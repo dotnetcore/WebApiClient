@@ -124,7 +124,11 @@ namespace WebApiClient
                 Attributes = parameter.GetCustomAttributes<ApiParameterAttribute>(true).ToArray()
             };
 
-            if (parameterDescriptor.Attributes.Length == 0)
+            if (typeof(HttpContent).IsAssignableFrom(parameter.ParameterType))
+            {
+                parameterDescriptor.Attributes = new[] { new HttpContentAttribute() };
+            }
+            else if (parameterDescriptor.Attributes.Length == 0)
             {
                 parameterDescriptor.Attributes = new[] { new PathQueryAttribute() };
             }

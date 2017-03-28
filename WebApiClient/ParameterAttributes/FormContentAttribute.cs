@@ -11,7 +11,7 @@ using System.Web;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示x-www-form-urlencoded的http内容
+    /// 表示将参数体作为x-www-form-urlencoded请求
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
     public class FormContentAttribute : HttpContentAttribute

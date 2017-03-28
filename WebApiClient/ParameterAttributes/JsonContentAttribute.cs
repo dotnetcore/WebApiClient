@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示application/json的http内容
+    /// 表示将参数体作为application/json请求
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
     public class JsonContentAttribute : HttpContentAttribute

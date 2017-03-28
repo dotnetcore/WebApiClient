@@ -9,7 +9,7 @@ namespace WebApiClient
 {
     /// <summary>
     /// 表示Url路径参数或query参数的特性
-    /// 所有未添加任何ApiParameterAttribute的参数都默认关联此特性
+    /// 此特性不需要显示声明
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
     public sealed class PathQueryAttribute : ApiParameterAttribute

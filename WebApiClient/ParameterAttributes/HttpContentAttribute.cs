@@ -10,10 +10,11 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示请求的http内容体抽象类
+    /// 表示参数为HttpContent或派生类型的特性
+    /// 此特性不需要显示声明
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-    public abstract class HttpContentAttribute : ApiParameterAttribute
+    public class HttpContentAttribute : ApiParameterAttribute
     {
         /// <summary>
         /// http请求之前
@@ -38,6 +39,9 @@ namespace WebApiClient
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的属性</param>
         /// <returns></returns>
-        protected abstract HttpContent GetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter);
+        protected virtual HttpContent GetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
+        {
+            return parameter.Value as HttpContent;
+        }
     }
 }
