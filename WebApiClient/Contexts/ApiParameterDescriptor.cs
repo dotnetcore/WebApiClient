@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApplication1
+namespace WebApiClient
 {
     /// <summary>
     /// 表示请求Api的参数描述

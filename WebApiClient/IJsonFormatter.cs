@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApplication1
+namespace WebApiClient
 {
     /// <summary>
     /// 定义json解析工具的接口

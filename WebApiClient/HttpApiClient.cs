@@ -9,7 +9,7 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApplication1
+namespace WebApiClient
 {
     /// <summary>
     /// 表示web api请求客户端

@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApplication1
+namespace WebApiClient
 {
     /// <summary>
     /// 表示将回复的Json结果作反序化为指定类型

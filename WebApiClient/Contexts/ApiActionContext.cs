@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApplication1
+namespace WebApiClient
 {
     /// <summary>
     /// 表示请求Api的上下文

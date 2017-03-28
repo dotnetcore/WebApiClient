@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace ConsoleApplication1
+namespace WebApiClient
 {
     /// <summary>
     /// 表示Url路径参数或query参数的特性
@@ -24,8 +24,17 @@ namespace ConsoleApplication1
         /// </summary>
         public PathQueryAttribute()
         {
-            this.IgnoreWhenNull = false;
         }
+
+        /// <summary>
+        /// 表示Url路径参数或query参数的特性
+        /// <param name="ignoreWhenNull">当值为null时忽略此参数</param>
+        /// </summary>
+        public PathQueryAttribute(bool ignoreWhenNull)
+        {
+            this.IgnoreWhenNull = ignoreWhenNull;
+        }
+
 
         /// <summary>
         /// http请求之前
