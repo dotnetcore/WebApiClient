@@ -3,6 +3,8 @@
 
 ### Api声明
 ```
+namespace Demo
+{
     [JsonReturn]
     [HttpHost("http://www.mywebapi.com")]
     public interface MyWebApi
@@ -26,10 +28,15 @@
         [HttpDelete("/webapi/user/{id}")] // DELETE  webapi/user/idValue
         Task<ApiResult<bool>> DeleteUser2Async(string id);
     }
- ```
+}
+```
  
  ### Api调用
  ```
+namespace Demo
+{
+    class Program
+    {
         static async void Test()
         {
             var myWebApi = new WebApiClient.HttpApiClient().GetHttpApi<MyWebApi>();
@@ -38,4 +45,7 @@
             await myWebApi.UpdateUserAsync(new UserInfo { UserName = "abc", Password = "123456" });
             await myWebApi.DeleteUser2Async(id: "id001");
         }
+    }
+}
+
 ```
