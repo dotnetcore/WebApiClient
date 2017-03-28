@@ -50,7 +50,7 @@ namespace WebApiClient
             }
 
             var uri = context.RequestMessage.RequestUri;
-            var pathQuery = this.GetPathQuery(uri.PathAndQuery, parameter);
+            var pathQuery = this.GetPathQuery(uri.LocalPath + uri.Query, parameter);
             context.RequestMessage.RequestUri = new Uri(uri, pathQuery);
         }
 
@@ -67,8 +67,47 @@ namespace WebApiClient
                 return this.GetPathQuerySimple(pathQuery, parameter.Name, parameter.Value);
             }
 
+            if (parameter.ParameterType.IsArray == true)
+            {
+                return this.GetPathQueryArray(pathQuery, parameter);
+            }
+
+            return this.GetPathQueryComplex(pathQuery, parameter);
+        }
+
+        /// <summary>
+        /// 获取新的Path与Query
+        /// </summary>
+        /// <param name="pathQuery">原始path与query</param>
+        /// <param name="parameter">参数</param>
+        /// <returns></returns>
+        private string GetPathQueryArray(string pathQuery, ApiParameterDescriptor parameter)
+        {
+            var array = parameter.Value as Array;
+            if (array == null)
+            {
+                return pathQuery;
+            }
+
+            foreach (var item in array)
+            {
+                pathQuery = this.GetPathQuerySimple(pathQuery, parameter.Name, item);
+            }
+            return pathQuery;
+        }
+
+        /// <summary>
+        /// 获取新的Path与Query
+        /// </summary>
+        /// <param name="pathQuery">原始path与query</param>
+        /// <param name="parameter">参数</param>
+        /// <returns></returns>
+        private string GetPathQueryComplex(string pathQuery, ApiParameterDescriptor parameter)
+        {
             var instance = parameter.Value;
-            var properties = Property.GetProperties(parameter.ParameterType);
+            var instanceType = parameter.ParameterType;
+
+            var properties = Property.GetProperties(instanceType);
             foreach (var p in properties)
             {
                 var value = instance == null ? null : p.GetValue(instance);
@@ -77,25 +116,24 @@ namespace WebApiClient
             return pathQuery;
         }
 
-
         /// <summary>
         /// 获取新的Path与Query
         /// </summary>
         /// <param name="pathQuery">原始path与query</param>
-        /// <param name="key">键</param>
+        /// <param name="name">名称</param>
         /// <param name="value">值</param>
         /// <returns></returns>
-        private string GetPathQuerySimple(string pathQuery, string key, object value)
+        private string GetPathQuerySimple(string pathQuery, string name, object value)
         {
             var valueString = value == null ? string.Empty : value.ToString();
-            var regex = new Regex("{" + key + "}", RegexOptions.IgnoreCase);
+            var regex = new Regex("{" + name + "}", RegexOptions.IgnoreCase);
 
             if (regex.IsMatch(pathQuery) == true)
             {
                 return regex.Replace(pathQuery, valueString);
             }
 
-            var keyValue = string.Format("{0}={1}", key, valueString);
+            var keyValue = string.Format("{0}={1}", name, valueString);
             var concat = pathQuery.Contains('?') ? "&" : "?";
             return pathQuery + concat + keyValue;
         }
