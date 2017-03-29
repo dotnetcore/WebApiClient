@@ -107,7 +107,7 @@ namespace WebApiClient
             }
 
             var apiAction = context.ApiActionDescriptor;
-            invocation.ReturnValue = apiAction.ExecuteAsync(actionContext);
+            invocation.ReturnValue = apiAction.Execute(actionContext);
         }
 
         /// <summary>

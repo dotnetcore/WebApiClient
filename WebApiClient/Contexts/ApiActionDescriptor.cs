@@ -38,13 +38,13 @@ namespace WebApiClient
         public Type ReturnDataType { get; internal set; }
 
         /// <summary>
-        /// 异步执行api
+        /// 执行api
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public object ExecuteAsync(ApiActionContext context)
+        public object Execute(ApiActionContext context)
         {
-            var taskResult = this.ExecuteApiAsync(context);
+            var taskResult = this.ExecuteAsync(context);
             return TaskEx.Cast(taskResult, this.ReturnDataType);
         }
 
@@ -53,7 +53,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        private async Task<object> ExecuteApiAsync(ApiActionContext context)
+        private async Task<object> ExecuteAsync(ApiActionContext context)
         {
             foreach (var methodAttribute in context.ApiActionDescriptor.Attributes)
             {
