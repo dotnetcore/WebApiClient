@@ -9,8 +9,19 @@ namespace WebApiClient
     /// <summary>
     /// 提供Taskof(Object)类型转换强类型
     /// </summary>
-    static class TaskConvter
+    static class TaskEx
     {
+        /// <summary>
+        /// 创建完成的任务
+        /// </summary>
+        /// <returns></returns>
+        public static Task CreateCompletedTask()
+        {
+            var taskSource = new TaskCompletionSource<object>();
+            taskSource.SetResult(null);
+            return taskSource.Task;
+        }
+
         /// <summary>
         /// 转换Taskof(Object)为强类型
         /// </summary>

@@ -42,7 +42,7 @@ namespace WebApiClient
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
         /// <returns></returns>
-        public override void BeforeRequest(ApiActionContext context, ApiParameterDescriptor parameter)
+        public override async Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             if (this.IgnoreWhenNull && parameter.Value == null)
             {
@@ -52,6 +52,8 @@ namespace WebApiClient
             var uri = context.RequestMessage.RequestUri;
             var pathQuery = this.GetPathQuery(uri.LocalPath + uri.Query, parameter);
             context.RequestMessage.RequestUri = new Uri(uri, pathQuery);
+
+            await TaskEx.CreateCompletedTask();
         }
 
         /// <summary>

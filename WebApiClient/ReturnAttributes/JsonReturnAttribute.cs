@@ -14,13 +14,13 @@ namespace WebApiClient
     public class JsonReturnAttribute : ApiReturnAttribute
     {
         /// <summary>
-        /// 异步获取结果
+        /// 获取异步结果
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override async Task<object> GetResultAsync(ApiActionContext context)
+        public override async Task<object> GetTaskResult(ApiActionContext context)
         {
-            var response = await context.ResponseMessage;
+            var response = context.ResponseMessage;
             var json = await response.Content.ReadAsStringAsync();
 
             var dataType = context.ApiActionDescriptor.ReturnDataType;

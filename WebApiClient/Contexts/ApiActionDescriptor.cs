@@ -38,28 +38,39 @@ namespace WebApiClient
         public Type ReturnDataType { get; internal set; }
 
         /// <summary>
-        /// 异步执行Api
+        /// 异步执行api
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public Task ExecuteAsync(ApiActionContext context)
+        public object ExecuteAsync(ApiActionContext context)
+        {
+            var taskResult = this.ExecuteApiAsync(context);
+            return TaskEx.Cast(taskResult, this.ReturnDataType);
+        }
+
+        /// <summary>
+        /// 异步执行api
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <returns></returns>
+        private async Task<object> ExecuteApiAsync(ApiActionContext context)
         {
             foreach (var methodAttribute in context.ApiActionDescriptor.Attributes)
             {
-                methodAttribute.BeforeRequest(context);
+                await methodAttribute.BeforeRequestAsync(context);
             }
 
             foreach (var parameter in context.ApiActionDescriptor.Parameters)
             {
                 foreach (var parameterAttribute in parameter.Attributes)
                 {
-                    parameterAttribute.BeforeRequest(context, parameter);
+                    await parameterAttribute.BeforeRequestAsync(context, parameter);
                 }
             }
 
-            context.ResponseMessage = context.HttpApiClient.HttpClient.SendAsync(context.RequestMessage);
-            var taskResult = context.ApiReturnAttribute.GetResultAsync(context);
-            return TaskConvter.Cast(taskResult, this.ReturnDataType);
+            var httpClient = context.HttpApiClient.HttpClient;
+            context.ResponseMessage = await httpClient.SendAsync(context.RequestMessage);
+            return await context.ApiReturnAttribute.GetTaskResult(context);
         }
 
         /// <summary>
@@ -73,7 +84,7 @@ namespace WebApiClient
                 Name = this.Name,
                 Attributes = this.Attributes,
                 ReturnDataType = this.ReturnDataType,
-                ReturnTaskType = this.ReturnTaskType,                
+                ReturnTaskType = this.ReturnTaskType,
                 Parameters = this.Parameters.Select(item => (ApiParameterDescriptor)item.Clone()).ToArray()
             };
         }

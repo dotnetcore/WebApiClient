@@ -15,6 +15,7 @@ namespace WebApiClient
         /// 执行前
         /// </summary>
         /// <param name="context">上下文</param>
-        public abstract void BeforeRequest(ApiActionContext context);
+        /// <returns></returns>
+        public abstract Task BeforeRequestAsync(ApiActionContext context);     
     }
 }

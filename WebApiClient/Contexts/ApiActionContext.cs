@@ -41,6 +41,6 @@ namespace WebApiClient
         /// <summary>
         /// 获取关联的HttpResponseMessage
         /// </summary>
-        public Task<HttpResponseMessage> ResponseMessage { get; internal set; }
+        public HttpResponseMessage ResponseMessage { get; internal set; }
     }
 }

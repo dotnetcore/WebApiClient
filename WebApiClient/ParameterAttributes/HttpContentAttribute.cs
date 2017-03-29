@@ -22,7 +22,7 @@ namespace WebApiClient
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
         /// <returns></returns>
-        public sealed override void BeforeRequest(ApiActionContext context, ApiParameterDescriptor parameter)
+        public sealed override async Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             if (context.RequestMessage.Method == HttpMethod.Get)
             {
@@ -31,6 +31,8 @@ namespace WebApiClient
 
             var httpContent = this.GetHttpContent(context, parameter);
             context.RequestMessage.Content = httpContent;
+
+            await TaskEx.CreateCompletedTask();
         }
 
         /// <summary>

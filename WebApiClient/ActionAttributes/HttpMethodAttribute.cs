@@ -44,10 +44,12 @@ namespace WebApiClient
         /// 执行前
         /// </summary>
         /// <param name="context">上下文</param>
-        public override void BeforeRequest(ApiActionContext context)
+        /// <returns></returns>
+        public override Task BeforeRequestAsync(ApiActionContext context)
         {
             context.RequestMessage.Method = this.Method;
             context.RequestMessage.RequestUri = new Uri(context.HostAttribute.Host, this.Path);
+            return TaskEx.CreateCompletedTask();
         }
 
         /// <summary>

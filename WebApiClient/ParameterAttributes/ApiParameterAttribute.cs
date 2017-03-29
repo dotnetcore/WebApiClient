@@ -18,6 +18,6 @@ namespace WebApiClient
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
         /// <returns></returns>
-        public abstract void BeforeRequest(ApiActionContext context, ApiParameterDescriptor parameter);
+        public abstract Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter);
     }
 }
