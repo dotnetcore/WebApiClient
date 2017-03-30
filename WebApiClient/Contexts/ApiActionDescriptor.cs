@@ -68,8 +68,19 @@ namespace WebApiClient
                 }
             }
 
+            foreach (var filter in context.ApiActionFilterAttributes)
+            {
+                await filter.OnBeginRequestAsync(context);
+            }
+
             var httpClient = context.HttpApiClient.HttpClient;
             context.ResponseMessage = await httpClient.SendAsync(context.RequestMessage);
+
+            foreach (var filter in context.ApiActionFilterAttributes)
+            {
+                await filter.OnEndRequestAsync(context);
+            }
+
             return await context.ApiReturnAttribute.GetTaskResult(context);
         }
 

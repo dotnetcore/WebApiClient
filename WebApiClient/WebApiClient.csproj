@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiActionFilterAttribute.cs" />
     <Compile Include="Contexts\ApiActionDescriptor.cs" />
     <Compile Include="Contexts\TaskEx.cs" />
     <Compile Include="JsonFormatter.cs" />

@@ -9,6 +9,7 @@ namespace Demo
 {
     [JsonReturn]
     [HttpHost("http://www.mywebapi.com")]
+    [MyFilter]
     public interface MyWebApi
     {
         [HttpGet("/webapi/{type}/about")] // GET webapi/typeValue/about

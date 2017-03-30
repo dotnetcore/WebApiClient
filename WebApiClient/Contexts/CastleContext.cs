@@ -27,10 +27,14 @@ namespace WebApiClient
         public ApiReturnAttribute ApiReturnAttribute { get; private set; }
 
         /// <summary>
+        /// 获取ApiActionFilterAttribute
+        /// </summary>
+        public ApiActionFilterAttribute[] ApiActionFilterAttributes { get; set; }
+
+        /// <summary>
         /// 获取ApiActionDescriptor
         /// </summary>
         public ApiActionDescriptor ApiActionDescriptor { get; private set; }
-
 
         /// <summary>
         /// 缓存字典
@@ -64,7 +68,7 @@ namespace WebApiClient
         private static CastleContext GetContextNoCache(IInvocation invocation)
         {
             var method = invocation.Method;
-            var hostAttribute = CastleContext.GetAttributeFromMethodAndInterface<HttpHostAttribute>(method, false);
+            var hostAttribute = CastleContext.GetAttributeFromMethodOrInterface<HttpHostAttribute>(method, false);
             if (hostAttribute == null)
             {
                 hostAttribute = invocation.Proxy.GetType().GetCustomAttribute<HttpHostAttribute>();
@@ -74,16 +78,21 @@ namespace WebApiClient
                 throw new HttpRequestException("未指定HttpHostAttribute");
             }
 
-            var returnAttribute = CastleContext.GetAttributeFromMethodAndInterface<ApiReturnAttribute>(method, true);
+            var returnAttribute = CastleContext.GetAttributeFromMethodOrInterface<ApiReturnAttribute>(method, true);
             if (returnAttribute == null)
             {
                 returnAttribute = new DefaultReturnAttribute();
             }
 
+            var methodFilters = method.GetCustomAttributes<ApiActionFilterAttribute>(true);
+            var interfaceFilters = method.DeclaringType.GetCustomAttributes<ApiActionFilterAttribute>(true);
+            var filterAttributes = methodFilters.Concat(interfaceFilters).Distinct(new ApiActionFilterAttributeComparer()).ToArray();
+
             return new CastleContext
             {
                 HostAttribute = hostAttribute,
                 ApiReturnAttribute = returnAttribute,
+                ApiActionFilterAttributes = filterAttributes,
                 ApiActionDescriptor = CastleContext.GetActionDescriptor(invocation)
             };
         }
@@ -142,7 +151,7 @@ namespace WebApiClient
         /// <param name="method">方法</param>
         /// <param name="inherit"></param>
         /// <returns></returns>
-        private static TAttribute GetAttributeFromMethodAndInterface<TAttribute>(MethodInfo method, bool inherit) where TAttribute : Attribute
+        private static TAttribute GetAttributeFromMethodOrInterface<TAttribute>(MethodInfo method, bool inherit) where TAttribute : Attribute
         {
             var attribute = method.GetCustomAttribute<TAttribute>(inherit);
             if (attribute == null)
@@ -175,6 +184,34 @@ namespace WebApiClient
                 || type == typeof(Guid)
                 || type == typeof(Uri);
         }
+
+        /// <summary>
+        /// ApiActionFilterAttribute比较器
+        /// </summary>
+        private class ApiActionFilterAttributeComparer : IEqualityComparer<ApiActionFilterAttribute>
+        {
+            /// <summary>
+            /// 是否相等
+            /// </summary>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <returns></returns>
+            public bool Equals(ApiActionFilterAttribute x, ApiActionFilterAttribute y)
+            {
+                return x.TypeId == y.TypeId;
+            }
+
+            /// <summary>
+            /// 获取哈希码
+            /// </summary>
+            /// <param name="obj"></param>
+            /// <returns></returns> 
+            public int GetHashCode(ApiActionFilterAttribute obj)
+            {
+                return obj.TypeId.GetHashCode();
+            }
+        }
+
 
         /// <summary>
         /// IInvocation对象的比较器

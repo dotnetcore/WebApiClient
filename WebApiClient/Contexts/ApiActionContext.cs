@@ -29,6 +29,11 @@ namespace WebApiClient
         public ApiReturnAttribute ApiReturnAttribute { get; internal set; }
 
         /// <summary>
+        /// 获取ApiActionFilterAttribute
+        /// </summary>
+        public ApiActionFilterAttribute[] ApiActionFilterAttributes { get; internal set; }
+
+        /// <summary>
         /// 获取关联的ApiActionDescriptor
         /// </summary>
         public ApiActionDescriptor ApiActionDescriptor { get; internal set; }
