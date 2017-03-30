@@ -12,15 +12,10 @@ namespace WebApiClient
     static class TaskEx
     {
         /// <summary>
-        /// 创建完成的任务
+        /// 完成的任务
         /// </summary>
         /// <returns></returns>
-        public static Task CreateCompletedTask()
-        {
-            var taskSource = new TaskCompletionSource<object>();
-            taskSource.SetResult(null);
-            return taskSource.Task;
-        }
+        public static readonly Task CompletedTask = Task.FromResult<object>(null);
 
         /// <summary>
         /// 转换Taskof(Object)为强类型
@@ -30,8 +25,8 @@ namespace WebApiClient
         /// <returns></returns>
         public static Task Cast(Task<object> taskResult, Type resultType)
         {
-            var taskSetterType = typeof(TaskSetter<>).MakeGenericType(resultType);
-            var taskSetter = Activator.CreateInstance(taskSetterType) as ITaskSetter;
+            var setterType = typeof(TaskSetter<>).MakeGenericType(resultType);
+            var taskSetter = Activator.CreateInstance(setterType) as ITaskSetter;
 
             taskResult.ContinueWith((task) =>
             {
@@ -48,7 +43,6 @@ namespace WebApiClient
                     taskSetter.SetException(ex);
                 }
             });
-
             return taskSetter.Task;
         }
 
@@ -83,6 +77,9 @@ namespace WebApiClient
         /// <typeparam name="TResult"></typeparam>
         private class TaskSetter<TResult> : ITaskSetter
         {
+            /// <summary>
+            /// TaskCompletionSource
+            /// </summary>
             private readonly TaskCompletionSource<TResult> taskSource;
 
             /// <summary>

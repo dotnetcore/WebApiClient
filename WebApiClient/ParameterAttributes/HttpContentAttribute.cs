@@ -31,8 +31,7 @@ namespace WebApiClient
 
             var httpContent = this.GetHttpContent(context, parameter);
             context.RequestMessage.Content = httpContent;
-
-            await TaskEx.CreateCompletedTask();
+            await TaskEx.CompletedTask;
         }
 
         /// <summary>

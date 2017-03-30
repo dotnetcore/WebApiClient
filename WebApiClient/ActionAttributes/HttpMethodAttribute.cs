@@ -49,7 +49,7 @@ namespace WebApiClient
         {
             context.RequestMessage.Method = this.Method;
             context.RequestMessage.RequestUri = new Uri(context.HostAttribute.Host, this.Path);
-            return TaskEx.CreateCompletedTask();
+            return TaskEx.CompletedTask;
         }
 
         /// <summary>
