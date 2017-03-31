@@ -16,7 +16,7 @@ namespace Demo
         Task<ApiResult<string>> GetAboutAsync(string type);
 
 
-        [HttpGet("/webapi/user")]  // GET webapi/user?userName=aa&nickName=bb&&BeginTime=cc&EndTime=dd
+        [HttpGet("/webapi/user")]  // GET webapi/user?userName=aa&nickName=bb&BeginTime=cc&EndTime=dd
         Task<ApiResult<UserInfo>> GetUserAsync(string userName, string nickName, TimeFilter timeFilter);
 
 
@@ -30,5 +30,9 @@ namespace Demo
 
         [HttpDelete("/webapi/user/{id}")] // DELETE  webapi/user/idValue
         Task<ApiResult<bool>> DeleteUser2Async(string id);
+
+        [DefaultReturn]
+        [HttpPost("/webapi/test/{action}")] // POST webapi/test/actionValue?id=id1&id=id2
+        Task<string> TestAsync(string action, int[] id, [FormContent] TimeFilter timerFilter);
     }
 }

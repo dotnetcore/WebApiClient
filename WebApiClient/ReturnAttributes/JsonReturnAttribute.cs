@@ -20,7 +20,7 @@ namespace WebApiClient
         /// <returns></returns>
         public override async Task<object> GetTaskResult(ApiActionContext context)
         {
-            var response = context.ResponseMessage;
+            var response = context.ResponseMessage.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
 
             var dataType = context.ApiActionDescriptor.ReturnDataType;

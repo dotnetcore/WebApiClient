@@ -22,9 +22,9 @@ namespace WebApiClient
         private readonly ProxyGenerator generator = new ProxyGenerator();
 
         /// <summary>
-        /// 获取关联的http客户端
+        /// 获取或设置http客户端
         /// </summary>
-        public HttpClient HttpClient { get; private set; }
+        public HttpClient HttpClient { get; set; }
 
         /// <summary>
         /// 获取或设置json解析工具

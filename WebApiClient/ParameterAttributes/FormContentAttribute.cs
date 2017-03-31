@@ -22,7 +22,7 @@ namespace WebApiClient
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
         /// <returns></returns>
-        protected override HttpContent GetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
+        protected sealed override HttpContent GetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var encoding = Encoding.UTF8;
             var body = this.GetFormContent(parameter, encoding);
@@ -31,11 +31,12 @@ namespace WebApiClient
 
         /// <summary>
         /// 生成表单内容
+        /// key1=value1&key2=value2
         /// </summary>
         /// <param name="parameter">参数</param>
         /// <param name="encoding">编码</param>
         /// <returns></returns>
-        private string GetFormContent(ApiParameterDescriptor parameter, Encoding encoding)
+        protected virtual string GetFormContent(ApiParameterDescriptor parameter, Encoding encoding)
         {
             if (parameter.IsSimpleType == true)
             {

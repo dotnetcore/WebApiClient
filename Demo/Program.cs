@@ -10,11 +10,18 @@ namespace Demo
     {
         static async void Test()
         {
-            var myWebApi = new WebApiClient.HttpApiClient().GetHttpApi<MyWebApi>();
-
-            await myWebApi.GetAboutAsync("typeValue");
-            await myWebApi.UpdateUserAsync(new UserInfo { UserName = "abc", Password = "123456" });
-            await myWebApi.DeleteUser2Async(id: "id001");
+            try
+            {
+                var myWebApi = new WebApiClient.HttpApiClient().GetHttpApi<MyWebApi>();
+                await myWebApi.TestAsync("myAction", new[] { 1, 2 }, null);
+                await myWebApi.GetAboutAsync("typeValue");
+                await myWebApi.UpdateUserAsync(new UserInfo { UserName = "abc", Password = "123456" });
+                await myWebApi.DeleteUser2Async(id: "id001");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
 
         static void Main(string[] args)

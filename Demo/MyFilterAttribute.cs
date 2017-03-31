@@ -12,6 +12,7 @@ namespace Demo
         protected override Task OnBeginRequestAsync(ApiActionContext context)
         {
             Console.WriteLine(context.ApiActionDescriptor.Name + "准备请求");
+            Console.WriteLine(context.RequestMessage.RequestUri);
             return base.OnBeginRequestAsync(context);
         }
 
