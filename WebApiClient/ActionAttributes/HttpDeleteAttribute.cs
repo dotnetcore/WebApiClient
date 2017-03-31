@@ -17,6 +17,7 @@ namespace WebApiClient
         /// Delete请求
         /// </summary>
         /// <param name="path">相对路径</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public HttpDeleteAttribute(string path)
             : base(HttpMethod.Delete, path)
         {

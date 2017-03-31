@@ -69,12 +69,19 @@ namespace WebApiClient
         /// </summary>
         /// <typeparam name="TInterface">请求接口</typeparam>
         /// <param name="host">服务跟路径，效果与HttpHostAttribute一致</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
         public TInterface GetHttpApi<TInterface>(string host) where TInterface : class
         {
             if (string.IsNullOrEmpty(host))
             {
                 throw new ArgumentNullException();
+            }
+
+            if (typeof(TInterface).IsInterface == false)
+            {
+                throw new ArgumentException(typeof(TInterface).Name + "不是接口类型");
             }
 
             var option = new ProxyGenerationOptions();

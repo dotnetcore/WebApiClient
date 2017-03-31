@@ -30,6 +30,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="method">请求方法</param>
         /// <param name="path">请求相对路径</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public HttpMethodAttribute(HttpMethod method, string path)
         {
             if (string.IsNullOrEmpty(path))

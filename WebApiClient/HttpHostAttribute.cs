@@ -21,6 +21,8 @@ namespace WebApiClient
         /// 请求服务的根路径
         /// </summary>
         /// <param name="host">根路径</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="UriFormatException"></exception>
         public HttpHostAttribute(string host)
         {
             this.Host = new Uri(host);

@@ -17,6 +17,7 @@ namespace WebApiClient
         /// Get请求
         /// </summary>
         /// <param name="path">相对路径</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public HttpGetAttribute(string path)
             : base(HttpMethod.Get, path)
         {
