@@ -62,6 +62,6 @@ namespace Demo
 * 派生ApiReturnAttribute扩展回复内容处理
 * 派生ApiParameterAttribute扩展参数处理
 * 派生ApiActionAttribute扩展方法逻辑处理
-
+* 派生ApiActionFilterAttribute扩展方法请求前后拦截
 ### 执行顺序
 ApiActionAttribute > ApiParameterAttribute > ApiReturnAttribute
