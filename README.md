@@ -13,7 +13,7 @@ namespace Demo
         Task<ApiResult<string>> GetAboutAsync(string type);
 
 
-        [HttpGet("/webapi/user")]  // GET webapi/user?userName=aa&nickName=bb&&BeginTime=cc&EndTime=dd
+        [HttpGet("/webapi/user")]  // GET webapi/user?userName=aa&nickName=bb&BeginTime=cc&EndTime=dd
         Task<ApiResult<UserInfo>> GetUserAsync(string userName, string nickName, TimeFilter timeFilter);
 
 
