@@ -19,7 +19,7 @@ namespace WebApiClient
         /// <returns></returns>
         internal protected virtual Task OnBeginRequestAsync(ApiActionContext context)
         {
-            return TaskEx.CompletedTask;
+            return TaskExtend.CompletedTask;
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace WebApiClient
         /// <returns></returns>
         internal protected virtual Task OnEndRequestAsync(ApiActionContext context)
         {
-            return TaskEx.CompletedTask;
+            return TaskExtend.CompletedTask;
         }
     }
 }

@@ -54,8 +54,9 @@
   <ItemGroup>
     <Compile Include="ApiActionFilterAttribute.cs" />
     <Compile Include="Contexts\ApiActionDescriptor.cs" />
-    <Compile Include="Contexts\TaskEx.cs" />
-    <Compile Include="JsonFormatter.cs" />
+    <Compile Include="Internal\TaskCompletionSource.cs" />
+    <Compile Include="Internal\TaskExtend.cs" />
+    <Compile Include="Internal\DefaultJsonFormatter.cs" />
     <Compile Include="ParameterAttributes\ApiParameterAttribute.cs" />
     <Compile Include="ActionAttributes\HttpDeleteAttribute.cs" />
     <Compile Include="ActionAttributes\HttpPutAttribute.cs" />
@@ -66,17 +67,19 @@
     <Compile Include="ActionAttributes\ApiActionAttribute.cs" />
     <Compile Include="ParameterAttributes\HttpContentAttribute.cs" />
     <Compile Include="ParameterAttributes\FormContentAttribute.cs" />
+    <Compile Include="ParameterAttributes\XmlContentAttribute.cs" />
     <Compile Include="ParameterAttributes\JsonContentAttribute.cs" />
     <Compile Include="ParameterAttributes\PathQueryAttribute.cs" />
     <Compile Include="ReturnAttributes\ApiReturnAttribute.cs" />
     <Compile Include="ActionAttributes\HttpMethodAttribute.cs" />
     <Compile Include="ReturnAttributes\DefaultReturnAttribute.cs" />
+    <Compile Include="ReturnAttributes\XmlReturnAttribute.cs" />
     <Compile Include="ReturnAttributes\JsonReturnAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Contexts\CastleContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ParameterAttributes\Property.cs" />
+    <Compile Include="Internal\Property.cs" />
     <Compile Include="Contexts\ApiActionContext.cs" />
     <Compile Include="HttpHostAttribute.cs" />
     <Compile Include="HttpApiClient.cs" />

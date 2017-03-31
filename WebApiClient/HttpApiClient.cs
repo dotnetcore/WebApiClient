@@ -51,7 +51,7 @@ namespace WebApiClient
             }
 
             this.HttpClient = httpClient;
-            this.JsonFormatter = new JsonFormatter();
+            this.JsonFormatter = new DefaultJsonFormatter();
         }
 
         /// <summary>

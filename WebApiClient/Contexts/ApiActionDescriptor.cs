@@ -44,8 +44,7 @@ namespace WebApiClient
         /// <returns></returns>
         public object Execute(ApiActionContext context)
         {
-            var taskResult = this.ExecuteAsync(context);
-            return TaskEx.Cast(taskResult, this.ReturnDataType);
+            return this.ExecuteAsync(context).CastResult(this.ReturnDataType);
         }
 
         /// <summary>
