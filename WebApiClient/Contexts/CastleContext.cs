@@ -198,7 +198,7 @@ namespace WebApiClient
             /// <returns></returns>
             public bool Equals(ApiActionFilterAttribute x, ApiActionFilterAttribute y)
             {
-                return x.TypeId == y.TypeId;
+                return true;
             }
 
             /// <summary>
@@ -226,7 +226,7 @@ namespace WebApiClient
             /// <returns></returns>
             public bool Equals(IInvocation x, IInvocation y)
             {
-                return x.Method.Equals(y.Method);
+                return x.Proxy.GetHashCode() == y.Proxy.GetHashCode();
             }
 
             /// <summary>

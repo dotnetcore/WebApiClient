@@ -19,7 +19,7 @@ namespace WebApiClient
         /// <summary>
         /// 代理生成器
         /// </summary>
-        private readonly ProxyGenerator generator = new ProxyGenerator();
+        private static readonly ProxyGenerator generator = new ProxyGenerator();
 
         /// <summary>
         /// 获取或设置http客户端
@@ -58,10 +58,11 @@ namespace WebApiClient
         /// 获取请求接口的实现对象
         /// </summary>
         /// <typeparam name="TInterface">请求接口</typeparam>
+        /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
         public TInterface GetHttpApi<TInterface>() where TInterface : class
         {
-            return this.generator.CreateInterfaceProxyWithoutTarget<TInterface>(this);
+            return HttpApiClient.GeneratoProxy<TInterface>(null, this);
         }
 
         /// <summary>
@@ -84,11 +85,26 @@ namespace WebApiClient
                 throw new ArgumentException(typeof(TInterface).Name + "不是接口类型");
             }
 
+            return HttpApiClient.GeneratoProxy<TInterface>(host, this);
+        }
+
+        /// <summary>
+        /// 获取请求接口的实现对象
+        /// </summary>
+        /// <typeparam name="TInterface">请求接口</typeparam>
+        /// <param name="host">服务跟路径</param>
+        /// <param name="interceptor">拦截器</param>
+        /// <returns></returns>
+        private static TInterface GeneratoProxy<TInterface>(string host, IInterceptor interceptor) where TInterface : class
+        {
             var option = new ProxyGenerationOptions();
-            var ctor = typeof(HttpHostAttribute).GetConstructors().FirstOrDefault();
-            var hostAttribute = new CustomAttributeInfo(ctor, new object[] { host });
-            option.AdditionalAttributes.Add(hostAttribute);
-            return this.generator.CreateInterfaceProxyWithoutTarget<TInterface>(option, this);
+            if (string.IsNullOrEmpty(host) == false)
+            {
+                var ctor = typeof(HttpHostAttribute).GetConstructors().FirstOrDefault();
+                var hostAttribute = new CustomAttributeInfo(ctor, new object[] { host });
+                option.AdditionalAttributes.Add(hostAttribute);
+            }
+            return HttpApiClient.generator.CreateInterfaceProxyWithoutTarget<TInterface>(option, interceptor);
         }
 
         /// <summary>
