@@ -29,7 +29,7 @@ namespace WebApiClient
             {
                 xmlSerializer.Serialize(stream, parameter.Value);
                 var xml = Encoding.UTF8.GetString(stream.ToArray());
-                return new StringContent(xml, Encoding.UTF8, "application/json");
+                return new StringContent(xml, Encoding.UTF8, "application/xml");
             }
         }
     }
