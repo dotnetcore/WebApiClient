@@ -17,7 +17,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        internal protected virtual Task OnBeginRequestAsync(ApiActionContext context)
+        public virtual Task OnBeginRequestAsync(ApiActionContext context)
         {
             return TaskExtend.CompletedTask;
         }
@@ -27,7 +27,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        internal protected virtual Task OnEndRequestAsync(ApiActionContext context)
+        public virtual Task OnEndRequestAsync(ApiActionContext context)
         {
             return TaskExtend.CompletedTask;
         }
