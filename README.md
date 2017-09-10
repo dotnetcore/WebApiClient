@@ -9,8 +9,9 @@
 public interface MyWebApi
 {
     // GET webapi/user/id001
-    // Return json内容
+    // Return Http回复对象
     [HttpGet("/webapi/user/{id}")]
+    [DefaultReturn]
     Task<HttpResponseMessage> GetUserByIdAsync(string id);
 
     // GET webapi/user?account=laojiu
@@ -58,17 +59,14 @@ static async Task TestAsync()
 ```
 
 ### 说明
-* 派生HttpContent类型的参数，都自动当作请求的内容
-* JsonContentAttribute表示将参数体作为application/json请求
-* FormContentAttribute表示将参数体作为x-www-form-urlencoded请求
+* 派生HttpContent类型的参数值，都自动当作请求的内容
 * PathQueryAttribute表示Url路径参数或query参数，不需要显示声明
-* HttpHostAttribute可以不声明，而是从GetHttpApi<ApiInterface>(host)里传
-* 可以使用DefaultReturnAttribute替换JsonReturnAttribute，自己接管回复内容
 
 ### 扩展
-* 派生ApiReturnAttribute扩展回复内容处理
-* 派生ApiParameterAttribute扩展参数处理
-* 派生ApiActionAttribute扩展方法逻辑处理
-* 派生ApiActionFilterAttribute扩展方法请求前后拦截
+* 派生ApiParameterAttribute，实现更多参数处理的功能
+* 派生ApiReturnAttribute，实现更多的回复内容处理的功能
+* 派生ApiActionAttribute，实现更多的请求前后逻辑处理的功能
+* 派生ApiActionFilterAttribute，实现请求前后拦截的功能
+
 ### 执行顺序
 ApiActionAttribute > ApiParameterAttribute > ApiReturnAttribute
