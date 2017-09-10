@@ -39,7 +39,7 @@ namespace Demo
     {
         static async void Test()
         {
-            var myWebApi = new WebApiClient.HttpApiClient().GetHttpApi<MyWebApi>();
+            var myWebApi = new WebApiClient.HttpApiClient().Implement<MyWebApi>();
 
             await myWebApi.GetAboutAsync("typeValue");
             await myWebApi.UpdateUserAsync(new UserInfo { UserName = "abc", Password = "123456" });
