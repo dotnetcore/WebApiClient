@@ -33,7 +33,7 @@ public interface MyWebApi
 
     // POST webapi/user   
     // Body: xml内容
-    // Return json内容
+    // Return xml内容
     [XmlReturn]
     [HttpPost("/webapi/user")]
     Task<UserInfo> UpdateUserWithXmlAsync([XmlContent] UserInfo user);
