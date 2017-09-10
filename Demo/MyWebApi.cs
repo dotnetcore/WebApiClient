@@ -14,8 +14,9 @@ namespace Demo
     public interface MyWebApi
     {
         // GET webapi/user/id001
-        // Return json内容
+        // Return Http回复对象
         [HttpGet("/webapi/user/{id}")]
+        [DefaultReturn]
         Task<HttpResponseMessage> GetUserByIdAsync(string id);
 
         // GET webapi/user?account=laojiu
