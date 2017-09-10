@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace WebApiClient
@@ -28,7 +29,8 @@ namespace WebApiClient
             var xmlSerializer = new XmlSerializer(obj.GetType());
             using (var stream = new MemoryStream())
             {
-                xmlSerializer.Serialize(stream, obj);
+                var xmlWriter = new XmlTextWriter(stream, Encoding.UTF8);
+                xmlSerializer.Serialize(xmlWriter, obj);
                 return Encoding.UTF8.GetString(stream.ToArray());
             }
         }

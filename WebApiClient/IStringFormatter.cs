@@ -12,7 +12,7 @@ namespace WebApiClient
     public interface IStringFormatter
     {
         /// <summary>
-        /// 序列化为json/xml文本
+        /// 序列化为uft-8 json/xml文本
         /// </summary>
         /// <param name="obj">对象</param>
         /// <returns></returns>
