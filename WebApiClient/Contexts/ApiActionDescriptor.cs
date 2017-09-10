@@ -44,15 +44,20 @@ namespace WebApiClient
         /// <returns></returns>
         public object Execute(ApiActionContext context)
         {
-            return this.ExecuteAsync(context).CastResult(this.ReturnDataType);
+            var provider = context.HttpApiClientConfig.HttpClientProvider;
+            var httpClient = provider.CreateHttpClient();
+            var result = this.ExecuteAsync(httpClient, context).CastResult(this.ReturnDataType);
+            provider.DisposeHttpClient(httpClient);
+            return result;
         }
 
         /// <summary>
         /// 异步执行api
         /// </summary>
+        /// <param name="httpClient">httpClient实例</param>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        private async Task<object> ExecuteAsync(ApiActionContext context)
+        private async Task<object> ExecuteAsync(HttpClient httpClient, ApiActionContext context)
         {
             foreach (var methodAttribute in context.ApiActionDescriptor.Attributes)
             {
@@ -72,7 +77,7 @@ namespace WebApiClient
                 await filter.OnBeginRequestAsync(context);
             }
 
-            var httpClient = context.HttpApiClient.HttpClient;
+            // 执行Http请求，获取回复对象
             context.ResponseMessage = await httpClient.SendAsync(context.RequestMessage);
 
             foreach (var filter in context.ApiActionFilterAttributes)

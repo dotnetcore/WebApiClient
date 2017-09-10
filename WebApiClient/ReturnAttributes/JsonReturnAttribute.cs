@@ -24,7 +24,7 @@ namespace WebApiClient
             var json = await response.Content.ReadAsStringAsync();
 
             var dataType = context.ApiActionDescriptor.ReturnDataType;
-            var result = context.HttpApiClient.JsonFormatter.Deserialize(json, dataType);
+            var result = context.HttpApiClientConfig.JsonFormatter.Deserialize(json, dataType);
             return result;
         }
     }

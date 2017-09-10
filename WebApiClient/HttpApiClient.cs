@@ -14,7 +14,7 @@ namespace WebApiClient
     /// <summary>
     /// 表示web api请求客户端
     /// </summary>
-    public class HttpApiClient : IInterceptor, IDisposable
+    public class HttpApiClient : IInterceptor
     {
         /// <summary>
         /// 代理生成器
@@ -22,70 +22,50 @@ namespace WebApiClient
         private static readonly ProxyGenerator generator = new ProxyGenerator();
 
         /// <summary>
-        /// 获取或设置http客户端
+        /// 获取配置项
         /// </summary>
-        public HttpClient HttpClient { get; set; }
-
-        /// <summary>
-        /// 获取或设置json解析工具
-        /// </summary>
-        public IJsonFormatter JsonFormatter { get; set; }
+        public HttpApiClientConfig Config { get; private set; }
 
         /// <summary>
         /// web api请求客户端
         /// </summary>
         public HttpApiClient()
-            : this(null)
         {
-        }
-
-        /// <summary>
-        /// web api请求客户端
-        /// </summary>
-        /// <param name="httpClient">关联的http客户端</param>
-        public HttpApiClient(HttpClient httpClient)
-        {
-            if (httpClient == null)
-            {
-                httpClient = new HttpClient();
-            }
-
-            this.HttpClient = httpClient;
-            this.JsonFormatter = new DefaultJsonFormatter();
+            this.Config = new HttpApiClientConfig();
         }
 
         /// <summary>
         /// 获取请求接口的实现对象
         /// </summary>
-        /// <typeparam name="TInterface">请求接口</typeparam>
+        /// <typeparam name="TApiInterface">请求接口</typeparam>
         /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
-        public TInterface GetHttpApi<TInterface>() where TInterface : class
+        public TApiInterface Implement<TApiInterface>() where TApiInterface : class
         {
-            return HttpApiClient.GeneratoProxy<TInterface>(null, this);
+            return HttpApiClient.GeneratoProxy<TApiInterface>(null, this);
         }
 
         /// <summary>
         /// 获取请求接口的实现对象
         /// </summary>
-        /// <typeparam name="TInterface">请求接口</typeparam>
+        /// <typeparam name="TApiInterface">请求接口</typeparam>
         /// <param name="host">服务跟路径，效果与HttpHostAttribute一致</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
-        public TInterface GetHttpApi<TInterface>(string host) where TInterface : class
+        public TApiInterface Implement<TApiInterface>(string host) where TApiInterface : class
         {
             if (string.IsNullOrEmpty(host))
             {
                 throw new ArgumentNullException();
             }
 
-            if (typeof(TInterface).IsInterface == false)
+            if (typeof(TApiInterface).IsInterface == false)
             {
-                throw new ArgumentException(typeof(TInterface).Name + "不是接口类型");
+                throw new ArgumentException(typeof(TApiInterface).Name + "不是接口类型");
             }
 
-            return HttpApiClient.GeneratoProxy<TInterface>(host, this);
+            return HttpApiClient.GeneratoProxy<TApiInterface>(host, this);
         }
 
         /// <summary>
@@ -107,6 +87,7 @@ namespace WebApiClient
             return HttpApiClient.generator.CreateInterfaceProxyWithoutTarget<TInterface>(option, interceptor);
         }
 
+
         /// <summary>
         /// 方法拦截
         /// </summary>
@@ -116,7 +97,7 @@ namespace WebApiClient
             var context = CastleContext.From(invocation);
             var actionContext = new ApiActionContext
             {
-                HttpApiClient = this,
+                HttpApiClientConfig = this.Config,
                 RequestMessage = new HttpRequestMessage(),
                 HostAttribute = context.HostAttribute,
                 ApiReturnAttribute = context.ApiReturnAttribute,
@@ -132,14 +113,6 @@ namespace WebApiClient
 
             var apiAction = context.ApiActionDescriptor;
             invocation.ReturnValue = apiAction.Execute(actionContext);
-        }
-
-        /// <summary>
-        /// 释放相关资源
-        /// </summary>
-        public void Dispose()
-        {
-            this.HttpClient.Dispose();
         }
     }
 }

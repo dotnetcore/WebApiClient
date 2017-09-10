@@ -53,7 +53,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiActionFilterAttribute.cs" />
+    <Compile Include="HttpApiClientConfig.cs" />
     <Compile Include="Contexts\ApiActionDescriptor.cs" />
+    <Compile Include="IHttpClientProvider.cs" />
+    <Compile Include="Internal\DefaultHttpClientProvider.cs" />
+    <Compile Include="Internal\DefaultXmlFormatter.cs" />
     <Compile Include="Internal\TaskCompletionSource.cs" />
     <Compile Include="Internal\TaskExtend.cs" />
     <Compile Include="Internal\DefaultJsonFormatter.cs" />
@@ -62,7 +66,7 @@
     <Compile Include="ActionAttributes\HttpPutAttribute.cs" />
     <Compile Include="ActionAttributes\HttpGetAttribute.cs" />
     <Compile Include="ActionAttributes\HttpPostAttribute.cs" />
-    <Compile Include="IJsonFormatter.cs" />
+    <Compile Include="IStringFormatter.cs" />
     <Compile Include="Contexts\ApiParameterDescriptor.cs" />
     <Compile Include="ActionAttributes\ApiActionAttribute.cs" />
     <Compile Include="ParameterAttributes\HttpContentAttribute.cs" />

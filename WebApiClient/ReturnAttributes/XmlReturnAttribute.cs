@@ -22,16 +22,12 @@ namespace WebApiClient
         /// <returns></returns>
         public override async Task<object> GetTaskResult(ApiActionContext context)
         {
-            var response = context.ResponseMessage;
-            var dataType = context.ApiActionDescriptor.ReturnDataType;
-            var xmlSerializer = new XmlSerializer(dataType);
+            var response = context.ResponseMessage.EnsureSuccessStatusCode();
+            var xml = await response.Content.ReadAsStringAsync();
 
-            using (var stream = new MemoryStream())
-            {
-                await response.Content.CopyToAsync(stream);
-                stream.Position = 0;
-                return xmlSerializer.Deserialize(stream);
-            }
+            var dataType = context.ApiActionDescriptor.ReturnDataType;
+            var result = context.HttpApiClientConfig.XmlFormatter.Deserialize(xml, dataType);
+            return result;
         }
     }
 }

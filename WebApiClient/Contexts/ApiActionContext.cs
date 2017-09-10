@@ -14,9 +14,9 @@ namespace WebApiClient
     public class ApiActionContext
     {
         /// <summary>
-        /// 获取关联的HttpApiClient
+        /// 获取关联的HttpApiClientConfig
         /// </summary>
-        public HttpApiClient HttpApiClient { get; internal set; }
+        public HttpApiClientConfig HttpApiClientConfig { get; internal set; }
 
         /// <summary>
         /// 获取关联的HttpHostAttribute

@@ -9,7 +9,7 @@ namespace WebApiClient
     /// <summary>
     /// 默认的json解析工具
     /// </summary>
-    class DefaultJsonFormatter : IJsonFormatter
+    class DefaultJsonFormatter : IStringFormatter
     {
         /// <summary>
         /// 序列化为json

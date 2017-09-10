@@ -24,13 +24,8 @@ namespace WebApiClient
         /// <returns></returns>
         protected override HttpContent GetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var xmlSerializer = new XmlSerializer(parameter.ParameterType);
-            using (var stream = new MemoryStream())
-            {
-                xmlSerializer.Serialize(stream, parameter.Value);
-                var xml = Encoding.UTF8.GetString(stream.ToArray());
-                return new StringContent(xml, Encoding.UTF8, "application/xml");
-            }
+            var xml = context.HttpApiClientConfig.XmlFormatter.Serialize(parameter.Value);
+            return new StringContent(xml, Encoding.UTF8, "application/xml");
         }
     }
 }

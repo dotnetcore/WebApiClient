@@ -12,7 +12,7 @@ namespace Demo
         {
             try
             {
-                var myWebApi = new WebApiClient.HttpApiClient().GetHttpApi<MyWebApi>();
+                var myWebApi = new WebApiClient.HttpApiClient().Implement<MyWebApi>();
                 await myWebApi.TestAsync("myAction", new[] { 1, 2 }, null);
                 await myWebApi.GetAboutAsync("typeValue");
                 await myWebApi.UpdateUserAsync(new UserInfo { UserName = "abc", Password = "123456" });

@@ -22,7 +22,7 @@ namespace WebApiClient
         /// <returns></returns>
         protected override HttpContent GetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var json = parameter.Value == null ? null : context.HttpApiClient.JsonFormatter.Serialize(parameter.Value);
+            var json = context.HttpApiClientConfig.JsonFormatter.Serialize(parameter.Value);
             return new StringContent(json, Encoding.UTF8, "application/json");
         }
     }
