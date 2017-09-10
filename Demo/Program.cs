@@ -8,26 +8,34 @@ namespace Demo
 {
     class Program
     {
-        static async void Test()
+        static async Task TestAsync()
+        {
+            var webApiClient = new WebApiClient.HttpApiClient();
+            var myWebApi = webApiClient.Implement<MyWebApi>();
+            var user = new UserInfo { Account = "laojiu", Password = "123456" };
+
+            var user1 = await myWebApi.GetUserByIdAsync("id001");
+            var user2 = await myWebApi.GetUserByIdAsync("laojiu");
+
+            await myWebApi.UpdateUserWithFormAsync(user);
+            await myWebApi.UpdateUserWithJsonAsync(user);
+            await myWebApi.UpdateUserWithXmlAsync(user);
+        }
+
+        static void Main(string[] args)
         {
             try
             {
-                var myWebApi = new WebApiClient.HttpApiClient().Implement<MyWebApi>();
-                await myWebApi.TestAsync("myAction", new[] { 1, 2 }, null);
-                await myWebApi.GetAboutAsync("typeValue");
-                await myWebApi.UpdateUserAsync(new UserInfo { UserName = "abc", Password = "123456" });
-                await myWebApi.DeleteUser2Async(id: "id001");
+                TestAsync().Wait();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
-        }
-
-        static void Main(string[] args)
-        {
-            Test();
-            Console.ReadLine();
+            finally
+            {
+                Console.ReadLine();
+            }
         }
     }
 }

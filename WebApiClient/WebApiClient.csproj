@@ -52,7 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiActionFilterAttribute.cs" />
+    <Compile Include="FilterAttributes\ApiActionFilterAttribute.cs" />
     <Compile Include="HttpApiClientConfig.cs" />
     <Compile Include="Contexts\ApiActionDescriptor.cs" />
     <Compile Include="IHttpClientProvider.cs" />
@@ -62,20 +62,20 @@
     <Compile Include="Internal\TaskExtend.cs" />
     <Compile Include="Internal\DefaultJsonFormatter.cs" />
     <Compile Include="ParameterAttributes\ApiParameterAttribute.cs" />
-    <Compile Include="ActionAttributes\HttpDeleteAttribute.cs" />
-    <Compile Include="ActionAttributes\HttpPutAttribute.cs" />
-    <Compile Include="ActionAttributes\HttpGetAttribute.cs" />
-    <Compile Include="ActionAttributes\HttpPostAttribute.cs" />
+    <Compile Include="HttpActionAttributes\HttpDeleteAttribute.cs" />
+    <Compile Include="HttpActionAttributes\HttpPutAttribute.cs" />
+    <Compile Include="HttpActionAttributes\HttpGetAttribute.cs" />
+    <Compile Include="HttpActionAttributes\HttpPostAttribute.cs" />
     <Compile Include="IStringFormatter.cs" />
     <Compile Include="Contexts\ApiParameterDescriptor.cs" />
-    <Compile Include="ActionAttributes\ApiActionAttribute.cs" />
+    <Compile Include="HttpActionAttributes\ApiActionAttribute.cs" />
     <Compile Include="ParameterAttributes\HttpContentAttribute.cs" />
     <Compile Include="ParameterAttributes\FormContentAttribute.cs" />
     <Compile Include="ParameterAttributes\XmlContentAttribute.cs" />
     <Compile Include="ParameterAttributes\JsonContentAttribute.cs" />
     <Compile Include="ParameterAttributes\PathQueryAttribute.cs" />
     <Compile Include="ReturnAttributes\ApiReturnAttribute.cs" />
-    <Compile Include="ActionAttributes\HttpMethodAttribute.cs" />
+    <Compile Include="HttpActionAttributes\HttpMethodAttribute.cs" />
     <Compile Include="ReturnAttributes\DefaultReturnAttribute.cs" />
     <Compile Include="ReturnAttributes\XmlReturnAttribute.cs" />
     <Compile Include="ReturnAttributes\JsonReturnAttribute.cs">
@@ -92,6 +92,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

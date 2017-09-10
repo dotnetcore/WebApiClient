@@ -46,10 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\TimeFilter.cs" />
-    <Compile Include="Models\UserInfo.cs" />
-    <Compile Include="MyFilterAttribute.cs" />
-    <Compile Include="Models\ApiResult.cs" />
+    <Compile Include="UserInfo.cs" />
+    <Compile Include="LoggerAttribute.cs" />
     <Compile Include="MyWebApi.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

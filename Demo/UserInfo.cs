@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Demo
 {
-    public class TimeFilter
+    public class UserInfo
     {
-        public DateTime? BeginTime { get; set; }
+        public string Account { get; set; }
 
-        public DateTime? EndTime { get; set; }
+        public string Password { get; set; }
     }
 }
