@@ -4,31 +4,29 @@
 ### Api声明
 ```
 [Logger] // 记录请求日志
-[JsonReturn] // 默认返回内容为Json
 [HttpHost("http://www.mywebapi.com")] // 可以在Implement传Url覆盖
 public interface MyWebApi
 {
     // GET webapi/user/id001
-    // Return Http回复对象
+    // Return HttpResponseMessage
     [HttpGet("/webapi/user/{id}")]
-    [DefaultReturn]
     Task<HttpResponseMessage> GetUserByIdAsync(string id);
 
     // GET webapi/user?account=laojiu
-    // Return json内容
+    // Return 原始string内容
     [HttpGet("/webapi/user")]
     Task<string> GetUserByAccountAsync(string account);
 
 
     // POST webapi/user  
     // Body:Account=laojiu&Password=123456
-    // Return json内容
+    // Return json或xml内容
     [HttpPost("/webapi/user")]
     Task<UserInfo> UpdateUserWithFormAsync([FormContent] UserInfo user);
 
     // POST webapi/user   
     // Body:{"Account":"laojiu","Password":"123456"}
-    // Return json内容
+    // Return json或xml内容
     [HttpPost("/webapi/user")]
     Task<UserInfo> UpdateUserWithJsonAsync([JsonContent] UserInfo user);
 
