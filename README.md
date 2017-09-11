@@ -31,7 +31,7 @@ public interface MyWebApi
     Task<UserInfo> UpdateUserWithJsonAsync([JsonContent] UserInfo user);
 
     // POST webapi/user   
-    // Body: xml内容
+    // Body:<?xml version="1.0" encoding="utf-8"?><UserInfo><Account>laojiu</Account><Password>123456</Password></UserInfo>
     // Return xml内容
     [XmlReturn]
     [HttpPost("/webapi/user")]
