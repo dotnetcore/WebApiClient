@@ -9,14 +9,12 @@ using WebApiClient;
 namespace Demo
 {
     [Logger] // 记录请求日志
-    [JsonReturn] // 默认返回内容为Json
     [HttpHost("http://www.mywebapi.com")] // 可以在Implement传Url覆盖
     public interface MyWebApi
     {
         // GET webapi/user/id001
         // Return Http回复对象
         [HttpGet("/webapi/user/{id}")]
-        [DefaultReturn]
         Task<HttpResponseMessage> GetUserByIdAsync(string id);
 
         // GET webapi/user?account=laojiu

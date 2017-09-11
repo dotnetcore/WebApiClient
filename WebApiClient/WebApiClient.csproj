@@ -76,7 +76,7 @@
     <Compile Include="ParameterAttributes\PathQueryAttribute.cs" />
     <Compile Include="ReturnAttributes\ApiReturnAttribute.cs" />
     <Compile Include="HttpActionAttributes\HttpMethodAttribute.cs" />
-    <Compile Include="ReturnAttributes\DefaultReturnAttribute.cs" />
+    <Compile Include="ReturnAttributes\AutoReturnAttribute.cs" />
     <Compile Include="ReturnAttributes\XmlReturnAttribute.cs" />
     <Compile Include="ReturnAttributes\JsonReturnAttribute.cs">
       <SubType>Code</SubType>

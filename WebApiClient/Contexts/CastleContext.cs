@@ -68,10 +68,10 @@ namespace WebApiClient
         private static CastleContext GetContextNoCache(IInvocation invocation)
         {
             var method = invocation.Method;
-            var hostAttribute = CastleContext.GetAttributeFromMethodOrInterface<HttpHostAttribute>(method, false);
+            var hostAttribute = invocation.Proxy.GetType().GetCustomAttribute<HttpHostAttribute>();
             if (hostAttribute == null)
             {
-                hostAttribute = invocation.Proxy.GetType().GetCustomAttribute<HttpHostAttribute>();
+                hostAttribute = CastleContext.GetAttributeFromMethodOrInterface<HttpHostAttribute>(method, false);
             }
             if (hostAttribute == null)
             {
@@ -81,7 +81,7 @@ namespace WebApiClient
             var returnAttribute = CastleContext.GetAttributeFromMethodOrInterface<ApiReturnAttribute>(method, true);
             if (returnAttribute == null)
             {
-                returnAttribute = new DefaultReturnAttribute();
+                returnAttribute = new AutoReturnAttribute();
             }
 
             var methodFilters = method.GetCustomAttributes<ApiActionFilterAttribute>(true);
