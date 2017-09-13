@@ -12,11 +12,12 @@ namespace WebApiClient
     class DefaultJsonFormatter : IStringFormatter
     {
         /// <summary>
-        /// 序列化为json
+        /// 序列化为json文本
         /// </summary>
         /// <param name="obj">对象</param>
+        /// <param name="encoding">编码</param>
         /// <returns></returns>
-        public string Serialize(object obj)
+        public string Serialize(object obj, Encoding encoding)
         {
             if (obj == null)
             {

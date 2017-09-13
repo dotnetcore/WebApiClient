@@ -45,5 +45,26 @@ namespace WebApiClient.Attributes
         {
             return parameter.Value as HttpContent;
         }
+
+        /// <summary>
+        /// 格式化参数
+        /// </summary>
+        /// <param name="formater">格式化工具</param>
+        /// <param name="encoding">编码</param>
+        /// <param name="parameter">参数</param>
+        /// <returns></returns>
+        protected string FormatParameter(IStringFormatter formater, Encoding encoding, ApiParameterDescriptor parameter)
+        {
+            if (parameter.Value == null)
+            {
+                return null;
+            }
+
+            if (parameter.ParameterType == typeof(string))
+            {
+                return parameter.Value.ToString();
+            }
+            return formater.Serialize(parameter.Value, encoding);
+        }
     }
 }

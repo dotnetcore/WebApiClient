@@ -15,11 +15,12 @@ namespace WebApiClient
     class DefaultXmlFormatter : IStringFormatter
     {
         /// <summary>
-        /// 序列化为xml
+        /// 序列化为xml文本
         /// </summary>
         /// <param name="obj">对象</param>
+        /// <param name="encoding">编码</param>
         /// <returns></returns>
-        public string Serialize(object obj)
+        public string Serialize(object obj, Encoding encoding)
         {
             if (obj == null)
             {
@@ -29,9 +30,9 @@ namespace WebApiClient
             var xmlSerializer = new XmlSerializer(obj.GetType());
             using (var stream = new MemoryStream())
             {
-                var xmlWriter = new XmlTextWriter(stream, Encoding.UTF8);
+                var xmlWriter = new XmlTextWriter(stream, encoding);
                 xmlSerializer.Serialize(xmlWriter, obj);
-                return Encoding.UTF8.GetString(stream.ToArray());
+                return encoding.GetString(stream.ToArray());
             }
         }
 

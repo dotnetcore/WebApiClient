@@ -12,11 +12,12 @@ namespace WebApiClient
     public interface IStringFormatter
     {
         /// <summary>
-        /// 序列化为uft-8 json/xml文本
+        /// 序列化为json/xml文本
         /// </summary>
         /// <param name="obj">对象</param>
+        /// <param name="encoding">编码</param>
         /// <returns></returns>
-        string Serialize(object obj);
+        string Serialize(object obj, Encoding encoding);
 
         /// <summary>
         /// 反序列化对象

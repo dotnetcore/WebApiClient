@@ -18,6 +18,44 @@ namespace WebApiClient.Attributes
     public class XmlContentAttribute : HttpContentAttribute
     {
         /// <summary>
+        /// 编码方式
+        /// </summary>
+        private readonly Encoding encoding;
+
+        /// <summary>
+        /// 将参数体作为application/xml请求
+        /// utf-8
+        /// </summary>
+        public XmlContentAttribute()
+            : this(Encoding.UTF8)
+        {
+        }
+
+        /// <summary>
+        /// 将参数体作为application/xml请求
+        /// </summary>
+        /// <param name="codeName">编码</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public XmlContentAttribute(string codeName)
+            : this(Encoding.GetEncoding(codeName))
+        {
+        }
+
+        /// <summary>
+        /// 将参数体作为application/xml请求
+        /// </summary>
+        /// <param name="encoding">编码</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public XmlContentAttribute(Encoding encoding)
+        {
+            if (encoding == null)
+            {
+                throw new ArgumentNullException();
+            }
+            this.encoding = encoding;
+        }
+
+        /// <summary>
         /// 获取http请求内容
         /// </summary>
         /// <param name="context">上下文</param>
@@ -25,8 +63,9 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         protected override HttpContent GetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var xml = context.HttpApiClientConfig.XmlFormatter.Serialize(parameter.Value);
-            return new StringContent(xml, Encoding.UTF8, "application/xml");
+            var formater = context.HttpApiClientConfig.XmlFormatter;
+            var content = this.FormatParameter(formater, this.encoding, parameter);
+            return new StringContent(content, this.encoding, "application/xml");
         }
     }
 }

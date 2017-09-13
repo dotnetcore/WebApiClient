@@ -15,7 +15,7 @@ namespace Demo
             var user = new UserInfo { Account = "laojiu", Password = "123456" };
 
             var user1 = await myWebApi.GetUserByIdAsync("id001");
-            var user2 = await myWebApi.GetUserByIdAsync("laojiu");
+            var user2 = await myWebApi.GetUserByAccountAsync("laojiu");
 
             await myWebApi.UpdateUserWithFormAsync(user);
             await myWebApi.UpdateUserWithJsonAsync(user);
