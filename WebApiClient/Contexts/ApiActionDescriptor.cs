@@ -45,9 +45,9 @@ namespace WebApiClient
         public object Execute(ApiActionContext context)
         {
             var provider = context.HttpApiClientConfig.HttpClientProvider;
-            var httpClient = provider.CreateHttpClient();
+            var httpClient = provider.GetHttpClient(context);
             var result = this.ExecuteAsync(httpClient, context).CastResult(this.ReturnDataType);
-            provider.DisposeHttpClient(httpClient);
+            provider.OnRequestCompleted(context, httpClient);
             return result;
         }
 

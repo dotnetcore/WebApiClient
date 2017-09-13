@@ -15,13 +15,15 @@ namespace WebApiClient
         /// <summary>
         /// 请求前获取HttpClient的实例
         /// </summary>
+        /// <param name="context">请求上下文</param>
         /// <returns></returns>
-        HttpClient CreateHttpClient();
+        HttpClient GetHttpClient(ApiActionContext context);
 
         /// <summary>
-        /// 请求完成释放HttpClient实例
+        /// 在Http请求完成之后
         /// </summary>
+        /// <param name="context">请求上下文</param>
         /// <param name="httpClient">httpClient实例</param>
-        void DisposeHttpClient(HttpClient httpClient);
+        void OnRequestCompleted(ApiActionContext context, HttpClient httpClient);
     }
 }

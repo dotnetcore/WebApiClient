@@ -56,7 +56,8 @@
     <Compile Include="HttpApiClientConfig.cs" />
     <Compile Include="Contexts\ApiActionDescriptor.cs" />
     <Compile Include="IHttpClientProvider.cs" />
-    <Compile Include="Internal\DefaultHttpClientProvider.cs" />
+    <Compile Include="HttpClientProvider.cs" />
+    <Compile Include="InstanceType.cs" />
     <Compile Include="Internal\DefaultXmlFormatter.cs" />
     <Compile Include="Internal\TaskCompletionSource.cs" />
     <Compile Include="Internal\TaskExtend.cs" />

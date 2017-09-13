@@ -34,7 +34,7 @@ namespace WebApiClient
         {
             this.XmlFormatter = new DefaultXmlFormatter();
             this.JsonFormatter = new DefaultJsonFormatter();
-            this.HttpClientProvider = new DefaultHttpClientProvider();
+            this.HttpClientProvider = new HttpClientProvider(InstanceType.SingleInstance);
         }
     }
 }
