@@ -82,7 +82,7 @@
     <Compile Include="ReturnAttributes\JsonReturnAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Contexts\CastleContext.cs" />
+    <Compile Include="Internal\CastleContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Internal\Property.cs" />
     <Compile Include="Contexts\ApiActionContext.cs" />

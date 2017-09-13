@@ -6,8 +6,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiClient.Contexts;
 
-namespace WebApiClient
+namespace WebApiClient.Attributes
 {
     /// <summary>
     /// 表示参数为HttpContent或派生类型的特性

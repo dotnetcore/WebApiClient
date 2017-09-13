@@ -6,8 +6,9 @@ using System.Linq.Expressions;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiClient.Contexts;
 
-namespace WebApiClient
+namespace WebApiClient.Attributes
 {
     /// <summary>
     /// 表示回复处理抽象类

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiClient.Attributes;
 
-namespace WebApiClient
+namespace WebApiClient.Contexts
 {
     /// <summary>
     /// 表示请求Api的参数描述

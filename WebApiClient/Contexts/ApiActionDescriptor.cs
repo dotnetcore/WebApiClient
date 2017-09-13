@@ -4,8 +4,9 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiClient.Attributes;
 
-namespace WebApiClient
+namespace WebApiClient.Contexts
 {
     /// <summary>
     /// 表示请求Api描述

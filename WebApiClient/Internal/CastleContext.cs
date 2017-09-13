@@ -8,6 +8,8 @@ using System.Reflection;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiClient.Attributes;
+using WebApiClient.Contexts;
 
 namespace WebApiClient
 {

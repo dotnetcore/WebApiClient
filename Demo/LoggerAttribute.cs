@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClient;
+using WebApiClient.Attributes;
+using WebApiClient.Contexts;
 
 namespace Demo
 {
@@ -21,6 +23,7 @@ namespace Demo
 
         public override Task OnEndRequestAsync(ApiActionContext context)
         {
+            context.ResponseMessage.EnsureSuccessStatusCode();
             Console.WriteLine(context.ApiActionDescriptor.Name + "请求完成");
             return base.OnEndRequestAsync(context);
         }
