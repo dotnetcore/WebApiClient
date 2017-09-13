@@ -107,6 +107,12 @@ namespace WebApiClient
         private static ApiActionDescriptor GetActionDescriptor(IInvocation invocation)
         {
             var method = invocation.Method;
+            if (method.ReturnType.IsGenericType == false || method.ReturnType.GetGenericTypeDefinition() != typeof(Task<>))
+            {
+                var message = string.Format("接口{0}返回类型应该是Task<{1}>", method.Name, method.ReturnType.Name);
+                throw new NotSupportedException(message);
+            }
+
             var descriptor = new ApiActionDescriptor
             {
                 Name = method.Name,
@@ -126,6 +132,12 @@ namespace WebApiClient
         /// <returns></returns>
         private static ApiParameterDescriptor GetParameterDescriptor(ParameterInfo parameter, int index)
         {
+            if (parameter.ParameterType.IsByRef == true)
+            {
+                var message = string.Format("接口参数不支持ref/out修饰：{0}", parameter);
+                throw new NotSupportedException(message);
+            }
+
             var parameterDescriptor = new ApiParameterDescriptor
             {
                 Name = parameter.Name,
