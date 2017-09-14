@@ -19,23 +19,29 @@ public interface MyWebApi
 
 
     // POST webapi/user  
-    // Body:Account=laojiu&Password=123456
+    // Body Account=laojiu&Password=123456
     // Return json或xml内容
     [HttpPost("/webapi/user")]
     Task<UserInfo> UpdateUserWithFormAsync([FormContent] UserInfo user);
 
     // POST webapi/user   
-    // Body:{"Account":"laojiu","Password":"123456"}
+    // Body {"Account":"laojiu","Password":"123456"}
     // Return json或xml内容
     [HttpPost("/webapi/user")]
     Task<UserInfo> UpdateUserWithJsonAsync([JsonContent] UserInfo user);
 
     // POST webapi/user   
-    // Body:<?xml version="1.0" encoding="utf-8"?><UserInfo><Account>laojiu</Account><Password>123456</Password></UserInfo>
+    // Body <?xml version="1.0" encoding="utf-8"?><UserInfo><Account>laojiu</Account><Password>123456</Password></UserInfo>
     // Return xml内容
     [XmlReturn]
     [HttpPost("/webapi/user")]
     Task<UserInfo> UpdateUserWithXmlAsync([XmlContent] UserInfo user);
+
+    // POST webapi/user   
+    // Body multipart/form-data
+    // Return json或xml内容
+    [HttpPost("/webapi/user")]
+    Task<UserInfo> UpdateUserWithMulitpartAsync([MulitpartContent] UserInfo user, params MulitpartFile[] files);
 }
 ```
  
@@ -43,16 +49,18 @@ public interface MyWebApi
  ```
 static async Task TestAsync()
 {
-    var webApiClient = new WebApiClient.HttpApiClient();
+    var webApiClient = new HttpApiClient();
     var myWebApi = webApiClient.Implement<MyWebApi>();
     var user = new UserInfo { Account = "laojiu", Password = "123456" };
+    var file = new MulitpartFile("head.jpg");
 
     var user1 = await myWebApi.GetUserByIdAsync("id001");
-    var user2 = await myWebApi.GetUserByIdAsync("laojiu");
+    var user2 = await myWebApi.GetUserByAccountAsync("laojiu");
 
     await myWebApi.UpdateUserWithFormAsync(user);
     await myWebApi.UpdateUserWithJsonAsync(user);
     await myWebApi.UpdateUserWithXmlAsync(user);
+    await myWebApi.UpdateUserWithMulitpartAsync(user, file);
 }
 ```
 
