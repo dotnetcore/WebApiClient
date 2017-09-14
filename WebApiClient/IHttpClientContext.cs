@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace WebApiClient
 {
     /// <summary>
-    /// 实例获取方式
+    /// 定义HttpClient的上下文
     /// </summary>
-    public enum InstanceType
+    public interface IHttpClientContext
     {
         /// <summary>
-        /// 单一实例
+        /// 获取HttpClient实例
         /// </summary>
-        SingleInstance,
+        HttpClient HttpClient { get; }
 
         /// <summary>
-        /// 每请求一个实例
+        /// 获取HttpClient处理者
         /// </summary>
-        InstancePerRequest
+        HttpClientHandler HttpClientHandler { get; }
     }
 }

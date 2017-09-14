@@ -9,22 +9,21 @@ using WebApiClient.Contexts;
 namespace WebApiClient
 {
     /// <summary>
-    /// 定义HttpClient提供者
+    /// 定义HttpClientContext提供者
     /// </summary>
-    public interface IHttpClientProvider
+    public interface IHttpClientContextProvider
     {
         /// <summary>
-        /// 请求前获取HttpClient的实例
+        /// 在请求前将创建IHttpClientContext
         /// </summary>
         /// <param name="context">请求上下文</param>
         /// <returns></returns>
-        HttpClient GetHttpClient(ApiActionContext context);
+        IHttpClientContext CreateHttpClientContext(ApiActionContext context);
 
         /// <summary>
         /// 在Http请求完成之后
         /// </summary>
         /// <param name="context">请求上下文</param>
-        /// <param name="httpClient">httpClient实例</param>
-        void OnRequestCompleted(ApiActionContext context, HttpClient httpClient);
+        void OnRequestCompleted(ApiActionContext context);
     }
 }

@@ -89,7 +89,7 @@ namespace WebApiClient
 
             var filterAttributes = method
                 .FindDeclaringAttributes<IApiActionFilterAttribute>(true)
-                .Distinct(new ApiActionFilterComparer())
+                .Distinct(new AttributeComparer<IApiActionFilterAttribute>())
                 .ToArray();
 
             return new CastleContext
@@ -120,7 +120,7 @@ namespace WebApiClient
                 Name = method.Name,
                 ReturnTaskType = method.ReturnType,
                 ReturnDataType = method.ReturnType.GetGenericArguments().FirstOrDefault(),
-                Attributes = method.GetAttributes<IApiActionAttribute>(true).ToArray(),
+                Attributes = method.FindDeclaringAttributes<IApiActionAttribute>(true).Distinct(new AttributeComparer<IApiActionAttribute>()).ToArray(),
                 Parameters = method.GetParameters().Select((p, i) => GetParameterDescriptor(p, i)).ToArray()
             };
             return descriptor;
@@ -193,9 +193,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// ApiActionFilter比较器
+        /// 特性比较器
         /// </summary>
-        private class ApiActionFilterComparer : IEqualityComparer<IApiActionFilterAttribute>
+        private class AttributeComparer<T> : IEqualityComparer<T>
         {
             /// <summary>
             /// 是否相等
@@ -203,7 +203,7 @@ namespace WebApiClient
             /// <param name="x"></param>
             /// <param name="y"></param>
             /// <returns></returns>
-            public bool Equals(IApiActionFilterAttribute x, IApiActionFilterAttribute y)
+            public bool Equals(T x, T y)
             {
                 return true;
             }
@@ -213,7 +213,7 @@ namespace WebApiClient
             /// </summary>
             /// <param name="obj"></param>
             /// <returns></returns> 
-            public int GetHashCode(IApiActionFilterAttribute obj)
+            public int GetHashCode(T obj)
             {
                 return obj.GetType().GetHashCode();
             }

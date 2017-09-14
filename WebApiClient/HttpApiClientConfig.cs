@@ -24,7 +24,7 @@ namespace WebApiClient
         /// <summary>
         /// 获取或设置httpClient提供者
         /// </summary>
-        public IHttpClientProvider HttpClientProvider { get; set; }
+        public IHttpClientContextProvider HttpClientContextProvider { get; set; }
 
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace WebApiClient
         {
             this.XmlFormatter = new DefaultXmlFormatter();
             this.JsonFormatter = new DefaultJsonFormatter();
-            this.HttpClientProvider = new HttpClientProvider(InstanceType.SingleInstance);
+            this.HttpClientContextProvider = new DefaultHttpClientContextProvider();
         }
     }
 }

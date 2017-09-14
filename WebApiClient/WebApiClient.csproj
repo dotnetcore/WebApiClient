@@ -53,6 +53,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\HeaderAttribute.cs" />
+    <Compile Include="HttpActionAttributes\ProxyAttribute.cs" />
+    <Compile Include="IHttpClientContext.cs" />
     <Compile Include="ParameterAttributes\UrlAttribute.cs" />
     <Compile Include="FilterAttributes\ApiActionFilterAttribute.cs" />
     <Compile Include="HttpActionAttributes\HttpHeadAttribute.cs" />
@@ -62,10 +64,9 @@
     <Compile Include="IApiActionFilterAttribute.cs" />
     <Compile Include="IApiParameterAttribute.cs" />
     <Compile Include="IApiReturnAttribute.cs" />
-    <Compile Include="IHttpClientProvider.cs" />
-    <Compile Include="HttpClientProvider.cs" />
+    <Compile Include="IHttpClientContextProvider.cs" />
+    <Compile Include="Internal\DefaultHttpClientContextProvider.cs" />
     <Compile Include="IHttpContentable.cs" />
-    <Compile Include="InstanceType.cs" />
     <Compile Include="Internal\DefaultXmlFormatter.cs" />
     <Compile Include="Internal\AttributeExtend.cs" />
     <Compile Include="ParameterAttributes\HttpContentableAttribute.cs" />
@@ -80,7 +81,6 @@
     <Compile Include="HttpActionAttributes\HttpPostAttribute.cs" />
     <Compile Include="IStringFormatter.cs" />
     <Compile Include="Contexts\ApiParameterDescriptor.cs" />
-    <Compile Include="HttpActionAttributes\ApiActionAttribute.cs" />
     <Compile Include="ParameterAttributes\HttpContentAttribute.cs" />
     <Compile Include="ParameterAttributes\FormContentAttribute.cs" />
     <Compile Include="ParameterAttributes\MulitpartContentAttribute.cs" />

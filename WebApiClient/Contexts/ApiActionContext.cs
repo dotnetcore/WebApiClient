@@ -40,6 +40,11 @@ namespace WebApiClient.Contexts
         public ApiActionDescriptor ApiActionDescriptor { get; internal set; }
 
         /// <summary>
+        /// 获取关联的HttpClientContext
+        /// </summary>
+        public IHttpClientContext HttpClientContext { get; internal set; }
+
+        /// <summary>
         /// 获取关联的HttpRequestMessage
         /// </summary>
         public HttpRequestMessage RequestMessage { get; internal set; }
