@@ -57,11 +57,14 @@
     <Compile Include="Contexts\ApiActionDescriptor.cs" />
     <Compile Include="IHttpClientProvider.cs" />
     <Compile Include="HttpClientProvider.cs" />
+    <Compile Include="IHttpContentable.cs" />
     <Compile Include="InstanceType.cs" />
     <Compile Include="Internal\DefaultXmlFormatter.cs" />
+    <Compile Include="ParameterAttributes\HttpContentableAttribute.cs" />
     <Compile Include="Internal\TaskCompletionSource.cs" />
     <Compile Include="Internal\TaskExtend.cs" />
     <Compile Include="Internal\DefaultJsonFormatter.cs" />
+    <Compile Include="MulitpartFile.cs" />
     <Compile Include="ParameterAttributes\ApiParameterAttribute.cs" />
     <Compile Include="HttpActionAttributes\HttpDeleteAttribute.cs" />
     <Compile Include="HttpActionAttributes\HttpPutAttribute.cs" />
@@ -72,6 +75,7 @@
     <Compile Include="HttpActionAttributes\ApiActionAttribute.cs" />
     <Compile Include="ParameterAttributes\HttpContentAttribute.cs" />
     <Compile Include="ParameterAttributes\FormContentAttribute.cs" />
+    <Compile Include="ParameterAttributes\MulitpartContentAttribute.cs" />
     <Compile Include="ParameterAttributes\XmlContentAttribute.cs" />
     <Compile Include="ParameterAttributes\JsonContentAttribute.cs" />
     <Compile Include="ParameterAttributes\PathQueryAttribute.cs" />

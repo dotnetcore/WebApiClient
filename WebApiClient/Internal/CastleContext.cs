@@ -147,13 +147,20 @@ namespace WebApiClient
                 Attributes = parameter.GetCustomAttributes<ApiParameterAttribute>(true).ToArray()
             };
 
-            if (typeof(HttpContent).IsAssignableFrom(parameter.ParameterType))
+            if (parameterDescriptor.Attributes.Length == 0)
             {
-                parameterDescriptor.Attributes = new[] { new HttpContentAttribute() };
-            }
-            else if (parameterDescriptor.Attributes.Length == 0)
-            {
-                parameterDescriptor.Attributes = new[] { new PathQueryAttribute() };
+                if (typeof(IHttpContentable).IsAssignableFrom(parameter.ParameterType))
+                {
+                    parameterDescriptor.Attributes = new[] { new HttpContentableAttribute() };
+                }
+                else if (typeof(HttpContent).IsAssignableFrom(parameter.ParameterType))
+                {
+                    parameterDescriptor.Attributes = new[] { new HttpContentAttribute() };
+                }
+                else if (parameterDescriptor.Attributes.Length == 0)
+                {
+                    parameterDescriptor.Attributes = new[] { new PathQueryAttribute() };
+                }
             }
             return parameterDescriptor;
         }

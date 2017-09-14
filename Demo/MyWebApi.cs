@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClient;
-using WebApiClient.Attributes; 
+using WebApiClient.Attributes;
 
 namespace Demo
 {
@@ -25,22 +25,28 @@ namespace Demo
 
 
         // POST webapi/user  
-        // Body:Account=laojiu&Password=123456
+        // Body Account=laojiu&Password=123456
         // Return json或xml内容
         [HttpPost("/webapi/user")]
         Task<UserInfo> UpdateUserWithFormAsync([FormContent] UserInfo user);
 
         // POST webapi/user   
-        // Body:{"Account":"laojiu","Password":"123456"}
+        // Body {"Account":"laojiu","Password":"123456"}
         // Return json或xml内容
         [HttpPost("/webapi/user")]
         Task<UserInfo> UpdateUserWithJsonAsync([JsonContent] UserInfo user);
 
         // POST webapi/user   
-        // Body:﻿<?xml version="1.0" encoding="utf-8"?><UserInfo><Account>laojiu</Account><Password>123456</Password></UserInfo>
+        // Body <?xml version="1.0" encoding="utf-8"?><UserInfo><Account>laojiu</Account><Password>123456</Password></UserInfo>
         // Return xml内容
         [XmlReturn]
         [HttpPost("/webapi/user")]
         Task<UserInfo> UpdateUserWithXmlAsync([XmlContent] UserInfo user);
+
+        // POST webapi/user   
+        // Body multipart/form-data
+        // Return json或xml内容
+        [HttpPost("/webapi/user")]
+        Task<UserInfo> UpdateUserWithMulitpartAsync([MulitpartContent] UserInfo user, params MulitpartFile[] files);
     }
 }
