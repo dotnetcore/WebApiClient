@@ -76,8 +76,8 @@ namespace WebApiClient
         /// <param name="parameter">特性关联的属性</param>
         void IHttpContentable.SetRquestHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var multipartForm = this.GetMultipartFormContent(context);
-            var content = this.ToHttpContent();
+            var multipartForm = this.GetHttpContentFromContext(context);
+            var content = this.ConvertToHttpContent();
             multipartForm.Add(content, parameter.Name, this.FileName);
             context.RequestMessage.Content = multipartForm;
         }
@@ -86,7 +86,7 @@ namespace WebApiClient
         /// 转换为HttpContent
         /// </summary>
         /// <returns></returns>
-        private HttpContent ToHttpContent()
+        private HttpContent ConvertToHttpContent()
         {
             if (this.stream != null)
             {
@@ -104,14 +104,14 @@ namespace WebApiClient
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        private MultipartFormDataContent GetMultipartFormContent(ApiActionContext context)
+        private MultipartFormDataContent GetHttpContentFromContext(ApiActionContext context)
         {
-            var mulitpartContent = context.RequestMessage.Content as MultipartFormDataContent;
-            if (mulitpartContent == null)
+            var httpContent = context.RequestMessage.Content as MultipartFormDataContent;
+            if (httpContent == null)
             {
-                mulitpartContent = new MultipartFormDataContent();
+                httpContent = new MultipartFormDataContent();
             }
-            return mulitpartContent;
+            return httpContent;
         }
     }
 }

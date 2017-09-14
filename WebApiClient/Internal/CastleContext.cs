@@ -1,5 +1,6 @@
 ﻿using Castle.DynamicProxy;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -144,6 +145,7 @@ namespace WebApiClient
                 Index = index,
                 ParameterType = parameter.ParameterType,
                 IsSimpleType = CastleContext.IsSimple(parameter.ParameterType),
+                IsEnumerable = typeof(IEnumerable).IsAssignableFrom(parameter.ParameterType),
                 Attributes = parameter.GetCustomAttributes<ApiParameterAttribute>(true).ToArray()
             };
 

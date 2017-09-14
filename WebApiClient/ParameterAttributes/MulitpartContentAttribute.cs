@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,13 +24,13 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         protected override HttpContent GetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var multiContent = this.GetMultipartFormContent(context);
-            var httpContents = this.GetContentItems(parameter, Encoding.UTF8);
-            foreach (var item in httpContents)
+            var httpContent = this.GetHttpContentFromContext(context);
+            var mulitItem = this.GetMulitpartItems(parameter, Encoding.UTF8);
+            foreach (var item in mulitItem)
             {
-                multiContent.Add(item.Content, item.Name);
+                httpContent.Add(item.Content, item.Name);
             }
-            return multiContent;
+            return httpContent;
         }
 
         /// <summary>
@@ -37,14 +38,14 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        private MultipartFormDataContent GetMultipartFormContent(ApiActionContext context)
+        private MultipartFormDataContent GetHttpContentFromContext(ApiActionContext context)
         {
-            var mulitpartContent = context.RequestMessage.Content as MultipartFormDataContent;
-            if (mulitpartContent == null)
+            var httpContent = context.RequestMessage.Content as MultipartFormDataContent;
+            if (httpContent == null)
             {
-                mulitpartContent = new MultipartFormDataContent();
+                httpContent = new MultipartFormDataContent();
             }
-            return mulitpartContent;
+            return httpContent;
         }
 
         /// <summary>
@@ -53,89 +54,96 @@ namespace WebApiClient.Attributes
         /// <param name="parameter">参数</param>
         /// <param name="encoding">编码</param>
         /// <returns></returns>
-        private IEnumerable<MulitpartItem> GetContentItems(ApiParameterDescriptor parameter, Encoding encoding)
+        private IEnumerable<MulitpartItem> GetMulitpartItems(ApiParameterDescriptor parameter, Encoding encoding)
         {
             if (parameter.IsSimpleType == true)
             {
-                var content = this.GetContentSimple(parameter.Name, parameter.Value, encoding);
+                var content = this.SimpleToMulitpartItem(parameter.Name, parameter.Value, encoding);
                 return new[] { content };
             }
-            else if (parameter.ParameterType.IsArray == true)
+            else if (parameter.IsEnumerable == true)
             {
-                return this.GetContentArray(parameter, encoding);
+                return this.EnumerableToMulitpartItems(parameter, encoding);
             }
 
-            return this.GetContentComplex(parameter, encoding);
+            return this.ComplexToMulitpartItems(parameter, encoding);
         }
 
         /// <summary>
-        /// 生成数组的HttpContent项
+        /// 数组转换为MulitpartItem项
         /// </summary>
         /// <param name="parameter">参数</param>
         /// <param name="encoding">编码</param>
         /// <returns></returns>
-        private IEnumerable<MulitpartItem> GetContentArray(ApiParameterDescriptor parameter, Encoding encoding)
+        private IEnumerable<MulitpartItem> EnumerableToMulitpartItems(ApiParameterDescriptor parameter, Encoding encoding)
         {
-            var array = parameter.Value as Array;
+            var array = parameter.Value as IEnumerable;
             if (array == null)
             {
                 return Enumerable.Empty<MulitpartItem>();
             }
 
-            return array.Cast<object>().Select(item => this.GetContentSimple(parameter.Name, item, encoding));
+            return
+                from item in array.Cast<object>()
+                select this.SimpleToMulitpartItem(parameter.Name, item, encoding);
         }
 
         /// <summary>
-        /// 生成复杂类型的HttpContent项
+        /// 复杂类型转换为MulitpartItem项
         /// </summary>
         /// <param name="parameter">参数</param>
         /// <param name="encoding">编码</param>
         /// <returns></returns>
-        private IEnumerable<MulitpartItem> GetContentComplex(ApiParameterDescriptor parameter, Encoding encoding)
+        private IEnumerable<MulitpartItem> ComplexToMulitpartItems(ApiParameterDescriptor parameter, Encoding encoding)
         {
             var instance = parameter.Value;
-            return Property
-                .GetProperties(parameter.ParameterType)
-                .Select(p =>
-                {
-                    var value = instance == null ? null : p.GetValue(instance);
-                    return this.GetContentSimple(p.Name, value, encoding);
-                });
+
+            return
+                from p in Property.GetProperties(parameter.ParameterType)
+                let value = instance == null ? null : p.GetValue(instance)
+                select this.SimpleToMulitpartItem(p.Name, value, encoding);
         }
 
         /// <summary>
-        /// 生成简单类型的HttpContent项
+        /// 简单类型转换为MulitpartItem项
         /// </summary>
         /// <param name="name">名称</param>
         /// <param name="value">值</param>
         /// <param name="encoding">编码</param>
         /// <returns></returns>
-        private MulitpartItem GetContentSimple(string name, object value, Encoding encoding)
+        private MulitpartItem SimpleToMulitpartItem(string name, object value, Encoding encoding)
         {
             var valueString = value == null ? null : value.ToString();
             var valueEncoded = HttpUtility.UrlEncode(valueString, encoding);
-
-            return new MulitpartItem
-            {
-                Name = name,
-                Content = new StringContent(valueEncoded, encoding)
-            };
+            var httpContent = new StringContent(valueEncoded, encoding);
+            return new MulitpartItem(name, httpContent);
         }
 
         /// <summary>
-        /// Mulitpart项
+        /// 表示Mulitpart项
         /// </summary>
         class MulitpartItem
         {
             /// <summary>
             /// 名称
             /// </summary>
-            public string Name { get; set; }
+            public string Name { get; private set; }
 
             /// <summary>
             /// 内容
             /// </summary>
-            public HttpContent Content { get; set; }
+            public HttpContent Content { get; private set; }
+
+            /// <summary>
+            /// Mulitpart项
+            /// </summary>
+            /// <param name="name">名称</param>
+            /// <param name="content">内容</param>
+            public MulitpartItem(string name, HttpContent content)
+            {
+                this.Name = name;
+                this.Content = content;
+            }
         }
     }
 }

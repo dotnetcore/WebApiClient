@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -41,14 +42,14 @@ namespace WebApiClient.Attributes
         {
             if (parameter.IsSimpleType == true)
             {
-                return this.GetContentSimple(parameter.Name, parameter.Value, encoding);
+                return this.SimpleToForm(parameter.Name, parameter.Value, encoding);
             }
-            else if (parameter.ParameterType.IsArray == true)
+            else if (parameter.IsEnumerable == true)
             {
-                return this.GetContentArray(parameter, encoding);
+                return this.EnumerableToForm(parameter, encoding);
             }
 
-            return this.GetContentComplex(parameter, encoding);
+            return this.ComplexToForm(parameter, encoding);
         }
 
         /// <summary>
@@ -57,16 +58,18 @@ namespace WebApiClient.Attributes
         /// <param name="parameter">参数</param>
         /// <param name="encoding">编码</param>
         /// <returns></returns>
-        private string GetContentArray(ApiParameterDescriptor parameter, Encoding encoding)
+        private string EnumerableToForm(ApiParameterDescriptor parameter, Encoding encoding)
         {
-            var array = parameter.Value as Array;
+            var array = parameter.Value as IEnumerable;
             if (array == null)
             {
                 return null;
             }
 
-            var keyValues = array.Cast<object>().Select(item => this.GetContentSimple(parameter.Name, item, encoding));
-            return string.Join("&", keyValues);
+            var q = from item in array.Cast<object>()
+                    select this.SimpleToForm(parameter.Name, item, encoding);
+
+            return string.Join("&", q);
         }
 
         /// <summary>
@@ -75,18 +78,14 @@ namespace WebApiClient.Attributes
         /// <param name="parameter">参数</param>
         /// <param name="encoding">编码</param>
         /// <returns></returns>
-        private string GetContentComplex(ApiParameterDescriptor parameter, Encoding encoding)
+        private string ComplexToForm(ApiParameterDescriptor parameter, Encoding encoding)
         {
             var instance = parameter.Value;
-            var keyValues = Property
-                .GetProperties(parameter.ParameterType)
-                .Select(p =>
-                {
-                    var value = instance == null ? null : p.GetValue(instance);
-                    return this.GetContentSimple(p.Name, value, encoding);
-                });
+            var q = from p in Property.GetProperties(parameter.ParameterType)
+                    let value = instance == null ? null : p.GetValue(instance)
+                    select this.SimpleToForm(p.Name, value, encoding);
 
-            return string.Join("&", keyValues);
+            return string.Join("&", q);
         }
 
         /// <summary>
@@ -96,7 +95,7 @@ namespace WebApiClient.Attributes
         /// <param name="value">值</param>
         /// <param name="encoding">编码</param>
         /// <returns></returns>
-        private string GetContentSimple(string name, object value, Encoding encoding)
+        private string SimpleToForm(string name, object value, Encoding encoding)
         {
             var valueString = value == null ? null : value.ToString();
             var valueEncoded = HttpUtility.UrlEncode(valueString, encoding);

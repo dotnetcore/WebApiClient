@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -69,9 +70,9 @@ namespace WebApiClient.Attributes
                 return this.GetPathQuerySimple(pathQuery, parameter.Name, parameter.Value);
             }
 
-            if (parameter.ParameterType.IsArray == true)
+            if (parameter.IsEnumerable == true)
             {
-                return this.GetPathQueryArray(pathQuery, parameter);
+                return this.GetPathQueryEnumerable(pathQuery, parameter);
             }
 
             return this.GetPathQueryComplex(pathQuery, parameter);
@@ -83,9 +84,9 @@ namespace WebApiClient.Attributes
         /// <param name="pathQuery">原始path与query</param>
         /// <param name="parameter">参数</param>
         /// <returns></returns>
-        private string GetPathQueryArray(string pathQuery, ApiParameterDescriptor parameter)
+        private string GetPathQueryEnumerable(string pathQuery, ApiParameterDescriptor parameter)
         {
-            var array = parameter.Value as Array;
+            var array = parameter.Value as IEnumerable;
             if (array == null)
             {
                 return pathQuery;

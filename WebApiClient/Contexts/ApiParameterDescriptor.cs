@@ -38,6 +38,11 @@ namespace WebApiClient.Contexts
         public bool IsSimpleType { get; internal set; }
 
         /// <summary>
+        /// 获取参数类型是否为可列举类型
+        /// </summary>
+        public bool IsEnumerable { get; internal set; }
+
+        /// <summary>
         /// 获取关联的参数特性
         /// </summary>
         public ApiParameterAttribute[] Attributes { get; internal set; }
@@ -62,6 +67,7 @@ namespace WebApiClient.Contexts
                 Attributes = this.Attributes,
                 Index = this.Index,
                 IsSimpleType = this.IsSimpleType,
+                IsEnumerable = this.IsEnumerable,
                 Name = this.Name,
                 ParameterType = this.ParameterType,
                 Value = this.Value
