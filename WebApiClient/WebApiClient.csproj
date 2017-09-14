@@ -52,6 +52,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\HeaderAttribute.cs" />
+    <Compile Include="ParameterAttributes\UrlAttribute.cs" />
     <Compile Include="FilterAttributes\ApiActionFilterAttribute.cs" />
     <Compile Include="HttpActionAttributes\HttpHeadAttribute.cs" />
     <Compile Include="HttpApiClientConfig.cs" />
