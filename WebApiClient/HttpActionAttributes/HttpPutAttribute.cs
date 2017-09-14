@@ -11,7 +11,7 @@ namespace WebApiClient.Attributes
     /// 表示Put请求
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public class HttpPutAttribute : HttpMethodAttribute
+    public sealed class HttpPutAttribute : HttpMethodAttribute
     {
         /// <summary>
         /// Put请求

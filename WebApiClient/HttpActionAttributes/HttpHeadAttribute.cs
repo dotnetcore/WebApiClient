@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 表示Get请求
+    /// 表示Head请求
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public sealed class HttpGetAttribute : HttpMethodAttribute
+    public sealed class HttpHeadAttribute : HttpMethodAttribute
     {
         /// <summary>
-        /// Get请求
+        /// Head请求
         /// </summary>
         /// <param name="path">相对路径</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public HttpGetAttribute(string path)
-            : base(HttpMethod.Get, path)
+        public HttpHeadAttribute(string path)
+            : base(HttpMethod.Head, path)
         {
         }
     }

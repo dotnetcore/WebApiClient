@@ -11,7 +11,7 @@ namespace WebApiClient.Attributes
     /// 表示Post请求
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public class HttpPostAttribute : HttpMethodAttribute
+    public sealed class HttpPostAttribute : HttpMethodAttribute
     {
         /// <summary>
         /// Post请求

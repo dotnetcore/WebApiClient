@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FilterAttributes\ApiActionFilterAttribute.cs" />
+    <Compile Include="HttpActionAttributes\HttpHeadAttribute.cs" />
     <Compile Include="HttpApiClientConfig.cs" />
     <Compile Include="Contexts\ApiActionDescriptor.cs" />
     <Compile Include="IHttpClientProvider.cs" />

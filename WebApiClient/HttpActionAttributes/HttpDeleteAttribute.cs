@@ -11,7 +11,7 @@ namespace WebApiClient.Attributes
     /// 表示Delete请求
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public class HttpDeleteAttribute : HttpMethodAttribute
+    public sealed class HttpDeleteAttribute : HttpMethodAttribute
     {
         /// <summary>
         /// Delete请求
