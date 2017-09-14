@@ -27,12 +27,12 @@ namespace WebApiClient.Contexts
         /// <summary>
         /// 获取关联的ApiReturnAttribute
         /// </summary>
-        public ApiReturnAttribute ApiReturnAttribute { get; internal set; }
+        public IApiReturnAttribute ApiReturnAttribute { get; internal set; }
 
         /// <summary>
         /// 获取ApiActionFilterAttribute
         /// </summary>
-        public ApiActionFilterAttribute[] ApiActionFilterAttributes { get; internal set; }
+        public IApiActionFilterAttribute[] ApiActionFilterAttributes { get; internal set; }
 
         /// <summary>
         /// 获取关联的ApiActionDescriptor

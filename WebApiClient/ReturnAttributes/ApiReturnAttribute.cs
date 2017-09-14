@@ -14,7 +14,7 @@ namespace WebApiClient.Attributes
     /// 表示回复处理抽象类
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public abstract class ApiReturnAttribute : Attribute
+    public abstract class ApiReturnAttribute : Attribute, IApiReturnAttribute
     {
         /// <summary>
         /// 获取异步结果

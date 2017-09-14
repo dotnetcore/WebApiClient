@@ -5,18 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
 
-namespace WebApiClient.Attributes
+namespace WebApiClient
 {
     /// <summary>
-    /// 表示与Api方法关联的特性
+    /// 定义ApiAction修饰特性的行为
     /// </summary>
-    public abstract class ApiActionAttribute : Attribute, IApiActionAttribute
+    public interface IApiActionAttribute
     {
         /// <summary>
         /// 执行前
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public abstract Task BeforeRequestAsync(ApiActionContext context);
+        Task BeforeRequestAsync(ApiActionContext context);
     }
 }

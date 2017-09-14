@@ -21,7 +21,7 @@ namespace WebApiClient.Contexts
         /// <summary>
         /// 获取Api关联的特性
         /// </summary>
-        public ApiActionAttribute[] Attributes { get; internal set; }
+        public IApiActionAttribute[] Attributes { get; internal set; }
 
         /// <summary>
         /// 获取Api的参数描述

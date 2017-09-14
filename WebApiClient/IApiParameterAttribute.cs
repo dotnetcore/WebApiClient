@@ -5,13 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
 
-namespace WebApiClient.Attributes
+namespace WebApiClient
 {
     /// <summary>
-    /// 表示与参数关联的特性
+    /// 定义修饰参数的特性行为
     /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-    public abstract class ApiParameterAttribute : Attribute, IApiParameterAttribute
+    public interface IApiParameterAttribute
     {
         /// <summary>
         /// http请求之前
@@ -19,6 +18,6 @@ namespace WebApiClient.Attributes
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
         /// <returns></returns>
-        public abstract Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter);
+        Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter);
     }
 }

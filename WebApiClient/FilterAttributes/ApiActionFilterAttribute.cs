@@ -11,7 +11,7 @@ namespace WebApiClient.Attributes
     /// 表示请求Api过滤器特性
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public abstract class ApiActionFilterAttribute : Attribute
+    public abstract class ApiActionFilterAttribute : Attribute, IApiActionFilterAttribute
     {
         /// <summary>
         /// 准备请求之前

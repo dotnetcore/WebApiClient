@@ -45,7 +45,7 @@ namespace WebApiClient.Contexts
         /// <summary>
         /// 获取关联的参数特性
         /// </summary>
-        public ApiParameterAttribute[] Attributes { get; internal set; }
+        public IApiParameterAttribute[] Attributes { get; internal set; }
 
         /// <summary>
         /// 转换为字符串
