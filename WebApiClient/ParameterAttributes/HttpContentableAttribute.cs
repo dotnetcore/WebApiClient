@@ -23,14 +23,20 @@ namespace WebApiClient.Attributes
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
         /// <returns></returns>
-        public override Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
+        public override async Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
+            var method = context.RequestMessage.Method;
+            if (method == HttpMethod.Get || method == HttpMethod.Head)
+            {
+                return;
+            }
+
             var contentables = this.GetHttpContentables(parameter);
             foreach (var item in contentables)
             {
                 item.SetRquestHttpContent(context, parameter);
             }
-            return TaskExtend.CompletedTask;
+            await TaskExtend.CompletedTask;
         }
 
         /// <summary>

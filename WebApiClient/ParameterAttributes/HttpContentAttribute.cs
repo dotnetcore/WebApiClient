@@ -25,7 +25,8 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         public sealed override async Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            if (context.RequestMessage.Method == HttpMethod.Get)
+            var method = context.RequestMessage.Method;
+            if (method == HttpMethod.Get || method == HttpMethod.Head)
             {
                 return;
             }
