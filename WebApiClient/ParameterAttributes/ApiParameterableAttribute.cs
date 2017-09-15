@@ -25,12 +25,6 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         public override async Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var method = context.RequestMessage.Method;
-            if (method == HttpMethod.Get || method == HttpMethod.Head)
-            {
-                return;
-            }
-
             var ables = this.GetApiParameterables(parameter);
             foreach (var item in ables)
             {
