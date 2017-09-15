@@ -1,5 +1,5 @@
 # WebApiClient
-一种类似Retrofit声明接口即可实现调用的WebApi客户端框架
+基于.Net45的HttpClient，只需声明http api的接口并打上特性[Attribute]，即可以异步调用http api的框架
 
 ### Api声明
 ```
