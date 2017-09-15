@@ -172,7 +172,7 @@ namespace WebApiClient
         /// <summary>
         /// 特性比较器
         /// </summary>
-        private class AttributeComparer<T> : IEqualityComparer<T> where T : IAttributeAllowMultiple
+        private class AttributeComparer<T> : IEqualityComparer<T> where T : IAttributeMultiplable
         {
             /// <summary>
             /// 是否相等

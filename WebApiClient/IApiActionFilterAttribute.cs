@@ -10,7 +10,7 @@ namespace WebApiClient
     /// <summary>
     /// 定义ApiAction过滤器的行为
     /// </summary>
-    public interface IApiActionFilterAttribute : IAttributeAllowMultiple
+    public interface IApiActionFilterAttribute : IAttributeMultiplable
     {
         /// <summary>
         /// 获取顺序排序的索引

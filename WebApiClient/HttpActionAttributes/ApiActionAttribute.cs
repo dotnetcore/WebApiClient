@@ -14,7 +14,7 @@ namespace WebApiClient.Attributes
     public abstract class ApiActionAttribute : Attribute, IApiActionAttribute
     {
         /// <summary>
-        /// 获取或设置本类型是否允许重复
+        /// 获取本类型是否允许在接口与方法上重复
         /// </summary>
         public virtual bool AllowMultiple { get; protected set; }
 

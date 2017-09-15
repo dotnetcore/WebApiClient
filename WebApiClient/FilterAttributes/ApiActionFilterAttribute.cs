@@ -19,7 +19,7 @@ namespace WebApiClient.Attributes
         public int OrderIndex { get; protected set; }
 
         /// <summary>
-        /// 获取或设置本类型是否允许重复
+        /// 获取本类型是否允许在接口与方法上重复
         /// </summary>
         public bool AllowMultiple { get; protected set; }
 
