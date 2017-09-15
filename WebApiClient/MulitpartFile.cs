@@ -88,13 +88,19 @@ namespace WebApiClient
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的属性</param>
-        Task IApiParameterable.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
+        async Task IApiParameterable.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
+            var method = context.RequestMessage.Method;
+            if (method == HttpMethod.Get || method == HttpMethod.Head)
+            {
+                return;
+            }
+
             var multipartForm = this.GetHttpContentFromContext(context);
             var content = this.ConvertToStreamContent();
             multipartForm.Add(content, parameter.Name, this.FileName);
             context.RequestMessage.Content = multipartForm;
-            return TaskExtend.CompletedTask;
+            await TaskExtend.CompletedTask;
         }
 
         /// <summary>

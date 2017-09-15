@@ -24,7 +24,7 @@ namespace Demo
         public override Task OnEndRequestAsync(ApiActionContext context)
         {
             var request = context.RequestMessage;
-            Console.WriteLine("{0} {1} {2}完成", DateTime.Now.ToString("HH:mm:ss.fff"), request.Method, request.RequestUri);
+            Console.WriteLine("{0} {1} {2}完成", DateTime.Now.ToString("HH:mm:ss.fff"), request.Method, request.RequestUri.AbsolutePath);
             return base.OnEndRequestAsync(context);
         }
     }

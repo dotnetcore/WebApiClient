@@ -14,7 +14,7 @@ namespace WebApiClient.Attributes
     /// 表示参数内容为IApiParameterable对象或其数组
     /// 不可继承
     /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
     public sealed class ParameterableAttribute : Attribute, IApiParameterAttribute
     {
         /// <summary>
