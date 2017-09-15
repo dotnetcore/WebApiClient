@@ -73,7 +73,7 @@ static async Task TestAsync()
 * 派生IApiActionAttribute，实现Api请求前的逻辑处理
 * 派生IApiActionFilterAttribute，实现Api请求前或请求后的逻辑处理
 * 派生IApiParameterAttribute或IApiParameterable，实现Api参数的逻辑处理
-* 派生ApiReturnAttribute，实现更多的回复内容处理的功能
+* 派生IApiReturnAttribute，实现更多的回复内容处理的功能
 
 ### 执行顺序
-IApiActionAttribute > IApiParameterAttribute> ApiReturnAttribute
+IApiActionAttribute > IApiParameterAttribute> IApiReturnAttribute
