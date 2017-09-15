@@ -99,6 +99,7 @@
     <Compile Include="Contexts\ApiActionContext.cs" />
     <Compile Include="HttpHostAttribute.cs" />
     <Compile Include="HttpApiClient.cs" />
+    <Compile Include="Url.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
