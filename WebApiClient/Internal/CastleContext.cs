@@ -145,20 +145,20 @@ namespace WebApiClient
                 Name = parameter.Name,
                 Index = index,
                 ParameterType = parameter.ParameterType,
-                IsSimpleType = CastleContext.IsSimple(parameter.ParameterType),
-                IsEnumerable = typeof(IEnumerable).IsAssignableFrom(parameter.ParameterType),
+                IsSimpleType = parameter.ParameterType.IsSimple(),
+                IsEnumerable = parameter.ParameterType.IsInheritFrom<IEnumerable>(),
                 Attributes = parameter.GetAttributes<IApiParameterAttribute>(true).ToArray()
             };
 
             if (parameterDescriptor.Attributes.Length == 0)
             {
-                if (typeof(IHttpContentable).IsAssignableFrom(parameter.ParameterType))
+                if (parameter.ParameterType.IsInheritFrom<IApiParameterable>() || parameter.ParameterType.IsEnumerable<IApiParameterable>())
                 {
-                    parameterDescriptor.Attributes = new[] { new HttpContentableAttribute() };
+                    parameterDescriptor.Attributes = new[] { new ApiParameterableAttribute() };
                 }
-                else if (typeof(HttpContent).IsAssignableFrom(parameter.ParameterType))
+                else if (parameter.ParameterType.IsInheritFrom<HttpContent>())
                 {
-                    parameterDescriptor.Attributes = new[] { new HttpContentAttribute() };
+                    parameterDescriptor.Attributes = new[] { new ApiParameterableAttribute() };
                 }
                 else if (parameterDescriptor.Attributes.Length == 0)
                 {
@@ -166,30 +166,6 @@ namespace WebApiClient
                 }
             }
             return parameterDescriptor;
-        }
-
-        /// <summary>
-        /// 获取是否为简单类型
-        /// </summary>
-        /// <param name="type">类型</param>
-        /// <returns></returns>
-        private static bool IsSimple(Type type)
-        {
-            if (type.IsGenericType == true)
-            {
-                type = type.GetGenericArguments().FirstOrDefault();
-            }
-
-            if (type.IsPrimitive || type.IsEnum)
-            {
-                return true;
-            }
-
-            return type == typeof(string)
-                || type == typeof(decimal)
-                || type == typeof(DateTime)
-                || type == typeof(Guid)
-                || type == typeof(Uri);
         }
 
         /// <summary>

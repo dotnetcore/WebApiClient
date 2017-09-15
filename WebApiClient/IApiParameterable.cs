@@ -8,15 +8,16 @@ using WebApiClient.Contexts;
 namespace WebApiClient
 {
     /// <summary>
-    /// 定义分析处理回复内容的特性的行为
+    /// 定义可以做为参数并完成相应的处理的对象的行为
     /// </summary>
-    public interface IApiReturnAttribute
+    public interface IApiParameterable
     {
         /// <summary>
-        /// 获取异步结果
+        /// http请求之前
         /// </summary>
         /// <param name="context">上下文</param>
+        /// <param name="parameter">特性关联的参数</param>
         /// <returns></returns>
-        Task<object> GetTaskResult(ApiActionContext context);
+        Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter);
     }
 }

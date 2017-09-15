@@ -13,7 +13,7 @@ namespace WebApiClient
     /// <summary>
     /// 表示multipart/form-data的一个文件项
     /// </summary>
-    public class MulitpartFile : IHttpContentable
+    public class MulitpartFile : IApiParameterable
     {
         /// <summary>
         /// 流
@@ -68,18 +68,18 @@ namespace WebApiClient
             this.FileName = Path.GetFileName(localFilePath);
         }
 
-
         /// <summary>
-        /// 设置http请求内容到上下文
+        /// 执行请求前
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的属性</param>
-        void IHttpContentable.SetRquestHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
+        Task IApiParameterable.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var multipartForm = this.GetHttpContentFromContext(context);
             var content = this.ConvertToHttpContent();
             multipartForm.Add(content, parameter.Name, this.FileName);
             context.RequestMessage.Content = multipartForm;
+            return TaskExtend.CompletedTask;
         }
 
         /// <summary>
