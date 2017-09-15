@@ -9,12 +9,12 @@ using WebApiClient.Contexts;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示将自身作为Http代理
+    /// 表示将自身作为请求的Http代理
     /// </summary>
     public class Proxy : WebProxy, IApiParameterable
     {
         /// <summary>
-        /// 将自身作为Http代理
+        /// 将自身作为请求的Http代理
         /// </summary>
         public Proxy()
             : base()
@@ -22,7 +22,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 将自身作为Http代理
+        /// 将自身作为请求的Http代理
         /// </summary>
         /// <param name="host">代理服务器域名或ip</param>
         /// <param name="port">代理服务器端口</param>
