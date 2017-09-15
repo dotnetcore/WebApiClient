@@ -15,7 +15,7 @@ namespace WebApiClient.Attributes
     /// 不可继承
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-    public sealed class ApiParameterableAttribute : ApiParameterAttribute
+    public sealed class ApiParameterableAttribute : Attribute, IApiParameterAttribute
     {
         /// <summary>
         /// http请求之前
@@ -23,7 +23,7 @@ namespace WebApiClient.Attributes
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
         /// <returns></returns>
-        public override async Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
+        public async Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var ables = this.GetApiParameterables(parameter);
             foreach (var item in ables)

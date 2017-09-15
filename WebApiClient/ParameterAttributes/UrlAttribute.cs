@@ -13,7 +13,7 @@ namespace WebApiClient.Attributes
     /// 一般放到第一个参数以防止将PathQuery的路径覆盖掉
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-    public class UrlAttribute : ApiParameterAttribute
+    public class UrlAttribute : Attribute, IApiParameterAttribute
     {
         /// <summary>
         /// http请求之前
@@ -21,7 +21,7 @@ namespace WebApiClient.Attributes
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
         /// <returns></returns>
-        public override Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
+        public virtual Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             if (parameter.Value == null)
             {

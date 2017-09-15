@@ -14,14 +14,14 @@ namespace WebApiClient.Attributes
     /// 表示将回复的Xml结果作反序化为指定类型
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class XmlReturnAttribute : ApiReturnAttribute
+    public class XmlReturnAttribute : Attribute, IApiReturnAttribute
     {
         /// <summary>
         /// 获取异步结果
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override async Task<object> GetTaskResult(ApiActionContext context)
+        public virtual async Task<object> GetTaskResult(ApiActionContext context)
         {
             var response = context.ResponseMessage.EnsureSuccessStatusCode();
             var xml = await response.Content.ReadAsStringAsync();

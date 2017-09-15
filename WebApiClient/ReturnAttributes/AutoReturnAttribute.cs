@@ -14,16 +14,15 @@ namespace WebApiClient.Attributes
     /// 支持返回TaskOf(HttpResponseMessage)或TaskOf(byte[])或TaskOf(string)
     /// 支持返回xml或json转换对应类型
     /// 此特性不需要显示声明
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class AutoReturnAttribute : ApiReturnAttribute
+    /// </summary> 
+    public class AutoReturnAttribute : Attribute, IApiReturnAttribute
     {
         /// <summary>
         /// 获取异步结果
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override async Task<object> GetTaskResult(ApiActionContext context)
+        public virtual async Task<object> GetTaskResult(ApiActionContext context)
         {
             var response = context.ResponseMessage;
             var returnType = context.ApiActionDescriptor.ReturnDataType;

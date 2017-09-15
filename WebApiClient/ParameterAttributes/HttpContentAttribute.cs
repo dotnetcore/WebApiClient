@@ -15,7 +15,7 @@ namespace WebApiClient.Attributes
     /// 此特性不需要显示声明
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-    public class HttpContentAttribute : ApiParameterAttribute
+    public class HttpContentAttribute : Attribute, IApiParameterAttribute
     {
         /// <summary>
         /// http请求之前
@@ -23,7 +23,7 @@ namespace WebApiClient.Attributes
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
         /// <returns></returns>
-        public sealed override async Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
+        async Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var method = context.RequestMessage.Method;
             if (method == HttpMethod.Get || method == HttpMethod.Head)

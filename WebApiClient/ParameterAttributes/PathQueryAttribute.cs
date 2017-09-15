@@ -14,7 +14,7 @@ namespace WebApiClient.Attributes
     /// 此特性不需要显示声明
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-    public sealed class PathQueryAttribute : ApiParameterAttribute
+    public sealed class PathQueryAttribute : Attribute, IApiParameterAttribute
     {
         /// <summary>
         /// 获取或设置当值为null时忽略此参数
@@ -44,7 +44,7 @@ namespace WebApiClient.Attributes
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
         /// <returns></returns>
-        public override async Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
+        public async Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             if (this.IgnoreWhenNull && parameter.Value == null)
             {

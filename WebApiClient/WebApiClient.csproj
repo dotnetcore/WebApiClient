@@ -75,7 +75,6 @@
     <Compile Include="Internal\TaskExtend.cs" />
     <Compile Include="Internal\DefaultJsonFormatter.cs" />
     <Compile Include="MulitpartFile.cs" />
-    <Compile Include="ParameterAttributes\ApiParameterAttribute.cs" />
     <Compile Include="HttpActionAttributes\HttpDeleteAttribute.cs" />
     <Compile Include="HttpActionAttributes\HttpPutAttribute.cs" />
     <Compile Include="HttpActionAttributes\HttpGetAttribute.cs" />
@@ -88,7 +87,6 @@
     <Compile Include="ParameterAttributes\XmlContentAttribute.cs" />
     <Compile Include="ParameterAttributes\JsonContentAttribute.cs" />
     <Compile Include="ParameterAttributes\PathQueryAttribute.cs" />
-    <Compile Include="ReturnAttributes\ApiReturnAttribute.cs" />
     <Compile Include="HttpActionAttributes\HttpMethodAttribute.cs" />
     <Compile Include="ReturnAttributes\AutoReturnAttribute.cs" />
     <Compile Include="ReturnAttributes\XmlReturnAttribute.cs" />
