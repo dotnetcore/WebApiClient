@@ -13,6 +13,11 @@ namespace Demo
     [HttpHost("http://localhost:9999")] // 可以在Implement传Url覆盖
     public interface UserApi
     {
+        // GET {url}?account={account}&password={password}&something={something}&
+        [HttpGet("/")]
+        [Header("Cookie", "a=1; b=2")]
+        Task<string> GetAboutAsync([Url] string url, [Header("Authorization")] string authorization, UserInfo user, string something);
+
         // GET webapi/user/GetById?id=id001
         // Return HttpResponseMessage
         [HttpGet("/webapi/user/GetById?id={id}")]

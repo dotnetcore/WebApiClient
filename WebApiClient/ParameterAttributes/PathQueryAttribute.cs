@@ -144,8 +144,7 @@ namespace WebApiClient.Attributes
             foreach (var p in properties)
             {
                 var value = instance == null ? null : p.GetValue(instance);
-                var pName = string.IsNullOrEmpty(this.name) ? parameter.Name : this.name;
-                pathQuery = this.GetPathQuerySimple(pathQuery, pName, value);
+                pathQuery = this.GetPathQuerySimple(pathQuery, p.Name , value);
             }
             return pathQuery;
         }

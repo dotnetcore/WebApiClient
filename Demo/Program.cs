@@ -34,8 +34,15 @@ namespace Demo
         {
             var webApiClient = new HttpApiClient();
             var myWebApi = webApiClient.Implement<UserApi>();
+
             var user = new UserInfo { Account = "laojiu", Password = "123456" };
             var file = new MulitpartFile("head.jpg");
+
+            var auth = "Basic eW91ck5hbWU6MTIzNDU2";
+            var about = await myWebApi.GetAboutAsync("http://localhost:9999/webapi/user/about", auth, user, "some value here");
+            Console.WriteLine(about);
+            Console.WriteLine();
+
 
             var user1 = await myWebApi.GetByIdAsync("id001");
             Console.WriteLine(await user1.Content.ReadAsStringAsync());

@@ -54,7 +54,11 @@ namespace WebApiClient
             /// </summary>
             public HttpClientContext()
             {
-                this.HttpClientHandler = new HttpClientHandler();
+                this.HttpClientHandler = new HttpClientHandler
+                {
+                    // 使用HttpClientHandler的Cookie提交
+                    UseCookies = false,
+                };
                 this.HttpClient = new HttpClient(this.HttpClientHandler, true);
             }
         }
