@@ -58,12 +58,16 @@ namespace WebApiClient.Attributes
         {
             var header = context.RequestMessage.Headers;
             header.Remove(this.name);
-            header.Add(this.name, this.value);
+            if (this.value != null)
+            {
+                header.Add(this.name, this.value);
+            }
             return TaskExtend.CompletedTask;
         }
 
         /// <summary>
         /// http请求之前
+        /// 值从参数过来
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
@@ -71,9 +75,11 @@ namespace WebApiClient.Attributes
         Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var header = context.RequestMessage.Headers;
-            var valueString = parameter.Value == null ? null : parameter.Value.ToString();
             header.Remove(this.name);
-            header.Add(this.name, valueString);
+            if (parameter.Value != null)
+            {
+                header.Add(this.name, parameter.Value.ToString());
+            }
             return TaskExtend.CompletedTask;
         }
 
