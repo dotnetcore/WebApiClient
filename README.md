@@ -76,4 +76,4 @@ static async Task TestAsync()
 * 派生IApiReturnAttribute，实现更多的回复内容处理的功能
 
 ### 执行顺序
-IApiActionAttribute > IApiParameterAttribute> IApiReturnAttribute
+IApiActionAttribute > IApiParameterAttribute、IApiParameterable > IApiActionFilterAttribute > IApiReturnAttribute
