@@ -26,6 +26,7 @@ namespace WebApiClient.Attributes
 
         /// <summary>
         /// 将参数值设置到Header
+        /// 参数值为null则删除此Header项
         /// </summary>
         /// <param name="name">header名称</param>
         /// <exception cref="ArgumentNullException"></exception>
@@ -36,6 +37,7 @@ namespace WebApiClient.Attributes
 
         /// <summary>
         /// 将指定值设置到Header
+        /// value为null则删除此Header项
         /// </summary>
         /// <param name="name">header名称</param>
         /// <param name="value">header值</param>
