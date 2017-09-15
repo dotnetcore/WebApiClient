@@ -1,5 +1,5 @@
 # WebApiClient
-一种类似Retrofit声明接口即可实现调用的WebApi客户端框架
+基于.Net45的HttpClient，只需定义http api的接口并打上特性[Attribute]，即可以异步调用http api的框架
 
 ### Api声明
 ```
@@ -64,6 +64,9 @@ static async Task TestAsync()
 }
 ```
 
+### 更多玩法
+下载源代码，运行demo，发现更多的秘密
+
 ### 说明
 * HttpContent类型的参数值，直接作为请求的内容体，如StringContent、FormUrlEncodedContent等
 * IApiParameterable或其集合类型的参数值，不需要添加特性修饰，如MulitpartFile、Url和Proxy类
@@ -76,4 +79,4 @@ static async Task TestAsync()
 * 派生IApiReturnAttribute，实现更多的回复内容处理的功能
 
 ### 执行顺序
-IApiActionAttribute > IApiParameterAttribute> IApiReturnAttribute
+IApiActionAttribute > IApiParameterAttribute、IApiParameterable > IApiActionFilterAttribute > IApiReturnAttribute
