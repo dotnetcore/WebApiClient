@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 定义json/xml文档解析工具的接口
+    /// 定义json/xml文档解析的行为
     /// </summary>
     public interface IStringFormatter
     {

@@ -8,7 +8,7 @@ using WebApiClient.Contexts;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 表示请求Api过滤器特性
+    /// ApiAction的过滤器抽象特性
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public abstract class ApiActionFilterAttribute : Attribute, IApiActionFilterAttribute

@@ -22,7 +22,7 @@ namespace WebApiClient
         public IStringFormatter JsonFormatter { get; set; }
 
         /// <summary>
-        /// 获取或设置httpClient提供者
+        /// 获取或设置HttpClient提供者
         /// </summary>
         public IHttpClientContextProvider HttpClientContextProvider { get; set; }
 

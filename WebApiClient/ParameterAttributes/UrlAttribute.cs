@@ -8,7 +8,7 @@ using WebApiClient.Contexts;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 表示将参数的值作为请求Url的特性
+    /// 表示将参数值作为请求url的特性
     /// 支持绝对或相对路径
     /// 一般放到第一个参数以防止将PathQuery的路径覆盖掉
     /// </summary>

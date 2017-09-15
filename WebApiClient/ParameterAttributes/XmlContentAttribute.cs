@@ -12,7 +12,7 @@ using WebApiClient.Contexts;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 表示将参数体作为application/xml请求
+    /// 表示将参数值作为application/xml请求
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
     public class XmlContentAttribute : HttpContentAttribute
@@ -23,7 +23,7 @@ namespace WebApiClient.Attributes
         private readonly Encoding encoding;
 
         /// <summary>
-        /// 将参数体作为application/xml请求
+        /// 将参数体值为application/xml请求
         /// utf-8
         /// </summary>
         public XmlContentAttribute()

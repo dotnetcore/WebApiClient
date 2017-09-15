@@ -8,7 +8,7 @@ using WebApiClient.Contexts;
 namespace WebApiClient
 {
     /// <summary>
-    /// 定义修饰参数的特性行为
+    /// 定义Api参数修饰特性的行为
     /// </summary>
     public interface IApiParameterAttribute
     {

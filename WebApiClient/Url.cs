@@ -8,9 +8,10 @@ using WebApiClient.Contexts;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示参数值为请求Url
+    /// 表示将自身请求Url
     /// 支持绝对或相对路径
     /// 一般放到第一个参数以防止将PathQuery的路径覆盖掉
+    /// 不可继承
     /// </summary>
     public sealed class Url : IApiParameterable
     {
@@ -20,7 +21,7 @@ namespace WebApiClient
         private readonly Uri url;
 
         /// <summary>
-        /// 参数值为请求Url
+        /// 将自身请求Url
         /// </summary>
         /// <param name="url">请求url</param>
         /// <exception cref="ArgumentNullException"></exception>
@@ -32,7 +33,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 参数值为请求Url
+        /// 将自身请求Url
         /// </summary>
         /// <param name="url">请求url</param>
         /// <exception cref="ArgumentNullException"></exception>

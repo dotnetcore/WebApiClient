@@ -9,6 +9,7 @@ namespace WebApiClient.Attributes
 {
     /// <summary>
     /// 表示Delete请求
+    /// 不可继承
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public sealed class HttpDeleteAttribute : HttpMethodAttribute

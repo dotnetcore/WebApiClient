@@ -10,7 +10,7 @@ using WebApiClient.Contexts;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 表示将参数体作为application/json请求
+    /// 表示将参数值作为application/json请求
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
     public class JsonContentAttribute : HttpContentAttribute
@@ -21,7 +21,7 @@ namespace WebApiClient.Attributes
         private readonly Encoding encoding;
 
         /// <summary>
-        /// 将参数体作为application/json请求
+        /// 将参数值作为application/json请求
         /// utf-8
         /// </summary>
         public JsonContentAttribute()

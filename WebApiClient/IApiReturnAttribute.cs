@@ -8,7 +8,7 @@ using WebApiClient.Contexts;
 namespace WebApiClient
 {
     /// <summary>
-    /// 定义分析处理回复内容的特性的行为
+    /// 定义回复内容处理特性的行为
     /// </summary>
     public interface IApiReturnAttribute
     {

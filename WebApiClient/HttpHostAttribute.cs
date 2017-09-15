@@ -8,6 +8,7 @@ namespace WebApiClient
 {
     /// <summary>
     /// 表示请求服务根路径
+    /// 不可继承
     /// </summary>
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Interface, AllowMultiple = false)]
     public sealed class HttpHostAttribute : Attribute
@@ -19,6 +20,7 @@ namespace WebApiClient
 
         /// <summary>
         /// 请求服务的根路径
+        /// http://www.webapi.com/
         /// </summary>
         /// <param name="host">根路径</param>
         /// <exception cref="ArgumentNullException"></exception>

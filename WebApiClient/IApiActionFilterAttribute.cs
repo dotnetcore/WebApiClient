@@ -8,7 +8,7 @@ using WebApiClient.Contexts;
 namespace WebApiClient
 {
     /// <summary>
-    /// 定义请求Api过滤器的行为
+    /// 定义ApiAction过滤器的行为
     /// </summary>
     public interface IApiActionFilterAttribute
     {

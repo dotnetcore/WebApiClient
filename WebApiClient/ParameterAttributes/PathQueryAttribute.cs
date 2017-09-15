@@ -10,8 +10,9 @@ using WebApiClient.Contexts;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 表示Url路径参数或query参数的特性
+    /// 表示将参数值作为url路径参数或query参数的特性
     /// 此特性不需要显示声明
+    /// 不可继承
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
     public sealed class PathQueryAttribute : Attribute, IApiParameterAttribute

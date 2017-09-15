@@ -13,7 +13,8 @@ using WebApiClient.Contexts;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示web api请求客户端
+    /// 表示HttpApi客户端
+    /// 提供获取Http接口的实例
     /// </summary>
     public class HttpApiClient : IInterceptor
     {
@@ -28,7 +29,7 @@ namespace WebApiClient
         public HttpApiClientConfig Config { get; private set; }
 
         /// <summary>
-        /// web api请求客户端
+        /// HttpApi客户端
         /// </summary>
         public HttpApiClient()
         {

@@ -11,7 +11,7 @@ using WebApiClient.Contexts;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示参数值为multipart/form-data的一个文件项
+    /// 表示将自身作为multipart/form-data的一个文件项
     /// </summary>
     public class MulitpartFile : IApiParameterable
     {

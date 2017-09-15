@@ -12,7 +12,7 @@ using WebApiClient.Contexts;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 表示multipart/form-data表单或表单的一个项
+    /// 表示参数值为multipart/form-data表单或表单的一个项
     /// </summary>
     public class MulitpartContentAttribute : HttpContentAttribute
     {

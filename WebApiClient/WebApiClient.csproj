@@ -88,6 +88,7 @@
     <Compile Include="ParameterAttributes\JsonContentAttribute.cs" />
     <Compile Include="ParameterAttributes\PathQueryAttribute.cs" />
     <Compile Include="HttpActionAttributes\HttpMethodAttribute.cs" />
+    <Compile Include="Proxy.cs" />
     <Compile Include="ReturnAttributes\AutoReturnAttribute.cs" />
     <Compile Include="ReturnAttributes\XmlReturnAttribute.cs" />
     <Compile Include="ReturnAttributes\JsonReturnAttribute.cs">
