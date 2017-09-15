@@ -1,5 +1,5 @@
 # WebApiClient
-基于.Net45的HttpClient，只需声明http api的接口并打上特性[Attribute]，即可以异步调用http api的框架
+基于.Net45的HttpClient，只需定义http api的接口并打上特性[Attribute]，即可以异步调用http api的框架
 
 ### Api声明
 ```
@@ -63,6 +63,9 @@ static async Task TestAsync()
     await myWebApi.UpdateUserWithMulitpartAsync(user, file);
 }
 ```
+
+### 更多玩法
+下载源代码，运行demo，发现更多的秘密
 
 ### 说明
 * HttpContent类型的参数值，直接作为请求的内容体，如StringContent、FormUrlEncodedContent等
