@@ -158,7 +158,7 @@ namespace WebApiClient
                 }
                 else if (parameter.ParameterType.IsInheritFrom<HttpContent>())
                 {
-                    parameterDescriptor.Attributes = new[] { new ApiParameterableAttribute() };
+                    parameterDescriptor.Attributes = new[] { new HttpContentAttribute() };
                 }
                 else if (parameterDescriptor.Attributes.Length == 0)
                 {
