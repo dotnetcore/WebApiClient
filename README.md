@@ -65,14 +65,15 @@ static async Task TestAsync()
 ```
 
 ### 说明
-* 派生HttpContent类型的参数值，都自动当作请求的内容
-* PathQueryAttribute表示Url路径参数或query参数，不需要显示声明
+* HttpContent类型的参数值，直接作为请求的内容体，如StringContent、FormUrlEncodedContent等
+* IApiParameterable或其集合类型的参数值，不需要添加特性修饰，如MulitpartFile、Url和Proxy类
+* 无任何特性修饰的且不属于以上两种类型的参数值，将自动关联[PathQueryAttribute]
 
 ### 扩展
-* 派生ApiParameterAttribute，实现更多参数处理的功能
+* 派生IApiActionAttribute，实现Api请求前的逻辑处理
+* 派生IApiActionFilterAttribute，实现Api请求前或请求后的逻辑处理
+* 派生IApiParameterAttribute或IApiParameterable，实现Api参数的逻辑处理
 * 派生ApiReturnAttribute，实现更多的回复内容处理的功能
-* 派生ApiActionAttribute，实现更多的请求前后逻辑处理的功能
-* 派生ApiActionFilterAttribute，实现请求前后拦截的功能
 
 ### 执行顺序
-ApiActionAttribute > ApiParameterAttribute > ApiReturnAttribute
+IApiActionAttribute > IApiParameterAttribute> ApiReturnAttribute
