@@ -14,7 +14,7 @@ namespace WebApiClient
         /// <summary>
         /// 提供任务的创建接口
         /// </summary>
-        private readonly ITaskCompletionSource taskSource;
+        private readonly ITaskSource taskSource;
 
         /// <summary>
         /// 获取task对象
@@ -33,8 +33,8 @@ namespace WebApiClient
         /// <param name="resultType">result类型</param>
         public TaskCompletionSource(Type resultType)
         {
-            var type = typeof(TaskCompletionSourceOf<>).MakeGenericType(resultType);
-            this.taskSource = Activator.CreateInstance(type) as ITaskCompletionSource;
+            var type = typeof(TaskSource<>).MakeGenericType(resultType);
+            this.taskSource = Activator.CreateInstance(type) as ITaskSource;
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace WebApiClient
         /// <summary>
         /// 提供任务的创建接口
         /// </summary>
-        private interface ITaskCompletionSource
+        private interface ITaskSource
         {
             /// <summary>
             /// 获取task对象
@@ -87,30 +87,17 @@ namespace WebApiClient
         /// 提供Task结果设置
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
-        private class TaskCompletionSourceOf<TResult> : ITaskCompletionSource
+        private class TaskSource<TResult> : TaskCompletionSource<TResult>, ITaskSource
         {
-            /// <summary>
-            /// TaskCompletionSource
-            /// </summary>
-            private readonly TaskCompletionSource<TResult> taskSource;
-
             /// <summary>
             /// 获取task对象
             /// </summary>
-            public Task Task
+            Task ITaskSource.Task
             {
                 get
                 {
-                    return this.taskSource.Task;
+                    return base.Task;
                 }
-            }
-
-            /// <summary>
-            /// Task结果设置
-            /// </summary>
-            public TaskCompletionSourceOf()
-            {
-                this.taskSource = new TaskCompletionSource<TResult>();
             }
 
             /// <summary>
@@ -118,9 +105,9 @@ namespace WebApiClient
             /// </summary>
             /// <param name="result"></param>
             /// <returns></returns>
-            public bool SetResult(object result)
+            bool ITaskSource.SetResult(object result)
             {
-                return this.taskSource.TrySetResult((TResult)result);
+                return base.TrySetResult((TResult)result);
             }
 
             /// <summary>
@@ -128,9 +115,9 @@ namespace WebApiClient
             /// </summary>
             /// <param name="ex"></param>
             /// <returns></returns>
-            public bool SetException(Exception ex)
+            bool ITaskSource.SetException(Exception ex)
             {
-                return this.taskSource.TrySetException(ex);
+                return base.TrySetException(ex);
             }
         }
     }

@@ -15,7 +15,7 @@ namespace WebApiClient.Attributes
     /// 不可继承
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-    public sealed class ApiParameterableAttribute : Attribute, IApiParameterAttribute
+    public sealed class ParameterableAttribute : Attribute, IApiParameterAttribute
     {
         /// <summary>
         /// http请求之前

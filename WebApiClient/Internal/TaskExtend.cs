@@ -20,21 +20,19 @@ namespace WebApiClient
         /// <summary>
         /// 转换Taskof(Object)的Result转换为resultType类型
         /// </summary>
-        /// <param name="taskResult">Taskof(Object)</param>
+        /// <param name="task">Taskof(Object)</param>
         /// <param name="resultType">Object对应的强类型</param>
         /// <returns></returns>
-        public static Task CastResult(this Task<object> taskResult, Type resultType)
+        public static Task CastResult(this Task<object> task, Type resultType)
         {
+            var awaiter = task.GetAwaiter();
             var taskSource = new TaskCompletionSource(resultType);
-            taskResult.ContinueWith((task) =>
+
+            awaiter.OnCompleted(() =>
             {
                 try
                 {
-                    taskSource.SetResult(task.Result);
-                }
-                catch (AggregateException ex)
-                {
-                    taskSource.SetException(ex.InnerException);
+                    taskSource.SetResult(awaiter.GetResult());
                 }
                 catch (Exception ex)
                 {

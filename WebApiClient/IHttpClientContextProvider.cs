@@ -21,9 +21,9 @@ namespace WebApiClient
         IHttpClientContext CreateHttpClientContext(ApiActionContext context);
 
         /// <summary>
-        /// 在Http请求完成之后
+        /// 在Http请求完成之后释放HttpClientContext 
         /// </summary>
-        /// <param name="context">请求上下文</param>
-        void OnRequestCompleted(ApiActionContext context);
+        /// <param name="context">HttpClient上下文</param>
+        void DisponseHttpClientContext(IHttpClientContext context);
     }
 }

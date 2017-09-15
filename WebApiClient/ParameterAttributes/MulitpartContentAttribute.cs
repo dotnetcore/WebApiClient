@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -38,12 +39,12 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        private MultipartFormDataContent GetHttpContentFromContext(ApiActionContext context)
+        private StMultipartFormDataContent GetHttpContentFromContext(ApiActionContext context)
         {
-            var httpContent = context.RequestMessage.Content as MultipartFormDataContent;
+            var httpContent = context.RequestMessage.Content as StMultipartFormDataContent;
             if (httpContent == null)
             {
-                httpContent = new MultipartFormDataContent();
+                httpContent = new StMultipartFormDataContent();
             }
             return httpContent;
         }
@@ -115,7 +116,7 @@ namespace WebApiClient.Attributes
         {
             var valueString = value == null ? null : value.ToString();
             var valueEncoded = HttpUtility.UrlEncode(valueString, encoding);
-            var httpContent = new StringContent(valueEncoded, encoding);
+            var httpContent = new StringContent(valueEncoded);
             return new MulitpartItem(name, httpContent);
         }
 
@@ -130,16 +131,16 @@ namespace WebApiClient.Attributes
             public string Name { get; private set; }
 
             /// <summary>
-            /// 内容
+            /// 文本内容
             /// </summary>
-            public HttpContent Content { get; private set; }
+            public StringContent Content { get; private set; }
 
             /// <summary>
             /// Mulitpart项
             /// </summary>
             /// <param name="name">名称</param>
             /// <param name="content">内容</param>
-            public MulitpartItem(string name, HttpContent content)
+            public MulitpartItem(string name, StringContent content)
             {
                 this.Name = name;
                 this.Content = content;

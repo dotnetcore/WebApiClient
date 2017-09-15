@@ -25,12 +25,13 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 请求完成释放HttpClient实例
+        /// <summary>
+        /// 在Http请求完成之后释放HttpClientContext 
         /// </summary>
-        /// <param name="context">请求上下文</param>
-        public void OnRequestCompleted(ApiActionContext context)
+        /// <param name="context">HttpClient上下文</param>
+        public void DisponseHttpClientContext(IHttpClientContext context)
         {
-            context.HttpClientContext.HttpClient.Dispose();
+            context.HttpClient.Dispose();
         }
 
         /// <summary>

@@ -154,7 +154,7 @@ namespace WebApiClient
             {
                 if (parameter.ParameterType.IsInheritFrom<IApiParameterable>() || parameter.ParameterType.IsEnumerable<IApiParameterable>())
                 {
-                    parameterDescriptor.Attributes = new[] { new ApiParameterableAttribute() };
+                    parameterDescriptor.Attributes = new[] { new ParameterableAttribute() };
                 }
                 else if (parameter.ParameterType.IsInheritFrom<HttpContent>())
                 {
@@ -209,7 +209,7 @@ namespace WebApiClient
             /// <returns></returns>
             public bool Equals(IInvocation x, IInvocation y)
             {
-                return x.Proxy.GetHashCode() == y.Proxy.GetHashCode();
+                return x.Method.Equals(y.Method);
             }
 
             /// <summary>

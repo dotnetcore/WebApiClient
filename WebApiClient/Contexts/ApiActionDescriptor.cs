@@ -43,20 +43,33 @@ namespace WebApiClient.Contexts
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public object Execute(ApiActionContext context)
+        public Task Execute(ApiActionContext context)
         {
-            var provider = context.HttpApiClientConfig.HttpClientContextProvider;
-            context.HttpClientContext = provider.CreateHttpClientContext(context);
-            return this.ExecuteAsync(context, provider).CastResult(this.ReturnDataType);
+            return this.ExecuteAsync(context).CastResult(this.ReturnDataType);
         }
 
         /// <summary>
         /// 异步执行api
         /// </summary>
         /// <param name="context">上下文</param>
-        /// <param name="provider">提供者</param>
         /// <returns></returns>
-        private async Task<object> ExecuteAsync(ApiActionContext context, IHttpClientContextProvider provider)
+        private async Task<object> ExecuteAsync(ApiActionContext context)
+        {
+            var provider = context.HttpApiClientConfig.HttpClientContextProvider;
+            context.HttpClientContext = provider.CreateHttpClientContext(context);
+
+            var apiResult = await this.ExecuteInternalAsync(context);
+
+            provider.DisponseHttpClientContext(context.HttpClientContext);
+            return apiResult;
+        }
+
+        /// <summary>
+        /// 异步执行api
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <returns></returns>
+        private async Task<object> ExecuteInternalAsync(ApiActionContext context)
         {
             foreach (var methodAttribute in context.ApiActionDescriptor.Attributes)
             {
@@ -77,16 +90,15 @@ namespace WebApiClient.Contexts
             }
 
             // 执行Http请求，获取回复对象
-            context.ResponseMessage = await context.HttpClientContext.HttpClient.SendAsync(context.RequestMessage);
+            var httpClient = context.HttpClientContext.HttpClient;
+            context.ResponseMessage = await httpClient.SendAsync(context.RequestMessage);
 
             foreach (var filter in context.ApiActionFilterAttributes)
             {
                 await filter.OnEndRequestAsync(context);
             }
 
-            var apiResult = await context.ApiReturnAttribute.GetTaskResult(context);
-            provider.OnRequestCompleted(context);
-            return apiResult;
+            return await context.ApiReturnAttribute.GetTaskResult(context);
         }
 
         /// <summary>

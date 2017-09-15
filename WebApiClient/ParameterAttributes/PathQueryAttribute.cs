@@ -77,7 +77,10 @@ namespace WebApiClient.Attributes
             }
 
             var uri = context.RequestMessage.RequestUri;
-            var pathQuery = this.GetPathQuery(uri.LocalPath + uri.Query, parameter);
+            var url = uri.ToString();
+            var relativeUrl = url.Substring(url.IndexOf(uri.AbsolutePath));
+
+            var pathQuery = this.GetPathQuery(relativeUrl, parameter);
             context.RequestMessage.RequestUri = new Uri(uri, pathQuery);
             await TaskExtend.CompletedTask;
         }

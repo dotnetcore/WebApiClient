@@ -36,6 +36,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Castle.Core.4.0.0\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
+    <Reference Include="NetworkSocket, Version=1.7.0.0, Culture=neutral, PublicKeyToken=48bdd02a78b31d80, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libs\NetworkSocket.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
@@ -46,9 +50,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UserController.cs" />
     <Compile Include="UserInfo.cs" />
-    <Compile Include="LoggerAttribute.cs" />
-    <Compile Include="MyWebApi.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="UserApi.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -60,6 +65,10 @@
       <Project>{dc333cc3-7576-45a7-9a17-e5d53f091453}</Project>
       <Name>WebApiClient</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Libs\NetworkSocket.dll" />
+    <Content Include="Libs\NetworkSocket.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

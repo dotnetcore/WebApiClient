@@ -1,6 +1,9 @@
-﻿using System;
+﻿using NetworkSocket;
+using NetworkSocket.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClient;
@@ -9,36 +12,54 @@ namespace Demo
 {
     class Program
     {
-        static async Task TestAsync()
-        {
-            var webApiClient = new HttpApiClient();
-            var myWebApi = webApiClient.Implement<MyWebApi>();
-            var user = new UserInfo { Account = "laojiu", Password = "123456" };
-            var file = new MulitpartFile("head.jpg");
-
-            var user1 = await myWebApi.GetUserByIdAsync("id001");
-            var user2 = await myWebApi.GetUserByAccountAsync("laojiu");
-
-            await myWebApi.UpdateUserWithFormAsync(user);
-            await myWebApi.UpdateUserWithJsonAsync(user);
-            await myWebApi.UpdateUserWithXmlAsync(user);
-            await myWebApi.UpdateUserWithMulitpartAsync(user, file);
-        }
+        /// <summary>
+        /// http服务器
+        /// </summary>
+        private static readonly TcpListener httpServer = new TcpListener();
 
         static void Main(string[] args)
         {
-            try
-            {
-                TestAsync().Wait();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-            finally
-            {
-                Console.ReadLine();
-            }
+            InitHttpServer();
+            RunApisAsync();
+            Console.ReadLine();
+        }
+
+        static void InitHttpServer()
+        {
+            httpServer.Use<HttpMiddleware>();
+            httpServer.Start(9999);
+        }
+
+        static async void RunApisAsync()
+        {
+            var webApiClient = new HttpApiClient();
+            var myWebApi = webApiClient.Implement<UserApi>();
+            var user = new UserInfo { Account = "laojiu", Password = "123456" };
+            var file = new MulitpartFile("head.jpg");
+
+            var user1 = await myWebApi.GetByIdAsync("id001");
+            Console.WriteLine(await user1.Content.ReadAsStringAsync());
+            Console.WriteLine();
+
+            var user2 = await myWebApi.GetByAccountAsync("laojiu");
+            Console.WriteLine(user2);
+            Console.WriteLine();
+
+            var user3 = await myWebApi.UpdateWithFormAsync(user);
+            Console.WriteLine(user3);
+            Console.WriteLine();
+
+            var user4 = await myWebApi.UpdateWithJsonAsync(user);
+            Console.WriteLine(user4);
+            Console.WriteLine();
+
+            var user5 = await myWebApi.UpdateWithXmlAsync(user);
+            Console.WriteLine(user5);
+            Console.WriteLine();
+
+            var user6 = await myWebApi.UpdateWithMulitpartAsync(user, file);
+            Console.WriteLine(user6);
+
         }
     }
 }

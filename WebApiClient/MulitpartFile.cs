@@ -31,12 +31,26 @@ namespace WebApiClient
         public string FileName { get; private set; }
 
         /// <summary>
+        /// 获取或设置文件的Mime
+        /// </summary>
+        public string ContentType { get; set; }
+
+        /// <summary>
+        /// multipart/form-data的一个文件项
+        /// </summary>
+        private MulitpartFile()
+        {
+            this.ContentType = "application/octet-stream";
+        }
+
+        /// <summary>
         /// multipart/form-data的一个文件项
         /// </summary>
         /// <param name="stream">数据流</param>
         /// <param name="fileName">文件友好名称</param>
         /// <exception cref="ArgumentNullException"></exception>
         public MulitpartFile(Stream stream, string fileName)
+            : this()
         {
             if (stream == null)
             {
@@ -53,6 +67,7 @@ namespace WebApiClient
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="FileNotFoundException"></exception>
         public MulitpartFile(string localFilePath)
+            : this()
         {
             if (string.IsNullOrEmpty(localFilePath))
             {
@@ -76,17 +91,17 @@ namespace WebApiClient
         Task IApiParameterable.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var multipartForm = this.GetHttpContentFromContext(context);
-            var content = this.ConvertToHttpContent();
+            var content = this.ConvertToStreamContent();
             multipartForm.Add(content, parameter.Name, this.FileName);
             context.RequestMessage.Content = multipartForm;
             return TaskExtend.CompletedTask;
         }
 
         /// <summary>
-        /// 转换为HttpContent
+        /// 转换为StreamContent
         /// </summary>
         /// <returns></returns>
-        private HttpContent ConvertToHttpContent()
+        private StreamContent ConvertToStreamContent()
         {
             if (this.stream != null)
             {
@@ -104,14 +119,23 @@ namespace WebApiClient
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        private MultipartFormDataContent GetHttpContentFromContext(ApiActionContext context)
+        private StMultipartFormDataContent GetHttpContentFromContext(ApiActionContext context)
         {
-            var httpContent = context.RequestMessage.Content as MultipartFormDataContent;
+            var httpContent = context.RequestMessage.Content as StMultipartFormDataContent;
             if (httpContent == null)
             {
-                httpContent = new MultipartFormDataContent();
+                httpContent = new StMultipartFormDataContent();
             }
             return httpContent;
+        }
+
+        /// <summary>
+        /// 转换为字符串
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return this.FileName;
         }
     }
 }
