@@ -86,6 +86,6 @@ namespace WebApiClient
             var methodAttributes = method.GetAttributes<TAttribute>(true);
             var interfaceAttributes = method.DeclaringType.GetAttributes<TAttribute>(true);
             return methodAttributes.Concat(interfaceAttributes);
-        }
+        } 
     }
 }

@@ -11,7 +11,6 @@ namespace WebApiClient.Attributes
     /// 表示Head请求
     /// 不可继承
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public sealed class HttpHeadAttribute : HttpMethodAttribute
     {
         /// <summary>

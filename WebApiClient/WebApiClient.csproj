@@ -52,9 +52,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HttpActionAttributes\ApiActionAttribute.cs" />
     <Compile Include="IApiParameterable.cs" />
     <Compile Include="Attributes\HeaderAttribute.cs" />
     <Compile Include="HttpActionAttributes\ProxyAttribute.cs" />
+    <Compile Include="IAttributeAllowMultiple.cs" />
     <Compile Include="IHttpClientContext.cs" />
     <Compile Include="Internal\StMultipartFormDataContent.cs" />
     <Compile Include="Internal\TypeExtend.cs" />

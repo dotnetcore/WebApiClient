@@ -14,7 +14,6 @@ namespace WebApiClient.Attributes
     /// <summary>
     /// 表示将参数值作为application/xml请求
     /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
     public class XmlContentAttribute : HttpContentAttribute
     {
         /// <summary>

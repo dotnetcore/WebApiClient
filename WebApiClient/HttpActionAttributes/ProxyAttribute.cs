@@ -11,8 +11,7 @@ namespace WebApiClient.Attributes
     /// <summary>
     /// 表示http代理特性
     /// </summary>
-    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false)]
-    public class ProxyAttribute : Attribute, IApiActionAttribute
+    public class ProxyAttribute : ApiActionAttribute
     {
         /// <summary>
         /// 域名或ip
@@ -69,7 +68,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public Task BeforeRequestAsync(ApiActionContext context)
+        public override Task BeforeRequestAsync(ApiActionContext context)
         {
             var hndler = context.HttpClientContext.HttpClientHandler;
             hndler.UseProxy = true;

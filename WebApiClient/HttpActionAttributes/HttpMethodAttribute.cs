@@ -13,8 +13,8 @@ namespace WebApiClient.Attributes
     /// <summary>
     /// 表示http请求方法描述特性
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public class HttpMethodAttribute : Attribute, IApiActionAttribute
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    public class HttpMethodAttribute : ApiActionAttribute
     {
         /// <summary>
         /// 获取请求方法
@@ -47,7 +47,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public Task BeforeRequestAsync(ApiActionContext context)
+        public override Task BeforeRequestAsync(ApiActionContext context)
         {
             context.RequestMessage.Method = this.Method;
             context.RequestMessage.RequestUri = new Uri(context.HostAttribute.Host, this.Path);

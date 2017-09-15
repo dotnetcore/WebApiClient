@@ -11,7 +11,7 @@ namespace WebApiClient.Attributes
     /// 表示Http请求Header的特性
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method | AttributeTargets.Parameter, AllowMultiple = true, Inherited = true)]
-    public class HeaderAttribute : Attribute, IApiActionAttribute, IApiParameterAttribute
+    public class HeaderAttribute : ApiActionAttribute, IApiParameterAttribute
     {
         /// <summary>
         /// 名称
@@ -22,6 +22,7 @@ namespace WebApiClient.Attributes
         /// 值 
         /// </summary>
         private readonly string value;
+
 
         /// <summary>
         /// 将参数值设置到Header
@@ -47,6 +48,7 @@ namespace WebApiClient.Attributes
             }
             this.name = name;
             this.value = value;
+            this.AllowMultiple = true;
         }
 
         /// <summary>
@@ -54,7 +56,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        Task IApiActionAttribute.BeforeRequestAsync(ApiActionContext context)
+        public override Task BeforeRequestAsync(ApiActionContext context)
         {
             var header = context.RequestMessage.Headers;
             header.Remove(this.name);

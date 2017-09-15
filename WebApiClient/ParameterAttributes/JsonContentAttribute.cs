@@ -12,7 +12,6 @@ namespace WebApiClient.Attributes
     /// <summary>
     /// 表示将参数值作为application/json请求
     /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
     public class JsonContentAttribute : HttpContentAttribute
     {
         /// <summary>

@@ -14,6 +14,16 @@ namespace WebApiClient.Attributes
     public abstract class ApiActionFilterAttribute : Attribute, IApiActionFilterAttribute
     {
         /// <summary>
+        /// 获取或设置顺序排序索引
+        /// </summary>
+        public int OrderIndex { get; protected set; }
+
+        /// <summary>
+        /// 获取或设置本类型是否允许重复
+        /// </summary>
+        public bool AllowMultiple { get; protected set; }
+
+        /// <summary>
         /// 准备请求之前
         /// </summary>
         /// <param name="context">上下文</param>

@@ -90,6 +90,7 @@ namespace WebApiClient
             var filterAttributes = method
                 .FindDeclaringAttributes<IApiActionFilterAttribute>(true)
                 .Distinct(new AttributeComparer<IApiActionFilterAttribute>())
+                .OrderBy(item => item.OrderIndex)
                 .ToArray();
 
             return new CastleContext
@@ -171,7 +172,7 @@ namespace WebApiClient
         /// <summary>
         /// 特性比较器
         /// </summary>
-        private class AttributeComparer<T> : IEqualityComparer<T>
+        private class AttributeComparer<T> : IEqualityComparer<T> where T : IAttributeAllowMultiple
         {
             /// <summary>
             /// 是否相等
@@ -181,7 +182,8 @@ namespace WebApiClient
             /// <returns></returns>
             public bool Equals(T x, T y)
             {
-                return true;
+                // 如果其中一个不允许重复，返回true将y过滤
+                return x.AllowMultiple == false || y.AllowMultiple == false;
             }
 
             /// <summary>

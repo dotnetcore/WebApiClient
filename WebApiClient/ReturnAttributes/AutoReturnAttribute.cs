@@ -15,6 +15,7 @@ namespace WebApiClient.Attributes
     /// 支持返回xml或json转换对应类型
     /// 此特性不需要显示声明
     /// </summary> 
+    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class AutoReturnAttribute : Attribute, IApiReturnAttribute
     {
         /// <summary>
