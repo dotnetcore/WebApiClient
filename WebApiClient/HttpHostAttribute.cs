@@ -10,7 +10,7 @@ namespace WebApiClient
     /// 表示请求服务根路径
     /// 不可继承
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Interface, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false)]
     public sealed class HttpHostAttribute : Attribute
     {
         /// <summary>

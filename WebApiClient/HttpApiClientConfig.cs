@@ -12,19 +12,19 @@ namespace WebApiClient
     public class HttpApiClientConfig
     {
         /// <summary>
-        /// 获取或设置Xml格式化工具
+        /// 获取Xml格式化工具
         /// </summary>
-        public IStringFormatter XmlFormatter { get; set; }
+        public IStringFormatter XmlFormatter { get; private set; }
 
         /// <summary>
-        /// 获取或设置Json格式化工具
+        /// 获取Json格式化工具
         /// </summary>
-        public IStringFormatter JsonFormatter { get; set; }
+        public IStringFormatter JsonFormatter { get; private set; }
 
         /// <summary>
-        /// 获取或设置HttpClient提供者
+        /// 获取HttpClient上下文提供者
         /// </summary>
-        public IHttpClientContextProvider HttpClientContextProvider { get; set; }
+        public IHttpClientContextProvider HttpClientContextProvider { get; private set; }
 
 
         /// <summary>
@@ -35,6 +35,48 @@ namespace WebApiClient
             this.XmlFormatter = new DefaultXmlFormatter();
             this.JsonFormatter = new DefaultJsonFormatter();
             this.HttpClientContextProvider = new DefaultHttpClientContextProvider();
+        }
+
+        /// <summary>
+        /// 使用Xml格式化工具
+        /// </summary>
+        /// <param name="xmlFormatter">Xml格式化工具</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public void UseXmlFormatter(IStringFormatter xmlFormatter)
+        {
+            if (xmlFormatter == null)
+            {
+                throw new ArgumentNullException();
+            }
+            this.XmlFormatter = xmlFormatter;
+        }
+
+        /// <summary>
+        /// 使用Json格式化工具
+        /// </summary>
+        /// <param name="jsonFormatter">Json格式化工具</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public void UseJsonFormatter(IStringFormatter jsonFormatter)
+        {
+            if (jsonFormatter == null)
+            {
+                throw new ArgumentNullException();
+            }
+            this.JsonFormatter = jsonFormatter;
+        }
+
+        /// <summary>
+        /// HttpClient上下文提供者
+        /// </summary>
+        /// <param name="provider">提供者</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public void UseHttpClientContextProvider(IHttpClientContextProvider provider)
+        {
+            if (provider == null)
+            {
+                throw new ArgumentNullException();
+            }
+            this.HttpClientContextProvider = provider;
         }
     }
 }
