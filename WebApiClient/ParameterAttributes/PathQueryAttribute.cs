@@ -78,7 +78,7 @@ namespace WebApiClient.Attributes
 
             var uri = context.RequestMessage.RequestUri;
             var url = uri.ToString();
-            var relativeUrl = url.Substring(url.IndexOf(uri.AbsolutePath));
+            var relativeUrl = url.Substring(url.IndexOf(uri.AbsolutePath)).TrimEnd('&','?');
 
             var pathQuery = this.GetPathQuery(relativeUrl, parameter);
             context.RequestMessage.RequestUri = new Uri(uri, pathQuery);
@@ -96,15 +96,15 @@ namespace WebApiClient.Attributes
             if (parameter.IsSimpleType == true)
             {
                 var pName = string.IsNullOrEmpty(this.name) ? parameter.Name : this.name;
-                return this.GetPathQuerySimple(pathQuery, pName, parameter.Value);
+                return this.GetSimplePathQuery(pathQuery, pName, parameter.Value);
             }
 
             if (parameter.IsEnumerable == true)
             {
-                return this.GetPathQueryEnumerable(pathQuery, parameter);
+                return this.GetEnumerablePathQuery(pathQuery, parameter);
             }
 
-            return this.GetPathQueryComplex(pathQuery, parameter);
+            return this.GetComplexPathQuery(pathQuery, parameter);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace WebApiClient.Attributes
         /// <param name="pathQuery">原始path与query</param>
         /// <param name="parameter">参数</param>
         /// <returns></returns>
-        private string GetPathQueryEnumerable(string pathQuery, ApiParameterDescriptor parameter)
+        private string GetEnumerablePathQuery(string pathQuery, ApiParameterDescriptor parameter)
         {
             var array = parameter.Value as IEnumerable;
             if (array == null)
@@ -124,7 +124,7 @@ namespace WebApiClient.Attributes
             foreach (var item in array)
             {
                 var pName = string.IsNullOrEmpty(this.name) ? parameter.Name : this.name;
-                pathQuery = this.GetPathQuerySimple(pathQuery, pName, item);
+                pathQuery = this.GetSimplePathQuery(pathQuery, pName, item);
             }
             return pathQuery;
         }
@@ -135,7 +135,7 @@ namespace WebApiClient.Attributes
         /// <param name="pathQuery">原始path与query</param>
         /// <param name="parameter">参数</param>
         /// <returns></returns>
-        private string GetPathQueryComplex(string pathQuery, ApiParameterDescriptor parameter)
+        private string GetComplexPathQuery(string pathQuery, ApiParameterDescriptor parameter)
         {
             var instance = parameter.Value;
             var instanceType = parameter.ParameterType;
@@ -144,7 +144,7 @@ namespace WebApiClient.Attributes
             foreach (var p in properties)
             {
                 var value = instance == null ? null : p.GetValue(instance);
-                pathQuery = this.GetPathQuerySimple(pathQuery, p.Name , value);
+                pathQuery = this.GetSimplePathQuery(pathQuery, p.Name, value);
             }
             return pathQuery;
         }
@@ -156,7 +156,7 @@ namespace WebApiClient.Attributes
         /// <param name="name">名称</param>
         /// <param name="value">值</param>
         /// <returns></returns>
-        private string GetPathQuerySimple(string pathQuery, string name, object value)
+        private string GetSimplePathQuery(string pathQuery, string name, object value)
         {
             var valueString = value == null ? string.Empty : value.ToString();
             var regex = new Regex("{" + name + "}", RegexOptions.IgnoreCase);

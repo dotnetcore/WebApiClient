@@ -26,20 +26,25 @@ namespace WebApiClient.Attributes
         /// </summary>
         public string Path { get; private set; }
 
+
+        /// <summary>
+        /// http请求方法描述特性
+        /// </summary>
+        /// <param name="method">请求方法</param>
+        public HttpMethodAttribute(HttpMethod method)
+            : this(method, null)
+        {
+        }
+
         /// <summary>
         /// http请求方法描述特性
         /// </summary>
         /// <param name="method">请求方法</param>
         /// <param name="path">请求相对路径</param>
-        /// <exception cref="ArgumentNullException"></exception>
         public HttpMethodAttribute(HttpMethod method, string path)
         {
-            if (string.IsNullOrEmpty(path))
-            {
-                throw new ArgumentNullException();
-            }
             this.Method = method;
-            this.Path = path.TrimEnd('&');
+            this.Path = path;
         }
 
         /// <summary>
@@ -50,7 +55,10 @@ namespace WebApiClient.Attributes
         public override Task BeforeRequestAsync(ApiActionContext context)
         {
             context.RequestMessage.Method = this.Method;
-            context.RequestMessage.RequestUri = new Uri(context.HostAttribute.Host, this.Path);
+            if (string.IsNullOrEmpty(this.Path) == false)
+            {
+                context.RequestMessage.RequestUri = new Uri(context.HostAttribute.Host, this.Path);
+            }
             return TaskExtend.CompletedTask;
         }
 

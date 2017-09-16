@@ -16,8 +16,15 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// Head请求
         /// </summary>
+        public HttpHeadAttribute()
+            : base(HttpMethod.Head)
+        {
+        }
+
+        /// <summary>
+        /// Head请求
+        /// </summary>
         /// <param name="path">相对路径</param>
-        /// <exception cref="ArgumentNullException"></exception>
         public HttpHeadAttribute(string path)
             : base(HttpMethod.Head, path)
         {

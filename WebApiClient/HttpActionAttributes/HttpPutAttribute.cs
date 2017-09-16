@@ -16,8 +16,15 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// Put请求
         /// </summary>
+        public HttpPutAttribute()
+            : base(HttpMethod.Put)
+        {
+        }
+
+        /// <summary>
+        /// Put请求
+        /// </summary>
         /// <param name="path">相对路径</param>
-        /// <exception cref="ArgumentNullException"></exception>
         public HttpPutAttribute(string path)
             : base(HttpMethod.Put, path)
         {

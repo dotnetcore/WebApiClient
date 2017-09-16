@@ -16,8 +16,15 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// Post请求
         /// </summary>
+        public HttpPostAttribute()
+            : base(HttpMethod.Post)
+        {
+        }
+
+        /// <summary>
+        /// Post请求
+        /// </summary>
         /// <param name="path">相对路径</param>
-        /// <exception cref="ArgumentNullException"></exception>
         public HttpPostAttribute(string path)
             : base(HttpMethod.Post, path)
         {
