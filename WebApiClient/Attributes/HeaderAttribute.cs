@@ -73,7 +73,7 @@ namespace WebApiClient.Attributes
             header.Remove(this.name);
             if (this.value != null)
             {
-                header.Add(this.name, this.value);
+                header.TryAddWithoutValidation(this.name, this.value);
             }
             return TaskExtend.CompletedTask;
         }
@@ -91,7 +91,7 @@ namespace WebApiClient.Attributes
             header.Remove(this.name);
             if (parameter.Value != null)
             {
-                header.Add(this.name, parameter.Value.ToString());
+                header.TryAddWithoutValidation(this.name, parameter.Value.ToString());
             }
             return TaskExtend.CompletedTask;
         }
