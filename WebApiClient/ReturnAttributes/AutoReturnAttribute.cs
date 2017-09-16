@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -11,19 +12,18 @@ namespace WebApiClient.Attributes
 {
     /// <summary>
     /// 自动适应返回类型处理
-    /// 支持返回TaskOf(HttpResponseMessage)或TaskOf(byte[])或TaskOf(string)
+    /// 支持返回TaskOf(HttpResponseMessage)或TaskOf(byte[])或TaskOf(string)或TaskOf(Stream)
     /// 支持返回xml或json转换对应类型
     /// 此特性不需要显示声明
     /// </summary> 
-    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class AutoReturnAttribute : Attribute, IApiReturnAttribute
+    public class AutoReturnAttribute : ApiReturnAttribute
     {
         /// <summary>
         /// 获取异步结果
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public virtual async Task<object> GetTaskResult(ApiActionContext context)
+        protected override async Task<object> GetTaskResult(ApiActionContext context)
         {
             var response = context.ResponseMessage;
             var returnType = context.ApiActionDescriptor.ReturnDataType;
@@ -43,17 +43,24 @@ namespace WebApiClient.Attributes
                 return await response.Content.ReadAsStringAsync();
             }
 
+            if (returnType == typeof(Stream))
+            {
+                return await response.Content.ReadAsStreamAsync();
+            }
+
             var contentType = new ContentType(response.Content.Headers.ContentType);
             if (contentType.IsApplicationJson())
             {
-                return await new JsonReturnAttribute().GetTaskResult(context);
+                var jsonReturn = new JsonReturnAttribute() as IApiReturnAttribute;
+                return await jsonReturn.GetTaskResult(context);
             }
             if (contentType.IsApplicationXml())
             {
-                return await new XmlReturnAttribute().GetTaskResult(context);
+                var xmlReturn = new XmlReturnAttribute() as IApiReturnAttribute;
+                return await xmlReturn.GetTaskResult(context);
             }
 
-            var message = string.Format("不支持的类型{0}的解析", returnType);
+            var message = string.Format("不支持的类型{0}的映射", returnType);
             throw new NotSupportedException(message);
         }
 

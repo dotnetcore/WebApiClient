@@ -143,6 +143,7 @@ namespace WebApiClient
 
             var parameterDescriptor = new ApiParameterDescriptor
             {
+                Value = null,
                 Name = parameter.Name,
                 Index = index,
                 ParameterType = parameter.ParameterType,
