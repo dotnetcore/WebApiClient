@@ -62,8 +62,14 @@ namespace WebApiClient.Attributes
                 var content = this.SimpleToMulitpartItem(parameter.Name, parameter.Value, encoding);
                 return new[] { content };
             }
-            else if (parameter.IsEnumerable == true)
+
+            if (parameter.IsEnumerable == true)
             {
+                var dic = parameter.Value as IDictionary<string, object>;
+                if (dic != null)
+                {
+                    return this.DictionaryToMulitpartItems(dic, encoding);
+                }
                 return this.EnumerableToMulitpartItems(parameter, encoding);
             }
 
@@ -87,6 +93,18 @@ namespace WebApiClient.Attributes
             return
                 from item in array.Cast<object>()
                 select this.SimpleToMulitpartItem(parameter.Name, item, encoding);
+        }
+
+        /// <summary>
+        /// 字典转换为MulitpartItem项
+        /// </summary>
+        /// <param name="parameter">参数</param>
+        /// <param name="encoding">编码</param>
+        /// <returns></returns>
+        private IEnumerable<MulitpartItem> DictionaryToMulitpartItems(IDictionary<string, object> dic, Encoding encoding)
+        {
+            return from kv in dic
+                   select this.SimpleToMulitpartItem(kv.Key, kv.Value, encoding);
         }
 
         /// <summary>

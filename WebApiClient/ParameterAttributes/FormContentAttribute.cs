@@ -43,8 +43,14 @@ namespace WebApiClient.Attributes
             {
                 return this.SimpleToForm(parameter.Name, parameter.Value, encoding);
             }
-            else if (parameter.IsEnumerable == true)
+
+            if (parameter.IsEnumerable == true)
             {
+                var dic = parameter.Value as IDictionary<string, object>;
+                if (dic != null)
+                {
+                    return this.DictionaryToForm(dic, encoding);
+                }
                 return this.EnumerableToForm(parameter, encoding);
             }
 
@@ -83,6 +89,20 @@ namespace WebApiClient.Attributes
             var q = from p in Property.GetProperties(parameter.ParameterType)
                     let value = instance == null ? null : p.GetValue(instance)
                     select this.SimpleToForm(p.Name, value, encoding);
+
+            return string.Join("&", q);
+        }
+
+        /// <summary>
+        /// 字典转换为表单
+        /// </summary>
+        /// <param name="dic"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        private string DictionaryToForm(IDictionary<string, object> dic, Encoding encoding)
+        {
+            var q = from kv in dic
+                    select this.SimpleToForm(kv.Key, kv.Value, encoding);
 
             return string.Join("&", q);
         }

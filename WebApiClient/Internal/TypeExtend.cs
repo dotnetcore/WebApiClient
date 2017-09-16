@@ -19,10 +19,10 @@ namespace WebApiClient
         /// <returns></returns>
         public static bool IsSimple(this  Type type)
         {
-            if (type.IsGenericType == true)
+            if (type.IsGenericType == true && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
-                type = type.GetGenericArguments().FirstOrDefault();
-            }
+                type = Nullable.GetUnderlyingType(type);
+            }          
 
             if (type.IsPrimitive || type.IsEnum)
             {
