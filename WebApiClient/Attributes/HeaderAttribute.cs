@@ -23,6 +23,16 @@ namespace WebApiClient.Attributes
         /// </summary>
         private readonly string value;
 
+        /// <summary>
+        /// 获取本类型是否允许在接口与方法上重复
+        /// </summary>
+        public override bool AllowMultiple
+        {
+            get
+            {
+                return true;
+            }
+        }
 
         /// <summary>
         /// 将参数值设置到Header
@@ -50,7 +60,6 @@ namespace WebApiClient.Attributes
             }
             this.name = name;
             this.value = value;
-            this.AllowMultiple = true;
         }
 
         /// <summary>

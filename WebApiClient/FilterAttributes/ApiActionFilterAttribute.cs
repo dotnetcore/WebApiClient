@@ -14,14 +14,14 @@ namespace WebApiClient.Attributes
     public abstract class ApiActionFilterAttribute : Attribute, IApiActionFilterAttribute
     {
         /// <summary>
-        /// 获取或设置顺序排序索引
+        /// 获取顺序排序索引
         /// </summary>
-        public int OrderIndex { get; protected set; }
+        public virtual int OrderIndex { get; private set; }
 
         /// <summary>
         /// 获取本类型是否允许在接口与方法上重复
         /// </summary>
-        public bool AllowMultiple { get; protected set; }
+        public virtual bool AllowMultiple { get; private set; }
 
         /// <summary>
         /// 准备请求之前

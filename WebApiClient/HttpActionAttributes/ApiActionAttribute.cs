@@ -16,7 +16,7 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// 获取本类型是否允许在接口与方法上重复
         /// </summary>
-        public virtual bool AllowMultiple { get; protected set; }
+        public virtual bool AllowMultiple { get; private set; }
 
         /// <summary>
         /// 执行前
