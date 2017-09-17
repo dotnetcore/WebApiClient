@@ -15,11 +15,11 @@ namespace WebApiClient
     {
         /// <summary>
         /// 文本内容
-        /// </summary>
-        /// <param name="text">文本</param>
+        /// </summary>     
         /// <param name="name">名称</param>
-        public MulitpartTextContent(string text, string name)
-            : base(text)
+        /// <param name="value">文本</param>
+        public MulitpartTextContent(string name, string value)
+            : base(value == null ? string.Empty : value)
         {
             if (this.Headers.ContentDisposition == null)
             {

@@ -13,7 +13,7 @@ namespace WebApiClient.Attributes
 {
     /// <summary>
     /// 表示参数为HttpContent或派生类型的特性
-    /// 此特性不需要显示声明
+    /// 此类型的参数可以不用注明HttpContentAttribute
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
     public class HttpContentAttribute : Attribute, IApiParameterAttribute

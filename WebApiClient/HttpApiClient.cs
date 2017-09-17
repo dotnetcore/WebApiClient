@@ -52,7 +52,7 @@ namespace WebApiClient
         /// 获取请求接口的实现对象
         /// </summary>
         /// <typeparam name="TApiInterface">请求接口</typeparam>
-        /// <param name="host">服务跟路径，效果与HttpHostAttribute一致</param>
+        /// <param name="host">服务完整主机域名,例如http://www.webapiclient.com</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="UriFormatException"></exception>

@@ -11,7 +11,9 @@ namespace WebApiClient.Attributes
 {
     /// <summary>
     /// 表示将参数值作为url路径参数或query参数的特性
-    /// 此特性不需要显示声明
+    /// 支持单一值类型如string、int、guid、枚举等，以及他们的可空类型或集合
+    /// 支持POCO类型、IDictionaryOf(string,string)类型、IDictionaryOf(string,object)类型
+    /// 此特性不需要在参数上显式注明
     /// 不可继承
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]

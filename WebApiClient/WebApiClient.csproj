@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Contexts\ApiReturnDescriptor.cs" />
     <Compile Include="HttpActionAttributes\ApiActionAttribute.cs" />
+    <Compile Include="HttpActionAttributes\HttpOptionsAttribute.cs" />
     <Compile Include="IApiParameterable.cs" />
     <Compile Include="Attributes\HeaderAttribute.cs" />
     <Compile Include="HttpActionAttributes\ProxyAttribute.cs" />

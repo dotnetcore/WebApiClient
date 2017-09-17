@@ -13,6 +13,8 @@ namespace WebApiClient.Attributes
 {
     /// <summary>
     /// 表示参数值为multipart/form-data表单或表单的一个项
+    /// 支持单一值类型如string、int、guid、枚举等，以及他们的可空类型或集合
+    /// 支持POCO类型、IDictionaryOf(string,string)类型、IDictionaryOf(string,object)类型
     /// </summary>
     public class MulitpartContentAttribute : HttpContentAttribute
     {
@@ -28,7 +30,7 @@ namespace WebApiClient.Attributes
             var httpContent = this.GetHttpContentFromContext(context);
 
             var q = from kv in base.FormatParameter(parameter)
-                    let value = kv.Value == null ? string.Empty : HttpUtility.UrlEncode(kv.Value, encoding)
+                    let value = HttpUtility.UrlEncode(kv.Value, encoding)
                     select new MulitpartTextContent(value, kv.Key);
 
             foreach (var item in q)

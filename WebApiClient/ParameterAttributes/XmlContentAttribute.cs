@@ -13,6 +13,7 @@ namespace WebApiClient.Attributes
 {
     /// <summary>
     /// 表示将参数值作为application/xml请求
+    /// 依赖于HttpApiClient.Config.XmlFormatter
     /// </summary>
     public class XmlContentAttribute : HttpContentAttribute
     {
