@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiClient.Attributes;
 using WebApiClient.Contexts;
 
 namespace WebApiClient
@@ -54,6 +55,7 @@ namespace WebApiClient
         /// <param name="host">服务跟路径，效果与HttpHostAttribute一致</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="UriFormatException"></exception>
         /// <returns></returns>
         public TApiInterface Implement<TApiInterface>(string host) where TApiInterface : class
         {
@@ -67,7 +69,8 @@ namespace WebApiClient
                 throw new ArgumentException(typeof(TApiInterface).Name + "不是接口类型");
             }
 
-            return HttpApiClient.GeneratoProxy<TApiInterface>(host, this);
+            var url = new Uri(host, UriKind.Absolute);
+            return HttpApiClient.GeneratoProxy<TApiInterface>(url.ToString(), this);
         }
 
         /// <summary>

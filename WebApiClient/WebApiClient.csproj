@@ -99,7 +99,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Internal\Property.cs" />
     <Compile Include="Contexts\ApiActionContext.cs" />
-    <Compile Include="HttpHostAttribute.cs" />
+    <Compile Include="Attributes\HttpHostAttribute.cs" />
     <Compile Include="HttpApiClient.cs" />
     <Compile Include="Url.cs" />
   </ItemGroup>
