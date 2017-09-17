@@ -164,7 +164,7 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         private MulitpartItem SimpleToMulitpartItem(string name, object value, Encoding encoding)
         {
-            var valueString = value == null ? null : value.ToString();
+            var valueString = value == null ? string.Empty : value.ToString();
             var valueEncoded = HttpUtility.UrlEncode(valueString, encoding);
             var httpContent = new StringContent(valueEncoded);
             return new MulitpartItem(name, httpContent);
