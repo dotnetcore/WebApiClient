@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,11 @@ namespace WebApiClient
     static class TypeExtend
     {
         /// <summary>
+        /// 缓存
+        /// </summary>
+        private static readonly ConcurrentDictionary<Type, bool> typeAllowMultipleCache = new ConcurrentDictionary<Type, bool>();
+
+        /// <summary>
         /// 获取是否为简单类型
         /// </summary>
         /// <param name="type">类型</param>
@@ -22,7 +28,7 @@ namespace WebApiClient
             if (type.IsGenericType == true && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
                 type = Nullable.GetUnderlyingType(type);
-            }          
+            }
 
             if (type.IsPrimitive || type.IsEnum)
             {
@@ -56,6 +62,17 @@ namespace WebApiClient
         public static bool IsInheritFrom(this Type type, Type baseType)
         {
             return baseType.IsAssignableFrom(type);
-        }      
+        }
+
+
+        /// <summary>
+        /// 关联的AttributeUsageAttribute是否AllowMultiple
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool AllowMultiple(this Type type)
+        {
+            return typeAllowMultipleCache.GetOrAdd(type, (t => t.IsInheritFrom<Attribute>() && t.GetAttribute<AttributeUsageAttribute>(true).AllowMultiple));
+        }
     }
 }

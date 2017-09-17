@@ -22,18 +22,7 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// 值 
         /// </summary>
-        private readonly string value;
-
-        /// <summary>
-        /// 获取本类型是否允许在接口与方法上重复
-        /// </summary>
-        public override bool AllowMultiple
-        {
-            get
-            {
-                return true;
-            }
-        }
+        private readonly string value;     
 
 
         /// <summary>
