@@ -15,70 +15,35 @@ using WebApiClient.Contexts;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示Castle相关上下文
+    /// 提供Descriptor缓存
     /// </summary>
-    class CastleContext
+    static class DescriptorCache
     {
-        /// <summary>
-        /// 获取HttpHostAttribute
-        /// </summary>
-        public HttpHostAttribute HostAttribute { get; private set; }
-
-        /// <summary>
-        /// 获取ApiActionDescriptor
-        /// </summary>
-        public ApiActionDescriptor ApiActionDescriptor { get; private set; }
-
         /// <summary>
         /// 缓存字典
         /// </summary>
-        private static readonly ConcurrentDictionary<IInvocation, CastleContext> cache;
+        private static readonly ConcurrentDictionary<IInvocation, ApiActionDescriptor> cache;
 
         /// <summary>
         /// Castle相关上下文
         /// </summary>
-        static CastleContext()
+        static DescriptorCache()
         {
-            cache = new ConcurrentDictionary<IInvocation, CastleContext>(new IInvocationComparer());
+            cache = new ConcurrentDictionary<IInvocation, ApiActionDescriptor>(new IInvocationComparer());
         }
 
         /// <summary>
-        /// 从缓存获得拦截内容获得
+        /// 从缓存获得ApiActionDescriptor
         /// </summary>
         /// <param name="invocation">拦截内容</param>
         /// <returns></returns>
-        public static CastleContext FromCached(IInvocation invocation)
+        public static ApiActionDescriptor GetApiActionDescriptor(IInvocation invocation)
         {
-            return cache.GetOrAdd(invocation, CastleContext.GetContextNoCache);
+            return cache.GetOrAdd(invocation, GetActionDescriptor);
         }
 
         /// <summary>
-        /// 从拦截内容获得
-        /// </summary>
-        /// <param name="invocation">拦截内容</param>
-        /// <returns></returns>
-        private static CastleContext GetContextNoCache(IInvocation invocation)
-        {
-            var method = invocation.Method;
-            var hostAttribute = invocation.Proxy.GetType().GetCustomAttribute<HttpHostAttribute>();
-            if (hostAttribute == null)
-            {
-                hostAttribute = method.FindDeclaringAttribute<HttpHostAttribute>(false);
-            }
-            if (hostAttribute == null)
-            {
-                throw new HttpRequestException("未指定HttpHostAttribute");
-            }
-
-            return new CastleContext
-            {
-                HostAttribute = hostAttribute,
-                ApiActionDescriptor = GetActionDescriptor(invocation)
-            };
-        }
-
-        /// <summary>
-        /// 生成ApiActionDescriptor
+        /// 从拦截内容获得ApiActionDescriptor
         /// </summary>
         /// <param name="invocation">拦截内容</param>
         /// <returns></returns>
@@ -97,14 +62,44 @@ namespace WebApiClient
                 .OrderBy(item => item.OrderIndex)
                 .ToArray();
 
+            var presetActionAttributes = GetPresetActionAttributes(invocation);
+            var declaringtActionAttributes = method.FindDeclaringAttributes<IApiActionAttribute>(true);
+
+            var actionAttributes = presetActionAttributes
+                .Concat(declaringtActionAttributes)
+                .Distinct(new AttributeComparer<IApiActionAttribute>())
+                .OrderBy(item => item.OrderIndex)
+                .ToArray();
+
             return new ApiActionDescriptor
             {
                 Name = method.Name,
                 Filters = filterAttributes,
                 Return = GetReturnDescriptor(method),
-                Attributes = method.FindDeclaringAttributes<IApiActionAttribute>(true).Distinct(new AttributeComparer<IApiActionAttribute>()).ToArray(),
+                Attributes = actionAttributes,
                 Parameters = method.GetParameters().Select((p, i) => GetParameterDescriptor(p, i)).ToArray()
             };
+        }
+
+        /// <summary>
+        /// 从拦截上下文获取预设的特性
+        /// </summary>
+        /// <param name="invocation"></param>
+        /// <returns></returns>
+        private static IEnumerable<ApiActionAttribute> GetPresetActionAttributes(IInvocation invocation)
+        {
+            var hostAttribute = invocation.Proxy.GetType().GetCustomAttribute<HttpHostAttribute>();
+            if (hostAttribute == null)
+            {
+                hostAttribute = invocation.Method.FindDeclaringAttribute<HttpHostAttribute>(false);
+            }
+
+            if (hostAttribute == null)
+            {
+                throw new HttpRequestException("未指定任何HttpHostAttribute");
+            }
+
+            yield return hostAttribute;
         }
 
         /// <summary>

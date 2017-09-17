@@ -14,6 +14,11 @@ namespace WebApiClient.Attributes
     public abstract class ApiActionAttribute : Attribute, IApiActionAttribute
     {
         /// <summary>
+        /// 获取顺序排序索引
+        /// </summary>
+        public virtual int OrderIndex { get; private set; }
+
+        /// <summary>
         /// 获取本类型是否允许在接口与方法上重复
         /// </summary>
         public virtual bool AllowMultiple { get; private set; }

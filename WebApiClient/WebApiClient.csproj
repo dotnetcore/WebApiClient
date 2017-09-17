@@ -96,11 +96,11 @@
     <Compile Include="ReturnAttributes\JsonReturnAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Internal\CastleContext.cs" />
+    <Compile Include="Internal\DescriptorCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Internal\Property.cs" />
     <Compile Include="Contexts\ApiActionContext.cs" />
-    <Compile Include="Attributes\HttpHostAttribute.cs" />
+    <Compile Include="HttpActionAttributes\HttpHostAttribute.cs" />
     <Compile Include="HttpApiClient.cs" />
     <Compile Include="Url.cs" />
   </ItemGroup>

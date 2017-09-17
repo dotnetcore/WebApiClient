@@ -20,11 +20,6 @@ namespace WebApiClient.Contexts
         public HttpApiClientConfig HttpApiClientConfig { get; internal set; }
 
         /// <summary>
-        /// 获取关联的HttpHostAttribute
-        /// </summary>
-        public HttpHostAttribute HostAttribute { get; internal set; } 
-
-        /// <summary>
         /// 获取关联的ApiActionDescriptor
         /// </summary>
         public ApiActionDescriptor ApiActionDescriptor { get; internal set; }

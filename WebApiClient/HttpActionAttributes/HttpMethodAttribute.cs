@@ -56,7 +56,8 @@ namespace WebApiClient.Attributes
             context.RequestMessage.Method = this.Method;
             if (string.IsNullOrEmpty(this.Path) == false)
             {
-                context.RequestMessage.RequestUri = new Uri(context.HostAttribute.Host, this.Path);
+                var baseUrl = context.RequestMessage.RequestUri;
+                context.RequestMessage.RequestUri = new Uri(baseUrl, this.Path);
             }
             return TaskExtend.CompletedTask;
         }

@@ -99,8 +99,9 @@ namespace WebApiClient
         /// <param name="invocation">拦截内容</param>
         void IInterceptor.Intercept(IInvocation invocation)
         {
-            var context = CastleContext.FromCached(invocation);
-            var actionDescripter = context.ApiActionDescriptor.Clone() as ApiActionDescriptor;
+            var cache = DescriptorCache.GetApiActionDescriptor(invocation);
+            var actionDescripter = cache.Clone() as ApiActionDescriptor;
+
             for (var i = 0; i < actionDescripter.Parameters.Length; i++)
             {
                 actionDescripter.Parameters[i].Value = invocation.GetArgumentValue(i);
@@ -108,15 +109,14 @@ namespace WebApiClient
 
             var actionContext = new ApiActionContext
             {
+                ApiActionDescriptor = actionDescripter,
                 HttpApiClientConfig = this.Config,
-                RequestMessage = new HttpRequestMessage(),
-                ResponseMessage = null,
                 HttpClientContext = null,
-                HostAttribute = context.HostAttribute,
-                ApiActionDescriptor = actionDescripter
+                RequestMessage = new HttpRequestMessage(),
+                ResponseMessage = null
             };
 
-            invocation.ReturnValue = context.ApiActionDescriptor.Execute(actionContext);
+            invocation.ReturnValue = actionDescripter.Execute(actionContext);
         }
     }
 }
