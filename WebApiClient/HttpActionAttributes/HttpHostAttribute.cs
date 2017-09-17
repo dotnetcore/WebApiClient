@@ -9,8 +9,9 @@ namespace WebApiClient.Attributes
 {
     /// <summary>
     /// 表示请求服务根路径
+    /// 不可继承
     /// </summary>
-    public class HttpHostAttribute : ApiActionAttribute
+    public sealed class HttpHostAttribute : ApiActionAttribute
     {
         /// <summary>
         /// 获取根路径
