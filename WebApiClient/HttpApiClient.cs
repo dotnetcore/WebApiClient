@@ -97,24 +97,25 @@ namespace WebApiClient
         void IInterceptor.Intercept(IInvocation invocation)
         {
             var context = CastleContext.From(invocation);
+            var actionDescripter = context.ApiActionDescriptor.Clone() as ApiActionDescriptor;
+            for (var i = 0; i < actionDescripter.Parameters.Length; i++)
+            {
+                actionDescripter.Parameters[i].Value = invocation.GetArgumentValue(i);
+            }
+
             var actionContext = new ApiActionContext
             {
                 HttpApiClientConfig = this.Config,
                 RequestMessage = new HttpRequestMessage(),
+                ResponseMessage = null,
+                HttpClientContext = null,
                 HostAttribute = context.HostAttribute,
                 ApiReturnAttribute = context.ApiReturnAttribute,
                 ApiActionFilterAttributes = context.ApiActionFilterAttributes,
-                ApiActionDescriptor = context.ApiActionDescriptor.Clone() as ApiActionDescriptor
+                ApiActionDescriptor = actionDescripter
             };
 
-            var parameters = actionContext.ApiActionDescriptor.Parameters;
-            for (var i = 0; i < parameters.Length; i++)
-            {
-                parameters[i].Value = invocation.Arguments[i];
-            }
-
-            var apiAction = context.ApiActionDescriptor;
-            invocation.ReturnValue = apiAction.Execute(actionContext);
+            invocation.ReturnValue = context.ApiActionDescriptor.Execute(actionContext);
         }
     }
 }

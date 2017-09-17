@@ -43,6 +43,16 @@ namespace WebApiClient.Contexts
         public bool IsEnumerable { get; internal set; }
 
         /// <summary>
+        /// 获取参数类型是否IDictionaryOf(string,object)
+        /// </summary>
+        public bool IsDictionaryOfObject { get; set; }
+
+        /// <summary>
+        /// 获取参数类型是否IDictionaryOf(string,string)
+        /// </summary>
+        public bool IsDictionaryOfString { get; set; }
+
+        /// <summary>
         /// 获取关联的参数特性
         /// </summary>
         public IApiParameterAttribute[] Attributes { get; internal set; }
@@ -68,7 +78,9 @@ namespace WebApiClient.Contexts
                 Index = this.Index,
                 IsSimpleType = this.IsSimpleType,
                 IsEnumerable = this.IsEnumerable,
-                Name = this.Name,
+                IsDictionaryOfObject = this.IsDictionaryOfObject,
+                IsDictionaryOfString = this.IsDictionaryOfString,
+                Name = this.Name,                 
                 ParameterType = this.ParameterType,
                 Value = this.Value
             };

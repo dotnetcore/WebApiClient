@@ -149,12 +149,14 @@ namespace WebApiClient
                 ParameterType = parameter.ParameterType,
                 IsSimpleType = parameter.ParameterType.IsSimple(),
                 IsEnumerable = parameter.ParameterType.IsInheritFrom<IEnumerable>(),
+                IsDictionaryOfObject = parameter.ParameterType.IsInheritFrom<IDictionary<string, object>>(),
+                IsDictionaryOfString = parameter.ParameterType.IsInheritFrom<IDictionary<string, string>>(),
                 Attributes = parameter.GetAttributes<IApiParameterAttribute>(true).ToArray()
             };
 
             if (parameterDescriptor.Attributes.Length == 0)
             {
-                if (parameter.ParameterType.IsInheritFrom<IApiParameterable>() || parameter.ParameterType.IsEnumerable<IApiParameterable>())
+                if (parameter.ParameterType.IsInheritFrom<IApiParameterable>() || parameter.ParameterType.IsInheritFrom<IEnumerable<IApiParameterable>>())
                 {
                     parameterDescriptor.Attributes = new[] { new ParameterableAttribute() };
                 }

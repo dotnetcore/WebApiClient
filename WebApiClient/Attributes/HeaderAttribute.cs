@@ -102,7 +102,7 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         public override string ToString()
         {
-            return this.name;
+            return string.Format("{0} = {1}", this.name, this.value);
         }
     }
 }

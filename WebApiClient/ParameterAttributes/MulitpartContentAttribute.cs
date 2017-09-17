@@ -63,13 +63,18 @@ namespace WebApiClient.Attributes
                 return new[] { content };
             }
 
+            if (parameter.IsDictionaryOfObject == true)
+            {
+                return this.DictionaryToMulitpartItems<object>(parameter, encoding);
+            }
+
+            if (parameter.IsDictionaryOfString == true)
+            {
+                return this.DictionaryToMulitpartItems<string>(parameter, encoding);
+            }
+
             if (parameter.IsEnumerable == true)
             {
-                var dic = parameter.Value as IDictionary<string, object>;
-                if (dic != null)
-                {
-                    return this.DictionaryToMulitpartItems(dic, encoding);
-                }
                 return this.EnumerableToMulitpartItems(parameter, encoding);
             }
 
@@ -103,6 +108,29 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         private IEnumerable<MulitpartItem> DictionaryToMulitpartItems(IDictionary<string, object> dic, Encoding encoding)
         {
+            if (dic == null)
+            {
+                return Enumerable.Empty<MulitpartItem>();
+            }
+
+            return from kv in dic
+                   select this.SimpleToMulitpartItem(kv.Key, kv.Value, encoding);
+        }
+
+        /// <summary>
+        /// 字典转换为MulitpartItem项
+        /// </summary>
+        /// <param name="parameter">参数</param>
+        /// <param name="encoding">编码</param>
+        /// <returns></returns>
+        private IEnumerable<MulitpartItem> DictionaryToMulitpartItems<TValue>(ApiParameterDescriptor parameter, Encoding encoding)
+        {
+            var dic = parameter.Value as IDictionary<string, TValue>;
+            if (dic == null)
+            {
+                return Enumerable.Empty<MulitpartItem>();
+            }
+
             return from kv in dic
                    select this.SimpleToMulitpartItem(kv.Key, kv.Value, encoding);
         }
@@ -116,10 +144,14 @@ namespace WebApiClient.Attributes
         private IEnumerable<MulitpartItem> ComplexToMulitpartItems(ApiParameterDescriptor parameter, Encoding encoding)
         {
             var instance = parameter.Value;
+            if (instance == null)
+            {
+                return Enumerable.Empty<MulitpartItem>();
+            }
 
             return
                 from p in Property.GetProperties(parameter.ParameterType)
-                let value = instance == null ? null : p.GetValue(instance)
+                let value = p.GetValue(instance)
                 select this.SimpleToMulitpartItem(p.Name, value, encoding);
         }
 

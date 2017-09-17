@@ -78,7 +78,7 @@ namespace WebApiClient.Attributes
 
             var uri = context.RequestMessage.RequestUri;
             var url = uri.ToString();
-            var relativeUrl = url.Substring(url.IndexOf(uri.AbsolutePath)).TrimEnd('&','?');
+            var relativeUrl = url.Substring(url.IndexOf(uri.AbsolutePath)).TrimEnd('&', '?');
 
             var pathQuery = this.GetPathQuery(relativeUrl, parameter);
             context.RequestMessage.RequestUri = new Uri(uri, pathQuery);
@@ -99,12 +99,43 @@ namespace WebApiClient.Attributes
                 return this.GetSimplePathQuery(pathQuery, pName, parameter.Value);
             }
 
+            if (parameter.IsDictionaryOfObject == true)
+            {
+                return this.GetDictionaryPathQuery<object>(pathQuery, parameter);
+            }
+
+            if (parameter.IsDictionaryOfString == true)
+            {
+                return this.GetDictionaryPathQuery<string>(pathQuery, parameter);
+            }
+
             if (parameter.IsEnumerable == true)
             {
                 return this.GetEnumerablePathQuery(pathQuery, parameter);
             }
 
             return this.GetComplexPathQuery(pathQuery, parameter);
+        }
+
+        /// <summary>
+        /// 获取新的Path与Query
+        /// </summary>
+        /// <param name="pathQuery">原始path与query</param>
+        /// <param name="parameter">参数</param>
+        /// <returns></returns>
+        private string GetDictionaryPathQuery<TValue>(string pathQuery, ApiParameterDescriptor parameter)
+        {
+            var dic = parameter.Value as IDictionary<string, TValue>;
+            if (dic == null)
+            {
+                return pathQuery;
+            }
+
+            foreach (var kv in dic)
+            {
+                pathQuery = this.GetSimplePathQuery(pathQuery, kv.Key, kv.Value);
+            }
+            return pathQuery;
         }
 
         /// <summary>

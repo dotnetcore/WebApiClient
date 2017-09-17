@@ -56,26 +56,6 @@ namespace WebApiClient
         public static bool IsInheritFrom(this Type type, Type baseType)
         {
             return baseType.IsAssignableFrom(type);
-        }
-
-        /// <summary>
-        /// 是否实现了EnumerableOf(T)
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsEnumerable<T>(this Type type)
-        {
-            if (type.IsArray && type.GetElementType().IsInheritFrom<T>())
-            {
-                return true;
-            }
-
-            if (type.IsInheritFrom<IEnumerable>() && type.IsGenericType && type.GetGenericArguments().FirstOrDefault().IsInheritFrom<T>())
-            {
-                return true;
-            }
-            return false;
-        }
+        }      
     }
 }
