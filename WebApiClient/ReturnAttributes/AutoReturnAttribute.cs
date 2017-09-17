@@ -26,24 +26,24 @@ namespace WebApiClient.Attributes
         protected override async Task<object> GetTaskResult(ApiActionContext context)
         {
             var response = context.ResponseMessage;
-            var returnType = context.ApiActionDescriptor.ReturnDataType;
+            var dataType = context.ApiActionDescriptor.Return.DataType;
 
-            if (returnType == typeof(HttpResponseMessage))
+            if (dataType == typeof(HttpResponseMessage))
             {
                 return response;
             }
 
-            if (returnType == typeof(byte[]))
+            if (dataType == typeof(byte[]))
             {
                 return await response.Content.ReadAsByteArrayAsync();
             }
 
-            if (returnType == typeof(string))
+            if (dataType == typeof(string))
             {
                 return await response.Content.ReadAsStringAsync();
             }
 
-            if (returnType == typeof(Stream))
+            if (dataType == typeof(Stream))
             {
                 return await response.Content.ReadAsStreamAsync();
             }
@@ -54,13 +54,14 @@ namespace WebApiClient.Attributes
                 var jsonReturn = new JsonReturnAttribute() as IApiReturnAttribute;
                 return await jsonReturn.GetTaskResult(context);
             }
+
             if (contentType.IsApplicationXml())
             {
                 var xmlReturn = new XmlReturnAttribute() as IApiReturnAttribute;
                 return await xmlReturn.GetTaskResult(context);
             }
 
-            var message = string.Format("不支持的类型{0}的映射", returnType);
+            var message = string.Format("不支持的类型{0}的映射", dataType);
             throw new NotSupportedException(message);
         }
 

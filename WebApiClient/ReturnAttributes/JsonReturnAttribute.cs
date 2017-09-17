@@ -23,7 +23,7 @@ namespace WebApiClient.Attributes
             var response = context.ResponseMessage;
             var json = await response.Content.ReadAsStringAsync();
 
-            var dataType = context.ApiActionDescriptor.ReturnDataType;
+            var dataType = context.ApiActionDescriptor.Return.DataType;
             var result = context.HttpApiClientConfig.JsonFormatter.Deserialize(json, dataType);
             return result;
         }

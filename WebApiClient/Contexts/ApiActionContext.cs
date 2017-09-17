@@ -22,17 +22,7 @@ namespace WebApiClient.Contexts
         /// <summary>
         /// 获取关联的HttpHostAttribute
         /// </summary>
-        public HttpHostAttribute HostAttribute { get; internal set; }
-
-        /// <summary>
-        /// 获取关联的ApiReturnAttribute
-        /// </summary>
-        public IApiReturnAttribute ApiReturnAttribute { get; internal set; }
-
-        /// <summary>
-        /// 获取ApiActionFilterAttribute
-        /// </summary>
-        public IApiActionFilterAttribute[] ApiActionFilterAttributes { get; internal set; }
+        public HttpHostAttribute HostAttribute { get; internal set; } 
 
         /// <summary>
         /// 获取关联的ApiActionDescriptor

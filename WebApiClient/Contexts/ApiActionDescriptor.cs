@@ -24,19 +24,19 @@ namespace WebApiClient.Contexts
         public IApiActionAttribute[] Attributes { get; internal set; }
 
         /// <summary>
+        /// 获取Api关联的过滤器特性
+        /// </summary>
+        public IApiActionFilterAttribute[] Filters { get; internal set; }
+
+        /// <summary>
         /// 获取Api的参数描述
         /// </summary>
         public ApiParameterDescriptor[] Parameters { get; internal set; }
 
         /// <summary>
-        /// 获取Api返回的TaskOf(T)类型
+        /// 获取Api的返回描述
         /// </summary>
-        public Type ReturnTaskType { get; internal set; }
-
-        /// <summary>
-        /// 获取Api返回的TaskOf(T)的T类型
-        /// </summary>
-        public Type ReturnDataType { get; internal set; }
+        public ApiReturnDescriptor Return { get; internal set; }
 
         /// <summary>
         /// 执行api
@@ -45,7 +45,7 @@ namespace WebApiClient.Contexts
         /// <returns></returns>
         public Task Execute(ApiActionContext context)
         {
-            return this.ExecuteAsync(context).CastResult(this.ReturnDataType);
+            return this.ExecuteAsync(context).CastResult(this.Return.DataType);
         }
 
         /// <summary>
@@ -71,12 +71,14 @@ namespace WebApiClient.Contexts
         /// <returns></returns>
         private async Task<object> ExecuteInternalAsync(ApiActionContext context)
         {
-            foreach (var methodAttribute in context.ApiActionDescriptor.Attributes)
+            var apiAction = context.ApiActionDescriptor;
+
+            foreach (var actionAttribute in apiAction.Attributes)
             {
-                await methodAttribute.BeforeRequestAsync(context);
+                await actionAttribute.BeforeRequestAsync(context);
             }
 
-            foreach (var parameter in context.ApiActionDescriptor.Parameters)
+            foreach (var parameter in apiAction.Parameters)
             {
                 foreach (var parameterAttribute in parameter.Attributes)
                 {
@@ -84,7 +86,7 @@ namespace WebApiClient.Contexts
                 }
             }
 
-            foreach (var filter in context.ApiActionFilterAttributes)
+            foreach (var filter in apiAction.Filters)
             {
                 await filter.OnBeginRequestAsync(context);
             }
@@ -93,12 +95,12 @@ namespace WebApiClient.Contexts
             var httpClient = context.HttpClientContext.HttpClient;
             context.ResponseMessage = await httpClient.SendAsync(context.RequestMessage);
 
-            foreach (var filter in context.ApiActionFilterAttributes)
+            foreach (var filter in apiAction.Filters)
             {
                 await filter.OnEndRequestAsync(context);
             }
 
-            return await context.ApiReturnAttribute.GetTaskResult(context);
+            return await apiAction.Return.Attribute.GetTaskResult(context);
         }
 
         /// <summary>
@@ -111,8 +113,8 @@ namespace WebApiClient.Contexts
             {
                 Name = this.Name,
                 Attributes = this.Attributes,
-                ReturnDataType = this.ReturnDataType,
-                ReturnTaskType = this.ReturnTaskType,
+                Return = this.Return,
+                Filters = this.Filters,
                 Parameters = this.Parameters.Select(item => (ApiParameterDescriptor)item.Clone()).ToArray()
             };
         }

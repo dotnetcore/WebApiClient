@@ -25,16 +25,6 @@ namespace WebApiClient
         public HttpHostAttribute HostAttribute { get; private set; }
 
         /// <summary>
-        /// 获取ApiReturnAttribute
-        /// </summary>
-        public IApiReturnAttribute ApiReturnAttribute { get; private set; }
-
-        /// <summary>
-        /// 获取ApiActionFilterAttribute
-        /// </summary>
-        public IApiActionFilterAttribute[] ApiActionFilterAttributes { get; set; }
-
-        /// <summary>
         /// 获取ApiActionDescriptor
         /// </summary>
         public ApiActionDescriptor ApiActionDescriptor { get; private set; }
@@ -49,18 +39,17 @@ namespace WebApiClient
         /// </summary>
         static CastleContext()
         {
-            CastleContext.cache = new ConcurrentDictionary<IInvocation, CastleContext>(new IInvocationComparer());
+            cache = new ConcurrentDictionary<IInvocation, CastleContext>(new IInvocationComparer());
         }
 
         /// <summary>
-        /// 从拦截内容获得
-        /// 使用缓存
+        /// 从缓存获得拦截内容获得
         /// </summary>
         /// <param name="invocation">拦截内容</param>
         /// <returns></returns>
-        public static CastleContext From(IInvocation invocation)
+        public static CastleContext FromCached(IInvocation invocation)
         {
-            return CastleContext.cache.GetOrAdd(invocation, CastleContext.GetContextNoCache);
+            return cache.GetOrAdd(invocation, CastleContext.GetContextNoCache);
         }
 
         /// <summary>
@@ -81,24 +70,10 @@ namespace WebApiClient
                 throw new HttpRequestException("未指定HttpHostAttribute");
             }
 
-            var returnAttribute = method.FindDeclaringAttribute<IApiReturnAttribute>(true);
-            if (returnAttribute == null)
-            {
-                returnAttribute = new AutoReturnAttribute();
-            }
-
-            var filterAttributes = method
-                .FindDeclaringAttributes<IApiActionFilterAttribute>(true)
-                .Distinct(new AttributeComparer<IApiActionFilterAttribute>())
-                .OrderBy(item => item.OrderIndex)
-                .ToArray();
-
             return new CastleContext
             {
                 HostAttribute = hostAttribute,
-                ApiReturnAttribute = returnAttribute,
-                ApiActionFilterAttributes = filterAttributes,
-                ApiActionDescriptor = CastleContext.GetActionDescriptor(invocation)
+                ApiActionDescriptor = GetActionDescriptor(invocation)
             };
         }
 
@@ -116,15 +91,20 @@ namespace WebApiClient
                 throw new NotSupportedException(message);
             }
 
-            var descriptor = new ApiActionDescriptor
+            var filterAttributes = method
+                .FindDeclaringAttributes<IApiActionFilterAttribute>(true)
+                .Distinct(new AttributeComparer<IApiActionFilterAttribute>())
+                .OrderBy(item => item.OrderIndex)
+                .ToArray();
+
+            return new ApiActionDescriptor
             {
                 Name = method.Name,
-                ReturnTaskType = method.ReturnType,
-                ReturnDataType = method.ReturnType.GetGenericArguments().FirstOrDefault(),
+                Filters = filterAttributes,
+                Return = GetReturnDescriptor(method),
                 Attributes = method.FindDeclaringAttributes<IApiActionAttribute>(true).Distinct(new AttributeComparer<IApiActionAttribute>()).ToArray(),
                 Parameters = method.GetParameters().Select((p, i) => GetParameterDescriptor(p, i)).ToArray()
             };
-            return descriptor;
         }
 
         /// <summary>
@@ -170,6 +150,27 @@ namespace WebApiClient
                 }
             }
             return parameterDescriptor;
+        }
+
+        /// <summary>
+        /// 生成ApiReturnDescriptor
+        /// </summary>
+        /// <param name="method">方法信息</param>
+        /// <returns></returns>
+        private static ApiReturnDescriptor GetReturnDescriptor(MethodInfo method)
+        {
+            var returnAttribute = method.FindDeclaringAttribute<IApiReturnAttribute>(true);
+            if (returnAttribute == null)
+            {
+                returnAttribute = new AutoReturnAttribute();
+            }
+
+            return new ApiReturnDescriptor
+            {
+                Attribute = returnAttribute,
+                TaskType = method.ReturnType,
+                DataType = method.ReturnType.GetGenericArguments().FirstOrDefault(),
+            };
         }
 
         /// <summary>

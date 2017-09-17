@@ -99,7 +99,7 @@ namespace WebApiClient
         /// <param name="invocation">拦截内容</param>
         void IInterceptor.Intercept(IInvocation invocation)
         {
-            var context = CastleContext.From(invocation);
+            var context = CastleContext.FromCached(invocation);
             var actionDescripter = context.ApiActionDescriptor.Clone() as ApiActionDescriptor;
             for (var i = 0; i < actionDescripter.Parameters.Length; i++)
             {
@@ -113,8 +113,6 @@ namespace WebApiClient
                 ResponseMessage = null,
                 HttpClientContext = null,
                 HostAttribute = context.HostAttribute,
-                ApiReturnAttribute = context.ApiReturnAttribute,
-                ApiActionFilterAttributes = context.ApiActionFilterAttributes,
                 ApiActionDescriptor = actionDescripter
             };
 
