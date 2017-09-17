@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
@@ -34,6 +35,18 @@ namespace WebApiClient.Attributes
             }
         }
 
+
+        /// <summary>
+        /// 将参数值设置到Header
+        /// 参数值为null则删除此Header项
+        /// </summary>
+        /// <param name="name">header名称</param>
+        public HeaderAttribute(HttpRequestHeader name)
+            : this(name.ToString(), null)
+        {
+        }
+
+
         /// <summary>
         /// 将参数值设置到Header
         /// 参数值为null则删除此Header项
@@ -42,6 +55,18 @@ namespace WebApiClient.Attributes
         /// <exception cref="ArgumentNullException"></exception>
         public HeaderAttribute(string name)
             : this(name, null)
+        {
+        }
+
+
+        /// <summary>
+        /// 将指定值设置到Header
+        /// value为null则删除此Header项
+        /// </summary>
+        /// <param name="name">header名称</param>
+        /// <param name="value">header值</param>
+        public HeaderAttribute(HttpRequestHeader name, string value)
+            : this(name.ToString(), value)
         {
         }
 
