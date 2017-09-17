@@ -12,7 +12,7 @@ using WebApiClient.Contexts;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 表示参数为HttpContent或派生类型的特性
+    /// 表示参数为HttpContent或派生类型的特性    
     /// 此类型的参数可以不用注明HttpContentAttribute
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
