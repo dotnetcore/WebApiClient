@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using WebApiClient.Attributes;
 using WebApiClient.Contexts;
 
-namespace WebApiClient.Attributes
+namespace WebApiClient
 {
     /// <summary>
     /// 表示参数内容为IApiParameterable对象或其数组
