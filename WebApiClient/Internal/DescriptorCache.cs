@@ -110,41 +110,44 @@ namespace WebApiClient
         /// <returns></returns>
         private static ApiParameterDescriptor GetParameterDescriptor(ParameterInfo parameter, int index)
         {
-            if (parameter.ParameterType.IsByRef == true)
+            var parameterType = parameter.ParameterType;
+            if (parameterType.IsByRef == true)
             {
                 var message = string.Format("接口参数不支持ref/out修饰：{0}", parameter);
                 throw new NotSupportedException(message);
             }
 
-            var parameterDescriptor = new ApiParameterDescriptor
+            var descriptor = new ApiParameterDescriptor
             {
                 Value = null,
                 Name = parameter.Name,
                 Index = index,
-                ParameterType = parameter.ParameterType,
-                IsSimpleType = parameter.ParameterType.IsSimple(),
-                IsEnumerable = parameter.ParameterType.IsInheritFrom<IEnumerable>(),
-                IsDictionaryOfObject = parameter.ParameterType.IsInheritFrom<IDictionary<string, object>>(),
-                IsDictionaryOfString = parameter.ParameterType.IsInheritFrom<IDictionary<string, string>>(),
+                ParameterType = parameterType,
+                IsApiParameterable = parameterType.IsInheritFrom<IApiParameterable>() || parameterType.IsInheritFrom<IEnumerable<IApiParameterable>>(),
+                IsHttpContent = parameterType.IsInheritFrom<HttpContent>(),
+                IsSimpleType = parameterType.IsSimple(),
+                IsEnumerable = parameterType.IsInheritFrom<IEnumerable>(),
+                IsDictionaryOfObject = parameterType.IsInheritFrom<IDictionary<string, object>>(),
+                IsDictionaryOfString = parameterType.IsInheritFrom<IDictionary<string, string>>(),
                 Attributes = parameter.GetAttributes<IApiParameterAttribute>(true).ToArray()
             };
 
-            if (parameterDescriptor.Attributes.Length == 0)
+            if (descriptor.Attributes.Length == 0)
             {
-                if (parameter.ParameterType.IsInheritFrom<IApiParameterable>() || parameter.ParameterType.IsInheritFrom<IEnumerable<IApiParameterable>>())
+                if (descriptor.IsApiParameterable == true)
                 {
-                    parameterDescriptor.Attributes = new[] { new ParameterableAttribute() };
+                    descriptor.Attributes = new[] { new ParameterableAttribute() };
                 }
-                else if (parameter.ParameterType.IsInheritFrom<HttpContent>())
+                else if (descriptor.IsHttpContent == true)
                 {
-                    parameterDescriptor.Attributes = new[] { new HttpContentAttribute() };
+                    descriptor.Attributes = new[] { new HttpContentAttribute() };
                 }
-                else if (parameterDescriptor.Attributes.Length == 0)
+                else
                 {
-                    parameterDescriptor.Attributes = new[] { new PathQueryAttribute() };
+                    descriptor.Attributes = new[] { new PathQueryAttribute() };
                 }
             }
-            return parameterDescriptor;
+            return descriptor;
         }
 
         /// <summary>

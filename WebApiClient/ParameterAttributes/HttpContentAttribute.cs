@@ -32,8 +32,14 @@ namespace WebApiClient.Attributes
                 return;
             }
 
-            var httpContent = this.GetHttpContent(context, parameter);
-            context.RequestMessage.Content = httpContent;
+            if (parameter.IsHttpContent == true)
+            {
+                context.RequestMessage.Content = parameter.Value as HttpContent;
+            }
+            else
+            {
+                context.RequestMessage.Content = this.GetHttpContent(context, parameter);
+            }
             await TaskExtend.CompletedTask;
         }
 

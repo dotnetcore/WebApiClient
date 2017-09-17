@@ -55,8 +55,9 @@
     <Compile Include="HttpActionAttributes\ProxyAttribute.cs" />
     <Compile Include="IAttributeMultiplable.cs" />
     <Compile Include="IHttpClientContext.cs" />
+    <Compile Include="Internal\MulitpartFileContent.cs" />
     <Compile Include="Internal\HttpUtility.cs" />
-    <Compile Include="Internal\StMultipartFormDataContent.cs" />
+    <Compile Include="Internal\MulitpartTextContent.cs" />
     <Compile Include="Internal\TypeExtend.cs" />
     <Compile Include="ParameterAttributes\UrlAttribute.cs" />
     <Compile Include="FilterAttributes\ApiActionFilterAttribute.cs" />
@@ -71,7 +72,7 @@
     <Compile Include="Internal\DefaultHttpClientContextProvider.cs" />
     <Compile Include="Internal\DefaultXmlFormatter.cs" />
     <Compile Include="Internal\AttributeExtend.cs" />
-    <Compile Include="ParameterAttributes\ParameterableAttribute.cs" />
+    <Compile Include="Internal\ParameterableAttribute.cs" />
     <Compile Include="Internal\TaskCompletionSource.cs" />
     <Compile Include="Internal\TaskExtend.cs" />
     <Compile Include="Internal\DefaultJsonFormatter.cs" />

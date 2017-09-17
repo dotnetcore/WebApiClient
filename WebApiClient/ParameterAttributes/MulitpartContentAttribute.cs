@@ -29,15 +29,11 @@ namespace WebApiClient.Attributes
 
             var q = from kv in base.FormatParameter(parameter)
                     let value = kv.Value == null ? string.Empty : HttpUtility.UrlEncode(kv.Value, encoding)
-                    select new
-                    {
-                        name = kv.Key,
-                        content = new StringContent(value)
-                    };
+                    select new MulitpartTextContent(value, kv.Key);
 
             foreach (var item in q)
             {
-                httpContent.Add(item.content, item.name);
+                httpContent.Add(item);
             }
             return httpContent;
         }
@@ -47,12 +43,12 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        private StMultipartFormDataContent GetHttpContentFromContext(ApiActionContext context)
+        private MultipartContent GetHttpContentFromContext(ApiActionContext context)
         {
-            var httpContent = context.RequestMessage.Content as StMultipartFormDataContent;
+            var httpContent = context.RequestMessage.Content as MultipartContent;
             if (httpContent == null)
             {
-                httpContent = new StMultipartFormDataContent();
+                httpContent = new MultipartFormDataContent();
             }
             return httpContent;
         }

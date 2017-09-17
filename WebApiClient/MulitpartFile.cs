@@ -96,27 +96,26 @@ namespace WebApiClient
                 return;
             }
 
-            var multipartForm = this.GetHttpContentFromContext(context);
-            var content = this.ConvertToStreamContent();
-            multipartForm.Add(content, parameter.Name, this.FileName);
-            context.RequestMessage.Content = multipartForm;
+            var httpContent = this.GetHttpContentFromContext(context);
+            var fileContent = new MulitpartFileContent(this.GetStream(), parameter.Name, this.FileName, this.ContentType);
+            httpContent.Add(fileContent);
+            context.RequestMessage.Content = httpContent;
             await TaskExtend.CompletedTask;
         }
 
         /// <summary>
-        /// 转换为StreamContent
+        /// 获取文件流
         /// </summary>
         /// <returns></returns>
-        private StreamContent ConvertToStreamContent()
+        private Stream GetStream()
         {
             if (this.stream != null)
             {
-                return new StreamContent(this.stream);
+                return this.stream;
             }
             else
             {
-                var fileStream = new FileStream(this.filePath, FileMode.Open, FileAccess.Read);
-                return new StreamContent(fileStream);
+                return new FileStream(this.filePath, FileMode.Open, FileAccess.Read);
             }
         }
 
@@ -125,12 +124,12 @@ namespace WebApiClient
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        private StMultipartFormDataContent GetHttpContentFromContext(ApiActionContext context)
+        private MultipartContent GetHttpContentFromContext(ApiActionContext context)
         {
-            var httpContent = context.RequestMessage.Content as StMultipartFormDataContent;
+            var httpContent = context.RequestMessage.Content as MultipartContent;
             if (httpContent == null)
             {
-                httpContent = new StMultipartFormDataContent();
+                httpContent = new MultipartFormDataContent();
             }
             return httpContent;
         }
