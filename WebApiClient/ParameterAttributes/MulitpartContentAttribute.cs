@@ -28,32 +28,17 @@ namespace WebApiClient.Attributes
         protected override HttpContent GetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var encoding = Encoding.UTF8;
-            var httpContent = this.GetHttpContentFromContext(context);
+            var httpContent = context.RequestMessage.Content.CastMultipartContent();
 
             var q = from kv in base.FormatParameter(parameter)
                     let value = HttpUtility.UrlEncode(kv.Value, encoding)
-                    select new MulitpartTextContent(value, kv.Key);
+                    select new MulitpartTextContent(kv.Key, value);
 
             foreach (var item in q)
             {
                 httpContent.Add(item);
             }
             return httpContent;
-        }
-
-        /// <summary>
-        /// 从上下文获取已有MultipartFormDataContent
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <returns></returns>
-        private MultipartContent GetHttpContentFromContext(ApiActionContext context)
-        {
-            var httpContent = context.RequestMessage.Content as MultipartContent;
-            if (httpContent == null)
-            {
-                httpContent = new MultipartFormDataContent();
-            }
-            return httpContent;
-        }
+        }         
     }
 }

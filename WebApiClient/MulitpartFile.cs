@@ -96,7 +96,7 @@ namespace WebApiClient
                 return;
             }
 
-            var httpContent = this.GetHttpContentFromContext(context);
+            var httpContent = context.RequestMessage.Content.CastMultipartContent();
             var fileContent = new MulitpartFileContent(this.GetStream(), parameter.Name, this.FileName, this.ContentType);
             httpContent.Add(fileContent);
             context.RequestMessage.Content = httpContent;
@@ -117,23 +117,7 @@ namespace WebApiClient
             {
                 return new FileStream(this.filePath, FileMode.Open, FileAccess.Read);
             }
-        }
-
-        /// <summary>
-        /// 从上下文获取已有MultipartFormDataContent
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <returns></returns>
-        private MultipartContent GetHttpContentFromContext(ApiActionContext context)
-        {
-            var httpContent = context.RequestMessage.Content as MultipartContent;
-            if (httpContent == null)
-            {
-                httpContent = new MultipartFormDataContent();
-            }
-            return httpContent;
-        }
-
+        }      
         /// <summary>
         /// 转换为字符串
         /// </summary>
