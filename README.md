@@ -48,11 +48,11 @@ static async Task TestAsync()
 * 请求Body：[HttpContent]、[JsonContent]、[XmlContent]、[FormContent]、[MulitpartConten]
 * 自定义IApiParameterAttribute特性
 
-### 特殊参数类型</br>
-* MulitpartFile类(表单文件)</br>
-* Url类(请求地址)</br>
-* Proxy类 (请求代理)</br>
-* 自定义IApiParameterable类 </br>
+### 特殊参数类型
+* MulitpartFile类(表单文件)
+* Url类(请求地址)
+* Proxy类 (请求代理)
+* 自定义IApiParameterable类
 
 ## 配置与扩展
 ### 配置
@@ -62,10 +62,8 @@ static async Task TestAsync()
 
 ### 扩展
 * 派生IApiActionAttribute，实现Api请求前的逻辑处理
-* 派生IApiActionFilterAttribute，实现Api请求前或请求后的逻辑处理
 * 派生IApiParameterAttribute或IApiParameterable，实现Api参数的逻辑处理
+* 派生IApiActionFilterAttribute，实现Api请求前或请求后的逻辑处理
 * 派生IApiReturnAttribute，实现更多的回复内容处理的功能
 
-### 执行顺序
-IApiActionAttribute > IApiParameterAttribute、IApiParameterable > IApiActionFilterAttribute > IApiReturnAttribute
 
