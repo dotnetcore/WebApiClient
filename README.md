@@ -66,29 +66,29 @@ static async Task TestAsync()
 
 ### 功能 
 * 方法或接口级特性
-绝对主机域名：[HttpHost]
-请求方式与路径：[HttpGet]、[HttpPost]、[HttpDelete]、[HttpPut]、[HttpHead]和[HttpOptions]
-代理：[Proxy]
-请求头：[Header]
-返回值：[AutoReturn]、[JsonReturn]、[XmlReturn]
-自定义IApiActionAttribute特性或IApiReturnAttribute特性
+绝对主机域名：[HttpHost]</br>
+请求方式与路径：[HttpGet]、[HttpPost]、[HttpDelete]、[HttpPut]、[HttpHead]和[HttpOptions]</br>
+代理：[Proxy]</br>
+请求头：[Header]</br>
+返回值：[AutoReturn]、[JsonReturn]、[XmlReturn]</br>
+自定义IApiActionAttribute特性或IApiReturnAttribute特性</br>
 
 * 参数级特性
-路径或query：[PathQuery]、[Url]
-请求头：[Header]
-请求Body：[HttpContent]、[JsonContent]、[XmlContent]、[FormContent]、[MulitpartConten]
-自定义IApiParameterAttribute特性
+路径或query：[PathQuery]、[Url]</br>
+请求头：[Header]</br>
+请求Body：[HttpContent]、[JsonContent]、[XmlContent]、[FormContent]、[MulitpartConten]</br>
+自定义IApiParameterAttribute特性</br>
 
-*特殊参数类型
-MulitpartFile类(表单文件)
-Url类(请求地址)
-Proxy类 (请求代理)
-自定义IApiParameterable类 
+* 特殊参数类型
+MulitpartFile类(表单文件)</br>
+Url类(请求地址)</br>
+Proxy类 (请求代理)</br>
+自定义IApiParameterable类 </br>
 
 ### 配置
-*HttpApiClient.Config.UseXmlFormatter(your formatter)
-*HttpApiClient.Config.UseJsonFormatter(your formatter)
-*HttpApiClient.Config.UseHttpClientContextProvider(your provider)
+* HttpApiClient.Config.UseXmlFormatter(your formatter)
+* HttpApiClient.Config.UseJsonFormatter(your formatter)
+* HttpApiClient.Config.UseHttpClientContextProvider(your provider)
 
 ### 扩展
 * 派生IApiActionAttribute，实现Api请求前的逻辑处理
