@@ -74,7 +74,7 @@ namespace WebApiClient
                     UseCookies = false,
 
                     // 默认开户Gzip请求
-                   // AutomaticDecompression = DecompressionMethods.GZip,
+                    AutomaticDecompression = DecompressionMethods.GZip,
                 };
 
                 this.HttpClient = new HttpClient(this.HttpClientHandler, false);
