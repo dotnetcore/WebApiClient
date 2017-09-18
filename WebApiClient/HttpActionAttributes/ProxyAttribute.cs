@@ -9,8 +9,9 @@ using WebApiClient.Contexts;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 表示http代理特性
+    /// 表示http全局代理特性
     /// </summary>
+    [AttributeUsage(AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
     public class ProxyAttribute : ApiActionAttribute
     {
         /// <summary>

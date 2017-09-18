@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HttpPlug.cs" />
     <Compile Include="UserController.cs" />
     <Compile Include="UserInfo.cs" />
     <Compile Include="Logger.cs" />

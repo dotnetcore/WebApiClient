@@ -20,6 +20,7 @@ namespace Demo
             var about = new StringBuilder()
                 .Append("Cookie:").AppendLine(Request.Headers.TryGet<string>("Cookie"))
                 .Append("Authorization:").AppendLine(Request.Headers.TryGet<string>("Authorization"))
+                .Append("Connection:").AppendLine(Request.Headers.TryGet<string>("Connection"))
                 .Append("UserInfo:").AppendLine(user.ToString())
                 .Append("Something:").Append(something)
                 .ToString();

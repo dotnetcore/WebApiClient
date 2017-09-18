@@ -22,12 +22,11 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// 值 
         /// </summary>
-        private readonly string value;     
+        private readonly string value;
 
 
         /// <summary>
-        /// 将参数值设置到Header
-        /// 参数值为null则删除此Header项
+        /// 将参数值设置到Header        
         /// </summary>
         /// <param name="name">header名称</param>
         public HeaderAttribute(HttpRequestHeader name)
@@ -37,8 +36,7 @@ namespace WebApiClient.Attributes
 
 
         /// <summary>
-        /// 将参数值设置到Header
-        /// 参数值为null则删除此Header项
+        /// 将参数值设置到Header      
         /// </summary>
         /// <param name="name">header名称</param>
         /// <exception cref="ArgumentNullException"></exception>
@@ -49,8 +47,7 @@ namespace WebApiClient.Attributes
 
 
         /// <summary>
-        /// 将指定值设置到Header
-        /// value为null则删除此Header项
+        /// 将指定值设置到Header       
         /// </summary>
         /// <param name="name">header名称</param>
         /// <param name="value">header值</param>
@@ -60,8 +57,7 @@ namespace WebApiClient.Attributes
         }
 
         /// <summary>
-        /// 将指定值设置到Header
-        /// value为null则删除此Header项
+        /// 将指定值设置到Header      
         /// </summary>
         /// <param name="name">header名称</param>
         /// <param name="value">header值</param>
@@ -83,12 +79,7 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         public override Task BeforeRequestAsync(ApiActionContext context)
         {
-            var header = context.RequestMessage.Headers;
-            header.Remove(this.name);
-            if (this.value != null)
-            {
-                header.TryAddWithoutValidation(this.name, this.value);
-            }
+            this.SetHeaderValue(context, this.value);
             return TaskExtend.CompletedTask;
         }
 
@@ -101,13 +92,24 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
+            var headerValue = parameter.Value == null ? null : parameter.Value.ToString();
+            this.SetHeaderValue(context, headerValue);
+            return TaskExtend.CompletedTask;
+        }
+
+        /// <summary>
+        /// 设置请求头
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="headerValue"></param>
+        private void SetHeaderValue(ApiActionContext context, string headerValue)
+        {
             var header = context.RequestMessage.Headers;
             header.Remove(this.name);
-            if (parameter.Value != null)
+            if (headerValue != null)
             {
-                header.TryAddWithoutValidation(this.name, parameter.Value.ToString());
+                header.TryAddWithoutValidation(this.name, headerValue);
             }
-            return TaskExtend.CompletedTask;
         }
 
         /// <summary>

@@ -27,6 +27,7 @@ namespace Demo
         static void InitHttpServer()
         {
             httpServer.Use<HttpMiddleware>();
+            httpServer.UsePlug<HttpPlug>();
             httpServer.Start(9999);
         }
 

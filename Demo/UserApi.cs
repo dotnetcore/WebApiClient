@@ -10,7 +10,7 @@ using WebApiClient.Attributes;
 namespace Demo
 {
     [Logger] // 记录请求日志
-    [HttpHost("http://localhost:9999")] // 可以在Implement传Url覆盖
+    [HttpHost("http://localhost:9999")] // 可以在Implement传Url覆盖     
     public interface UserApi
     {
         // GET {url}?account={account}&password={password}&something={something}&

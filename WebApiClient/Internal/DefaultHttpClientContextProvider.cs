@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,8 +14,13 @@ namespace WebApiClient
     /// <summary>
     /// HttpClientContext提供者
     /// </summary>
-    class DefaultHttpClientContextProvider : IHttpClientContextProvider
+    class DefaultHttpClientContextProvider : IHttpClientContextProvider, IDisposable
     {
+        /// <summary>
+        /// 获取HttpClient处理者
+        /// </summary>
+        private readonly HttpClientContext httpClientContext = new HttpClientContext();
+
         /// <summary>
         /// 在请求前将创建IHttpClientContext
         /// </summary>
@@ -21,7 +28,7 @@ namespace WebApiClient
         /// <returns></returns>
         public IHttpClientContext CreateHttpClientContext(ApiActionContext context)
         {
-            return new HttpClientContext();
+            return this.httpClientContext;
         }
 
         /// <summary>
@@ -31,13 +38,20 @@ namespace WebApiClient
         /// <param name="context">HttpClient上下文</param>
         public void DisponseHttpClientContext(IHttpClientContext context)
         {
-            context.HttpClient.Dispose();
+        }
+
+        /// <summary>
+        /// 释放
+        /// </summary>
+        public void Dispose()
+        {
+            this.httpClientContext.Dispose();
         }
 
         /// <summary>
         /// 表示HttpClient上下文
         /// </summary>
-        class HttpClientContext : IHttpClientContext
+        class HttpClientContext : IHttpClientContext, IDisposable
         {
             /// <summary>
             /// 获取HttpClient实例
@@ -58,8 +72,22 @@ namespace WebApiClient
                 {
                     // 使用HttpClientHandler的Cookie提交
                     UseCookies = false,
+
+                    // 默认开户Gzip请求
+                    AutomaticDecompression = DecompressionMethods.GZip,
                 };
-                this.HttpClient = new HttpClient(this.HttpClientHandler, true);
+
+                this.HttpClient = new HttpClient(this.HttpClientHandler, false);
+                this.HttpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
+            }
+
+            /// <summary>
+            /// 释放
+            /// </summary>
+            public void Dispose()
+            {
+                this.HttpClient.Dispose();
+                this.HttpClientHandler.Dispose();
             }
         }
     }
