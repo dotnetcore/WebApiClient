@@ -45,13 +45,12 @@ static async Task TestAsync()
 ### 参数级特性
 * 路径或query：[PathQuery]、[Url]
 * 请求头：[Header]
-* 请求Body：[HttpContent]、[JsonContent]、[XmlContent]、[FormContent]、[MulitpartConten]
+* 请求Body：[HttpContent]、[JsonContent]、[XmlContent]、[FormContent]、[MulitpartContent]
 * 自定义IApiParameterAttribute特性
 
 ### 特殊参数类型
 * MulitpartFile类(表单文件)
 * Url类(请求地址)
-* Proxy类 (请求代理)
 * 自定义IApiParameterable类
 
 ## 配置与扩展
