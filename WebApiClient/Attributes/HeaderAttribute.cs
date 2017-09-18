@@ -104,12 +104,91 @@ namespace WebApiClient.Attributes
         /// <param name="headerValue"></param>
         private void SetHeaderValue(ApiActionContext context, string headerValue)
         {
-            var header = context.RequestMessage.Headers;
-            header.Remove(this.name);
-            if (headerValue != null)
+            if (string.Equals(this.name, "Cookie", StringComparison.OrdinalIgnoreCase))
             {
-                header.TryAddWithoutValidation(this.name, headerValue);
+                this.SetCookie(context, headerValue);
             }
+            else
+            {
+                var header = context.RequestMessage.Headers;
+                header.Remove(this.name);
+                if (headerValue != null)
+                {
+                    header.TryAddWithoutValidation(this.name, headerValue);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 设置Cookie值
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <param name="cookieValues">cookie值</param>
+        private void SetCookie(ApiActionContext context, string cookieValues)
+        {
+            var useContainer = context.HttpClientContext.HttpClientHandler.UseCookies;
+            if (useContainer == true)
+            {
+                this.SetCookieToContainer(context, cookieValues);
+            }
+            else
+            {
+                this.SetCookieToHeader(context, cookieValues);
+            }
+        }
+
+        /// <summary>
+        /// 设置Cookie值到请求头
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <param name="cookieValues">cookie值</param>
+        private void SetCookieToHeader(ApiActionContext context, string cookieValues)
+        {
+            var cookieItems = this
+                .GetCookies(cookieValues)
+                .Select(item => string.Format("{0}={1}", item.Name, item.Value));
+
+            var encodeCookies = string.Join("; ", cookieItems).Trim();
+            var header = context.RequestMessage.Headers;
+
+            const string cookieName = "Cookie";
+            header.Remove(cookieName);
+            header.TryAddWithoutValidation(cookieName, encodeCookies);
+        }
+
+        /// <summary>
+        /// 设置Cookie值到容器
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <param name="cookieValues">cookie值</param>
+        private void SetCookieToContainer(ApiActionContext context, string cookieValues)
+        {
+            var baseUrl = context.RequestMessage.RequestUri;
+            var container = context.HttpClientContext.HttpClientHandler.CookieContainer;
+            foreach (var cookie in this.GetCookies(cookieValues))
+            {
+                container.Add(baseUrl, cookie);
+            }
+        }
+
+        /// <summary>
+        /// 获取Cookie项
+        /// </summary>
+        /// <param name="cookieValues"></param>
+        /// <returns></returns>
+        private IEnumerable<Cookie> GetCookies(string cookieValues)
+        {
+            if (cookieValues == null)
+            {
+                return Enumerable.Empty<Cookie>();
+            }
+
+            return from item in cookieValues.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                   let kv = item.Split('=')
+                   let name = kv.FirstOrDefault().Trim()
+                   let value = kv.Length > 1 ? kv.LastOrDefault() : string.Empty
+                   let encode = HttpUtility.UrlEncode(value, Encoding.UTF8)
+                   select new Cookie(name, encode);
         }
 
         /// <summary>

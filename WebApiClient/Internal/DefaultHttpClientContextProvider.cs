@@ -70,9 +70,6 @@ namespace WebApiClient
             {
                 this.HttpClientHandler = new HttpClientHandler
                 {
-                    // 使用HttpClientHandler的Cookie提交
-                    UseCookies = false,
-
                     // 默认开户Gzip请求
                     AutomaticDecompression = DecompressionMethods.GZip,
                 };
