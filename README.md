@@ -64,13 +64,31 @@ static async Task TestAsync()
 }
 ```
 
-### 更多玩法
-下载源代码，运行demo，发现更多的秘密
+### 功能 
+* 方法或接口级特性
+绝对主机域名：[HttpHost]
+请求方式与路径：[HttpGet]、[HttpPost]、[HttpDelete]、[HttpPut]、[HttpHead]和[HttpOptions]
+代理：[Proxy]
+请求头：[Header]
+返回值：[AutoReturn]、[JsonReturn]、[XmlReturn]
+自定义IApiActionAttribute特性或IApiReturnAttribute特性
 
-### 说明
-* HttpContent类型的参数值，直接作为请求的内容体，如StringContent、FormUrlEncodedContent等
-* IApiParameterable或其集合类型的参数值，不需要添加特性修饰，如MulitpartFile、Url和Proxy类
-* 无任何特性修饰的且不属于以上两种类型的参数值，将自动关联[PathQueryAttribute]
+* 参数级特性
+路径或query：[PathQuery]、[Url]
+请求头：[Header]
+请求Body：[HttpContent]、[JsonContent]、[XmlContent]、[FormContent]、[MulitpartConten]
+自定义IApiParameterAttribute特性
+
+*特殊参数类型
+MulitpartFile类(表单文件)
+Url类(请求地址)
+Proxy类 (请求代理)
+自定义IApiParameterable类 
+
+### 配置
+*HttpApiClient.Config.UseXmlFormatter(your formatter)
+*HttpApiClient.Config.UseJsonFormatter(your formatter)
+*HttpApiClient.Config.UseHttpClientContextProvider(your provider)
 
 ### 扩展
 * 派生IApiActionAttribute，实现Api请求前的逻辑处理
@@ -80,3 +98,6 @@ static async Task TestAsync()
 
 ### 执行顺序
 IApiActionAttribute > IApiParameterAttribute、IApiParameterable > IApiActionFilterAttribute > IApiReturnAttribute
+
+### 更多玩法
+下载源代码，运行demo，发现更多的秘密
