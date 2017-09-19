@@ -5,8 +5,8 @@
 ### Api声明
 ```
 [Logger] // 记录请求日志
-[HttpHost("http://www.mywebapi.com")] // 可以在Implement传Url覆盖
-public interface MyWebApi
+[HttpHost("http://www.mywebapi.com")] // 可以在Config设置
+public interface MyWebApi : IDisposable
 {
     // GET webapi/user?account=laojiu
     // Return 原始string内容
@@ -22,11 +22,10 @@ public interface MyWebApi
 ```
  
 ### Api调用
- ```
+```
 static async Task TestAsync()
 {
-    var webApiClient = new HttpApiClient();
-    var myWebApi = webApiClient.Implement<MyWebApi>();
+    var myWebApi = HttpApiClient.Create<UserApi>();
     var user = new UserInfo { Account = "laojiu", Password = "123456" }; 
     var user1 = await myWebApi.GetUserByAccountAsync("laojiu");
     var user2 = await myWebApi.UpdateUserWithFormAsync(user);
@@ -50,19 +49,23 @@ static async Task TestAsync()
 
 ### 特殊参数类型
 * MulitpartFile类(表单文件)
-* Url类(请求地址)
 * 自定义IApiParameterable类
 
 ## 配置与扩展
 ### 配置
-* HttpApiClient.Config.UseXmlFormatter(your formatter)
-* HttpApiClient.Config.UseJsonFormatter(your formatter)
-* HttpApiClient.Config.UseHttpClientContextProvider(your provider)
+```
+var config = new HttpApiConfig
+{
+    HttpHost = ...                
+    JsonFormatter = ...
+    XmlFormatter = ...
+    ...
+};
+var yourApi = HttpApiClient.Create<YourApi>(config);
+```
 
 ### 扩展
 * 派生IApiActionAttribute，实现Api请求前的逻辑处理
 * 派生IApiParameterAttribute或IApiParameterable，实现Api参数的逻辑处理
 * 派生IApiActionFilterAttribute，实现Api请求前或请求后的逻辑处理
 * 派生IApiReturnAttribute，实现更多的回复内容处理的功能
-
-
