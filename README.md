@@ -33,17 +33,24 @@ static async Task TestAsync()
 ```
 
 ## 功能列表 
-### 方法或接口级特性
+### 接口级特性
 * 绝对主机域名：[HttpHost]
-* 请求方式与路径：[HttpGet]、[HttpPost]、[HttpDelete]、[HttpPut]、[HttpHead]和[HttpOptions]
-* 代理：[Proxy]
 * 请求头：[Header]
 * 返回值：[AutoReturn]、[JsonReturn]、[XmlReturn]
+* 代理：[Proxy]
+* 自定义IApiActionAttribute特性或IApiReturnAttribute特性
+
+### 方法级特性
+* 绝对主机域名：[HttpHost]
+* 请求头：[Header]
+* 返回值：[AutoReturn]、[JsonReturn]、[XmlReturn]
+* 请求方式+路径：[HttpGet]、[HttpPost]、[HttpDelete]、[HttpPut]、[HttpHead]和[HttpOptions]
 * 自定义IApiActionAttribute特性或IApiReturnAttribute特性
 
 ### 参数级特性
-* 路径或query：[PathQuery]、[Url]
 * 请求头：[Header]
+* Path/Query：[PathQuery]
+* 请求URL：[Url]
 * 请求Body：[HttpContent]、[JsonContent]、[XmlContent]、[FormContent]、[MulitpartContent]
 * 自定义IApiParameterAttribute特性
 
