@@ -17,106 +17,77 @@ namespace WebApiClient
     /// 表示HttpApi客户端
     /// 提供获取Http接口的实例
     /// </summary>
-    public class HttpApiClient : IInterceptor
+    public static class HttpApiClient
     {
+        /// <summary>
+        /// void类型
+        /// </summary>
+        private static readonly Type voidType = typeof(void);
+
         /// <summary>
         /// 代理生成器
         /// </summary>
         private static readonly ProxyGenerator generator = new ProxyGenerator();
 
         /// <summary>
-        /// 获取配置项
+        /// dispose方法
         /// </summary>
-        public HttpApiClientConfig Config { get; private set; }
+        private static readonly MethodInfo disposeMethod = typeof(IDisposable).GetMethods().FirstOrDefault();
 
         /// <summary>
-        /// HttpApi客户端
-        /// </summary>
-        public HttpApiClient()
-        {
-            this.Config = new HttpApiClientConfig();
-        }
-
-        /// <summary>
-        /// 获取请求接口的实现对象
-        /// </summary>
-        /// <typeparam name="TApiInterface">请求接口</typeparam>
-        /// <exception cref="ArgumentException"></exception>
-        /// <returns></returns>
-        public TApiInterface Implement<TApiInterface>() where TApiInterface : class
-        {
-            return HttpApiClient.GeneratoProxy<TApiInterface>(null, this);
-        }
-
-        /// <summary>
-        /// 获取请求接口的实现对象
-        /// </summary>
-        /// <typeparam name="TApiInterface">请求接口</typeparam>
-        /// <param name="host">服务完整主机域名,例如http://www.webapiclient.com</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="UriFormatException"></exception>
-        /// <returns></returns>
-        public TApiInterface Implement<TApiInterface>(string host) where TApiInterface : class
-        {
-            if (string.IsNullOrEmpty(host))
-            {
-                throw new ArgumentNullException();
-            }
-
-            if (typeof(TApiInterface).IsInterface == false)
-            {
-                throw new ArgumentException(typeof(TApiInterface).Name + "不是接口类型");
-            }
-
-            var url = new Uri(host, UriKind.Absolute);
-            return HttpApiClient.GeneratoProxy<TApiInterface>(url.ToString(), this);
-        }
-
-        /// <summary>
-        /// 获取请求接口的实现对象
+        /// 创建请求接口的实例
+        /// 关联新建的HttpApiConfig对象
         /// </summary>
         /// <typeparam name="TInterface">请求接口</typeparam>
-        /// <param name="host">服务跟路径</param>
-        /// <param name="interceptor">拦截器</param>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        private static TInterface GeneratoProxy<TInterface>(string host, IInterceptor interceptor) where TInterface : class
+        public static TInterface Create<TInterface>() where TInterface : class
         {
-            var option = new ProxyGenerationOptions();
-            if (string.IsNullOrEmpty(host) == false)
-            {
-                var ctor = typeof(HttpHostAttribute).GetConstructors().FirstOrDefault();
-                var hostAttribute = new CustomAttributeInfo(ctor, new object[] { host });
-                option.AdditionalAttributes.Add(hostAttribute);
-            }
-            return HttpApiClient.generator.CreateInterfaceProxyWithoutTarget<TInterface>(option, interceptor);
+            return Create<TInterface>(null);
         }
 
+        /// <summary>
+        /// 创建请求接口的实例
+        /// </summary>
+        /// <typeparam name="TInterface">请求接口</typeparam>
+        /// <param name="httpApiConfig">接口配置</param>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <returns></returns>
+        public static TInterface Create<TInterface>(HttpApiConfig httpApiConfig) where TInterface : class
+        {
+            CheckApiInterface<TInterface>();
+
+            if (httpApiConfig == null)
+            {
+                httpApiConfig = new HttpApiConfig();
+            }
+            var interceptor = new DefaultInterceptor(httpApiConfig);
+            return generator.CreateInterfaceProxyWithoutTarget<TInterface>(interceptor);
+        }
 
         /// <summary>
-        /// 方法拦截
+        /// 检测接口的正确性
         /// </summary>
-        /// <param name="invocation">拦截内容</param>
-        void IInterceptor.Intercept(IInvocation invocation)
+        /// <typeparam name="T"></typeparam>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        private static void CheckApiInterface<T>()
         {
-            var cache = DescriptorCache.GetApiActionDescriptor(invocation);
-            var actionDescripter = cache.Clone() as ApiActionDescriptor;
-
-            for (var i = 0; i < actionDescripter.Parameters.Length; i++)
+            var type = typeof(T);
+            if (type.IsInterface == false)
             {
-                actionDescripter.Parameters[i].Value = invocation.GetArgumentValue(i);
+                throw new ArgumentException(typeof(T).Name + "不是接口类型");
             }
 
-            var actionContext = new ApiActionContext
+            foreach (var m in type.GetMethods())
             {
-                ApiActionDescriptor = actionDescripter,
-                HttpApiClientConfig = this.Config,
-                HttpClientContext = null,
-                RequestMessage = new HttpRequestMessage(),
-                ResponseMessage = null
-            };
-
-            invocation.ReturnValue = actionDescripter.Execute(actionContext);
+                if (m.ReturnType == voidType && m.Equals(disposeMethod) == false)
+                {
+                    throw new NotSupportedException("不支持的void返回方法：" + m);
+                }
+            }
         }
     }
 }

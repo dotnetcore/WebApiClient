@@ -53,10 +53,15 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         public override Task BeforeRequestAsync(ApiActionContext context)
         {
+            var baseUrl = context.RequestMessage.RequestUri;
+            if (baseUrl == null)
+            {
+                throw new UriFormatException("请设置配置项的HttpHost或添加HttpHostAttribute");
+            }
+
             context.RequestMessage.Method = this.Method;
             if (string.IsNullOrEmpty(this.Path) == false)
             {
-                var baseUrl = context.RequestMessage.RequestUri;
                 context.RequestMessage.RequestUri = new Uri(baseUrl, this.Path);
             }
             return TaskExtend.CompletedTask;

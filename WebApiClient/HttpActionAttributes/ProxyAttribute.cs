@@ -71,9 +71,9 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         public override Task BeforeRequestAsync(ApiActionContext context)
         {
-            var hndler = context.HttpClientContext.HttpClientHandler;
-            hndler.UseProxy = true;
-            hndler.Proxy = this.CreateProxy();
+            var hanlder = context.HttpApiConfig.HttpClientHandler;
+            hanlder.UseProxy = true;
+            hanlder.Proxy = this.CreateProxy();
             return TaskExtend.CompletedTask;
         }
 

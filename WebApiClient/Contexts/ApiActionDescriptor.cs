@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using WebApiClient.Attributes;
 
@@ -55,22 +56,6 @@ namespace WebApiClient.Contexts
         /// <returns></returns>
         private async Task<object> ExecuteAsync(ApiActionContext context)
         {
-            var provider = context.HttpApiClientConfig.HttpClientContextProvider;
-            context.HttpClientContext = provider.CreateHttpClientContext(context);
-
-            var apiResult = await this.ExecuteInternalAsync(context);
-
-            provider.DisponseHttpClientContext(context.HttpClientContext);
-            return apiResult;
-        }
-
-        /// <summary>
-        /// 异步执行api
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <returns></returns>
-        private async Task<object> ExecuteInternalAsync(ApiActionContext context)
-        {
             var apiAction = context.ApiActionDescriptor;
 
             foreach (var actionAttribute in apiAction.Attributes)
@@ -91,9 +76,7 @@ namespace WebApiClient.Contexts
                 await filter.OnBeginRequestAsync(context);
             }
 
-            // 执行Http请求，获取回复对象
-            var httpClient = context.HttpClientContext.HttpClient;
-            context.ResponseMessage = await httpClient.SendAsync(context.RequestMessage);
+            await this.SendAsync(context);
 
             foreach (var filter in apiAction.Filters)
             {
@@ -101,6 +84,17 @@ namespace WebApiClient.Contexts
             }
 
             return await apiAction.Return.Attribute.GetTaskResult(context);
+        }
+
+        /// <summary>
+        /// 执行发送请求
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <returns></returns>
+        private async Task SendAsync(ApiActionContext context)
+        {
+            var invoker = context.HttpApiConfig.HttpClient;
+            context.ResponseMessage = await invoker.SendAsync(context.RequestMessage);
         }
 
         /// <summary>

@@ -11,7 +11,7 @@ namespace Demo
 {
     [Logger] // 记录请求日志
     [HttpHost("http://localhost:9999")] // 可以在Implement传Url覆盖     
-    public interface UserApi
+    public interface UserApi : IDisposable
     {
         // GET {url}?account={account}&password={password}&something={something}&
         [HttpGet("/")]

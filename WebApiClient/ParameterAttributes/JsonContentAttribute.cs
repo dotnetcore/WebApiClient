@@ -62,7 +62,7 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         protected override HttpContent GetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var formater = context.HttpApiClientConfig.JsonFormatter;
+            var formater = context.HttpApiConfig.JsonFormatter;
             var content = base.FormatParameter(parameter, formater, this.encoding);
             return new StringContent(content, this.encoding, "application/json");
         }

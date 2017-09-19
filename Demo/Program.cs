@@ -33,8 +33,7 @@ namespace Demo
 
         static async void RunApisAsync()
         {
-            var webApiClient = new HttpApiClient();
-            var myWebApi = webApiClient.Implement<UserApi>();
+            var myWebApi = HttpApiClient.Create<UserApi>();
 
             var user = new UserInfo { Account = "laojiu", Password = "123456" };
             var file = new MulitpartFile("head.jpg");
@@ -68,6 +67,7 @@ namespace Demo
             var user6 = await myWebApi.UpdateWithMulitpartAsync(user, file);
             Console.WriteLine(user6);
 
+            myWebApi.Dispose();
         }
     }
 }

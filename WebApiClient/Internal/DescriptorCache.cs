@@ -56,18 +56,15 @@ namespace WebApiClient
                 throw new NotSupportedException(message);
             }
 
-            var filterAttributes = method
-                .FindDeclaringAttributes<IApiActionFilterAttribute>(true)
-                .Distinct(new AttributeComparer<IApiActionFilterAttribute>())
+            var actionAttributes = method
+                .FindDeclaringAttributes<IApiActionAttribute>(true)
+                .Distinct(new AttributeComparer<IApiActionAttribute>())
                 .OrderBy(item => item.OrderIndex)
                 .ToArray();
 
-            var presetActionAttributes = GetPresetActionAttributes(invocation);
-            var declaringtActionAttributes = method.FindDeclaringAttributes<IApiActionAttribute>(true);
-
-            var actionAttributes = presetActionAttributes
-                .Concat(declaringtActionAttributes)
-                .Distinct(new AttributeComparer<IApiActionAttribute>())
+            var filterAttributes = method
+                .FindDeclaringAttributes<IApiActionFilterAttribute>(true)
+                .Distinct(new AttributeComparer<IApiActionFilterAttribute>())
                 .OrderBy(item => item.OrderIndex)
                 .ToArray();
 
@@ -79,27 +76,6 @@ namespace WebApiClient
                 Attributes = actionAttributes,
                 Parameters = method.GetParameters().Select((p, i) => GetParameterDescriptor(p, i)).ToArray()
             };
-        }
-
-        /// <summary>
-        /// 从拦截上下文获取预设的特性
-        /// </summary>
-        /// <param name="invocation"></param>
-        /// <returns></returns>
-        private static IEnumerable<ApiActionAttribute> GetPresetActionAttributes(IInvocation invocation)
-        {
-            var hostAttribute = invocation.Proxy.GetType().GetCustomAttribute<HttpHostAttribute>();
-            if (hostAttribute == null)
-            {
-                hostAttribute = invocation.Method.FindDeclaringAttribute<HttpHostAttribute>(false);
-            }
-
-            if (hostAttribute == null)
-            {
-                throw new HttpRequestException("未指定任何HttpHostAttribute");
-            }
-
-            yield return hostAttribute;
         }
 
         /// <summary>

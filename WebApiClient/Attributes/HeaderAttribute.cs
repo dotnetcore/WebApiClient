@@ -126,7 +126,7 @@ namespace WebApiClient.Attributes
         /// <param name="cookieValues">cookie值</param>
         private void SetCookie(ApiActionContext context, string cookieValues)
         {
-            var useContainer = context.HttpClientContext.HttpClientHandler.UseCookies;
+            var useContainer = context.HttpApiConfig.HttpClientHandler.UseCookies;
             if (useContainer == true)
             {
                 this.SetCookieToContainer(context, cookieValues);
@@ -164,7 +164,7 @@ namespace WebApiClient.Attributes
         private void SetCookieToContainer(ApiActionContext context, string cookieValues)
         {
             var baseUrl = context.RequestMessage.RequestUri;
-            var container = context.HttpClientContext.HttpClientHandler.CookieContainer;
+            var container = context.HttpApiConfig.HttpClientHandler.CookieContainer;
             foreach (var cookie in this.GetCookies(cookieValues))
             {
                 container.Add(baseUrl, cookie);

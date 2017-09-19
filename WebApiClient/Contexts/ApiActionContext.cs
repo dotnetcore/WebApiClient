@@ -15,19 +15,14 @@ namespace WebApiClient.Contexts
     public class ApiActionContext
     {
         /// <summary>
-        /// 获取关联的HttpApiClientConfig
+        /// 获取关联的HttpApiConfig
         /// </summary>
-        public HttpApiClientConfig HttpApiClientConfig { get; internal set; }
+        public HttpApiConfig HttpApiConfig { get; internal set; }
 
         /// <summary>
         /// 获取关联的ApiActionDescriptor
         /// </summary>
         public ApiActionDescriptor ApiActionDescriptor { get; internal set; }
-
-        /// <summary>
-        /// 获取关联的HttpClientContext
-        /// </summary>
-        public IHttpClientContext HttpClientContext { get; internal set; }
 
         /// <summary>
         /// 获取关联的HttpRequestMessage
