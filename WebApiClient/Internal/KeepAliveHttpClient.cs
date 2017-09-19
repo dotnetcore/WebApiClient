@@ -70,7 +70,12 @@ namespace WebApiClient
             protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
             {
                 request.Headers.Remove("Connection");
-                if (this.keepAlive == true)
+
+                if (this.keepAlive == false)
+                {
+                    request.Headers.Add("Connection", "close");
+                }
+                else
                 {
                     if (Interlocked.CompareExchange(ref this.sendTimes, 1, 0) == 0)
                     {
