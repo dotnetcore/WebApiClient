@@ -82,7 +82,6 @@ namespace WebApiClient
             public void Dispose()
             {
                 this.HttpClient.Dispose();
-                this.HttpClientHandler.Dispose();
             }
         }
     }
