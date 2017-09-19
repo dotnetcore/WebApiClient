@@ -10,8 +10,8 @@ using WebApiClient.Attributes;
 namespace Demo
 {
     [Logger] // 记录请求日志
-    [HttpHost("http://localhost:9999")] // 可以在Implement传Url覆盖     
-    public interface UserApi : IDisposable
+    [HttpHost("http://localhost:9999")] // HttpHost可以在Config传入    
+    public interface UserApi : IDisposable // 调用IDisposable可以Dispose实例的配置项
     {
         // GET {url}?account={account}&password={password}&something={something}&
         [HttpGet("/")]
