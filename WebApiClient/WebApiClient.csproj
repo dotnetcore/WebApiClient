@@ -104,7 +104,6 @@
     <Compile Include="Contexts\ApiActionContext.cs" />
     <Compile Include="HttpActionAttributes\HttpHostAttribute.cs" />
     <Compile Include="HttpApiClient.cs" />
-    <Compile Include="Url.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
