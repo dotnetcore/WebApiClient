@@ -57,6 +57,7 @@
     <Compile Include="IAttributeMultiplable.cs" />
     <Compile Include="IHttpClientContext.cs" />
     <Compile Include="Internal\HttpContentConvert.cs" />
+    <Compile Include="Internal\KeepAliveHttpClient.cs" />
     <Compile Include="Internal\MulitpartFileContent.cs" />
     <Compile Include="Internal\HttpUtility.cs" />
     <Compile Include="Internal\MulitpartTextContent.cs" />

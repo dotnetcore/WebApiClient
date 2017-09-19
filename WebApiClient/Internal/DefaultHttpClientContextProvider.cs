@@ -69,13 +69,11 @@ namespace WebApiClient
             /// </summary>
             public HttpClientContext()
             {
-                this.HttpClientHandler = new KeepAliveHandler(keepAlive: true)
-                {
-                    // 默认开户Gzip请求
-                    AutomaticDecompression = DecompressionMethods.GZip,
-                };
+                var httpClient = new KeepAliveHttpClient(keepAlive: true);
+                httpClient.MessageHandler.AutomaticDecompression = DecompressionMethods.GZip;
 
-                this.HttpClient = new HttpClient(this.HttpClientHandler, false);
+                this.HttpClient = httpClient;
+                this.HttpClientHandler = httpClient.MessageHandler;
             }
 
             /// <summary>
@@ -85,54 +83,6 @@ namespace WebApiClient
             {
                 this.HttpClient.Dispose();
                 this.HttpClientHandler.Dispose();
-            }
-        }
-
-        /// <summary>
-        /// 修复keep-alive问题的HttpClientHandler
-        /// </summary>
-        class KeepAliveHandler : HttpClientHandler
-        {
-            /// <summary>
-            /// 发送次数
-            /// </summary>
-            private int sendTimes = 0;
-
-            /// <summary>
-            /// 是否keepAlive
-            /// </summary>
-            private readonly bool keepAlive;
-
-            /// <summary>
-            /// keep-alive的HttpClientHandler
-            /// </summary>
-            /// <param name="keepAlive">keepAlive</param>
-            public KeepAliveHandler(bool keepAlive)
-            {
-                this.keepAlive = keepAlive;
-            }
-
-            /// <summary>
-            /// 发送请求
-            /// </summary>
-            /// <param name="request"></param>
-            /// <param name="cancellationToken"></param>
-            /// <returns></returns>
-            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
-            {
-                request.Headers.Remove("Connection");
-                if (this.keepAlive == true)
-                {
-                    if (Interlocked.CompareExchange(ref this.sendTimes, 1, 0) == 0)
-                    {
-                        request.Headers.Add("Connection", string.Empty);
-                    }
-                    else
-                    {
-                        request.Headers.Add("Connection", "keep-alive");
-                    }
-                }
-                return base.SendAsync(request, cancellationToken);
             }
         }
     }
