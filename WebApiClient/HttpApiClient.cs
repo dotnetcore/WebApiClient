@@ -42,7 +42,7 @@ namespace WebApiClient
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        public static TInterface Create<TInterface>() where TInterface : class
+        public static TInterface Create<TInterface>() where TInterface : class,IDisposable
         {
             return Create<TInterface>(null);
         }
