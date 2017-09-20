@@ -10,7 +10,7 @@ namespace WebApiClient
     /// <summary>
     /// 表示Http接口的配置项
     /// </summary>
-    public sealed class HttpApiConfig
+    public class HttpApiConfig
     {
         /// <summary>
         /// 获取或设置Http服务完整主机域名
@@ -18,6 +18,11 @@ namespace WebApiClient
         /// 设置了HttpHost值，HttpHostAttribute将失效  
         /// </summary>
         public Uri HttpHost { get; set; }
+
+        /// <summary>
+        /// 获取或设置自定义相关数据
+        /// </summary>
+        public object UserToken { get; set; }
 
         /// <summary>
         /// 获取或设置Xml格式化工具
@@ -48,10 +53,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 设置默认配置
+        /// 将null值的属性设置为默认
         /// </summary>
-        /// <returns></returns>
-        internal HttpApiConfig SetWithDefaultConfigs()
+        public virtual void SetNullAsDefault()
         {
             if (this.XmlFormatter == null)
             {
@@ -72,8 +76,6 @@ namespace WebApiClient
             {
                 this.HttpClient = new HttpClient(this.HttpClientHandler);
             }
-
-            return this;
         }
     }
 }

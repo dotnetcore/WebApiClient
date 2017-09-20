@@ -36,7 +36,9 @@ namespace WebApiClient
             {
                 throw new ArgumentNullException();
             }
-            this.httpApiConfig = apiConfig.SetWithDefaultConfigs();
+
+            apiConfig.SetNullAsDefault();
+            this.httpApiConfig = apiConfig;
         }
 
         /// <summary>

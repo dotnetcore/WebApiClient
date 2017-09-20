@@ -56,7 +56,6 @@
     <Compile Include="Attributes\HeaderAttribute.cs" />
     <Compile Include="HttpActionAttributes\ProxyAttribute.cs" />
     <Compile Include="IAttributeMultiplable.cs" />
-    <Compile Include="IHttpClientContext.cs" />
     <Compile Include="Internal\DefaultInterceptor.cs" />
     <Compile Include="Internal\HttpContentConvert.cs" />
     <Compile Include="Internal\DefaultHttpClientHandler.cs" />
