@@ -49,7 +49,10 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         public override Task BeforeRequestAsync(ApiActionContext context)
         {
-            context.RequestMessage.RequestUri = this.Host;
+            if (context.HttpApiConfig.HttpHost == null)
+            {
+                context.RequestMessage.RequestUri = this.Host;
+            }
             return TaskExtend.CompletedTask;
         }
 
