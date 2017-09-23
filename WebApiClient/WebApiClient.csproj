@@ -57,6 +57,7 @@
     <Compile Include="HttpActionAttributes\ProxyAttribute.cs" />
     <Compile Include="IAttributeMultiplable.cs" />
     <Compile Include="Internal\ApiInterceptor.cs" />
+    <Compile Include="Internal\MimeTable.cs" />
     <Compile Include="Internal\MultipartContentExtend.cs" />
     <Compile Include="Internal\DefaultHttpClientHandler.cs" />
     <Compile Include="Internal\MulitpartFileContent.cs" />
@@ -105,6 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <EmbeddedResource Include="Internal\mime.day" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

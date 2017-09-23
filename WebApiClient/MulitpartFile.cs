@@ -35,13 +35,6 @@ namespace WebApiClient
         /// </summary>
         public string ContentType { get; set; }
 
-        /// <summary>
-        /// multipart/form-data的一个文件项
-        /// </summary>
-        private MulitpartFile()
-        {
-            this.ContentType = "application/octet-stream";
-        }
 
         /// <summary>
         /// multipart/form-data的一个文件项
@@ -50,7 +43,6 @@ namespace WebApiClient
         /// <param name="fileName">文件友好名称</param>
         /// <exception cref="ArgumentNullException"></exception>
         public MulitpartFile(Stream stream, string fileName)
-            : this()
         {
             if (stream == null)
             {
@@ -58,6 +50,7 @@ namespace WebApiClient
             }
             this.stream = stream;
             this.FileName = fileName;
+            this.ContentType = MimeTable.GetContentType(fileName);
         }
 
         /// <summary>
@@ -67,7 +60,6 @@ namespace WebApiClient
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="FileNotFoundException"></exception>
         public MulitpartFile(string localFilePath)
-            : this()
         {
             if (string.IsNullOrEmpty(localFilePath))
             {
@@ -81,6 +73,7 @@ namespace WebApiClient
 
             this.filePath = localFilePath;
             this.FileName = Path.GetFileName(localFilePath);
+            this.ContentType = MimeTable.GetContentType(localFilePath);
         }
 
         /// <summary>
