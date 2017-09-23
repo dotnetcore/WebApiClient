@@ -74,7 +74,6 @@
     <Compile Include="Internal\DefaultXmlFormatter.cs" />
     <Compile Include="Internal\AttributeExtend.cs" />
     <Compile Include="Internal\ParameterableAttribute.cs" />
-    <Compile Include="Internal\TaskCompletionSource.cs" />
     <Compile Include="Internal\TaskExtend.cs" />
     <Compile Include="Internal\DefaultJsonFormatter.cs" />
     <Compile Include="MulitpartFile.cs" />
