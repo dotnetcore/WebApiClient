@@ -61,6 +61,7 @@ static async Task TestAsync()
 
 ### 特殊参数类型
 * MulitpartFile类(表单文件)
+* MulitpartText类(表单文本)
 * 自定义IApiParameterable类
 
 ## 配置与扩展
