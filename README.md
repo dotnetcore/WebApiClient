@@ -1,6 +1,3 @@
-# WebApiClient
-基于.Net45的HttpClient，只需定义http api的接口并打上特性[Attribute]，即可以异步调用http api的框架
-
 ## 如何使用
 ### Api声明
 ```
@@ -31,6 +28,14 @@ static async Task TestAsync()
     var user2 = await myWebApi.UpdateUserWithFormAsync(user);
 }
 ```
+
+## 支持与约束
+* 支持接口继承或多继承
+* 支持泛型接口、泛型方法
+* 支持非泛型接口、非泛型方法
+* 约束接口只能定义方法
+* 约束接口的参数不能为ref/out
+* 约束接口的返回类型必须是TaskOf(TResult)
 
 ## 功能列表 
 ### 接口级特性
@@ -72,7 +77,7 @@ var yourApi = HttpApiClient.Create<YourApi>(config);
 ```
 
 ### 扩展
-* 派生IApiActionAttribute，实现Api请求前的逻辑处理
+* 派生IApiActionAttribute或ApiActionAttribute，实现Api请求前的逻辑处理
 * 派生IApiParameterAttribute或IApiParameterable，实现Api参数的逻辑处理
-* 派生IApiActionFilterAttribute，实现Api请求前或请求后的逻辑处理
-* 派生IApiReturnAttribute，实现更多的回复内容处理的功能
+* 派生IApiActionFilterAttribute或ApiActionFilterAttribute，实现Api请求前或请求后的逻辑处理
+* 派生IApiReturnAttribute或ApiReturnAttribute，实现更多的回复内容处理的功能
