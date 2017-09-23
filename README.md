@@ -1,6 +1,3 @@
-# WebApiClient
-基于.Net45的HttpClient，只需定义http api的接口并打上特性[Attribute]，即可以异步调用http api的框架
-
 ## 如何使用
 ### Api声明
 ```
