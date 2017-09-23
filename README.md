@@ -38,7 +38,7 @@ static async Task TestAsync()
 * 支持非泛型接口、非泛型方法
 * 约束接口只能定义方法
 * 约束接口的参数不能为ref/out
-* 约束接口的返回类型必须是Task<TResult>
+* 约束接口的返回类型必须是TaskOf(TResult)
 
 ## 功能列表 
 ### 接口级特性
