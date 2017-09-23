@@ -18,14 +18,18 @@ namespace Demo
         public ActionResult About(UserInfo user, string something)
         {
             var about = new StringBuilder()
-                .Append("Cookie:").AppendLine(Request.Headers.TryGet<string>("Cookie"))
-                .Append("Authorization:").AppendLine(Request.Headers.TryGet<string>("Authorization"))
-                .Append("Connection:").AppendLine(Request.Headers.TryGet<string>("Connection"))
+                .AppendLine()
                 .Append("UserInfo:").AppendLine(user.ToString())
-                .Append("Something:").Append(something)
-                .ToString();
+                .Append("Something:").Append(something);
 
-            return Content(about);
+            var keys = Request.Headers.Keys;
+            foreach (var key in keys.Cast<string>().Reverse())
+            {
+                var value = Request.Headers.TryGet<string>(key, null);
+                about.Insert(0, key + ": " + value + "\r\n");
+            }
+
+            return Content(about.ToString());
         }
 
         [HttpGet]
