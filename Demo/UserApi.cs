@@ -33,7 +33,7 @@ namespace Demo
         // Body Account=laojiu&Password=123456
         // Return json或xml内容
         [HttpPost("/webapi/user/UpdateWithForm")]
-        Task<UserInfo> UpdateWithFormAsync([FormContent] UserInfo user);
+        Task<UserInfo> UpdateWithFormAsync([FormContent] UserInfo user, FormField nickName);
 
         // POST webapi/user/UpdateWithJson
         // Body {"Account":"laojiu","Password":"123456"}
@@ -52,6 +52,6 @@ namespace Demo
         // Body multipart/form-data
         // Return json或xml内容
         [HttpPost("/webapi/user/UpdateWithMulitpart")]
-        Task<UserInfo> UpdateWithMulitpartAsync([MulitpartContent] UserInfo user, params MulitpartFile[] files);
+        Task<UserInfo> UpdateWithMulitpartAsync([MulitpartContent] UserInfo user, MulitpartText age, params MulitpartFile[] files);
     }
 }
