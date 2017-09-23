@@ -64,6 +64,7 @@
     <Compile Include="Internal\HttpUtility.cs" />
     <Compile Include="Internal\MulitpartTextContent.cs" />
     <Compile Include="Internal\TypeExtend.cs" />
+    <Compile Include="MulitpartText.cs" />
     <Compile Include="ParameterAttributes\UrlAttribute.cs" />
     <Compile Include="FilterAttributes\ApiActionFilterAttribute.cs" />
     <Compile Include="HttpActionAttributes\HttpHeadAttribute.cs" />
