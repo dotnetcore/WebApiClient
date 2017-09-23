@@ -55,7 +55,7 @@ namespace WebApiClient
         /// <summary>
         /// 将null值的属性设置为默认
         /// </summary>
-        public virtual void SetNullAsDefault()
+        public virtual void SetNullPropertyAsDefault()
         {
             if (this.XmlFormatter == null)
             {

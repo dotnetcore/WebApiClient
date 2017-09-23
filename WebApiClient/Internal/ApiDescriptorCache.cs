@@ -15,9 +15,9 @@ using WebApiClient.Contexts;
 namespace WebApiClient
 {
     /// <summary>
-    /// 提供Descriptor缓存
+    /// 提供Api描述的缓存
     /// </summary>
-    static class DescriptorCache
+    static class ApiDescriptorCache
     {
         /// <summary>
         /// 缓存字典
@@ -27,7 +27,7 @@ namespace WebApiClient
         /// <summary>
         /// Castle相关上下文
         /// </summary>
-        static DescriptorCache()
+        static ApiDescriptorCache()
         {
             cache = new ConcurrentDictionary<IInvocation, ApiActionDescriptor>(new IInvocationComparer());
         }

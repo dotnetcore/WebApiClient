@@ -28,7 +28,7 @@ namespace WebApiClient.Attributes
         protected override HttpContent GetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var encoding = Encoding.UTF8;
-            var httpContent = context.RequestMessage.Content.CastMultipartContent();
+            var httpContent = context.RequestMessage.Content.CastOrCreateMultipartContent();
 
             var q = from kv in base.FormatParameter(parameter)
                     let value = HttpUtility.UrlEncode(kv.Value, encoding)

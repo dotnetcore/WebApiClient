@@ -63,7 +63,7 @@ namespace WebApiClient
             {
                 httpApiConfig = new HttpApiConfig();
             }
-            var interceptor = new DefaultInterceptor(httpApiConfig);
+            var interceptor = new ApiInterceptor(httpApiConfig);
             return generator.CreateInterfaceProxyWithoutTarget<TInterface>(interceptor);
         }
 

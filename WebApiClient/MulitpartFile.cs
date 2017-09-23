@@ -96,9 +96,8 @@ namespace WebApiClient
                 return;
             }
 
-            var httpContent = context.RequestMessage.Content.CastMultipartContent();
-            var fileContent = new MulitpartFileContent(this.GetStream(), parameter.Name, this.FileName, this.ContentType);
-            httpContent.Add(fileContent);
+            var httpContent = context.RequestMessage.Content.CastOrCreateMultipartContent();
+            httpContent.AddFile(this.GetStream(), parameter.Name, this.FileName, this.ContentType);
             context.RequestMessage.Content = httpContent;
             await TaskExtend.CompletedTask;
         }
@@ -117,7 +116,8 @@ namespace WebApiClient
             {
                 return new FileStream(this.filePath, FileMode.Open, FileAccess.Read);
             }
-        }      
+        }
+
         /// <summary>
         /// 转换为字符串
         /// </summary>

@@ -23,7 +23,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="type">类型</param>
         /// <returns></returns>
-        public static bool IsSimple(this  Type type)
+        public static bool IsSimple(this Type type)
         {
             if (type.IsGenericType == true && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
@@ -52,18 +52,6 @@ namespace WebApiClient
         {
             return typeof(TBase).IsAssignableFrom(type);
         }
-
-        /// <summary>
-        /// 是否可以从baseType类型派生
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="baseType"></param>
-        /// <returns></returns>
-        public static bool IsInheritFrom(this Type type, Type baseType)
-        {
-            return baseType.IsAssignableFrom(type);
-        }
-
 
         /// <summary>
         /// 关联的AttributeUsageAttribute是否AllowMultiple
