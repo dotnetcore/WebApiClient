@@ -80,7 +80,7 @@ var yourApi = HttpApiClient.Create<YourApi>(config);
 ```
 
 ### 扩展
-* 派生IApiActionAttribute，实现Api请求前的逻辑处理
+* 派生IApiActionAttribute或ApiActionAttribute，实现Api请求前的逻辑处理
 * 派生IApiParameterAttribute或IApiParameterable，实现Api参数的逻辑处理
-* 派生IApiActionFilterAttribute，实现Api请求前或请求后的逻辑处理
-* 派生IApiReturnAttribute，实现更多的回复内容处理的功能
+* 派生IApiActionFilterAttribute或ApiActionFilterAttribute，实现Api请求前或请求后的逻辑处理
+* 派生IApiReturnAttribute或ApiReturnAttribute，实现更多的回复内容处理的功能
