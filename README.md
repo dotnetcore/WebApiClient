@@ -60,6 +60,7 @@ static async Task TestAsync()
 * 自定义IApiParameterAttribute特性
 
 ### 特殊参数类型
+* FormField(表单字段)
 * MulitpartFile类(表单文件)
 * MulitpartText类(表单文本)
 * 自定义IApiParameterable类
