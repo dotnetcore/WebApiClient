@@ -42,17 +42,22 @@ namespace WebApiClient
 
             if (formBuffer == null || formBuffer.Length == 0)
             {
-                return new StringContent(newContent, encoding);
+                var bytesContent = encoding.GetBytes(newContent);
+                var byteArrayContent = new ByteArrayContent(bytesContent);
+                byteArrayContent.Headers.ContentType = new MediaTypeHeaderValue(mediaType);
+                return byteArrayContent;
             }
+            else
+            {
+                var nameValueBuffer = encoding.GetBytes("&" + newContent);
+                var bytesContent = new byte[formBuffer.Length + nameValueBuffer.Length];
+                formBuffer.CopyTo(bytesContent, 0);
+                nameValueBuffer.CopyTo(bytesContent, formBuffer.Length);
 
-            var nameValueBuffer = encoding.GetBytes("&" + newContent);
-            var bytesContent = new byte[formBuffer.Length + nameValueBuffer.Length];
-            formBuffer.CopyTo(bytesContent, 0);
-            nameValueBuffer.CopyTo(bytesContent, formBuffer.Length);
-
-            var byteArrayContent = new ByteArrayContent(bytesContent);
-            byteArrayContent.Headers.ContentType = new MediaTypeHeaderValue(mediaType);
-            return byteArrayContent;
+                var byteArrayContent = new ByteArrayContent(bytesContent);
+                byteArrayContent.Headers.ContentType = new MediaTypeHeaderValue(mediaType);
+                return byteArrayContent;
+            }
         }
 
         /// <summary>

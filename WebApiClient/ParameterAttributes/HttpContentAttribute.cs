@@ -40,7 +40,6 @@ namespace WebApiClient.Attributes
             {
                 context.RequestMessage.Content = await this.GenerateHttpContentAsync(context, parameter);
             }
-            await TaskExtend.CompletedTask;
         }
 
         /// <summary>
