@@ -12,7 +12,7 @@ namespace WebApiClient.Attributes
 {
     /// <summary>
     /// 表示将回复的Xml结果作反序化为指定类型
-    /// 依赖于HttpApiClient.Config.XmlFormatter
+    /// 依赖于HttpApiConfig.XmlFormatter
     /// </summary>
     public class XmlReturnAttribute :  ApiReturnAttribute 
     {
