@@ -47,7 +47,7 @@ namespace Demo
         }
 
         [HttpPost]
-        public JsonResult UpdateWithForm(UserInfo user)
+        public JsonResult UpdateWithForm(UserInfo user, string nickName)
         {
             return Json(user);
         }
@@ -66,7 +66,7 @@ namespace Demo
         }
 
         [HttpPost]
-        public ActionResult UpdateWithMulitpart(UserInfo user)
+        public ActionResult UpdateWithMulitpart(UserInfo user, int age)
         {
             return Json(user);
         }
