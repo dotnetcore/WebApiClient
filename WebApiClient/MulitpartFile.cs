@@ -119,15 +119,5 @@ namespace WebApiClient
         {
             return this.FileName;
         }
-
-        /// <summary>
-        /// 从string类型隐式转换
-        /// </summary>
-        /// <param name="localFilePath"></param>
-        /// <returns></returns>
-        public static implicit operator MulitpartFile(string localFilePath)
-        {
-            return new MulitpartFile(localFilePath);
-        }
     }
 }

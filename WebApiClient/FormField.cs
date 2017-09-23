@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
@@ -9,9 +10,9 @@ using WebApiClient.Contexts;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示将自身作为multipart/form-data的一个文本项
+    /// 表示x-www-form-urlencoded的字段
     /// </summary>
-    public class MulitpartText : IApiParameterable
+    public class FormField : IApiParameterable
     {
         /// <summary>
         /// 文本内容
@@ -19,19 +20,20 @@ namespace WebApiClient
         private readonly string stringValue;
 
         /// <summary>
-        /// multipart/form-data的一个文本项
+        /// x-www-form-urlencoded的字段
         /// </summary>     
         /// <param name="value">文本内容</param>
-        public MulitpartText(object value)
+        public FormField(object value)
         {
             this.stringValue = value == null ? string.Empty : value.ToString();
         }
 
         /// <summary>
-        /// multipart/form-data的一个文本项
+        /// x-www-form-urlencoded的字段
+        /// 如果有[FormContent]的参数，FormField需要放在其后
         /// </summary>     
         /// <param name="value">文本内容</param>
-        public MulitpartText(string value)
+        public FormField(string value)
         {
             this.stringValue = value;
         }
@@ -50,12 +52,13 @@ namespace WebApiClient
                 return;
             }
 
-            var httpContent = context.RequestMessage.Content.CastOrCreateMultipartContent();
-            httpContent.AddText(parameter.Name, this.stringValue);
+            var keyValue = new KeyValuePair<string, string>(parameter.Name, this.stringValue);
+            var httpContent = await context.RequestMessage.Content.MergeKeyValuesAsync(new[] { keyValue });
             context.RequestMessage.Content = httpContent;
 
             await TaskExtend.CompletedTask;
         }
+
 
         /// <summary>
         /// 转换为字符串
@@ -71,9 +74,9 @@ namespace WebApiClient
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static implicit operator MulitpartText(string value)
+        public static implicit operator FormField(string value)
         {
-            return new MulitpartText(value);
+            return new FormField(value);
         }
 
         /// <summary>
@@ -81,9 +84,9 @@ namespace WebApiClient
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static implicit operator MulitpartText(int value)
+        public static implicit operator FormField(int value)
         {
-            return new MulitpartText(value);
+            return new FormField(value);
         }
 
         /// <summary>
@@ -91,9 +94,9 @@ namespace WebApiClient
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static implicit operator MulitpartText(int? value)
+        public static implicit operator FormField(int? value)
         {
-            return new MulitpartText(value);
+            return new FormField(value);
         }
 
         /// <summary>
@@ -101,9 +104,9 @@ namespace WebApiClient
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static implicit operator MulitpartText(decimal value)
+        public static implicit operator FormField(decimal value)
         {
-            return new MulitpartText(value);
+            return new FormField(value);
         }
 
         /// <summary>
@@ -111,9 +114,9 @@ namespace WebApiClient
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static implicit operator MulitpartText(decimal? value)
+        public static implicit operator FormField(decimal? value)
         {
-            return new MulitpartText(value);
+            return new FormField(value);
         }
 
         /// <summary>
@@ -121,9 +124,9 @@ namespace WebApiClient
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static implicit operator MulitpartText(double value)
+        public static implicit operator FormField(double value)
         {
-            return new MulitpartText(value);
+            return new FormField(value);
         }
 
         /// <summary>
@@ -131,20 +134,19 @@ namespace WebApiClient
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static implicit operator MulitpartText(double? value)
+        public static implicit operator FormField(double? value)
         {
-            return new MulitpartText(value);
+            return new FormField(value);
         }
-
 
         /// <summary>
         /// 从DateTime类型隐式转换
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static implicit operator MulitpartText(DateTime value)
+        public static implicit operator FormField(DateTime value)
         {
-            return new MulitpartText(value);
+            return new FormField(value);
         }
 
         /// <summary>
@@ -152,9 +154,9 @@ namespace WebApiClient
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static implicit operator MulitpartText(DateTime? value)
+        public static implicit operator FormField(DateTime? value)
         {
-            return new MulitpartText(value);
+            return new FormField(value);
         }
     }
 }

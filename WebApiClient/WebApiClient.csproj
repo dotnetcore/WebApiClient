@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contexts\ApiReturnDescriptor.cs" />
+    <Compile Include="FormField.cs" />
     <Compile Include="HttpActionAttributes\ApiActionAttribute.cs" />
     <Compile Include="HttpActionAttributes\HttpOptionsAttribute.cs" />
     <Compile Include="HttpApiConfig.cs" />
@@ -58,7 +59,7 @@
     <Compile Include="IAttributeMultiplable.cs" />
     <Compile Include="Internal\ApiInterceptor.cs" />
     <Compile Include="Internal\MimeTable.cs" />
-    <Compile Include="Internal\MultipartContentExtend.cs" />
+    <Compile Include="Internal\HttpContentExtend.cs" />
     <Compile Include="Internal\DefaultHttpClientHandler.cs" />
     <Compile Include="Internal\MulitpartFileContent.cs" />
     <Compile Include="Internal\HttpUtility.cs" />

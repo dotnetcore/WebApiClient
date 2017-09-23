@@ -38,20 +38,31 @@ namespace WebApiClient.Attributes
             }
             else
             {
-                context.RequestMessage.Content = this.GetHttpContent(context, parameter);
+                context.RequestMessage.Content = await this.GenerateHttpContentAsync(context, parameter);
             }
             await TaskExtend.CompletedTask;
         }
 
         /// <summary>
-        /// 获取http请求内容
+        /// 生成http请求内容
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的属性</param>
         /// <returns></returns>
-        protected virtual HttpContent GetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
+        protected virtual Task<HttpContent> GenerateHttpContentAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            return parameter.Value as HttpContent;
+            var httpContent = this.GenerateHttpContent(context, parameter);
+            return Task.FromResult(httpContent);
+        }
+
+        /// 生成http请求内容
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <param name="parameter">特性关联的属性</param>
+        /// <returns></returns>
+        protected virtual HttpContent GenerateHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -75,6 +86,8 @@ namespace WebApiClient.Attributes
             return formater.Serialize(parameter.Value, encoding);
         }
 
+        #region key-value formatter
+
         /// <summary>
         /// 格式化参数为键值对
         /// </summary>
@@ -82,6 +95,11 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         protected IEnumerable<KeyValuePair<string, string>> FormatParameter(ApiParameterDescriptor parameter)
         {
+            if (parameter.Value == null)
+            {
+                return Enumerable.Empty<KeyValuePair<string, string>>();
+            }
+
             if (parameter.IsSimpleType == true)
             {
                 var kv = this.FormatAsSimple(parameter.Name, parameter.Value);
@@ -169,5 +187,7 @@ namespace WebApiClient.Attributes
             var valueString = value == null ? null : value.ToString();
             return new KeyValuePair<string, string>(name, valueString);
         }
+
+        #endregion
     }
 }

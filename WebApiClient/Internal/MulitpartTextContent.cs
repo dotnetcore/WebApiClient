@@ -19,7 +19,7 @@ namespace WebApiClient
         /// <param name="name">名称</param>
         /// <param name="value">文本</param>
         public MulitpartTextContent(string name, string value)
-            : base(value == null ? string.Empty : value)
+            : base(EncodingValue(value))
         {
             if (this.Headers.ContentDisposition == null)
             {
@@ -28,6 +28,20 @@ namespace WebApiClient
                 this.Headers.ContentDisposition = disposition;
             }
             this.Headers.Remove("Content-Type");
+        }
+
+        /// <summary>
+        /// 对值进行编码
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <returns></returns>
+        private static string EncodingValue(string value)
+        {
+            if (value == null)
+            {
+                return string.Empty;
+            }
+            return HttpUtility.UrlEncode(value, Encoding.UTF8);
         }
     }
 }

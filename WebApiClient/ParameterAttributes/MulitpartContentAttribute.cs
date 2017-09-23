@@ -20,25 +20,22 @@ namespace WebApiClient.Attributes
     public class MulitpartContentAttribute : HttpContentAttribute
     {
         /// <summary>
-        /// 获取http请求内容
+        /// 生成http请求内容
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的属性</param>
         /// <returns></returns>
-        protected override HttpContent GetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
+        protected override HttpContent GenerateHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var encoding = Encoding.UTF8;
             var httpContent = context.RequestMessage.Content.CastOrCreateMultipartContent();
-
             var q = from kv in base.FormatParameter(parameter)
-                    let value = HttpUtility.UrlEncode(kv.Value, encoding)
-                    select new MulitpartTextContent(kv.Key, value);
+                    select new MulitpartTextContent(kv.Key, kv.Value);
 
             foreach (var item in q)
             {
                 httpContent.Add(item);
             }
             return httpContent;
-        }         
+        }
     }
 }

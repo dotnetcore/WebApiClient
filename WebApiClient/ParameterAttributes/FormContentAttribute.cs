@@ -20,19 +20,15 @@ namespace WebApiClient.Attributes
     public class FormContentAttribute : HttpContentAttribute
     {
         /// <summary>
-        /// 获取http请求内容
+        /// 生成http请求内容
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
         /// <returns></returns>
-        protected sealed override HttpContent GetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
+        protected override Task<HttpContent> GenerateHttpContentAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var encoding = Encoding.UTF8;
-            var q = from kv in base.FormatParameter(parameter)
-                    select string.Format("{0}={1}", kv.Key, HttpUtility.UrlEncode(kv.Value, encoding));
-
-            var content = string.Join("&", q);
-            return new StringContent(content, encoding, "application/x-www-form-urlencoded");
+            var keyValues = base.FormatParameter(parameter);
+            return context.RequestMessage.Content.MergeKeyValuesAsync(keyValues);
         }
     }
 }

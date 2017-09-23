@@ -56,12 +56,12 @@ namespace WebApiClient.Attributes
         }
 
         /// <summary>
-        /// 获取http请求内容
+        /// 生成http请求内容
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
         /// <returns></returns>
-        protected override HttpContent GetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
+        protected override HttpContent GenerateHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var formater = context.HttpApiConfig.JsonFormatter;
             var content = base.FormatParameter(parameter, formater, this.encoding);
