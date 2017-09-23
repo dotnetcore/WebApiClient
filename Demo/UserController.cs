@@ -35,28 +35,26 @@ namespace Demo
         [HttpGet]
         public JsonResult GetById(string id)
         {
-            var model = new UserInfo { Account = CurrentContext.Action.ApiName, Password = "123456" };
+            var model = new UserInfo();
             return Json(model);
         }
 
         [HttpGet]
         public JsonResult GetByAccount(string account)
         {
-            var model = new UserInfo { Account = CurrentContext.Action.ApiName, Password = "123456" };
+            var model = new UserInfo { Account = account };
             return Json(model);
         }
 
         [HttpPost]
         public JsonResult UpdateWithForm(UserInfo user)
         {
-            user.Account = CurrentContext.Action.ApiName;
             return Json(user);
         }
 
         [HttpPost]
         public JsonResult UpdateWithJson([Body] UserInfo user)
         {
-            user.Account = CurrentContext.Action.ApiName;
             return Json(user);
         }
 
@@ -70,8 +68,6 @@ namespace Demo
         [HttpPost]
         public ActionResult UpdateWithMulitpart(UserInfo user)
         {
-            user.Account = CurrentContext.Action.ApiName;
-            user.Password = string.Join(";", Request.Files.Select(item => item.FileName));
             return Json(user);
         }
 
