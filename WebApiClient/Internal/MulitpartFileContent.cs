@@ -34,7 +34,7 @@ namespace WebApiClient
 
             if (string.IsNullOrEmpty(contentType))
             {
-                contentType = "application/octet-stream";
+                contentType = MimeTable.GetContentType(fileName);
             }
             this.Headers.ContentType = new MediaTypeHeaderValue(contentType);
         }

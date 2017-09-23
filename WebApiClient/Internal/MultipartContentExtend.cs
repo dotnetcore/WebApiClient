@@ -44,7 +44,7 @@ namespace WebApiClient
         /// <param name="fileName">文件名</param>
         /// <param name="contentType">文件Mime</param>
         /// <returns></returns>
-        public static MultipartContent AddFile(this MultipartContent httpContent, Stream stream, string name, string fileName, string contentType = "application/octet-stream")
+        public static MultipartContent AddFile(this MultipartContent httpContent, Stream stream, string name, string fileName, string contentType )
         {
             var fileContent = new MulitpartFileContent(stream, name, fileName, contentType);
             httpContent.Add(fileContent);

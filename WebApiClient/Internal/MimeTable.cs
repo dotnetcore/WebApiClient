@@ -15,7 +15,7 @@ namespace WebApiClient
         /// <summary>
         /// 默认文件类型
         /// </summary>
-        private static readonly string defaultContentType = "application/octet-stream";
+        private const string defaultContentType = "application/octet-stream";
 
         /// <summary>
         /// mime数据表
