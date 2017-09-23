@@ -13,7 +13,7 @@ namespace WebApiClient
     /// <summary>
     /// 表示Api的拦截器
     /// </summary>
-    class ApiInterceptor : IInterceptor, IDisposable
+    class ApiInterceptor : IInterceptor
     {
         /// <summary>
         /// httpApi配置
@@ -49,7 +49,7 @@ namespace WebApiClient
         {
             if (invocation.Method.Equals(disposeMethod) == true)
             {
-                this.Dispose();
+                this.httpApiConfig.Dispose();
             }
             else
             {
@@ -81,14 +81,6 @@ namespace WebApiClient
             };
 
             return actionDescripter.Execute(actionContext);
-        }
-
-        /// <summary>
-        /// 释放资源
-        /// </summary>
-        public void Dispose()
-        {
-            this.httpApiConfig.HttpClient.Dispose();
         }
     }
 }
