@@ -52,7 +52,7 @@ namespace Demo
             Console.WriteLine(user2);
             Console.WriteLine();
 
-            var user3 = await myWebApi.UpdateWithFormAsync(user, nickName: "老九");
+            var user3 = await myWebApi.UpdateWithFormAsync(user, nickName: "老九", age: 18);
             Console.WriteLine(user3);
             Console.WriteLine();
 
@@ -64,7 +64,7 @@ namespace Demo
             Console.WriteLine(user5);
             Console.WriteLine();
 
-            var user6 = await myWebApi.UpdateWithMulitpartAsync(user, 20, file);
+            var user6 = await myWebApi.UpdateWithMulitpartAsync(user, "老九", 18, file);
             Console.WriteLine(user6);
 
             myWebApi.Dispose();

@@ -37,7 +37,7 @@ namespace WebApiClient
 
 
         /// <summary>
-        /// multipart/form-data的一个文件项
+        /// 将自身作为multipart/form-data的一个文件项
         /// </summary>
         /// <param name="stream">数据流</param>
         /// <param name="fileName">文件友好名称</param>
@@ -80,7 +80,7 @@ namespace WebApiClient
         /// 执行请求前
         /// </summary>
         /// <param name="context">上下文</param>
-        /// <param name="parameter">特性关联的属性</param>
+        /// <param name="parameter">特性关联的参数</param>
         async Task IApiParameterable.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var method = context.RequestMessage.Method;

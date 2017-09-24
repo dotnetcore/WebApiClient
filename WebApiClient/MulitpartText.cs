@@ -19,7 +19,7 @@ namespace WebApiClient
         private readonly string stringValue;
 
         /// <summary>
-        /// multipart/form-data的一个文本项
+        /// 将自身作为multipart/form-data的一个文本项
         /// </summary>     
         /// <param name="value">文本内容</param>
         public MulitpartText(object value)

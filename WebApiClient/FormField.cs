@@ -10,7 +10,7 @@ using WebApiClient.Contexts;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示x-www-form-urlencoded的字段
+    /// 表示将自身作为x-www-form-urlencoded的字段
     /// </summary>
     public class FormField : IApiParameterable
     {
@@ -20,7 +20,7 @@ namespace WebApiClient
         private readonly string stringValue;
 
         /// <summary>
-        /// x-www-form-urlencoded的字段
+        /// 将自身作为x-www-form-urlencoded的字段
         /// </summary>     
         /// <param name="value">文本内容</param>
         public FormField(object value)

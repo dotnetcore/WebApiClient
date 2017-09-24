@@ -46,7 +46,7 @@ namespace WebApiClient.Attributes
         /// 生成http请求内容
         /// </summary>
         /// <param name="context">上下文</param>
-        /// <param name="parameter">特性关联的属性</param>
+        /// <param name="parameter">特性关联的参数</param>
         /// <returns></returns>
         protected virtual Task<HttpContent> GenerateHttpContentAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
@@ -57,7 +57,7 @@ namespace WebApiClient.Attributes
         /// 生成http请求内容
         /// </summary>
         /// <param name="context">上下文</param>
-        /// <param name="parameter">特性关联的属性</param>
+        /// <param name="parameter">特性关联的参数</param>
         /// <returns></returns>
         protected virtual HttpContent GenerateHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
@@ -12,11 +9,9 @@ using WebApiClient.Contexts;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 表示参数值作为multipart/form-data表单或表单的一个项
-    /// 支持单一值类型如string、int、guid、枚举等，以及他们的可空类型或集合
-    /// 支持POCO类型、IDictionaryOf(string,string)类型、IDictionaryOf(string,object)类型
+    /// 表示参数值作为multipart/form-data表单的一个文本项
     /// </summary>
-    public class MulitpartContentAttribute : HttpContentAttribute
+    public class MulitpartTextAttribute : HttpContentAttribute
     {
         /// <summary>
         /// 生成http请求内容
@@ -26,14 +21,9 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         protected override HttpContent GenerateHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
+            var stringValue = parameter.Value == null ? null : parameter.Value.ToString();
             var httpContent = context.RequestMessage.Content.CastOrCreateMultipartContent();
-            var q = from kv in base.FormatParameter(parameter)
-                    select new MulitpartTextContent(kv.Key, kv.Value);
-
-            foreach (var item in q)
-            {
-                httpContent.Add(item);
-            }
+            httpContent.AddText(parameter.Name, stringValue);
             return httpContent;
         }
     }
