@@ -28,37 +28,61 @@ namespace WebApiClient
                 return instance;
             }
 
-            var encoding = Encoding.UTF8;
+            var formBody = default(byte[]);
             const string mediaType = "application/x-www-form-urlencoded";
-            var kvs = from kv in keyValues select string.Format("{0}={1}", kv.Key, HttpUtility.UrlEncode(kv.Value, encoding));
-            var newContent = string.Join("&", kvs);
 
-            var formBuffer = default(byte[]);
             if (instance != null)
             {
                 instance.Headers.ContentType.EnsureMediaTypeEqual(mediaType);
-                formBuffer = await instance.ReadAsByteArrayAsync();
+                formBody = await instance.ReadAsByteArrayAsync();
             }
 
-            if (formBuffer == null || formBuffer.Length == 0)
-            {
-                var bytesContent = encoding.GetBytes(newContent);
-                var byteArrayContent = new ByteArrayContent(bytesContent);
-                byteArrayContent.Headers.ContentType = new MediaTypeHeaderValue(mediaType);
-                return byteArrayContent;
-            }
-            else
-            {
-                var nameValueBuffer = encoding.GetBytes("&" + newContent);
-                var bytesContent = new byte[formBuffer.Length + nameValueBuffer.Length];
-                formBuffer.CopyTo(bytesContent, 0);
-                nameValueBuffer.CopyTo(bytesContent, formBuffer.Length);
-
-                var byteArrayContent = new ByteArrayContent(bytesContent);
-                byteArrayContent.Headers.ContentType = new MediaTypeHeaderValue(mediaType);
-                return byteArrayContent;
-            }
+            var bytesContent = Merge(formBody, keyValues);
+            var byteArrayContent = new ByteArrayContent(bytesContent);
+            byteArrayContent.Headers.ContentType = new MediaTypeHeaderValue(mediaType);
+            return byteArrayContent;
         }
+
+        /// <summary>
+        /// 合并内容
+        /// </summary>
+        /// <param name="formBody"></param>
+        /// <param name="keyValues"></param>
+        /// <returns></returns>
+        private static byte[] Merge(byte[] formBody, IEnumerable<KeyValuePair<string, string>> keyValues)
+        {
+            var encoding = Encoding.UTF8;
+            var kvs = from kv in keyValues select string.Format("{0}={1}", kv.Key, HttpUtility.UrlEncode(kv.Value, encoding));
+            var stringContent = string.Join("&", kvs);
+
+            if (formBody != null && formBody.Length > 0)
+            {
+                stringContent = "&" + stringContent;
+            }
+
+            var bytes2 = encoding.GetBytes(stringContent);
+            return Merge(formBody, bytes2);
+        }
+
+        /// <summary>
+        /// 合并字节组
+        /// </summary>
+        /// <param name="formBody"></param>
+        /// <param name="byteConent"></param>
+        /// <returns></returns>
+        private static byte[] Merge(byte[] formBody, byte[] byteConent)
+        {
+            if (formBody == null || formBody.Length == 0)
+            {
+                return byteConent;
+            }
+
+            var bytes = new byte[formBody.Length + byteConent.Length];
+            formBody.CopyTo(bytes, 0);
+            byteConent.CopyTo(bytes, formBody.Length);
+            return bytes;
+        }
+
 
         /// <summary>
         /// 转换为MultipartContent

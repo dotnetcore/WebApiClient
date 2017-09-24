@@ -10,45 +10,45 @@ using WebApiClient.Attributes;
 namespace Demo
 {
     [Logger] // 记录请求日志
-    [HttpHost("http://localhost:9999")] // HttpHost可以在Config传入    
-    public interface UserApi : IDisposable // 调用IDisposable可以Dispose实例的配置项
+    [HttpHost("http://localhost:9999")] // HttpHost可以在Config传入覆盖    
+    public interface UserApi : IDisposable
     {
-        // GET {url}?account={account}&password={password}&something={something}&
-        [HttpGet("/")]
+        // GET {url}?account={account}&password={password}&something={something}
+        [HttpGet]
         [Header("Cookie", "a=1; b=2")]
         Task<string> GetAboutAsync([Url] string url, [Header("Authorization")] string authorization, UserInfo user, string something);
 
-        // GET webapi/user/GetById?id=id001
+        // /GET webapi/user/GetById?id=id001
         // Return HttpResponseMessage
         [HttpGet("/webapi/user/GetById?id={id}")]
         Task<HttpResponseMessage> GetByIdAsync(string id);
 
-        // GET webapi/user/GetByAccount?account=laojiu
+        // GET /webapi/user/GetByAccount?account=laojiu
         // Return 原始string内容
         [HttpGet("/webapi/user/GetByAccount")]
         Task<string> GetByAccountAsync(string account);
 
 
-        // POST webapi/user/UpdateWithForm  
+        // POST /webapi/user/UpdateWithForm  
         // Body Account=laojiu&Password=123456
         // Return json或xml内容
         [HttpPost("/webapi/user/UpdateWithForm")]
         Task<UserInfo> UpdateWithFormAsync([FormContent] UserInfo user, FormField nickName);
 
-        // POST webapi/user/UpdateWithJson
+        // POST /webapi/user/UpdateWithJson
         // Body {"Account":"laojiu","Password":"123456"}
         // Return json或xml内容
         [HttpPost("/webapi/user/UpdateWithJson")]
         Task<UserInfo> UpdateWithJsonAsync([JsonContent] UserInfo user);
 
-        // POST webapi/user/UpdateWithXml 
+        // POST /webapi/user/UpdateWithXml 
         // Body <?xml version="1.0" encoding="utf-8"?><UserInfo><Account>laojiu</Account><Password>123456</Password></UserInfo>
         // Return xml内容
         [XmlReturn]
         [HttpPost("/webapi/user/UpdateWithXml")]
         Task<UserInfo> UpdateWithXmlAsync([XmlContent] UserInfo user);
 
-        // POST webapi/user/UpdateWithMulitpart  
+        // POST /webapi/user/UpdateWithMulitpart  
         // Body multipart/form-data
         // Return json或xml内容
         [HttpPost("/webapi/user/UpdateWithMulitpart")]

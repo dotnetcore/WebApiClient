@@ -20,49 +20,10 @@ namespace WebApiClient.Attributes
     public sealed class PathQueryAttribute : Attribute, IApiParameterAttribute
     {
         /// <summary>
-        /// 名称
-        /// </summary>
-        private string name;
-
-        /// <summary>
-        /// 获取或设置当值为null时忽略此参数
-        /// </summary>
-        public bool IgnoreWhenNull { get; set; }
-
-        /// <summary>
         /// 表示Url路径参数或query参数的特性
         /// </summary>
         public PathQueryAttribute()
         {
-        }
-
-        /// <summary>
-        /// 表示Url路径参数或query参数的特性
-        /// </summary>
-        /// <param name="name">名称</param>
-        public PathQueryAttribute(string name)
-            : this(name, false)
-        {
-        }
-
-        /// <summary>
-        /// 表示Url路径参数或query参数的特性
-        /// <param name="ignoreWhenNull">当值为null时忽略此参数</param>
-        /// </summary>
-        public PathQueryAttribute(bool ignoreWhenNull)
-            : this(null, ignoreWhenNull)
-        {
-        }
-
-        /// <summary>
-        /// 表示Url路径参数或query参数的特性
-        /// </summary>
-        /// <param name="name">名称</param>
-        /// <param name="ignoreWhenNull">当值为null时忽略此参数</param>
-        public PathQueryAttribute(string name, bool ignoreWhenNull)
-        {
-            this.name = name;
-            this.IgnoreWhenNull = ignoreWhenNull;
         }
 
         /// <summary>
@@ -73,11 +34,6 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         public async Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            if (this.IgnoreWhenNull && parameter.Value == null)
-            {
-                return;
-            }
-
             var uri = context.RequestMessage.RequestUri;
             var url = uri.ToString();
             var relativeUrl = url.Substring(url.IndexOf(uri.AbsolutePath)).TrimEnd('&', '?');
@@ -97,8 +53,7 @@ namespace WebApiClient.Attributes
         {
             if (parameter.IsSimpleType == true)
             {
-                var pName = string.IsNullOrEmpty(this.name) ? parameter.Name : this.name;
-                return this.GetSimplePathQuery(pathQuery, pName, parameter.Value);
+                return this.GetSimplePathQuery(pathQuery, parameter.Name, parameter.Value);
             }
 
             if (parameter.IsDictionaryOfObject == true)
@@ -156,8 +111,7 @@ namespace WebApiClient.Attributes
 
             foreach (var item in array)
             {
-                var pName = string.IsNullOrEmpty(this.name) ? parameter.Name : this.name;
-                pathQuery = this.GetSimplePathQuery(pathQuery, pName, item);
+                pathQuery = this.GetSimplePathQuery(pathQuery, parameter.Name, item);
             }
             return pathQuery;
         }
