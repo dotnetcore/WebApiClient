@@ -56,7 +56,7 @@ static async Task TestAsync()
 * 请求头：[Header]
 * Path/Query：[PathQuery]
 * 请求URL：[Url]
-* 请求Body：[HttpContent]、[JsonContent]、[XmlContent]、[FormContent]、[MulitpartContent]
+* 请求Body：[HttpContent]、[JsonContent]、[XmlContent]、[FormContent]、[MulitpartContent]、[FormField]、[MulitpartText]
 * 自定义IApiParameterAttribute特性
 
 ### 特殊参数类型
