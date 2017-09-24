@@ -13,7 +13,6 @@ namespace WebApiClient.Attributes
 {
     /// <summary>
     /// 表示将参数值作为x-www-form-urlencoded请求
-    /// 每个Api只能注明于其中的一个参数
     /// 支持单一值类型如string、int、guid、枚举等，以及他们的可空类型或集合
     /// 支持POCO类型、IDictionaryOf(string,string)类型、IDictionaryOf(string,object)类型
     /// </summary>
