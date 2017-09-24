@@ -39,7 +39,8 @@ namespace Demo
             var file = new MulitpartFile("NetworkSocket.dll");
 
             var auth = "Basic eW91ck5hbWU6MTIzNDU2";
-            var about = await myWebApi.GetAboutAsync("http://localhost:9999/webapi/user/about", auth, user, "some value here");
+            var url = "http://localhost:9999/webapi/user/about";
+            var about = await myWebApi.GetAboutAsync(url, auth, user, "some-value");
             Console.WriteLine(about);
             Console.WriteLine();
 

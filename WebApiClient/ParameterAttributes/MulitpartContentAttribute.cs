@@ -26,14 +26,9 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         protected override HttpContent GenerateHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
+            var keyValues = base.FormatParameter(parameter);
             var httpContent = context.RequestMessage.Content.CastOrCreateMultipartContent();
-            var q = from kv in base.FormatParameter(parameter)
-                    select new MulitpartTextContent(kv.Key, kv.Value);
-
-            foreach (var item in q)
-            {
-                httpContent.Add(item);
-            }
+            httpContent.AddText(keyValues);
             return httpContent;
         }
     }

@@ -60,8 +60,8 @@ namespace WebApiClient
                 stringContent = "&" + stringContent;
             }
 
-            var bytes2 = encoding.GetBytes(stringContent);
-            return Merge(formBody, bytes2);
+            var byteConent = encoding.GetBytes(stringContent);
+            return Merge(formBody, byteConent);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace WebApiClient
 
         /// <summary>
         /// 转换为MultipartContent
-        /// 失败则返回MultipartContent的实例
+        /// 为null则返回MultipartContent的实例
         /// </summary>
         /// <param name="instance"></param>
         /// <returns></returns>
@@ -118,12 +118,23 @@ namespace WebApiClient
         /// <param name="name">名称</param>
         /// <param name="fileName">文件名</param>
         /// <param name="contentType">文件Mime</param>
-        /// <returns></returns>
-        public static MultipartContent AddFile(this MultipartContent httpContent, Stream stream, string name, string fileName, string contentType)
+        public static void AddFile(this MultipartContent httpContent, Stream stream, string name, string fileName, string contentType)
         {
             var fileContent = new MulitpartFileContent(stream, name, fileName, contentType);
             httpContent.Add(fileContent);
-            return httpContent;
+        }
+
+        /// <summary>
+        /// 添加文本内容
+        /// </summary>     
+        /// <param name="httpContent"></param>
+        /// <param name="keyValues">键值对</param>
+        public static void AddText(this MultipartContent httpContent, IEnumerable<KeyValuePair<string, string>> keyValues)
+        {
+            foreach (var kv in keyValues)
+            {
+                httpContent.AddText(kv.Key, kv.Value);
+            }
         }
 
         /// <summary>
@@ -132,11 +143,10 @@ namespace WebApiClient
         /// <param name="httpContent"></param>
         /// <param name="name">名称</param>
         /// <param name="value">文本</param>
-        public static MultipartContent AddText(this MultipartContent httpContent, string name, string value)
+        public static void AddText(this MultipartContent httpContent, string name, string value)
         {
             var textContent = new MulitpartTextContent(name, value);
             httpContent.Add(textContent);
-            return httpContent;
         }
 
         /// <summary>
@@ -144,7 +154,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="contentType">已有的ContentType</param>
         /// <param name="newMediaType">新的MediaType</param>
-        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
         private static void EnsureMediaTypeEqual(this MediaTypeHeaderValue contentType, string newMediaType)
         {
             if (contentType == null)
@@ -156,7 +166,7 @@ namespace WebApiClient
             if (string.Equals(oldMediaType, newMediaType, StringComparison.OrdinalIgnoreCase) == false)
             {
                 var message = string.Format("Content-Type必须保持为{0}", oldMediaType);
-                throw new InvalidOperationException(message);
+                throw new NotSupportedException(message);
             }
         }
     }

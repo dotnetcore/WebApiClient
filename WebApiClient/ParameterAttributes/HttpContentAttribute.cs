@@ -29,17 +29,11 @@ namespace WebApiClient.Attributes
             var method = context.RequestMessage.Method;
             if (method == HttpMethod.Get || method == HttpMethod.Head)
             {
-                return;
+                var message = string.Format("{0}方法不支持使用{1}", method, this.GetType().Name);
+                throw new NotSupportedException(message);
             }
 
-            if (parameter.IsHttpContent == true)
-            {
-                context.RequestMessage.Content = parameter.Value as HttpContent;
-            }
-            else
-            {
-                context.RequestMessage.Content = await this.GenerateHttpContentAsync(context, parameter);
-            }
+            context.RequestMessage.Content = await this.GenerateHttpContentAsync(context, parameter);
         }
 
         /// <summary>
@@ -61,9 +55,11 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         protected virtual HttpContent GenerateHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            throw new NotImplementedException();
+            return parameter.Value as HttpContent;
         }
 
+
+        #region string formatter
         /// <summary>
         /// 格式化参数
         /// </summary>
@@ -84,6 +80,8 @@ namespace WebApiClient.Attributes
             }
             return formater.Serialize(parameter.Value, encoding);
         }
+        #endregion
+
 
         #region key-value formatter
 

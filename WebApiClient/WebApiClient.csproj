@@ -110,7 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <EmbeddedResource Include="Internal\mime.day" />
+    <EmbeddedResource Include="Internal\Mime.day" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

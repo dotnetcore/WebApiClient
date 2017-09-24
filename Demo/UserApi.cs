@@ -16,7 +16,11 @@ namespace Demo
         // GET {url}?account={account}&password={password}&something={something}
         [HttpGet]
         [Header("Cookie", "a=1; b=2")]
-        Task<string> GetAboutAsync([Url] string url, [Header("Authorization")] string authorization, UserInfo user, string something);
+        Task<string> GetAboutAsync(
+            [Url] string url,
+            [Header("Authorization")] string authorization,
+            UserInfo user,
+            string something);
 
         // /GET webapi/user/GetById?id=id001
         // Return HttpResponseMessage

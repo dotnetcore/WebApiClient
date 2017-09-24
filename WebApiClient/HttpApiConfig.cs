@@ -21,11 +21,6 @@ namespace WebApiClient
         public Uri HttpHost { get; set; }
 
         /// <summary>
-        /// 获取或设置自定义相关数据
-        /// </summary>
-        public object UserToken { get; set; }
-
-        /// <summary>
         /// 获取或设置Xml格式化工具
         /// </summary>
         public IStringFormatter XmlFormatter { get; set; }
@@ -122,6 +117,7 @@ namespace WebApiClient
                 this.JsonFormatter = null;
                 this.HttpClient = null;
                 this.HttpClientHandler = null;
+                this.HttpHost = null;
             }
         }
         #endregion

@@ -86,7 +86,8 @@ namespace WebApiClient
             var method = context.RequestMessage.Method;
             if (method == HttpMethod.Get || method == HttpMethod.Head)
             {
-                return;
+                var message = string.Format("{0}方法不支持使用{1}", method, this.GetType().Name);
+                throw new NotSupportedException(message);
             }
 
             var httpContent = context.RequestMessage.Content.CastOrCreateMultipartContent();

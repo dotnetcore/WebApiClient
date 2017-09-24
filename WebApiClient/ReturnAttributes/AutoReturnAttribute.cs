@@ -11,10 +11,10 @@ using WebApiClient.Contexts;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 自动适应返回类型处理
+    /// 自动适应返回类型的处理
     /// 支持返回TaskOf(HttpResponseMessage)或TaskOf(byte[])或TaskOf(string)或TaskOf(Stream)
     /// 支持返回xml或json转换对应类型
-    /// 此特性不需要显示声明
+    /// 没有任何IApiReturnAttribute特性修饰的接口方法，将默认为AutoReturn修饰
     /// </summary> 
     public class AutoReturnAttribute : ApiReturnAttribute
     {
@@ -61,7 +61,7 @@ namespace WebApiClient.Attributes
                 return await xmlReturn.GetTaskResult(context);
             }
 
-            var message = string.Format("不支持的类型{0}的映射", dataType);
+            var message = string.Format("不支持的类型{0}的自动映射", dataType);
             throw new NotSupportedException(message);
         }
 
@@ -101,7 +101,7 @@ namespace WebApiClient.Attributes
             /// <returns></returns>
             public bool IsApplicationJson()
             {
-                return this.Is("application/json");
+                return this.Is("application/json") || this.Is("text/json");
             }
 
             /// <summary>

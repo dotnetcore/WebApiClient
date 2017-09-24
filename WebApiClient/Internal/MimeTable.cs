@@ -48,7 +48,7 @@ namespace WebApiClient
         /// <returns></returns>
         private static string[] LoadMimeLines()
         {
-            var name = typeof(MimeTable).Namespace + ".Internal.mime.day";
+            var name = typeof(MimeTable).Namespace + ".Internal.Mime.day";
             using (var stream = typeof(MimeTable).Assembly.GetManifestResourceStream(name))
             {
                 using (var reader = new StreamReader(stream))
