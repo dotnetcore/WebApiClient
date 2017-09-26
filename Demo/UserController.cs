@@ -47,7 +47,7 @@ namespace Demo
         }
 
         [HttpPost]
-        public JsonResult UpdateWithForm(UserInfo user, string nickName, int? age)
+        public JsonResult UpdateWithForm(UserInfo user, string name, string nickName, int? age)
         {
             return Json(user);
         }

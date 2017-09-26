@@ -34,9 +34,10 @@ namespace Demo
 
 
         // POST /webapi/user/UpdateWithForm  
-        // Body Account=laojiu&Password=123456
+        // Body Account=laojiu&Password=123456&name=value&nickName=老九&age=18
         // Return json或xml内容
         [HttpPost("/webapi/user/UpdateWithForm")]
+        [FormField("name", "value")] // 固定的参数值可以这么写
         Task<UserInfo> UpdateWithFormAsync([FormContent] UserInfo user, FormField nickName, [FormField] int? age);
 
         // POST /webapi/user/UpdateWithJson
