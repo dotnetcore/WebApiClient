@@ -60,9 +60,7 @@ namespace WebApiClient.Attributes
                 throw new NotSupportedException("请传入name和value参数：" + this.GetType().Name);
             }
 
-            this.EnsureNoGet(context.RequestMessage.Method);
-
-            var httpContent = context.RequestMessage.Content.CastOrCreateMultipartContent();
+            var httpContent = context.EnsureNoGet().RequestMessage.Content.CastOrCreateMultipartContent();
             httpContent.AddText(this.name, this.value);
             context.RequestMessage.Content = httpContent;
 
@@ -77,27 +75,12 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         async Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            this.EnsureNoGet(context.RequestMessage.Method);
-
             var stringValue = parameter.Value == null ? null : parameter.Value.ToString();
-            var httpContent = context.RequestMessage.Content.CastOrCreateMultipartContent();
+            var httpContent = context.EnsureNoGet().RequestMessage.Content.CastOrCreateMultipartContent();
             httpContent.AddText(parameter.Name, stringValue);
             context.RequestMessage.Content = httpContent;
 
             await TaskExtend.CompletedTask;
-        }
-
-        /// <summary>
-        /// 确保不是get之类的请求
-        /// </summary>
-        /// <param name="method">方法</param>
-        private void EnsureNoGet(HttpMethod method)
-        {
-            if (method == HttpMethod.Get || method == HttpMethod.Head)
-            {
-                var message = string.Format("{0}方法不支持使用{1}", method, this.GetType().Name);
-                throw new NotSupportedException(message);
-            }
         }
     }
 }

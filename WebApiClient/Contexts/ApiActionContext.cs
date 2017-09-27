@@ -42,5 +42,21 @@ namespace WebApiClient.Contexts
         {
             return this.ApiActionDescriptor.ToString();
         }
+
+        /// <summary>
+        /// 确保不是get之类的请求
+        /// </summary>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <returns></returns>
+        internal ApiActionContext EnsureNoGet()
+        {
+            var method = this.RequestMessage.Method;
+            if (method == HttpMethod.Get || method == HttpMethod.Head)
+            {
+                var message = string.Format("{0}方法不支持使用{1}", method, this.GetType().Name);
+                throw new NotSupportedException(message);
+            }
+            return this;
+        }
     }
 }

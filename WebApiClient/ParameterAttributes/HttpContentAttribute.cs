@@ -26,14 +26,7 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         async Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var method = context.RequestMessage.Method;
-            if (method == HttpMethod.Get || method == HttpMethod.Head)
-            {
-                var message = string.Format("{0}方法不支持使用{1}", method, this.GetType().Name);
-                throw new NotSupportedException(message);
-            }
-
-            context.RequestMessage.Content = await this.GenerateHttpContentAsync(context, parameter);
+            context.EnsureNoGet().RequestMessage.Content = await this.GenerateHttpContentAsync(context, parameter);
         }
 
         /// <summary>

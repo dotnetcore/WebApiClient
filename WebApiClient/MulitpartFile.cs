@@ -83,14 +83,7 @@ namespace WebApiClient
         /// <param name="parameter">特性关联的参数</param>
         async Task IApiParameterable.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var method = context.RequestMessage.Method;
-            if (method == HttpMethod.Get || method == HttpMethod.Head)
-            {
-                var message = string.Format("{0}方法不支持使用{1}", method, this.GetType().Name);
-                throw new NotSupportedException(message);
-            }
-
-            var httpContent = context.RequestMessage.Content.CastOrCreateMultipartContent();
+            var httpContent = context.EnsureNoGet().RequestMessage.Content.CastOrCreateMultipartContent();
             httpContent.AddFile(this.GetStream(), parameter.Name, this.FileName, this.ContentType);
             context.RequestMessage.Content = httpContent;
             await TaskExtend.CompletedTask;

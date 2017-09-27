@@ -45,16 +45,9 @@ namespace WebApiClient
         /// <param name="parameter">特性关联的参数</param>
         /// <returns></returns>
         async Task IApiParameterable.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
-        {
-            var method = context.RequestMessage.Method;
-            if (method == HttpMethod.Get || method == HttpMethod.Head)
-            {
-                var message = string.Format("{0}方法不支持使用{1}", method, this.GetType().Name);
-                throw new NotSupportedException(message);
-            }
-
+        { 
             var keyValue = new KeyValuePair<string, string>(parameter.Name, this.stringValue);
-            var httpContent = await context.RequestMessage.Content.MergeKeyValuesAsync(new[] { keyValue });
+            var httpContent = await context.EnsureNoGet().RequestMessage.Content.MergeKeyValuesAsync(new[] { keyValue });
             context.RequestMessage.Content = httpContent;
 
             await TaskExtend.CompletedTask;
