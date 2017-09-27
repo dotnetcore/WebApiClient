@@ -26,7 +26,7 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         async Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            context.EnsureNoGet().RequestMessage.Content = await this.GenerateHttpContentAsync(context, parameter);
+            context.RequestMessage.Content = await this.GenerateHttpContentAsync(context.EnsureNoGet(), parameter);
         }
 
         /// <summary>
