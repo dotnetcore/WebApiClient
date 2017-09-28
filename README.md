@@ -29,6 +29,9 @@ static async Task TestAsync()
 }
 ```
 
+## Nuget
+PM> `install-package Laojiu.WebApiClient`
+
 ## 支持与约束
 * 支持接口继承或多继承
 * 支持泛型接口、泛型方法
