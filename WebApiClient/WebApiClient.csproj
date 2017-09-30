@@ -50,9 +50,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasicAuth.cs" />
     <Compile Include="Contexts\ApiReturnDescriptor.cs" />
     <Compile Include="FormField.cs" />
     <Compile Include="HttpActionAttributes\ApiActionAttribute.cs" />
+    <Compile Include="HttpActionAttributes\BasicAuthAttribute.cs" />
     <Compile Include="HttpActionAttributes\HttpOptionsAttribute.cs" />
     <Compile Include="HttpApiConfig.cs" />
     <Compile Include="IApiParameterable.cs" />

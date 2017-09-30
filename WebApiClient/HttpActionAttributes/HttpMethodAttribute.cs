@@ -25,6 +25,18 @@ namespace WebApiClient.Attributes
         /// </summary>
         public string Path { get; private set; }
 
+        /// <summary>
+        /// 获取顺序排序索引
+        /// 优先级最高
+        /// </summary>
+        public override int OrderIndex
+        {
+            get
+            {
+                return int.MinValue + 1;
+            }
+        }
+
 
         /// <summary>
         /// http请求方法描述特性

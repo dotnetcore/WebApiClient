@@ -25,6 +25,7 @@ namespace Demo
         // /GET webapi/user/GetById?id=id001
         // Return HttpResponseMessage
         [HttpGet("/webapi/user/GetById?id={id}")]
+        [BasicAuth("userName", "password")]
         Task<HttpResponseMessage> GetByIdAsync(string id);
 
         // GET /webapi/user/GetByAccount?account=laojiu
