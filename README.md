@@ -29,6 +29,9 @@ static async Task TestAsync()
 }
 ```
 
+## Nuget
+PM> `install-package Laojiu.WebApiClient`
+
 ## 支持与约束
 * 支持接口继承或多继承
 * 支持泛型接口、泛型方法
@@ -43,6 +46,7 @@ static async Task TestAsync()
 * 请求头：[Header]
 * 返回值：[AutoReturn]、[JsonReturn]、[XmlReturn]
 * 代理：[Proxy]
+* 请求Body：[FormField]、[MulitpartText]
 * 自定义IApiActionAttribute特性或IApiReturnAttribute特性
 
 ### 方法级特性
@@ -50,6 +54,7 @@ static async Task TestAsync()
 * 请求头：[Header]
 * 返回值：[AutoReturn]、[JsonReturn]、[XmlReturn]
 * 请求方式+路径：[HttpGet]、[HttpPost]、[HttpDelete]、[HttpPut]、[HttpHead]和[HttpOptions]
+* 请求Body：[FormField]、[MulitpartText]
 * 自定义IApiActionAttribute特性或IApiReturnAttribute特性
 
 ### 参数级特性
