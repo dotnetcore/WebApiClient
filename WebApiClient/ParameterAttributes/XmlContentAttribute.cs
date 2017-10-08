@@ -56,17 +56,17 @@ namespace WebApiClient.Attributes
             this.encoding = encoding;
         }
 
+
         /// <summary>
-        /// 生成http请求内容
+        /// 设置参数到http请求内容
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
-        /// <returns></returns>
-        protected override HttpContent GenerateHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
+        protected override void SetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var formater = context.HttpApiConfig.XmlFormatter;
-            var content = base.FormatParameter(parameter, formater, this.encoding);
-            return new StringContent(content, this.encoding, "application/xml");
+            var content = parameter.FormatAsString(formater, this.encoding);
+            context.RequestMessage.Content = new StringContent(content, this.encoding, "application/xml");
         }
     }
 }

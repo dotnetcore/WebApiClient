@@ -76,7 +76,7 @@ namespace WebApiClient
             {
                 ApiActionDescriptor = actionDescripter,
                 HttpApiConfig = this.httpApiConfig,
-                RequestMessage = new HttpRequestMessage { RequestUri = this.httpApiConfig.HttpHost },
+                RequestMessage = new HttpApiRequestMessage { RequestUri = this.httpApiConfig.HttpHost },
                 ResponseMessage = null
             };
 

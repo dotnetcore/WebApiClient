@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace WebApiClient
     /// <summary>
     /// 表示将自身作为请求的基本授权
     /// </summary>
+    [DebuggerDisplay("{Authorization} = {authValue}")]
     public class BasicAuth : IApiParameterable
     {
         /// <summary>
@@ -75,7 +77,7 @@ namespace WebApiClient
         /// <returns></returns>
         public override string ToString()
         {
-            return this.authValue;
+            return string.Format("{0}: {1}", scheme, this.authValue);
         }
     }
 }

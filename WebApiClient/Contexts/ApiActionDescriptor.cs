@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -12,6 +13,7 @@ namespace WebApiClient.Contexts
     /// <summary>
     /// 表示请求Api描述
     /// </summary>
+    [DebuggerDisplay("Name = {Name}")]
     public class ApiActionDescriptor : ICloneable
     {
         /// <summary>
@@ -111,15 +113,6 @@ namespace WebApiClient.Contexts
                 Filters = this.Filters,
                 Parameters = this.Parameters.Select(item => (ApiParameterDescriptor)item.Clone()).ToArray()
             };
-        }
-
-        /// <summary>
-        /// 转换为字符串
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return this.Name;
         }
     }
 }

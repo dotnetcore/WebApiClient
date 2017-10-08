@@ -18,16 +18,16 @@ namespace WebApiClient.Attributes
     /// </summary>
     public class FormContentAttribute : HttpContentAttribute
     {
+
         /// <summary>
-        /// 生成http请求内容
+        /// 设置参数到http请求内容
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
-        /// <returns></returns>
-        protected override Task<HttpContent> GenerateHttpContentAsync(ApiActionContext context, ApiParameterDescriptor parameter)
+        protected override async Task SetHttpContentAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var keyValues = base.FormatParameter(parameter);
-            return context.RequestMessage.Content.MergeKeyValuesAsync(keyValues);
+            var keyValues = parameter.FormatAsKeyValues();
+            await context.RequestMessage.AddFieldAsync(keyValues);
         }
     }
 }

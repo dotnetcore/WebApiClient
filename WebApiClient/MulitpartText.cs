@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -11,6 +12,7 @@ namespace WebApiClient
     /// <summary>
     /// 表示将自身作为multipart/form-data的一个文本项
     /// </summary>
+    [DebuggerDisplay("{value}")]
     public class MulitpartText : IApiParameterable
     {
         /// <summary>
@@ -44,20 +46,8 @@ namespace WebApiClient
         /// <returns></returns>
         async Task IApiParameterable.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var httpContent = context.EnsureNoGet().RequestMessage.Content.CastOrCreateMultipartContent();
-            httpContent.AddText(parameter.Name, this.stringValue);
-            context.RequestMessage.Content = httpContent;
-
+            context.RequestMessage.AddText(parameter.Name, this.stringValue);
             await TaskExtend.CompletedTask;
-        }
-
-        /// <summary>
-        /// 转换为字符串
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return this.stringValue;
         }
 
         /// <summary>

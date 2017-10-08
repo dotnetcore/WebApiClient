@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace WebApiClient.Attributes
     /// <summary>
     /// 表示请求的基本授权
     /// </summary>
+    [DebuggerDisplay("{baiscAuth}")]
     public class BasicAuthAttribute : ApiActionAttribute
     {
         /// <summary>
@@ -36,15 +38,6 @@ namespace WebApiClient.Attributes
         public override Task BeforeRequestAsync(ApiActionContext context)
         {
             return this.baiscAuth.BeforeRequestAsync(context, null);
-        }
-
-        /// <summary>
-        /// 转换为字符串
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return this.baiscAuth.ToString();
-        }
+        } 
     }
 }

@@ -57,7 +57,7 @@ namespace WebApiClient
         /// <returns></returns>
         public static TInterface Create<TInterface>(HttpApiConfig httpApiConfig) where TInterface : class
         {
-            CheckApiInterface<TInterface>();
+            EnsureApiInterface<TInterface>();
 
             if (httpApiConfig == null)
             {
@@ -68,20 +68,20 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 检测接口的正确性
+        /// 确保类型是Api接口
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
-        private static void CheckApiInterface<T>()
+        private static void EnsureApiInterface<T>()
         {
-            var type = typeof(T);
-            if (type.IsInterface == false)
+            var apiType = typeof(T);
+            if (apiType.IsInterface == false)
             {
                 throw new ArgumentException(typeof(T).Name + "不是接口类型");
             }
 
-            foreach (var m in type.GetMethods())
+            foreach (var m in apiType.GetMethods())
             {
                 if (m.ReturnType == voidType && m.Equals(disposeMethod) == false)
                 {

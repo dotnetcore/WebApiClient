@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace WebApiClient.Attributes
     /// 例如http://www.webapiclient.com
     /// 不可继承
     /// </summary>
+    [DebuggerDisplay("Host = {Host}")]
     public sealed class HttpHostAttribute : ApiActionAttribute
     {
         /// <summary>

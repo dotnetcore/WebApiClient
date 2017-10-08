@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -12,6 +13,7 @@ namespace WebApiClient.Attributes
     /// 表示Http请求Header的特性
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method | AttributeTargets.Parameter, AllowMultiple = true, Inherited = true)]
+    [DebuggerDisplay("{name} = {value}")]
     public class HeaderAttribute : ApiActionAttribute, IApiParameterAttribute
     {
         /// <summary>
@@ -189,15 +191,6 @@ namespace WebApiClient.Attributes
                    let value = kv.Length > 1 ? kv.LastOrDefault() : string.Empty
                    let encode = HttpUtility.UrlEncode(value, Encoding.UTF8)
                    select new Cookie(name, encode);
-        }
-
-        /// <summary>
-        /// 转换为字符串
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return string.Format("{0} = {1}", this.name, this.value);
         }
     }
 }

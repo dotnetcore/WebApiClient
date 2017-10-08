@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -27,36 +28,11 @@ namespace WebApiClient.Contexts
         /// <summary>
         /// 获取关联的HttpRequestMessage
         /// </summary>
-        public HttpRequestMessage RequestMessage { get; internal set; }
+        public HttpApiRequestMessage RequestMessage { get; internal set; }
 
         /// <summary>
         /// 获取关联的HttpResponseMessage
         /// </summary>
         public HttpResponseMessage ResponseMessage { get; internal set; }
-
-        /// <summary>
-        /// 转换为字符串
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return this.ApiActionDescriptor.ToString();
-        }
-
-        /// <summary>
-        /// 确保不是get之类的请求
-        /// </summary>
-        /// <exception cref="NotSupportedException"></exception>
-        /// <returns></returns>
-        internal ApiActionContext EnsureNoGet()
-        {
-            var method = this.RequestMessage.Method;
-            if (method == HttpMethod.Get || method == HttpMethod.Head)
-            {
-                var message = string.Format("{0}方法不支持使用{1}", method, this.GetType().Name);
-                throw new NotSupportedException(message);
-            }
-            return this;
-        }
     }
 }

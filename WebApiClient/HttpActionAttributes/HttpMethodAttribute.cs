@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -13,6 +14,7 @@ namespace WebApiClient.Attributes
     /// 表示http请求方法描述特性
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    [DebuggerDisplay("Method = {Method}")]
     public class HttpMethodAttribute : ApiActionAttribute
     {
         /// <summary>
@@ -77,15 +79,6 @@ namespace WebApiClient.Attributes
                 context.RequestMessage.RequestUri = new Uri(baseUrl, this.Path);
             }
             return TaskExtend.CompletedTask;
-        }
-
-        /// <summary>
-        /// 转换为字符串
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return string.Format("{0} {1}", this.Method, this.Path);
         }
     }
 }

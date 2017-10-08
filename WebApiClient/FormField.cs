@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -12,6 +13,7 @@ namespace WebApiClient
     /// <summary>
     /// 表示将自身作为x-www-form-urlencoded的字段
     /// </summary>
+    [DebuggerDisplay("{stringValue}")]
     public class FormField : IApiParameterable
     {
         /// <summary>
@@ -45,22 +47,8 @@ namespace WebApiClient
         /// <param name="parameter">特性关联的参数</param>
         /// <returns></returns>
         async Task IApiParameterable.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
-        { 
-            var keyValue = new KeyValuePair<string, string>(parameter.Name, this.stringValue);
-            var httpContent = await context.EnsureNoGet().RequestMessage.Content.MergeKeyValuesAsync(new[] { keyValue });
-            context.RequestMessage.Content = httpContent;
-
-            await TaskExtend.CompletedTask;
-        }
-
-
-        /// <summary>
-        /// 转换为字符串
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
         {
-            return this.stringValue;
+            await context.RequestMessage.AddFieldAsync(parameter.Name, this.stringValue);
         }
 
         /// <summary>

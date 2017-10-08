@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -13,6 +14,7 @@ namespace WebApiClient
     /// <summary>
     /// 表示将自身作为multipart/form-data的一个文件项
     /// </summary>
+    [DebuggerDisplay("FileName = {FileName}")]
     public class MulitpartFile : IApiParameterable
     {
         /// <summary>
@@ -83,9 +85,7 @@ namespace WebApiClient
         /// <param name="parameter">特性关联的参数</param>
         async Task IApiParameterable.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var httpContent = context.EnsureNoGet().RequestMessage.Content.CastOrCreateMultipartContent();
-            httpContent.AddFile(this.GetStream(), parameter.Name, this.FileName, this.ContentType);
-            context.RequestMessage.Content = httpContent;
+            context.RequestMessage.AddFile(this.GetStream(), parameter.Name, this.FileName, this.ContentType);
             await TaskExtend.CompletedTask;
         }
 
@@ -103,15 +103,6 @@ namespace WebApiClient
             {
                 return new FileStream(this.filePath, FileMode.Open, FileAccess.Read);
             }
-        }
-
-        /// <summary>
-        /// 转换为字符串
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return this.FileName;
         }
     }
 }

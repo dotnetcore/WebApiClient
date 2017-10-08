@@ -57,13 +57,13 @@
     <Compile Include="HttpActionAttributes\BasicAuthAttribute.cs" />
     <Compile Include="HttpActionAttributes\HttpOptionsAttribute.cs" />
     <Compile Include="HttpApiConfig.cs" />
+    <Compile Include="HttpApiRequestMessage.cs" />
     <Compile Include="IApiParameterable.cs" />
     <Compile Include="Attributes\HeaderAttribute.cs" />
     <Compile Include="HttpActionAttributes\ProxyAttribute.cs" />
     <Compile Include="IAttributeMultiplable.cs" />
     <Compile Include="Internal\ApiInterceptor.cs" />
     <Compile Include="Internal\MimeTable.cs" />
-    <Compile Include="Internal\HttpContentExtend.cs" />
     <Compile Include="Internal\DefaultHttpClientHandler.cs" />
     <Compile Include="Internal\MulitpartFileContent.cs" />
     <Compile Include="Internal\HttpUtility.cs" />

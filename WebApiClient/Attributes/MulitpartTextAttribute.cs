@@ -60,10 +60,7 @@ namespace WebApiClient.Attributes
                 throw new NotSupportedException("请传入name和value参数：" + this.GetType().Name);
             }
 
-            var httpContent = context.EnsureNoGet().RequestMessage.Content.CastOrCreateMultipartContent();
-            httpContent.AddText(this.name, this.value);
-            context.RequestMessage.Content = httpContent;
-
+            context.RequestMessage.AddText(this.name, this.value);
             await TaskExtend.CompletedTask;
         }
 
@@ -76,10 +73,7 @@ namespace WebApiClient.Attributes
         async Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var stringValue = parameter.Value == null ? null : parameter.Value.ToString();
-            var httpContent = context.EnsureNoGet().RequestMessage.Content.CastOrCreateMultipartContent();
-            httpContent.AddText(parameter.Name, stringValue);
-            context.RequestMessage.Content = httpContent;
-
+            context.RequestMessage.AddText(parameter.Name, stringValue);
             await TaskExtend.CompletedTask;
         }
     }

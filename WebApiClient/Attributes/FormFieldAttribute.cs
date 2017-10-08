@@ -60,9 +60,7 @@ namespace WebApiClient.Attributes
                 throw new NotSupportedException("请传入name和value参数：" + this.GetType().Name);
             }
 
-            var keyValue = new KeyValuePair<string, string>(this.name, this.value);
-            var httpContent = await context.EnsureNoGet().RequestMessage.Content.MergeKeyValuesAsync(new[] { keyValue });
-            context.RequestMessage.Content = httpContent;
+            await context.RequestMessage.AddFieldAsync(this.name, this.value);
         }
 
         /// <summary>
@@ -74,9 +72,7 @@ namespace WebApiClient.Attributes
         async Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var stringValue = parameter.Value == null ? null : parameter.Value.ToString();
-            var keyValue = new KeyValuePair<string, string>(parameter.Name, stringValue);
-            var httpContent = await context.EnsureNoGet().RequestMessage.Content.MergeKeyValuesAsync(new[] { keyValue });
-            context.RequestMessage.Content = httpContent;
+            await context.RequestMessage.AddFieldAsync(parameter.Name, stringValue);
         }
     }
 }
