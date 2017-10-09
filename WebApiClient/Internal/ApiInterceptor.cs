@@ -53,7 +53,7 @@ namespace WebApiClient
             }
             else
             {
-                invocation.ReturnValue = this.ExecuteHttpApi(invocation);
+                invocation.ReturnValue = this.ExecuteApi(invocation);
             }
         }
 
@@ -62,7 +62,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="invocation">上下文</param>
         /// <returns></returns>
-        private Task ExecuteHttpApi(IInvocation invocation)
+        private Task ExecuteApi(IInvocation invocation)
         {
             var cache = ApiDescriptorCache.GetApiActionDescriptor(invocation);
             var actionDescripter = cache.Clone() as ApiActionDescriptor;

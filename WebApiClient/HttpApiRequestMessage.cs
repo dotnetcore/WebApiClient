@@ -23,7 +23,7 @@ namespace WebApiClient
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        public virtual async Task AddFieldAsync(string name, string value)
+        public async Task AddFieldAsync(string name, string value)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -40,9 +40,9 @@ namespace WebApiClient
         /// <param name="keyValues">键值对</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        public virtual async Task AddFieldAsync(IEnumerable<KeyValuePair<string, string>> keyValues)
+        public async Task AddFieldAsync(IEnumerable<KeyValuePair<string, string>> keyValues)
         {
-            this.EnsureNotGet();
+            this.EnsureNotGetOrHead();
 
             if (keyValues == null)
             {
@@ -93,7 +93,7 @@ namespace WebApiClient
         /// <returns></returns>
         private static byte[] MergeBytes(byte[] formBody, byte[] byteConent)
         {
-            if (formBody == null || formBody.Length == 0)
+            if (formBody == null || formBody.Length == 0 || byteConent == null)
             {
                 return byteConent;
             }
@@ -105,7 +105,6 @@ namespace WebApiClient
         }
 
 
-
         /// <summary>
         /// 添加文件内容到已有的Content
         /// 要求content-type为multipart/form-data
@@ -115,9 +114,9 @@ namespace WebApiClient
         /// <param name="fileName">文件名</param>
         /// <param name="contentType">文件Mime</param>
         /// <exception cref="NotSupportedException"></exception>
-        public virtual void AddFile(Stream stream, string name, string fileName, string contentType)
+        public void AddFile(Stream stream, string name, string fileName, string contentType)
         {
-            this.EnsureNotGet();
+            this.EnsureNotGetOrHead();
 
             var httpContent = this.CastOrCreateMultipartContent();
             var fileContent = new MulitpartFileContent(stream, name, fileName, contentType);
@@ -134,7 +133,7 @@ namespace WebApiClient
         /// <exception cref="ArgumentNullException"></exception>
         public void AddText(IEnumerable<KeyValuePair<string, string>> keyValues)
         {
-            this.EnsureNotGet();
+            this.EnsureNotGetOrHead();
 
             foreach (var kv in keyValues)
             {
@@ -151,9 +150,9 @@ namespace WebApiClient
         /// <param name="value">文本</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
-        public virtual void AddText(string name, string value)
+        public void AddText(string name, string value)
         {
-            this.EnsureNotGet();
+            this.EnsureNotGetOrHead();
             this.AddTextInternal(name, value);
         }
 
@@ -232,7 +231,7 @@ namespace WebApiClient
         /// 返回关联的HttpContent对象
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
-        private void EnsureNotGet()
+        private void EnsureNotGetOrHead()
         {
             if (this.Method == HttpMethod.Get || this.Method == HttpMethod.Head)
             {

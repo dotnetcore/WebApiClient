@@ -43,21 +43,22 @@ namespace WebApiClient
         /// <returns></returns>
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            request.Headers.Remove("Connection");
+            const string scheme = "Connection";
+            request.Headers.Remove(scheme);
 
             if (this.KeepAlive == false)
             {
-                request.Headers.Add("Connection", "close");
+                request.Headers.Add(scheme, "close");
             }
             else
             {
                 if (Interlocked.CompareExchange(ref this.sendTimes, 1, 0) == 0)
                 {
-                    request.Headers.Add("Connection", string.Empty);
+                    request.Headers.Add(scheme, string.Empty);
                 }
                 else
                 {
-                    request.Headers.Add("Connection", "keep-alive");
+                    request.Headers.Add(scheme, "keep-alive");
                 }
             }
             return base.SendAsync(request, cancellationToken);
