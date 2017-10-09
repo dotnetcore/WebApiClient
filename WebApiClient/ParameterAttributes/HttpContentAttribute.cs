@@ -49,6 +49,7 @@ namespace WebApiClient.Attributes
         /// <param name="parameter">特性关联的参数</param>
         protected virtual void SetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
+            context.RequestMessage.Content = parameter.Value as HttpContent;
         }
     }
 }
