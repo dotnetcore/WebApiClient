@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiClient", "WebApiClient\WebApiClient.csproj", "{DC333CC3-7576-45A7-9A17-E5D53F091453}"
 EndProject
@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A32DE2DA-BB2C-471F-9D6A-3CF8EDC39803}"
 	ProjectSection(SolutionItems) = preProject
 		Laojiu.WebApiClient.1.0.1.nupkg = Laojiu.WebApiClient.1.0.1.nupkg
+		Laojiu.WebApiClient.1.0.2.nupkg = Laojiu.WebApiClient.1.0.2.nupkg
 	EndProjectSection
 EndProject
 Global
