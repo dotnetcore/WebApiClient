@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiClient;
 using WebApiClient.Attributes;
-using WebApiClient.Contexts;
 
 namespace Demo
 {

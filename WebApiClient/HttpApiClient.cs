@@ -9,7 +9,6 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClient.Attributes;
-using WebApiClient.Contexts;
 
 namespace WebApiClient
 {
