@@ -72,8 +72,7 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         async Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var stringValue = parameter.Value == null ? null : parameter.Value.ToString();
-            context.RequestMessage.AddText(parameter.Name, stringValue);
+            context.RequestMessage.AddText(parameter.Name, parameter.ToString());
             await TaskExtend.CompletedTask;
         }
     }

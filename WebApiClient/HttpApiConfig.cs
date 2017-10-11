@@ -31,6 +31,11 @@ namespace WebApiClient
         public IStringFormatter JsonFormatter { get; set; }
 
         /// <summary>
+        /// 获取或设置KeyValue格式化工具
+        /// </summary>
+        public IKeyValueFormatter KeyValueFormatter { get; set; }
+
+        /// <summary>
         /// 获取或设置Http处理程序
         /// </summary>
         public HttpClientHandler HttpClientHandler { get; set; }
@@ -60,6 +65,11 @@ namespace WebApiClient
             if (this.JsonFormatter == null)
             {
                 this.JsonFormatter = new DefaultJsonFormatter();
+            }
+
+            if (this.KeyValueFormatter == null)
+            {
+                this.KeyValueFormatter = new DefaultKeyValueFormatter();
             }
 
             if (this.HttpClientHandler == null)
@@ -115,6 +125,7 @@ namespace WebApiClient
             {
                 this.XmlFormatter = null;
                 this.JsonFormatter = null;
+                this.KeyValueFormatter = null;
                 this.HttpClient = null;
                 this.HttpClientHandler = null;
                 this.HttpHost = null;

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
+using WebApiClient.Contexts;
 
 namespace WebApiClient
 {
@@ -15,23 +16,23 @@ namespace WebApiClient
     class DefaultXmlFormatter : IStringFormatter
     {
         /// <summary>
-        /// 序列化为xml文本
+        /// 将参数值序列化为xml文本
         /// </summary>
-        /// <param name="obj">对象</param>
+        /// <param name="parameter">对象</param>
         /// <param name="encoding">编码</param>
         /// <returns></returns>
-        public string Serialize(object obj, Encoding encoding)
+        public string Serialize(ApiParameterDescriptor parameter, Encoding encoding)
         {
-            if (obj == null)
+            if (parameter.Value == null)
             {
                 return null;
             }
 
-            var xmlSerializer = new XmlSerializer(obj.GetType());
+            var xmlSerializer = new XmlSerializer(parameter.ParameterType);
             using (var stream = new MemoryStream())
             {
                 var xmlWriter = new XmlTextWriter(stream, encoding);
-                xmlSerializer.Serialize(xmlWriter, obj);
+                xmlSerializer.Serialize(xmlWriter, parameter.Value);
                 return encoding.GetString(stream.ToArray());
             }
         }

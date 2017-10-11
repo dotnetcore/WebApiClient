@@ -65,7 +65,7 @@ namespace WebApiClient.Attributes
         protected override void SetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var formater = context.HttpApiConfig.XmlFormatter;
-            var content = parameter.FormatAsString(formater, this.encoding);
+            var content = formater.Serialize(parameter, this.encoding);
             context.RequestMessage.Content = new StringContent(content, this.encoding, "application/xml");
         }
     }

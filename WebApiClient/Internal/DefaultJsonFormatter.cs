@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiClient.Contexts;
 
 namespace WebApiClient
 {
@@ -12,19 +13,19 @@ namespace WebApiClient
     class DefaultJsonFormatter : IStringFormatter
     {
         /// <summary>
-        /// 序列化为json文本
+        /// 将参数值序列化为json文本
         /// </summary>
-        /// <param name="obj">对象</param>
+        /// <param name="parameter">对象</param>
         /// <param name="encoding">编码</param>
         /// <returns></returns>
-        public string Serialize(object obj, Encoding encoding)
+        public string Serialize(ApiParameterDescriptor parameter, Encoding encoding)
         {
-            if (obj == null)
+            if (parameter.Value == null)
             {
                 return null;
             }
             var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
-            return serializer.Serialize(obj);
+            return serializer.Serialize(parameter.Value);
         }
 
         /// <summary>

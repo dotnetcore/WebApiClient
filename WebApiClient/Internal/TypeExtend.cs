@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,9 +15,41 @@ namespace WebApiClient
     static class TypeExtend
     {
         /// <summary>
+        /// void类型
+        /// </summary>
+        private static readonly Type voidType = typeof(void);
+
+        /// <summary>
+        /// dispose方法
+        /// </summary>
+        private static readonly MethodInfo disposeMethod = typeof(IDisposable).GetMethods().FirstOrDefault();
+
+        /// <summary>
         /// 缓存
         /// </summary>
         private static readonly ConcurrentDictionary<Type, bool> typeAllowMultipleCache = new ConcurrentDictionary<Type, bool>();
+
+        /// <summary>
+        /// 确保类型是Api接口
+        /// </summary>
+        /// <param name="apiType">接口类型</param>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        public static void EnsureApiInterface(this Type apiType)
+        {
+            if (apiType.IsInterface == false)
+            {
+                throw new ArgumentException(apiType.Name + "不是接口类型");
+            }
+
+            foreach (var m in apiType.GetMethods())
+            {
+                if (m.ReturnType == voidType && m.Equals(disposeMethod) == false)
+                {
+                    throw new NotSupportedException("不支持的void返回方法：" + m);
+                }
+            }
+        }
 
         /// <summary>
         /// 获取是否为简单类型

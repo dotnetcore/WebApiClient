@@ -20,19 +20,9 @@ namespace WebApiClient
     public static class HttpApiClient
     {
         /// <summary>
-        /// void类型
-        /// </summary>
-        private static readonly Type voidType = typeof(void);
-
-        /// <summary>
         /// 代理生成器
         /// </summary>
         private static readonly ProxyGenerator generator = new ProxyGenerator();
-
-        /// <summary>
-        /// dispose方法
-        /// </summary>
-        private static readonly MethodInfo disposeMethod = typeof(IDisposable).GetMethods().FirstOrDefault();
 
         /// <summary>
         /// 创建请求接口的实例
@@ -57,7 +47,7 @@ namespace WebApiClient
         /// <returns></returns>
         public static TInterface Create<TInterface>(HttpApiConfig httpApiConfig) where TInterface : class
         {
-            EnsureApiInterface<TInterface>();
+            typeof(TInterface).EnsureApiInterface();
 
             if (httpApiConfig == null)
             {
@@ -65,29 +55,6 @@ namespace WebApiClient
             }
             var interceptor = new ApiInterceptor(httpApiConfig);
             return generator.CreateInterfaceProxyWithoutTarget<TInterface>(interceptor);
-        }
-
-        /// <summary>
-        /// 确保类型是Api接口
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="NotSupportedException"></exception>
-        private static void EnsureApiInterface<T>()
-        {
-            var apiType = typeof(T);
-            if (apiType.IsInterface == false)
-            {
-                throw new ArgumentException(typeof(T).Name + "不是接口类型");
-            }
-
-            foreach (var m in apiType.GetMethods())
-            {
-                if (m.ReturnType == voidType && m.Equals(disposeMethod) == false)
-                {
-                    throw new NotSupportedException("不支持的void返回方法：" + m);
-                }
-            }
         }
     }
 }

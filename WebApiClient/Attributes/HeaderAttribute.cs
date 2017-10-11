@@ -94,8 +94,7 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var headerValue = parameter.Value == null ? null : parameter.Value.ToString();
-            this.SetHeaderValue(context, headerValue);
+            this.SetHeaderValue(context, parameter.ToString());
             return TaskExtend.CompletedTask;
         }
 
