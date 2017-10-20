@@ -63,8 +63,8 @@ namespace WebApiClient.Attributes
         /// <param name="parameter">特性关联的参数</param>
         protected override void SetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var formater = context.HttpApiConfig.XmlFormatter;
-            var content = formater.Serialize(parameter, this.encoding);
+            var formatter = context.HttpApiConfig.XmlFormatter;
+            var content = formatter.Serialize(parameter, this.encoding);
             context.RequestMessage.Content = new StringContent(content, this.encoding, "application/xml");
         }
     }

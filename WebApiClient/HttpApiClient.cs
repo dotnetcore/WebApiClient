@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -22,6 +23,21 @@ namespace WebApiClient
         /// 代理生成器
         /// </summary>
         private static readonly ProxyGenerator generator = new ProxyGenerator();
+
+        /// <summary>
+        /// 获取或设置一个站点内的连接数限制
+        /// </summary>
+        public static int ConnectionLimit
+        {
+            get
+            {
+                return ServicePointManager.DefaultConnectionLimit;
+            }
+            set
+            {
+                ServicePointManager.DefaultConnectionLimit = value;
+            }
+        }
 
         /// <summary>
         /// 创建请求接口的实例

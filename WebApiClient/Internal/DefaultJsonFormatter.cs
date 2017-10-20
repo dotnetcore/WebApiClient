@@ -35,6 +35,10 @@ namespace WebApiClient
         /// <returns></returns>
         public object Deserialize(string json, Type objType)
         {
+            if (string.IsNullOrEmpty(json))
+            {
+                return null;
+            }
             var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
             return serializer.Deserialize(json, objType);
         }

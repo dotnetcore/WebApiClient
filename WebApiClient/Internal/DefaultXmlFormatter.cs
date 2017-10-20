@@ -44,6 +44,11 @@ namespace WebApiClient
         /// <returns></returns>
         public object Deserialize(string xml, Type objType)
         {
+            if (string.IsNullOrEmpty(xml))
+            {
+                return null;
+            }
+
             var xmlSerializer = new XmlSerializer(objType);
             using (var reader = new StringReader(xml))
             {

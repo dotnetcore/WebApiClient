@@ -13,6 +13,7 @@ namespace WebApiClient.Attributes
     /// 支持单一值类型如string、int、guid、枚举等，以及他们的可空类型或集合
     /// 支持POCO类型、IDictionaryOf(string,string)类型、IDictionaryOf(string,object)类型
     /// 没有任何特性修饰的普通参数，将默认为PathQuery修饰
+    /// 依赖于HttpApiConfig.KeyValueFormatter
     /// 不可继承
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
@@ -36,60 +37,25 @@ namespace WebApiClient.Attributes
             var uri = context.RequestMessage.RequestUri;
             var url = uri.ToString();
             var relativeUrl = url.Substring(url.IndexOf(uri.AbsolutePath)).TrimEnd('&', '?');
+            var keyValues = context.HttpApiConfig.KeyValueFormatter.Serialize(parameter);
+            var pathQuery = this.GetPathQuery(relativeUrl, keyValues);
 
-            var pathQuery = this.GetPathQuery(relativeUrl, parameter);
             context.RequestMessage.RequestUri = new Uri(uri, pathQuery);
             await TaskExtend.CompletedTask;
         }
 
-        /// <summary>
-        /// 获取新的Path与Query
-        /// </summary>
-        /// <param name="pathQuery">原始path与query</param>
-        /// <param name="parameter">特性关联的参数</param>
-        /// <returns></returns>
-        private string GetPathQuery(string pathQuery, ApiParameterDescriptor parameter)
-        {
-            if (parameter.IsSimpleType == true)
-            {
-                return this.GetSimplePathQuery(pathQuery, parameter.Name, parameter.Value);
-            }
-
-            if (parameter.IsDictionaryOfObject == true)
-            {
-                return this.GetDictionaryPathQuery<object>(pathQuery, parameter);
-            }
-
-            if (parameter.IsDictionaryOfString == true)
-            {
-                return this.GetDictionaryPathQuery<string>(pathQuery, parameter);
-            }
-
-            if (parameter.IsEnumerable == true)
-            {
-                return this.GetEnumerablePathQuery(pathQuery, parameter);
-            }
-
-            return this.GetComplexPathQuery(pathQuery, parameter);
-        }
 
         /// <summary>
         /// 获取新的Path与Query
         /// </summary>
         /// <param name="pathQuery">原始path与query</param>
-        /// <param name="parameter">参数</param>
+        /// <param name="keyValues">键值对</param>
         /// <returns></returns>
-        private string GetDictionaryPathQuery<TValue>(string pathQuery, ApiParameterDescriptor parameter)
+        private string GetPathQuery(string pathQuery, IEnumerable<KeyValuePair<string, string>> keyValues)
         {
-            var dic = parameter.Value as IDictionary<string, TValue>;
-            if (dic == null)
+            foreach (var keyValue in keyValues)
             {
-                return pathQuery;
-            }
-
-            foreach (var kv in dic)
-            {
-                pathQuery = this.GetSimplePathQuery(pathQuery, kv.Key, kv.Value);
+                pathQuery = this.GetPathQuery(pathQuery, keyValue);
             }
             return pathQuery;
         }
@@ -98,63 +64,22 @@ namespace WebApiClient.Attributes
         /// 获取新的Path与Query
         /// </summary>
         /// <param name="pathQuery">原始path与query</param>
-        /// <param name="parameter">参数</param>
+        /// <param name="keyValue">键值对</param>
         /// <returns></returns>
-        private string GetEnumerablePathQuery(string pathQuery, ApiParameterDescriptor parameter)
+        private string GetPathQuery(string pathQuery, KeyValuePair<string, string> keyValue)
         {
-            var array = parameter.Value as IEnumerable;
-            if (array == null)
-            {
-                return pathQuery;
-            }
-
-            foreach (var item in array)
-            {
-                pathQuery = this.GetSimplePathQuery(pathQuery, parameter.Name, item);
-            }
-            return pathQuery;
-        }
-
-        /// <summary>
-        /// 获取新的Path与Query
-        /// </summary>
-        /// <param name="pathQuery">原始path与query</param>
-        /// <param name="parameter">参数</param>
-        /// <returns></returns>
-        private string GetComplexPathQuery(string pathQuery, ApiParameterDescriptor parameter)
-        {
-            var instance = parameter.Value;
-            var instanceType = parameter.ParameterType;
-
-            var properties = Property.GetProperties(instanceType);
-            foreach (var p in properties)
-            {
-                var value = instance == null ? null : p.GetValue(instance);
-                pathQuery = this.GetSimplePathQuery(pathQuery, p.Name, value);
-            }
-            return pathQuery;
-        }
-
-        /// <summary>
-        /// 获取新的Path与Query
-        /// </summary>
-        /// <param name="pathQuery">原始path与query</param>
-        /// <param name="name">名称</param>
-        /// <param name="value">值</param>
-        /// <returns></returns>
-        private string GetSimplePathQuery(string pathQuery, string name, object value)
-        {
-            var valueString = value == null ? string.Empty : value.ToString();
-            var regex = new Regex("{" + name + "}", RegexOptions.IgnoreCase);
+            var key = keyValue.Key;
+            var value = keyValue.Value == null ? string.Empty : keyValue.Value;
+            var regex = new Regex("{" + key + "}", RegexOptions.IgnoreCase);
 
             if (regex.IsMatch(pathQuery) == true)
             {
-                return regex.Replace(pathQuery, valueString);
+                return regex.Replace(pathQuery, value);
             }
 
-            var keyValue = string.Format("{0}={1}", name, valueString);
+            var query = string.Format("{0}={1}", key, value);
             var concat = pathQuery.Contains('?') ? "&" : "?";
-            return pathQuery + concat + keyValue;
+            return pathQuery + concat + query;
         }
     }
 }
