@@ -74,7 +74,7 @@ namespace WebApiClient
 
             if (this.HttpClientHandler == null)
             {
-                this.HttpClientHandler = new DefaultHttpClientHandler(keepAlive: true);
+                this.HttpClientHandler = new DefaultHttpClientHandler();
             }
 
             if (this.HttpClient == null)

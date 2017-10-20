@@ -20,17 +20,15 @@ namespace WebApiClient
         private int sendTimes = 0;
 
         /// <summary>
-        /// 获取是否keepAlive
+        /// 获取是否短连接
         /// </summary>
-        public bool KeepAlive { get; private set; }
+        public bool ConnectionClose { get; set; }
 
         /// <summary>
-        /// keep-alive的HttpClientHandler
+        /// HttpClientHandler
         /// </summary>
-        /// <param name="keepAlive">keepAlive</param>
-        public DefaultHttpClientHandler(bool keepAlive)
+        public DefaultHttpClientHandler()
         {
-            this.KeepAlive = keepAlive;
             this.UseProxy = false;
             this.AutomaticDecompression = DecompressionMethods.GZip;
         }
@@ -43,23 +41,14 @@ namespace WebApiClient
         /// <returns></returns>
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            const string scheme = "Connection";
-            request.Headers.Remove(scheme);
-
-            if (this.KeepAlive == false)
+            request.Headers.Connection.Clear();
+            if (this.ConnectionClose == true)
             {
-                request.Headers.Add(scheme, "close");
+                request.Headers.Connection.Add("close");
             }
-            else
+            else if (Interlocked.CompareExchange(ref this.sendTimes, 1, 0) == 1)
             {
-                if (Interlocked.CompareExchange(ref this.sendTimes, 1, 0) == 0)
-                {
-                    request.Headers.Add(scheme, string.Empty);
-                }
-                else
-                {
-                    request.Headers.Add(scheme, "keep-alive");
-                }
+                request.Headers.Connection.Add("keep-alive");
             }
             return base.SendAsync(request, cancellationToken);
         }
