@@ -74,7 +74,7 @@ namespace WebApiClient
             }
 
             return
-                from p in Property.GetProperties(parameter.ParameterType)
+                from p in Property.GetProperties(instance.GetType())
                 let value = p.GetValue(instance)
                 select this.FormatAsSimple(p.Name, value);
         }
