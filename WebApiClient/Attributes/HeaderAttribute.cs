@@ -144,16 +144,19 @@ namespace WebApiClient.Attributes
         /// <param name="cookieValues">cookie值</param>
         private void SetCookieToHeader(ApiActionContext context, string cookieValues)
         {
-            var cookieItems = this
-                .GetCookies(cookieValues)
-                .Select(item => string.Format("{0}={1}", item.Name, item.Value));
-
-            var encodeCookies = string.Join("; ", cookieItems).Trim();
             var header = context.RequestMessage.Headers;
-
             const string cookieName = "Cookie";
             header.Remove(cookieName);
-            header.TryAddWithoutValidation(cookieName, encodeCookies);
+
+            var cookieItems = this
+               .GetCookies(cookieValues)
+               .Select(item => string.Format("{0}={1}", item.Name, item.Value));
+
+            var cookieHeader = string.Join("; ", cookieItems);
+            if (string.IsNullOrEmpty(cookieHeader) == false)
+            {
+                header.TryAddWithoutValidation(cookieName, cookieHeader);
+            }
         }
 
         /// <summary>
