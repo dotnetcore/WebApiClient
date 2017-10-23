@@ -36,10 +36,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Castle.Core.4.2.0\lib\net45\Castle.Core.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net" />
@@ -62,6 +58,7 @@
     <Compile Include="HttpActionAttributes\ProxyAttribute.cs" />
     <Compile Include="IAttributeMultiplable.cs" />
     <Compile Include="IKeyValueFormatter.cs" />
+    <Compile Include="IApiInterceptor.cs" />
     <Compile Include="Internal\ApiInterceptor.cs" />
     <Compile Include="Internal\DefaultKeyValueFormatter.cs" />
     <Compile Include="Internal\MimeTable.cs" />
@@ -70,6 +67,7 @@
     <Compile Include="Internal\HttpUtility.cs" />
     <Compile Include="Internal\MulitpartTextContent.cs" />
     <Compile Include="Internal\TypeExtend.cs" />
+    <Compile Include="Internal\ProxyGenerator.cs" />
     <Compile Include="MulitpartText.cs" />
     <Compile Include="Attributes\FormFieldAttribute.cs" />
     <Compile Include="Attributes\MulitpartTextAttribute.cs" />
@@ -116,7 +114,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <EmbeddedResource Include="Internal\Mime.day" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

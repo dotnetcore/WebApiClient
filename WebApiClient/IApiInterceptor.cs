@@ -1,0 +1,38 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace WebApiClient
+{
+    /// <summary>
+    /// 定义http接口拦截器的行为
+    /// </summary>
+    public interface IApiInterceptor
+    {
+        /// <summary>
+        /// 拦截方法的调用
+        /// </summary>
+        /// <param name="target">接口的实例</param>
+        /// <param name="methodIndex">接口的方法索引</param>
+        /// <param name="parameters">接口的参数集合</param>
+        /// <returns></returns>
+        object Intercept(object target, int methodIndex, object[] parameters);
+    }
+
+
+    /// <summary>
+    /// 定义http接口拦截器的行为
+    /// <typeparam name="TInterface">接口类型</typeparam>
+    /// </summary>
+    public interface IApiInterceptor<TInterface> : IApiInterceptor where TInterface : class
+    {
+        /// <summary>
+        /// 提供设置接口的方法
+        /// </summary>
+        MethodInfo[] ApiMethods { set; }
+    }
+}

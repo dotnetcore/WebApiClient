@@ -1,4 +1,4 @@
-﻿using Castle.DynamicProxy;
+﻿
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -19,10 +19,6 @@ namespace WebApiClient
     /// </summary>
     public static class HttpApiClient
     {
-        /// <summary>
-        /// 代理生成器
-        /// </summary>
-        private static readonly ProxyGenerator generator = new ProxyGenerator();
 
         /// <summary>
         /// 获取或设置一个站点内的连接数限制
@@ -68,8 +64,9 @@ namespace WebApiClient
             {
                 httpApiConfig = new HttpApiConfig();
             }
-            var interceptor = new ApiInterceptor(httpApiConfig);
-            return generator.CreateInterfaceProxyWithoutTarget<TInterface>(interceptor);
+
+            var interceptor = new ApiInterceptor<TInterface>(httpApiConfig);
+            return ProxyGenerator.CreateInterfaceProxyWithoutTarget<TInterface>(interceptor);
         }
     }
 }

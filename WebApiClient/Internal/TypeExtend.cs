@@ -25,6 +25,11 @@ namespace WebApiClient
         private static readonly MethodInfo disposeMethod = typeof(IDisposable).GetMethods().FirstOrDefault();
 
         /// <summary>
+        /// 接口的方法缓存
+        /// </summary>
+        private static readonly ConcurrentDictionary<Type, MethodInfo[]> interfaceMethodsCache = new ConcurrentDictionary<Type, MethodInfo[]>();
+
+        /// <summary>
         /// 缓存
         /// </summary>
         private static readonly ConcurrentDictionary<Type, bool> typeAllowMultipleCache = new ConcurrentDictionary<Type, bool>();
@@ -42,11 +47,62 @@ namespace WebApiClient
                 throw new ArgumentException(apiType.Name + "不是接口类型");
             }
 
+            if (TypeAttributes.Public != (TypeAttributes.Public & apiType.Attributes))
+            {
+                throw new NotSupportedException(apiType.Name + "必须为public修饰");
+            }
+
             foreach (var m in apiType.GetMethods())
             {
+                if (m.IsGenericMethod == true)
+                {
+                    throw new NotSupportedException("不支持泛型方法：" + m);
+                }
+
                 if (m.ReturnType == voidType && m.Equals(disposeMethod) == false)
                 {
                     throw new NotSupportedException("不支持的void返回方法：" + m);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获取接口类型的所有方法
+        /// </summary>
+        /// <param name="interfaceType"></param>
+        /// <returns></returns>
+        public static MethodInfo[] GetInterfaceAllMethods(this Type interfaceType)
+        {
+            if (interfaceType.IsInterface == false)
+            {
+                throw new NotSupportedException("类型必须为接口类型");
+            }
+
+            return interfaceMethodsCache.GetOrAdd(interfaceType, type =>
+            {
+                var hashSet = new HashSet<Type>();
+                var methodList = new List<MethodInfo>();
+                SearchInterfaceMethods(type, ref hashSet, ref methodList);
+                return methodList.ToArray();
+            });
+        }
+
+        /// <summary>
+        /// 递归查找接口的方法
+        /// </summary>
+        /// <param name="interfaceType"></param>
+        /// <param name="typeHashSet"></param>
+        /// <param name="methodList"></param>
+        private static void SearchInterfaceMethods(Type interfaceType, ref HashSet<Type> typeHashSet, ref List<MethodInfo> methodList)
+        {
+            if (typeHashSet.Add(interfaceType))
+            {
+                var methods = interfaceType.GetMethods();
+                methodList.AddRange(methods);
+
+                foreach (var item in interfaceType.GetInterfaces())
+                {
+                    SearchInterfaceMethods(item, ref typeHashSet, ref methodList);
                 }
             }
         }
@@ -95,5 +151,8 @@ namespace WebApiClient
         {
             return typeAllowMultipleCache.GetOrAdd(type, (t => t.IsInheritFrom<Attribute>() && t.GetAttribute<AttributeUsageAttribute>(true).AllowMultiple));
         }
+
+
+
     }
 }

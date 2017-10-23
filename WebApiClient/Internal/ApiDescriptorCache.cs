@@ -1,5 +1,4 @@
-﻿using Castle.DynamicProxy;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -21,34 +20,33 @@ namespace WebApiClient
         /// <summary>
         /// 缓存字典
         /// </summary>
-        private static readonly ConcurrentDictionary<IInvocation, ApiActionDescriptor> cache;
+        private static readonly ConcurrentDictionary<MethodInfo, ApiActionDescriptor> cache;
 
         /// <summary>
         /// Castle相关上下文
         /// </summary>
         static ApiDescriptorCache()
         {
-            cache = new ConcurrentDictionary<IInvocation, ApiActionDescriptor>(new IInvocationComparer());
+            cache = new ConcurrentDictionary<MethodInfo, ApiActionDescriptor>();
         }
 
         /// <summary>
         /// 从缓存获得ApiActionDescriptor
         /// </summary>
-        /// <param name="invocation">拦截内容</param>
+        /// <param name="method">接口的方法</param>
         /// <returns></returns>
-        public static ApiActionDescriptor GetApiActionDescriptor(IInvocation invocation)
+        public static ApiActionDescriptor GetApiActionDescriptor(MethodInfo method)
         {
-            return cache.GetOrAdd(invocation, GetActionDescriptor);
+            return cache.GetOrAdd(method, GetActionDescriptor);
         }
 
         /// <summary>
         /// 从拦截内容获得ApiActionDescriptor
         /// </summary>
-        /// <param name="invocation">拦截内容</param>
+        /// <param name="method">接口的方法</param>
         /// <returns></returns>
-        private static ApiActionDescriptor GetActionDescriptor(IInvocation invocation)
+        private static ApiActionDescriptor GetActionDescriptor(MethodInfo method)
         {
-            var method = invocation.Method;
             if (method.ReturnType.IsGenericType == false || method.ReturnType.GetGenericTypeDefinition() != typeof(Task<>))
             {
                 var message = string.Format("接口{0}返回类型应该是Task<{1}>", method.Name, method.ReturnType.Name);
@@ -171,34 +169,6 @@ namespace WebApiClient
             public int GetHashCode(T obj)
             {
                 return obj.GetType().GetHashCode();
-            }
-        }
-
-
-        /// <summary>
-        /// IInvocation对象的比较器
-        /// </summary>
-        private class IInvocationComparer : IEqualityComparer<IInvocation>
-        {
-            /// <summary>
-            /// 是否相等
-            /// </summary>
-            /// <param name="x"></param>
-            /// <param name="y"></param>
-            /// <returns></returns>
-            public bool Equals(IInvocation x, IInvocation y)
-            {
-                return x.Method.Equals(y.Method);
-            }
-
-            /// <summary>
-            /// 获取哈希码
-            /// </summary>
-            /// <param name="obj"></param>
-            /// <returns></returns>
-            public int GetHashCode(IInvocation obj)
-            {
-                return obj.Method.GetHashCode();
             }
         }
     }

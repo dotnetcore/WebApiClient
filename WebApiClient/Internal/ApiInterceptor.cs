@@ -1,8 +1,6 @@
-﻿using Castle.DynamicProxy;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,8 +9,9 @@ namespace WebApiClient
 {
     /// <summary>
     /// 表示Api的拦截器
+    /// <typeparam name="T"></typeparam>
     /// </summary>
-    class ApiInterceptor : IInterceptor
+    class ApiInterceptor<T> : IApiInterceptor<T> where T : class
     {
         /// <summary>
         /// httpApi配置
@@ -25,6 +24,11 @@ namespace WebApiClient
         private static readonly MethodInfo disposeMethod = typeof(IDisposable).GetMethods().FirstOrDefault();
 
         /// <summary>
+        /// 获取或设置接口的方法
+        /// </summary>
+        public MethodInfo[] ApiMethods { private get; set; }
+
+        /// <summary>
         /// Api的拦截器
         /// </summary>
         /// <param name="apiConfig">httpApi配置</param>
@@ -33,9 +37,8 @@ namespace WebApiClient
         {
             if (apiConfig == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("apiConfig");
             }
-
             apiConfig.SetNullPropertyAsDefault();
             this.httpApiConfig = apiConfig;
         }
@@ -43,32 +46,38 @@ namespace WebApiClient
         /// <summary>
         /// 拦截方法的调用
         /// </summary>
-        /// <param name="invocation">方法上下文</param>
-        public void Intercept(IInvocation invocation)
+        /// <param name="target">接口的实例</param>
+        /// <param name="methodIndex">接口的方法索引</param>
+        /// <param name="parameters">接口的参数集合</param>
+        /// <returns></returns>
+        public object Intercept(object target, int methodIndex, object[] parameters)
         {
-            if (invocation.Method.Equals(disposeMethod) == true)
+            var method = this.ApiMethods[methodIndex];
+            if (method.Equals(disposeMethod) == true)
             {
                 this.httpApiConfig.Dispose();
+                return null;
             }
             else
             {
-                invocation.ReturnValue = this.ExecuteApi(invocation);
+                return this.ExecuteApi(method, parameters);
             }
         }
 
         /// <summary>
         /// 执行Http请求接口
         /// </summary>
-        /// <param name="invocation">上下文</param>
+        /// <param name="method">接口的方法</param>
+        /// <param name="parameters">参数集合</param>
         /// <returns></returns>
-        private Task ExecuteApi(IInvocation invocation)
+        private Task ExecuteApi(MethodInfo method, object[] parameters)
         {
-            var cache = ApiDescriptorCache.GetApiActionDescriptor(invocation);
+            var cache = ApiDescriptorCache.GetApiActionDescriptor(method);
             var actionDescripter = cache.Clone() as ApiActionDescriptor;
 
             for (var i = 0; i < actionDescripter.Parameters.Length; i++)
             {
-                actionDescripter.Parameters[i].Value = invocation.GetArgumentValue(i);
+                actionDescripter.Parameters[i].Value = parameters[i];
             }
 
             var actionContext = new ApiActionContext
