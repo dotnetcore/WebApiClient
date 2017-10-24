@@ -52,16 +52,22 @@ namespace WebApiClient
                 throw new NotSupportedException(apiType.Name + "必须为public修饰");
             }
 
-            foreach (var m in apiType.GetMethods())
+
+            foreach (var m in apiType.GetInterfaceAllMethods())
             {
+                if (m.Equals(disposeMethod) == true)
+                {
+                    continue;
+                }
+
                 if (m.IsGenericMethod == true)
                 {
                     throw new NotSupportedException("不支持泛型方法：" + m);
                 }
 
-                if (m.ReturnType == voidType && m.Equals(disposeMethod) == false)
+                if (m.ReturnType.IsGenericType == false || m.ReturnType.GetGenericTypeDefinition() != typeof(Task<>))
                 {
-                    throw new NotSupportedException("不支持的void返回方法：" + m);
+                    throw new NotSupportedException("返回类型必须为Task<>：" + m);
                 }
             }
         }
@@ -151,8 +157,5 @@ namespace WebApiClient
         {
             return typeAllowMultipleCache.GetOrAdd(type, (t => t.IsInheritFrom<Attribute>() && t.GetAttribute<AttributeUsageAttribute>(true).AllowMultiple));
         }
-
-
-
     }
 }
