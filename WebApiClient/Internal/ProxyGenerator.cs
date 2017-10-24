@@ -25,6 +25,11 @@ namespace WebApiClient
         private static readonly ConcurrentDictionary<Type, Type> proxyCache = new ConcurrentDictionary<Type, Type>();
 
         /// <summary>
+        /// 程序域的AssemblyBuilder缓存
+        /// </summary>
+        private static readonly ConcurrentDictionary<AppDomain, AssemblyBuilder> assemblyCache = new ConcurrentDictionary<AppDomain, AssemblyBuilder>();
+
+        /// <summary>
         /// 创建接口的代理实例
         /// </summary>
         /// <typeparam name="T">接口殴类型</typeparam>
@@ -48,10 +53,10 @@ namespace WebApiClient
         private static Type GenerateProxyType(Type interfaceType, MethodInfo[] apiMethods)
         {
             const string assemblyName = "ApiProxyAssembly";
-            var moduleName = Guid.NewGuid().ToString();
-            var proxyTypeName = interfaceType.Namespace + "." + interfaceType.Name;
+            var moduleName = string.Format("{0}_{1}.dll", interfaceType.Name, Guid.NewGuid());
+            var proxyTypeName = interfaceType.FullName;
 
-            var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(assemblyName), AssemblyBuilderAccess.Run);
+            var assemblyBuilder = assemblyCache.GetOrAdd(AppDomain.CurrentDomain, domain => domain.DefineDynamicAssembly(new AssemblyName(assemblyName), AssemblyBuilderAccess.Run));
             var moduleBuilder = assemblyBuilder.DefineDynamicModule(moduleName);
             var typeBuilder = moduleBuilder.DefineType(proxyTypeName, TypeAttributes.Class, typeof(MarshalByRefObject));
             typeBuilder.AddInterfaceImplementation(interfaceType);
