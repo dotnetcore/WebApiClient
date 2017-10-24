@@ -71,7 +71,6 @@
     <Compile Include="MulitpartText.cs" />
     <Compile Include="Attributes\FormFieldAttribute.cs" />
     <Compile Include="Attributes\MulitpartTextAttribute.cs" />
-    <Compile Include="ParameterAttributes\UrlAttribute.cs" />
     <Compile Include="FilterAttributes\ApiActionFilterAttribute.cs" />
     <Compile Include="HttpActionAttributes\HttpHeadAttribute.cs" />
     <Compile Include="Contexts\ApiActionDescriptor.cs" />
@@ -94,6 +93,7 @@
     <Compile Include="ParameterAttributes\HttpContentAttribute.cs" />
     <Compile Include="ParameterAttributes\FormContentAttribute.cs" />
     <Compile Include="ParameterAttributes\MulitpartContentAttribute.cs" />
+    <Compile Include="ParameterAttributes\UrlAttribute.cs" />
     <Compile Include="ParameterAttributes\XmlContentAttribute.cs" />
     <Compile Include="ParameterAttributes\JsonContentAttribute.cs" />
     <Compile Include="ParameterAttributes\PathQueryAttribute.cs" />

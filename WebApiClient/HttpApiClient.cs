@@ -19,10 +19,10 @@ namespace WebApiClient
     /// </summary>
     public static class HttpApiClient
     {
-
         /// <summary>
         /// 获取或设置一个站点内的连接数限制
         /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static int ConnectionLimit
         {
             get

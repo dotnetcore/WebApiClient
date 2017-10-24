@@ -30,7 +30,7 @@ namespace WebApiClient
         private static readonly ConcurrentDictionary<Type, MethodInfo[]> interfaceMethodsCache = new ConcurrentDictionary<Type, MethodInfo[]>();
 
         /// <summary>
-        /// 缓存
+        /// 类型是否AllowMultiple的缓存
         /// </summary>
         private static readonly ConcurrentDictionary<Type, bool> typeAllowMultipleCache = new ConcurrentDictionary<Type, bool>();
 
@@ -47,11 +47,11 @@ namespace WebApiClient
                 throw new ArgumentException(apiType.Name + "不是接口类型");
             }
 
+            // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口
             if (TypeAttributes.Public != (TypeAttributes.Public & apiType.Attributes))
             {
                 throw new NotSupportedException(apiType.Name + "必须为public修饰");
             }
-
 
             foreach (var m in apiType.GetInterfaceAllMethods())
             {
@@ -73,9 +73,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 获取接口类型的所有方法
+        /// 获取接口类型及其继承的接口的所有方法
         /// </summary>
-        /// <param name="interfaceType"></param>
+        /// <param name="interfaceType">接口类型</param>
         /// <returns></returns>
         public static MethodInfo[] GetInterfaceAllMethods(this Type interfaceType)
         {
@@ -86,29 +86,32 @@ namespace WebApiClient
 
             return interfaceMethodsCache.GetOrAdd(interfaceType, type =>
             {
-                var hashSet = new HashSet<Type>();
-                var methodList = new List<MethodInfo>();
-                SearchInterfaceMethods(type, ref hashSet, ref methodList);
-                return methodList.ToArray();
+                var typeHashSet = new HashSet<Type>();
+                var methodHashSet = new HashSet<MethodInfo>();
+                SearchInterfaceMethods(type, ref typeHashSet, ref methodHashSet);
+                return methodHashSet.ToArray();
             });
         }
 
         /// <summary>
         /// 递归查找接口的方法
         /// </summary>
-        /// <param name="interfaceType"></param>
-        /// <param name="typeHashSet"></param>
-        /// <param name="methodList"></param>
-        private static void SearchInterfaceMethods(Type interfaceType, ref HashSet<Type> typeHashSet, ref List<MethodInfo> methodList)
+        /// <param name="interfaceType">接口类型</param>
+        /// <param name="typeHashSet">接口类型集</param>
+        /// <param name="methodHashSet">方法集</param>
+        private static void SearchInterfaceMethods(Type interfaceType, ref HashSet<Type> typeHashSet, ref HashSet<MethodInfo> methodHashSet)
         {
-            if (typeHashSet.Add(interfaceType))
+            if (typeHashSet.Add(interfaceType) == true)
             {
                 var methods = interfaceType.GetMethods();
-                methodList.AddRange(methods);
+                foreach (var item in methods)
+                {
+                    methodHashSet.Add(item);
+                }
 
                 foreach (var item in interfaceType.GetInterfaces())
                 {
-                    SearchInterfaceMethods(item, ref typeHashSet, ref methodList);
+                    SearchInterfaceMethods(item, ref typeHashSet, ref methodHashSet);
                 }
             }
         }
