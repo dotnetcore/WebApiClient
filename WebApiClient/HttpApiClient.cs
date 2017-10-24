@@ -65,7 +65,7 @@ namespace WebApiClient
                 httpApiConfig = new HttpApiConfig();
             }
 
-            var interceptor = new ApiInterceptor<TInterface>(httpApiConfig);
+            var interceptor = new ApiInterceptor(httpApiConfig);
             return ProxyGenerator.CreateInterfaceProxyWithoutTarget<TInterface>(interceptor);
         }
     }

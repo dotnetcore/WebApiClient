@@ -9,9 +9,8 @@ namespace WebApiClient
 {
     /// <summary>
     /// 表示Api的拦截器
-    /// <typeparam name="T"></typeparam>
     /// </summary>
-    class ApiInterceptor<T> : IApiInterceptor<T> where T : class
+    class ApiInterceptor : IApiInterceptor
     {
         /// <summary>
         /// httpApi配置
@@ -22,11 +21,6 @@ namespace WebApiClient
         /// dispose方法
         /// </summary>
         private static readonly MethodInfo disposeMethod = typeof(IDisposable).GetMethods().FirstOrDefault();
-
-        /// <summary>
-        /// 获取或设置接口的方法
-        /// </summary>
-        public MethodInfo[] ApiMethods { private get; set; }
 
         /// <summary>
         /// Api的拦截器
@@ -47,12 +41,11 @@ namespace WebApiClient
         /// 拦截方法的调用
         /// </summary>
         /// <param name="target">接口的实例</param>
-        /// <param name="methodIndex">接口的方法索引</param>
+        /// <param name="method">接口的方法</param>
         /// <param name="parameters">接口的参数集合</param>
         /// <returns></returns>
-        public object Intercept(object target, int methodIndex, object[] parameters)
+        public object Intercept(object target, MethodInfo method, object[] parameters)
         {
-            var method = this.ApiMethods[methodIndex];
             if (method.Equals(disposeMethod) == true)
             {
                 this.httpApiConfig.Dispose();
