@@ -43,12 +43,12 @@ namespace WebApiClient
         private static Type GenerateProxyType(Type interfaceType, MethodInfo[] apiMethods)
         {
             const string assemblyName = "ApiProxyAssembly";
-            var moduleName = interfaceType.Name + "ProxyModule";
+            var moduleName = Guid.NewGuid().ToString();
             var proxyTypeName = interfaceType.Namespace + "." + interfaceType.Name;
 
             var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(assemblyName), AssemblyBuilderAccess.Run);
             var moduleBuilder = assemblyBuilder.DefineDynamicModule(moduleName);
-            var typeBuilder = moduleBuilder.DefineType(proxyTypeName, TypeAttributes.Class);
+            var typeBuilder = moduleBuilder.DefineType(proxyTypeName, TypeAttributes.Class, typeof(MarshalByRefObject));
             typeBuilder.AddInterfaceImplementation(interfaceType);
 
             return ImplementInterface(typeBuilder, apiMethods);
