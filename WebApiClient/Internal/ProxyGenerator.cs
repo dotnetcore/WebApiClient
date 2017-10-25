@@ -20,14 +20,14 @@ namespace WebApiClient
         private static readonly MethodInfo interceptMethod = typeof(IApiInterceptor).GetMethod("Intercept");
 
         /// <summary>
-        /// 接口类型与代理类型的缓存
+        /// 接口类型与代理类型的构造器缓存
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, Type> proxyCache = new ConcurrentDictionary<Type, Type>();
+        private static readonly ConcurrentDictionary<Type, ConstructorInfo> proxyCotrCache = new ConcurrentDictionary<Type, ConstructorInfo>();
 
         /// <summary>
         /// 程序域的AssemblyBuilder缓存
         /// </summary>
-        private static readonly ConcurrentDictionary<AppDomain, AssemblyBuilder> assemblyCache = new ConcurrentDictionary<AppDomain, AssemblyBuilder>();
+        private static readonly ConcurrentDictionary<AppDomain, AssemblyBuilder> domaminAssemblyCache = new ConcurrentDictionary<AppDomain, AssemblyBuilder>();
 
         /// <summary>
         /// 创建接口的代理实例
@@ -40,28 +40,30 @@ namespace WebApiClient
             var interfaceType = typeof(T);
             var apiMethods = interfaceType.GetInterfaceAllMethods();
 
-            var proxyType = proxyCache.GetOrAdd(interfaceType, t => GenerateProxyType(t, apiMethods));
-            return Activator.CreateInstance(proxyType, new object[] { interceptor, apiMethods }) as T;
+            var proxyTypeCotr = proxyCotrCache.GetOrAdd(interfaceType, type => GenerateProxyTypeCotr(type, apiMethods));
+            return proxyTypeCotr.Invoke(new object[] { interceptor, apiMethods }) as T;
         }
 
         /// <summary>
         /// 生成接口的代理类
+        /// 返回其构造器
         /// </summary>
         /// <param name="interfaceType">接口类型</param>
         /// <param name="apiMethods">拦截的方法</param>
         /// <returns></returns>
-        private static Type GenerateProxyType(Type interfaceType, MethodInfo[] apiMethods)
+        private static ConstructorInfo GenerateProxyTypeCotr(Type interfaceType, MethodInfo[] apiMethods)
         {
             const string assemblyName = "ApiProxyAssembly";
             var moduleName = string.Format("{0}_{1}.dll", interfaceType.Name, Guid.NewGuid());
             var proxyTypeName = interfaceType.FullName;
 
-            var assemblyBuilder = assemblyCache.GetOrAdd(AppDomain.CurrentDomain, domain => domain.DefineDynamicAssembly(new AssemblyName(assemblyName), AssemblyBuilderAccess.Run));
+            var assemblyBuilder = domaminAssemblyCache.GetOrAdd(AppDomain.CurrentDomain, domain => domain.DefineDynamicAssembly(new AssemblyName(assemblyName), AssemblyBuilderAccess.Run));
             var moduleBuilder = assemblyBuilder.DefineDynamicModule(moduleName);
-            var typeBuilder = moduleBuilder.DefineType(proxyTypeName, TypeAttributes.Class, typeof(MarshalByRefObject));
+            var typeBuilder = moduleBuilder.DefineType(proxyTypeName, TypeAttributes.Class);
             typeBuilder.AddInterfaceImplementation(interfaceType);
 
-            return ImplementApiMethods(typeBuilder, apiMethods);
+            var proxyType = ImplementApiMethods(typeBuilder, apiMethods);
+            return proxyType.GetConstructor(new[] { typeof(IApiInterceptor), typeof(MethodInfo[]) });
         }
 
         /// <summary>
