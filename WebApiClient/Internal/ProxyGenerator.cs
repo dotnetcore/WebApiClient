@@ -20,14 +20,19 @@ namespace WebApiClient
         private static readonly MethodInfo interceptMethod = typeof(IApiInterceptor).GetMethod("Intercept");
 
         /// <summary>
-        /// 接口类型与代理类型的构造器缓存
+        /// 代理类型的构造器的参数类型
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, ConstructorInfo> proxyCotrCache = new ConcurrentDictionary<Type, ConstructorInfo>();
+        private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IApiInterceptor), typeof(MethodInfo[]) };
 
         /// <summary>
-        /// 程序域的AssemblyBuilder缓存
+        /// 应用程序池下的程序集创建器
         /// </summary>
-        private static readonly ConcurrentDictionary<AppDomain, AssemblyBuilder> domaminAssemblyCache = new ConcurrentDictionary<AppDomain, AssemblyBuilder>();
+        private static readonly AssemblyBuilder domainAssemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("ApiProxyAssembly"), AssemblyBuilderAccess.Run);
+
+        /// <summary>
+        /// 接口类型与代理类型的构造器缓存
+        /// </summary>
+        private static readonly ConcurrentDictionary<Type, ConstructorInfo> proxyTypeCtorCache = new ConcurrentDictionary<Type, ConstructorInfo>();
 
         /// <summary>
         /// 创建接口的代理实例
@@ -40,8 +45,8 @@ namespace WebApiClient
             var interfaceType = typeof(T);
             var apiMethods = interfaceType.GetInterfaceAllMethods();
 
-            var proxyTypeCotr = proxyCotrCache.GetOrAdd(interfaceType, type => GenerateProxyTypeCotr(type, apiMethods));
-            return proxyTypeCotr.Invoke(new object[] { interceptor, apiMethods }) as T;
+            var proxyTypeCtor = proxyTypeCtorCache.GetOrAdd(interfaceType, type => GenerateProxyTypeCtor(type, apiMethods));
+            return proxyTypeCtor.Invoke(new object[] { interceptor, apiMethods }) as T;
         }
 
         /// <summary>
@@ -51,19 +56,15 @@ namespace WebApiClient
         /// <param name="interfaceType">接口类型</param>
         /// <param name="apiMethods">拦截的方法</param>
         /// <returns></returns>
-        private static ConstructorInfo GenerateProxyTypeCotr(Type interfaceType, MethodInfo[] apiMethods)
+        private static ConstructorInfo GenerateProxyTypeCtor(Type interfaceType, MethodInfo[] apiMethods)
         {
-            const string assemblyName = "ApiProxyAssembly";
             var moduleName = string.Format("{0}_{1}.dll", interfaceType.Name, Guid.NewGuid());
-            var proxyTypeName = interfaceType.FullName;
-
-            var assemblyBuilder = domaminAssemblyCache.GetOrAdd(AppDomain.CurrentDomain, domain => domain.DefineDynamicAssembly(new AssemblyName(assemblyName), AssemblyBuilderAccess.Run));
-            var moduleBuilder = assemblyBuilder.DefineDynamicModule(moduleName);
-            var typeBuilder = moduleBuilder.DefineType(proxyTypeName, TypeAttributes.Class);
+            var moduleBuilder = domainAssemblyBuilder.DefineDynamicModule(moduleName);
+            var typeBuilder = moduleBuilder.DefineType(interfaceType.FullName, TypeAttributes.Class);
             typeBuilder.AddInterfaceImplementation(interfaceType);
 
             var proxyType = ImplementApiMethods(typeBuilder, apiMethods);
-            return proxyType.GetConstructor(new[] { typeof(IApiInterceptor), typeof(MethodInfo[]) });
+            return proxyType.GetConstructor(proxyTypeCtorArgTypes);
         }
 
         /// <summary>
@@ -76,24 +77,27 @@ namespace WebApiClient
         private static Type ImplementApiMethods(TypeBuilder typeBuilder, MethodInfo[] apiMethods)
         {
             // 字段
-            var fieldInterceptor = typeBuilder.DefineField("interceptor", typeof(IApiInterceptor), FieldAttributes.Private | FieldAttributes.InitOnly);
-            var fieldApiMethods = typeBuilder.DefineField("apiMethods", typeof(MethodInfo[]), FieldAttributes.Private | FieldAttributes.InitOnly);
+            var filedAttribute = FieldAttributes.Private | FieldAttributes.InitOnly;
+            var fieldInterceptor = typeBuilder.DefineField("interceptor", typeof(IApiInterceptor), filedAttribute);
+            var fieldApiMethods = typeBuilder.DefineField("apiMethods", typeof(MethodInfo[]), filedAttribute);
 
             // 构造器
-            var ctorBuilder = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, new[] { typeof(IApiInterceptor), typeof(MethodInfo[]) });
-            var ctroIL = ctorBuilder.GetILGenerator();
-            ctroIL.Emit(OpCodes.Ldarg_0);
-            ctroIL.Emit(OpCodes.Call, typeof(object).GetConstructor(new Type[0]));
+            var ctorBuilder = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, proxyTypeCtorArgTypes);
+            var ctorIL = ctorBuilder.GetILGenerator();
+            ctorIL.Emit(OpCodes.Ldarg_0);
+            ctorIL.Emit(OpCodes.Call, typeof(object).GetConstructor(new Type[0]));
 
-            ctroIL.Emit(OpCodes.Ldarg_0);
-            ctroIL.Emit(OpCodes.Ldarg_1);
-            ctroIL.Emit(OpCodes.Stfld, fieldInterceptor);
+            // this.interceptor = 第一个参数
+            ctorIL.Emit(OpCodes.Ldarg_0);
+            ctorIL.Emit(OpCodes.Ldarg_1);
+            ctorIL.Emit(OpCodes.Stfld, fieldInterceptor);
 
-            ctroIL.Emit(OpCodes.Ldarg_0);
-            ctroIL.Emit(OpCodes.Ldarg_2);
-            ctroIL.Emit(OpCodes.Stfld, fieldApiMethods);
+            // this.apiMethods = 第二个参数
+            ctorIL.Emit(OpCodes.Ldarg_0);
+            ctorIL.Emit(OpCodes.Ldarg_2);
+            ctorIL.Emit(OpCodes.Stfld, fieldApiMethods);
 
-            ctroIL.Emit(OpCodes.Ret);
+            ctorIL.Emit(OpCodes.Ret);
 
             // 接口实现
             for (var i = 0; i < apiMethods.Length; i++)
@@ -113,7 +117,7 @@ namespace WebApiClient
                 // 加载target参数
                 apiMethodIL.Emit(OpCodes.Ldarg_0);
 
-                //var method = this.apiMethods[i]
+                // var method = this.apiMethods[i]
                 var method = apiMethodIL.DeclareLocal(typeof(MethodInfo));
                 apiMethodIL.Emit(OpCodes.Ldarg_0);
                 apiMethodIL.Emit(OpCodes.Ldfld, fieldApiMethods);
