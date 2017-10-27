@@ -35,6 +35,11 @@ namespace WebApiClient
         private static readonly ConcurrentDictionary<Type, ConstructorInfo> proxyTypeCtorCache = new ConcurrentDictionary<Type, ConstructorInfo>();
 
         /// <summary>
+        /// 模块与模块创建器的缓存
+        /// </summary>
+        private static readonly ConcurrentDictionary<Module, ModuleBuilder> moduleModuleBuilderCache = new ConcurrentDictionary<Module, ModuleBuilder>();
+
+        /// <summary>
         /// 创建接口的代理实例
         /// </summary>
         /// <typeparam name="T">接口殴类型</typeparam>
@@ -58,8 +63,7 @@ namespace WebApiClient
         /// <returns></returns>
         private static ConstructorInfo GenerateProxyTypeCtor(Type interfaceType, MethodInfo[] apiMethods)
         {
-            var moduleName = string.Format("{0}_{1}.dll", interfaceType.Name, Guid.NewGuid());
-            var moduleBuilder = domainAssemblyBuilder.DefineDynamicModule(moduleName);
+            var moduleBuilder = moduleModuleBuilderCache.GetOrAdd(interfaceType.Module, module => domainAssemblyBuilder.DefineDynamicModule(module.Name));
             var typeBuilder = moduleBuilder.DefineType(interfaceType.FullName, TypeAttributes.Class);
             typeBuilder.AddInterfaceImplementation(interfaceType);
 
