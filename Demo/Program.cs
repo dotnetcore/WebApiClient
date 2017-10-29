@@ -3,6 +3,7 @@ using NetworkSocket.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
@@ -53,7 +54,13 @@ namespace Demo
             Console.WriteLine(user2);
             Console.WriteLine();
 
-            var user3 = await myWebApi.UpdateWithFormAsync(user, nickName: "老九", age: 18);
+            var user3 = await myWebApi.UpdateWithFormAsync(user, nickName: "老九", age: 18)
+                .Retry(3, i => TimeSpan.FromSeconds(i))
+                .WhenCatch<TimeoutException>()
+                .WhenCatch<HttpRequestException>()
+                .WhenResult(u => u.Account != "laojiu");
+            ;
+
             Console.WriteLine(user3);
             Console.WriteLine();
 

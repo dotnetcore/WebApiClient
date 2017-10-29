@@ -11,6 +11,7 @@ namespace Demo
 {
     [Logger] // 记录请求日志
     [HttpHost("http://localhost:9999")] // HttpHost可以在Config传入覆盖    
+    [AutoReturn(EnsureSuccessStatusCode = true)]
     public interface UserApi : IDisposable
     {
         // GET {url}?account={account}&password={password}&something={something}
@@ -39,7 +40,7 @@ namespace Demo
         // Return json或xml内容
         [HttpPost("/webapi/user/UpdateWithForm")]
         [FormField("name", "value")] // 固定的参数值可以这么写
-        Task<UserInfo> UpdateWithFormAsync([FormContent] UserInfo user, FormField nickName, [FormField] int? age);
+        ITask<UserInfo> UpdateWithFormAsync([FormContent] UserInfo user, FormField nickName, [FormField] int? age);
 
         // POST /webapi/user/UpdateWithJson
         // Body {"Account":"laojiu","Password":"123456"}
