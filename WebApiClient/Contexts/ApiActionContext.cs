@@ -34,5 +34,25 @@ namespace WebApiClient
         /// 获取关联的HttpResponseMessage
         /// </summary>
         public HttpResponseMessage ResponseMessage { get; internal set; }
+
+        /// <summary>
+        /// 执行
+        /// </summary>
+        /// <returns></returns>
+        public Task Execute()
+        {
+            return this.ExecuteAsync().Cast(this.ApiActionDescriptor.Return.DataType);
+        }
+
+        /// <summary>
+        /// 异步执行
+        /// </summary>
+        /// <returns></returns>
+        public Task<object> ExecuteAsync()
+        {
+            this.ResponseMessage = null;
+            this.RequestMessage = new HttpApiRequestMessage { RequestUri = this.HttpApiConfig.HttpHost };
+            return this.ApiActionDescriptor.ExecuteAsync(this);
+        }
     }
 }

@@ -40,23 +40,13 @@ namespace WebApiClient
         /// 获取Api的返回描述
         /// </summary>
         public ApiReturnDescriptor Return { get; internal set; }
-
-        /// <summary>
-        /// 执行api
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <returns></returns>
-        public Task Execute(ApiActionContext context)
-        {
-            return this.ExecuteAsync(context).Cast(this.Return.DataType);
-        }
-
+        
         /// <summary>
         /// 异步执行api
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        private async Task<object> ExecuteAsync(ApiActionContext context)
+        public async Task<object> ExecuteAsync(ApiActionContext context)
         {
             var apiAction = context.ApiActionDescriptor;
 

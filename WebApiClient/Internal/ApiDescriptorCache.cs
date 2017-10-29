@@ -47,10 +47,14 @@ namespace WebApiClient
         /// <returns></returns>
         private static ApiActionDescriptor GetActionDescriptor(MethodInfo method)
         {
-            if (method.ReturnType.IsGenericType == false || method.ReturnType.GetGenericTypeDefinition() != typeof(Task<>))
+            if (method.ReturnType.IsGenericType == false)
             {
-                var message = string.Format("接口{0}返回类型应该是Task<{1}>", method.Name, method.ReturnType.Name);
-                throw new NotSupportedException(message);
+                var returnType = method.ReturnType.GetGenericTypeDefinition();
+                if (returnType != typeof(Task<>) || returnType != typeof(ITask<>))
+                {
+                    var message = string.Format("接口{0}返回类型应该是Task<{1}>或ITask<{1}>", method.Name, method.ReturnType.Name);
+                    throw new NotSupportedException(message);
+                }
             }
 
             var actionAttributes = method
@@ -136,12 +140,20 @@ namespace WebApiClient
                 returnAttribute = new AutoReturnAttribute();
             }
 
-            return new ApiReturnDescriptor
+            var descriptor = new ApiReturnDescriptor
             {
                 Attribute = returnAttribute,
-                TaskType = method.ReturnType,
+                ReturnType = method.ReturnType,
                 DataType = method.ReturnType.GetGenericArguments().FirstOrDefault(),
             };
+
+            if (descriptor.ReturnType.GetGenericTypeDefinition() == typeof(ITask<>))
+            {
+                descriptor.ITaskCtor = typeof(ApiTask<>)
+                    .MakeGenericType(descriptor.DataType)
+                    .GetConstructor(new[] { typeof(ApiActionContext) });
+            }
+            return descriptor;
         }
 
         /// <summary>

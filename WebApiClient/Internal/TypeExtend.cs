@@ -64,11 +64,6 @@ namespace WebApiClient
                 {
                     throw new NotSupportedException("不支持泛型方法：" + m);
                 }
-
-                if (m.ReturnType.IsGenericType == false || m.ReturnType.GetGenericTypeDefinition() != typeof(Task<>))
-                {
-                    throw new NotSupportedException("返回类型必须为Task<>：" + m);
-                }
             }
         }
 

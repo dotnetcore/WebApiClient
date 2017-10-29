@@ -51,19 +51,27 @@ namespace WebApiClient
                 this.httpApiConfig.Dispose();
                 return null;
             }
+
+            var context = this.CreateApiActionContext(method, parameters);
+            var apiReturn = context.ApiActionDescriptor.Return;
+
+            if (apiReturn.ITaskCtor != null)
+            {
+                return apiReturn.ITaskCtor.Invoke(new object[] { context });
+            }
             else
             {
-                return this.ExecuteApi(method, parameters);
+                return context.Execute();
             }
         }
 
         /// <summary>
-        /// 执行Http请求接口
+        /// 执行请求接口
         /// </summary>
         /// <param name="method">接口的方法</param>
         /// <param name="parameters">参数集合</param>
         /// <returns></returns>
-        private Task ExecuteApi(MethodInfo method, object[] parameters)
+        private ApiActionContext CreateApiActionContext(MethodInfo method, object[] parameters)
         {
             var cache = ApiDescriptorCache.GetApiActionDescriptor(method);
             var actionDescripter = cache.Clone() as ApiActionDescriptor;
@@ -73,15 +81,13 @@ namespace WebApiClient
                 actionDescripter.Parameters[i].Value = parameters[i];
             }
 
-            var actionContext = new ApiActionContext
+            return new ApiActionContext
             {
                 ApiActionDescriptor = actionDescripter,
                 HttpApiConfig = this.httpApiConfig,
-                RequestMessage = new HttpApiRequestMessage { RequestUri = this.httpApiConfig.HttpHost },
+                RequestMessage = null,
                 ResponseMessage = null
             };
-
-            return actionDescripter.Execute(actionContext);
         }
     }
 }

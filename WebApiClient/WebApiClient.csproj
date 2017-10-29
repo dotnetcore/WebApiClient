@@ -60,6 +60,8 @@
     <Compile Include="IKeyValueFormatter.cs" />
     <Compile Include="IApiInterceptor.cs" />
     <Compile Include="Internal\ApiInterceptor.cs" />
+    <Compile Include="Internal\ApiRetryTask.cs" />
+    <Compile Include="Internal\ApiTask.cs" />
     <Compile Include="Internal\DefaultKeyValueFormatter.cs" />
     <Compile Include="Internal\MimeTable.cs" />
     <Compile Include="Internal\DefaultHttpClientHandler.cs" />
@@ -68,6 +70,9 @@
     <Compile Include="Internal\MulitpartTextContent.cs" />
     <Compile Include="Internal\TypeExtend.cs" />
     <Compile Include="Internal\ProxyGenerator.cs" />
+    <Compile Include="IRetryTask.cs" />
+    <Compile Include="ITask.cs" />
+    <Compile Include="ITaskExtend.cs" />
     <Compile Include="MulitpartText.cs" />
     <Compile Include="Attributes\FormFieldAttribute.cs" />
     <Compile Include="Attributes\MulitpartTextAttribute.cs" />
@@ -98,6 +103,7 @@
     <Compile Include="ParameterAttributes\JsonContentAttribute.cs" />
     <Compile Include="ParameterAttributes\PathQueryAttribute.cs" />
     <Compile Include="HttpActionAttributes\HttpMethodAttribute.cs" />
+    <Compile Include="ResultNotMatchException.cs" />
     <Compile Include="ReturnAttributes\AutoReturnAttribute.cs" />
     <Compile Include="ReturnAttributes\ApiReturnAttribute.cs" />
     <Compile Include="ReturnAttributes\XmlReturnAttribute.cs" />
