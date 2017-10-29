@@ -46,7 +46,7 @@ namespace WebApiClient
         /// <returns></returns>
         public static IRetryTask<TResult> Retry<TResult>(this ITask<TResult> task, int maxCount, Func<int, TimeSpan> delay)
         {
-            return new ApiRetryTask<TResult>(task.GetInvoker(), maxCount, delay);
+            return new ApiRetryTask<TResult>(task.InvokeAsync, maxCount, delay);
         }
     }
 }
