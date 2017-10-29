@@ -17,6 +17,7 @@ namespace WebApiClient
         /// <typeparam name="TResult"></typeparam>
         /// <param name="task"></param>
         /// <param name="maxCount">最大重试次数</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <returns></returns>
         public static IRetryTask<TResult> Retry<TResult>(this ITask<TResult> task, int maxCount)
         {
@@ -30,6 +31,7 @@ namespace WebApiClient
         /// <param name="task"></param>
         /// <param name="maxCount">最大重试次数</param>
         /// <param name="delay">各次重试的延时时间</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <returns></returns>
         public static IRetryTask<TResult> Retry<TResult>(this ITask<TResult> task, int maxCount, TimeSpan delay)
         {
@@ -43,9 +45,14 @@ namespace WebApiClient
         /// <param name="task"></param>
         /// <param name="maxCount">最大重试次数</param>
         /// <param name="delay">各次重试的延时时间</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <returns></returns>
         public static IRetryTask<TResult> Retry<TResult>(this ITask<TResult> task, int maxCount, Func<int, TimeSpan> delay)
         {
+            if (maxCount < 1)
+            {
+                throw new ArgumentOutOfRangeException("maxCount");
+            }
             return new ApiRetryTask<TResult>(task.InvokeAsync, maxCount, delay);
         }
     }

@@ -40,8 +40,13 @@ namespace WebApiClient
         /// <param name="invoker">任务执行器</param>
         /// <param name="retryMaxCount">最大尝试次数</param>
         /// <param name="retryDelay">各次重试的延时时间</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public ApiRetryTask(Func<Task<object>> invoker, int retryMaxCount, Func<int, TimeSpan> retryDelay)
         {
+            if (retryMaxCount < 1)
+            {
+                throw new ArgumentOutOfRangeException("retryMaxCount");
+            }
             this.invoker = invoker;
             this.retryMaxCount = retryMaxCount;
             this.retryDelay = retryDelay;
