@@ -68,7 +68,6 @@
     <Compile Include="Internal\MulitpartFileContent.cs" />
     <Compile Include="Internal\HttpUtility.cs" />
     <Compile Include="Internal\MulitpartTextContent.cs" />
-    <Compile Include="Internal\TaskExtend.cs" />
     <Compile Include="Internal\TypeExtend.cs" />
     <Compile Include="Internal\ProxyGenerator.cs" />
     <Compile Include="IRetryTask.cs" />

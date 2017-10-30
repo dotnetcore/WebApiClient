@@ -60,7 +60,7 @@ namespace WebApiClient.Attributes
             }
 
             context.RequestMessage.AddText(this.name, this.value);
-            await TaskExtend.CompletedTask;
+            await ApiTask.CompletedTask;
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace WebApiClient.Attributes
         async Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             context.RequestMessage.AddText(parameter.Name, parameter.ToString());
-            await TaskExtend.CompletedTask;
+            await ApiTask.CompletedTask;
         }
     }
 }

@@ -14,6 +14,12 @@ namespace WebApiClient
     static class ApiTask
     {
         /// <summary>
+        /// 完成的任务
+        /// </summary>
+        /// <returns></returns>
+        public static readonly Task CompletedTask = Task.FromResult<object>(null);
+
+        /// <summary>
         /// 创建ApiTask实例
         /// </summary>
         /// <param name="context">上下文</param>
@@ -30,7 +36,7 @@ namespace WebApiClient
     /// 表示Api请求的异步任务
     /// </summary>
     /// <typeparam name="TResult">结果类型</typeparam>
-    class ApiTask<TResult> : ITask<TResult>, ITask
+    sealed class ApiTask<TResult> : ITask<TResult>, ITask
     {
         /// <summary>
         /// 上下文

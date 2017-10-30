@@ -41,7 +41,7 @@ namespace WebApiClient.Attributes
             var pathQuery = this.GetPathQuery(relativeUrl, keyValues);
 
             context.RequestMessage.RequestUri = new Uri(uri, pathQuery);
-            await TaskExtend.CompletedTask;
+            await ApiTask.CompletedTask;
         }
 
 

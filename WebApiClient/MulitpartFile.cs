@@ -85,7 +85,7 @@ namespace WebApiClient
         async Task IApiParameterable.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             context.RequestMessage.AddFile(this.GetStream(), parameter.Name, this.FileName, this.ContentType);
-            await TaskExtend.CompletedTask;
+            await ApiTask.CompletedTask;
         }
 
         /// <summary>

@@ -37,7 +37,7 @@ namespace WebApiClient.Attributes
                 var baseUrl = context.RequestMessage.RequestUri;
                 context.RequestMessage.RequestUri = new Uri(baseUrl, url);
             }
-            return TaskExtend.CompletedTask;
+            return ApiTask.CompletedTask;
         }
     }
 }

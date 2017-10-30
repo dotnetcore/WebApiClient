@@ -75,7 +75,7 @@ namespace WebApiClient.Attributes
             var hanlder = context.HttpApiConfig.HttpClientHandler;
             hanlder.UseProxy = true;
             hanlder.Proxy = this.CreateProxy();
-            return TaskExtend.CompletedTask;
+            return ApiTask.CompletedTask;
         }
 
         /// <summary>

@@ -54,7 +54,7 @@ namespace WebApiClient.Attributes
             {
                 context.RequestMessage.RequestUri = this.Host;
             }
-            return TaskExtend.CompletedTask;
+            return ApiTask.CompletedTask;
         }
 
         /// <summary>

@@ -81,7 +81,7 @@ namespace WebApiClient.Attributes
         public override Task BeforeRequestAsync(ApiActionContext context)
         {
             this.SetHeaderValue(context, this.value);
-            return TaskExtend.CompletedTask;
+            return ApiTask.CompletedTask;
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace WebApiClient.Attributes
         Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             this.SetHeaderValue(context, parameter.ToString());
-            return TaskExtend.CompletedTask;
+            return ApiTask.CompletedTask;
         }
 
         /// <summary>

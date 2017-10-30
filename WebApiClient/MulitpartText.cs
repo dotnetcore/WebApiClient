@@ -46,7 +46,7 @@ namespace WebApiClient
         async Task IApiParameterable.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             context.RequestMessage.AddText(parameter.Name, this.stringValue);
-            await TaskExtend.CompletedTask;
+            await ApiTask.CompletedTask;
         }
 
         /// <summary>

@@ -37,7 +37,7 @@ namespace WebApiClient.Attributes
         protected virtual Task SetHttpContentAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             this.SetHttpContent(context, parameter);
-            return TaskExtend.CompletedTask;
+            return ApiTask.CompletedTask;
         }
 
 

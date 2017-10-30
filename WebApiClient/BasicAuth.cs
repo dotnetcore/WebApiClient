@@ -66,7 +66,7 @@ namespace WebApiClient
             {
                 header.TryAddWithoutValidation(scheme, this.authValue);
             }
-            return TaskExtend.CompletedTask;
+            return ApiTask.CompletedTask;
         }
 
         /// <summary>
