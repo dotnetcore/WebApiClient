@@ -36,15 +36,6 @@ namespace WebApiClient
         public HttpResponseMessage ResponseMessage { get; internal set; }
 
         /// <summary>
-        /// 执行
-        /// </summary>
-        /// <returns></returns>
-        public Task Execute()
-        {
-            return this.ExecuteAsync().Cast(this.ApiActionDescriptor.Return.DataType);
-        }
-
-        /// <summary>
         /// 异步执行
         /// </summary>
         /// <returns></returns>

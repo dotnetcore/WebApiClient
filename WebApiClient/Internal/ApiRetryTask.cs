@@ -17,7 +17,7 @@ namespace WebApiClient
         /// <summary>
         /// 任务执行器
         /// </summary>
-        private Func<Task<object>> invoker;
+        private Func<Task<TResult>> invoker;
 
         /// <summary>
         /// 获取最大重试次数
@@ -30,18 +30,13 @@ namespace WebApiClient
         private readonly Func<int, TimeSpan> retryDelay;
 
         /// <summary>
-        /// 请求结果过滤器列表
-        /// </summary>
-        private List<Func<TResult, bool>> apiResultPredicates;
-
-        /// <summary>
         /// 支持重试的Api请求
         /// </summary>
         /// <param name="invoker">任务执行器</param>
         /// <param name="retryMaxCount">最大尝试次数</param>
         /// <param name="retryDelay">各次重试的延时时间</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public ApiRetryTask(Func<Task<object>> invoker, int retryMaxCount, Func<int, TimeSpan> retryDelay)
+        public ApiRetryTask(Func<Task<TResult>> invoker, int retryMaxCount, Func<int, TimeSpan> retryDelay)
         {
             if (retryMaxCount < 1)
             {
@@ -58,31 +53,31 @@ namespace WebApiClient
         /// <returns></returns>
         public TaskAwaiter<TResult> GetAwaiter()
         {
-            return this.InvokeAsync().Cast<TResult>().GetAwaiter();
+            return this.InvokeAsync().GetAwaiter();
         }
 
         /// <summary>
         /// 执行任务
         /// </summary>
         /// <returns></returns>
-        public async Task<object> InvokeAsync()
+        Task ITask.InvokeAsync()
+        {
+            return this.InvokeAsync();
+        }
+
+        /// <summary>
+        /// 执行任务
+        /// </summary>
+        /// <returns></returns>
+        public async Task<TResult> InvokeAsync()
         {
             var exception = default(Exception);
             for (var i = 0; i <= this.retryMaxCount; i++)
             {
                 try
                 {
-                    await this.DelayFor(i);
-
-                    var apiResult = (TResult)await this.invoker.Invoke();
-                    if (this.apiResultPredicates == null)
-                    {
-                        return apiResult;
-                    }
-                    if (this.apiResultPredicates.All(item => item(apiResult) == false))
-                    {
-                        return apiResult;
-                    }
+                    await this.DelayBeforRetryAsync(i);
+                    return await this.invoker.Invoke();
                 }
                 catch (RetryException ex)
                 {
@@ -102,7 +97,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        private async Task DelayFor(int index)
+        private async Task DelayBeforRetryAsync(int index)
         {
             if (index == 0 || this.retryDelay == null)
             {
@@ -136,24 +131,12 @@ namespace WebApiClient
         /// <returns></returns>
         public IRetryTask<TResult> WhenCatch<TException>(Func<TException, bool> predicate) where TException : Exception
         {
-            this.invoker = this.WrapTryCatch<TException>(this.invoker, predicate);
-            return this;
-        }
-
-        /// <summary>
-        /// Catch包装
-        /// </summary>
-        /// <typeparam name="TException"></typeparam>
-        /// <param name="targetInvoker">目标</param>
-        /// <param name="predicate">条件</param>
-        /// <returns></returns>
-        private Func<Task<object>> WrapTryCatch<TException>(Func<Task<object>> targetInvoker, Func<TException, bool> predicate) where TException : Exception
-        {
-            return async () =>
+            var target = this.invoker;
+            this.invoker = async () =>
             {
                 try
                 {
-                    return await targetInvoker.Invoke();
+                    return await target.Invoke();
                 }
                 catch (TException ex)
                 {
@@ -164,6 +147,7 @@ namespace WebApiClient
                     throw ex;
                 }
             };
+            return this;
         }
 
         /// <summary>
@@ -178,12 +162,16 @@ namespace WebApiClient
                 throw new ArgumentNullException();
             }
 
-            if (this.apiResultPredicates == null)
+            var target = this.invoker;
+            this.invoker = async () =>
             {
-                this.apiResultPredicates = new List<Func<TResult, bool>>();
-            }
-
-            this.apiResultPredicates.Add(predicate);
+                var result = await target.Invoke();
+                if (predicate.Invoke(result) == true)
+                {
+                    throw new RetryException(null);
+                }
+                return result;
+            };
             return this;
         }
 

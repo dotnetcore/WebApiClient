@@ -25,12 +25,17 @@ namespace WebApiClient
         public Type ReturnType { get; internal set; }
 
         /// <summary>
+        /// 获取返回类型的泛型定义
+        /// </summary>
+        public Type GenericType { get; internal set; }
+
+        /// <summary>
         /// 获取Api返回的TaskOf(T)的T类型
         /// </summary>
         public Type DataType { get; internal set; }
 
         /// <summary>
-        /// ITask返回类型对应的泛型构造器
+        /// 返回类型对应的ITask泛型构造器
         /// </summary>
         public ConstructorInfo ITaskCtor { get; internal set; }
     }

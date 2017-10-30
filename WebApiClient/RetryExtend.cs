@@ -9,7 +9,7 @@ namespace WebApiClient
     /// <summary>
     /// ITask的扩展
     /// </summary>
-    public static class ITaskExtend
+    public static class RetryExtend
     {
         /// <summary>
         /// 尝试重新请求

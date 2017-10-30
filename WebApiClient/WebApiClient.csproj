@@ -68,11 +68,12 @@
     <Compile Include="Internal\MulitpartFileContent.cs" />
     <Compile Include="Internal\HttpUtility.cs" />
     <Compile Include="Internal\MulitpartTextContent.cs" />
+    <Compile Include="Internal\TaskExtend.cs" />
     <Compile Include="Internal\TypeExtend.cs" />
     <Compile Include="Internal\ProxyGenerator.cs" />
     <Compile Include="IRetryTask.cs" />
     <Compile Include="ITask.cs" />
-    <Compile Include="ITaskExtend.cs" />
+    <Compile Include="RetryExtend.cs" />
     <Compile Include="MulitpartText.cs" />
     <Compile Include="Attributes\FormFieldAttribute.cs" />
     <Compile Include="Attributes\MulitpartTextAttribute.cs" />
@@ -86,7 +87,6 @@
     <Compile Include="Internal\DefaultXmlFormatter.cs" />
     <Compile Include="Internal\AttributeExtend.cs" />
     <Compile Include="Internal\ParameterableAttribute.cs" />
-    <Compile Include="Internal\TaskExtend.cs" />
     <Compile Include="Internal\DefaultJsonFormatter.cs" />
     <Compile Include="MulitpartFile.cs" />
     <Compile Include="HttpActionAttributes\HttpDeleteAttribute.cs" />

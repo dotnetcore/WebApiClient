@@ -12,7 +12,7 @@ namespace WebApiClient
     /// 表示Api请求的异步任务
     /// </summary>
     /// <typeparam name="TResult">结果类型</typeparam>
-    class ApiTask<TResult> : ITask<TResult>
+    class ApiTask<TResult> : ITask<TResult>,ITask 
     {
         /// <summary>
         /// 上下文
@@ -34,16 +34,25 @@ namespace WebApiClient
         /// <returns></returns>
         public TaskAwaiter<TResult> GetAwaiter()
         {
-            return this.InvokeAsync().Cast<TResult>().GetAwaiter();
+            return this.InvokeAsync().GetAwaiter();
         }
 
         /// <summary>
         /// 执行任务
         /// </summary>
         /// <returns></returns>
-        public Task<object> InvokeAsync()
+        public async Task<TResult> InvokeAsync()
         {
-            return this.context.ExecuteAsync();
+            return (TResult)await this.context.ExecuteAsync();
+        }
+
+        /// <summary>
+        /// 执行任务
+        /// </summary>
+        /// <returns></returns>
+        Task ITask.InvokeAsync()
+        {
+            return this.InvokeAsync();
         }
     }
 }

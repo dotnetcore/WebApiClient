@@ -144,15 +144,14 @@ namespace WebApiClient
             {
                 Attribute = returnAttribute,
                 ReturnType = method.ReturnType,
+                GenericType = method.ReturnType.GetGenericTypeDefinition(),
                 DataType = method.ReturnType.GetGenericArguments().FirstOrDefault(),
             };
 
-            if (descriptor.ReturnType.GetGenericTypeDefinition() == typeof(ITask<>))
-            {
-                descriptor.ITaskCtor = typeof(ApiTask<>)
-                    .MakeGenericType(descriptor.DataType)
-                    .GetConstructor(new[] { typeof(ApiActionContext) });
-            }
+            descriptor.ITaskCtor = typeof(ApiTask<>)
+                .MakeGenericType(descriptor.DataType)
+                .GetConstructor(new[] { typeof(ApiActionContext) });
+
             return descriptor;
         }
 
