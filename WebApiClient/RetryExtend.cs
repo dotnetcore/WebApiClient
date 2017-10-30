@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// ITask的扩展
+    /// ITask的Retry扩展
     /// </summary>
     public static class RetryExtend
     {

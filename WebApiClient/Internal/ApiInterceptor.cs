@@ -53,16 +53,15 @@ namespace WebApiClient
             }
 
             var context = this.CreateApiActionContext(method, parameters);
-            var apiReturn = context.ApiActionDescriptor.Return;
-            var itask = apiReturn.ITaskCtor.Invoke(new object[] { context }) as ITask;
+            var apiTask = ApiTask.CreateInstance(context);
 
-            if (apiReturn.GenericType == typeof(Task<>))
+            if (context.ApiActionDescriptor.Return.GenericType == typeof(Task<>))
             {
-                return itask.InvokeAsync();
+                return apiTask.InvokeAsync();
             }
             else
             {
-                return itask;
+                return apiTask;
             }
         }
 

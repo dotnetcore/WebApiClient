@@ -9,10 +9,28 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
+    /// 提供ApiTask的创建
+    /// </summary>
+    static class ApiTask
+    {
+        /// <summary>
+        /// 创建ApiTask实例
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <returns></returns>
+        public static ITask CreateInstance(ApiActionContext context)
+        {
+            var ctor = context.ApiActionDescriptor.Return.ITaskCtor;
+            return ctor.Invoke(new object[] { context }) as ITask;
+        }
+    }
+
+
+    /// <summary>
     /// 表示Api请求的异步任务
     /// </summary>
     /// <typeparam name="TResult">结果类型</typeparam>
-    class ApiTask<TResult> : ITask<TResult>,ITask 
+    class ApiTask<TResult> : ITask<TResult>, ITask
     {
         /// <summary>
         /// 上下文
