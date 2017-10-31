@@ -27,12 +27,12 @@ namespace Demo
         // Return HttpResponseMessage
         [HttpGet("/webapi/user/GetById?id={id}")]
         [BasicAuth("userName", "password")]
-        Task<HttpResponseMessage> GetByIdAsync(string id);
+        ITask<HttpResponseMessage> GetByIdAsync(string id);
 
         // GET /webapi/user/GetByAccount?account=laojiu
         // Return 原始string内容
         [HttpGet("/webapi/user/GetByAccount")]
-        Task<string> GetByAccountAsync(string account);
+        ITask<string> GetByAccountAsync(string account);
 
 
         // POST /webapi/user/UpdateWithForm  
@@ -46,19 +46,19 @@ namespace Demo
         // Body {"Account":"laojiu","Password":"123456"}
         // Return json或xml内容
         [HttpPost("/webapi/user/UpdateWithJson")]
-        Task<UserInfo> UpdateWithJsonAsync([JsonContent] UserInfo user);
+        ITask<UserInfo> UpdateWithJsonAsync([JsonContent] UserInfo user);
 
         // POST /webapi/user/UpdateWithXml 
         // Body <?xml version="1.0" encoding="utf-8"?><UserInfo><Account>laojiu</Account><Password>123456</Password></UserInfo>
         // Return xml内容
         [XmlReturn]
         [HttpPost("/webapi/user/UpdateWithXml")]
-        Task<UserInfo> UpdateWithXmlAsync([XmlContent] UserInfo user);
+        ITask<UserInfo> UpdateWithXmlAsync([XmlContent] UserInfo user);
 
         // POST /webapi/user/UpdateWithMulitpart  
         // Body multipart/form-data
         // Return json或xml内容
         [HttpPost("/webapi/user/UpdateWithMulitpart")]
-        Task<UserInfo> UpdateWithMulitpartAsync([MulitpartContent] UserInfo user, [MulitpartText] string nickName, MulitpartText age, params MulitpartFile[] files);
+        ITask<UserInfo> UpdateWithMulitpartAsync([MulitpartContent] UserInfo user, [MulitpartText] string nickName, MulitpartText age, params MulitpartFile[] files);
     }
 }
