@@ -49,6 +49,7 @@ namespace Demo
         [HttpPost]
         public JsonResult UpdateWithForm(UserInfo user, string name, string nickName, int? age)
         {
+            user.Account = "xyz";
             return Json(user);
         }
 

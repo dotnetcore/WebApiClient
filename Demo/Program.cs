@@ -58,7 +58,11 @@ namespace Demo
                 .Retry(3, i => TimeSpan.FromSeconds(i))
                 .WhenCatch<TimeoutException>()
                 .WhenCatch<HttpRequestException>()
-                .WhenResult(u => u.Account != "laojiu");
+                .WhenResult(u => u.Account != "laojiu")
+
+                .Handle()
+                .WhenCatch<RetryException>(ex => new UserInfo { Account = "RetryException" })
+                .WhenCatch<Exception>(ex => new UserInfo { Account = "Exception" })
             ;
 
             Console.WriteLine(user3);
