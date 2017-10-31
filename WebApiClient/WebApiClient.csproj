@@ -57,8 +57,10 @@
     <Compile Include="Attributes\HeaderAttribute.cs" />
     <Compile Include="HttpActionAttributes\ProxyAttribute.cs" />
     <Compile Include="IAttributeMultiplable.cs" />
+    <Compile Include="IHandleTask.cs" />
     <Compile Include="IKeyValueFormatter.cs" />
     <Compile Include="IApiInterceptor.cs" />
+    <Compile Include="Internal\ApiHandleTask.cs" />
     <Compile Include="Internal\ApiInterceptor.cs" />
     <Compile Include="Internal\ApiRetryTask.cs" />
     <Compile Include="Internal\ApiTask.cs" />
@@ -72,7 +74,7 @@
     <Compile Include="Internal\ProxyGenerator.cs" />
     <Compile Include="IRetryTask.cs" />
     <Compile Include="ITask.cs" />
-    <Compile Include="RetryExtend.cs" />
+    <Compile Include="TaskExtend.cs" />
     <Compile Include="MulitpartText.cs" />
     <Compile Include="Attributes\FormFieldAttribute.cs" />
     <Compile Include="Attributes\MulitpartTextAttribute.cs" />

@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// ITask的Retry扩展
+    /// ITask的扩展
     /// </summary>
-    public static class RetryExtend
+    public static class TaskExtend
     {
         /// <summary>
-        /// 尝试重新请求
+        /// 返回提供请求重试的请求任务对象
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="task"></param>
@@ -25,7 +25,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 尝试重新请求
+        /// 返回提供请求重试的请求任务对象
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="task"></param>
@@ -39,7 +39,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 尝试重新请求
+        /// 返回提供请求重试的请求任务对象
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="task"></param>
@@ -54,6 +54,17 @@ namespace WebApiClient
                 throw new ArgumentOutOfRangeException("maxCount");
             }
             return new ApiRetryTask<TResult>(task.InvokeAsync, maxCount, delay);
+        }
+
+        /// <summary>
+        /// 返回提供异常处理请求任务对象
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="task"></param>
+        /// <returns></returns>
+        public static IHandleTask<TResult> Handle<TResult>(this ITask<TResult> task)
+        {
+            return new ApiHandleTask<TResult>(task.InvokeAsync);
         }
     }
 }
