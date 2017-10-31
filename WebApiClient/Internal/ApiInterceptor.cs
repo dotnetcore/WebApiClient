@@ -52,26 +52,26 @@ namespace WebApiClient
                 return null;
             }
 
-            var context = this.CreateApiActionContext(method, parameters);
-            var apiTask = ApiTask.CreateInstance(context);
+            var apiActionDescripter = this.GetApiActionDescriptor(method, parameters);
+            var apiTask = ApiTask.CreateInstance(this.httpApiConfig, apiActionDescripter);
 
-            if (context.ApiActionDescriptor.Return.GenericType == typeof(Task<>))
+            if (apiActionDescripter.Return.GenericType == typeof(ITask<>))
             {
-                return apiTask.InvokeAsync();
+                return apiTask;
             }
             else
             {
-                return apiTask;
+                return apiTask.InvokeAsync();
             }
         }
 
         /// <summary>
-        /// 执行请求接口
+        /// 获取api的描述
         /// </summary>
         /// <param name="method">接口的方法</param>
         /// <param name="parameters">参数集合</param>
         /// <returns></returns>
-        private ApiActionContext CreateApiActionContext(MethodInfo method, object[] parameters)
+        private ApiActionDescriptor GetApiActionDescriptor(MethodInfo method, object[] parameters)
         {
             var cache = ApiDescriptorCache.GetApiActionDescriptor(method);
             var actionDescripter = cache.Clone() as ApiActionDescriptor;
@@ -80,14 +80,7 @@ namespace WebApiClient
             {
                 actionDescripter.Parameters[i].Value = parameters[i];
             }
-
-            return new ApiActionContext
-            {
-                ApiActionDescriptor = actionDescripter,
-                HttpApiConfig = this.httpApiConfig,
-                RequestMessage = null,
-                ResponseMessage = null
-            };
+            return actionDescripter;
         }
     }
 }

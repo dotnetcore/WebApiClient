@@ -102,7 +102,7 @@
     <Compile Include="ParameterAttributes\JsonContentAttribute.cs" />
     <Compile Include="ParameterAttributes\PathQueryAttribute.cs" />
     <Compile Include="HttpActionAttributes\HttpMethodAttribute.cs" />
-    <Compile Include="ResultNotMatchException.cs" />
+    <Compile Include="RetryException.cs" />
     <Compile Include="ReturnAttributes\AutoReturnAttribute.cs" />
     <Compile Include="ReturnAttributes\ApiReturnAttribute.cs" />
     <Compile Include="ReturnAttributes\XmlReturnAttribute.cs" />

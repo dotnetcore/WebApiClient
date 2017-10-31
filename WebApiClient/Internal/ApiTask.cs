@@ -9,6 +9,18 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
+    /// 定义返回结果的行为
+    /// </summary>
+    interface ITask
+    {
+        /// <summary>
+        /// 创建请求任务
+        /// </summary>
+        /// <returns></returns>
+        Task InvokeAsync();
+    }
+
+    /// <summary>
     /// 提供ApiTask的创建
     /// </summary>
     static class ApiTask
@@ -20,14 +32,16 @@ namespace WebApiClient
         public static readonly Task CompletedTask = Task.FromResult<object>(null);
 
         /// <summary>
-        /// 创建ApiTask实例
+        /// 创建ApiTask的实例
         /// </summary>
-        /// <param name="context">上下文</param>
+        /// <param name="httpApiConfig">http接口配置</param>
+        /// <param name="apiActionDescriptor">api描述</param>
         /// <returns></returns>
-        public static ITask CreateInstance(ApiActionContext context)
+        public static ITask CreateInstance(HttpApiConfig httpApiConfig, ApiActionDescriptor apiActionDescriptor)
         {
-            var ctor = context.ApiActionDescriptor.Return.ITaskCtor;
-            return ctor.Invoke(new object[] { context }) as ITask;
+            // var instance = new ApiTask<TResult>(httpApiConfig, apiActionDescriptor);
+            var ctor = apiActionDescriptor.Return.ITaskCtor;
+            return ctor.Invoke(new object[] { httpApiConfig, apiActionDescriptor }) as ITask;
         }
     }
 
@@ -39,21 +53,29 @@ namespace WebApiClient
     sealed class ApiTask<TResult> : ITask<TResult>, ITask
     {
         /// <summary>
-        /// 上下文
+        /// http接口配置
         /// </summary>
-        private readonly ApiActionContext context;
+        private readonly HttpApiConfig httpApiConfig;
+
+        /// <summary>
+        /// api描述
+        /// </summary>
+        private readonly ApiActionDescriptor apiActionDescriptor;
 
         /// <summary>
         /// Api请求的异步任务
         /// </summary>
-        /// <param name="context">上下文</param>
-        public ApiTask(ApiActionContext context)
+        /// <param name="httpApiConfig">http接口配置</param>
+        /// <param name="apiActionDescriptor">api描述</param>
+        public ApiTask(HttpApiConfig httpApiConfig, ApiActionDescriptor apiActionDescriptor)
         {
-            this.context = context;
+            this.httpApiConfig = httpApiConfig;
+            this.apiActionDescriptor = apiActionDescriptor;
         }
 
         /// <summary>
-        /// 返回TaskAwaiter对象
+        /// 执行InvokeAsync
+        /// 并返回其TaskAwaiter对象
         /// </summary>
         /// <returns></returns>
         public TaskAwaiter<TResult> GetAwaiter()
@@ -62,16 +84,23 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 执行任务
+        /// 创建请求任务
         /// </summary>
         /// <returns></returns>
         public async Task<TResult> InvokeAsync()
         {
-            return (TResult)await this.context.ExecuteAsync();
+            var context = new ApiActionContext
+            {
+                ApiActionDescriptor = this.apiActionDescriptor,
+                HttpApiConfig = this.httpApiConfig,
+                RequestMessage = new HttpApiRequestMessage { RequestUri = this.httpApiConfig.HttpHost },
+                ResponseMessage = null
+            };
+            return (TResult)await this.apiActionDescriptor.ExecuteAsync(context);
         }
 
         /// <summary>
-        /// 执行任务
+        /// 创建请求任务
         /// </summary>
         /// <returns></returns>
         Task ITask.InvokeAsync()

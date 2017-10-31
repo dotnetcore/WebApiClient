@@ -150,7 +150,7 @@ namespace WebApiClient
 
             descriptor.ITaskCtor = typeof(ApiTask<>)
                 .MakeGenericType(descriptor.DataType)
-                .GetConstructor(new[] { typeof(ApiActionContext) });
+                .GetConstructor(new[] { typeof(HttpApiConfig), typeof(ApiActionDescriptor) });
 
             return descriptor;
         }

@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示支持重试的Api请求
+    /// 表示支持重试的Api请求任务
     /// </summary>
     /// <typeparam name="TResult">结果类型</typeparam>
     class ApiRetryTask<TResult> : IRetryTask<TResult>
     {
         /// <summary>
-        /// 任务执行器
+        /// 请求任务创建的委托
         /// </summary>
         private Func<Task<TResult>> invoker;
 
@@ -30,9 +30,9 @@ namespace WebApiClient
         private readonly Func<int, TimeSpan> retryDelay;
 
         /// <summary>
-        /// 支持重试的Api请求
+        /// 支持重试的Api请求任务
         /// </summary>
-        /// <param name="invoker">任务执行器</param>
+        /// <param name="invoker">请求任务创建的委托</param>
         /// <param name="retryMaxCount">最大尝试次数</param>
         /// <param name="retryDelay">各次重试的延时时间</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
@@ -48,7 +48,8 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 返回TaskAwaiter对象
+        /// 执行InvokeAsync
+        /// 并返回其TaskAwaiter对象
         /// </summary>
         /// <returns></returns>
         public TaskAwaiter<TResult> GetAwaiter()
@@ -57,16 +58,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 执行任务
-        /// </summary>
-        /// <returns></returns>
-        Task ITask.InvokeAsync()
-        {
-            return this.InvokeAsync();
-        }
-
-        /// <summary>
-        /// 执行任务
+        /// 创建请求任务
         /// </summary>
         /// <returns></returns>
         public async Task<TResult> InvokeAsync()
@@ -76,10 +68,10 @@ namespace WebApiClient
             {
                 try
                 {
-                    await this.DelayBeforRetryAsync(i);
+                    await this.DelayBeforRetry(i);
                     return await this.invoker.Invoke();
                 }
-                catch (RetryException ex)
+                catch (RetryMarkException ex)
                 {
                     exception = ex.InnerException;
                 }
@@ -87,7 +79,8 @@ namespace WebApiClient
 
             if (exception == null)
             {
-                exception = new ResultNotMatchException();
+                var message = string.Format("已经重试了{0}次，但结果仍未正确", this.retryMaxCount);
+                exception = new RetryException(message);
             }
             throw exception;
         }
@@ -97,7 +90,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        private async Task DelayBeforRetryAsync(int index)
+        private async Task DelayBeforRetry(int index)
         {
             if (index == 0 || this.retryDelay == null)
             {
@@ -131,18 +124,18 @@ namespace WebApiClient
         /// <returns></returns>
         public IRetryTask<TResult> WhenCatch<TException>(Func<TException, bool> predicate) where TException : Exception
         {
-            var target = this.invoker;
+            var inner = this.invoker;
             this.invoker = async () =>
             {
                 try
                 {
-                    return await target.Invoke();
+                    return await inner.Invoke();
                 }
                 catch (TException ex)
                 {
                     if (predicate == null || predicate.Invoke(ex))
                     {
-                        throw new RetryException(ex);
+                        throw new RetryMarkException(ex);
                     }
                     throw ex;
                 }
@@ -162,13 +155,13 @@ namespace WebApiClient
                 throw new ArgumentNullException();
             }
 
-            var target = this.invoker;
+            var inner = this.invoker;
             this.invoker = async () =>
             {
-                var result = await target.Invoke();
+                var result = await inner.Invoke();
                 if (predicate.Invoke(result) == true)
                 {
-                    throw new RetryException(null);
+                    throw new RetryMarkException(null);
                 }
                 return result;
             };
@@ -176,15 +169,15 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 表示需要重试的异常
+        /// 表示重试标记的异常
         /// </summary>
-        private class RetryException : Exception
+        private class RetryMarkException : Exception
         {
             /// <summary>
-            /// 需要重试的异常
+            /// 重试标记的异常
             /// </summary>
             /// <param name="inner">内部异常</param>
-            public RetryException(Exception inner)
+            public RetryMarkException(Exception inner)
                 : base(null, inner)
             {
             }
