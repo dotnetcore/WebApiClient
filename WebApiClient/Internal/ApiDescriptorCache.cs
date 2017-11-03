@@ -148,10 +148,7 @@ namespace WebApiClient
                 DataType = method.ReturnType.GetGenericArguments().FirstOrDefault(),
             };
 
-            descriptor.ITaskCtor = typeof(ApiTask<>)
-                .MakeGenericType(descriptor.DataType)
-                .GetConstructor(new[] { typeof(HttpApiConfig), typeof(ApiActionDescriptor) });
-
+            descriptor.ITaskCtor = ApiTask.GetConstructor(descriptor.DataType);
             return descriptor;
         }
 

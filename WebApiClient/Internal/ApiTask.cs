@@ -33,74 +33,86 @@ namespace WebApiClient
         }
 
         /// <summary>
+        /// 获取泛型构造器
+        /// </summary>
+        /// <param name="dataType">泛型参数类型</param>
+        /// <returns></returns>
+        public static ConstructorInfo GetConstructor(Type dataType)
+        {
+            return typeof(ApiTaskOf<>)
+                .MakeGenericType(dataType)
+                .GetConstructor(new[] { typeof(HttpApiConfig), typeof(ApiActionDescriptor) });
+        }
+
+        /// <summary>
         /// 创建请求任务
         /// 返回请求结果
         /// </summary>
         /// <returns></returns>
         public abstract Task InvokeAsync();
-    }
 
-
-    /// <summary>
-    /// 表示Api请求的异步任务
-    /// </summary>
-    /// <typeparam name="TResult">结果类型</typeparam>
-    sealed class ApiTask<TResult> : ApiTask, ITask<TResult>
-    {
-        /// <summary>
-        /// http接口配置
-        /// </summary>
-        private readonly HttpApiConfig httpApiConfig;
 
         /// <summary>
-        /// api描述
+        /// 表示Api请求的异步任务
         /// </summary>
-        private readonly ApiActionDescriptor apiActionDescriptor;
-
-        /// <summary>
-        /// Api请求的异步任务
-        /// </summary>
-        /// <param name="httpApiConfig">http接口配置</param>
-        /// <param name="apiActionDescriptor">api描述</param>
-        public ApiTask(HttpApiConfig httpApiConfig, ApiActionDescriptor apiActionDescriptor)
+        /// <typeparam name="TResult">结果类型</typeparam>
+        private class ApiTaskOf<TResult> : ApiTask, ITask<TResult>
         {
-            this.httpApiConfig = httpApiConfig;
-            this.apiActionDescriptor = apiActionDescriptor;
-        }
+            /// <summary>
+            /// http接口配置
+            /// </summary>
+            private readonly HttpApiConfig httpApiConfig;
 
-        /// <summary>
-        /// 执行InvokeAsync
-        /// 并返回其TaskAwaiter对象
-        /// </summary>
-        /// <returns></returns>
-        public TaskAwaiter<TResult> GetAwaiter()
-        {
-            return ((ITask<TResult>)this).InvokeAsync().GetAwaiter();
-        }
+            /// <summary>
+            /// api描述
+            /// </summary>
+            private readonly ApiActionDescriptor apiActionDescriptor;
 
-        /// <summary>
-        /// 创建请求任务
-        /// </summary>
-        /// <returns></returns>
-        public override Task InvokeAsync()
-        {
-            return ((ITask<TResult>)this).InvokeAsync();
-        }
-
-        /// <summary>
-        /// 创建请求任务
-        /// </summary>
-        /// <returns></returns>
-        async Task<TResult> ITask<TResult>.InvokeAsync()
-        {
-            var context = new ApiActionContext
+            /// <summary>
+            /// Api请求的异步任务
+            /// </summary>
+            /// <param name="httpApiConfig">http接口配置</param>
+            /// <param name="apiActionDescriptor">api描述</param>
+            public ApiTaskOf(HttpApiConfig httpApiConfig, ApiActionDescriptor apiActionDescriptor)
             {
-                ApiActionDescriptor = this.apiActionDescriptor,
-                HttpApiConfig = this.httpApiConfig,
-                RequestMessage = new HttpApiRequestMessage { RequestUri = this.httpApiConfig.HttpHost },
-                ResponseMessage = null
-            };
-            return (TResult)await this.apiActionDescriptor.ExecuteAsync(context);
+                this.httpApiConfig = httpApiConfig;
+                this.apiActionDescriptor = apiActionDescriptor;
+            }
+
+            /// <summary>
+            /// 执行InvokeAsync
+            /// 并返回其TaskAwaiter对象
+            /// </summary>
+            /// <returns></returns>
+            public TaskAwaiter<TResult> GetAwaiter()
+            {
+                return ((ITask<TResult>)this).InvokeAsync().GetAwaiter();
+            }
+
+            /// <summary>
+            /// 创建请求任务
+            /// </summary>
+            /// <returns></returns>
+            public override Task InvokeAsync()
+            {
+                return ((ITask<TResult>)this).InvokeAsync();
+            }
+
+            /// <summary>
+            /// 创建请求任务
+            /// </summary>
+            /// <returns></returns>
+            async Task<TResult> ITask<TResult>.InvokeAsync()
+            {
+                var context = new ApiActionContext
+                {
+                    ApiActionDescriptor = this.apiActionDescriptor,
+                    HttpApiConfig = this.httpApiConfig,
+                    RequestMessage = new HttpApiRequestMessage { RequestUri = this.httpApiConfig.HttpHost },
+                    ResponseMessage = null
+                };
+                return (TResult)await this.apiActionDescriptor.ExecuteAsync(context);
+            }
         }
     }
 }

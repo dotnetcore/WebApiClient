@@ -16,7 +16,7 @@ namespace WebApiClient
         /// <summary>
         /// 请求任务创建的委托
         /// </summary>
-        private Func<Task<TResult>> invoker;
+        private readonly Func<Task<TResult>> invoker;
 
         /// <summary>
         /// 异常处理的请求任务
@@ -59,19 +59,19 @@ namespace WebApiClient
                 throw new ArgumentNullException();
             }
 
-            var inner = this.invoker;
-            this.invoker = async () =>
+            Func<Task<TResult>> newInvoker = async () =>
             {
                 try
                 {
-                    return await inner.Invoke();
+                    return await this.invoker.Invoke();
                 }
                 catch (TException ex)
                 {
                     return func.Invoke(ex);
                 }
             };
-            return this;
+
+            return new ApiHandleTask<TResult>(newInvoker);
         }
 
         /// <summary>
@@ -87,13 +87,12 @@ namespace WebApiClient
                 throw new ArgumentNullException();
             }
 
-            var inner = this.invoker;
-            this.invoker = async () =>
+            Func<Task<TResult>> newInvoker = async () =>
             {
                 TException _ex;
                 try
                 {
-                    return await inner.Invoke();
+                    return await this.invoker.Invoke();
                 }
                 catch (TException ex)
                 {
@@ -101,7 +100,8 @@ namespace WebApiClient
                 }
                 return await func.Invoke(_ex);
             };
-            return this;
+
+            return new ApiHandleTask<TResult>(newInvoker);
         }
     }
 }

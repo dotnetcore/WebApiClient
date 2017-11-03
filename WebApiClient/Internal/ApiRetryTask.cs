@@ -17,7 +17,7 @@ namespace WebApiClient
         /// <summary>
         /// 请求任务创建的委托
         /// </summary>
-        private Func<Task<TResult>> invoker;
+        private readonly Func<Task<TResult>> invoker;
 
         /// <summary>
         /// 获取最大重试次数
@@ -124,12 +124,11 @@ namespace WebApiClient
         /// <returns></returns>
         public IRetryTask<TResult> WhenCatch<TException>(Func<TException, bool> predicate) where TException : Exception
         {
-            var inner = this.invoker;
-            this.invoker = async () =>
+            Func<Task<TResult>> newInvoker = async () =>
             {
                 try
                 {
-                    return await inner.Invoke();
+                    return await this.invoker.Invoke();
                 }
                 catch (TException ex)
                 {
@@ -140,7 +139,7 @@ namespace WebApiClient
                     throw ex;
                 }
             };
-            return this;
+            return new ApiRetryTask<TResult>(newInvoker, this.retryMaxCount, this.retryDelay);
         }
 
         /// <summary>
@@ -155,17 +154,17 @@ namespace WebApiClient
                 throw new ArgumentNullException();
             }
 
-            var inner = this.invoker;
-            this.invoker = async () =>
+            Func<Task<TResult>> newInvoker = async () =>
             {
-                var result = await inner.Invoke();
+                var result = await this.invoker.Invoke();
                 if (predicate.Invoke(result) == true)
                 {
                     throw new RetryMarkException(null);
                 }
                 return result;
             };
-            return this;
+
+            return new ApiRetryTask<TResult>(newInvoker, this.retryMaxCount, this.retryDelay);
         }
 
         /// <summary>
