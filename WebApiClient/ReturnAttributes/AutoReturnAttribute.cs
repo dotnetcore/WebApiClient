@@ -60,7 +60,7 @@ namespace WebApiClient.Attributes
                 return await xmlReturn.GetTaskResult(context);
             }
 
-            var message = string.Format("不支持的类型{0}的自动映射", dataType);
+            var message = string.Format("请求的回复内容不支持自动映射为类型{0}，请为接口设置合适的ApiReturnAttribute", dataType);
             throw new NotSupportedException(message);
         }
 

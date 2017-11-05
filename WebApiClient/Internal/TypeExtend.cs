@@ -34,56 +34,32 @@ namespace WebApiClient
         /// </summary>
         private static readonly ConcurrentDictionary<Type, bool> typeAllowMultipleCache = new ConcurrentDictionary<Type, bool>();
 
-        /// <summary>
-        /// 确保类型是Api接口
-        /// </summary>
-        /// <param name="apiType">接口类型</param>
-        /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="NotSupportedException"></exception>
-        public static void EnsureApiInterface(this Type apiType)
-        {
-            if (apiType.IsInterface == false)
-            {
-                throw new ArgumentException(apiType.Name + "不是接口类型");
-            }
-
-            // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口
-            if (TypeAttributes.Public != (TypeAttributes.Public & apiType.Attributes))
-            {
-                throw new NotSupportedException(apiType.Name + "必须为public修饰");
-            }
-
-            foreach (var m in apiType.GetInterfaceAllMethods())
-            {
-                if (m.Equals(disposeMethod) == true)
-                {
-                    continue;
-                }
-
-                if (m.IsGenericMethod == true)
-                {
-                    throw new NotSupportedException("不支持泛型方法：" + m);
-                }
-            }
-        }
 
         /// <summary>
         /// 获取接口类型及其继承的接口的所有方法
         /// </summary>
         /// <param name="interfaceType">接口类型</param>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        public static MethodInfo[] GetInterfaceAllMethods(this Type interfaceType)
+        public static MethodInfo[] GetApiAllMethods(this Type interfaceType)
         {
             if (interfaceType.IsInterface == false)
             {
-                throw new NotSupportedException("类型必须为接口类型");
+                throw new ArgumentException("类型必须为接口类型");
+            }
+
+            // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口
+            if (TypeAttributes.Public != (TypeAttributes.Public & interfaceType.Attributes))
+            {
+                throw new NotSupportedException(interfaceType.Name + "必须为public修饰");
             }
 
             return interfaceMethodsCache.GetOrAdd(interfaceType, type =>
             {
                 var typeHashSet = new HashSet<Type>();
                 var methodHashSet = new HashSet<MethodInfo>();
-                SearchInterfaceMethods(type, ref typeHashSet, ref methodHashSet);
+                GetInterfaceMethods(type, ref typeHashSet, ref methodHashSet);
                 return methodHashSet.ToArray();
             });
         }
@@ -94,22 +70,64 @@ namespace WebApiClient
         /// <param name="interfaceType">接口类型</param>
         /// <param name="typeHashSet">接口类型集</param>
         /// <param name="methodHashSet">方法集</param>
-        private static void SearchInterfaceMethods(Type interfaceType, ref HashSet<Type> typeHashSet, ref HashSet<MethodInfo> methodHashSet)
+        /// <exception cref="NotSupportedException"></exception>
+        private static void GetInterfaceMethods(Type interfaceType, ref HashSet<Type> typeHashSet, ref HashSet<MethodInfo> methodHashSet)
         {
             if (typeHashSet.Add(interfaceType) == true)
             {
                 var methods = interfaceType.GetMethods();
                 foreach (var item in methods)
                 {
+                    item.EnsureApiMethod();
                     methodHashSet.Add(item);
                 }
 
                 foreach (var item in interfaceType.GetInterfaces())
                 {
-                    SearchInterfaceMethods(item, ref typeHashSet, ref methodHashSet);
+                    GetInterfaceMethods(item, ref typeHashSet, ref methodHashSet);
                 }
             }
         }
+
+        /// <summary>
+        /// 确保方法是支持的Api接口
+        /// </summary>
+        /// <exception cref="NotSupportedException"></exception>
+        private static void EnsureApiMethod(this MethodInfo method)
+        {
+            if (method.Equals(disposeMethod) == true)
+            {
+                return;
+            }
+
+            if (method.IsGenericMethod == true)
+            {
+                throw new NotSupportedException("不支持泛型方法：" + method);
+            }
+
+            var genericType = method.ReturnType;
+            if (genericType.IsGenericType == true)
+            {
+                genericType = genericType.GetGenericTypeDefinition();
+            }
+
+            var isTaskType = genericType == typeof(Task<>) || genericType == typeof(ITask<>);
+            if (isTaskType == false)
+            {
+                var message = string.Format("接口{0}返回类型必须为Task<>或ITask<>", method.Name);
+                throw new NotSupportedException(message);
+            }
+
+            foreach (var parameter in method.GetParameters())
+            {
+                if (parameter.ParameterType.IsByRef == true)
+                {
+                    var message = string.Format("接口参数不支持ref/out修饰：{0}", parameter);
+                    throw new NotSupportedException(message);
+                }
+            }
+        }
+
 
         /// <summary>
         /// 获取是否为简单类型

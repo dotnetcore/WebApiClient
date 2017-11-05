@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 代理生成器
+    /// 接口的代理类型生成器
+    /// 不支持泛型方法
+    /// 不支持ref/out参数
     /// </summary>
     static class ProxyGenerator
     {
@@ -44,12 +46,13 @@ namespace WebApiClient
         /// </summary>
         /// <typeparam name="T">接口殴类型</typeparam>
         /// <param name="interceptor">拦截器</param>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
         public static T CreateInterfaceProxyWithoutTarget<T>(IApiInterceptor interceptor) where T : class
         {
             var interfaceType = typeof(T);
-            var apiMethods = interfaceType.GetInterfaceAllMethods();
-
+            var apiMethods = interfaceType.GetApiAllMethods();
             var proxyTypeCtor = proxyTypeCtorCache.GetOrAdd(interfaceType, type => GenerateProxyTypeCtor(type, apiMethods));
             return proxyTypeCtor.Invoke(new object[] { interceptor, apiMethods }) as T;
         }

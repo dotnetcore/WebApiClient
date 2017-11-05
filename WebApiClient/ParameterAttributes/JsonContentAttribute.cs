@@ -45,7 +45,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="encoding">编码</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public JsonContentAttribute(Encoding encoding)
+        private JsonContentAttribute(Encoding encoding)
         {
             if (encoding == null)
             {

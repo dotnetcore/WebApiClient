@@ -58,8 +58,6 @@ namespace WebApiClient
         /// <returns></returns>
         public static TInterface Create<TInterface>(HttpApiConfig httpApiConfig) where TInterface : class
         {
-            typeof(TInterface).EnsureApiInterface();
-
             if (httpApiConfig == null)
             {
                 httpApiConfig = new HttpApiConfig();

@@ -27,7 +27,7 @@ namespace WebApiClient.Attributes
                 throw new ArgumentNullException(parameter.Name);
             }
 
-            var url = new Uri(parameter.Value.ToString(), UriKind.RelativeOrAbsolute);
+            var url = new Uri(parameter.ToString(), UriKind.RelativeOrAbsolute);
             if (url.IsAbsoluteUri == true)
             {
                 context.RequestMessage.RequestUri = url;

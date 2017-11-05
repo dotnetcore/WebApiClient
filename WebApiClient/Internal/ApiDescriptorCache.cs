@@ -47,16 +47,6 @@ namespace WebApiClient
         /// <returns></returns>
         private static ApiActionDescriptor GetActionDescriptor(MethodInfo method)
         {
-            if (method.ReturnType.IsGenericType == false)
-            {
-                var returnType = method.ReturnType.GetGenericTypeDefinition();
-                if (returnType != typeof(Task<>) || returnType != typeof(ITask<>))
-                {
-                    var message = string.Format("接口{0}返回类型应该是Task<{1}>或ITask<{1}>", method.Name, method.ReturnType.Name);
-                    throw new NotSupportedException(message);
-                }
-            }
-
             var actionAttributes = method
                 .FindDeclaringAttributes<IApiActionAttribute>(true)
                 .Distinct(new AttributeComparer<IApiActionAttribute>())
@@ -75,7 +65,7 @@ namespace WebApiClient
                 Filters = filterAttributes,
                 Return = GetReturnDescriptor(method),
                 Attributes = actionAttributes,
-                Parameters = method.GetParameters().Select((p, i) => GetParameterDescriptor(p, i)).ToArray()
+                Parameters = method.GetParameters().Select(p => GetParameterDescriptor(p)).ToArray()
             };
         }
 
@@ -83,22 +73,15 @@ namespace WebApiClient
         /// 生成ApiParameterDescriptor
         /// </summary>
         /// <param name="parameter">参数信息</param>
-        /// <param name="index">参数索引</param>
         /// <returns></returns>
-        private static ApiParameterDescriptor GetParameterDescriptor(ParameterInfo parameter, int index)
+        private static ApiParameterDescriptor GetParameterDescriptor(ParameterInfo parameter)
         {
             var parameterType = parameter.ParameterType;
-            if (parameterType.IsByRef == true)
-            {
-                var message = string.Format("接口参数不支持ref/out修饰：{0}", parameter);
-                throw new NotSupportedException(message);
-            }
-
             var descriptor = new ApiParameterDescriptor
             {
                 Value = null,
                 Name = parameter.Name,
-                Index = index,
+                Index = parameter.Position,
                 ParameterType = parameterType,
                 IsApiParameterable = parameterType.IsInheritFrom<IApiParameterable>() || parameterType.IsInheritFrom<IEnumerable<IApiParameterable>>(),
                 IsHttpContent = parameterType.IsInheritFrom<HttpContent>(),
@@ -140,15 +123,15 @@ namespace WebApiClient
                 returnAttribute = new AutoReturnAttribute();
             }
 
+            var dataType = method.ReturnType.GetGenericArguments().FirstOrDefault();
             var descriptor = new ApiReturnDescriptor
             {
                 Attribute = returnAttribute,
                 ReturnType = method.ReturnType,
                 GenericType = method.ReturnType.GetGenericTypeDefinition(),
-                DataType = method.ReturnType.GetGenericArguments().FirstOrDefault(),
+                DataType = dataType,
+                ITaskCtor = ApiTask.GetConstructor(dataType),
             };
-
-            descriptor.ITaskCtor = ApiTask.GetConstructor(descriptor.DataType);
             return descriptor;
         }
 

@@ -46,7 +46,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="encoding">编码</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public XmlContentAttribute(Encoding encoding)
+        private XmlContentAttribute(Encoding encoding)
         {
             if (encoding == null)
             {
