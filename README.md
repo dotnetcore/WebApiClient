@@ -8,13 +8,13 @@ public interface MyWebApi : IDisposable
     // GET webapi/user?account=laojiu
     // Return 原始string内容
     [HttpGet("/webapi/user")]
-    Task<string> GetUserByAccountAsync(string account);
+    ITask<string> GetUserByAccountAsync(string account);
 
     // POST webapi/user  
     // Body Account=laojiu&Password=123456
     // Return json或xml内容
     [HttpPost("/webapi/user")]
-    Task<UserInfo> UpdateUserWithFormAsync([FormContent] UserInfo user);
+    ITask<UserInfo> UpdateUserWithFormAsync([FormContent] UserInfo user);
 }
 ```
  
