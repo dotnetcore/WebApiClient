@@ -50,7 +50,9 @@ namespace WebApiClient
             }
 
             // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口
-            if (TypeAttributes.Public != (TypeAttributes.Public & interfaceType.Attributes))
+            var attrs = new[] { TypeAttributes.Public, TypeAttributes.NestedPublic };
+            var attr = attrs.Aggregate((a, b) => a | b) & interfaceType.Attributes;
+            if (attrs.Contains(attr) == false)
             {
                 throw new NotSupportedException(interfaceType.Name + "必须为public修饰");
             }
