@@ -34,11 +34,10 @@ PM> `install-package Laojiu.WebApiClient`
 
 ## 支持与约束
 * 支持接口继承或多继承
-* 支持泛型接口、泛型方法
-* 支持非泛型接口、非泛型方法
+* 支持泛型接口
 * 约束接口只能定义方法
 * 约束接口的参数不能为ref/out
-* 约束接口的返回类型必须是TaskOf(TResult)
+* 约束接口的返回类型必须是TaskOf(TResult)或ITaskOf(TResult)
 
 ## 功能列表 
 ### 接口级特性
@@ -68,7 +67,20 @@ PM> `install-package Laojiu.WebApiClient`
 * FormField(表单字段)
 * MulitpartFile类(表单文件)
 * MulitpartText类(表单文本)
+* BasicAuth(基本身份)
 * 自定义IApiParameterable类
+
+## 异常的Retry与Handle
+* ITask类型支持Retry功能，当某种异常时，请求重试
+* ITask类型支持Handle功能，当某种异常时，将结果处理为目标值
+```
+var user = await myWebApi.UpdateWithFormAsync(user, nickName: "老九", age: 18)
+    .Retry(3, i => TimeSpan.FromSeconds(i))
+    .WhenCatch<TimeoutException>()
+    .Handle()
+    .WhenCatch<RetryException>(ex => new UserInfo { Account = "RetryException" })
+    .WhenCatch<Exception>(ex => new UserInfo { Account = "Exception" });
+```
 
 ## 配置与扩展
 ### 配置
