@@ -79,7 +79,8 @@ namespace WebApiClient
             }
 
             return
-                from p in Property.GetProperties(instance.GetType())
+                from p in KeyValueProperty.GetProperties(instance.GetType())
+                where p.IsKeyValueIgnore == false
                 let value = p.GetValue(instance)
                 select this.FormatAsSimple(p.Name, value);
         }

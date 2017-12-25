@@ -46,6 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KeyAliasAttribute.cs" />
+    <Compile Include="KeyValueIgnoreAttribute.cs" />
     <Compile Include="Parameterables\BasicAuth.cs" />
     <Compile Include="Contexts\ApiReturnDescriptor.cs" />
     <Compile Include="Parameterables\FormField.cs" />
@@ -115,7 +117,7 @@
     </Compile>
     <Compile Include="Internal\ApiDescriptorCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Internal\Property.cs" />
+    <Compile Include="Internal\KeyValueProperty.cs" />
     <Compile Include="Contexts\ApiActionContext.cs" />
     <Compile Include="HttpActionAttributes\HttpHostAttribute.cs" />
     <Compile Include="HttpApiClient.cs" />
