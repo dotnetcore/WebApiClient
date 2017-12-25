@@ -80,7 +80,7 @@ namespace WebApiClient
 
             return
                 from p in KeyValueProperty.GetProperties(instance.GetType())
-                where p.IsKeyValueIgnore == false
+                where p.IsSupportGet && p.IsKeyValueIgnore == false
                 let value = p.GetValue(instance)
                 select this.FormatAsSimple(p.Name, value);
         }

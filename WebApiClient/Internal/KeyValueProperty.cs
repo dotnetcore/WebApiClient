@@ -20,12 +20,12 @@ namespace WebApiClient
         /// <summary>
         /// 获取属性别名或名称
         /// </summary>
-        public string Name { get; protected set; }
+        public string Name { get; private set; }
 
         /// <summary>
-        /// 获取属性信息
+        /// 获取是否支持Get操作
         /// </summary>
-        public PropertyInfo Info { get; private set; }
+        public bool IsSupportGet { get; private set; }
 
         /// <summary>
         /// 获取是否声明KeyValueIgnoreAttribute
@@ -38,9 +38,6 @@ namespace WebApiClient
         /// <param name="property">属性信息</param>
         public KeyValueProperty(PropertyInfo property)
         {
-            this.Info = property;
-            this.IsKeyValueIgnore = property.IsDefined(typeof(KeyValueIgnoreAttribute));
-
             var keyAlias = property.GetAttribute<KeyAliasAttribute>(true);
             this.Name = keyAlias == null ? property.Name : keyAlias.Alias;
 
@@ -49,15 +46,23 @@ namespace WebApiClient
             {
                 this.geter = new Method(getMethod);
             }
+
+            this.IsSupportGet = this.geter != null;
+            this.IsKeyValueIgnore = property.IsDefined(typeof(KeyValueIgnoreAttribute));
         }
 
         /// <summary>
         /// 获取属性的值
         /// </summary>
         /// <param name="instance">实例</param>
+        /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
         public object GetValue(object instance)
         {
+            if (this.IsSupportGet == false)
+            {
+                throw new NotSupportedException();
+            }
             return this.geter.Invoke(instance, null);
         }
 
