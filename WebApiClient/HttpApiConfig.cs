@@ -14,6 +14,16 @@ namespace WebApiClient
     public class HttpApiConfig : IDisposable
     {
         /// <summary>
+        /// 与HttpClientHandler实例关联的HttpClient
+        /// </summary>
+        private HttpClient httpClient;
+
+        /// <summary>
+        /// Http处理程序
+        /// </summary>
+        private HttpClientHandler httpClientHandler;
+
+        /// <summary>
         /// 获取或设置Http服务完整主机域名
         /// 例如http://www.webapiclient.com
         /// 设置了HttpHost值，HttpHostAttribute将失效  
@@ -35,52 +45,53 @@ namespace WebApiClient
         /// </summary>
         public IKeyValueFormatter KeyValueFormatter { get; set; }
 
+
         /// <summary>
         /// 获取或设置Http处理程序
         /// </summary>
-        public HttpClientHandler HttpClientHandler { get; set; }
+        public HttpClientHandler HttpClientHandler
+        {
+            get
+            {
+                if (this.httpClientHandler == null)
+                {
+                    this.httpClientHandler = new DefaultHttpClientHandler();
+                }
+                return this.httpClientHandler;
+            }
+            set
+            {
+                this.httpClientHandler = value;
+            }
+        }
 
         /// <summary>
         /// 获取或设置与HttpClientHandler实例关联的HttpClient
         /// </summary>
-        public HttpClient HttpClient { get; set; }
+        public HttpClient HttpClient
+        {
+            get
+            {
+                if (this.httpClient == null)
+                {
+                    this.httpClient = new HttpClient(this.HttpClientHandler);
+                }
+                return this.httpClient;
+            }
+            set
+            {
+                this.httpClient = value;
+            }
+        }
 
         /// <summary>
         /// Http接口的配置项   
         /// </summary>
         public HttpApiConfig()
         {
-        }
-
-        /// <summary>
-        /// 将null值的属性设置为默认
-        /// </summary>
-        internal protected virtual void SetNullPropertyAsDefault()
-        {
-            if (this.XmlFormatter == null)
-            {
-                this.XmlFormatter = new DefaultXmlFormatter();
-            }
-
-            if (this.JsonFormatter == null)
-            {
-                this.JsonFormatter = new DefaultJsonFormatter();
-            }
-
-            if (this.KeyValueFormatter == null)
-            {
-                this.KeyValueFormatter = new DefaultKeyValueFormatter();
-            }
-
-            if (this.HttpClientHandler == null)
-            {
-                this.HttpClientHandler = new DefaultHttpClientHandler();
-            }
-
-            if (this.HttpClient == null)
-            {
-                this.HttpClient = new HttpClient(this.HttpClientHandler);
-            }
+            this.XmlFormatter = DefaultXmlFormatter.Instance;
+            this.JsonFormatter = DefaultJsonFormatter.Instance;
+            this.KeyValueFormatter = DefaultKeyValueFormatter.Instance;
         }
 
         #region IDisposable

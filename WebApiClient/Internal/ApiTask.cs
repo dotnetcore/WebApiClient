@@ -20,6 +20,18 @@ namespace WebApiClient
         public static readonly Task CompletedTask = Task.FromResult<object>(null);
 
         /// <summary>
+        /// 获取泛型构造器
+        /// </summary>
+        /// <param name="dataType">泛型参数类型</param>
+        /// <returns></returns>
+        public static ConstructorInfo GetConstructor(Type dataType)
+        {
+            return typeof(ApiTaskOf<>)
+                .MakeGenericType(dataType)
+                .GetConstructor(new[] { typeof(HttpApiConfig), typeof(ApiActionDescriptor) });
+        }
+
+        /// <summary>
         /// 创建ApiTaskOf(T)的实例
         /// </summary>
         /// <param name="httpApiConfig">http接口配置</param>
@@ -30,18 +42,6 @@ namespace WebApiClient
             // var instance = new ApiTask<TResult>(httpApiConfig, apiActionDescriptor);
             var ctor = apiActionDescriptor.Return.ITaskCtor;
             return ctor.Invoke(new object[] { httpApiConfig, apiActionDescriptor }) as ApiTask;
-        }
-
-        /// <summary>
-        /// 获取泛型构造器
-        /// </summary>
-        /// <param name="dataType">泛型参数类型</param>
-        /// <returns></returns>
-        public static ConstructorInfo GetConstructor(Type dataType)
-        {
-            return typeof(ApiTaskOf<>)
-                .MakeGenericType(dataType)
-                .GetConstructor(new[] { typeof(HttpApiConfig), typeof(ApiActionDescriptor) });
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace WebApiClient
             /// <returns></returns>
             public TaskAwaiter<TResult> GetAwaiter()
             {
-                return ((ITask<TResult>)this).InvokeAsync().GetAwaiter();
+                return this.ExecuteAsync().GetAwaiter();
             }
 
             /// <summary>
@@ -95,14 +95,23 @@ namespace WebApiClient
             /// <returns></returns>
             public override Task InvokeAsync()
             {
-                return ((ITask<TResult>)this).InvokeAsync();
+                return this.ExecuteAsync();
             }
 
             /// <summary>
             /// 创建请求任务
             /// </summary>
             /// <returns></returns>
-            async Task<TResult> ITask<TResult>.InvokeAsync()
+            Task<TResult> ITask<TResult>.InvokeAsync()
+            {
+                return this.ExecuteAsync();
+            }
+
+            /// <summary>
+            /// 执行一次请求
+            /// </summary>
+            /// <returns></returns>
+            private async Task<TResult> ExecuteAsync()
             {
                 var context = new ApiActionContext
                 {
@@ -111,7 +120,8 @@ namespace WebApiClient
                     RequestMessage = new HttpApiRequestMessage { RequestUri = this.httpApiConfig.HttpHost },
                     ResponseMessage = null
                 };
-                return (TResult)await this.apiActionDescriptor.ExecuteAsync(context);
+                var result = await this.apiActionDescriptor.ExecuteAsync(context);
+                return (TResult)result;
             }
         }
     }

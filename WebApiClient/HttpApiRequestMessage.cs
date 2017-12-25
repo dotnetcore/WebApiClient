@@ -15,6 +15,11 @@ namespace WebApiClient
     public class HttpApiRequestMessage : HttpRequestMessage
     {
         /// <summary>
+        /// 获取或设置请求的超时时间
+        /// </summary>
+        public TimeSpan? Timeout { get; set; }         
+
+        /// <summary>
         /// 添加字段到已有的Content
         /// 要求content-type为application/x-www-form-urlencoded
         /// </summary>

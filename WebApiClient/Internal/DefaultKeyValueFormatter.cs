@@ -13,6 +13,11 @@ namespace WebApiClient
     class DefaultKeyValueFormatter : IKeyValueFormatter
     {
         /// <summary>
+        /// 获取唯一实例
+        /// </summary>
+        public static readonly DefaultKeyValueFormatter Instance = new DefaultKeyValueFormatter();
+
+        /// <summary>
         /// 将参数值序列化为键值对
         /// </summary>
         /// <param name="parameter">参数</param>

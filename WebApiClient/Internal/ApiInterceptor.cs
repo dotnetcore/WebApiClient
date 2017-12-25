@@ -33,7 +33,6 @@ namespace WebApiClient
             {
                 throw new ArgumentNullException("apiConfig");
             }
-            apiConfig.SetNullPropertyAsDefault();
             this.httpApiConfig = apiConfig;
         }
 

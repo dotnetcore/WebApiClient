@@ -12,6 +12,11 @@ namespace WebApiClient
     class DefaultJsonFormatter : IStringFormatter
     {
         /// <summary>
+        /// 获取唯一实例
+        /// </summary>
+        public static readonly DefaultJsonFormatter Instance = new DefaultJsonFormatter();
+
+        /// <summary>
         /// 将参数值序列化为json文本
         /// </summary>
         /// <param name="parameter">对象</param>

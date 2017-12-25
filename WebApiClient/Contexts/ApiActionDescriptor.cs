@@ -40,7 +40,7 @@ namespace WebApiClient
         /// 获取Api的返回描述
         /// </summary>
         public ApiReturnDescriptor Return { get; internal set; }
-        
+
         /// <summary>
         /// 异步执行api
         /// </summary>
@@ -86,7 +86,9 @@ namespace WebApiClient
         private async Task SendAsync(ApiActionContext context)
         {
             var invoker = context.HttpApiConfig.HttpClient;
-            context.ResponseMessage = await invoker.SendAsync(context.RequestMessage);
+            var timeout = context.RequestMessage.Timeout.HasValue ? context.RequestMessage.Timeout.Value : invoker.Timeout;
+            var token = new CancellationTokenSource(timeout).Token;
+            context.ResponseMessage = await invoker.SendAsync(context.RequestMessage, token);
         }
 
         /// <summary>

@@ -15,6 +15,11 @@ namespace WebApiClient
     class DefaultXmlFormatter : IStringFormatter
     {
         /// <summary>
+        /// 获取唯一实例
+        /// </summary>
+        public static readonly DefaultXmlFormatter Instance = new DefaultXmlFormatter();
+
+        /// <summary>
         /// 将参数值序列化为xml文本
         /// </summary>
         /// <param name="parameter">对象</param>

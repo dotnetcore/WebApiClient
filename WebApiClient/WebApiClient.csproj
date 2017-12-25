@@ -46,12 +46,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BasicAuth.cs" />
+    <Compile Include="Parameterables\BasicAuth.cs" />
     <Compile Include="Contexts\ApiReturnDescriptor.cs" />
-    <Compile Include="FormField.cs" />
+    <Compile Include="Parameterables\FormField.cs" />
     <Compile Include="HttpActionAttributes\ApiActionAttribute.cs" />
     <Compile Include="HttpActionAttributes\BasicAuthAttribute.cs" />
     <Compile Include="HttpActionAttributes\HttpOptionsAttribute.cs" />
+    <Compile Include="HttpActionAttributes\TimeoutAttribute.cs" />
     <Compile Include="HttpApiConfig.cs" />
     <Compile Include="HttpApiRequestMessage.cs" />
     <Compile Include="IApiParameterable.cs" />
@@ -76,7 +77,7 @@
     <Compile Include="IRetryTask.cs" />
     <Compile Include="ITask.cs" />
     <Compile Include="TaskExtend.cs" />
-    <Compile Include="MulitpartText.cs" />
+    <Compile Include="Parameterables\MulitpartText.cs" />
     <Compile Include="Attributes\FormFieldAttribute.cs" />
     <Compile Include="Attributes\MulitpartTextAttribute.cs" />
     <Compile Include="FilterAttributes\ApiActionFilterAttribute.cs" />
@@ -90,7 +91,7 @@
     <Compile Include="Internal\AttributeExtend.cs" />
     <Compile Include="Internal\ParameterableAttribute.cs" />
     <Compile Include="Internal\DefaultJsonFormatter.cs" />
-    <Compile Include="MulitpartFile.cs" />
+    <Compile Include="Parameterables\MulitpartFile.cs" />
     <Compile Include="HttpActionAttributes\HttpDeleteAttribute.cs" />
     <Compile Include="HttpActionAttributes\HttpPutAttribute.cs" />
     <Compile Include="HttpActionAttributes\HttpGetAttribute.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="Contexts\ApiActionContext.cs" />
     <Compile Include="HttpActionAttributes\HttpHostAttribute.cs" />
     <Compile Include="HttpApiClient.cs" />
+    <Compile Include="Parameterables\Timeout.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
