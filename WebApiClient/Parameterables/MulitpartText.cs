@@ -11,7 +11,7 @@ namespace WebApiClient
     /// <summary>
     /// 表示将自身作为multipart/form-data的一个文本项
     /// </summary>
-    [DebuggerDisplay("{value}")]
+    [DebuggerDisplay("{stringValue}")]
     public class MulitpartText : IApiParameterable
     {
         /// <summary>

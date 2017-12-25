@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,12 +10,13 @@ namespace WebApiClient.Attributes
     /// <summary>
     /// 表示此请求的超时时间
     /// </summary>
+    [DebuggerDisplay("Timeout = {TimeSpan}")]
     public class TimeoutAttribute : ApiActionAttribute
     {
         /// <summary>
-        /// 获取超时时间的毫秒数
+        /// 获取超时时间
         /// </summary>
-        public int Milliseconds { get; private set; }
+        public TimeSpan TimeSpan { get; private set; }
 
         /// <summary>
         /// 请求的超时时间
@@ -27,7 +29,7 @@ namespace WebApiClient.Attributes
             {
                 throw new ArgumentOutOfRangeException();
             }
-            this.Milliseconds = milliseconds;
+            this.TimeSpan = TimeSpan.FromMilliseconds(milliseconds);
         }
 
         /// <summary>
@@ -37,7 +39,7 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         public override Task BeforeRequestAsync(ApiActionContext context)
         {
-            context.RequestMessage.Timeout = TimeSpan.FromMilliseconds(this.Milliseconds);
+            context.RequestMessage.Timeout = this.TimeSpan;
             return ApiTask.CompletedTask;
         }
     }

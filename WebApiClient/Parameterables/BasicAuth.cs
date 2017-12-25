@@ -11,7 +11,7 @@ namespace WebApiClient
     /// <summary>
     /// 表示将自身作为请求的基本授权
     /// </summary>
-    [DebuggerDisplay("{Authorization} = {authValue}")]
+    [DebuggerDisplay("Authorization = {authValue}")]
     public class BasicAuth : IApiParameterable
     {
         /// <summary>
