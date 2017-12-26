@@ -150,7 +150,6 @@ namespace WebApiClient
         /// 添加文本内容到已有的Content
         /// 要求content-type为multipart/form-data
         /// </summary>     
-        /// <param name="httpContent"></param>
         /// <param name="name">名称</param>
         /// <param name="value">文本</param>
         /// <exception cref="NotSupportedException"></exception>
@@ -165,7 +164,6 @@ namespace WebApiClient
         /// 添加文本内容到已有的Content
         /// 要求content-type为multipart/form-data
         /// </summary>     
-        /// <param name="httpContent"></param>
         /// <param name="name">名称</param>
         /// <param name="value">文本</param>
         /// <exception cref="NotSupportedException"></exception>

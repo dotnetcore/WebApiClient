@@ -44,6 +44,7 @@ namespace WebApiClient.Attributes
             this.Host = new Uri(host, UriKind.Absolute);
         }
 
+        /// <summary>
         /// 执行前
         /// </summary>
         /// <param name="context">上下文</param>
