@@ -8,9 +8,10 @@ namespace WebApiClient
 {
     /// <summary>
     /// 表示当KeyValueFormatter序列化对象时，指定此属性对应的键的别名
+    /// 不可继承
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public class KeyAliasAttribute : Attribute
+    public sealed class KeyAliasAttribute : Attribute
     {
         /// <summary>
         /// 获取属性对应的键的别名
@@ -21,8 +22,13 @@ namespace WebApiClient
         /// 指定此属性对应的键的别名
         /// </summary>
         /// <param name="alias">对应的键的别名</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public KeyAliasAttribute(string alias)
         {
+            if (string.IsNullOrWhiteSpace(alias))
+            {
+                throw new ArgumentNullException();
+            }
             this.Alias = alias;
         }
     }

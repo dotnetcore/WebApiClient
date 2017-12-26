@@ -14,6 +14,22 @@ namespace WebApiClient
     public class HttpApiConfig : IDisposable
     {
         /// <summary>
+        /// 获取默认xml格式化工具唯一实例
+        /// </summary>
+        public static readonly IStringFormatter DefaultXmlFormatter = new DefaultXmlFormatter();
+
+        /// <summary>
+        /// 获取默认json格式化工具唯一实例
+        /// </summary>
+        public static readonly IStringFormatter DefaultJsonFormatter = new DefaultJsonFormatter();
+
+        /// <summary>
+        /// 获取默认KeyValue格式化工具唯一实例
+        /// </summary>
+        public static readonly IKeyValueFormatter DefaultKeyValueFormatter = new DefaultKeyValueFormatter();
+
+
+        /// <summary>
         /// 与HttpClientHandler实例关联的HttpClient
         /// </summary>
         private HttpClient httpClient;
@@ -89,9 +105,9 @@ namespace WebApiClient
         /// </summary>
         public HttpApiConfig()
         {
-            this.XmlFormatter = DefaultXmlFormatter.Instance;
-            this.JsonFormatter = DefaultJsonFormatter.Instance;
-            this.KeyValueFormatter = DefaultKeyValueFormatter.Instance;
+            this.XmlFormatter = HttpApiConfig.DefaultXmlFormatter;
+            this.JsonFormatter = HttpApiConfig.DefaultJsonFormatter;
+            this.KeyValueFormatter = HttpApiConfig.DefaultKeyValueFormatter;
         }
 
         #region IDisposable
