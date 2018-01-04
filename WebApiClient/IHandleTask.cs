@@ -18,6 +18,14 @@ namespace WebApiClient
         /// <typeparam name="TException"></typeparam>
         /// <param name="func">获取结果</param>
         /// <returns></returns>
+        IHandleTask<TResult> WhenCatch<TException>(Func<TResult> func) where TException : Exception;
+
+        /// <summary>
+        /// 当捕获到异常时返回指定结果
+        /// </summary>
+        /// <typeparam name="TException"></typeparam>
+        /// <param name="func">获取结果</param>
+        /// <returns></returns>
         IHandleTask<TResult> WhenCatch<TException>(Func<TException, TResult> func) where TException : Exception;
 
         /// <summary>
