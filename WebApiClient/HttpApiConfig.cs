@@ -20,6 +20,8 @@ namespace WebApiClient
 
         /// <summary>
         /// 获取默认json格式化工具唯一实例
+        /// 如果应用程序池加载了Newtonsoft.Json，则使用Newtonsoft.Json.JsonConvert
+        /// 否则使用运行库的System.Web.Script.Serialization.JavaScriptSerializer
         /// </summary>
         public static readonly IStringFormatter DefaultJsonFormatter = new DefaultJsonFormatter();
 

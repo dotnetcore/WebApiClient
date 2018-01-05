@@ -10,7 +10,6 @@ namespace WebApiClient.Attributes
     /// <summary>
     /// 表示将回复的Json结果作反序化为指定类型
     /// 依赖于HttpApiConfig.JsonFormatter
-    /// 为了更好的性能，建议实例json.net等实现一个JsonFormatter替换默认的
     /// </summary>
     public class JsonReturnAttribute : ApiReturnAttribute
     {

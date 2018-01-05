@@ -23,6 +23,12 @@ namespace WebApiClient
             {
                 return null;
             }
+
+            if (JsonNet.IsSupported == true)
+            {
+                return JsonNet.SerializeObject(parameter.Value);
+            }
+
             var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
             return serializer.Serialize(parameter.Value);
         }
@@ -39,6 +45,12 @@ namespace WebApiClient
             {
                 return null;
             }
+
+            if (JsonNet.IsSupported == true)
+            {
+                return JsonNet.DeserializeObject(json, objType);
+            }
+
             var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
             return serializer.Deserialize(json, objType);
         }

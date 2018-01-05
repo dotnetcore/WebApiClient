@@ -12,7 +12,6 @@ namespace WebApiClient.Attributes
     /// 表示将参数值作为application/json请求
     /// 每个Api只能注明于其中的一个参数
     /// 依赖于HttpApiConfig.JsonFormatter
-    /// 为了更好的性能，建议实例json.net等实现一个JsonFormatter替换默认的
     /// </summary>
     public class JsonContentAttribute : HttpContentAttribute
     {

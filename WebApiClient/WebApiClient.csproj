@@ -46,6 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Internal\JsonNet.cs" />
+    <Compile Include="Internal\Method.cs" />
     <Compile Include="KeyAliasAttribute.cs" />
     <Compile Include="KeyValueIgnoreAttribute.cs" />
     <Compile Include="Parameterables\BasicAuth.cs" />
