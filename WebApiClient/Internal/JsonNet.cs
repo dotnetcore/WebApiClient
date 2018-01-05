@@ -46,8 +46,8 @@ namespace WebApiClient
             var type = FindJsonConvertType();
             if (type != null)
             {
-                serializeFunc = FindSerializeObjectFunc(type);
-                deserializeFunc = FindDeserializeObjectFunc(type);
+                serializeFunc = CreateSerializeObjectFunc(type);
+                deserializeFunc = CreateDeserializeObjectFunc(type);
             }
             IsSupported = serializeFunc != null && deserializeFunc != null;
         }
@@ -97,11 +97,11 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 查找SerializeObject方法
+        /// 创建SerializeObject方法的委托
         /// </summary>
-        /// <param name="classType">JsonConvert</param>
+        /// <param name="classType">JsonConvert类型</param>
         /// <returns></returns>
-        private static Func<object, string> FindSerializeObjectFunc(Type classType)
+        private static Func<object, string> CreateSerializeObjectFunc(Type classType)
         {
             var method = classType.GetMethod("SerializeObject", new[] { typeof(object) });
             if (method == null)
@@ -112,11 +112,11 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 查找DeserializeObject方法
+        /// 创建DeserializeObject方法的委托
         /// </summary>
-        /// <param name="classType">JsonConvert</param>
+        /// <param name="classType">JsonConvert类型</param>
         /// <returns></returns>
-        private static Func<string, Type, object> FindDeserializeObjectFunc(Type classType)
+        private static Func<string, Type, object> CreateDeserializeObjectFunc(Type classType)
         {
             var method = classType.GetMethod("DeserializeObject", new[] { typeof(string), typeof(Type) });
             if (method == null)
