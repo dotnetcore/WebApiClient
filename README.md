@@ -22,7 +22,7 @@ public interface MyWebApi : IDisposable
 ```
 static async Task TestAsync()
 {
-    var myWebApi = HttpApiClient.Create<UserApi>();
+    var myWebApi = HttpApiClient.Create<MyWebApi>();
     var user = new UserInfo { Account = "laojiu", Password = "123456" }; 
     var user1 = await myWebApi.GetUserByAccountAsync("laojiu");
     var user2 = await myWebApi.UpdateUserWithFormAsync(user);
