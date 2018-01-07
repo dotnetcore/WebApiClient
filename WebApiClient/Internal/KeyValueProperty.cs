@@ -15,7 +15,7 @@ namespace WebApiClient
         /// <summary>
         /// 获取器
         /// </summary>
-        private readonly Method geter;
+        private readonly Getter getter;
 
         /// <summary>
         /// 获取属性别名或名称
@@ -36,18 +36,17 @@ namespace WebApiClient
         /// 属性
         /// </summary>
         /// <param name="property">属性信息</param>
-        public KeyValueProperty(PropertyInfo property)
+        private KeyValueProperty(PropertyInfo property)
         {
             var keyAlias = property.GetAttribute<KeyAliasAttribute>(true);
             this.Name = keyAlias == null ? property.Name : keyAlias.Alias;
 
-            var getMethod = property.GetGetMethod();
-            if (getMethod != null)
+            if (property.CanRead == true)
             {
-                this.geter = new Method(getMethod);
+                this.getter = Getter.Create(property);
             }
 
-            this.IsSupportGet = this.geter != null;
+            this.IsSupportGet = this.getter != null;
             this.IsKeyValueIgnore = property.IsDefined(typeof(KeyValueIgnoreAttribute));
         }
 
@@ -63,7 +62,7 @@ namespace WebApiClient
             {
                 throw new NotSupportedException();
             }
-            return this.geter.Invoke(instance, null);
+            return this.getter.Invoke(instance);
         }
 
         /// <summary>
@@ -74,90 +73,68 @@ namespace WebApiClient
         /// <summary>
         /// 从类型的属性获取属性
         /// </summary>
-        /// <param name="type">类型</param>
+        /// <param name="classType">类型</param>
         /// <returns></returns>
-        public static KeyValueProperty[] GetProperties(Type type)
+        public static KeyValueProperty[] GetProperties(Type classType)
         {
-            return cached.GetOrAdd(type, t =>
+            return cached.GetOrAdd(classType, t =>
               t.GetProperties().Select(p => new KeyValueProperty(p)).ToArray()
            );
         }
 
         /// <summary>
-        /// 表示方法
+        /// 表示属性的Get方法抽象类
         /// </summary>
-        private class Method
+        private abstract class Getter
         {
             /// <summary>
-            /// 方法执行委托
+            /// 创建属性的Get方法
             /// </summary>
-            private readonly Func<object, object[], object> invoker;
-
-            /// <summary>
-            /// 获取方法名
-            /// </summary>
-            public string Name { get; protected set; }
-
-            /// <summary>
-            /// 获取方法信息
-            /// </summary>
-            public MethodInfo Info { get; private set; }
-
-            /// <summary>
-            /// 方法
-            /// </summary>
-            /// <param name="method">方法信息</param>
-            public Method(MethodInfo method)
+            /// <param name="property">属性</param>
+            /// <returns></returns>
+            public static Getter Create(PropertyInfo property)
             {
-                this.Name = method.Name;
-                this.Info = method;
-                this.invoker = Method.CreateInvoker(method);
+                var getterType = typeof(GenericGetter<,>).MakeGenericType(property.DeclaringType, property.PropertyType);
+                return Activator.CreateInstance(getterType, property) as Getter;
             }
 
             /// <summary>
-            /// 执行方法
+            /// 执行Get方法
             /// </summary>
             /// <param name="instance">实例</param>
-            /// <param name="parameters">参数</param>
             /// <returns></returns>
-            public object Invoke(object instance, params object[] parameters)
-            {
-                return this.invoker.Invoke(instance, parameters);
-            }
+            public abstract object Invoke(object instance);
 
             /// <summary>
-            /// 生成方法的调用委托
+            /// 表示属性的Get方法
             /// </summary>
-            /// <param name="method">方法成员信息</param>
-            /// <exception cref="ArgumentException"></exception>
-            /// <returns></returns>
-            private static Func<object, object[], object> CreateInvoker(MethodInfo method)
+            /// <typeparam name="TTarget">属性所在的类</typeparam>
+            /// <typeparam name="TResult">属性的返回值</typeparam>
+            private class GenericGetter<TTarget, TResult> : Getter
             {
-                var instance = Expression.Parameter(typeof(object), "instance");
-                var parameters = Expression.Parameter(typeof(object[]), "parameters");
+                /// <summary>
+                /// get方法的委托
+                /// </summary>
+                private readonly Func<TTarget, TResult> getFunc;
 
-                var instanceCast = method.IsStatic ? null : Expression.Convert(instance, method.ReflectedType);
-                var parametersCast = method.GetParameters().Select((p, i) =>
+                /// <summary>
+                /// 属性的Get方法
+                /// </summary>
+                /// <param name="property">属性</param>
+                public GenericGetter(PropertyInfo property)
                 {
-                    var parameter = Expression.ArrayIndex(parameters, Expression.Constant(i));
-                    return Expression.Convert(parameter, p.ParameterType);
-                });
-
-                var body = Expression.Call(instanceCast, method, parametersCast);
-
-                if (method.ReturnType == typeof(void))
-                {
-                    var action = Expression.Lambda<Action<object, object[]>>(body, instance, parameters).Compile();
-                    return (_instance, _parameters) =>
-                    {
-                        action.Invoke(_instance, _parameters);
-                        return null;
-                    };
+                    var getMethod = property.GetGetMethod();
+                    this.getFunc = (Func<TTarget, TResult>)getMethod.CreateDelegate(typeof(Func<TTarget, TResult>), null);
                 }
-                else
+
+                /// <summary>
+                /// 执行Get方法
+                /// </summary>
+                /// <param name="instance">实例</param>
+                /// <returns></returns>
+                public override object Invoke(object instance)
                 {
-                    var bodyCast = Expression.Convert(body, typeof(object));
-                    return Expression.Lambda<Func<object, object[], object>>(bodyCast, instance, parameters).Compile();
+                    return this.getFunc.Invoke((TTarget)instance);
                 }
             }
         }

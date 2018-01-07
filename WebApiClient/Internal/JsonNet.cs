@@ -36,7 +36,7 @@ namespace WebApiClient
         /// <summary>
         /// 获取是否得到支持
         /// </summary>
-        public static bool IsSupported = false;
+        public static bool IsSupported { get; private set; }
 
         /// <summary>
         /// Json.net
@@ -54,6 +54,10 @@ namespace WebApiClient
         /// <returns></returns>
         public static string SerializeObject(object obj)
         {
+            if (JsonNet.IsSupported == false)
+            {
+                throw new NotSupportedException();
+            }
             return JsonNet.serializeFunc.Invoke(obj);
         }
 
@@ -65,6 +69,10 @@ namespace WebApiClient
         /// <returns></returns>
         public static object DeserializeObject(string json, Type type)
         {
+            if (JsonNet.IsSupported == false)
+            {
+                throw new NotSupportedException();
+            }
             return JsonNet.deserializeFunc.Invoke(json, type);
         }
 
