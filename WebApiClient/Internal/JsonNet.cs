@@ -14,42 +14,37 @@ namespace WebApiClient
     static class JsonNet
     {
         /// <summary>
-        /// 程序集名称
+        /// Json.Net程序集名称
         /// </summary>
-        private static readonly string assemblyName = "Newtonsoft.Json";
+        private static readonly string jsonNetAssemblyName = "Newtonsoft.Json";
 
         /// <summary>
-        /// 程序集文件
+        /// JsonConvert类名
         /// </summary>
-        private static readonly string assemblyFile = assemblyName + ".dll";
+        private static readonly string jsonNetJsonConvertTypeName = "Newtonsoft.Json.JsonConvert";
 
         /// <summary>
         /// 序列化方法的委托
         /// </summary>
-        private static readonly Func<object, string> serializeFunc = null;
+        private static Func<object, string> serializeFunc = null;
 
         /// <summary>
         /// 反序列化方法的委托
         /// </summary>
-        private static readonly Func<string, Type, object> deserializeFunc = null;
+        private static Func<string, Type, object> deserializeFunc = null;
 
         /// <summary>
         /// 获取是否得到支持
         /// </summary>
-        public static readonly bool IsSupported = false;
+        public static bool IsSupported = false;
 
         /// <summary>
         /// Json.net
         /// </summary>
         static JsonNet()
         {
-            var type = FindJsonConvertType();
-            if (type != null)
-            {
-                serializeFunc = CreateSerializeObjectFunc(type);
-                deserializeFunc = CreateDeserializeObjectFunc(type);
-            }
-            IsSupported = serializeFunc != null && deserializeFunc != null;
+            AppDomain.CurrentDomain.AssemblyLoad += (s, e) => InitJsonNet(e.LoadedAssembly);
+            InitJsonNet(AppDomain.CurrentDomain.GetAssemblies());
         }
 
         /// <summary>
@@ -59,7 +54,7 @@ namespace WebApiClient
         /// <returns></returns>
         public static string SerializeObject(object obj)
         {
-            return serializeFunc.Invoke(obj) as string;
+            return JsonNet.serializeFunc.Invoke(obj);
         }
 
         /// <summary>
@@ -70,30 +65,37 @@ namespace WebApiClient
         /// <returns></returns>
         public static object DeserializeObject(string json, Type type)
         {
-            return deserializeFunc.Invoke(json, type);
+            return JsonNet.deserializeFunc.Invoke(json, type);
         }
 
         /// <summary>
-        /// 查找类型JsonConvert
+        /// 初始化json.net
         /// </summary>
-        /// <returns></returns>
-        private static Type FindJsonConvertType()
+        /// <param name="assemblies">查找的程序集</param>
+        private static void InitJsonNet(params Assembly[] assemblies)
         {
-            var assembly = AppDomain
-                .CurrentDomain
-                .GetAssemblies()
-                .FirstOrDefault(item => item.GetName().Name.Equals(assemblyName, StringComparison.OrdinalIgnoreCase));
-
-            if (assembly == null && File.Exists(assemblyFile))
+            if (JsonNet.IsSupported == true)
             {
-                assembly = Assembly.LoadFrom(assemblyFile);
+                return;
             }
 
-            if (assembly == null)
+            var jsonNetAssembly = assemblies
+                .FirstOrDefault(item => item.GetName().Name.Equals(jsonNetAssemblyName, StringComparison.OrdinalIgnoreCase));
+
+            if (jsonNetAssembly == null)
             {
-                return null;
+                return;
             }
-            return assembly.GetType("Newtonsoft.Json.JsonConvert", false);
+
+            var jsonConvertType = jsonNetAssembly.GetType(jsonNetJsonConvertTypeName, false);
+            if (jsonConvertType == null)
+            {
+                return;
+            }
+
+            serializeFunc = CreateSerializeObjectFunc(jsonConvertType);
+            deserializeFunc = CreateDeserializeObjectFunc(jsonConvertType);
+            JsonNet.IsSupported = serializeFunc != null && deserializeFunc != null;
         }
 
         /// <summary>
