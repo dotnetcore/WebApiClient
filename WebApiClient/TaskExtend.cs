@@ -79,5 +79,38 @@ namespace WebApiClient
             }
             return new ApiHandleTask<TResult>(task.InvokeAsync);
         }
+
+        /// <summary>
+        /// 返回提供异常处理请求任务对象
+        /// 当遇到异常时返回默认值
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="task"></param>
+        /// <returns></returns>
+        public static IHandleTask<TResult> HandleAsDefaultWhenException<TResult>(this ITask<TResult> task)
+        {
+            return task.HandleAsDefaultWhenException(null);
+        }
+
+        /// <summary>
+        /// 返回提供异常处理请求任务对象
+        /// 当遇到异常时返回默认值
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="task"></param>
+        /// <param name="handler">异常处理委托</param>
+        /// <returns></returns>
+        public static IHandleTask<TResult> HandleAsDefaultWhenException<TResult>(this ITask<TResult> task, Action<Exception> handler)
+        {
+            Func<Exception, TResult> func = ex =>
+            {
+                if (handler != null)
+                {
+                    handler(ex);
+                }
+                return default(TResult);
+            };
+            return task.Handle().WhenCatch<Exception>(func);
+        }
     }
 }
