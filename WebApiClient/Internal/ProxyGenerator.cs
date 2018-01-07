@@ -29,7 +29,7 @@ namespace WebApiClient
         /// <summary>
         /// 应用程序池下的程序集创建器
         /// </summary>
-        private static readonly AssemblyBuilder domainAssemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("ApiProxyAssembly"), AssemblyBuilderAccess.Run);
+        private static readonly AssemblyBuilder domainAssemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("ApiProxyAssembly"), AssemblyBuilderAccess.Run);
 
         /// <summary>
         /// 接口类型与代理类型的构造器缓存

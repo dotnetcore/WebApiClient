@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,8 +31,13 @@ namespace WebApiClient
                 return JsonNet.SerializeObject(parameter.Value);
             }
 
-            var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
-            return serializer.Serialize(parameter.Value);
+            var serializer = new DataContractJsonSerializer(parameter.ParameterType);
+            using (var stream = new MemoryStream())
+            {
+                serializer.WriteObject(stream, parameter.Value);
+                var bytes = stream.ToArray();
+                return encoding.GetString(bytes);
+            }
         }
 
         /// <summary>
@@ -51,8 +58,13 @@ namespace WebApiClient
                 return JsonNet.DeserializeObject(json, objType);
             }
 
-            var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
-            return serializer.Deserialize(json, objType);
+            var bytes = Encoding.UTF8.GetBytes(json);
+            var serializer = new DataContractJsonSerializer(objType);
+            using (var stream = new MemoryStream(bytes))
+            {
+                stream.Position = 0;
+                return serializer.ReadObject(stream);
+            }
         }
     }
 }
