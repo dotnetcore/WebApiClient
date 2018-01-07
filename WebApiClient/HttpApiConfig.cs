@@ -67,10 +67,16 @@ namespace WebApiClient
         /// <summary>
         /// 获取或设置Http处理程序
         /// </summary>
+        /// <exception cref="ObjectDisposedException"></exception>
         public HttpClientHandler HttpClientHandler
         {
             get
             {
+                if (this.IsDisposed == true)
+                {
+                    throw new ObjectDisposedException(this.GetType().Name);
+                }
+
                 if (this.httpClientHandler == null)
                 {
                     this.httpClientHandler = new DefaultHttpClientHandler();
@@ -86,10 +92,16 @@ namespace WebApiClient
         /// <summary>
         /// 获取或设置与HttpClientHandler实例关联的HttpClient
         /// </summary>
+        /// <exception cref="ObjectDisposedException"></exception>
         public HttpClient HttpClient
         {
             get
             {
+                if (this.IsDisposed == true)
+                {
+                    throw new ObjectDisposedException(this.GetType().Name);
+                }
+
                 if (this.httpClient == null)
                 {
                     this.httpClient = new HttpClient(this.HttpClientHandler);
@@ -145,19 +157,9 @@ namespace WebApiClient
         /// <param name="disposing">是否也释放托管资源</param>
         protected virtual void Dispose(bool disposing)
         {
-            if (this.HttpClient != null)
+            if (this.httpClient != null)
             {
-                this.HttpClient.Dispose();
-            }
-
-            if (disposing == true)
-            {
-                this.XmlFormatter = null;
-                this.JsonFormatter = null;
-                this.KeyValueFormatter = null;
-                this.HttpClient = null;
-                this.HttpClientHandler = null;
-                this.HttpHost = null;
+                this.httpClient.Dispose();
             }
         }
         #endregion
