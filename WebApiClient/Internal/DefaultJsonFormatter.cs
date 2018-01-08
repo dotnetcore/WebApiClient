@@ -31,7 +31,7 @@ namespace WebApiClient
                 return JsonNet.SerializeObject(parameter.Value);
             }
 
-            var serializer = new DataContractJsonSerializer(parameter.ParameterType);
+            var serializer = new DataContractJsonSerializer(parameter.Value.GetType());
             using (var stream = new MemoryStream())
             {
                 serializer.WriteObject(stream, parameter.Value);
