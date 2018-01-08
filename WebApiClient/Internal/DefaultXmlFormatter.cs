@@ -27,7 +27,7 @@ namespace WebApiClient
                 return null;
             }
 
-            var xmlSerializer = new XmlSerializer(parameter.ParameterType);
+            var xmlSerializer = new XmlSerializer(parameter.Value.GetType());
             using (var stream = new MemoryStream())
             {
                 var xmlWriter = new XmlTextWriter(stream, encoding);
