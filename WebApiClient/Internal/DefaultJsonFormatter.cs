@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
+
+#if NETCOREAPP2_0
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+#endif
 
 namespace WebApiClient
 {
@@ -26,18 +30,19 @@ namespace WebApiClient
                 return null;
             }
 
+            var dateTimeFormate = "yyyy-MM-dd HH:mm:ss";
+#if NET45
             if (JsonNet.IsSupported == true)
             {
                 return JsonNet.SerializeObject(parameter.Value);
             }
-
-            var serializer = new DataContractJsonSerializer(parameter.Value.GetType());
-            using (var stream = new MemoryStream())
-            {
-                serializer.WriteObject(stream, parameter.Value);
-                var bytes = stream.ToArray();
-                return encoding.GetString(bytes);
-            }
+            return JSON.Serialize(parameter.Value, dateTimeFormate);            
+#endif
+#if NETCOREAPP2_0
+            
+            var setting = new JsonSerializerSettings { DateFormatString = dateTimeFormate };
+            return JsonConvert.SerializeObject(parameter.Value, setting);
+#endif
         }
 
         /// <summary>
@@ -53,18 +58,17 @@ namespace WebApiClient
                 return null;
             }
 
+#if NET45
             if (JsonNet.IsSupported == true)
             {
                 return JsonNet.DeserializeObject(json, objType);
             }
+            return JSON.Deserialize(json, objType);
+#endif
 
-            var bytes = Encoding.UTF8.GetBytes(json);
-            var serializer = new DataContractJsonSerializer(objType);
-            using (var stream = new MemoryStream(bytes))
-            {
-                stream.Position = 0;
-                return serializer.ReadObject(stream);
-            }
+#if NETCOREAPP2_0
+            return JsonConvert.DeserializeObject(json, objType);
+#endif
         }
     }
 }
