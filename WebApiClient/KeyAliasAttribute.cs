@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示当KeyValueFormatter序列化对象时，指定此属性对应的键的别名
-    /// 不可继承
+    /// 表示指定此属性对应的键的别名
+    /// 请使用AliasAsAttribute替代
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+    [Obsolete("此类型已作废，请使用AliasAsAttribute替代", true)]
     public sealed class KeyAliasAttribute : Attribute
     {
         /// <summary>

@@ -38,7 +38,7 @@ namespace WebApiClient
         /// <param name="property">属性信息</param>
         private KeyValueProperty(PropertyInfo property)
         {
-            var keyAlias = property.GetAttribute<KeyAliasAttribute>(true);
+            var keyAlias = property.GetAttribute<AliasAsAttribute>(true);
             this.Name = keyAlias == null ? property.Name : keyAlias.Alias;
 
             if (property.CanRead == true)

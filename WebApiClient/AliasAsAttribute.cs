@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebApiClient.Attributes
+namespace WebApiClient
 {
     /// <summary>
-    /// 表示指定参数的别名
+    /// 表示将参数名或属性名进行别名
+    /// 当修饰属性时，键值对序列化时将使用该别名
     /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public sealed class AliasAsAttribute : Attribute
     {
         /// <summary>
@@ -23,9 +24,9 @@ namespace WebApiClient.Attributes
         /// <param name="alias">参数的别名</param>
         public AliasAsAttribute(string alias)
         {
-            if (string.IsNullOrEmpty(alias) == true)
+            if (string.IsNullOrWhiteSpace(alias) == true)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("alias");
             }
             this.Alias = alias;
         }
