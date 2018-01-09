@@ -14,10 +14,10 @@ namespace WebApiClient
         /// <summary>
         /// 将参数值序列化为json/xml文本
         /// </summary>
-        /// <param name="parameter">对象</param>
+        /// <param name="obj">对象</param>
         /// <param name="encoding">编码</param>
         /// <returns></returns>
-        string Serialize(ApiParameterDescriptor parameter, Encoding encoding);
+        string Serialize(object obj, Encoding encoding);
 
         /// <summary>
         /// 将接口回复的内容反序列化对象

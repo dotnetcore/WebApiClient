@@ -114,21 +114,21 @@ namespace WebApiClient
             // 设置代理前释放实例并重新初始化
             if (this.Handler.Proxy != null)
             {
-                this.ReInitHttpClient();
+                this.InitHttpClientWithoutProxy();
             }
 
             this.Handler.UseProxy = proxy != null;
-            this.Handler.Proxy = proxy;            
+            this.Handler.Proxy = proxy;
             return true;
         }
-
+        
         /// <summary>
         /// 重新初始化HttpClient实例
         /// </summary>
-        private void ReInitHttpClient()
+        private void InitHttpClientWithoutProxy()
         {
-            var handler = new DefaultHttpClientHandler();
-            var httpClient = new HttpClient(handler)
+            var withoutProxyHandler = ((DefaultHttpClientHandler)this.Handler).CloneWithoutProxy();
+            var httpClient = new HttpClient(withoutProxyHandler)
             {
                 Timeout = this.Timeout,
                 MaxResponseContentBufferSize = this.MaxResponseContentBufferSize
@@ -141,7 +141,7 @@ namespace WebApiClient
 
             this.client.Dispose();
             this.client = httpClient;
-            this.Handler = handler;
+            this.Handler = withoutProxyHandler;
         }
 
 
@@ -249,6 +249,30 @@ namespace WebApiClient
                     request.Headers.Connection.Add("keep-alive");
                 }
                 return base.SendAsync(request, cancellationToken);
+            }
+
+            /// <summary>
+            /// 无代理克隆
+            /// </summary>
+            /// <returns></returns>
+            public DefaultHttpClientHandler CloneWithoutProxy()
+            {
+                return new DefaultHttpClientHandler
+                {
+                    AllowAutoRedirect = this.AllowAutoRedirect,
+                    AutomaticDecompression = this.AutomaticDecompression,
+                    ClientCertificateOptions = this.ClientCertificateOptions,
+                    ConnectionClose = this.ConnectionClose,
+                    CookieContainer = this.CookieContainer,
+                    Credentials = this.Credentials,
+                    MaxAutomaticRedirections = this.MaxAutomaticRedirections,
+                    MaxRequestContentBufferSize = this.MaxRequestContentBufferSize,
+                    PreAuthenticate = this.PreAuthenticate,
+                    UseProxy = false,
+                    Proxy = null,
+                    UseCookies = this.UseCookies,
+                    UseDefaultCredentials = this.UseDefaultCredentials
+                };
             }
         }
     }

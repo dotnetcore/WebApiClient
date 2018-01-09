@@ -20,12 +20,12 @@ namespace WebApiClient
         /// <summary>
         /// 将参数值序列化为json文本
         /// </summary>
-        /// <param name="parameter">对象</param>
+        /// <param name="obj">对象</param>
         /// <param name="encoding">编码</param>
         /// <returns></returns>
-        public string Serialize(ApiParameterDescriptor parameter, Encoding encoding)
+        public string Serialize(object obj, Encoding encoding)
         {
-            if (parameter.Value == null)
+            if (obj == null)
             {
                 return null;
             }
@@ -34,14 +34,14 @@ namespace WebApiClient
 #if NET45
             if (JsonNet.IsSupported == true)
             {
-                return JsonNet.SerializeObject(parameter.Value);
+                return JsonNet.SerializeObject(obj);
             }
-            return JSON.Serialize(parameter.Value, dateTimeFormate);            
+            return JSON.Serialize(obj, dateTimeFormate);
 #endif
 #if NETCOREAPP2_0
             
             var setting = new JsonSerializerSettings { DateFormatString = dateTimeFormate };
-            return JsonConvert.SerializeObject(parameter.Value, setting);
+            return JsonConvert.SerializeObject(obj, setting);
 #endif
         }
 

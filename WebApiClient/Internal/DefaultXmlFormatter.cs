@@ -17,21 +17,21 @@ namespace WebApiClient
         /// <summary>
         /// 将参数值序列化为xml文本
         /// </summary>
-        /// <param name="parameter">对象</param>
+        /// <param name="obj">对象</param>
         /// <param name="encoding">编码</param>
         /// <returns></returns>
-        public string Serialize(ApiParameterDescriptor parameter, Encoding encoding)
+        public string Serialize(object obj, Encoding encoding)
         {
-            if (parameter.Value == null)
+            if (obj == null)
             {
                 return null;
             }
 
-            var xmlSerializer = new XmlSerializer(parameter.Value.GetType());
+            var xmlSerializer = new XmlSerializer(obj.GetType());
             using (var stream = new MemoryStream())
             {
                 var xmlWriter = new XmlTextWriter(stream, encoding);
-                xmlSerializer.Serialize(xmlWriter, parameter.Value);
+                xmlSerializer.Serialize(xmlWriter, obj);
                 return encoding.GetString(stream.ToArray());
             }
         }
