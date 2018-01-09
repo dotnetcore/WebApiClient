@@ -76,10 +76,13 @@ namespace WebApiClient
         private static ApiParameterDescriptor GetParameterDescriptor(ParameterInfo parameter)
         {
             var parameterType = parameter.ParameterType;
+            var parameterAlias = parameter.GetCustomAttribute(typeof(AliasAsAttribute)) as AliasAsAttribute;
+            var parameterName = parameterAlias == null ? parameter.Name : parameterAlias.Alias;
+
             var descriptor = new ApiParameterDescriptor
             {
                 Value = null,
-                Name = parameter.Name,
+                Name = parameterName,
                 Index = parameter.Position,
                 ParameterType = parameterType,
                 IsApiParameterable = parameterType.IsInheritFrom<IApiParameterable>() || parameterType.IsInheritFrom<IEnumerable<IApiParameterable>>(),

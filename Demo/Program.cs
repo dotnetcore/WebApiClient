@@ -54,7 +54,7 @@ namespace Demo
             Console.WriteLine(user2);
             Console.WriteLine();
 
-            var user3 = await myWebApi.UpdateWithFormAsync(user, nickName: "老九", age: 18)
+            var user3 = await myWebApi.UpdateWithFormAsync(user, nickName: "老九", nullableAge: 18)
                 .Retry(3, i => TimeSpan.FromSeconds(i))
                 .WhenCatch<TimeoutException>()
                 .WhenCatch<HttpRequestException>()
