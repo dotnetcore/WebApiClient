@@ -85,10 +85,8 @@ namespace WebApiClient
         /// <returns></returns>
         private async Task SendAsync(ApiActionContext context)
         {
-            var invoker = context.HttpApiConfig.HttpClient;
-            var timeout = context.RequestMessage.Timeout.HasValue ? context.RequestMessage.Timeout.Value : invoker.Timeout;
-            var token = new CancellationTokenSource(timeout).Token;
-            context.ResponseMessage = await invoker.SendAsync(context.RequestMessage, token);
+            var client = context.HttpApiConfig.HttpClient;
+            context.ResponseMessage = await client.SendAsync(context.RequestMessage);
         }
 
         /// <summary>

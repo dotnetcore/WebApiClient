@@ -34,12 +34,8 @@ namespace WebApiClient
         /// <summary>
         /// 与HttpClientHandler实例关联的HttpClient
         /// </summary>
-        private HttpClient httpClient;
+        private IHttpClient httpClient;
 
-        /// <summary>
-        /// Http处理程序
-        /// </summary>
-        private HttpClientHandler httpClientHandler;
 
         /// <summary>
         /// 获取或设置Http服务完整主机域名
@@ -63,37 +59,11 @@ namespace WebApiClient
         /// </summary>
         public IKeyValueFormatter KeyValueFormatter { get; set; }
 
-
         /// <summary>
-        /// 获取或设置Http处理程序
+        /// 获取HttpClient实例
         /// </summary>
         /// <exception cref="ObjectDisposedException"></exception>
-        public HttpClientHandler HttpClientHandler
-        {
-            get
-            {
-                if (this.IsDisposed == true)
-                {
-                    throw new ObjectDisposedException(this.GetType().Name);
-                }
-
-                if (this.httpClientHandler == null)
-                {
-                    this.httpClientHandler = new DefaultHttpClientHandler();
-                }
-                return this.httpClientHandler;
-            }
-            set
-            {
-                this.httpClientHandler = value;
-            }
-        }
-
-        /// <summary>
-        /// 获取或设置与HttpClientHandler实例关联的HttpClient
-        /// </summary>
-        /// <exception cref="ObjectDisposedException"></exception>
-        public HttpClient HttpClient
+        public IHttpClient HttpClient
         {
             get
             {
@@ -104,21 +74,27 @@ namespace WebApiClient
 
                 if (this.httpClient == null)
                 {
-                    this.httpClient = new HttpClient(this.HttpClientHandler);
+                    this.httpClient = new DefaultHttpClient();
                 }
                 return this.httpClient;
-            }
-            set
-            {
-                this.httpClient = value;
             }
         }
 
         /// <summary>
         /// Http接口的配置项   
         /// </summary>
-        public HttpApiConfig()
+        public HttpApiConfig() :
+            this(null)
         {
+        }
+
+        /// <summary>
+        /// Http接口的配置项   
+        /// </summary>
+        /// <param name="client">客户端对象</param>
+        public HttpApiConfig(IHttpClient client)
+        {
+            this.httpClient = client;
             this.XmlFormatter = HttpApiConfig.DefaultXmlFormatter;
             this.JsonFormatter = HttpApiConfig.DefaultJsonFormatter;
             this.KeyValueFormatter = HttpApiConfig.DefaultKeyValueFormatter;
