@@ -27,15 +27,15 @@ namespace WebApiClient.Attributes
                 throw new ArgumentNullException(parameter.Name);
             }
 
-            var url = new Uri(parameter.ToString(), UriKind.RelativeOrAbsolute);
-            if (url.IsAbsoluteUri == true)
+            var targetUrl = new Uri(parameter.ToString(), UriKind.RelativeOrAbsolute);
+            if (targetUrl.IsAbsoluteUri == true)
             {
-                context.RequestMessage.RequestUri = url;
+                context.RequestMessage.RequestUri = targetUrl;
             }
             else
             {
                 var baseUrl = context.RequestMessage.RequestUri;
-                context.RequestMessage.RequestUri = new Uri(baseUrl, url);
+                context.RequestMessage.RequestUri = new Uri(baseUrl, targetUrl);
             }
             return ApiTask.CompletedTask;
         }

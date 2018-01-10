@@ -35,51 +35,50 @@ namespace WebApiClient.Attributes
         public async Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var uri = context.RequestMessage.RequestUri;
-            var url = uri.ToString();
-            var relativeUrl = url.Substring(url.IndexOf(uri.AbsolutePath)).TrimEnd('&', '?');
+            var fixUrl = uri.ToString().TrimEnd('?', '&', '/');
             var keyValues = context.HttpApiConfig.KeyValueFormatter.Serialize(parameter);
-            var pathQuery = this.GetPathQuery(relativeUrl, keyValues);
+            var targetUrl = new Uri(this.UseQuery(fixUrl, keyValues));
 
-            context.RequestMessage.RequestUri = new Uri(uri, pathQuery);
+            context.RequestMessage.RequestUri = targetUrl;
             await ApiTask.CompletedTask;
         }
 
-
         /// <summary>
-        /// 获取新的Path与Query
+        /// url添加query
         /// </summary>
-        /// <param name="pathQuery">原始path与query</param>
+        /// <param name="url">url</param>
         /// <param name="keyValues">键值对</param>
         /// <returns></returns>
-        private string GetPathQuery(string pathQuery, IEnumerable<KeyValuePair<string, string>> keyValues)
+        private string UseQuery(string url, IEnumerable<KeyValuePair<string, string>> keyValues)
         {
             foreach (var keyValue in keyValues)
             {
-                pathQuery = this.GetPathQuery(pathQuery, keyValue);
+                url = this.UseQuery(url, keyValue);
             }
-            return pathQuery;
+            return url;
         }
 
         /// <summary>
-        /// 获取新的Path与Query
+        /// url添加query
         /// </summary>
-        /// <param name="pathQuery">原始path与query</param>
+        /// <param name="url">url</param>
         /// <param name="keyValue">键值对</param>
         /// <returns></returns>
-        private string GetPathQuery(string pathQuery, KeyValuePair<string, string> keyValue)
+        private string UseQuery(string url, KeyValuePair<string, string> keyValue)
         {
             var key = keyValue.Key;
             var value = keyValue.Value == null ? string.Empty : keyValue.Value;
             var regex = new Regex("{" + key + "}", RegexOptions.IgnoreCase);
 
-            if (regex.IsMatch(pathQuery) == true)
+            if (regex.IsMatch(url) == true)
             {
-                return regex.Replace(pathQuery, value);
+                return regex.Replace(url, value);
             }
 
-            var query = string.Format("{0}={1}", key, value);
-            var concat = pathQuery.Contains('?') ? "&" : "?";
-            return pathQuery + concat + query;
+            var valueEncoded = HttpUtility.UrlEncode(value, Encoding.UTF8);
+            var query = string.Format("{0}={1}", key, valueEncoded);
+            var concat = url.Contains('?') ? "&" : "?";
+            return url + concat + query;
         }
     }
 }

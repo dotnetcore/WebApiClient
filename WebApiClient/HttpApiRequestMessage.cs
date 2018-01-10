@@ -48,12 +48,12 @@ namespace WebApiClient
         /// <param name="value">参数值</param>
         public void AddUrlQeury(string key, string value)
         {
-            var url = this.RequestUri.ToString();
-            var query = string.Format("{0}={1}", key, value);
+            var url = this.RequestUri.ToString().TrimEnd('?', '&', '/');
+            var valueEncoded = HttpUtility.UrlEncode(value, Encoding.UTF8);
+            var query = string.Format("{0}={1}", key, valueEncoded);
             var concat = url.Contains('?') ? "&" : "?";
             this.RequestUri = new Uri(url + concat + query);
         }
-
 
         /// <summary>
         /// 添加字段到已有的Content
