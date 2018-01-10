@@ -16,43 +16,27 @@ namespace WebApiClient.Attributes
     public class JsonContentAttribute : HttpContentAttribute
     {
         /// <summary>
-        /// 编码方式
+        /// 日期时间格式
         /// </summary>
-        private readonly Encoding encoding;
+        private readonly string datetimeFormat;
 
         /// <summary>
         /// 将参数值作为application/json请求
-        /// utf-8
         /// </summary>
         public JsonContentAttribute()
-            : this(Encoding.UTF8)
+            : this(null)
         {
         }
 
         /// <summary>
         /// 将参数体作为application/json请求
         /// </summary>
-        /// <param name="codeName">编码</param>
+        /// <param name="datetimeFormat">日期时间格式</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public JsonContentAttribute(string codeName)
-            : this(Encoding.GetEncoding(codeName))
+        public JsonContentAttribute(string datetimeFormat)
         {
+            this.datetimeFormat = datetimeFormat;
         }
-
-        /// <summary>
-        /// 将参数体作为application/json请求
-        /// </summary>
-        /// <param name="encoding">编码</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        private JsonContentAttribute(Encoding encoding)
-        {
-            if (encoding == null)
-            {
-                throw new ArgumentNullException();
-            }
-            this.encoding = encoding;
-        }
-
 
         /// <summary>
         /// 设置参数到http请求内容
@@ -62,8 +46,9 @@ namespace WebApiClient.Attributes
         protected override void SetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var formatter = context.HttpApiConfig.JsonFormatter;
-            var content = formatter.Serialize(parameter.Value, this.encoding);
-            context.RequestMessage.Content = new StringContent(content, this.encoding, "application/json");
+            var timeFormat = context.HttpApiConfig.GetDateTimeFormat(this.datetimeFormat);
+            var content = formatter.Serialize(parameter.Value, timeFormat);
+            context.RequestMessage.Content = new StringContent(content, Encoding.UTF8, "application/json");
         }
     }
 }

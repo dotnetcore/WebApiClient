@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,8 +17,9 @@ namespace WebApiClient
         /// 序列化模型对象为键值对
         /// </summary>
         /// <param name="model">对象</param>
+        /// <param name="datetimeFormat">日期时间格式</param>
         /// <returns></returns>
-        public IEnumerable<KeyValuePair<string, string>> Serialize(object model)
+        public IEnumerable<KeyValuePair<string, string>> Serialize(object model, string datetimeFormat)
         {
             if (model == null)
             {
@@ -27,50 +29,51 @@ namespace WebApiClient
             var dicObj = model as IDictionary<string, object>;
             if (dicObj != null)
             {
-                return this.FormatAsDictionary<object>(dicObj);
+                return this.FormatAsDictionary<object>(dicObj, datetimeFormat);
             }
 
             var dicString = model as IDictionary<string, string>;
             if (dicString != null)
             {
-                return this.FormatAsDictionary<string>(dicString);
+                return this.FormatAsDictionary<string>(dicString, datetimeFormat);
             }
 
-            return this.FormatAsComplex(model);
+            return this.FormatAsComplex(model, datetimeFormat);
         }
 
         /// <summary>
         /// 将参数值序列化为键值对
         /// </summary>
         /// <param name="parameter">参数</param>
+        /// <param name="datetimeFormat">时期格式日期时间格式</param>
         /// <returns></returns>
-        public IEnumerable<KeyValuePair<string, string>> Serialize(ApiParameterDescriptor parameter)
+        public IEnumerable<KeyValuePair<string, string>> Serialize(ApiParameterDescriptor parameter, string datetimeFormat)
         {
             if (parameter.IsSimpleType == true)
             {
-                var kv = this.FormatAsSimple(parameter.Name, parameter.Value);
+                var kv = this.FormatAsSimple(parameter.Name, parameter.Value, datetimeFormat);
                 return new[] { kv };
             }
 
             if (parameter.IsDictionaryOfString == true)
             {
                 var dic = parameter.Value as IDictionary<string, string>;
-                return this.FormatAsDictionary<string>(dic);
+                return this.FormatAsDictionary<string>(dic, datetimeFormat);
             }
 
             if (parameter.IsDictionaryOfObject == true)
             {
                 var dic = parameter.Value as IDictionary<string, object>;
-                return this.FormatAsDictionary<object>(dic);
+                return this.FormatAsDictionary<object>(dic, datetimeFormat);
             }
 
             if (parameter.IsEnumerable == true)
             {
                 var enumerable = parameter.Value as IEnumerable;
-                return this.ForamtAsEnumerable(parameter.Name, enumerable);
+                return this.ForamtAsEnumerable(parameter.Name, enumerable, datetimeFormat);
             }
 
-            return this.FormatAsComplex(parameter.Value);
+            return this.FormatAsComplex(parameter.Value, datetimeFormat);
         }
 
         /// <summary>
@@ -78,8 +81,9 @@ namespace WebApiClient
         /// </summary>
         /// <param name="name">名称</param>
         /// <param name="enumerable">值</param>
+        /// <param name="datetimeFormat">日期时间格式</param>
         /// <returns></returns>
-        private IEnumerable<KeyValuePair<string, string>> ForamtAsEnumerable(string name, IEnumerable enumerable)
+        private IEnumerable<KeyValuePair<string, string>> ForamtAsEnumerable(string name, IEnumerable enumerable, string datetimeFormat)
         {
             if (enumerable == null)
             {
@@ -87,15 +91,16 @@ namespace WebApiClient
             }
 
             return from item in enumerable.Cast<object>()
-                   select this.FormatAsSimple(name, item);
+                   select this.FormatAsSimple(name, item, datetimeFormat);
         }
 
         /// <summary>
         /// 复杂类型为键值对
         /// </summary>
         /// <param name="instance">实例</param>
+        /// <param name="datetimeFormat">日期时间格式</param>
         /// <returns></returns>
-        private IEnumerable<KeyValuePair<string, string>> FormatAsComplex(object instance)
+        private IEnumerable<KeyValuePair<string, string>> FormatAsComplex(object instance, string datetimeFormat)
         {
             if (instance == null)
             {
@@ -106,21 +111,22 @@ namespace WebApiClient
                 from p in KeyValueProperty.GetProperties(instance.GetType())
                 where p.IsSupportGet && p.IsKeyValueIgnore == false
                 let value = p.GetValue(instance)
-                select this.FormatAsSimple(p.Name, value);
+                select this.FormatAsSimple(p.Name, value, datetimeFormat);
         }
 
         /// <summary>
         /// 字典转换为键值对
         /// </summary>
         /// <param name="dic">字典</param>
+        /// <param name="datetimeFormat">日期时间格式</param>
         /// <returns></returns>
-        private IEnumerable<KeyValuePair<string, string>> FormatAsDictionary<TValue>(IDictionary<string, TValue> dic)
+        private IEnumerable<KeyValuePair<string, string>> FormatAsDictionary<TValue>(IDictionary<string, TValue> dic, string datetimeFormat)
         {
             if (dic == null)
             {
                 return Enumerable.Empty<KeyValuePair<string, string>>();
             }
-            return from kv in dic select this.FormatAsSimple(kv.Key, kv.Value);
+            return from kv in dic select this.FormatAsSimple(kv.Key, kv.Value, datetimeFormat);
         }
 
         /// <summary>
@@ -128,11 +134,28 @@ namespace WebApiClient
         /// </summary>
         /// <param name="name">名称</param>
         /// <param name="value">值</param>
+        /// <param name="datetimeFormat">日期时间格式，null则ISO 8601</param>
         /// <returns></returns>
-        private KeyValuePair<string, string> FormatAsSimple(string name, object value)
+        private KeyValuePair<string, string> FormatAsSimple(string name, object value, string datetimeFormat)
         {
-            var valueString = value == null ? null : value.ToString();
-            return new KeyValuePair<string, string>(name, valueString);
+            if (value == null)
+            {
+                return new KeyValuePair<string, string>(name, null);
+            }
+
+            var isDateTime = value is DateTime;
+            if (isDateTime == false)
+            {
+                return new KeyValuePair<string, string>(name, value.ToString());
+            }
+
+            // 时间格式转换
+            if (string.IsNullOrEmpty(datetimeFormat) == true)
+            {
+                datetimeFormat = DateTimeFormats.ISO8601WithMillisecond;
+            }
+            var dateTime = ((DateTime)value).ToString(datetimeFormat, DateTimeFormatInfo.InvariantInfo);
+            return new KeyValuePair<string, string>(name, dateTime);
         }
     }
 }

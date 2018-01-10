@@ -4,45 +4,35 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-#if NETCOREAPP2_0
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-#endif
+
 
 namespace WebApiClient
 {
     /// <summary>
     /// 默认的json解析工具
     /// </summary>
-    class DefaultJsonFormatter : IStringFormatter
+    class DefaultJsonFormatter : IJsonFormatter
     {
         /// <summary>
         /// 将参数值序列化为json文本
         /// </summary>
         /// <param name="obj">对象</param>
-        /// <param name="encoding">编码</param>
+        /// <param name="datetimeFormate">时期格式，null则ISO 8601</param>
         /// <returns></returns>
-        public string Serialize(object obj, Encoding encoding)
+        public string Serialize(object obj, string datetimeFormate)
         {
             if (obj == null)
             {
                 return null;
             }
-
-            var dateTimeFormate = "yyyy-MM-dd HH:mm:ss";
-#if NET45
-            if (JsonNet.IsSupported == true)
+            if (string.IsNullOrEmpty(datetimeFormate))
             {
-                return JsonNet.SerializeObject(obj);
+                datetimeFormate = DateTimeFormats.ISO8601WithMillisecond;
             }
-            return JSON.Serialize(obj, dateTimeFormate);
-#endif
-#if NETCOREAPP2_0
-            
-            var setting = new JsonSerializerSettings { DateFormatString = dateTimeFormate };
+            var setting = new JsonSerializerSettings { DateFormatString = datetimeFormate };
             return JsonConvert.SerializeObject(obj, setting);
-#endif
         }
 
         /// <summary>
@@ -57,18 +47,7 @@ namespace WebApiClient
             {
                 return null;
             }
-
-#if NET45
-            if (JsonNet.IsSupported == true)
-            {
-                return JsonNet.DeserializeObject(json, objType);
-            }
-            return JSON.Deserialize(json, objType);
-#endif
-
-#if NETCOREAPP2_0
             return JsonConvert.DeserializeObject(json, objType);
-#endif
         }
     }
 }

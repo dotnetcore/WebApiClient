@@ -20,10 +20,25 @@ namespace WebApiClient.Attributes
     public sealed class PathQueryAttribute : Attribute, IApiParameterAttribute
     {
         /// <summary>
+        /// 时期时间格式
+        /// </summary>
+        private readonly string datetimeFormate;
+
+        /// <summary>
         /// 表示Url路径参数或query参数的特性
         /// </summary>
         public PathQueryAttribute()
+            : this(null)
         {
+        }
+
+        /// <summary>
+        /// 表示Url路径参数或query参数的特性
+        /// </summary>
+        /// <param name="datetimeFormat">时期时间格式</param>
+        public PathQueryAttribute(string datetimeFormat)
+        {
+            this.datetimeFormate = datetimeFormat;
         }
 
         /// <summary>
@@ -36,7 +51,8 @@ namespace WebApiClient.Attributes
         {
             var uri = context.RequestMessage.RequestUri;
             var fixUrl = uri.ToString().TrimEnd('?', '&', '/');
-            var keyValues = context.HttpApiConfig.KeyValueFormatter.Serialize(parameter);
+            var timeFormat = context.HttpApiConfig.GetDateTimeFormat(this.datetimeFormate);
+            var keyValues = context.HttpApiConfig.KeyValueFormatter.Serialize(parameter, timeFormat);
             var targetUrl = new Uri(this.UseQuery(fixUrl, keyValues));
 
             context.RequestMessage.RequestUri = targetUrl;

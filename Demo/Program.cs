@@ -19,7 +19,7 @@ namespace Demo
         private static readonly TcpListener httpServer = new TcpListener();
 
         static void Main(string[] args)
-        {
+        {          
             InitHttpServer();
             RunApisAsync();
             Console.ReadLine();
@@ -36,7 +36,7 @@ namespace Demo
         {
             var myWebApi = HttpApiClient.Create<UserApi>();
 
-            var user = new UserInfo { Account = "laojiu", Password = "123456" };
+            var user = new UserInfo { Account = "laojiu", Password = "123456", BirthDay = DateTime.Parse("2018-01-01 12:30:30") };
             var file = new MulitpartFile("NetworkSocket.dll");
 
             var auth = "Basic eW91ck5hbWU6MTIzNDU2";

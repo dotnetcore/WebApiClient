@@ -12,7 +12,7 @@ namespace WebApiClient
     /// <summary>
     /// 默认的Xml解析工具
     /// </summary>
-    class DefaultXmlFormatter : IStringFormatter
+    class DefaultXmlFormatter : IXmlFormatter
     {
         /// <summary>
         /// 将参数值序列化为xml文本

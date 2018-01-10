@@ -67,9 +67,8 @@ namespace Demo
         }
 
         [HttpPost]
-        public ActionResult UpdateWithMulitpart(string account, string password, string nickName, int? age)
+        public ActionResult UpdateWithMulitpart(UserInfo user , string nickName, int? age)
         {
-            var user = new UserInfo { Account = account, Password = password };
             return Json(user);
         }
 

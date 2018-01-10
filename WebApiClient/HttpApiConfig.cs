@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -16,26 +17,24 @@ namespace WebApiClient
         /// <summary>
         /// 获取默认xml格式化工具唯一实例
         /// </summary>
-        public static readonly IStringFormatter DefaultXmlFormatter = new DefaultXmlFormatter();
+        public static readonly IXmlFormatter DefaultXmlFormatter = new DefaultXmlFormatter();
 
         /// <summary>
         /// 获取默认json格式化工具唯一实例
         /// 如果应用程序池加载了Newtonsoft.Json，则使用Newtonsoft.Json.JsonConvert
         /// 否则使用运行库的System.Web.Script.Serialization.JavaScriptSerializer
         /// </summary>
-        public static readonly IStringFormatter DefaultJsonFormatter = new DefaultJsonFormatter();
+        public static readonly IJsonFormatter DefaultJsonFormatter = new DefaultJsonFormatter();
 
         /// <summary>
         /// 获取默认KeyValue格式化工具唯一实例
         /// </summary>
         public static readonly IKeyValueFormatter DefaultKeyValueFormatter = new DefaultKeyValueFormatter();
 
-
         /// <summary>
         /// 与HttpClientHandler实例关联的HttpClient
         /// </summary>
         private IHttpClient httpClient;
-
 
         /// <summary>
         /// 获取或设置Http服务完整主机域名
@@ -45,14 +44,21 @@ namespace WebApiClient
         public Uri HttpHost { get; set; }
 
         /// <summary>
+        /// 获取或设置请求时序列化使用的日期时间格式
+        /// 当不指定时间格式才使用此格式
+        /// 默认为本地日期时间格式
+        /// </summary>
+        public string DateTimeFormat { get; set; }
+
+        /// <summary>
         /// 获取或设置Xml格式化工具
         /// </summary>
-        public IStringFormatter XmlFormatter { get; set; }
+        public IXmlFormatter XmlFormatter { get; set; }
 
         /// <summary>
         /// 获取或设置Json格式化工具
         /// </summary>
-        public IStringFormatter JsonFormatter { get; set; }
+        public IJsonFormatter JsonFormatter { get; set; }
 
         /// <summary>
         /// 获取或设置KeyValue格式化工具
@@ -95,9 +101,30 @@ namespace WebApiClient
         public HttpApiConfig(IHttpClient client)
         {
             this.httpClient = client;
+            this.DateTimeFormat = DateTimeFormats.GetLocalDateTimeFormat();
             this.XmlFormatter = HttpApiConfig.DefaultXmlFormatter;
             this.JsonFormatter = HttpApiConfig.DefaultJsonFormatter;
             this.KeyValueFormatter = HttpApiConfig.DefaultKeyValueFormatter;
+        }
+
+        /// <summary>
+        /// 返回最终的日期时间格式
+        /// 如果format为null则返回配置的DateTimeFormat
+        /// </summary>
+        /// <param name="format">日期时间格式</param>
+        /// <returns></returns>
+        public string GetDateTimeFormat(string format)
+        {
+            if (string.IsNullOrEmpty(format) == false)
+            {
+                return format;
+            }
+
+            if (string.IsNullOrEmpty(this.DateTimeFormat) == false)
+            {
+                return this.DateTimeFormat;
+            }
+            return DateTimeFormats.ISO8601WithMillisecond;
         }
 
         #region IDisposable

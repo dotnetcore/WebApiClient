@@ -19,6 +19,28 @@ namespace WebApiClient.Attributes
     public class MulitpartContentAttribute : HttpContentAttribute
     {
         /// <summary>
+        /// 时期时间格式
+        /// </summary>
+        private readonly string datetimeFormate;
+
+        /// <summary>
+        /// 将参数值作为multipart/form-data表单或表单的一个项
+        /// </summary>
+        public MulitpartContentAttribute()
+            : this(null)
+        {
+        }
+
+        /// <summary>
+        /// 将参数值作为multipart/form-data表单或表单的一个项
+        /// </summary>
+        /// <param name="datetimeFormat">时期时间格式</param>
+        public MulitpartContentAttribute(string datetimeFormat)
+        {
+            this.datetimeFormate = datetimeFormat;
+        }
+
+        /// <summary>
         /// 设置参数到http请求内容
         /// </summary>
         /// <param name="context">上下文</param>
@@ -26,7 +48,7 @@ namespace WebApiClient.Attributes
         protected override void SetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var formatter = context.HttpApiConfig.KeyValueFormatter;
-            var keyValues = formatter.Serialize(parameter);
+            var keyValues = formatter.Serialize(parameter, this.datetimeFormate);
             context.RequestMessage.AddMulitpartText(keyValues);
         }
     }
