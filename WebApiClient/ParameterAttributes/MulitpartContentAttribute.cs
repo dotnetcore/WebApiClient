@@ -27,7 +27,7 @@ namespace WebApiClient.Attributes
         {
             var formatter = context.HttpApiConfig.KeyValueFormatter;
             var keyValues = formatter.Serialize(parameter);
-            context.RequestMessage.AddText(keyValues);
+            context.RequestMessage.AddMulitpartText(keyValues);
         }
     }
 }

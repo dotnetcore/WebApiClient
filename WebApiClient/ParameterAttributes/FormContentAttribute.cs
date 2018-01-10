@@ -27,7 +27,7 @@ namespace WebApiClient.Attributes
         {
             var formatter = context.HttpApiConfig.KeyValueFormatter;
             var keyValues = formatter.Serialize(parameter);
-            await context.RequestMessage.AddFieldAsync(keyValues);
+            await context.RequestMessage.AddFormFieldAsync(keyValues);
         }
     }
 }

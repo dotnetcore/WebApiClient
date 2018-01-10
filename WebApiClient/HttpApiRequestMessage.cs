@@ -17,7 +17,43 @@ namespace WebApiClient
         /// <summary>
         /// 获取或设置请求的超时时间
         /// </summary>
-        public TimeSpan? Timeout { get; set; }         
+        public TimeSpan? Timeout { get; set; }
+
+
+        /// <summary>
+        /// 追加Query参数到请求路径
+        /// </summary>
+        /// <param name="keyValue">参数</param>
+        public void AddUrlQeury(IEnumerable<KeyValuePair<string, string>> keyValue)
+        {
+            foreach (var kv in keyValue)
+            {
+                this.AddUrlQeury(kv);
+            }
+        }
+
+        /// <summary>
+        /// 追加Query参数到请求路径
+        /// </summary>
+        /// <param name="keyValue">参数</param>
+        public void AddUrlQeury(KeyValuePair<string, string> keyValue)
+        {
+            this.AddUrlQeury(keyValue.Key, keyValue.Value);
+        }
+
+        /// <summary>
+        /// 追加Query参数到请求路径
+        /// </summary>
+        /// <param name="key">参数名</param>
+        /// <param name="value">参数值</param>
+        public void AddUrlQeury(string key, string value)
+        {
+            var url = this.RequestUri.ToString();
+            var query = string.Format("{0}={1}", key, value);
+            var concat = url.Contains('?') ? "&" : "?";
+            this.RequestUri = new Uri(url + concat + query);
+        }
+
 
         /// <summary>
         /// 添加字段到已有的Content
@@ -28,14 +64,14 @@ namespace WebApiClient
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        public async Task AddFieldAsync(string name, string value)
+        public async Task AddFormFieldAsync(string name, string value)
         {
             if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentNullException("name");
             }
             var kv = new KeyValuePair<string, string>(name, value);
-            await this.AddFieldAsync(new[] { kv });
+            await this.AddFormFieldAsync(new[] { kv });
         }
 
         /// <summary>
@@ -45,7 +81,7 @@ namespace WebApiClient
         /// <param name="keyValues">键值对</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        public async Task AddFieldAsync(IEnumerable<KeyValuePair<string, string>> keyValues)
+        public async Task AddFormFieldAsync(IEnumerable<KeyValuePair<string, string>> keyValues)
         {
             this.EnsureNotGetOrHead();
 
@@ -119,7 +155,7 @@ namespace WebApiClient
         /// <param name="fileName">文件名</param>
         /// <param name="contentType">文件Mime</param>
         /// <exception cref="NotSupportedException"></exception>
-        public void AddFile(Stream stream, string name, string fileName, string contentType)
+        public void AddMulitpartFile(Stream stream, string name, string fileName, string contentType)
         {
             this.EnsureNotGetOrHead();
 
@@ -136,13 +172,13 @@ namespace WebApiClient
         /// <param name="keyValues">键值对</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
-        public void AddText(IEnumerable<KeyValuePair<string, string>> keyValues)
+        public void AddMulitpartText(IEnumerable<KeyValuePair<string, string>> keyValues)
         {
             this.EnsureNotGetOrHead();
 
             foreach (var kv in keyValues)
             {
-                this.AddTextInternal(kv.Key, kv.Value);
+                this.AddMulitpartTextInternal(kv.Key, kv.Value);
             }
         }
 
@@ -154,10 +190,10 @@ namespace WebApiClient
         /// <param name="value">文本</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
-        public void AddText(string name, string value)
+        public void AddMulitpartText(string name, string value)
         {
             this.EnsureNotGetOrHead();
-            this.AddTextInternal(name, value);
+            this.AddMulitpartTextInternal(name, value);
         }
 
         /// <summary>
@@ -168,7 +204,7 @@ namespace WebApiClient
         /// <param name="value">文本</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
-        private void AddTextInternal(string name, string value)
+        private void AddMulitpartTextInternal(string name, string value)
         {
             if (string.IsNullOrEmpty(name))
             {

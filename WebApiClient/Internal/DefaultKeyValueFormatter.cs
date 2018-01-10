@@ -13,6 +13,33 @@ namespace WebApiClient
     class DefaultKeyValueFormatter : IKeyValueFormatter
     {
         /// <summary>
+        /// 序列化模型对象为键值对
+        /// </summary>
+        /// <param name="model">对象</param>
+        /// <returns></returns>
+        public IEnumerable<KeyValuePair<string, string>> Serialize(object model)
+        {
+            if (model == null)
+            {
+                return Enumerable.Empty<KeyValuePair<string, string>>();
+            }
+
+            var dicObj = model as IDictionary<string, object>;
+            if (dicObj != null)
+            {
+                return this.FormatAsDictionary<object>(dicObj);
+            }
+
+            var dicString = model as IDictionary<string, string>;
+            if (dicString != null)
+            {
+                return this.FormatAsDictionary<string>(dicString);
+            }
+
+            return this.FormatAsComplex(model);
+        }
+
+        /// <summary>
         /// 将参数值序列化为键值对
         /// </summary>
         /// <param name="parameter">参数</param>
@@ -27,47 +54,49 @@ namespace WebApiClient
 
             if (parameter.IsDictionaryOfString == true)
             {
-                return this.FormatAsDictionary<string>(parameter);
+                var dic = parameter.Value as IDictionary<string, string>;
+                return this.FormatAsDictionary<string>(dic);
             }
 
             if (parameter.IsDictionaryOfObject == true)
             {
-                return this.FormatAsDictionary<object>(parameter);
+                var dic = parameter.Value as IDictionary<string, object>;
+                return this.FormatAsDictionary<object>(dic);
             }
 
             if (parameter.IsEnumerable == true)
             {
-                return this.ForamtAsEnumerable(parameter);
+                var enumerable = parameter.Value as IEnumerable;
+                return this.ForamtAsEnumerable(parameter.Name, enumerable);
             }
 
-            return this.FormatAsComplex(parameter);
+            return this.FormatAsComplex(parameter.Value);
         }
 
         /// <summary>
         /// 数组为键值对
         /// </summary>
-        /// <param name="parameter">参数</param>
+        /// <param name="name">名称</param>
+        /// <param name="enumerable">值</param>
         /// <returns></returns>
-        private IEnumerable<KeyValuePair<string, string>> ForamtAsEnumerable(ApiParameterDescriptor parameter)
+        private IEnumerable<KeyValuePair<string, string>> ForamtAsEnumerable(string name, IEnumerable enumerable)
         {
-            var array = parameter.Value as IEnumerable;
-            if (array == null)
+            if (enumerable == null)
             {
                 return Enumerable.Empty<KeyValuePair<string, string>>();
             }
 
-            return from item in array.Cast<object>()
-                   select this.FormatAsSimple(parameter.Name, item);
+            return from item in enumerable.Cast<object>()
+                   select this.FormatAsSimple(name, item);
         }
 
         /// <summary>
         /// 复杂类型为键值对
         /// </summary>
-        /// <param name="parameter">参数</param>
+        /// <param name="instance">实例</param>
         /// <returns></returns>
-        private IEnumerable<KeyValuePair<string, string>> FormatAsComplex(ApiParameterDescriptor parameter)
+        private IEnumerable<KeyValuePair<string, string>> FormatAsComplex(object instance)
         {
-            var instance = parameter.Value;
             if (instance == null)
             {
                 return Enumerable.Empty<KeyValuePair<string, string>>();
@@ -83,16 +112,14 @@ namespace WebApiClient
         /// <summary>
         /// 字典转换为键值对
         /// </summary>
-        /// <param name="parameter">参数</param>
+        /// <param name="dic">字典</param>
         /// <returns></returns>
-        private IEnumerable<KeyValuePair<string, string>> FormatAsDictionary<TValue>(ApiParameterDescriptor parameter)
+        private IEnumerable<KeyValuePair<string, string>> FormatAsDictionary<TValue>(IDictionary<string, TValue> dic)
         {
-            var dic = parameter.Value as IDictionary<string, TValue>;
             if (dic == null)
             {
                 return Enumerable.Empty<KeyValuePair<string, string>>();
             }
-
             return from kv in dic select this.FormatAsSimple(kv.Key, kv.Value);
         }
 

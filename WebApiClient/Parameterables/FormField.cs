@@ -47,7 +47,7 @@ namespace WebApiClient
         /// <returns></returns>
         async Task IApiParameterable.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            await context.RequestMessage.AddFieldAsync(parameter.Name, this.stringValue);
+            await context.RequestMessage.AddFormFieldAsync(parameter.Name, this.stringValue);
         }
 
         /// <summary>

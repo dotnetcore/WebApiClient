@@ -84,7 +84,7 @@ namespace WebApiClient
         /// <param name="parameter">特性关联的参数</param>
         async Task IApiParameterable.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            context.RequestMessage.AddFile(this.GetStream(), parameter.Name, this.FileName, this.ContentType);
+            context.RequestMessage.AddMulitpartFile(this.GetStream(), parameter.Name, this.FileName, this.ContentType);
             await ApiTask.CompletedTask;
         }
 
