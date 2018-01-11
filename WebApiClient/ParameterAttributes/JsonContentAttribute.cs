@@ -32,7 +32,6 @@ namespace WebApiClient.Attributes
         /// 将参数体作为application/json请求
         /// </summary>
         /// <param name="datetimeFormat">日期时间格式</param>
-        /// <exception cref="ArgumentNullException"></exception>
         public JsonContentAttribute(string datetimeFormat)
         {
             this.datetimeFormat = datetimeFormat;
