@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System.Reflection;
 using Newtonsoft.Json.Converters;
+using System.Collections.Concurrent;
 
 namespace WebApiClient
 {
@@ -65,6 +66,26 @@ namespace WebApiClient
     class DateTimeFormatContractResolver : DefaultContractResolver
     {
         /// <summary>
+        /// 缓存
+        /// </summary>
+        private static readonly ConcurrentDictionary<MemberInfo, IsoDateTimeConverter> cache = new ConcurrentDictionary<MemberInfo, IsoDateTimeConverter>();
+
+        /// <summary>
+        /// 获取转换器
+        /// </summary>
+        /// <param name="member">成员</param>
+        /// <returns></returns>
+        private static IsoDateTimeConverter GetConverter(MemberInfo member)
+        {
+            var datatimeFormat = member.GetAttribute<DateTimeFormatAttribute>(true);
+            if (datatimeFormat == null)
+            {
+                return null;
+            }
+            return new IsoDateTimeConverter { DateTimeFormat = datatimeFormat.Format };
+        }
+
+        /// <summary>
         /// 创建属性
         /// </summary>
         /// <param name="member"></param>
@@ -78,7 +99,7 @@ namespace WebApiClient
                 var datatimeFormat = member.GetAttribute<DateTimeFormatAttribute>(true);
                 if (datatimeFormat != null)
                 {
-                    property.Converter = new IsoDateTimeConverter { DateTimeFormat = datatimeFormat.Format };
+                    property.Converter = cache.GetOrAdd(member, GetConverter);
                 }
             }
             return property;
