@@ -19,7 +19,10 @@ namespace Demo
         private static readonly TcpListener httpServer = new TcpListener();
 
         static void Main(string[] args)
-        {          
+        {
+            var t = DateTime.Now;
+            var f1= t.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'sszzzz", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            var f = t.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ssK", System.Globalization.DateTimeFormatInfo.InvariantInfo);
             InitHttpServer();
             RunApisAsync();
             Console.ReadLine();
