@@ -96,11 +96,7 @@ namespace WebApiClient
             var property = base.CreateProperty(member, memberSerialization);
             if (property.Converter == null)
             {
-                var datatimeFormat = member.GetAttribute<DateTimeFormatAttribute>(true);
-                if (datatimeFormat != null)
-                {
-                    property.Converter = cache.GetOrAdd(member, GetConverter);
-                }
+                property.Converter = cache.GetOrAdd(member, GetConverter);
             }
             return property;
         }
