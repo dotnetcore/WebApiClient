@@ -113,7 +113,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="format">日期时间格式</param>
         /// <returns></returns>
-        public string GetDateTimeFormat(string format)
+        public string SelectDateTimeFormat(string format)
         {
             if (string.IsNullOrEmpty(format) == false)
             {
@@ -124,7 +124,8 @@ namespace WebApiClient
             {
                 return this.DateTimeFormat;
             }
-            return DateTimeFormats.ISO8601WithMillisecond;
+
+            return DateTimeFormats.ISO8601_WithMillisecond;
         }
 
         #region IDisposable

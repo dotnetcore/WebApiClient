@@ -152,7 +152,7 @@ namespace WebApiClient
             // 时间格式转换
             if (string.IsNullOrEmpty(datetimeFormat) == true)
             {
-                datetimeFormat = DateTimeFormats.ISO8601WithMillisecond;
+                datetimeFormat = DateTimeFormats.ISO8601_WithMillisecond;
             }
             var dateTime = ((DateTime)value).ToString(datetimeFormat, DateTimeFormatInfo.InvariantInfo);
             return new KeyValuePair<string, string>(name, dateTime);

@@ -29,7 +29,7 @@ namespace WebApiClient
             }
             if (string.IsNullOrEmpty(datetimeFormate))
             {
-                datetimeFormate = DateTimeFormats.ISO8601WithMillisecond;
+                datetimeFormate = DateTimeFormats.ISO8601_WithMillisecond;
             }
             var setting = new JsonSerializerSettings { DateFormatString = datetimeFormate };
             return JsonConvert.SerializeObject(obj, setting);
