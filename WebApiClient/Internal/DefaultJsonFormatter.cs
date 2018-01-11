@@ -6,7 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
+using Newtonsoft.Json.Serialization;
+using System.Reflection;
+using Newtonsoft.Json.Converters;
 
 namespace WebApiClient
 {
@@ -27,11 +29,17 @@ namespace WebApiClient
             {
                 return null;
             }
+
             if (string.IsNullOrEmpty(datetimeFormate))
             {
                 datetimeFormate = DateTimeFormats.ISO8601_WithMillisecond;
             }
-            var setting = new JsonSerializerSettings { DateFormatString = datetimeFormate };
+
+            var setting = new JsonSerializerSettings
+            {
+                DateFormatString = datetimeFormate,
+                ContractResolver = new DateTimeFormatContractResolver()
+            };
             return JsonConvert.SerializeObject(obj, setting);
         }
 
@@ -50,4 +58,31 @@ namespace WebApiClient
             return JsonConvert.DeserializeObject(json, objType);
         }
     }
+
+    /// <summary>
+    /// 时间格式化解析器
+    /// </summary>
+    class DateTimeFormatContractResolver : DefaultContractResolver
+    {
+        /// <summary>
+        /// 创建属性
+        /// </summary>
+        /// <param name="member"></param>
+        /// <param name="memberSerialization"></param>
+        /// <returns></returns>
+        protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+        {
+            var property = base.CreateProperty(member, memberSerialization);
+            if (property.Converter == null)
+            {
+                var datatimeFormat = member.GetAttribute<DateTimeFormatAttribute>(true);
+                if (datatimeFormat != null)
+                {
+                    property.Converter = new IsoDateTimeConverter { DateTimeFormat = datatimeFormat.Format };
+                }
+            }
+            return property;
+        }
+    }
 }
+

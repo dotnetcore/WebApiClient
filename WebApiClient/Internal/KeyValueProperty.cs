@@ -33,6 +33,11 @@ namespace WebApiClient
         public bool IsKeyValueIgnore { get; private set; }
 
         /// <summary>
+        /// 获取声明的DateTimeFormatAttribute的Format
+        /// </summary>
+        public string DateTimeFormat { get; private set; }
+
+        /// <summary>
         /// 属性
         /// </summary>
         /// <param name="property">属性信息</param>
@@ -40,6 +45,12 @@ namespace WebApiClient
         {
             var keyAlias = property.GetAttribute<AliasAsAttribute>(true);
             this.Name = keyAlias == null ? property.Name : keyAlias.Alias;
+
+            if (property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?))
+            {
+                var format = property.GetAttribute<DateTimeFormatAttribute>(true);
+                this.DateTimeFormat = format == null ? null : format.Format;
+            }
 
             if (property.CanRead == true)
             {

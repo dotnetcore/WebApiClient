@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 表示http全局代理特性
+    /// 表示http代理特性
     /// </summary>
-    [AttributeUsage(AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     [DebuggerDisplay("Proxy {host}:{port}")]
     public class ProxyAttribute : ApiActionAttribute
     {
@@ -72,20 +72,12 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         public override Task BeforeRequestAsync(ApiActionContext context)
         {
-            var proxy = this.CreateProxy();
+            var proxy = new WebProxy(this.host, this.port)
+            {
+                Credentials = this.credential
+            };
             context.HttpApiConfig.HttpClient.SetProxy(proxy);
             return ApiTask.CompletedTask;
-        }
-
-        /// <summary>
-        /// 创建代理
-        /// </summary>
-        /// <returns></returns>
-        protected virtual IWebProxy CreateProxy()
-        {
-            var proxy = new WebProxy(this.host, this.port);
-            proxy.Credentials = this.credential;
-            return proxy;
         }
     }
 }

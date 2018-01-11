@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiClient;
 
 namespace Demo
 {
@@ -12,6 +13,7 @@ namespace Demo
 
         public string Password { get; set; }
 
+        [DateTimeFormat("yyyy-MM-dd")]
         public DateTime? BirthDay { get; set; }
 
         public override string ToString()

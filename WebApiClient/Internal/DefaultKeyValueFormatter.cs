@@ -111,7 +111,8 @@ namespace WebApiClient
                 from p in KeyValueProperty.GetProperties(instance.GetType())
                 where p.IsSupportGet && p.IsKeyValueIgnore == false
                 let value = p.GetValue(instance)
-                select this.FormatAsSimple(p.Name, value, datetimeFormat);
+                let format = p.DateTimeFormat == null ? datetimeFormat : p.DateTimeFormat
+                select this.FormatAsSimple(p.Name, value, format);
         }
 
         /// <summary>
