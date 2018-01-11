@@ -39,7 +39,7 @@ namespace WebApiClient
             var setting = new JsonSerializerSettings
             {
                 DateFormatString = datetimeFormate,
-                ContractResolver = new DateTimeFormatContractResolver()
+                ContractResolver = new PropertyContractResolver()
             };
             return JsonConvert.SerializeObject(obj, setting);
         }
@@ -56,35 +56,25 @@ namespace WebApiClient
             {
                 return null;
             }
-            return JsonConvert.DeserializeObject(json, objType);
+            var setting = new JsonSerializerSettings
+            {
+                ContractResolver = new PropertyContractResolver()
+            };
+            return JsonConvert.DeserializeObject(json, objType, setting);
         }
     }
 
     /// <summary>
-    /// 时间格式化解析器
+    /// 属性解析器
     /// </summary>
-    class DateTimeFormatContractResolver : DefaultContractResolver
+    class PropertyContractResolver : DefaultContractResolver
     {
         /// <summary>
-        /// 缓存
+        /// 属性的描述缓存
         /// </summary>
-        private static readonly ConcurrentDictionary<MemberInfo, IsoDateTimeConverter> cache = new ConcurrentDictionary<MemberInfo, IsoDateTimeConverter>();
+        private static readonly ConcurrentDictionary<MemberInfo, PropertyDescriptor> descriptorCache = new ConcurrentDictionary<MemberInfo, PropertyDescriptor>();
 
-        /// <summary>
-        /// 获取转换器
-        /// </summary>
-        /// <param name="member">成员</param>
-        /// <returns></returns>
-        private static IsoDateTimeConverter GetConverter(MemberInfo member)
-        {
-            var datatimeFormat = member.GetAttribute<DateTimeFormatAttribute>(true);
-            if (datatimeFormat == null)
-            {
-                return null;
-            }
-            return new IsoDateTimeConverter { DateTimeFormat = datatimeFormat.Format };
-        }
-
+        /// <summary> 
         /// <summary>
         /// 创建属性
         /// </summary>
@@ -94,11 +84,65 @@ namespace WebApiClient
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
             var property = base.CreateProperty(member, memberSerialization);
-            if (property.Converter == null)
+            if (property.Converter != null)
             {
-                property.Converter = cache.GetOrAdd(member, GetConverter);
+                return property;
             }
+
+            var descriptor = descriptorCache.GetOrAdd(member, (m) => new PropertyDescriptor(m));
+            if (descriptor.IsIgnoreSerialized == true)
+            {
+                return null;
+            }
+
+            if (string.IsNullOrEmpty(descriptor.Alias) == false)
+            {
+                property.PropertyName = descriptor.Alias;
+            }
+            property.Converter = descriptor.DateTimeConverter;
             return property;
+        }
+
+        /// <summary>
+        /// 属性的描述
+        /// </summary>
+        private class PropertyDescriptor
+        {
+            /// <summary>
+            /// 别名
+            /// </summary>
+            public string Alias { get; private set; }
+
+            /// <summary>
+            /// 时间转换器
+            /// </summary>
+            public JsonConverter DateTimeConverter { get; private set; }
+
+            /// <summary>
+            /// 是否序列化忽略
+            /// </summary>
+            public bool IsIgnoreSerialized { get; private set; }
+
+            /// <summary>
+            /// 属性的描述
+            /// </summary>
+            /// <param name="member"></param>
+            public PropertyDescriptor(MemberInfo member)
+            {
+                var datatimeFormat = member.GetAttribute<DateTimeFormatAttribute>(true);
+                if (datatimeFormat != null)
+                {
+                    this.DateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = datatimeFormat.Format };
+                }
+
+                var alias = member.GetAttribute<AliasAsAttribute>(true);
+                if (alias != null)
+                {
+                    this.Alias = alias.Alias;
+                }
+
+                this.IsIgnoreSerialized = member.IsDefined(typeof(IgnoreSerializedAttribute));
+            }
         }
     }
 }

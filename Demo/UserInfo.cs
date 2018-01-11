@@ -11,10 +11,14 @@ namespace Demo
     {
         public string Account { get; set; }
 
+        [AliasAs("password")]
         public string Password { get; set; }
 
         [DateTimeFormat("yyyy-MM-dd")]
         public DateTime? BirthDay { get; set; }
+
+        [IgnoreSerialized]
+        public string Email { get; set; }
 
         public override string ToString()
         {

@@ -8,7 +8,7 @@ namespace WebApiClient
 {
     /// <summary>
     /// 表示将参数名或属性名进行别名
-    /// 当修饰属性时，键值对序列化时将使用该别名
+    /// 当修饰属性时，Json或KeyValueFormatter序列化将使用此别名
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public sealed class AliasAsAttribute : Attribute

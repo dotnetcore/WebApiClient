@@ -28,9 +28,9 @@ namespace WebApiClient
         public bool IsSupportGet { get; private set; }
 
         /// <summary>
-        /// 获取是否声明KeyValueIgnoreAttribute
-        /// </summary>
-        public bool IsKeyValueIgnore { get; private set; }
+        /// 获取是否声明IgnoreSerializedAttribute
+        /// </summary>      
+        public bool IgnoreSerialized { get; private set; }
 
         /// <summary>
         /// 获取声明的DateTimeFormatAttribute的Format
@@ -43,8 +43,8 @@ namespace WebApiClient
         /// <param name="property">属性信息</param>
         private KeyValueProperty(PropertyInfo property)
         {
-            var keyAlias = property.GetAttribute<AliasAsAttribute>(true);
-            this.Name = keyAlias == null ? property.Name : keyAlias.Alias;
+            var aliasAs = property.GetAttribute<AliasAsAttribute>(true);
+            this.Name = aliasAs == null ? property.Name : aliasAs.Alias;
 
             if (property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?))
             {
@@ -58,7 +58,7 @@ namespace WebApiClient
             }
 
             this.IsSupportGet = this.getter != null;
-            this.IsKeyValueIgnore = property.IsDefined(typeof(KeyValueIgnoreAttribute));
+            this.IgnoreSerialized = property.IsDefined(typeof(IgnoreSerializedAttribute));
         }
 
         /// <summary>

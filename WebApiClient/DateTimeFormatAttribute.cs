@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示属性序列化时的日期时间格式
-    /// 修饰时间类型的属性才生效
+    /// 表示属性在Json或KeyValueFormatter序列化时使用的日期时间格式
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public sealed class DateTimeFormatAttribute : Attribute
