@@ -42,11 +42,9 @@ namespace WebApiClient
         public Uri HttpHost { get; set; }
 
         /// <summary>
-        /// 获取或设置请求时序列化使用的日期时间格式
-        /// 当不指定时间格式才使用此格式
-        /// 默认为本地日期时间格式
+        /// 获取或设置请求时序列化使用的默认格式    
         /// </summary>
-        public string DateTimeFormat { get; set; }
+        public FormatOptions FormatOptions { get; set; }
 
         /// <summary>
         /// 获取或设置Xml格式化工具
@@ -99,31 +97,10 @@ namespace WebApiClient
         public HttpApiConfig(IHttpClient client)
         {
             this.httpClient = client;
-            this.DateTimeFormat = DateTimeFormats.GetLocalDateTimeFormat();
+            this.FormatOptions = new FormatOptions();
             this.XmlFormatter = HttpApiConfig.DefaultXmlFormatter;
             this.JsonFormatter = HttpApiConfig.DefaultJsonFormatter;
             this.KeyValueFormatter = HttpApiConfig.DefaultKeyValueFormatter;
-        }
-
-        /// <summary>
-        /// 返回最终的日期时间格式
-        /// 如果format为null则返回配置的DateTimeFormat
-        /// </summary>
-        /// <param name="format">日期时间格式</param>
-        /// <returns></returns>
-        public string SelectDateTimeFormat(string format)
-        {
-            if (string.IsNullOrEmpty(format) == false)
-            {
-                return format;
-            }
-
-            if (string.IsNullOrEmpty(this.DateTimeFormat) == false)
-            {
-                return this.DateTimeFormat;
-            }
-
-            return DateTimeFormats.ISO8601_WithMillisecond;
         }
 
         #region IDisposable

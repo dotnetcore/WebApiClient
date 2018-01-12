@@ -15,9 +15,9 @@ namespace WebApiClient
         /// 将参数值序列化为json文本
         /// </summary>
         /// <param name="obj">对象</param>
-        /// <param name="datetimeFormate">时期格式，null则ISO 8601</param>
+        /// <param name="options">选项</param>
         /// <returns></returns>
-        string Serialize(object obj, string datetimeFormate);
+        string Serialize(object obj, FormatOptions options);
 
         /// <summary>
         /// 将接口回复的内容反序列化对象

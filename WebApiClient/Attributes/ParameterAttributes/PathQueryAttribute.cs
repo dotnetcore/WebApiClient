@@ -57,8 +57,8 @@ namespace WebApiClient.Attributes
             }
 
             var fixUrl = uri.ToString().TrimEnd('?', '&', '/');
-            var timeFormat = context.HttpApiConfig.SelectDateTimeFormat(this.datetimeFormate);
-            var keyValues = context.HttpApiConfig.KeyValueFormatter.Serialize(parameter, timeFormat);
+            var options = context.HttpApiConfig.FormatOptions.CloneChange(this.datetimeFormate);
+            var keyValues = context.HttpApiConfig.KeyValueFormatter.Serialize(parameter, options);
             var targetUrl = new Uri(this.UseQuery(fixUrl, keyValues));
 
             context.RequestMessage.RequestUri = targetUrl;

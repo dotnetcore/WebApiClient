@@ -48,8 +48,8 @@ namespace WebApiClient.Attributes
         protected override async Task SetHttpContentAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var formatter = context.HttpApiConfig.KeyValueFormatter;
-            var timeFormat = context.HttpApiConfig.SelectDateTimeFormat(this.datetimeFormat);
-            var keyValues = formatter.Serialize(parameter, timeFormat);
+            var options = context.HttpApiConfig.FormatOptions.CloneChange(this.datetimeFormat);
+            var keyValues = formatter.Serialize(parameter, options);
             await context.RequestMessage.AddFormFieldAsync(keyValues);
         }
     }

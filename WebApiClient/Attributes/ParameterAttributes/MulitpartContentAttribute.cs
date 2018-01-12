@@ -48,7 +48,8 @@ namespace WebApiClient.Attributes
         protected override void SetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var formatter = context.HttpApiConfig.KeyValueFormatter;
-            var keyValues = formatter.Serialize(parameter, this.datetimeFormate);
+            var options = context.HttpApiConfig.FormatOptions.CloneChange(this.datetimeFormate);
+            var keyValues = formatter.Serialize(parameter, options);
             context.RequestMessage.AddMulitpartText(keyValues);
         }
     }
