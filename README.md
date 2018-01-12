@@ -125,3 +125,7 @@ var yourApi = HttpApiClient.Create<YourApi>(config);
 * 派生IApiParameterAttribute或IApiParameterable，实现Api参数的逻辑处理
 * 派生IApiActionFilterAttribute或ApiActionFilterAttribute，实现Api请求前或请求后的逻辑处理
 * 派生IApiReturnAttribute或ApiReturnAttribute，实现更多的回复内容处理的功能
+
+### wiki
+* [WebApiClient基础](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E5%9F%BA%E7%A1%80)
+* [WebApiClient中级](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E4%B8%AD%E7%BA%A7)
