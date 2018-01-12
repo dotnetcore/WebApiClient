@@ -63,6 +63,7 @@ namespace WebApiClient.Attributes
         /// 执行前
         /// </summary>
         /// <param name="context">上下文</param>
+        /// <exception cref="ApiConfigException"></exception>
         /// <returns></returns>
         public override Task BeforeRequestAsync(ApiActionContext context)
         {
@@ -80,16 +81,17 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="baseUri"></param>
         /// <param name="relative"></param>
+        /// <exception cref="ApiConfigException"></exception>
         /// <returns></returns>
         private Uri GetRequestUri(Uri baseUri, Uri relative)
         {
             if (baseUri == null)
             {
-                if (relative != null && relative.IsAbsoluteUri == true)
+                if (relative == null || relative.IsAbsoluteUri == true)
                 {
                     return relative;
                 }
-                return null;
+                throw new ApiConfigException("未配置HttpConfig.HttpHost或未使用HttpHostAttribute特性");
             }
             else
             {

@@ -19,12 +19,11 @@ namespace WebApiClient
         /// </summary>
         public TimeSpan? Timeout { get; set; }
 
-
         /// <summary>
         /// 追加Query参数到请求路径
         /// </summary>
         /// <param name="keyValue">参数</param>
-        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="ApiConfigException"></exception>
         public void AddUrlQeury(IEnumerable<KeyValuePair<string, string>> keyValue)
         {
             foreach (var kv in keyValue)
@@ -37,7 +36,7 @@ namespace WebApiClient
         /// 追加Query参数到请求路径
         /// </summary>
         /// <param name="keyValue">参数</param>
-        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="ApiConfigException"></exception>
         public void AddUrlQeury(KeyValuePair<string, string> keyValue)
         {
             this.AddUrlQeury(keyValue.Key, keyValue.Value);
@@ -48,12 +47,12 @@ namespace WebApiClient
         /// </summary>
         /// <param name="key">参数名</param>
         /// <param name="value">参数值</param>
-        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="ApiConfigException"></exception>
         public void AddUrlQeury(string key, string value)
         {
-            if(this.RequestUri==null)
+            if (this.RequestUri == null)
             {
-                throw new NotSupportedException("请配置HttpConfig.HttpHost或使用HttpHostAttribute特性");
+                throw new ApiConfigException("请配置HttpConfig.HttpHost或使用HttpHostAttribute特性");
             }
             var url = this.RequestUri.ToString().TrimEnd('?', '&', '/');
             var valueEncoded = HttpUtility.UrlEncode(value, Encoding.UTF8);

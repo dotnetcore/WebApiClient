@@ -176,7 +176,7 @@ namespace WebApiClient
         {
             if (request.RequestUri == null)
             {
-                throw new NotSupportedException("未配置HttpConfig.HttpHost或未使用HttpHostAttribute特性");
+                throw new ApiConfigException("未配置RequestUri，RequestUri不能为null");
             }
 
             try
