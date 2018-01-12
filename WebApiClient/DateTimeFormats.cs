@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 提供ISO8601日期时间格式模板
+    /// 提供日期时间格式模板
     /// </summary>
     public static class DateTimeFormats
     {
