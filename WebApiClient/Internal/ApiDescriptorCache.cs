@@ -77,7 +77,7 @@ namespace WebApiClient
         {
             var parameterType = parameter.ParameterType;
             var parameterAlias = parameter.GetCustomAttribute(typeof(AliasAsAttribute)) as AliasAsAttribute;
-            var parameterName = parameterAlias == null ? parameter.Name : parameterAlias.Alias;
+            var parameterName = parameterAlias == null ? parameter.Name : parameterAlias.Name;
 
             var descriptor = new ApiParameterDescriptor
             {

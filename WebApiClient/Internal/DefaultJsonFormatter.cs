@@ -84,42 +84,39 @@ namespace WebApiClient
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
             var property = base.CreateProperty(member, memberSerialization);
-            if (property.Converter != null)
-            {
-                return property;
-            }
-
             var descriptor = descriptorCache.GetOrAdd(member, (m) => new PropertyDescriptor(m));
-            if (descriptor.IsIgnoreSerialized == true)
-            {
-                return null;
-            }
 
             if (string.IsNullOrEmpty(descriptor.Alias) == false)
             {
                 property.PropertyName = descriptor.Alias;
             }
-            property.Converter = descriptor.DateTimeConverter;
+
+            if (property.Converter != null)
+            {
+                property.Converter = descriptor.DateTimeConverter;
+            }
+
+            property.Ignored = descriptor.IsIgnoreSerialized;
             return property;
         }
 
         /// <summary>
-        /// 属性的描述
+        /// 表示属性的描述
         /// </summary>
         private class PropertyDescriptor
         {
             /// <summary>
-            /// 别名
+            /// 获取别名
             /// </summary>
             public string Alias { get; private set; }
 
             /// <summary>
-            /// 时间转换器
+            /// 获取时间转换器
             /// </summary>
             public JsonConverter DateTimeConverter { get; private set; }
 
             /// <summary>
-            /// 是否序列化忽略
+            /// 获取是否序列化忽略
             /// </summary>
             public bool IsIgnoreSerialized { get; private set; }
 
@@ -135,10 +132,10 @@ namespace WebApiClient
                     this.DateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = datatimeFormat.Format };
                 }
 
-                var alias = member.GetAttribute<AliasAsAttribute>(true);
-                if (alias != null)
+                var aliasAs = member.GetAttribute<AliasAsAttribute>(true);
+                if (aliasAs != null)
                 {
-                    this.Alias = alias.Alias;
+                    this.Alias = aliasAs.Name;
                 }
 
                 this.IsIgnoreSerialized = member.IsDefined(typeof(IgnoreSerializedAttribute));

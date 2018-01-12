@@ -44,12 +44,12 @@ namespace WebApiClient
         private KeyValueProperty(PropertyInfo property)
         {
             var aliasAs = property.GetAttribute<AliasAsAttribute>(true);
-            this.Name = aliasAs == null ? property.Name : aliasAs.Alias;
+            this.Name = aliasAs == null ? property.Name : aliasAs.Name;
 
             if (property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?))
             {
-                var format = property.GetAttribute<DateTimeFormatAttribute>(true);
-                this.DateTimeFormat = format == null ? null : format.Format;
+                var formatAttribute = property.GetAttribute<DateTimeFormatAttribute>(true);
+                this.DateTimeFormat = formatAttribute == null ? null : formatAttribute.Format;
             }
 
             if (property.CanRead == true)

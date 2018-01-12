@@ -14,21 +14,21 @@ namespace WebApiClient
     public sealed class AliasAsAttribute : Attribute
     {
         /// <summary>
-        /// 参数的别名
+        /// 获取别名
         /// </summary>
-        public string Alias { get; private set; }
+        public string Name { get; private set; }
 
         /// <summary>
-        /// 指定参数的别名
+        /// 指定参数或属性的别名
         /// </summary>
-        /// <param name="alias">参数的别名</param>
-        public AliasAsAttribute(string alias)
+        /// <param name="name">参数或属性的别名</param>
+        public AliasAsAttribute(string name)
         {
-            if (string.IsNullOrWhiteSpace(alias) == true)
+            if (string.IsNullOrWhiteSpace(name) == true)
             {
                 throw new ArgumentNullException("alias");
             }
-            this.Alias = alias;
+            this.Name = name;
         }
     }
 }
