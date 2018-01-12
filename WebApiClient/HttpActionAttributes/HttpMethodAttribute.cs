@@ -52,7 +52,7 @@ namespace WebApiClient.Attributes
         /// http请求方法描述特性
         /// </summary>
         /// <param name="method">请求方法</param>
-        /// <param name="path">请求相对路径</param>
+        /// <param name="path">请求绝对或相对路径</param>
         public HttpMethodAttribute(HttpMethod method, string path)
         {
             this.Method = method;
@@ -66,18 +66,39 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         public override Task BeforeRequestAsync(ApiActionContext context)
         {
-            var baseUrl = context.RequestMessage.RequestUri;
-            if (baseUrl == null)
-            {
-                throw new UriFormatException("请设置配置项的HttpHost或添加HttpHostAttribute");
-            }
+            var baseUri = context.RequestMessage.RequestUri;
+            var relative = string.IsNullOrEmpty(this.Path) ? null : new Uri(this.Path, UriKind.RelativeOrAbsolute);
+            var requestUri = this.GetRequestUri(baseUri, relative);
 
             context.RequestMessage.Method = this.Method;
-            if (string.IsNullOrEmpty(this.Path) == false)
-            {
-                context.RequestMessage.RequestUri = new Uri(baseUrl, this.Path);
-            }
+            context.RequestMessage.RequestUri = requestUri;
             return ApiTask.CompletedTask;
+        }
+
+        /// <summary>
+        /// 获取请求URL
+        /// </summary>
+        /// <param name="baseUri"></param>
+        /// <param name="relative"></param>
+        /// <returns></returns>
+        private Uri GetRequestUri(Uri baseUri, Uri relative)
+        {
+            if (baseUri == null)
+            {
+                if (relative != null && relative.IsAbsoluteUri == true)
+                {
+                    return relative;
+                }
+                return null;
+            }
+            else
+            {
+                if (relative == null)
+                {
+                    return baseUri;
+                }
+                return new Uri(baseUri, relative);
+            }
         }
     }
 }

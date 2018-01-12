@@ -24,7 +24,7 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// Post请求
         /// </summary>
-        /// <param name="path">相对路径</param>
+        /// <param name="path">请求绝对或相对路径</param>
         public HttpPostAttribute(string path)
             : base(HttpMethod.Post, path)
         {

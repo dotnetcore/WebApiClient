@@ -121,7 +121,7 @@ namespace WebApiClient
             this.Handler.Proxy = proxy;
             return true;
         }
-        
+
         /// <summary>
         /// 重新初始化HttpClient实例
         /// </summary>
@@ -174,6 +174,11 @@ namespace WebApiClient
         /// <returns></returns>
         public async Task<HttpResponseMessage> SendAsync(HttpApiRequestMessage request)
         {
+            if (request.RequestUri == null)
+            {
+                throw new NotSupportedException("未配置HttpConfig.HttpHost或未使用HttpHostAttribute特性");
+            }
+
             try
             {
                 Interlocked.Increment(ref this.pendingCount);

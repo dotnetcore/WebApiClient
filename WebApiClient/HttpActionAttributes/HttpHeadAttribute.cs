@@ -24,7 +24,7 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// Head请求
         /// </summary>
-        /// <param name="path">相对路径</param>
+        /// <param name="path">请求绝对或相对路径</param>
         public HttpHeadAttribute(string path)
             : base(HttpMethod.Head, path)
         {

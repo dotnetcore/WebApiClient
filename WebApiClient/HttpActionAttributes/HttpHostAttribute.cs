@@ -36,7 +36,7 @@ namespace WebApiClient.Attributes
         /// 请求服务的根路径
         /// 例如http://www.webapiclient.com
         /// </summary>
-        /// <param name="host">根路径</param>
+        /// <param name="host">请求完整绝对根路径</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="UriFormatException"></exception>
         public HttpHostAttribute(string host)

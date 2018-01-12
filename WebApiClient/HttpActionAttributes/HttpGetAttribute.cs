@@ -24,7 +24,7 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// Get请求
         /// </summary>
-        /// <param name="path">相对路径</param>
+        /// <param name="path">请求绝对或相对路径</param>
         public HttpGetAttribute(string path)
             : base(HttpMethod.Get, path)
         {

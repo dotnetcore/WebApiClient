@@ -27,15 +27,19 @@ namespace WebApiClient.Attributes
                 throw new ArgumentNullException(parameter.Name);
             }
 
-            var targetUrl = new Uri(parameter.ToString(), UriKind.RelativeOrAbsolute);
-            if (targetUrl.IsAbsoluteUri == true)
+            var relative = new Uri(parameter.ToString(), UriKind.RelativeOrAbsolute);
+            if (relative.IsAbsoluteUri == true)
             {
-                context.RequestMessage.RequestUri = targetUrl;
+                context.RequestMessage.RequestUri = relative;
             }
             else
             {
-                var baseUrl = context.RequestMessage.RequestUri;
-                context.RequestMessage.RequestUri = new Uri(baseUrl, targetUrl);
+                var baseUri = context.RequestMessage.RequestUri;
+                if (baseUri == null)
+                {
+                    throw new NotSupportedException("请配置HttpConfig.HttpHost或使用HttpHostAttribute特性，否则必须使用绝对路径");
+                }
+                context.RequestMessage.RequestUri = new Uri(baseUri, relative);
             }
             return ApiTask.CompletedTask;
         }

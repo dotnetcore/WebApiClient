@@ -50,6 +50,11 @@ namespace WebApiClient.Attributes
         public async Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var uri = context.RequestMessage.RequestUri;
+            if (uri == null)
+            {
+                throw new NotSupportedException("未配置HttpConfig.HttpHost或未使用HttpHostAttribute特性");
+            }
+
             var fixUrl = uri.ToString().TrimEnd('?', '&', '/');
             var timeFormat = context.HttpApiConfig.SelectDateTimeFormat(this.datetimeFormate);
             var keyValues = context.HttpApiConfig.KeyValueFormatter.Serialize(parameter, timeFormat);

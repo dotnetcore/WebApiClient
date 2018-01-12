@@ -166,11 +166,16 @@ namespace WebApiClient.Attributes
         /// <param name="cookieValues">cookie值</param>
         private void SetCookieToContainer(ApiActionContext context, string cookieValues)
         {
-            var baseUrl = context.RequestMessage.RequestUri;
+            var domain = context.RequestMessage.RequestUri;
+            if (domain == null)
+            {
+                throw new NotSupportedException("未配置HttpConfig.HttpHost或使用HttpHostAttribute特性，无法设置Cookie");
+            }
+
             var container = context.HttpApiConfig.HttpClient.Handler.CookieContainer;
             foreach (var cookie in this.GetCookies(cookieValues))
             {
-                container.Add(baseUrl, cookie);
+                container.Add(domain, cookie);
             }
         }
 
