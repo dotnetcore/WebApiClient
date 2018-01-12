@@ -102,9 +102,9 @@ var user = await myWebApi.UpdateWithFormAsync(user, nickName: "老九", age: 18)
 ```
 
 ## DataAnnotations
-### AliasAs(属性的别名）
-### DateTimeFormat(时期时间格式)
-### IgnoreSerialized 序列化忽略
+* AliasAs(属性的别名）
+* DateTimeFormat(时期时间格式)
+* IgnoreSerialized 序列化忽略
 
 
 ## 配置与扩展
