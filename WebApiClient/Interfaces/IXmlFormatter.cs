@@ -12,7 +12,7 @@ namespace WebApiClient
     public interface IXmlFormatter
     {
         /// <summary>
-        /// 将参数值序列化为xml文本
+        /// 将对象序列化为xml文本
         /// </summary>
         /// <param name="obj">对象</param>
         /// <param name="encoding">编码</param>
@@ -20,11 +20,11 @@ namespace WebApiClient
         string Serialize(object obj, Encoding encoding);
 
         /// <summary>
-        /// 将接口回复的内容反序列化对象
+        /// 将xml文本反序列化对象
         /// </summary>
-        /// <param name="content">xml文本内容</param>
+        /// <param name="xml">xml文本内容</param>
         /// <param name="objType">对象类型</param>
         /// <returns></returns>
-        object Deserialize(string content, Type objType);
+        object Deserialize(string xml, Type objType);
     }
 }

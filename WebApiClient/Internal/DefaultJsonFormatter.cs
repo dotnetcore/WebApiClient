@@ -19,7 +19,7 @@ namespace WebApiClient
     class DefaultJsonFormatter : IJsonFormatter
     {
         /// <summary>
-        /// 将参数值序列化为json文本
+        /// 将对象列化为json文本
         /// </summary>
         /// <param name="obj">对象</param>
         /// <param name="options">选项</param>
@@ -45,7 +45,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 反序列化对象
+        /// 反序列化json为对象
         /// </summary>
         /// <param name="json">json</param>
         /// <param name="objType">对象类型</param>

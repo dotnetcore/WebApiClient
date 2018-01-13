@@ -9,81 +9,63 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 默认参数值序列化工具
+    /// 默认键值对列化工具
     /// </summary>
     class DefaultKeyValueFormatter : IKeyValueFormatter
     {
         /// <summary>
-        /// 序列化模型对象为键值对
-        /// </summary>
-        /// <param name="model">对象</param>
-        /// <param name="options">选项</param>
-        /// <returns></returns>
-        public IEnumerable<KeyValuePair<string, string>> Serialize(object model, FormatOptions options)
-        {
-            if (model == null)
-            {
-                return Enumerable.Empty<KeyValuePair<string, string>>();
-            }
-
-            if (options == null)
-            {
-                options = new FormatOptions();
-            }
-
-            var dicObj = model as IDictionary<string, object>;
-            if (dicObj != null)
-            {
-                return this.FormatAsDictionary<object>(dicObj, options);
-            }
-
-            var dicString = model as IDictionary<string, string>;
-            if (dicString != null)
-            {
-                return this.FormatAsDictionary<string>(dicString, options);
-            }
-
-            return this.FormatAsComplex(model, options);
-        }
-
-        /// <summary>
-        /// 将参数值序列化为键值对
+        /// 序列化参数为键值对
         /// </summary>
         /// <param name="parameter">参数</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
         public IEnumerable<KeyValuePair<string, string>> Serialize(ApiParameterDescriptor parameter, FormatOptions options)
         {
+            return this.Serialize(parameter.Name, parameter.Value, options);
+        }
+
+        /// <summary>
+        /// 序列化对象为键值对
+        /// </summary>
+        /// <param name="name">对象名称</param>
+        /// <param name="obj">对象实例</param>
+        /// <param name="options">选项</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns></returns>
+        public IEnumerable<KeyValuePair<string, string>> Serialize(string name, object obj, FormatOptions options)
+        {
             if (options == null)
             {
                 options = new FormatOptions();
             }
 
-            if (parameter.IsSimpleType == true)
+            var type = obj == null ? null : obj.GetType();
+            var descriptor = TypeDescriptor.GetDescriptor(type);
+            if (descriptor == null || descriptor.IsSimpleType == true)
             {
-                var kv = this.FormatAsSimple(parameter.Name, parameter.Value, options);
+                var kv = this.FormatAsSimple(name, obj, options);
                 return new[] { kv };
             }
 
-            if (parameter.IsDictionaryOfString == true)
+            if (descriptor.IsDictionaryOfString == true)
             {
-                var dic = parameter.Value as IDictionary<string, string>;
+                var dic = obj as IDictionary<string, string>;
                 return this.FormatAsDictionary<string>(dic, options);
             }
 
-            if (parameter.IsDictionaryOfObject == true)
+            if (descriptor.IsDictionaryOfObject == true)
             {
-                var dic = parameter.Value as IDictionary<string, object>;
+                var dic = obj as IDictionary<string, object>;
                 return this.FormatAsDictionary<object>(dic, options);
             }
 
-            if (parameter.IsEnumerable == true)
+            if (descriptor.IsEnumerable == true)
             {
-                var enumerable = parameter.Value as IEnumerable;
-                return this.ForamtAsEnumerable(parameter.Name, enumerable, options);
+                var enumerable = obj as IEnumerable;
+                return this.ForamtAsEnumerable(name, enumerable, options);
             }
 
-            return this.FormatAsComplex(parameter.Value, options);
+            return this.FormatAsComplex(obj, options);
         }
 
         /// <summary>
@@ -146,9 +128,15 @@ namespace WebApiClient
         /// <param name="name">名称</param>
         /// <param name="value">值</param>
         /// <param name="options">选项</param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         private KeyValuePair<string, string> FormatAsSimple(string name, object value, FormatOptions options)
         {
+            if (string.IsNullOrEmpty(name) == true)
+            {
+                throw new ArgumentNullException("name");
+            }
+
             if (options.UseCamelCase == true)
             {
                 name = FormatOptions.CamelCase(name);

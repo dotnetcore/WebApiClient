@@ -7,20 +7,21 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 定义参数转换为键值对的行为
+    /// 定义将对象转换为键值对的行为
     /// </summary>
     public interface IKeyValueFormatter
     {
         /// <summary>
-        /// 序列化模型对象为键值对
+        /// 序列化对象为键值对
         /// </summary>
-        /// <param name="model">对象</param>
+        /// <param name="name">对象名称</param>
+        /// <param name="obj">对象实例</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        IEnumerable<KeyValuePair<string, string>> Serialize(object model, FormatOptions options);
+        IEnumerable<KeyValuePair<string, string>> Serialize(string name, object obj, FormatOptions options);
 
         /// <summary>
-        /// 将参数值序列化为键值对
+        /// 序列化参数为键值对
         /// </summary>
         /// <param name="parameter">参数</param>
         /// <param name="options">选项</param>

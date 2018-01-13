@@ -38,27 +38,7 @@ namespace WebApiClient
         /// <summary>
         /// 获取参数类型是否为HttpContent类型
         /// </summary>
-        public bool IsHttpContent { get; internal set; }
-
-        /// <summary>
-        /// 获取参数类型是否为简单类型
-        /// </summary>
-        public bool IsSimpleType { get; internal set; }
-
-        /// <summary>
-        /// 获取参数类型是否为可列举类型
-        /// </summary>
-        public bool IsEnumerable { get; internal set; }
-
-        /// <summary>
-        /// 获取参数类型是否为IDictionaryOf(string,object)
-        /// </summary>
-        public bool IsDictionaryOfObject { get; internal set; }
-
-        /// <summary>
-        /// 获取参数类型是否为IDictionaryOf(string,string)
-        /// </summary>
-        public bool IsDictionaryOfString { get; internal set; }
+        public bool IsHttpContent { get; internal set; }      
 
         /// <summary>
         /// 获取参数类型是否为IApiParameterable类型
@@ -91,10 +71,6 @@ namespace WebApiClient
                 Index = this.Index,
                 IsApiParameterable = this.IsApiParameterable,
                 IsHttpContent = this.IsHttpContent,
-                IsSimpleType = this.IsSimpleType,
-                IsEnumerable = this.IsEnumerable,
-                IsDictionaryOfObject = this.IsDictionaryOfObject,
-                IsDictionaryOfString = this.IsDictionaryOfString,
                 Name = this.Name,
                 ParameterType = this.ParameterType,
                 Value = this.Value

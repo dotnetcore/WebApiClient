@@ -15,7 +15,7 @@ namespace WebApiClient
     class DefaultXmlFormatter : IXmlFormatter
     {
         /// <summary>
-        /// 将参数值序列化为xml文本
+        /// 将对象序列化为xml文本
         /// </summary>
         /// <param name="obj">对象</param>
         /// <param name="encoding">编码</param>
@@ -37,7 +37,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 反序列化对象
+        /// 反序列化xml为对象
         /// </summary>
         /// <param name="xml">xml</param>
         /// <param name="objType">对象类型</param>

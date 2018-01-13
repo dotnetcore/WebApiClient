@@ -48,13 +48,13 @@ namespace WebApiClient
         {
             var actionAttributes = method
                 .FindDeclaringAttributes<IApiActionAttribute>(true)
-                .Distinct(new AttributeComparer<IApiActionAttribute>())
+                .Distinct(new MultiplableComparer<IApiActionAttribute>())
                 .OrderBy(item => item.OrderIndex)
                 .ToArray();
 
             var filterAttributes = method
                 .FindDeclaringAttributes<IApiActionFilterAttribute>(true)
-                .Distinct(new AttributeComparer<IApiActionFilterAttribute>())
+                .Distinct(new MultiplableComparer<IApiActionFilterAttribute>())
                 .OrderBy(item => item.OrderIndex)
                 .ToArray();
 
@@ -81,34 +81,32 @@ namespace WebApiClient
 
             var descriptor = new ApiParameterDescriptor
             {
+                Attributes = null,
                 Value = null,
                 Name = parameterName,
                 Index = parameter.Position,
                 ParameterType = parameterType,
                 IsApiParameterable = parameterType.IsInheritFrom<IApiParameterable>() || parameterType.IsInheritFrom<IEnumerable<IApiParameterable>>(),
                 IsHttpContent = parameterType.IsInheritFrom<HttpContent>(),
-                IsSimpleType = parameterType.IsSimple(),
-                IsEnumerable = parameterType.IsInheritFrom<IEnumerable>(),
-                IsDictionaryOfObject = parameterType.IsInheritFrom<IDictionary<string, object>>(),
-                IsDictionaryOfString = parameterType.IsInheritFrom<IDictionary<string, string>>(),
-                Attributes = parameter.GetAttributes<IApiParameterAttribute>(true).ToArray()
             };
 
-            if (descriptor.Attributes.Length == 0)
+            var defined = parameter.GetAttributes<IApiParameterAttribute>(true);
+            var attributes = new ParameterAttributeCollection(defined);
+
+            if (descriptor.IsApiParameterable == true)
             {
-                if (descriptor.IsApiParameterable == true)
-                {
-                    descriptor.Attributes = new[] { new ParameterableAttribute() };
-                }
-                else if (descriptor.IsHttpContent == true)
-                {
-                    descriptor.Attributes = new[] { new HttpContentAttribute() };
-                }
-                else
-                {
-                    descriptor.Attributes = new[] { new PathQueryAttribute() };
-                }
+                attributes.Add(new ParameterableAttribute());
             }
+            else if (descriptor.IsHttpContent == true)
+            {
+                attributes.AddIfNotExists(new HttpContentAttribute());
+            }
+            else if (attributes.Count == 0)
+            {
+                attributes.Add(new PathQueryAttribute());
+            }
+
+            descriptor.Attributes = attributes.ToArray();
             return descriptor;
         }
 
@@ -138,9 +136,75 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 特性比较器
+        /// 表示参数特性集合
         /// </summary>
-        private class AttributeComparer<T> : IEqualityComparer<T> where T : IAttributeMultiplable
+        private class ParameterAttributeCollection
+        {
+            /// <summary>
+            /// 特性列表
+            /// </summary>
+            private readonly List<IApiParameterAttribute> attribueList = new List<IApiParameterAttribute>();
+
+            /// <summary>
+            /// 获取元素数量
+            /// </summary>
+            public int Count
+            {
+                get
+                {
+                    return this.attribueList.Count;
+                }
+            }
+
+            /// <summary>
+            /// 参数特性集合
+            /// </summary>
+            /// <param name="defined">声明的特性</param>
+            public ParameterAttributeCollection(IEnumerable<IApiParameterAttribute> defined)
+            {
+                this.attribueList.AddRange(defined);
+            }
+
+            /// <summary>
+            /// 添加新特性
+            /// </summary>
+            /// <param name="attribute"></param>
+            public void Add(IApiParameterAttribute attribute)
+            {
+                this.attribueList.Add(attribute);
+            }
+
+            /// <summary>
+            /// 添加新特性
+            /// </summary>
+            /// <param name="attribute"></param>
+            /// <returns></returns>
+            public bool AddIfNotExists(IApiParameterAttribute attribute)
+            {
+                var type = attribute.GetType();
+                if (this.attribueList.Any(item => item.GetType() == type) == true)
+                {
+                    return false;
+                }
+
+                this.attribueList.Add(attribute);
+                return true;
+            }
+
+            /// <summary>
+            /// 转换为数组
+            /// </summary>
+            /// <returns></returns>
+            public IApiParameterAttribute[] ToArray()
+            {
+                return this.attribueList.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// 是否允许重复的特性比较器
+        /// </summary>
+        private class MultiplableComparer<TAttributeMultiplable> : IEqualityComparer<TAttributeMultiplable> where TAttributeMultiplable : IAttributeMultiplable
         {
             /// <summary>
             /// 是否相等
@@ -148,7 +212,7 @@ namespace WebApiClient
             /// <param name="x"></param>
             /// <param name="y"></param>
             /// <returns></returns>
-            public bool Equals(T x, T y)
+            public bool Equals(TAttributeMultiplable x, TAttributeMultiplable y)
             {
                 // 如果其中一个不允许重复，返回true将y过滤
                 return x.AllowMultiple == false || y.AllowMultiple == false;
@@ -159,7 +223,7 @@ namespace WebApiClient
             /// </summary>
             /// <param name="obj"></param>
             /// <returns></returns> 
-            public int GetHashCode(T obj)
+            public int GetHashCode(TAttributeMultiplable obj)
             {
                 return obj.GetType().GetHashCode();
             }
