@@ -80,25 +80,31 @@ namespace WebApiClient
         /// <returns></returns>
         public static string CamelCase(string name)
         {
-            if (string.IsNullOrEmpty(name) == true)
+            if (string.IsNullOrEmpty(name) || char.IsUpper(name[0]) == false)
             {
                 return name;
             }
 
-            return Regex.Replace(name, @"^[A-Z]+", m =>
+            var charArray = name.ToCharArray();
+            for (int i = 0; i < charArray.Length; i++)
             {
-                if (m.Success == false)
+                if (i == 1 && char.IsUpper(charArray[i]) == false)
                 {
-                    return name;
+                    break;
                 }
-                if (m.Value.Length > 1)
-                {
-                    var charArray = m.Value.ToLower().ToCharArray();
-                    charArray[charArray.Length - 1] = Char.ToUpper(charArray[charArray.Length - 1]);
-                    return new string(charArray);
+
+                var hasNext = (i + 1 < charArray.Length);
+                if (i > 0 && hasNext && !char.IsUpper(charArray[i + 1]))
+                {                    
+                    if (char.IsSeparator(charArray[i + 1]))
+                    {
+                        charArray[i] = Char.ToLowerInvariant(charArray[i]);
+                    }
+                    break;
                 }
-                return m.Value.ToLower();
-            });
+                charArray[i] = Char.ToLowerInvariant(charArray[i]);
+            }
+            return new string(charArray);
         }
     }
 }
