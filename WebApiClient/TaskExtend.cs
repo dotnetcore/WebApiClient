@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// ITask的扩展
+    /// 提供ITask的扩展
     /// </summary>
     public static class TaskExtend
     {
@@ -81,7 +81,6 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 返回提供异常处理请求任务对象
         /// 当遇到异常时返回默认值
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
@@ -93,7 +92,6 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 返回提供异常处理请求任务对象
         /// 当遇到异常时返回默认值
         /// </summary>
         /// <typeparam name="TResult"></typeparam>

@@ -59,7 +59,7 @@ namespace WebApiClient.Attributes
             var fixUrl = uri.ToString().TrimEnd('?', '&', '/');
             var options = context.HttpApiConfig.FormatOptions.CloneChange(this.datetimeFormate);
             var keyValues = context.HttpApiConfig.KeyValueFormatter.Serialize(parameter, options);
-            var targetUrl = new Uri(this.UseQuery(fixUrl, keyValues));
+            var targetUrl = new Uri(this.UsePathQuery(fixUrl, keyValues));
 
             context.RequestMessage.RequestUri = targetUrl;
             await ApiTask.CompletedTask;
@@ -71,11 +71,11 @@ namespace WebApiClient.Attributes
         /// <param name="url">url</param>
         /// <param name="keyValues">键值对</param>
         /// <returns></returns>
-        private string UseQuery(string url, IEnumerable<KeyValuePair<string, string>> keyValues)
+        private string UsePathQuery(string url, IEnumerable<KeyValuePair<string, string>> keyValues)
         {
             foreach (var keyValue in keyValues)
             {
-                url = this.UseQuery(url, keyValue);
+                url = this.UsePathQuery(url, keyValue);
             }
             return url;
         }
@@ -86,7 +86,7 @@ namespace WebApiClient.Attributes
         /// <param name="url">url</param>
         /// <param name="keyValue">键值对</param>
         /// <returns></returns>
-        private string UseQuery(string url, KeyValuePair<string, string> keyValue)
+        private string UsePathQuery(string url, KeyValuePair<string, string> keyValue)
         {
             var key = keyValue.Key;
             var value = keyValue.Value == null ? string.Empty : keyValue.Value;

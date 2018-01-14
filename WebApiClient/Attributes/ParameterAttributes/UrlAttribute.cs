@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 表示将参数值作为请求url的特性
+    /// 表示将参数值作为请求url的特性  
+    /// 要求必须修饰于第一个参数
     /// 支持绝对或相对路径
-    /// 一般放到第一个参数以防止将PathQuery的路径覆盖掉
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-    public class UrlAttribute : Attribute, IApiParameterAttribute
+    public sealed class UrlAttribute : Attribute, IApiParameterAttribute
     {
         /// <summary>
         /// http请求之前
@@ -21,11 +21,16 @@ namespace WebApiClient.Attributes
         /// <param name="parameter">特性关联的参数</param>
         /// <exception cref="ApiConfigException"></exception>
         /// <returns></returns>
-        public virtual Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
+        public Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             if (parameter.Value == null)
             {
                 throw new ArgumentNullException(parameter.Name);
+            }
+
+            if (parameter.Index > 0)
+            {
+                throw new ApiConfigException(this.GetType().Name + "必须修饰于第一个参数");
             }
 
             var relative = new Uri(parameter.ToString(), UriKind.RelativeOrAbsolute);

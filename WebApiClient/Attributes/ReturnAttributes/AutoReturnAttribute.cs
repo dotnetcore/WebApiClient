@@ -15,7 +15,7 @@ namespace WebApiClient.Attributes
     /// 支持返回xml或json转换对应类型
     /// 没有任何IApiReturnAttribute特性修饰的接口方法，将默认为AutoReturn修饰
     /// </summary> 
-    public class AutoReturnAttribute : ApiReturnAttribute
+    public sealed class AutoReturnAttribute : ApiReturnAttribute
     {
         /// <summary>
         /// 获取异步结果

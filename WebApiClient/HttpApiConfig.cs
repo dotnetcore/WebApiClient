@@ -10,7 +10,6 @@ namespace WebApiClient
 {
     /// <summary>
     /// 表示Http接口的配置项
-    /// 更多的配置项，可以继承此类
     /// </summary>
     public class HttpApiConfig : IDisposable
     {

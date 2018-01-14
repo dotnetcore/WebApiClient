@@ -24,11 +24,11 @@ namespace WebApiClient
         /// </summary>
         /// <param name="keyValue">参数</param>
         /// <exception cref="ApiConfigException"></exception>
-        public void AddUrlQeury(IEnumerable<KeyValuePair<string, string>> keyValue)
+        public void AddUrlQuery(IEnumerable<KeyValuePair<string, string>> keyValue)
         {
             foreach (var kv in keyValue)
             {
-                this.AddUrlQeury(kv);
+                this.AddUrlQuery(kv);
             }
         }
 
@@ -37,9 +37,9 @@ namespace WebApiClient
         /// </summary>
         /// <param name="keyValue">参数</param>
         /// <exception cref="ApiConfigException"></exception>
-        public void AddUrlQeury(KeyValuePair<string, string> keyValue)
+        public void AddUrlQuery(KeyValuePair<string, string> keyValue)
         {
-            this.AddUrlQeury(keyValue.Key, keyValue.Value);
+            this.AddUrlQuery(keyValue.Key, keyValue.Value);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace WebApiClient
         /// <param name="key">参数名</param>
         /// <param name="value">参数值</param>
         /// <exception cref="ApiConfigException"></exception>
-        public void AddUrlQeury(string key, string value)
+        public void AddUrlQuery(string key, string value)
         {
             if (this.RequestUri == null)
             {

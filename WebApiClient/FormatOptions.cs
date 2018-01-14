@@ -54,7 +54,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 如果新的日期时间格式有变化
+        /// 当datetimeFormat不为null且有变化时
         /// 则克隆并使用新的datetimeFormat
         /// </summary>
         /// <param name="datetimeFormat">日期时间格式</param>
@@ -95,7 +95,7 @@ namespace WebApiClient
 
                 var hasNext = (i + 1 < charArray.Length);
                 if (i > 0 && hasNext && !char.IsUpper(charArray[i + 1]))
-                {                    
+                {
                     if (char.IsSeparator(charArray[i + 1]))
                     {
                         charArray[i] = Char.ToLowerInvariant(charArray[i]);
