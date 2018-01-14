@@ -94,11 +94,7 @@ namespace WebApiClient
                 var property = base.CreateProperty(member, memberSerialization);
                 var descriptor = PropertyDescriptor.GetDescriptor(member);
 
-                if (string.IsNullOrEmpty(descriptor.Alias) == false)
-                {
-                    property.PropertyName = descriptor.Alias;
-                }
-
+                property.PropertyName = descriptor.AliasName;
                 if (this.useCamelCase == true)
                 {
                     property.PropertyName = FormatOptions.CamelCase(property.PropertyName);
@@ -124,9 +120,9 @@ namespace WebApiClient
                 private static readonly ConcurrentDictionary<MemberInfo, PropertyDescriptor> descriptorCache;
 
                 /// <summary>
-                /// 获取别名
+                /// 获取属性别名或名称
                 /// </summary>
-                public string Alias { get; private set; }
+                public string AliasName { get; private set; }
 
                 /// <summary>
                 /// 获取时间转换器
@@ -144,16 +140,13 @@ namespace WebApiClient
                 /// <param name="member"></param>
                 private PropertyDescriptor(MemberInfo member)
                 {
+                    var aliasAs = member.GetAttribute<AliasAsAttribute>(true);
+                    this.AliasName = aliasAs == null ? member.Name : aliasAs.Name;
+
                     var datatimeFormat = member.GetAttribute<DateTimeFormatAttribute>(true);
                     if (datatimeFormat != null)
                     {
                         this.DateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = datatimeFormat.Format };
-                    }
-
-                    var aliasAs = member.GetAttribute<AliasAsAttribute>(true);
-                    if (aliasAs != null)
-                    {
-                        this.Alias = aliasAs.Name;
                     }
 
                     this.IsIgnoreSerialized = member.IsDefined(typeof(IgnoreSerializedAttribute));

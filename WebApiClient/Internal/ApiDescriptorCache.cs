@@ -78,26 +78,17 @@ namespace WebApiClient
             var parameterType = parameter.ParameterType;
             var parameterAlias = parameter.GetCustomAttribute(typeof(AliasAsAttribute)) as AliasAsAttribute;
             var parameterName = parameterAlias == null ? parameter.Name : parameterAlias.Name;
-
-            var descriptor = new ApiParameterDescriptor
-            {
-                Attributes = null,
-                Value = null,
-                Name = parameterName,
-                Index = parameter.Position,
-                ParameterType = parameterType,
-                IsApiParameterable = parameterType.IsInheritFrom<IApiParameterable>() || parameterType.IsInheritFrom<IEnumerable<IApiParameterable>>(),
-                IsHttpContent = parameterType.IsInheritFrom<HttpContent>(),
-            };
+            var isHttpContent = parameterType.IsInheritFrom<HttpContent>();
+            var isApiParameterable = parameterType.IsInheritFrom<IApiParameterable>() || parameterType.IsInheritFrom<IEnumerable<IApiParameterable>>();
 
             var defined = parameter.GetAttributes<IApiParameterAttribute>(true);
             var attributes = new ParameterAttributeCollection(defined);
 
-            if (descriptor.IsApiParameterable == true)
+            if (isApiParameterable == true)
             {
                 attributes.Add(new ParameterableAttribute());
             }
-            else if (descriptor.IsHttpContent == true)
+            else if (isHttpContent == true)
             {
                 attributes.AddIfNotExists(new HttpContentAttribute());
             }
@@ -106,8 +97,14 @@ namespace WebApiClient
                 attributes.Add(new PathQueryAttribute());
             }
 
-            descriptor.Attributes = attributes.ToArray();
-            return descriptor;
+            return new ApiParameterDescriptor
+            {
+                Attributes = attributes.ToArray(),
+                Index = parameter.Position,
+                Name = parameterName,
+                ParameterType = parameterType,
+                Value = null,
+            };
         }
 
         /// <summary>

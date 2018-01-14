@@ -36,16 +36,6 @@ namespace WebApiClient
         public object Value { get; internal set; }
 
         /// <summary>
-        /// 获取参数类型是否为HttpContent类型
-        /// </summary>
-        public bool IsHttpContent { get; internal set; }      
-
-        /// <summary>
-        /// 获取参数类型是否为IApiParameterable类型
-        /// </summary>
-        public bool IsApiParameterable { get; internal set; }
-
-        /// <summary>
         /// 获取关联的参数特性
         /// </summary>
         public IApiParameterAttribute[] Attributes { get; internal set; }
@@ -69,8 +59,6 @@ namespace WebApiClient
             {
                 Attributes = this.Attributes,
                 Index = this.Index,
-                IsApiParameterable = this.IsApiParameterable,
-                IsHttpContent = this.IsHttpContent,
                 Name = this.Name,
                 ParameterType = this.ParameterType,
                 Value = this.Value
