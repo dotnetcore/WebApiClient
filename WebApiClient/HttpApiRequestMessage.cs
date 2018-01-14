@@ -74,7 +74,7 @@ namespace WebApiClient
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             }
             var kv = new KeyValuePair<string, string>(name, value);
             await this.AddFormFieldAsync(new[] { kv });
@@ -214,7 +214,7 @@ namespace WebApiClient
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             }
 
             var httpContent = this.CastOrCreateMultipartContent();

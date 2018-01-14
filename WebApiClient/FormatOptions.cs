@@ -38,7 +38,7 @@ namespace WebApiClient
             {
                 if (string.IsNullOrEmpty(value))
                 {
-                    throw new ArgumentNullException();
+                    throw new ArgumentNullException(nameof(value));
                 }
                 this.dateTimeFormat = value;
             }

@@ -47,7 +47,7 @@ namespace WebApiClient
         {
             if (stream == null)
             {
-                throw new ArgumentNullException("stream");
+                throw new ArgumentNullException(nameof(stream));
             }
             this.stream = stream;
             this.FileName = fileName;
@@ -64,7 +64,7 @@ namespace WebApiClient
         {
             if (string.IsNullOrEmpty(localFilePath))
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(localFilePath));
             }
 
             if (File.Exists(localFilePath) == false)

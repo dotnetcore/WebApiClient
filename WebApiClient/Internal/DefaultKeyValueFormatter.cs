@@ -136,7 +136,7 @@ namespace WebApiClient
         {
             if (string.IsNullOrEmpty(name) == true)
             {
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             }
 
             if (options.UseCamelCase == true)

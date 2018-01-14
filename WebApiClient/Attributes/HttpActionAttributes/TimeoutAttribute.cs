@@ -27,7 +27,7 @@ namespace WebApiClient.Attributes
         {
             if (milliseconds <= 0)
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(milliseconds));
             }
             this.TimeSpan = TimeSpan.FromMilliseconds(milliseconds);
         }

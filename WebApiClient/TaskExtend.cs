@@ -54,12 +54,12 @@ namespace WebApiClient
         {
             if (task == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(task));
             }
 
             if (maxCount < 1)
             {
-                throw new ArgumentOutOfRangeException("maxCount");
+                throw new ArgumentOutOfRangeException(nameof(maxCount));
             }
             return new ApiRetryTask<TResult>(task.InvokeAsync, maxCount, delay);
         }
@@ -75,7 +75,7 @@ namespace WebApiClient
         {
             if (task == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(task));
             }
             return new ApiHandleTask<TResult>(task.InvokeAsync);
         }

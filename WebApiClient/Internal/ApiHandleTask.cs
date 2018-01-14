@@ -67,7 +67,7 @@ namespace WebApiClient
         {
             if (func == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(func));
             }
 
             Func<Task<TResult>> newInvoker = async () =>
@@ -95,7 +95,7 @@ namespace WebApiClient
         {
             if (func == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(func));
             }
 
             Func<Task<TResult>> newInvoker = async () =>

@@ -40,7 +40,7 @@ namespace WebApiClient
         {
             if (retryMaxCount < 1)
             {
-                throw new ArgumentOutOfRangeException("retryMaxCount");
+                throw new ArgumentOutOfRangeException(nameof(retryMaxCount));
             }
             this.invoker = invoker;
             this.retryMaxCount = retryMaxCount;
@@ -151,7 +151,7 @@ namespace WebApiClient
         {
             if (predicate == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(predicate));
             }
 
             Func<Task<TResult>> newInvoker = async () =>

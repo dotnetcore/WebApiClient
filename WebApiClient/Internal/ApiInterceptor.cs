@@ -31,7 +31,7 @@ namespace WebApiClient
         {
             if (apiConfig == null)
             {
-                throw new ArgumentNullException("apiConfig");
+                throw new ArgumentNullException(nameof(apiConfig));
             }
             this.httpApiConfig = apiConfig;
         }

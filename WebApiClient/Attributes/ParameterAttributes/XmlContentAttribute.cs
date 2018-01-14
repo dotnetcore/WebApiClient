@@ -50,7 +50,7 @@ namespace WebApiClient.Attributes
         {
             if (encoding == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(encoding));
             }
             this.encoding = encoding;
         }

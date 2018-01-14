@@ -53,7 +53,7 @@ namespace WebApiClient.Attributes
         {
             if (string.IsNullOrEmpty(host))
             {
-                throw new ArgumentNullException("host");
+                throw new ArgumentNullException(nameof(host));
             }
 
             this.host = host;

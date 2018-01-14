@@ -27,7 +27,7 @@ namespace WebApiClient
         {
             if (milliseconds <= 0)
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(milliseconds));
             }
             this.TimeSpan = TimeSpan.FromMilliseconds(milliseconds);
         }
@@ -41,7 +41,7 @@ namespace WebApiClient
         {
             if (timeSpan <= TimeSpan.Zero)
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(timeSpan));
             }
             this.TimeSpan = timeSpan;
         }

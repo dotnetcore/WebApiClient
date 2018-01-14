@@ -34,7 +34,7 @@ namespace WebApiClient
         {
             if (string.IsNullOrEmpty(userName))
             {
-                throw new ArgumentNullException("userName");
+                throw new ArgumentNullException(nameof(userName));
             }
             this.authValue = GetBasicAuthValue(userName, password);
         }
