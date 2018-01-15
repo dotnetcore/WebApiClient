@@ -27,19 +27,14 @@ namespace WebApiClient
         private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IApiInterceptor), typeof(MethodInfo[]) };
 
         /// <summary>
-        /// 应用程序池下的程序集创建器
+        /// 程序集HashCode^模块HashCode与模块创建器的缓存
         /// </summary>
-        private static readonly ConcurrentDictionary<int, AssemblyBuilder> assemblyBuilderCache = new ConcurrentDictionary<int, AssemblyBuilder>();
+        private static readonly ConcurrentDictionary<int, ModuleBuilder> hashCodeModuleBuilderCache = new ConcurrentDictionary<int, ModuleBuilder>();
 
         /// <summary>
         /// 接口类型与代理类型的构造器缓存
         /// </summary>
         private static readonly ConcurrentDictionary<Type, ConstructorInfo> proxyTypeCtorCache = new ConcurrentDictionary<Type, ConstructorInfo>();
-
-        /// <summary>
-        /// 模块与模块创建器的缓存
-        /// </summary>
-        private static readonly ConcurrentDictionary<Module, ModuleBuilder> moduleModuleBuilderCache = new ConcurrentDictionary<Module, ModuleBuilder>();
 
         /// <summary>
         /// 创建接口的代理实例
@@ -66,13 +61,21 @@ namespace WebApiClient
         /// <returns></returns>
         private static ConstructorInfo GenerateProxyTypeCtor(Type interfaceType, MethodInfo[] apiMethods)
         {
+            var moduleName = interfaceType.Module.Name;
             var hashCode = interfaceType.Assembly.GetHashCode() ^ interfaceType.Module.GetHashCode();
-            var assemblyBuilder = assemblyBuilderCache.GetOrAdd(hashCode, (hash) => AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(hash.ToString()), AssemblyBuilderAccess.Run));
-            var moduleBuilder = moduleModuleBuilderCache.GetOrAdd(interfaceType.Module, module => assemblyBuilder.DefineDynamicModule(module.Name));
+
+            // 每个动态集下面只会有一个模块
+            var moduleBuilder = hashCodeModuleBuilderCache.GetOrAdd(hashCode, (hash) =>
+            {
+                return AssemblyBuilder
+                .DefineDynamicAssembly(new AssemblyName(hash.ToString()), AssemblyBuilderAccess.Run)
+                .DefineDynamicModule(moduleName);
+            });
+
             var typeBuilder = moduleBuilder.DefineType(interfaceType.FullName, TypeAttributes.Class);
             typeBuilder.AddInterfaceImplementation(interfaceType);
 
-            var proxyType = ImplementApiMethods(typeBuilder, apiMethods);
+            var proxyType = ProxyGenerator.ImplementApiMethods(typeBuilder, apiMethods);
             return proxyType.GetConstructor(proxyTypeCtorArgTypes);
         }
 
