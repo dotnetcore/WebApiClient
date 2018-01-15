@@ -167,7 +167,11 @@ namespace WebApiClient
                 }
                 apiMethodIL.Emit(OpCodes.Ret);
             }
+#if NETSTANDARD2_0
+            return typeBuilder.CreateTypeInfo();
+#else
             return typeBuilder.CreateType();
+#endif
         }
     }
 }
