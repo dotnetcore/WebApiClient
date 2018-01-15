@@ -79,11 +79,6 @@ namespace WebApiClient
         /// <returns></returns>
         private IEnumerable<KeyValuePair<string, string>> ForamtAsEnumerable(string name, IEnumerable enumerable, FormatOptions options)
         {
-            if (enumerable == null)
-            {
-                return Enumerable.Empty<KeyValuePair<string, string>>();
-            }
-
             return from item in enumerable.Cast<object>()
                    select this.FormatAsSimple(name, item, options);
         }
@@ -96,11 +91,6 @@ namespace WebApiClient
         /// <returns></returns>
         private IEnumerable<KeyValuePair<string, string>> FormatAsComplex(object instance, FormatOptions options)
         {
-            if (instance == null)
-            {
-                return Enumerable.Empty<KeyValuePair<string, string>>();
-            }
-
             return
                 from p in PropertyDescriptor.GetProperties(instance.GetType())
                 where p.IsSupportGet && p.IgnoreSerialized == false
@@ -117,10 +107,6 @@ namespace WebApiClient
         /// <returns></returns>
         private IEnumerable<KeyValuePair<string, string>> FormatAsDictionary<TValue>(IDictionary<string, TValue> dic, FormatOptions options)
         {
-            if (dic == null)
-            {
-                return Enumerable.Empty<KeyValuePair<string, string>>();
-            }
             return from kv in dic select this.FormatAsSimple(kv.Key, kv.Value, options);
         }
 
