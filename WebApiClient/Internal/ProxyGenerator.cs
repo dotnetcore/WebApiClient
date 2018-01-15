@@ -14,7 +14,7 @@ namespace WebApiClient
     /// 不支持泛型方法
     /// 不支持ref/out参数
     /// </summary>
-    static class ProxyGenerator
+    internal static class ProxyGenerator
     {
         /// <summary>
         /// IApiInterceptor的Intercept方法
@@ -27,9 +27,9 @@ namespace WebApiClient
         private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IApiInterceptor), typeof(MethodInfo[]) };
 
         /// <summary>
-        /// 应用程序池下的程序集创建器
+        /// 应用程序池下的程序集创建器缓存
         /// </summary>
-        private static readonly AssemblyBuilder domainAssemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("ApiProxyAssembly"), AssemblyBuilderAccess.Run);
+        private static readonly ConcurrentDictionary<Assembly, AssemblyBuilder> domainAssemblyBuilderCache = new ConcurrentDictionary<Assembly, AssemblyBuilder>();
 
         /// <summary>
         /// 接口类型与代理类型的构造器缓存
@@ -66,6 +66,7 @@ namespace WebApiClient
         /// <returns></returns>
         private static ConstructorInfo GenerateProxyTypeCtor(Type interfaceType, MethodInfo[] apiMethods)
         {
+            var domainAssemblyBuilder = domainAssemblyBuilderCache.GetOrAdd(interfaceType.Assembly, modelut => AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("ApiProxyAssembly." + interfaceType.Assembly.GetName().Name), AssemblyBuilderAccess.Run));
             var moduleBuilder = moduleModuleBuilderCache.GetOrAdd(interfaceType.Module, module => domainAssemblyBuilder.DefineDynamicModule(module.Name));
             var typeBuilder = moduleBuilder.DefineType(interfaceType.FullName, TypeAttributes.Class);
             typeBuilder.AddInterfaceImplementation(interfaceType);
