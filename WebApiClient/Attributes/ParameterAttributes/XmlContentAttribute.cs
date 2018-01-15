@@ -11,9 +11,7 @@ using System.Xml.Serialization;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 表示将参数值作为application/xml请求
-    /// 每个Api只能注明于其中的一个参数
-    /// 依赖于HttpApiConfig.XmlFormatter
+    /// 使用XmlFormatter序列化参数值得到的json文本作为application/xml请求
     /// </summary>
     public class XmlContentAttribute : HttpContentAttribute
     {

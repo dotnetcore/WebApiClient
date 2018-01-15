@@ -41,7 +41,8 @@ namespace WebApiClient
         public Uri HttpHost { get; set; }
 
         /// <summary>
-        /// 获取或设置请求时序列化使用的默认格式    
+        /// 获取或设置请求时序列化使用的默认格式   
+        /// 影响JsonFormatter或KeyValueFormatter的序列化
         /// </summary>
         public FormatOptions FormatOptions { get; set; }
 

@@ -125,8 +125,8 @@ namespace WebApiClient
             {
                 Attribute = returnAttribute,
                 ReturnType = method.ReturnType,
-                GenericType = method.ReturnType.GetGenericTypeDefinition(),
                 DataType = dataType,
+                IsITaskDefinition = method.ReturnType.GetGenericTypeDefinition() == typeof(ITask<>),
                 ITaskCtor = ApiTask.GetConstructor(dataType),
             };
             return descriptor;

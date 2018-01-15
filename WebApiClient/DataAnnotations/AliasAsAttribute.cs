@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
+    /// DataAnnotation
     /// 表示将参数名或属性名进行别名
     /// 当修饰属性时，JsonFormatter或KeyValueFormatter序列化将使用此别名
     /// </summary>

@@ -10,8 +10,7 @@ using System.Xml.Serialization;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 表示将回复的Xml结果作反序化为指定类型
-    /// 依赖于HttpApiConfig.XmlFormatter
+    /// 使用XmlFormatter反序列化回复内容作为返回值
     /// </summary>
     public class XmlReturnAttribute :  ApiReturnAttribute 
     {

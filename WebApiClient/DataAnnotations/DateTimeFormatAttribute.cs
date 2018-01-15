@@ -8,6 +8,7 @@ namespace WebApiClient
 {
     /// <summary>
     /// 表示属性在JsonFormatter或KeyValueFormatter序列化时使用的日期时间格式
+    /// DataAnnotation
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public sealed class DateTimeFormatAttribute : Attribute

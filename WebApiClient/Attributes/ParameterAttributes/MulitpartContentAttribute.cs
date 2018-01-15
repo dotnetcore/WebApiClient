@@ -11,10 +11,7 @@ using System.Threading.Tasks;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 表示参数值作为multipart/form-data表单或表单的一个项
-    /// 支持单一值类型如string、int、guid、枚举等，以及他们的可空类型或集合
-    /// 支持POCO类型、IDictionaryOf(string,string)类型、IDictionaryOf(string,object)类型
-    /// 依赖于HttpApiConfig.KeyValueFormatter
+    /// 使用KeyValueFormatter序列化参数值得到的键值对分别作为multipart/form-data表单的一个文本项 
     /// </summary>
     public class MulitpartContentAttribute : HttpContentAttribute
     {

@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 表示将回复的Json结果作反序化为指定类型
-    /// 依赖于HttpApiConfig.JsonFormatter
+    /// 使用JsonFormatter反序列化回复内容作为返回值
     /// </summary>
     public class JsonReturnAttribute : ApiReturnAttribute
     {

@@ -11,8 +11,7 @@ using System.Threading.Tasks;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 表示参数为HttpContent或派生类型的特性    
-    /// 此类型的参数可以不用注明HttpContentAttribute
+    /// 表示参数值理解为HttpContent类型的特性    
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
     public class HttpContentAttribute : Attribute, IApiParameterAttribute
