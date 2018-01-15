@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -221,6 +222,48 @@ namespace WebApiClient
             var textContent = new MulitpartTextContent(name, value);
             httpContent.Add(textContent);
             this.Content = httpContent;
+        }
+
+        /// <summary>
+        /// 设置Cookie值到请求头
+        /// 当HttpClientHandler.UseCookies == false才会提交到服务端
+        /// </summary>
+        /// <param name="cookieValues">cookie值，可以不编码，eg：key1=value1; key2=value2</param>
+        public bool SetCookies(string cookieValues)
+        {
+            const string cookieName = "Cookie";
+            this.Headers.Remove(cookieName);
+
+            var cookieText = this.EncodeCookies(cookieValues);
+            if (string.IsNullOrEmpty(cookieText) == true)
+            {
+                return false;
+            }
+
+            return this.Headers.TryAddWithoutValidation(cookieName, cookieText);
+        }
+
+        /// <summary>
+        /// 给cookie编码
+        /// </summary>
+        /// <param name="cookieValues"></param>
+        /// <returns></returns>
+        private string EncodeCookies(string cookieValues)
+        {
+            if (cookieValues == null)
+            {
+                return null;
+            }
+
+            var encoding = Encoding.UTF8;
+            var kvs = from item in cookieValues.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                      let kv = item.Split('=')
+                      let name = kv.FirstOrDefault().Trim()
+                      let value = kv.Length > 1 ? kv.LastOrDefault() : string.Empty
+                      let encoded = HttpUtility.UrlEncode(value, encoding)
+                      select string.Format("{0}={1}", name, encoded);
+
+            return string.Join("; ", kvs);
         }
 
         /// <summary>

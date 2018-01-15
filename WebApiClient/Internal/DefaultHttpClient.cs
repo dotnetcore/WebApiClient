@@ -88,6 +88,53 @@ namespace WebApiClient
         }
 
         /// <summary>
+        /// 设置Cookie值到Cookie容器
+        /// 当Handler.UseCookies才添加
+        /// </summary>
+        /// <param name="domain">cookie域名</param>
+        /// <param name="cookieValues">cookie值，可以不编码，eg：key1=value1; key2=value2</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns></returns>
+        public bool SetCookie(Uri domain, string cookieValues)
+        {
+            if (this.Handler.UseCookies == false)
+            {
+                return false;
+            }
+
+            if (domain == null)
+            {
+                throw new ArgumentNullException(nameof(domain));
+            }
+
+            foreach (var cookie in this.EncodeCookies(cookieValues))
+            {
+                this.Handler.CookieContainer.Add(domain, cookie);
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 给cookie编码
+        /// </summary>
+        /// <param name="cookieValues"></param>
+        /// <returns></returns>
+        private IEnumerable<Cookie> EncodeCookies(string cookieValues)
+        {
+            if (cookieValues == null)
+            {
+                return Enumerable.Empty<Cookie>();
+            }
+
+            return from item in cookieValues.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                   let kv = item.Split('=')
+                   let name = kv.FirstOrDefault().Trim()
+                   let value = kv.Length > 1 ? kv.LastOrDefault() : string.Empty
+                   let encode = HttpUtility.UrlEncode(value, Encoding.UTF8)
+                   select new Cookie(name, encode);
+        }
+
+        /// <summary>
         /// 设置代理
         /// </summary>
         /// <param name="proxy">代理，为null则清除代理</param>
