@@ -3,7 +3,7 @@ PM> `install-package Laojiu.WebApiClient`
 
 ## 2. WebApiClient是什么
 ### 2.1 接口的声明
-```
+```c#
 [HttpHost("http://www.webapiclient.com")] 
 public interface MyWebApi : IDisposable
 {
@@ -32,7 +32,7 @@ public class UserInfo
 ```
  
 ### 2.2 接口的调用
-```
+```c#
 static async Task TestAsync()
 {
     var myWebApi = HttpApiClient.Create<MyWebApi>();
