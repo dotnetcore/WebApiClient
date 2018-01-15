@@ -1,8 +1,8 @@
 ## Nuget
 PM> `install-package Laojiu.WebApiClient`
 
-## 如何使用
-### Api声明
+## WebApiClient是什么
+### 1. 接口的声明
 ```
 [HttpHost("http://www.webapiclient.com")] 
 public interface MyWebApi : IDisposable
@@ -13,7 +13,7 @@ public interface MyWebApi : IDisposable
     ITask<string> GetUserByAccountAsync(string account);
 
     // POST webapi/user  
-    // Body Account=laojiu&Password=123456
+    // Body Account=laojiu&password=123456
     // Return json或xml内容
     [HttpPost("/webapi/user")]
     ITask<UserInfo> UpdateUserWithFormAsync([FormContent] UserInfo user);
@@ -31,7 +31,7 @@ public class UserInfo
 }
 ```
  
-### Api调用
+### 2. 接口的调用
 ```
 static async Task TestAsync()
 {
@@ -42,6 +42,6 @@ static async Task TestAsync()
 }
 ``` 
 
-### 详细教程
+### 详细文档
 * [WebApiClient基础](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E5%9F%BA%E7%A1%80)
 * [WebApiClient中级](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E4%B8%AD%E7%BA%A7)
