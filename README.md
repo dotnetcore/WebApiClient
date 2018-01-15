@@ -1,8 +1,8 @@
-## Nuget
+## 1. Nuget
 PM> `install-package Laojiu.WebApiClient`
 
-## WebApiClient是什么
-### 1. 接口的声明
+## 2. WebApiClient是什么
+### 2.1 接口的声明
 ```
 [HttpHost("http://www.webapiclient.com")] 
 public interface MyWebApi : IDisposable
@@ -31,7 +31,7 @@ public class UserInfo
 }
 ```
  
-### 2. 接口的调用
+### 2.2 接口的调用
 ```
 static async Task TestAsync()
 {
@@ -42,6 +42,11 @@ static async Task TestAsync()
 }
 ``` 
 
-### 详细文档
+### 3. 详细文档
 * [WebApiClient基础](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E5%9F%BA%E7%A1%80)
 * [WebApiClient中级](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E4%B8%AD%E7%BA%A7)
+
+### 4. 怎么联系我
+* 加群439800853 注明WeApiClient
+* 366193849@qq.com，不重要的尽量不要发
+
