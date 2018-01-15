@@ -39,7 +39,7 @@ namespace WebApiClient
         /// <summary>
         /// 创建接口的代理实例
         /// </summary>
-        /// <typeparam name="T">接口殴类型</typeparam>
+        /// <typeparam name="T">接口类型</typeparam>
         /// <param name="interceptor">拦截器</param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>

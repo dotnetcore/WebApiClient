@@ -27,10 +27,10 @@ namespace WebApiClient
         /// </summary>
         static MimeTable()
         {
-            var datas = from line in LoadMimeLines()
-                        let kv = line.Split('\t', ' ')
-                        let ext = kv.FirstOrDefault().Trim().TrimStart('.')
-                        let contenType = kv.LastOrDefault().Trim()
+            var datas = from line in MimeTable.LoadMimeLines()
+                        let kv = line.Split(new[] { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                        let ext = kv.FirstOrDefault()
+                        let contenType = kv.LastOrDefault()
                         select new { ext, contenType };
 
             foreach (var item in datas)
@@ -51,6 +51,11 @@ namespace WebApiClient
             var name = typeof(MimeTable).Namespace + ".Internal.mime.day";
             using (var stream = typeof(MimeTable).Assembly.GetManifestResourceStream(name))
             {
+                if (stream == null)
+                {
+                    return new string[0];
+                }
+
                 using (var reader = new StreamReader(stream))
                 {
                     return reader.ReadToEnd().Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
@@ -70,7 +75,7 @@ namespace WebApiClient
                 return defaultContentType;
             }
 
-            var ext = Path.GetExtension(fileNameOrExtension).TrimStart('.');
+            var ext = Path.GetExtension(fileNameOrExtension);
             if (mimeTable.ContainsKey(ext))
             {
                 return mimeTable[ext];
