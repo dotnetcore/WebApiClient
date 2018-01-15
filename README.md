@@ -1,4 +1,4 @@
-## 1. Nuget
+## 1. [Nuget](https://www.nuget.org/packages/Laojiu.WebApiClient/)
 PM> `install-package Laojiu.WebApiClient`
 
 ## 2. WebApiClient是什么
