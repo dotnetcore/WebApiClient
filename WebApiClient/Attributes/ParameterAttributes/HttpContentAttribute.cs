@@ -21,6 +21,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
+        /// <exception cref="ApiConfigException"></exception>
         /// <returns></returns>
         async Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
@@ -32,6 +33,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
+        /// <exception cref="ApiConfigException"></exception>
         /// <returns></returns>
         protected virtual Task SetHttpContentAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
@@ -45,8 +47,14 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
+        /// <exception cref="ApiConfigException"></exception>
         protected virtual void SetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
+            if (context.RequestMessage.Content != null)
+            {
+                var message = string.Format("参数{0} {1}必须置前", parameter.ParameterType.Name, parameter.Name);
+                throw new ApiConfigException(message);
+            }
             context.RequestMessage.Content = parameter.Value as HttpContent;
         }
     }
