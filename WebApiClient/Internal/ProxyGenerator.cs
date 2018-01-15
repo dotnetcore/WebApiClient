@@ -29,7 +29,7 @@ namespace WebApiClient
         /// <summary>
         /// 应用程序池下的程序集创建器
         /// </summary>
-        private static readonly AssemblyBuilder domainAssemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("ApiProxyAssembly"), AssemblyBuilderAccess.Run);
+        private static readonly ConcurrentDictionary<int, AssemblyBuilder> assemblyBuilderCache = new ConcurrentDictionary<int, AssemblyBuilder>();
 
         /// <summary>
         /// 接口类型与代理类型的构造器缓存
@@ -66,7 +66,9 @@ namespace WebApiClient
         /// <returns></returns>
         private static ConstructorInfo GenerateProxyTypeCtor(Type interfaceType, MethodInfo[] apiMethods)
         {
-            var moduleBuilder = moduleModuleBuilderCache.GetOrAdd(interfaceType.Module, module => domainAssemblyBuilder.DefineDynamicModule(module.Name));
+            var hashCode = interfaceType.Assembly.GetHashCode() ^ interfaceType.Module.GetHashCode();
+            var assemblyBuilder = assemblyBuilderCache.GetOrAdd(hashCode, (hash) => AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(hash.ToString()), AssemblyBuilderAccess.Run));
+            var moduleBuilder = moduleModuleBuilderCache.GetOrAdd(interfaceType.Module, module => assemblyBuilder.DefineDynamicModule(module.Name));
             var typeBuilder = moduleBuilder.DefineType(interfaceType.FullName, TypeAttributes.Class);
             typeBuilder.AddInterfaceImplementation(interfaceType);
 
@@ -167,11 +169,7 @@ namespace WebApiClient
                 }
                 apiMethodIL.Emit(OpCodes.Ret);
             }
-#if NETSTANDARD2_0
             return typeBuilder.CreateTypeInfo();
-#else
-            return typeBuilder.CreateType();
-#endif
         }
     }
 }
