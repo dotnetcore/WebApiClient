@@ -11,19 +11,19 @@ namespace WebApiClient
     /// 表示全局过滤器的集合
     /// 全局过滤器执行优先级最高，执行顺序为添加的顺序
     /// </summary>
-    public class GlobalFilterCollection : ICollection<IApiActionFilterAttribute>
+    public class GlobalFilterCollection : ICollection<IApiActionFilter>
     {
         /// <summary>
         /// 保存数据的列表
         /// </summary>
-        private readonly List<IApiActionFilterAttribute> filters;
+        private readonly List<IApiActionFilter> filters;
 
         /// <summary>
         /// 全局过滤器的集合
         /// </summary>
         public GlobalFilterCollection()
         {
-            this.filters = new List<IApiActionFilterAttribute>();
+            this.filters = new List<IApiActionFilter>();
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="item">全局过滤器</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public void Add(IApiActionFilterAttribute item)
+        public void Add(IApiActionFilter item)
         {
             if (item == null)
             {
@@ -64,7 +64,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="item">全局过滤器</param>
         /// <returns></returns>
-        public bool Contains(IApiActionFilterAttribute item)
+        public bool Contains(IApiActionFilter item)
         {
             if (item == null)
             {
@@ -78,7 +78,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="item">定的全局过滤器</param>
         /// <returns></returns>
-        public bool Remove(IApiActionFilterAttribute item)
+        public bool Remove(IApiActionFilter item)
         {
             if (item == null)
             {
@@ -91,17 +91,16 @@ namespace WebApiClient
         /// 返回过滤器的迭代器
         /// </summary>
         /// <returns></returns>
-        public IEnumerator<IApiActionFilterAttribute> GetEnumerator()
+        public IEnumerator<IApiActionFilter> GetEnumerator()
         {
             return this.filters.GetEnumerator();
         }
-
 
         #region 显式实现
         /// <summary>
         /// 获取是否是只读的
         /// </summary>
-        bool ICollection<IApiActionFilterAttribute>.IsReadOnly
+        bool ICollection<IApiActionFilter>.IsReadOnly
         {
             get
             {
@@ -114,7 +113,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="array"></param>
         /// <param name="arrayIndex"></param>
-        void ICollection<IApiActionFilterAttribute>.CopyTo(IApiActionFilterAttribute[] array, int arrayIndex)
+        void ICollection<IApiActionFilter>.CopyTo(IApiActionFilter[] array, int arrayIndex)
         {
             this.filters.CopyTo(array, arrayIndex);
         }

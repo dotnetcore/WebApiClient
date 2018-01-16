@@ -7,22 +7,9 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 定义ApiAction过滤器的行为
+    /// 定义ApiAction过滤器修饰特性的的行为
     /// </summary>
-    public interface IApiActionFilterAttribute : IAttributeMultiplable
-    {       
-        /// <summary>
-        /// 准备请求之前
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <returns></returns>
-        Task OnBeginRequestAsync(ApiActionContext context);
-
-        /// <summary>
-        /// 请求完成之后
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <returns></returns>
-        Task OnEndRequestAsync(ApiActionContext context);
+    public interface IApiActionFilterAttribute : IApiActionFilter, IAttributeMultiplable
+    {
     }
 }
