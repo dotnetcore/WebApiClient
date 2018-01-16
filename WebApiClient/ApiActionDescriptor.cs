@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +21,11 @@ namespace WebApiClient
         /// 获取Api名称
         /// </summary>
         public string Name { get; internal set; }
+
+        /// <summary>
+        /// 获取关联的方法信息
+        /// </summary>
+        public MethodInfo Member { get; internal set; }
 
         /// <summary>
         /// 获取Api关联的特性
@@ -109,9 +115,10 @@ namespace WebApiClient
             return new ApiActionDescriptor
             {
                 Name = this.Name,
-                Attributes = this.Attributes,
+                Member = this.Member,
                 Return = this.Return,
                 Filters = this.Filters,
+                Attributes = this.Attributes,
                 Parameters = this.Parameters.Select(item => (ApiParameterDescriptor)item.Clone()).ToArray()
             };
         }

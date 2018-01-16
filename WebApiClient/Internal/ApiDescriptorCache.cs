@@ -60,6 +60,7 @@ namespace WebApiClient
 
             return new ApiActionDescriptor
             {
+                Member = method,
                 Name = method.Name,
                 Filters = filterAttributes,
                 Return = GetReturnDescriptor(method),
@@ -99,11 +100,12 @@ namespace WebApiClient
 
             return new ApiParameterDescriptor
             {
-                Attributes = attributes.ToArray(),
-                Index = parameter.Position,
-                Name = parameterName,
-                ParameterType = parameterType,
                 Value = null,
+                Member = parameter,
+                Name = parameterName,
+                Index = parameter.Position,
+                Attributes = attributes.ToArray(),
+                ParameterType = parameterType
             };
         }
 

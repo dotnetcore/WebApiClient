@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClient.Attributes;
@@ -19,6 +20,11 @@ namespace WebApiClient
         /// 获取参数名称
         /// </summary>
         public string Name { get; internal set; }
+
+        /// <summary>
+        /// 获取关联的参数信息
+        /// </summary>
+        public ParameterInfo Member { get; internal set; }
 
         /// <summary>
         /// 获取参数索引
@@ -57,11 +63,12 @@ namespace WebApiClient
         {
             return new ApiParameterDescriptor
             {
-                Attributes = this.Attributes,
-                Index = this.Index,
                 Name = this.Name,
-                ParameterType = this.ParameterType,
-                Value = this.Value
+                Index = this.Index,
+                Value = this.Value,
+                Member = this.Member,
+                Attributes = this.Attributes,
+                ParameterType = this.ParameterType
             };
         }
     }
