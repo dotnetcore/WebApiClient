@@ -49,6 +49,7 @@ namespace WebApiClient
         public async Task<object> ExecuteAsync(ApiActionContext context)
         {
             var apiAction = context.ApiActionDescriptor;
+            var globalFilters = context.HttpApiConfig.GlobalFilters;
 
             foreach (var actionAttribute in apiAction.Attributes)
             {
@@ -63,12 +64,22 @@ namespace WebApiClient
                 }
             }
 
+            foreach (var filter in globalFilters)
+            {
+                await filter.OnBeginRequestAsync(context);
+            }
+
             foreach (var filter in apiAction.Filters)
             {
                 await filter.OnBeginRequestAsync(context);
             }
 
             await this.SendAsync(context);
+
+            foreach (var filter in globalFilters)
+            {
+                await filter.OnEndRequestAsync(context);
+            }
 
             foreach (var filter in apiAction.Filters)
             {

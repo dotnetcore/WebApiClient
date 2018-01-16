@@ -34,6 +34,28 @@ namespace WebApiClient
         private IHttpClient httpClient;
 
         /// <summary>
+        /// 获取HttpClient实例
+        /// </summary>
+        /// <exception cref="ObjectDisposedException"></exception>
+        public IHttpClient HttpClient
+        {
+            get
+            {
+                if (this.IsDisposed == true)
+                {
+                    throw new ObjectDisposedException(this.GetType().Name);
+                }
+
+                if (this.httpClient == null)
+                {
+                    this.httpClient = new DefaultHttpClient();
+                }
+                return this.httpClient;
+            }
+        }
+
+
+        /// <summary>
         /// 获取或设置Http服务完整主机域名
         /// 例如http://www.webapiclient.com
         /// 设置了HttpHost值，HttpHostAttribute将失效  
@@ -62,25 +84,9 @@ namespace WebApiClient
         public IKeyValueFormatter KeyValueFormatter { get; set; }
 
         /// <summary>
-        /// 获取HttpClient实例
+        /// 获取全局过滤器集合
         /// </summary>
-        /// <exception cref="ObjectDisposedException"></exception>
-        public IHttpClient HttpClient
-        {
-            get
-            {
-                if (this.IsDisposed == true)
-                {
-                    throw new ObjectDisposedException(this.GetType().Name);
-                }
-
-                if (this.httpClient == null)
-                {
-                    this.httpClient = new DefaultHttpClient();
-                }
-                return this.httpClient;
-            }
-        }
+        public GlobalFilterCollection GlobalFilters { get; private set; }
 
         /// <summary>
         /// Http接口的配置项   
@@ -101,6 +107,7 @@ namespace WebApiClient
             this.XmlFormatter = HttpApiConfig.DefaultXmlFormatter;
             this.JsonFormatter = HttpApiConfig.DefaultJsonFormatter;
             this.KeyValueFormatter = HttpApiConfig.DefaultKeyValueFormatter;
+            this.GlobalFilters = new GlobalFilterCollection();
         }
 
         #region IDisposable
