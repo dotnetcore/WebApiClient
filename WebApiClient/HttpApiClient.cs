@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -15,8 +16,9 @@ namespace WebApiClient
 {
     /// <summary>
     /// 表示HttpApi客户端
-    /// 提供获取Http接口的实例
+    /// 提供创建HttpApiClient实例的方法
     /// </summary>
+    [DebuggerDisplay("{typeof(HttpApiClient)}")]
     public abstract class HttpApiClient : IHttpApiClient
     {
         /// <summary>
@@ -42,6 +44,18 @@ namespace WebApiClient
             }
         }
 
+
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        public void Dispose()
+        {
+            if (this.ApiConfig != null)
+            {
+                this.ApiConfig.Dispose();
+            }
+        }
+
         /// <summary>
         /// 获取或设置一个站点内的连接数限制
         /// </summary>
@@ -59,8 +73,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 创建请求接口的实例
-        /// 关联新建的HttpApiConfig对象
+        /// 创建实现了指定接口的HttpApiClient实例
         /// </summary>
         /// <typeparam name="TInterface">请求接口</typeparam>
         /// <exception cref="ArgumentException"></exception>
@@ -72,7 +85,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 创建请求接口的实例
+        /// 创建实现了指定接口的HttpApiClient实例
         /// </summary>
         /// <typeparam name="TInterface">请求接口</typeparam>
         /// <param name="httpApiConfig">接口配置</param>
@@ -88,17 +101,6 @@ namespace WebApiClient
 
             var interceptor = new ApiInterceptor(httpApiConfig);
             return ProxyGenerator.CreateInterfaceProxyWithoutTarget<TInterface>(interceptor);
-        }
-
-        /// <summary>
-        /// 释放资源
-        /// </summary>
-        public void Dispose()
-        {
-            if (this.ApiConfig != null && this.ApiConfig.IsDisposed == false)
-            {
-                this.ApiConfig.Dispose();
-            }
         }
     }
 }

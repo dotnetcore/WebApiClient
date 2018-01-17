@@ -52,7 +52,7 @@ namespace WebApiClient
         public static T CreateInterfaceProxyWithoutTarget<T>(IApiInterceptor interceptor) where T : class
         {
             var interfaceType = typeof(T);
-            var apiMethods = interfaceType.GetApiAllMethods();
+            var apiMethods = interfaceType.GetApiAllMethods(typeof(IHttpApiClient), typeof(IDisposable));
             var proxyTypeCtor = proxyTypeCtorCache.GetOrAdd(interfaceType, type => GenerateProxyTypeCtor(type, apiMethods));
             return proxyTypeCtor.Invoke(new object[] { interceptor, apiMethods }) as T;
         }

@@ -18,11 +18,6 @@ namespace WebApiClient
         public HttpApiConfig ApiConfig { get; private set; }
 
         /// <summary>
-        /// dispose方法
-        /// </summary>
-        private static readonly MethodInfo disposeMethod = typeof(IDisposable).GetMethods().FirstOrDefault();
-
-        /// <summary>
         /// Api的拦截器
         /// </summary>
         /// <param name="apiConfig">httpApi配置</param>
@@ -45,12 +40,6 @@ namespace WebApiClient
         /// <returns></returns>
         public object Intercept(object target, MethodInfo method, object[] parameters)
         {
-            if (method.Equals(disposeMethod) == true)
-            {
-                this.ApiConfig.Dispose();
-                return null;
-            }
-
             var apiActionDescripter = this.GetApiActionDescriptor(method, parameters);
             var apiTask = ApiTask.CreateInstance(this.ApiConfig, apiActionDescripter);
 

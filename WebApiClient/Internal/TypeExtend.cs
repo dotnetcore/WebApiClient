@@ -39,10 +39,11 @@ namespace WebApiClient
         /// 获取接口类型及其继承的接口的所有方法
         /// </summary>
         /// <param name="interfaceType">接口类型</param>
+        /// <param name="excepts">排除的接口类型</param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        public static MethodInfo[] GetApiAllMethods(this Type interfaceType)
+        public static MethodInfo[] GetApiAllMethods(this Type interfaceType, params Type[] excepts)
         {
             if (interfaceType.IsInterface == false)
             {
@@ -61,7 +62,7 @@ namespace WebApiClient
             {
                 var typeHashSet = new HashSet<Type>();
                 var methodHashSet = new HashSet<MethodInfo>();
-                GetInterfaceMethods(type, ref typeHashSet, ref methodHashSet);
+                GetInterfaceMethods(type, excepts, ref typeHashSet, ref methodHashSet);
                 return methodHashSet.ToArray();
             });
         }
@@ -70,13 +71,13 @@ namespace WebApiClient
         /// 递归查找接口的方法
         /// </summary>
         /// <param name="interfaceType">接口类型</param>
+        /// <param name="excepts">排除的接口类型</param>
         /// <param name="typeHashSet">接口类型集</param>
         /// <param name="methodHashSet">方法集</param>
         /// <exception cref="NotSupportedException"></exception>
-        private static void GetInterfaceMethods(Type interfaceType, ref HashSet<Type> typeHashSet, ref HashSet<MethodInfo> methodHashSet)
+        private static void GetInterfaceMethods(Type interfaceType, Type[] excepts, ref HashSet<Type> typeHashSet, ref HashSet<MethodInfo> methodHashSet)
         {
-            // IHttpApiClient接口已在基类HttpClient实现
-            if (interfaceType == typeof(IHttpApiClient))
+            if (excepts.Contains(interfaceType) == true)
             {
                 return;
             }
@@ -95,7 +96,7 @@ namespace WebApiClient
 
             foreach (var item in interfaceType.GetInterfaces())
             {
-                GetInterfaceMethods(item, ref typeHashSet, ref methodHashSet);
+                GetInterfaceMethods(item, excepts, ref typeHashSet, ref methodHashSet);
             }
         }
 
