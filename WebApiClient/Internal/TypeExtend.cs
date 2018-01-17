@@ -161,7 +161,8 @@ namespace WebApiClient
                 || type == typeof(decimal)
                 || type == typeof(DateTime)
                 || type == typeof(Guid)
-                || type == typeof(Uri);
+                || type == typeof(Uri)
+                || type == typeof(Version);
         }
 
         /// <summary>

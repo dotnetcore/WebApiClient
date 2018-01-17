@@ -45,19 +45,30 @@ namespace WebApiClient
             var descriptor = TypeDescriptor.GetDescriptor(type);
             if (descriptor == null || descriptor.IsSimpleType == true)
             {
-                var kv = this.FormatAsSimple(name, obj, options);
-                return new[] { kv };
+                return new[] { this.FormatAsSimple(name, obj, options) };
             }
 
-            if (descriptor.IsDictionaryOfString == true)
+            if (type == typeof(KeyValuePair<string, string>))
             {
-                var dic = obj as IDictionary<string, string>;
+                var kv = (KeyValuePair<string, string>)obj;
+                return new[] { this.FormatAsSimple(kv.Key, kv.Value, options) };
+            }
+
+            if (type == typeof(KeyValuePair<string, object>))
+            {
+                var kv = (KeyValuePair<string, object>)obj;
+                return new[] { this.FormatAsSimple(kv.Key, kv.Value, options) };
+            }
+
+            if (descriptor.IsEnumerableKeyValueOfString == true)
+            {
+                var dic = obj as IEnumerable<KeyValuePair<string, string>>;
                 return this.FormatAsDictionary<string>(dic, options);
             }
 
-            if (descriptor.IsDictionaryOfObject == true)
+            if (descriptor.IsEnumerableKeyValueOfObject == true)
             {
-                var dic = obj as IDictionary<string, object>;
+                var dic = obj as IEnumerable<KeyValuePair<string, object>>;
                 return this.FormatAsDictionary<object>(dic, options);
             }
 
@@ -105,7 +116,7 @@ namespace WebApiClient
         /// <param name="dic">字典</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        private IEnumerable<KeyValuePair<string, string>> FormatAsDictionary<TValue>(IDictionary<string, TValue> dic, FormatOptions options)
+        private IEnumerable<KeyValuePair<string, string>> FormatAsDictionary<TValue>(IEnumerable<KeyValuePair<string, TValue>> dic, FormatOptions options)
         {
             return from kv in dic select this.FormatAsSimple(kv.Key, kv.Value, options);
         }
@@ -167,14 +178,14 @@ namespace WebApiClient
             public bool IsEnumerable { get; private set; }
 
             /// <summary>
-            /// 获取类型是否为IDictionaryOf(string,object)
+            /// 获取类型是否为IEnumerable(KeyValuePair(string, object))
             /// </summary>
-            public bool IsDictionaryOfObject { get; private set; }
+            public bool IsEnumerableKeyValueOfObject { get; private set; }
 
             /// <summary>
-            /// 获取类型是否为IDictionaryOf(string,string)
+            /// 获取类型是否为IEnumerable(KeyValuePair(string, string))
             /// </summary>
-            public bool IsDictionaryOfString { get; private set; }
+            public bool IsEnumerableKeyValueOfString { get; private set; }
 
             /// <summary>
             /// 类型描述
@@ -184,8 +195,8 @@ namespace WebApiClient
             {
                 this.IsSimpleType = type.IsSimple();
                 this.IsEnumerable = type.IsInheritFrom<IEnumerable>();
-                this.IsDictionaryOfObject = type.IsInheritFrom<IDictionary<string, object>>();
-                this.IsDictionaryOfString = type.IsInheritFrom<IDictionary<string, string>>();
+                this.IsEnumerableKeyValueOfObject = type.IsInheritFrom<IEnumerable<KeyValuePair<string, object>>>();
+                this.IsEnumerableKeyValueOfString = type.IsInheritFrom<IEnumerable<KeyValuePair<string, string>>>();
             }
 
             /// <summary>
