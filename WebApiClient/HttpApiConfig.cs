@@ -12,12 +12,12 @@ namespace WebApiClient
         /// <summary>
         /// 获取默认xml格式化工具唯一实例
         /// </summary>
-        public static readonly IXmlFormatter DefaultXmlFormatter = new DefaultXmlFormatter();
+        public static readonly IXmlFormatter DefaultXmlFormatter = new XmlFormatter();
 
         /// <summary>
         /// 获取默认json格式化工具唯一实例
         /// </summary>
-        public static readonly IJsonFormatter DefaultJsonFormatter = new DefaultJsonFormatter();
+        public static readonly IJsonFormatter DefaultJsonFormatter = new JsonFormatter();
 
         /// <summary>
         /// 获取默认KeyValue格式化工具唯一实例

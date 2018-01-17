@@ -32,11 +32,6 @@ namespace WebApiClient.Defaults
         private long pendingCount = 0L;
 
         /// <summary>
-        /// HttpClientHandler提示者
-        /// </summary>
-        private readonly Func<HttpClientHandler> handlerProvider;
-
-        /// <summary>
         /// 获取关联的Http处理对象
         /// </summary>
         public HttpClientHandler Handler { get; private set; }
@@ -82,28 +77,13 @@ namespace WebApiClient.Defaults
             }
         }
 
-        /// <summary>
-        /// 默认的HttpClient
-        /// </summary>
-        public HttpClient() :
-            this(() => new DefaultHttpClientHandler())
-        {
-        }
 
         /// <summary>
         /// 默认的HttpClient
         /// </summary>
-        /// <param name="handlerProvider">HttpClientHandler提供者，要求每调用一次返回一个新实例</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public HttpClient(Func<HttpClientHandler> handlerProvider)
+        public HttpClient()
         {
-            if (handlerProvider == null)
-            {
-                throw new ArgumentNullException(nameof(handlerProvider));
-            }
-
-            this.handlerProvider = handlerProvider;
-            this.Handler = handlerProvider.Invoke();
+            this.Handler = this.CreateHttpClientHandler();
             this.client = new System.Net.Http.HttpClient(this.Handler);
         }
 
@@ -199,7 +179,7 @@ namespace WebApiClient.Defaults
         /// </summary>
         private void InitWithoutProxy()
         {
-            var handler = this.handlerProvider.Invoke();
+            var handler = this.CreateHttpClientHandler();
             this.CopyProperties(this.Handler, handler);
             handler.UseProxy = false;
             handler.Proxy = null;
@@ -210,6 +190,15 @@ namespace WebApiClient.Defaults
 
             this.client = httpClient;
             this.Handler = handler;
+        }
+
+        /// <summary>
+        /// 创建HttpClientHandler的新实例
+        /// </summary>
+        /// <returns></returns>
+        protected virtual HttpClientHandler CreateHttpClientHandler()
+        {
+            return new DefaultHttpClientHandler();
         }
 
         /// <summary>

@@ -22,7 +22,9 @@ namespace WebApiClient.Defaults
         /// <param name="parameter">参数</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        IEnumerable<KeyValuePair<string, string>> IKeyValueFormatter.Serialize(ApiParameterDescriptor parameter, FormatOptions options)
+        IEnumerable<KeyValuePair<string, string>> IKeyValueFormatter.Serialize(
+            ApiParameterDescriptor parameter,
+            FormatOptions options)
         {
             return this.Serialize(parameter.Name, parameter.Value, options);
         }
@@ -35,7 +37,10 @@ namespace WebApiClient.Defaults
         /// <param name="options">选项</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        IEnumerable<KeyValuePair<string, string>> IKeyValueFormatter.Serialize(string name, object obj, FormatOptions options)
+        IEnumerable<KeyValuePair<string, string>> IKeyValueFormatter.Serialize(
+            string name,
+            object obj,
+            FormatOptions options)
         {
             return this.Serialize(name, obj, options);
         }
@@ -48,7 +53,10 @@ namespace WebApiClient.Defaults
         /// <param name="options">选项</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        protected virtual IEnumerable<KeyValuePair<string, string>> Serialize(string name, object obj, FormatOptions options)
+        protected virtual IEnumerable<KeyValuePair<string, string>> Serialize(
+            string name,
+            object obj,
+            FormatOptions options)
         {
             if (options == null)
             {
@@ -59,40 +67,40 @@ namespace WebApiClient.Defaults
             var descriptor = TypeDescriptor.GetDescriptor(type);
             if (descriptor == null || descriptor.IsSimpleType == true)
             {
-                return new[] { this.FormatAsSimple(name, obj, options) };
+                return new[] { this.SerializeAsSimple(name, obj, options) };
             }
 
             if (type == typeof(KeyValuePair<string, string>))
             {
                 var kv = (KeyValuePair<string, string>)obj;
-                return new[] { this.FormatAsSimple(kv.Key, kv.Value, options) };
+                return new[] { this.SerializeAsSimple(kv.Key, kv.Value, options) };
             }
 
             if (type == typeof(KeyValuePair<string, object>))
             {
                 var kv = (KeyValuePair<string, object>)obj;
-                return new[] { this.FormatAsSimple(kv.Key, kv.Value, options) };
+                return new[] { this.SerializeAsSimple(kv.Key, kv.Value, options) };
             }
 
             if (descriptor.IsEnumerableKeyValueOfString == true)
             {
                 var dic = obj as IEnumerable<KeyValuePair<string, string>>;
-                return this.FormatAsDictionary<string>(dic, options);
+                return this.SerializeAsDictionary<string>(dic, options);
             }
 
             if (descriptor.IsEnumerableKeyValueOfObject == true)
             {
                 var dic = obj as IEnumerable<KeyValuePair<string, object>>;
-                return this.FormatAsDictionary<object>(dic, options);
+                return this.SerializeAsDictionary<object>(dic, options);
             }
 
             if (descriptor.IsEnumerable == true)
             {
                 var enumerable = obj as IEnumerable;
-                return this.ForamtAsEnumerable(name, enumerable, options);
+                return this.SerializeAsEnumerable(name, enumerable, options);
             }
 
-            return this.FormatAsComplex(obj, options);
+            return this.SerializeAsComplex(obj, options);
         }
 
         /// <summary>
@@ -102,10 +110,13 @@ namespace WebApiClient.Defaults
         /// <param name="enumerable">值</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        private IEnumerable<KeyValuePair<string, string>> ForamtAsEnumerable(string name, IEnumerable enumerable, FormatOptions options)
+        private IEnumerable<KeyValuePair<string, string>> SerializeAsEnumerable(
+            string name,
+            IEnumerable enumerable,
+            FormatOptions options)
         {
             return from item in enumerable.Cast<object>()
-                   select this.FormatAsSimple(name, item, options);
+                   select this.SerializeAsSimple(name, item, options);
         }
 
         /// <summary>
@@ -114,14 +125,16 @@ namespace WebApiClient.Defaults
         /// <param name="instance">实例</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        private IEnumerable<KeyValuePair<string, string>> FormatAsComplex(object instance, FormatOptions options)
+        private IEnumerable<KeyValuePair<string, string>> SerializeAsComplex(
+            object instance,
+            FormatOptions options)
         {
             return
                 from p in PropertyDescriptor.GetProperties(instance.GetType())
                 where p.IsSupportGet && p.IgnoreSerialized == false
                 let value = p.GetValue(instance)
                 let opt = options.CloneChange(p.DateTimeFormat)
-                select this.FormatAsSimple(p.AliasName, value, opt);
+                select this.SerializeAsSimple(p.AliasName, value, opt);
         }
 
         /// <summary>
@@ -130,9 +143,11 @@ namespace WebApiClient.Defaults
         /// <param name="dic">字典</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        private IEnumerable<KeyValuePair<string, string>> FormatAsDictionary<TValue>(IEnumerable<KeyValuePair<string, TValue>> dic, FormatOptions options)
+        private IEnumerable<KeyValuePair<string, string>> SerializeAsDictionary<TValue>(
+            IEnumerable<KeyValuePair<string, TValue>> dic,
+            FormatOptions options)
         {
-            return from kv in dic select this.FormatAsSimple(kv.Key, kv.Value, options);
+            return from kv in dic select this.SerializeAsSimple(kv.Key, kv.Value, options);
         }
 
         /// <summary>
@@ -143,7 +158,10 @@ namespace WebApiClient.Defaults
         /// <param name="options">选项</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        protected KeyValuePair<string, string> FormatAsSimple(string name, object value, FormatOptions options)
+        protected KeyValuePair<string, string> SerializeAsSimple(
+            string name,
+            object value,
+            FormatOptions options)
         {
             if (string.IsNullOrEmpty(name) == true)
             {
