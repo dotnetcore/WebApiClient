@@ -8,13 +8,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WebApiClient
+namespace WebApiClient.Defaults
 {
 
     /// <summary>
     /// 表示默认的HttpClient
     /// </summary>
-    class DefaultHttpClient : IHttpClient
+    public class DefaultHttpClient : IHttpClient
     {
         /// <summary>
         /// HttpClient实例
@@ -30,6 +30,11 @@ namespace WebApiClient
         /// 正在挂起的请求
         /// </summary>
         private long pendingCount = 0L;
+
+        /// <summary>
+        /// HttpClientHandler提示者
+        /// </summary>
+        private readonly Func<HttpClientHandler> handlerProvider;
 
         /// <summary>
         /// 获取关联的Http处理对象
@@ -76,15 +81,29 @@ namespace WebApiClient
                 this.client.MaxResponseContentBufferSize = value;
             }
         }
+        /// <summary>
+        /// 默认的HttpClient
+        /// </summary>
+        public DefaultHttpClient() :
+            this(() => new DefaultHttpClientHandler())
+        {
+        }
 
         /// <summary>
         /// 默认的HttpClient
         /// </summary>
-        public DefaultHttpClient()
+        /// <param name="handlerProvider">HttpClientHandler提供者，要求每调用一次返回一个新实例</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public DefaultHttpClient(Func<HttpClientHandler> handlerProvider)
         {
-            var handler = new DefaultHttpClientHandler();
-            this.client = new HttpClient(handler);
-            this.Handler = handler;
+            if (handlerProvider == null)
+            {
+                throw new ArgumentNullException(nameof(handlerProvider));
+            }
+
+            this.handlerProvider = handlerProvider;
+            this.Handler = handlerProvider.Invoke();
+            this.client = new HttpClient(this.Handler);
         }
 
         /// <summary>
@@ -153,6 +172,11 @@ namespace WebApiClient
                 throw new InvalidOperationException("当前还有未完成的请求，不能更换代理");
             }
 
+            if (this.Handler.SupportsProxy == false)
+            {
+                return false;
+            }
+
             if (this.IsProxyEquals(this.Handler.Proxy, proxy) == true)
             {
                 return false;
@@ -161,7 +185,7 @@ namespace WebApiClient
             // 设置代理前释放实例并重新初始化
             if (this.Handler.Proxy != null)
             {
-                this.InitHttpClientWithoutProxy();
+                this.InitWithoutProxy();
             }
 
             this.Handler.UseProxy = proxy != null;
@@ -170,27 +194,49 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 重新初始化HttpClient实例
+        /// 重新初始化HttpClient和Handler实例
         /// </summary>
-        private void InitHttpClientWithoutProxy()
+        private void InitWithoutProxy()
         {
-            var withoutProxyHandler = ((DefaultHttpClientHandler)this.Handler).CloneWithoutProxy();
-            var httpClient = new HttpClient(withoutProxyHandler)
-            {
-                Timeout = this.Timeout,
-                MaxResponseContentBufferSize = this.MaxResponseContentBufferSize
-            };
+            var handler = this.handlerProvider.Invoke();
+            this.CopyProperties(this.Handler, handler);
+            handler.UseProxy = false;
+            handler.Proxy = null;
 
-            foreach (var item in this.DefaultRequestHeaders)
-            {
-                httpClient.DefaultRequestHeaders.TryAddWithoutValidation(item.Key, item.Value);
-            }
-
+            var httpClient = new HttpClient(handler);
+            this.CopyProperties(this.client, httpClient);
             this.client.Dispose();
+
             this.client = httpClient;
-            this.Handler = withoutProxyHandler;
+            this.Handler = handler;
         }
 
+        /// <summary>
+        /// 复制source的属性到target
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        private bool CopyProperties<T>(T source, T target)
+        {
+            var state = true;
+            var properties = source.GetType()
+                .GetProperties()
+                .Where(item => item.CanRead && item.CanWrite);
+
+            foreach (var propery in properties)
+            {
+                try
+                {
+                    var value = propery.GetValue(source);
+                    propery.SetValue(target, value);
+                }
+                catch (Exception)
+                {
+                    state = false;
+                }
+            }
+            return state;
+        }
 
         /// <summary>
         /// 比较代理是否相等
@@ -257,8 +303,6 @@ namespace WebApiClient
             this.isDisposed = true;
         }
 
-
-
         /// <summary>
         /// 默认的HttpClientHandler
         /// </summary>
@@ -301,30 +345,6 @@ namespace WebApiClient
                     request.Headers.Connection.Add("keep-alive");
                 }
                 return base.SendAsync(request, cancellationToken);
-            }
-
-            /// <summary>
-            /// 无代理克隆
-            /// </summary>
-            /// <returns></returns>
-            public DefaultHttpClientHandler CloneWithoutProxy()
-            {
-                return new DefaultHttpClientHandler
-                {
-                    AllowAutoRedirect = this.AllowAutoRedirect,
-                    AutomaticDecompression = this.AutomaticDecompression,
-                    ClientCertificateOptions = this.ClientCertificateOptions,
-                    ConnectionClose = this.ConnectionClose,
-                    CookieContainer = this.CookieContainer,
-                    Credentials = this.Credentials,
-                    MaxAutomaticRedirections = this.MaxAutomaticRedirections,
-                    MaxRequestContentBufferSize = this.MaxRequestContentBufferSize,
-                    PreAuthenticate = this.PreAuthenticate,
-                    UseProxy = false,
-                    Proxy = null,
-                    UseCookies = this.UseCookies,
-                    UseDefaultCredentials = this.UseDefaultCredentials
-                };
             }
         }
     }
