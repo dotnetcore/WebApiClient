@@ -100,7 +100,7 @@ namespace WebApiClient
             }
 
             var interceptor = new ApiInterceptor(httpApiConfig);
-            return ProxyGenerator.CreateInterfaceProxyWithoutTarget<TInterface>(interceptor);
+            return HttpApiClientProxy.CreateProxyWithInterface<TInterface>(interceptor);
         }
     }
 }
