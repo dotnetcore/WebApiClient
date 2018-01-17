@@ -22,7 +22,7 @@ namespace WebApiClient
         /// <summary>
         /// 获取默认KeyValue格式化工具唯一实例
         /// </summary>
-        public static readonly IKeyValueFormatter DefaultKeyValueFormatter = new DefaultKeyValueFormatter();
+        public static readonly IKeyValueFormatter DefaultKeyValueFormatter = new KeyValueFormatter();
 
         /// <summary>
         /// 与HttpClientHandler实例关联的HttpClient
@@ -44,7 +44,7 @@ namespace WebApiClient
 
                 if (this.httpClient == null)
                 {
-                    this.httpClient = new DefaultHttpClient();
+                    this.httpClient = new HttpClient();
                 }
                 return this.httpClient;
             }

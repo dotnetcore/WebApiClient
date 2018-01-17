@@ -12,9 +12,9 @@ using WebApiClient.Interfaces;
 namespace WebApiClient.Defaults
 {
     /// <summary>
-    /// 默认键值对列化工具
+    /// 表示默认键值对列化工具
     /// </summary>
-    public class DefaultKeyValueFormatter : IKeyValueFormatter
+    public class KeyValueFormatter : IKeyValueFormatter
     {
         /// <summary>
         /// 序列化参数为键值对

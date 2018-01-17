@@ -11,16 +11,15 @@ using WebApiClient.Interfaces;
 
 namespace WebApiClient.Defaults
 {
-
     /// <summary>
     /// 表示默认的HttpClient
     /// </summary>
-    public class DefaultHttpClient : IHttpClient
+    public class HttpClient : IHttpClient
     {
         /// <summary>
         /// HttpClient实例
         /// </summary>
-        private HttpClient client;
+        private System.Net.Http.HttpClient client;
 
         /// <summary>
         /// 是否已释放
@@ -82,10 +81,11 @@ namespace WebApiClient.Defaults
                 this.client.MaxResponseContentBufferSize = value;
             }
         }
+
         /// <summary>
         /// 默认的HttpClient
         /// </summary>
-        public DefaultHttpClient() :
+        public HttpClient() :
             this(() => new DefaultHttpClientHandler())
         {
         }
@@ -95,7 +95,7 @@ namespace WebApiClient.Defaults
         /// </summary>
         /// <param name="handlerProvider">HttpClientHandler提供者，要求每调用一次返回一个新实例</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public DefaultHttpClient(Func<HttpClientHandler> handlerProvider)
+        public HttpClient(Func<HttpClientHandler> handlerProvider)
         {
             if (handlerProvider == null)
             {
@@ -104,7 +104,7 @@ namespace WebApiClient.Defaults
 
             this.handlerProvider = handlerProvider;
             this.Handler = handlerProvider.Invoke();
-            this.client = new HttpClient(this.Handler);
+            this.client = new System.Net.Http.HttpClient(this.Handler);
         }
 
         /// <summary>
@@ -204,7 +204,7 @@ namespace WebApiClient.Defaults
             handler.UseProxy = false;
             handler.Proxy = null;
 
-            var httpClient = new HttpClient(handler);
+            var httpClient = new System.Net.Http.HttpClient(handler);
             this.CopyProperties(this.client, httpClient);
             this.client.Dispose();
 
