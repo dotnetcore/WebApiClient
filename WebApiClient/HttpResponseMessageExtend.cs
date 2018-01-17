@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 提供对 HttpResponseMessage内部保存的扩展
+    /// 提供对 HttpResponseMessage内容保存的扩展
     /// </summary>
     public static class HttpResponseMessageExtend
     {
@@ -113,7 +113,7 @@ namespace WebApiClient
 
             if (targetStream.CanWrite == false)
             {
-                throw new ArgumentException("targetStream不可写", nameof(targetStream));
+                throw new ArgumentException(nameof(targetStream) + "cannot be write", nameof(targetStream));
             }
 
             var length = 0;
