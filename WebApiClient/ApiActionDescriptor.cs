@@ -45,66 +45,7 @@ namespace WebApiClient
         /// <summary>
         /// 获取Api的返回描述
         /// </summary>
-        public ApiReturnDescriptor Return { get; internal set; }
-
-        /// <summary>
-        /// 异步执行api
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <returns></returns>
-        public async Task<object> ExecuteAsync(ApiActionContext context)
-        {
-            var apiAction = context.ApiActionDescriptor;
-            var globalFilters = context.HttpApiConfig.GlobalFilters;
-
-            foreach (var actionAttribute in apiAction.Attributes)
-            {
-                await actionAttribute.BeforeRequestAsync(context);
-            }
-
-            foreach (var parameter in apiAction.Parameters)
-            {
-                foreach (var parameterAttribute in parameter.Attributes)
-                {
-                    await parameterAttribute.BeforeRequestAsync(context, parameter);
-                }
-            }
-
-            foreach (var filter in globalFilters)
-            {
-                await filter.OnBeginRequestAsync(context);
-            }
-
-            foreach (var filter in apiAction.Filters)
-            {
-                await filter.OnBeginRequestAsync(context);
-            }
-
-            await this.SendAsync(context);
-
-            foreach (var filter in globalFilters)
-            {
-                await filter.OnEndRequestAsync(context);
-            }
-
-            foreach (var filter in apiAction.Filters)
-            {
-                await filter.OnEndRequestAsync(context);
-            }
-
-            return await apiAction.Return.Attribute.GetTaskResult(context);
-        }
-
-        /// <summary>
-        /// 执行发送请求
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <returns></returns>
-        private async Task SendAsync(ApiActionContext context)
-        {
-            var client = context.HttpApiConfig.HttpClient;
-            context.ResponseMessage = await client.SendAsync(context.RequestMessage);
-        }
+        public ApiReturnDescriptor Return { get; internal set; }      
 
         /// <summary>
         /// 克隆

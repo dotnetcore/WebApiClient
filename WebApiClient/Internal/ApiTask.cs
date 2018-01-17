@@ -86,7 +86,7 @@ namespace WebApiClient
             /// <returns></returns>
             public TaskAwaiter<TResult> GetAwaiter()
             {
-                return this.ExecuteAsync().GetAwaiter();
+                return this.RequestAsync().GetAwaiter();
             }
 
             /// <summary>
@@ -95,7 +95,7 @@ namespace WebApiClient
             /// <returns></returns>
             public override Task InvokeAsync()
             {
-                return this.ExecuteAsync();
+                return this.RequestAsync();
             }
 
             /// <summary>
@@ -104,14 +104,14 @@ namespace WebApiClient
             /// <returns></returns>
             Task<TResult> ITask<TResult>.InvokeAsync()
             {
-                return this.ExecuteAsync();
+                return this.RequestAsync();
             }
 
             /// <summary>
             /// 执行一次请求
             /// </summary>
             /// <returns></returns>
-            private async Task<TResult> ExecuteAsync()
+            private async Task<TResult> RequestAsync()
             {
                 var context = new ApiActionContext
                 {
@@ -120,8 +120,57 @@ namespace WebApiClient
                     RequestMessage = new HttpApiRequestMessage { RequestUri = this.httpApiConfig.HttpHost },
                     ResponseMessage = null
                 };
-                var result = await this.apiActionDescriptor.ExecuteAsync(context);
+                var result = await this.RequestAsync(context);
                 return (TResult)result;
+            }
+
+            /// <summary>
+            /// 异步执行http请求
+            /// </summary>
+            /// <param name="context">上下文</param>
+            /// <returns></returns>
+            private async Task<object> RequestAsync(ApiActionContext context)
+            {
+                var apiAction = context.ApiActionDescriptor;
+                var globalFilters = context.HttpApiConfig.GlobalFilters;
+
+                foreach (var actionAttribute in apiAction.Attributes)
+                {
+                    await actionAttribute.BeforeRequestAsync(context);
+                }
+
+                foreach (var parameter in apiAction.Parameters)
+                {
+                    foreach (var parameterAttribute in parameter.Attributes)
+                    {
+                        await parameterAttribute.BeforeRequestAsync(context, parameter);
+                    }
+                }
+
+                foreach (var filter in globalFilters)
+                {
+                    await filter.OnBeginRequestAsync(context);
+                }
+
+                foreach (var filter in apiAction.Filters)
+                {
+                    await filter.OnBeginRequestAsync(context);
+                }
+
+                var client = context.HttpApiConfig.HttpClient;
+                context.ResponseMessage = await client.SendAsync(context.RequestMessage);
+
+                foreach (var filter in globalFilters)
+                {
+                    await filter.OnEndRequestAsync(context);
+                }
+
+                foreach (var filter in apiAction.Filters)
+                {
+                    await filter.OnEndRequestAsync(context);
+                }
+
+                return await apiAction.Return.Attribute.GetTaskResult(context);
             }
         }
     }
