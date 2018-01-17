@@ -6,9 +6,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using WebApiClient.Attributes;
+using WebApiClient.Interfaces;
 
-namespace WebApiClient
+namespace WebApiClient.Contexts
 {
     /// <summary>
     /// 表示请求Api的参数描述

@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using WebApiClient.Contexts;
 
 namespace WebApiClient.Attributes
 {
@@ -63,7 +64,7 @@ namespace WebApiClient.Attributes
         /// 执行前
         /// </summary>
         /// <param name="context">上下文</param>
-        /// <exception cref="ApiConfigException"></exception>
+        /// <exception cref="HttpApiConfigException"></exception>
         /// <returns></returns>
         public override Task BeforeRequestAsync(ApiActionContext context)
         {
@@ -81,7 +82,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="baseUri"></param>
         /// <param name="relative"></param>
-        /// <exception cref="ApiConfigException"></exception>
+        /// <exception cref="HttpApiConfigException"></exception>
         /// <returns></returns>
         private Uri GetRequestUri(Uri baseUri, Uri relative)
         {
@@ -91,7 +92,7 @@ namespace WebApiClient.Attributes
                 {
                     return relative;
                 }
-                throw new ApiConfigException("未配置HttpConfig.HttpHost或未使用HttpHostAttribute特性");
+                throw new HttpApiConfigException("未配置HttpConfig.HttpHost或未使用HttpHostAttribute特性");
             }
             else
             {

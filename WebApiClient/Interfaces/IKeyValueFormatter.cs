@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiClient.Contexts;
 
-namespace WebApiClient
+namespace WebApiClient.Interfaces
 {
     /// <summary>
     /// 定义将对象转换为键值对的行为

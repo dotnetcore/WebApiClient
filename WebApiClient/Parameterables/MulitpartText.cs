@@ -5,8 +5,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiClient.Contexts;
+using WebApiClient.Interfaces;
 
-namespace WebApiClient
+namespace WebApiClient.Parameterables
 {
     /// <summary>
     /// 表示将自身作为multipart/form-data的一个文本项

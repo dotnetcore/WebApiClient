@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebApiClient
+namespace WebApiClient.DataAnnotations
 {
     /// <summary>
-    /// 表示属性在JsonFormatter或KeyValueFormatter序列化时使用的日期时间格式
     /// DataAnnotation
+    /// 表示属性在JsonFormatter或KeyValueFormatter序列化时使用的日期时间格式
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public sealed class DateTimeFormatAttribute : Attribute

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiClient.Contexts;
+using WebApiClient.Interfaces;
 
 namespace WebApiClient.Attributes
 {
@@ -19,7 +21,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
-        /// <exception cref="ApiConfigException"></exception>
+        /// <exception cref="HttpApiConfigException"></exception>
         /// <returns></returns>
         public Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
@@ -30,7 +32,7 @@ namespace WebApiClient.Attributes
 
             if (parameter.Index > 0)
             {
-                throw new ApiConfigException(this.GetType().Name + "必须修饰于第一个参数");
+                throw new HttpApiConfigException(this.GetType().Name + "必须修饰于第一个参数");
             }
 
             var relative = new Uri(parameter.ToString(), UriKind.RelativeOrAbsolute);
@@ -43,7 +45,7 @@ namespace WebApiClient.Attributes
                 var baseUri = context.RequestMessage.RequestUri;
                 if (baseUri == null)
                 {
-                    throw new ApiConfigException("请配置HttpConfig.HttpHost或使用HttpHostAttribute特性，否则必须使用绝对路径");
+                    throw new HttpApiConfigException("请配置HttpConfig.HttpHost或使用HttpHostAttribute特性，否则必须使用绝对路径");
                 }
                 context.RequestMessage.RequestUri = new Uri(baseUri, relative);
             }

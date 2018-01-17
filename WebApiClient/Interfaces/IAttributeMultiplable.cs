@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebApiClient
+namespace WebApiClient.Interfaces
 {
     /// <summary>
     /// 定义特性是否允许在接口与方法上重复声明

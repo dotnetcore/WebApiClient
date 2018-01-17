@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebApiClient
+namespace WebApiClient.Interfaces
 {
     /// <summary>
     /// 定义异常处理的行为

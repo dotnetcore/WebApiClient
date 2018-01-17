@@ -5,6 +5,8 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiClient.Contexts;
+using WebApiClient.Interfaces;
 
 namespace WebApiClient.Attributes
 {
@@ -101,7 +103,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="context"></param>
         /// <param name="headerValue"></param>
-        /// <exception cref="ApiConfigException"></exception>
+        /// <exception cref="HttpApiConfigException"></exception>
         /// <returns></returns>
         private bool SetHeaderValue(ApiActionContext context, string headerValue)
         {
@@ -124,7 +126,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="cookieValues">cookie值</param>
-        /// <exception cref="ApiConfigException"></exception>
+        /// <exception cref="HttpApiConfigException"></exception>
         /// <returns></returns>
         private bool SetCookie(ApiActionContext context, string cookieValues)
         {
@@ -136,7 +138,7 @@ namespace WebApiClient.Attributes
             var domain = context.RequestMessage.RequestUri;
             if (domain == null)
             {
-                throw new ApiConfigException("未配置HttpConfig.HttpHost或使用HttpHostAttribute特性，无法设置Cookie");
+                throw new HttpApiConfigException("未配置HttpConfig.HttpHost或使用HttpHostAttribute特性，无法设置Cookie");
             }
             return context.HttpApiConfig.HttpClient.SetCookie(domain, cookieValues);
         }

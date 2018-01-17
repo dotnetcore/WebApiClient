@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiClient.Contexts;
 
-namespace WebApiClient
+namespace WebApiClient.Interfaces
 {
     /// <summary>
     /// 定义自身可以做为参数并进行相应处理的对象的行为

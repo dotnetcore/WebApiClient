@@ -5,8 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
+using WebApiClient.Interfaces;
 
-namespace WebApiClient
+namespace WebApiClient.Contexts
 {
     /// <summary>
     /// 表示请求Api的返回描述

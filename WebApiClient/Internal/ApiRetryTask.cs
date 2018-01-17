@@ -5,6 +5,8 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiClient.Interfaces;
+using WebApiClient.Interfaces;
 
 namespace WebApiClient
 {

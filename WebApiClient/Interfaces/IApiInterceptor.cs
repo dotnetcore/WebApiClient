@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebApiClient
+namespace WebApiClient.Interfaces
 {
     /// <summary>
     /// 定义http接口拦截器的行为

@@ -4,9 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebApiClient.Attributes;
+using WebApiClient.Contexts;
+using WebApiClient.Interfaces;
 
-namespace WebApiClient
+namespace WebApiClient.Parameterables
 {
     /// <summary>
     /// 表示将自身作为请求的基本授权

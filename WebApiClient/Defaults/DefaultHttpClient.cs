@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using WebApiClient.Interfaces;
 
 namespace WebApiClient.Defaults
 {
@@ -269,7 +270,7 @@ namespace WebApiClient.Defaults
         {
             if (request.RequestUri == null)
             {
-                throw new ApiConfigException("未配置RequestUri，RequestUri不能为null");
+                throw new HttpApiConfigException("未配置RequestUri，RequestUri不能为null");
             }
 
             try

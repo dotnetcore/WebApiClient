@@ -10,6 +10,8 @@ using Newtonsoft.Json.Serialization;
 using System.Reflection;
 using Newtonsoft.Json.Converters;
 using System.Collections.Concurrent;
+using WebApiClient.DataAnnotations;
+using WebApiClient.Interfaces;
 
 namespace WebApiClient
 {

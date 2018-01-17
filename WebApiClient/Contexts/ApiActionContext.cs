@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiClient.Attributes;
 
-namespace WebApiClient
+namespace WebApiClient.Contexts
 {
     /// <summary>
     /// 表示请求Api的上下文

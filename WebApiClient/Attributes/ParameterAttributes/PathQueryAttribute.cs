@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using WebApiClient.Contexts;
+using WebApiClient.Interfaces;
 
 namespace WebApiClient.Attributes
 {
@@ -42,14 +44,14 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
-        /// <exception cref="ApiConfigException"></exception>
+        /// <exception cref="HttpApiConfigException"></exception>
         /// <returns></returns>
         public async Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var uri = context.RequestMessage.RequestUri;
             if (uri == null)
             {
-                throw new ApiConfigException("未配置HttpConfig.HttpHost或未使用HttpHostAttribute特性");
+                throw new HttpApiConfigException("未配置HttpConfig.HttpHost或未使用HttpHostAttribute特性");
             }
 
             var fixUrl = uri.ToString().TrimEnd('?', '&', '/');

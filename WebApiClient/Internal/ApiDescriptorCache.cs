@@ -8,6 +8,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClient.Attributes;
+using WebApiClient.Contexts;
+using WebApiClient.DataAnnotations;
+using WebApiClient.Interfaces;
 
 namespace WebApiClient
 {

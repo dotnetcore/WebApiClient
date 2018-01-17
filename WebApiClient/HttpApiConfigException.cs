@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示接口配置异常
+    /// 表示Http接口的特性配置异常
     /// </summary>
-    public class ApiConfigException : Exception
+    public class HttpApiConfigException : Exception
     {
         /// <summary>
-        /// 接口配置异常
+        /// Http接口特性配置异常
         /// </summary>
         /// <param name="message">提示信息</param>
-        public ApiConfigException(string message) :
+        public HttpApiConfigException(string message) :
             base(message)
         {
         }
