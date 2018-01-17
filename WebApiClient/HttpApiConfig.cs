@@ -48,7 +48,14 @@ namespace WebApiClient
 
                 if (this.httpClient == null)
                 {
-                    this.httpClient = new DefaultHttpClient();
+                    if (this.HttpClientHandler == null)
+                    {
+                        this.httpClient = new DefaultHttpClient();
+                    }
+                    else {
+                        this.httpClient = new DefaultHttpClient(this.HttpClientHandler);
+                    }
+                    
                 }
                 return this.httpClient;
             }
@@ -87,6 +94,11 @@ namespace WebApiClient
         /// 获取全局过滤器集合
         /// </summary>
         public GlobalFilterCollection GlobalFilters { get; private set; }
+
+        /// <summary>
+        /// 获取或设置HttpClient的HttpMessageHandler
+        /// </summary>
+        public HttpMessageHandler HttpClientHandler { get; set; }
 
         /// <summary>
         /// Http接口的配置项   

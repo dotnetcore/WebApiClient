@@ -88,6 +88,15 @@ namespace WebApiClient
         }
 
         /// <summary>
+        /// 可设置HttpMessageHandler
+        /// </summary>
+        public DefaultHttpClient(HttpMessageHandler handler)
+        {
+            this.client = new HttpClient(handler);
+            this.Handler = (HttpClientHandler)handler;
+        }
+
+        /// <summary>
         /// 设置Cookie值到Cookie容器
         /// 当Handler.UseCookies才添加
         /// </summary>
