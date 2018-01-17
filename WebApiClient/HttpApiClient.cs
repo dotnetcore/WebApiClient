@@ -81,7 +81,26 @@ namespace WebApiClient
         /// <returns></returns>
         public static TInterface Create<TInterface>() where TInterface : class, IDisposable
         {
-            return Create<TInterface>(null);
+            return Create<TInterface>(default(HttpApiConfig));
+        }
+
+        /// <summary>
+        /// 创建实现了指定接口的HttpApiClient实例
+        /// </summary>
+        /// <typeparam name="TInterface">请求接口</typeparam>
+        /// <param name="httpHost">Http服务完整主机域名，如http://www.webapiclient.com</param>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="UriFormatException"></exception>
+        /// <returns></returns>
+        public static TInterface Create<TInterface>(string httpHost) where TInterface : class, IDisposable
+        {
+            var config = new HttpApiConfig();
+            if (string.IsNullOrEmpty(httpHost) == false)
+            {
+                config.HttpHost = new Uri(httpHost, UriKind.Absolute);
+            }
+            return Create<TInterface>(config);
         }
 
         /// <summary>
