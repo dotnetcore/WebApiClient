@@ -75,19 +75,27 @@ namespace WebApiClient
         /// <exception cref="NotSupportedException"></exception>
         private static void GetInterfaceMethods(Type interfaceType, ref HashSet<Type> typeHashSet, ref HashSet<MethodInfo> methodHashSet)
         {
-            if (typeHashSet.Add(interfaceType) == true)
+            // IHttpApiClient接口已在基类HttpClient实现
+            if (interfaceType == typeof(IHttpApiClient))
             {
-                var methods = interfaceType.GetMethods();
-                foreach (var item in methods)
-                {
-                    item.EnsureApiMethod();
-                    methodHashSet.Add(item);
-                }
+                return;
+            }
 
-                foreach (var item in interfaceType.GetInterfaces())
-                {
-                    GetInterfaceMethods(item, ref typeHashSet, ref methodHashSet);
-                }
+            if (typeHashSet.Add(interfaceType) == false)
+            {
+                return;
+            }
+
+            var methods = interfaceType.GetMethods();
+            foreach (var item in methods)
+            {
+                item.EnsureApiMethod();
+                methodHashSet.Add(item);
+            }
+
+            foreach (var item in interfaceType.GetInterfaces())
+            {
+                GetInterfaceMethods(item, ref typeHashSet, ref methodHashSet);
             }
         }
 

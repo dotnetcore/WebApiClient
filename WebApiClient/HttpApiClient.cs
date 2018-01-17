@@ -17,8 +17,31 @@ namespace WebApiClient
     /// 表示HttpApi客户端
     /// 提供获取Http接口的实例
     /// </summary>
-    public static class HttpApiClient
+    public abstract class HttpApiClient : IHttpApiClient
     {
+        /// <summary>
+        /// 获取相关配置
+        /// </summary>
+        public HttpApiConfig ApiConfig { get; private set; }
+
+        /// <summary>
+        /// 获取拦截器
+        /// </summary>
+        public IApiInterceptor ApiInterceptor { get; private set; }
+
+        /// <summary>
+        /// http客户端的基类
+        /// </summary>
+        /// <param name="interceptor">拦截器</param>
+        public HttpApiClient(IApiInterceptor interceptor)
+        {
+            if (interceptor != null)
+            {
+                this.ApiInterceptor = interceptor;
+                this.ApiConfig = interceptor.ApiConfig;
+            }
+        }
+
         /// <summary>
         /// 获取或设置一个站点内的连接数限制
         /// </summary>
@@ -43,7 +66,7 @@ namespace WebApiClient
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        public static TInterface Create<TInterface>() where TInterface : class,IDisposable
+        public static TInterface Create<TInterface>() where TInterface : class, IDisposable
         {
             return Create<TInterface>(null);
         }
@@ -65,6 +88,17 @@ namespace WebApiClient
 
             var interceptor = new ApiInterceptor(httpApiConfig);
             return ProxyGenerator.CreateInterfaceProxyWithoutTarget<TInterface>(interceptor);
+        }
+
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        public void Dispose()
+        {
+            if (this.ApiConfig != null && this.ApiConfig.IsDisposed == false)
+            {
+                this.ApiConfig.Dispose();
+            }
         }
     }
 }

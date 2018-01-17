@@ -22,6 +22,11 @@ namespace WebApiClient
         private static readonly MethodInfo interceptMethod = typeof(IApiInterceptor).GetMethod("Intercept");
 
         /// <summary>
+        /// HttpApiClient的构造器
+        /// </summary>
+        private static readonly ConstructorInfo baseConstructor = typeof(HttpApiClient).GetConstructor(new Type[] { typeof(IApiInterceptor) });
+
+        /// <summary>
         /// 代理类型的构造器的参数类型
         /// </summary>
         private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IApiInterceptor), typeof(MethodInfo[]) };
@@ -72,7 +77,7 @@ namespace WebApiClient
                 .DefineDynamicModule(moduleName);
             });
 
-            var typeBuilder = moduleBuilder.DefineType(interfaceType.FullName, TypeAttributes.Class);
+            var typeBuilder = moduleBuilder.DefineType(interfaceType.FullName, TypeAttributes.Class, typeof(HttpApiClient));
             typeBuilder.AddInterfaceImplementation(interfaceType);
 
             var proxyType = ProxyGenerator.ImplementApiMethods(typeBuilder, apiMethods);
@@ -93,11 +98,13 @@ namespace WebApiClient
             var fieldInterceptor = typeBuilder.DefineField("interceptor", typeof(IApiInterceptor), filedAttribute);
             var fieldApiMethods = typeBuilder.DefineField("apiMethods", typeof(MethodInfo[]), filedAttribute);
 
-            // 构造器
+            // 构造器         
+            // this(IApiInterceptor interceptor, MethodInfo[] methods):base(interceptor)
             var ctorBuilder = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, proxyTypeCtorArgTypes);
             var ctorIL = ctorBuilder.GetILGenerator();
             ctorIL.Emit(OpCodes.Ldarg_0);
-            ctorIL.Emit(OpCodes.Call, typeof(object).GetConstructor(new Type[0]));
+            ctorIL.Emit(OpCodes.Ldarg_1);
+            ctorIL.Emit(OpCodes.Call, baseConstructor);
 
             // this.interceptor = 第一个参数
             ctorIL.Emit(OpCodes.Ldarg_0);
@@ -112,12 +119,12 @@ namespace WebApiClient
             ctorIL.Emit(OpCodes.Ret);
 
             // 接口实现
+            var implementAttribute = MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot | MethodAttributes.HideBySig;
             for (var i = 0; i < apiMethods.Length; i++)
             {
                 var apiMethod = apiMethods[i];
                 var apiParameters = apiMethod.GetParameters();
                 var parameterTypes = apiParameters.Select(p => p.ParameterType).ToArray();
-                var implementAttribute = MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot | MethodAttributes.HideBySig;
 
                 var methodBuilder = typeBuilder.DefineMethod(apiMethod.Name, implementAttribute, CallingConventions.Standard, apiMethod.ReturnType, parameterTypes);
                 var apiMethodIL = methodBuilder.GetILGenerator();

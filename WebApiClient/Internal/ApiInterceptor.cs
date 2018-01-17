@@ -13,9 +13,9 @@ namespace WebApiClient
     class ApiInterceptor : IApiInterceptor
     {
         /// <summary>
-        /// httpApi配置
+        /// 获取相关的配置
         /// </summary>
-        private readonly HttpApiConfig httpApiConfig;
+        public HttpApiConfig ApiConfig { get; private set; }
 
         /// <summary>
         /// dispose方法
@@ -33,7 +33,7 @@ namespace WebApiClient
             {
                 throw new ArgumentNullException(nameof(apiConfig));
             }
-            this.httpApiConfig = apiConfig;
+            this.ApiConfig = apiConfig;
         }
 
         /// <summary>
@@ -47,12 +47,12 @@ namespace WebApiClient
         {
             if (method.Equals(disposeMethod) == true)
             {
-                this.httpApiConfig.Dispose();
+                this.ApiConfig.Dispose();
                 return null;
             }
 
             var apiActionDescripter = this.GetApiActionDescriptor(method, parameters);
-            var apiTask = ApiTask.CreateInstance(this.httpApiConfig, apiActionDescripter);
+            var apiTask = ApiTask.CreateInstance(this.ApiConfig, apiActionDescripter);
 
             if (apiActionDescripter.Return.IsITaskDefinition == true)
             {
