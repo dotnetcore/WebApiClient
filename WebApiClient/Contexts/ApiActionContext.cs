@@ -1,4 +1,6 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
+using WebApiClient.Interfaces;
 
 namespace WebApiClient.Contexts
 {
@@ -7,6 +9,11 @@ namespace WebApiClient.Contexts
     /// </summary>
     public class ApiActionContext
     {
+        /// <summary>
+        /// 获取请求上下文的附加数据
+        /// </summary>
+        public ITags Tags { get; private set; }
+
         /// <summary>
         /// 获取关联的HttpApiConfig
         /// </summary>
@@ -26,5 +33,13 @@ namespace WebApiClient.Contexts
         /// 获取关联的HttpResponseMessage
         /// </summary>
         public HttpResponseMessage ResponseMessage { get; internal set; }
+
+        /// <summary>
+        /// 请求Api的上下文
+        /// </summary>
+        public ApiActionContext()
+        {
+            this.Tags = new Tags();
+        }
     }
 }
