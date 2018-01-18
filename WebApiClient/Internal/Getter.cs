@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示属性或字段的Getter
+    /// 表示属性的Getter
     /// </summary>
     class Getter
     {
@@ -26,17 +26,7 @@ namespace WebApiClient
         public Getter(PropertyInfo property)
            : this(property.DeclaringType, property.Name)
         {
-        }
-
-        /// <summary>
-        /// 表示字段的Getter
-        /// </summary>
-        /// <param name="field">字段</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public Getter(FieldInfo field)
-           : this(field.DeclaringType, field.Name)
-        {
-        }
+        } 
 
         /// <summary>
         /// 表示类型字段或属性的Getter
