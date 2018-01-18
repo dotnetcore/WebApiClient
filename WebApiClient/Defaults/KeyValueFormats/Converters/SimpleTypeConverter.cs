@@ -20,7 +20,7 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
         {
             if (this.IsSupported(context.Type) == true)
             {
-                return new[] { this.ToKeyValuePair(context) };
+                return new[] { this.GetKeyValuePair(context) };
             }
             return this.Next.Invoke(context);
         }

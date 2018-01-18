@@ -21,13 +21,13 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             if (context.Type == typeof(KeyValuePair<string, string>))
             {
                 var kv = (KeyValuePair<string, string>)context.Value;
-                return new[] { this.ToKeyValuePair(kv.Key, kv.Value, context.Options) };
+                return new[] { this.GetKeyValuePair(kv.Key, kv.Value, context.Options) };
             }
 
             if (context.Type == typeof(KeyValuePair<string, object>))
             {
                 var kv = (KeyValuePair<string, object>)context.Value;
-                return new[] { this.ToKeyValuePair(kv.Key, kv.Value, context.Options) };
+                return new[] { this.GetKeyValuePair(kv.Key, kv.Value, context.Options) };
             }
 
             return this.Next.Invoke(context);

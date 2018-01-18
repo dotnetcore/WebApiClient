@@ -24,7 +24,7 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             {
                 var array = context.Value as IEnumerable;
                 return array.Cast<object>()
-                    .SelectMany(item => this.SerializeByFormatter(context.Name, item, context.Options));
+                    .SelectMany(item => base.Recursion(context.Name, item, context.Options));
             }
             return this.Next.Invoke(context);
         }

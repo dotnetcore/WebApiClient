@@ -31,47 +31,51 @@ namespace WebApiClient.Defaults.KeyValueFormats
         public abstract IEnumerable<KeyValuePair<string, string>> Invoke(ConvertContext context);
 
         /// <summary>
+        /// 递归序列化
         /// 使用与Converter关联的IJsonFormatter进行序列化
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        protected IEnumerable<KeyValuePair<string, string>> SerializeByFormatter(ConvertContext context)
+        protected IEnumerable<KeyValuePair<string, string>> Recursion(ConvertContext context)
         {
-            return this.SerializeByFormatter(context.Name, context.Value, context.Options);
+            return this.Recursion(context.Name, context.Value, context.Options);
         }
 
         /// <summary>
+        /// 递归序列化
         /// 使用与Converter关联的IJsonFormatter进行序列化
         /// </summary>
         /// <param name="name">名称</param>
         /// <param name="value">值</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        protected IEnumerable<KeyValuePair<string, string>> SerializeByFormatter(string name, object value, FormatOptions options)
+        protected IEnumerable<KeyValuePair<string, string>> Recursion(string name, object value, FormatOptions options)
         {
             return this.Formatter.Serialize(name, value, options);
         }
 
         /// <summary>
-        /// 将上下文简单转换为键值对
+        /// 结合context.Options约定
+        /// 将context的Value值转换为键值对
         /// </summary>
         /// <param name="context">上下文</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        protected KeyValuePair<string, string> ToKeyValuePair(ConvertContext context)
+        protected KeyValuePair<string, string> GetKeyValuePair(ConvertContext context)
         {
-            return this.ToKeyValuePair(context.Name, context.Value, context.Options);
+            return this.GetKeyValuePair(context.Name, context.Value, context.Options);
         }
 
         /// <summary>
-        /// 将值简单转换为键值对
+        /// 结合options约定
+        /// 将value值转换为键值对
         /// </summary>
         /// <param name="name">名称</param>
         /// <param name="value">值</param>
         /// <param name="options">选项</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        protected KeyValuePair<string, string> ToKeyValuePair(string name, object value, FormatOptions options)
+        protected KeyValuePair<string, string> GetKeyValuePair(string name, object value, FormatOptions options)
         {
             if (string.IsNullOrEmpty(name) == true)
             {

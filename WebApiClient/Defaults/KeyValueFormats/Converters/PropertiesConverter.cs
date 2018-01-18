@@ -29,7 +29,7 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
                 where p.IsSupportGet && p.IgnoreSerialized == false
                 let value = p.GetValue(context.Value)
                 let opt = context.Options.CloneChange(p.DateTimeFormat)
-                select this.ToKeyValuePair(p.AliasName, value, opt); // 只拆解第一层属性
+                select this.GetKeyValuePair(p.AliasName, value, opt); // 只拆解第一层属性
         }
 
         /// <summary>
