@@ -79,7 +79,7 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
 
                 if (property.CanRead == true)
                 {
-                    this.getter = Getter.Create(property);
+                    this.getter = new Getter(property);
                 }
 
                 this.IgnoreSerialized = property.IsDefined(typeof(IgnoreSerializedAttribute));
@@ -114,63 +114,6 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             public static PropertyDescriptor[] GetProperties(Type classType)
             {
                 return propertyCached.GetOrAdd(classType, t => t.GetProperties().Select(p => new PropertyDescriptor(p)).ToArray());
-            }
-
-            /// <summary>
-            /// 表示属性的Get方法抽象类
-            /// </summary>
-            private abstract class Getter
-            {
-                /// <summary>
-                /// 创建属性的Get方法
-                /// </summary>
-                /// <param name="property">属性</param>
-                /// <returns></returns>
-                public static Getter Create(PropertyInfo property)
-                {
-                    var getterType = typeof(GenericGetter<,>).MakeGenericType(property.DeclaringType, property.PropertyType);
-                    return Activator.CreateInstance(getterType, property) as Getter;
-                }
-
-                /// <summary>
-                /// 执行Get方法
-                /// </summary>
-                /// <param name="instance">实例</param>
-                /// <returns></returns>
-                public abstract object Invoke(object instance);
-
-                /// <summary>
-                /// 表示属性的Get方法
-                /// </summary>
-                /// <typeparam name="TTarget">属性所在的类</typeparam>
-                /// <typeparam name="TResult">属性的返回值</typeparam>
-                private class GenericGetter<TTarget, TResult> : Getter
-                {
-                    /// <summary>
-                    /// get方法的委托
-                    /// </summary>
-                    private readonly Func<TTarget, TResult> getFunc;
-
-                    /// <summary>
-                    /// 属性的Get方法
-                    /// </summary>
-                    /// <param name="property">属性</param>
-                    public GenericGetter(PropertyInfo property)
-                    {
-                        var getMethod = property.GetGetMethod();
-                        this.getFunc = (Func<TTarget, TResult>)getMethod.CreateDelegate(typeof(Func<TTarget, TResult>), null);
-                    }
-
-                    /// <summary>
-                    /// 执行Get方法
-                    /// </summary>
-                    /// <param name="instance">实例</param>
-                    /// <returns></returns>
-                    public override object Invoke(object instance)
-                    {
-                        return this.getFunc.Invoke((TTarget)instance);
-                    }
-                }
             }
         }
     }
