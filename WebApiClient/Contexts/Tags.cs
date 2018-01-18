@@ -16,7 +16,7 @@ namespace WebApiClient.Contexts
         /// <summary>
         /// 自增id
         /// </summary>
-        private long id = 0L;
+        private static long idValue = 0L;
 
         /// <summary>
         /// 数据字典
@@ -28,7 +28,7 @@ namespace WebApiClient.Contexts
         /// </summary>
         public Tags()
         {
-            this.Id = Interlocked.Increment(ref this.id).ToString();
+            this.Id = Interlocked.Increment(ref idValue).ToString();
             this.lazy = new Lazy<Dictionary<string, object>>(() => new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase));
         }
 
