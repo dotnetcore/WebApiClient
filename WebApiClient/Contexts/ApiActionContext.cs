@@ -12,7 +12,7 @@ namespace WebApiClient.Contexts
         /// <summary>
         /// 获取请求上下文的附加数据
         /// </summary>
-        public ITags Tags { get; private set; }
+        public Tags Tags { get; private set; }
 
         /// <summary>
         /// 获取关联的HttpApiConfig

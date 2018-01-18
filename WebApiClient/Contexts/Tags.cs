@@ -3,17 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Linq;
-using WebApiClient.Contexts;
-using WebApiClient.Interfaces;
 
-namespace WebApiClient
+namespace WebApiClient.Contexts
 {
     /// <summary>
     /// 提供请求上下文的数据操作
     /// </summary>
     [DebuggerDisplay("Id = {Id}")]
     [DebuggerTypeProxy(typeof(DebugView))]
-    class Tags : ITags
+    public sealed class Tags
     {
         /// <summary>
         /// 自增id
