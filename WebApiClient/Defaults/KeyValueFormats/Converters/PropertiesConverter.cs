@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiClient.DataAnnotations;
 
-namespace WebApiClient.Defaults.KeyValueFormates.Converters
+namespace WebApiClient.Defaults.KeyValueFormats.Converters
 {
     /// <summary>
     /// 表示属性拆解转换器
@@ -21,18 +21,15 @@ namespace WebApiClient.Defaults.KeyValueFormates.Converters
         /// <returns></returns>
         public override IEnumerable<KeyValuePair<string, string>> Invoke(ConvertContext context)
         {
-            var options = context.Options;
-            if (options == null)
-            {
-                options = new FormatOptions();
-            }
+            // 无条件解析属性
+            // 因为我也不知道这一步要怎么处理该类型了
 
             return
-                from p in PropertyDescriptor.GetProperties(context.Descriptor.Type)
+                from p in PropertyDescriptor.GetProperties(context.Type)
                 where p.IsSupportGet && p.IgnoreSerialized == false
                 let value = p.GetValue(context.Value)
-                let opt = options.CloneChange(p.DateTimeFormat)
-                select this.ToKeyValuePair(p.AliasName, value, opt); // 只拆解第一层
+                let opt = context.Options.CloneChange(p.DateTimeFormat)
+                select this.ToKeyValuePair(p.AliasName, value, opt); // 只拆解第一层属性
         }
 
         /// <summary>

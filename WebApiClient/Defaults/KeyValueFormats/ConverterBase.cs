@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiClient.Interfaces;
 
-namespace WebApiClient.Defaults.KeyValueFormates
+namespace WebApiClient.Defaults.KeyValueFormats
 {
     /// <summary>
     /// 表示转换器的抽象类
@@ -76,6 +76,11 @@ namespace WebApiClient.Defaults.KeyValueFormates
             if (string.IsNullOrEmpty(name) == true)
             {
                 throw new ArgumentNullException(nameof(name));
+            }
+
+            if (options == null)
+            {
+                options = new FormatOptions();
             }
 
             if (options.UseCamelCase == true)

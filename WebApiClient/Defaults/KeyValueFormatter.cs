@@ -7,8 +7,8 @@ using System.Linq;
 using System.Reflection;
 using WebApiClient.Contexts;
 using WebApiClient.DataAnnotations;
-using WebApiClient.Defaults.KeyValueFormates;
-using WebApiClient.Defaults.KeyValueFormates.Converters;
+using WebApiClient.Defaults.KeyValueFormats;
+using WebApiClient.Defaults.KeyValueFormats.Converters;
 using WebApiClient.Interfaces;
 
 namespace WebApiClient.Defaults
@@ -19,55 +19,37 @@ namespace WebApiClient.Defaults
     public class KeyValueFormatter : IKeyValueFormatter
     {
         /// <summary>
-        /// 转换器链表
-        /// </summary>
-        private readonly LinkedList<ConverterBase> linkedList = new LinkedList<ConverterBase>();
-
-        /// <summary>
         /// 默认的转换器组合
         /// </summary>
         private static readonly ConverterBase[] defaultConverters = new ConverterBase[]
         {
             new NullValueConverter(),
-            new SimpleValueConverter(),
+            new SimpleTypeConverter(),
             new KeyValuePairConverter(),
-            new DictionaryConverter(),
             new EnumerableConverter(),
             new PropertiesConverter()
         };
 
         /// <summary>
-        /// 默认键值对列化工具
+        /// 第一个转换器
         /// </summary>
-        public KeyValueFormatter()
-            : this(defaultConverters)
-        {
-        }
+        private readonly ConverterBase firstConverter;
 
         /// <summary>
         /// 默认键值对列化工具
         /// </summary>
-        /// <param name="converters"></param>
-        public KeyValueFormatter(IEnumerable<ConverterBase> converters)
+        public KeyValueFormatter()
         {
-            if (converters == null)
-            {
-                throw new ArgumentNullException(nameof(converters));
-            }
+            var notSupported = new NotSupportedConverter();
+            var converters = this.GetConverters().Concat(new[] { notSupported });
+            this.firstConverter = converters.First();
 
-            foreach (var item in converters)
+            converters.Aggregate((cur, next) =>
             {
-                this.linkedList.AddLast(item);
-            }
-            this.linkedList.AddLast(new NotSupportedConverter());
-
-            var node = this.linkedList.First;
-            while (node.Next != null)
-            {
-                node.Value.Next = node.Next.Value;
-                node.Value.Formatter = this;
-                node = node.Next;
-            }
+                cur.Next = next;
+                cur.Formatter = this;
+                return next;
+            }).Formatter = this;
         }
 
         /// <summary>
@@ -76,9 +58,7 @@ namespace WebApiClient.Defaults
         /// <param name="parameter">参数</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        IEnumerable<KeyValuePair<string, string>> IKeyValueFormatter.Serialize(
-            ApiParameterDescriptor parameter,
-            FormatOptions options)
+        IEnumerable<KeyValuePair<string, string>> IKeyValueFormatter.Serialize(ApiParameterDescriptor parameter, FormatOptions options)
         {
             return this.Serialize(parameter.Name, parameter.Value, options);
         }
@@ -91,12 +71,18 @@ namespace WebApiClient.Defaults
         /// <param name="options">选项</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        IEnumerable<KeyValuePair<string, string>> IKeyValueFormatter.Serialize(
-            string name,
-            object obj,
-            FormatOptions options)
+        IEnumerable<KeyValuePair<string, string>> IKeyValueFormatter.Serialize(string name, object obj, FormatOptions options)
         {
             return this.Serialize(name, obj, options);
+        }
+
+        /// <summary>
+        /// 返回一组按顺序的转换器
+        /// </summary>
+        /// <returns></returns>
+        protected virtual IEnumerable<ConverterBase> GetConverters()
+        {
+            return KeyValueFormatter.defaultConverters;
         }
 
         /// <summary>
@@ -107,26 +93,16 @@ namespace WebApiClient.Defaults
         /// <param name="options">选项</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        protected virtual IEnumerable<KeyValuePair<string, string>> Serialize(
-            string name,
-            object obj,
-            FormatOptions options)
+        private IEnumerable<KeyValuePair<string, string>> Serialize(string name, object obj, FormatOptions options)
         {
-            if (options == null)
-            {
-                options = new FormatOptions();
-            }
-
-            var type = obj == null ? null : obj.GetType();
             var context = new ConvertContext
             {
                 Name = name,
                 Value = obj,
-                Options = options,
-                Descriptor = TypeDescriptor.GetDescriptor(type)
+                Type = obj == null ? null : obj.GetType(),
+                Options = options == null ? new FormatOptions() : options
             };
-
-            return this.linkedList.First.Value.Invoke(context);
+            return this.firstConverter.Invoke(context);
         }
 
         /// <summary>
@@ -136,7 +112,7 @@ namespace WebApiClient.Defaults
         {
             public override IEnumerable<KeyValuePair<string, string>> Invoke(ConvertContext context)
             {
-                throw new NotSupportedException("不支持的类型转换");
+                throw new NotSupportedException("不支持的类型转换：" + context.Type);
             }
         }
     }

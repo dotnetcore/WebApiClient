@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebApiClient.Defaults.KeyValueFormates
+namespace WebApiClient.Defaults.KeyValueFormats
 {
     /// <summary>
     /// 表示要转换的上下文
@@ -22,13 +22,13 @@ namespace WebApiClient.Defaults.KeyValueFormates
         public object Value { get; set; }
 
         /// <summary>
+        /// 获取或设置Value对应的类型
+        /// </summary>
+        public Type Type { get; set; }
+
+        /// <summary>
         /// 获取或设置格式化选项
         /// </summary>
         public FormatOptions Options { get; set; }
-
-        /// <summary>
-        /// 获取或设置类型描述
-        /// </summary>
-        public TypeDescriptor Descriptor { get; set; }
     }
 }

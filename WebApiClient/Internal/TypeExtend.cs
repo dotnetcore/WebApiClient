@@ -135,33 +135,7 @@ namespace WebApiClient
                     throw new NotSupportedException(message);
                 }
             }
-        }
-
-
-        /// <summary>
-        /// 获取是否为简单类型
-        /// </summary>
-        /// <param name="type">类型</param>
-        /// <returns></returns>
-        public static bool IsSimple(this Type type)
-        {
-            if (type.IsGenericType == true && type.GetGenericTypeDefinition() == typeof(Nullable<>))
-            {
-                type = Nullable.GetUnderlyingType(type);
-            }
-
-            if (type.IsPrimitive || type.IsEnum)
-            {
-                return true;
-            }
-
-            return type == typeof(string)
-                || type == typeof(decimal)
-                || type == typeof(DateTime)
-                || type == typeof(Guid)
-                || type == typeof(Uri)
-                || type == typeof(Version);
-        }
+        }         
 
         /// <summary>
         /// 是否可以从TBase类型派生

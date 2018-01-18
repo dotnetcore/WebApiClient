@@ -1,15 +1,17 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebApiClient.Defaults.KeyValueFormates.Converters
+namespace WebApiClient.Defaults.KeyValueFormats.Converters
 {
     /// <summary>
-    /// 表示简单值类型转换器
+    /// 表示集合转换器
+    /// 负责拆解集合并递归转换
     /// </summary>
-    public class SimpleValueConverter : ConverterBase
+    public class EnumerableConverter : ConverterBase
     {
         /// <summary>
         /// 执行转换
@@ -18,9 +20,11 @@ namespace WebApiClient.Defaults.KeyValueFormates.Converters
         /// <returns></returns>
         public override IEnumerable<KeyValuePair<string, string>> Invoke(ConvertContext context)
         {
-            if (context.Descriptor.IsSimpleType == true)
+            if (context.Type.IsInheritFrom<IEnumerable>() == true)
             {
-                return new[] { this.ToKeyValuePair(context) };
+                var array = context.Value as IEnumerable;
+                return array.Cast<object>()
+                    .SelectMany(item => this.SerializeByFormatter(context.Name, item, context.Options));
             }
             return this.Next.Invoke(context);
         }

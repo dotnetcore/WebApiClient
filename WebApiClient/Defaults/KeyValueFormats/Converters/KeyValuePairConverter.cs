@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebApiClient.Defaults.KeyValueFormates.Converters
+namespace WebApiClient.Defaults.KeyValueFormats.Converters
 {
     /// <summary>
     /// 表示KeyValuePair类型转换器
@@ -18,13 +18,13 @@ namespace WebApiClient.Defaults.KeyValueFormates.Converters
         /// <returns></returns>
         public override IEnumerable<KeyValuePair<string, string>> Invoke(ConvertContext context)
         {
-            if (context.Descriptor.Type == typeof(KeyValuePair<string, string>))
+            if (context.Type == typeof(KeyValuePair<string, string>))
             {
                 var kv = (KeyValuePair<string, string>)context.Value;
                 return new[] { this.ToKeyValuePair(kv.Key, kv.Value, context.Options) };
             }
 
-            if (context.Descriptor.Type == typeof(KeyValuePair<string, object>))
+            if (context.Type == typeof(KeyValuePair<string, object>))
             {
                 var kv = (KeyValuePair<string, object>)context.Value;
                 return new[] { this.ToKeyValuePair(kv.Key, kv.Value, context.Options) };
