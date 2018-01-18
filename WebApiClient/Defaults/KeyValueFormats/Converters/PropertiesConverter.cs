@@ -21,15 +21,15 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
         /// <returns></returns>
         public override IEnumerable<KeyValuePair<string, string>> Invoke(ConvertContext context)
         {
-            // 无条件解析属性
-            // 因为我也不知道这一步要怎么处理该类型了
+            // 无条件解析为属性
+            // 因为其它转换器都无法解析此类型
 
             return
                 from p in PropertyDescriptor.GetProperties(context.Type)
                 where p.IsSupportGet && p.IgnoreSerialized == false
                 let value = p.GetValue(context.Value)
-                let opt = context.Options.CloneChange(p.DateTimeFormat)
-                select this.GetKeyValuePair(p.AliasName, value, opt); // 只拆解第一层属性
+                let options = context.Options.CloneChange(p.DateTimeFormat)
+                select this.GetKeyValuePair(p.Name, value, options); // 只拆解第一层属性则不用递归
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             /// <summary>
             /// 获取属性别名或名称
             /// </summary>
-            public string AliasName { get; private set; }
+            public string Name { get; private set; }
 
             /// <summary>
             /// 获取声明的DateTimeFormatAttribute的Format
@@ -69,7 +69,7 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             private PropertyDescriptor(PropertyInfo property)
             {
                 var aliasAs = property.GetAttribute<AliasAsAttribute>(true);
-                this.AliasName = aliasAs == null ? property.Name : aliasAs.Name;
+                this.Name = aliasAs == null ? property.Name : aliasAs.Name;
 
                 if (property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?))
                 {

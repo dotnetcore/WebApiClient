@@ -23,6 +23,8 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             if (context.Type.IsInheritFrom<IEnumerable>() == true)
             {
                 var array = context.Value as IEnumerable;
+
+                // 递归转换数据里各个元素
                 return array.Cast<object>()
                     .SelectMany(item => base.Recursion(context.Name, item, context.Options));
             }

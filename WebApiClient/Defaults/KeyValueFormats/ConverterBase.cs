@@ -98,14 +98,13 @@ namespace WebApiClient.Defaults.KeyValueFormats
             }
 
             var isDateTime = value is DateTime;
-            if (isDateTime == false)
+            if (isDateTime == true)
             {
-                return new KeyValuePair<string, string>(name, value.ToString());
+                var dateTimeString = ((DateTime)value).ToString(options.DateTimeFormat, DateTimeFormatInfo.InvariantInfo);
+                return new KeyValuePair<string, string>(name, dateTimeString);
             }
 
-            // 时间格式转换         
-            var dateTime = ((DateTime)value).ToString(options.DateTimeFormat, DateTimeFormatInfo.InvariantInfo);
-            return new KeyValuePair<string, string>(name, dateTime);
+            return new KeyValuePair<string, string>(name, value.ToString());
         }
     }
 }
