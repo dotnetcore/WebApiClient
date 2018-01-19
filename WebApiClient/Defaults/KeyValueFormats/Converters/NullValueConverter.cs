@@ -18,9 +18,9 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
         /// <returns></returns>
         public override IEnumerable<KeyValuePair<string, string>> Invoke(ConvertContext context)
         {
-            if (context.Value == null)
+            if (context.Data == null)
             {
-                return new[] { base.ConvertToKeyValuePair(context) };
+                return context.ToKeyValuePairs();
             }
             return this.Next.Invoke(context);
         }

@@ -19,12 +19,13 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
         /// <returns></returns>
         public override IEnumerable<KeyValuePair<string, string>> Invoke(ConvertContext context)
         {
-            var dynamicObject = context.Value as DynamicObject;
+            var dynamicObject = context.Data as DynamicObject;
             if (dynamicObject != null)
             {
                 return from name in dynamicObject.GetDynamicMemberNames()
                        let value = this.GetValue(dynamicObject, name)
-                       select base.ConvertToKeyValuePair(name, value, context.Options);
+                       let ctx = new ConvertContext(name, value, context.Depths, context.Options)
+                       select ctx.ToKeyValuePair();
             }
 
             return this.Next.Invoke(context);

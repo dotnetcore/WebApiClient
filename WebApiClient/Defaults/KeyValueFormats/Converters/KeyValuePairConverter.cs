@@ -26,15 +26,17 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
         /// <returns></returns>
         public override IEnumerable<KeyValuePair<string, string>> Invoke(ConvertContext context)
         {
-            var type = context.Type;
+            var type = context.DataType;
             if (type.IsGenericType && type.GetGenericTypeDefinition() == keyValuePairType)
             {
                 var reader = KeyValuePairReader.GetReader(type);
-                var key = reader.GetKey(context.Value).ToString();
-                var value = reader.GetValue(context.Value);
+                var key = reader.GetKey(context.Data).ToString();
+                var value = reader.GetValue(context.Data);
 
-                return new[] { base.ConvertToKeyValuePair(key, value, context.Options) };
+                var ctx = new ConvertContext(key, value, context.Depths, context.Options);
+                return ctx.ToKeyValuePairs();
             }
+
             return this.Next.Invoke(context);
         }
 

@@ -14,13 +14,15 @@ namespace WebApiClient
         private string dateTimeFormat;
 
         /// <summary>
-        /// 获取或设置是否使用骆驼命名
+        /// 获取或设置序列化时是否使用骆驼命名
+        /// 对于JsonFormatter将影响到属性的名称
+        /// 对于KeyValueFormatter将影响到Key的值
         /// 默认为false
         /// </summary>
         public bool UseCamelCase { get; set; }
 
         /// <summary>
-        /// 获取或设置时期时间格式
+        /// 获取或设置序列化DateTime类型使用的格式
         /// 默认为本地日期时间格式
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>

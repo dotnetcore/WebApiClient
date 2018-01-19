@@ -21,10 +21,9 @@ namespace WebApiClient.Defaults
         /// <summary>
         /// 默认的转换器组合
         /// </summary>
-        private static readonly ConverterBase[] defaultConverters = new ConverterBase[]
+        private static readonly IConverter[] defaultConverters = new IConverter[]
         {
             new NullValueConverter(),
-            new EnumTypeConverter(),
             new SimpleTypeConverter(),
             new KeyValuePairConverter(),
             new EnumerableConverter(),
@@ -34,7 +33,7 @@ namespace WebApiClient.Defaults
         /// <summary>
         /// 第一个转换器
         /// </summary>
-        private readonly ConverterBase firstConverter;
+        private readonly IConverter firstConverter;
 
         /// <summary>
         /// 默认键值对列化工具
@@ -45,12 +44,17 @@ namespace WebApiClient.Defaults
             var converters = this.GetConverters().Concat(new[] { notSupported });
             this.firstConverter = converters.First();
 
+            foreach (var item in converters)
+            {
+                item.First = this.firstConverter;
+                item.MaxDepth = 3;
+            }
+
             converters.Aggregate((cur, next) =>
             {
                 cur.Next = next;
-                cur.Formatter = this;
                 return next;
-            }).Formatter = this;
+            });
         }
 
         /// <summary>
@@ -74,13 +78,7 @@ namespace WebApiClient.Defaults
         /// <returns></returns>
         public IEnumerable<KeyValuePair<string, string>> Serialize(string name, object obj, FormatOptions options)
         {
-            var context = new ConvertContext
-            {
-                Name = name,
-                Value = obj,
-                Type = obj == null ? null : obj.GetType(),
-                Options = options == null ? new FormatOptions() : options
-            };
+            var context = new ConvertContext(name, obj, 0, options);
             return this.firstConverter.Invoke(context);
         }
 
@@ -88,7 +86,7 @@ namespace WebApiClient.Defaults
         /// 返回一组按顺序的转换器
         /// </summary>
         /// <returns></returns>
-        protected virtual IEnumerable<ConverterBase> GetConverters()
+        protected virtual IEnumerable<IConverter> GetConverters()
         {
             return KeyValueFormatter.defaultConverters;
         }
@@ -100,7 +98,7 @@ namespace WebApiClient.Defaults
         {
             public override IEnumerable<KeyValuePair<string, string>> Invoke(ConvertContext context)
             {
-                throw new NotSupportedException("不支持的类型转换：" + context.Type);
+                throw new NotSupportedException("不支持的类型转换：" + context.DataType);
             }
         }
     }

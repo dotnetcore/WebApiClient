@@ -25,11 +25,12 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             // 因为其它转换器都无法解析此类型
 
             return
-                from p in PropertyDescriptor.GetProperties(context.Type)
+                from p in PropertyDescriptor.GetProperties(context.DataType)
                 where p.IsSupportGet && p.IgnoreSerialized == false
-                let value = p.GetValue(context.Value)
+                let value = p.GetValue(context.Data)
                 let options = context.Options.CloneChange(p.DateTimeFormat)
-                select base.ConvertToKeyValuePair(p.Name, value, options); // 只拆解第一层属性则不用递归
+                let ctx = new ConvertContext(p.Name, value, context.Depths, options)
+                select ctx.ToKeyValuePair(); // 只拆解第一层属性则不用递归
         }
 
         /// <summary>

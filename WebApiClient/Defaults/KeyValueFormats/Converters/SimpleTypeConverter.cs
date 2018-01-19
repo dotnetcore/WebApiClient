@@ -16,35 +16,36 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
         /// </summary>
         /// <param name="context">转换上下文</param>
         /// <returns></returns>
-        public override IEnumerable<KeyValuePair<string, string>> Invoke(ConvertContext context)
+        public sealed override IEnumerable<KeyValuePair<string, string>> Invoke(ConvertContext context)
         {
-            if (this.IsSupported(context.Type) == true)
+            if (this.IsSupported(context.DataType) == true)
             {
-                return new[] { base.ConvertToKeyValuePair(context) };
+                return context.ToKeyValuePairs();
             }
             return this.Next.Invoke(context);
         }
 
         /// <summary>
         /// 获取类型是否为简单类型
-        /// 从而使用ToString()方法值为字符串
+        /// 从而直接调用context.ToKeyValuePair()
         /// </summary>
-        /// <param name="type">类型</param>
+        /// <param name="dataType">类型</param>
         /// <returns></returns>
-        protected virtual bool IsSupported(Type type)
+        protected virtual bool IsSupported(Type dataType)
         {
-            if (type.IsGenericType == true && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            if (dataType.IsGenericType == true && dataType.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
-                type = Nullable.GetUnderlyingType(type);
+                dataType = Nullable.GetUnderlyingType(dataType);
             }
 
-            return type.IsPrimitive
-                || type == typeof(string)
-                || type == typeof(decimal)
-                || type == typeof(DateTime)
-                || type == typeof(Guid)
-                || type == typeof(Uri)
-                || type == typeof(Version);
+            return dataType.IsPrimitive
+                || dataType.IsEnum
+                || dataType == typeof(string)
+                || dataType == typeof(decimal)
+                || dataType == typeof(DateTime)
+                || dataType == typeof(Guid)
+                || dataType == typeof(Uri)
+                || dataType == typeof(Version);
         }
     }
 }

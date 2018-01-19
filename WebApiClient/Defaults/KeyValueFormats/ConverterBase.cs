@@ -11,17 +11,55 @@ namespace WebApiClient.Defaults.KeyValueFormats
     /// <summary>
     /// 表示转换器的抽象类
     /// </summary>
-    public abstract class ConverterBase
+    public abstract class ConverterBase : IConverter
     {
         /// <summary>
-        /// 设置过滤器
+        /// 第一个转换器
         /// </summary>
-        public IKeyValueFormatter Formatter { private get; set; }
+        private IConverter first;
+
+        /// <summary>
+        /// 最高递归的层数     
+        /// </summary>
+        private int maxDepth = 3;
 
         /// <summary>
         /// 获取下一个转换器
         /// </summary>
-        public ConverterBase Next { get; set; }
+        protected IConverter Next { get; private set; }
+
+        /// <summary>
+        /// 设置第一个转换器
+        /// </summary>
+        IConverter IConverter.First
+        {
+            set
+            {
+                this.first = value;
+            }
+        }
+
+        /// <summary>
+        /// 设置下一个转换器
+        /// </summary>
+        IConverter IConverter.Next
+        {
+            set
+            {
+                this.Next = value;
+            }
+        }
+
+        /// <summary>
+        /// 设置最高递归的层数
+        /// </summary>
+        int IConverter.MaxDepth
+        {
+            set
+            {
+                this.maxDepth = value;
+            }
+        }
 
         /// <summary>
         /// 执行转换
@@ -30,71 +68,21 @@ namespace WebApiClient.Defaults.KeyValueFormats
         /// <returns></returns>
         public abstract IEnumerable<KeyValuePair<string, string>> Invoke(ConvertContext context);
 
-
         /// <summary>
-        /// 递归序列化
-        /// 使用与Converter关联的IJsonFormatter进行序列化
+        /// 递归执行转换
+        /// 调用头转换器进行解析context
         /// </summary>
-        /// <param name="name">名称</param>
-        /// <param name="value">值</param>
-        /// <param name="options">选项</param>
+        /// <param name="context">转换上下文</param>
         /// <returns></returns>
-        protected IEnumerable<KeyValuePair<string, string>> RecurseConvert(string name, object value, FormatOptions options)
+        protected IEnumerable<KeyValuePair<string, string>> Recurse(ConvertContext context)
         {
-            return this.Formatter.Serialize(name, value, options);
-        }
-
-        /// <summary>
-        /// 结合context.Options约定
-        /// 将context的Value值转换为键值对
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <returns></returns>
-        protected KeyValuePair<string, string> ConvertToKeyValuePair(ConvertContext context)
-        {
-            return this.ConvertToKeyValuePair(context.Name, context.Value, context.Options);
-        }
-
-        /// <summary>
-        /// 结合options约定
-        /// 给name和value转换为KeyValuePair对象
-        /// </summary>
-        /// <param name="name">名称</param>
-        /// <param name="value">值</param>
-        /// <param name="options">选项</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <returns></returns>
-        protected KeyValuePair<string, string> ConvertToKeyValuePair(string name, object value, FormatOptions options)
-        {
-            if (string.IsNullOrEmpty(name) == true)
+            if (context.Depths >= this.maxDepth)
             {
-                throw new ArgumentNullException(nameof(name));
+                throw new NotSupportedException("转换的层数已超过设置的MaxDepth");
             }
 
-            if (options == null)
-            {
-                options = new FormatOptions();
-            }
-
-            if (options.UseCamelCase == true)
-            {
-                name = FormatOptions.CamelCase(name);
-            }
-
-            if (value == null)
-            {
-                return new KeyValuePair<string, string>(name, null);
-            }
-
-            var isDateTime = value is DateTime;
-            if (isDateTime == true)
-            {
-                var dateTimeString = options.FormatDateTime((DateTime)value);
-                return new KeyValuePair<string, string>(name, dateTimeString);
-            }
-
-            return new KeyValuePair<string, string>(name, value.ToString());
+            context.Depths = context.Depths + 1;
+            return this.first.Invoke(context);
         }
     }
 }
