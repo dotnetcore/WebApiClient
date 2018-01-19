@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace WebApiClient.Defaults.KeyValueFormats
 {
     /// <summary>
     /// 表示要转换的上下文
     /// </summary>
+    [DebuggerDisplay("{Name} = {Data}")]
     public class ConvertContext
     {
         /// <summary>

@@ -44,16 +44,12 @@ namespace WebApiClient.Defaults
             var converters = this.GetConverters().Concat(new[] { notSupported });
             this.firstConverter = converters.First();
 
-            foreach (var item in converters)
-            {
-                item.First = this.firstConverter;
-            }
-
             converters.Aggregate((cur, next) =>
             {
                 cur.Next = next;
+                cur.First = this.firstConverter;
                 return next;
-            });
+            }).First = this.firstConverter;
         }
 
         /// <summary>

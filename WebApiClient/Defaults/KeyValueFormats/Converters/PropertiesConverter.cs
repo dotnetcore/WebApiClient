@@ -3,8 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using WebApiClient.DataAnnotations;
 
 namespace WebApiClient.Defaults.KeyValueFormats.Converters
@@ -23,14 +21,26 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
         {
             // 无条件解析为属性
             // 因为其它转换器都无法解析此类型
+            // 只拆解第一层属性则不用递归
+            return from ctx in this.GetPropertiesContexts(context)
+                   select ctx.ToKeyValuePair();
+        }
 
+
+        /// <summary>
+        /// 解析context的Data的属性
+        /// 返回多个属性组成的ConvertContext
+        /// </summary>
+        /// <param name="context">转换上下文</param>
+        /// <returns></returns>
+        protected IEnumerable<ConvertContext> GetPropertiesContexts(ConvertContext context)
+        {
             return
                 from p in PropertyDescriptor.GetProperties(context.DataType)
                 where p.IsSupportGet && p.IgnoreSerialized == false
                 let value = p.GetValue(context.Data)
                 let options = context.Options.CloneChange(p.DateTimeFormat)
-                let ctx = new ConvertContext(p.Name, value, context.Depths, options)
-                select ctx.ToKeyValuePair(); // 只拆解第一层属性则不用递归
+                select new ConvertContext(p.Name, value, context.Depths, options);
         }
 
         /// <summary>
