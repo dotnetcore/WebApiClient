@@ -104,6 +104,12 @@ namespace WebApiClient.Defaults.KeyValueFormats
                 return new KeyValuePair<string, string>(name, dateTimeString);
             }
 
+            var isEnum = value is Enum;
+            if (isEnum == true)
+            {
+                return new KeyValuePair<string, string>(name, ((int)value).ToString());
+            }
+
             return new KeyValuePair<string, string>(name, value.ToString());
         }
     }
