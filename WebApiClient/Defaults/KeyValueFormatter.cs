@@ -47,7 +47,6 @@ namespace WebApiClient.Defaults
             foreach (var item in converters)
             {
                 item.First = this.firstConverter;
-                item.MaxDepth = 3;
             }
 
             converters.Aggregate((cur, next) =>
