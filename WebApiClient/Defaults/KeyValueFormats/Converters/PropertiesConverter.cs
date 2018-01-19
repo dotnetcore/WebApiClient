@@ -68,7 +68,9 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             /// <param name="property">属性信息</param>
             private PropertyDescriptor(PropertyInfo property)
             {
-                this.Name = property.Name;
+                var aliasAs = property.GetAttribute<AliasAsAttribute>(true);
+                this.Name = aliasAs == null ? property.Name : aliasAs.Name;
+
                 if (property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?))
                 {
                     var formatAttribute = property.GetAttribute<DateTimeFormatAttribute>(true);
