@@ -32,6 +32,11 @@ namespace WebApiClient.Defaults
         private long pendingCount = 0L;
 
         /// <summary>
+        /// 是否支持创建Handler
+        /// </summary>
+        private bool supportCreateHandler = false;
+
+        /// <summary>
         /// 获取关联的Http处理对象
         /// </summary>
         public HttpClientHandler Handler { get; private set; }
@@ -81,10 +86,46 @@ namespace WebApiClient.Defaults
         /// <summary>
         /// 默认的HttpClient
         /// </summary>
-        public HttpClient()
+        public HttpClient() :
+            this(handler: null, disposeHandler: true, supportCreateHandler: true)
         {
-            this.Handler = this.CreateHttpClientHandler();
-            this.client = new System.Net.Http.HttpClient(this.Handler);
+        }
+
+        /// <summary>
+        /// 默认的HttpClient
+        /// </summary>
+        /// <param name="handler">关联的Http处理对象</param>
+        /// <param name="disposeHandler">调用Dispose方法时，是否也Dispose handler</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public HttpClient(HttpClientHandler handler, bool disposeHandler = false)
+            : this(handler, disposeHandler, false)
+        {
+        }
+
+        /// <summary>
+        /// 默认的HttpClient
+        /// </summary>
+        /// <param name="handler"></param>   
+        /// <param name="disposeHandler">调用HttpClient.Dispose时是否也disposeHandler</param>
+        /// <param name="supportCreateHandler">是否支持调用创建实例</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        private HttpClient(HttpClientHandler handler, bool disposeHandler, bool supportCreateHandler)
+        {
+            this.supportCreateHandler = supportCreateHandler;
+            if (handler == null)
+            {
+                if (supportCreateHandler == false)
+                {
+                    throw new ArgumentNullException(nameof(handler));
+                }
+                else
+                {
+                    handler = this.CreateHttpClientHandler();
+                }
+            }
+
+            this.Handler = handler;
+            this.client = new System.Net.Http.HttpClient(this.Handler, disposeHandler);
         }
 
         /// <summary>
@@ -198,6 +239,10 @@ namespace WebApiClient.Defaults
         /// <returns></returns>
         protected virtual HttpClientHandler CreateHttpClientHandler()
         {
+            if (this.supportCreateHandler == false)
+            {
+                throw new NotSupportedException("不支持创建新的HttpClientHandler实例");
+            }
             return new DefaultHttpClientHandler();
         }
 
