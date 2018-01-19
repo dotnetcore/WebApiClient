@@ -111,6 +111,7 @@ namespace WebApiClient
 
         /// <summary>
         /// 获取全局过滤器集合
+        /// 非线程安全类型
         /// </summary>
         public GlobalFilterCollection GlobalFilters { get; private set; }
 

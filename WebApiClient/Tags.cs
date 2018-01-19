@@ -8,6 +8,7 @@ namespace WebApiClient
 {
     /// <summary>
     /// 表示自定义数据的存储和访问容器
+    /// 线程安全类型
     /// </summary>
     [DebuggerDisplay("Id = {Id}")]
     [DebuggerTypeProxy(typeof(DebugView))]

@@ -8,6 +8,7 @@ namespace WebApiClient
     /// <summary>
     /// 表示全局过滤器的集合
     /// 全局过滤器执行优先级最高，执行顺序为添加的顺序
+    /// 非线程安全类型
     /// </summary>
     public class GlobalFilterCollection : ICollection<IApiActionFilter>
     {

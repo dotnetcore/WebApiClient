@@ -66,15 +66,6 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 转换为string
-        /// </summary>
-        /// <returns></returns>
-        public string AsString()
-        {
-            return this.As<string>();
-        }
-
-        /// <summary>
         /// 转换为int
         /// </summary>
         /// <returns></returns>
