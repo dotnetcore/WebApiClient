@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 
-namespace WebApiClient.Contexts
+namespace WebApiClient
 {
     /// <summary>
-    /// 提供请求上下文的数据操作
+    /// 表示自定义数据的存储和访问容器
     /// </summary>
     [DebuggerDisplay("Id = {Id}")]
     [DebuggerTypeProxy(typeof(DebugView))]
@@ -24,7 +24,7 @@ namespace WebApiClient.Contexts
         private readonly Lazy<Dictionary<string, object>> lazy;
 
         /// <summary>
-        /// 请求上下文的数据
+        /// 定义数据的存储和访问容器
         /// </summary>
         public Tags()
         {

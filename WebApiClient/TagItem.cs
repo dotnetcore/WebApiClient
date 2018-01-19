@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace WebApiClient.Contexts
+namespace WebApiClient
 {
     /// <summary>
-    /// 表示ITags的数据项
+    /// 表示Tags的一个数据项
     /// </summary>
     public struct TagItem
     {
@@ -51,7 +51,7 @@ namespace WebApiClient.Contexts
         /// <returns></returns>
         public T As<T>()
         {
-            return this.IsNull ? default(T) : (T)this.value;
+            return this.As<T>(default(T));
         }
 
         /// <summary>

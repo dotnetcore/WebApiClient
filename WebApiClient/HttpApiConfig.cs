@@ -25,9 +25,37 @@ namespace WebApiClient
         public static readonly IKeyValueFormatter DefaultKeyValueFormatter = new KeyValueFormatter();
 
         /// <summary>
+        /// 自定义数据容器
+        /// </summary>
+        private Tags tags;
+
+        /// <summary>
         /// 与HttpClientHandler实例关联的HttpClient
         /// </summary>
         private IHttpClient httpClient;
+
+        /// <summary>
+        /// 同步锁
+        /// </summary>
+        private readonly object syncRoot = new object();
+
+        /// <summary>
+        /// 获取配置的自定义数据的存储和访问容器
+        /// </summary>
+        public Tags Tags
+        {
+            get
+            {
+                lock (this.syncRoot)
+                {
+                    if (this.tags == null)
+                    {
+                        this.tags = new Tags();
+                    }
+                    return this.tags;
+                }
+            }
+        }
 
         /// <summary>
         /// 获取HttpClient实例
@@ -37,19 +65,21 @@ namespace WebApiClient
         {
             get
             {
-                if (this.IsDisposed == true)
+                lock (this.syncRoot)
                 {
-                    throw new ObjectDisposedException(this.GetType().Name);
-                }
+                    if (this.IsDisposed == true)
+                    {
+                        throw new ObjectDisposedException(this.GetType().Name);
+                    }
 
-                if (this.httpClient == null)
-                {
-                    this.httpClient = new HttpClient();
+                    if (this.httpClient == null)
+                    {
+                        this.httpClient = new HttpClient();
+                    }
+                    return this.httpClient;
                 }
-                return this.httpClient;
             }
         }
-
 
         /// <summary>
         /// 获取或设置Http服务完整主机域名

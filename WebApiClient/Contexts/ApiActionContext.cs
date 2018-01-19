@@ -10,9 +10,24 @@ namespace WebApiClient.Contexts
     public class ApiActionContext
     {
         /// <summary>
-        /// 获取请求上下文的附加数据
+        /// 自定义数据的存储和访问容器
         /// </summary>
-        public Tags Tags { get; private set; }
+        private Tags tags;
+
+        /// <summary>
+        /// 获取本次请求相关的自定义数据的存储和访问容器
+        /// </summary>
+        public Tags Tags
+        {
+            get
+            {
+                if (this.tags == null)
+                {
+                    this.tags = new Tags();
+                }
+                return this.tags;
+            }
+        }
 
         /// <summary>
         /// 获取关联的HttpApiConfig
@@ -33,13 +48,5 @@ namespace WebApiClient.Contexts
         /// 获取关联的HttpResponseMessage
         /// </summary>
         public HttpResponseMessage ResponseMessage { get; internal set; }
-
-        /// <summary>
-        /// 请求Api的上下文
-        /// </summary>
-        public ApiActionContext()
-        {
-            this.Tags = new Tags();
-        }
     }
 }
