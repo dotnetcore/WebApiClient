@@ -20,14 +20,14 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
         /// <returns></returns>
         public override IEnumerable<KeyValuePair<string, string>> Invoke(ConvertContext context)
         {
-            if (context.Type.IsInheritFrom<IEnumerable>() == true)
+            var array = context.Value as IEnumerable;
+            if (array != null)
             {
-                var array = context.Value as IEnumerable;
-
                 // 递归转换数组里各个元素
                 return array.Cast<object>()
                     .SelectMany(item => base.RecurseConvert(context.Name, item, context.Options));
             }
+
             return this.Next.Invoke(context);
         }
     }
