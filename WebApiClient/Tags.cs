@@ -14,9 +14,9 @@ namespace WebApiClient
     public sealed class Tags
     {
         /// <summary>
-        /// 自增id
+        /// 同步锁
         /// </summary>
-        private static long idValue = 0L;
+        private readonly object syncRoot = new object();
 
         /// <summary>
         /// 数据字典
@@ -28,7 +28,6 @@ namespace WebApiClient
         /// </summary>
         public Tags()
         {
-            this.Id = Interlocked.Increment(ref idValue).ToString();
             this.lazy = new Lazy<Dictionary<string, object>>(() => new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase));
         }
 
@@ -57,9 +56,12 @@ namespace WebApiClient
         /// <returns></returns>
         public TagItem Get(string key)
         {
-            object value;
-            this.lazy.Value.TryGetValue(key, out value);
-            return new TagItem(value);
+            lock (this.syncRoot)
+            {
+                object value;
+                this.lazy.Value.TryGetValue(key, out value);
+                return new TagItem(value);
+            }
         }
 
         /// <summary>
@@ -73,7 +75,11 @@ namespace WebApiClient
             {
                 return false;
             }
-            return this.lazy.Value.Remove(key);
+
+            lock (this.syncRoot)
+            {
+                return this.lazy.Value.Remove(key);
+            }
         }
 
         /// <summary>
@@ -83,7 +89,10 @@ namespace WebApiClient
         /// <param name="value">值</param>
         public void Set(string key, object value)
         {
-            this.lazy.Value[key] = value;
+            lock (this.syncRoot)
+            {
+                this.lazy.Value[key] = value;
+            }
         }
 
         /// <summary>
