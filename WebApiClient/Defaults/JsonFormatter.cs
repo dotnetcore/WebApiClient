@@ -20,7 +20,7 @@ namespace WebApiClient.Defaults
         /// <param name="obj">对象</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        string IJsonFormatter.Serialize(object obj, FormatOptions options)
+        public string Serialize(object obj, FormatOptions options)
         {
             if (obj == null)
             {
@@ -45,7 +45,7 @@ namespace WebApiClient.Defaults
         /// <param name="json">json</param>
         /// <param name="objType">对象类型</param>
         /// <returns></returns>
-        object IJsonFormatter.Deserialize(string json, Type objType)
+        public object Deserialize(string json, Type objType)
         {
             if (string.IsNullOrEmpty(json))
             {

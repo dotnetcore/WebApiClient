@@ -58,7 +58,7 @@ namespace WebApiClient.Defaults
         /// <param name="parameter">参数</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        IEnumerable<KeyValuePair<string, string>> IKeyValueFormatter.Serialize(ApiParameterDescriptor parameter, FormatOptions options)
+        public IEnumerable<KeyValuePair<string, string>> Serialize(ApiParameterDescriptor parameter, FormatOptions options)
         {
             return this.Serialize(parameter.Name, parameter.Value, options);
         }
@@ -71,29 +71,7 @@ namespace WebApiClient.Defaults
         /// <param name="options">选项</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        IEnumerable<KeyValuePair<string, string>> IKeyValueFormatter.Serialize(string name, object obj, FormatOptions options)
-        {
-            return this.Serialize(name, obj, options);
-        }
-
-        /// <summary>
-        /// 返回一组按顺序的转换器
-        /// </summary>
-        /// <returns></returns>
-        protected virtual IEnumerable<ConverterBase> GetConverters()
-        {
-            return KeyValueFormatter.defaultConverters;
-        }
-
-        /// <summary>
-        /// 序列化对象为键值对
-        /// </summary>
-        /// <param name="name">对象名称</param>
-        /// <param name="obj">对象实例</param>
-        /// <param name="options">选项</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <returns></returns>
-        private IEnumerable<KeyValuePair<string, string>> Serialize(string name, object obj, FormatOptions options)
+        public IEnumerable<KeyValuePair<string, string>> Serialize(string name, object obj, FormatOptions options)
         {
             var context = new ConvertContext
             {
@@ -103,6 +81,15 @@ namespace WebApiClient.Defaults
                 Options = options == null ? new FormatOptions() : options
             };
             return this.firstConverter.Invoke(context);
+        }
+
+        /// <summary>
+        /// 返回一组按顺序的转换器
+        /// </summary>
+        /// <returns></returns>
+        protected virtual IEnumerable<ConverterBase> GetConverters()
+        {
+            return KeyValueFormatter.defaultConverters;
         }
 
         /// <summary>
