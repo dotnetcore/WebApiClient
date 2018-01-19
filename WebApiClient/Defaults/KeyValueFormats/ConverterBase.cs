@@ -21,7 +21,7 @@ namespace WebApiClient.Defaults.KeyValueFormats
         /// <summary>
         /// 最高递归的层数     
         /// </summary>
-        private int maxDepth = 3;
+        private int maxDepth = 16;
 
         /// <summary>
         /// 获取下一个转换器

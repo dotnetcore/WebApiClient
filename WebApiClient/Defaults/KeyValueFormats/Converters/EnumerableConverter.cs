@@ -26,12 +26,11 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
                 return this.Next.Invoke(context);
             }
 
-            // 递归转换数组里各个元素
-            return array.Cast<object>().SelectMany(item =>
-            {
-                var ctx = new ConvertContext(context.Name, item, context.Depths, context.Options);
-                return this.Recurse(ctx);
-            });
+            var ctxs =
+                from item in array.Cast<object>()
+                select new ConvertContext(context.Name, item, context.Depths, context.Options);
+
+            return ctxs.SelectMany(ctx => this.Recurse(ctx));
         }
     }
 }
