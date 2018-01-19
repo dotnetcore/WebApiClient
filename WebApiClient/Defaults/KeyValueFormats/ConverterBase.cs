@@ -30,16 +30,6 @@ namespace WebApiClient.Defaults.KeyValueFormats
         /// <returns></returns>
         public abstract IEnumerable<KeyValuePair<string, string>> Invoke(ConvertContext context);
 
-        /// <summary>
-        /// 递归序列化
-        /// 使用与Converter关联的IJsonFormatter进行序列化
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <returns></returns>
-        protected IEnumerable<KeyValuePair<string, string>> RecurseConvert(ConvertContext context)
-        {
-            return this.RecurseConvert(context.Name, context.Value, context.Options);
-        }
 
         /// <summary>
         /// 递归序列化
@@ -68,7 +58,7 @@ namespace WebApiClient.Defaults.KeyValueFormats
 
         /// <summary>
         /// 结合options约定
-        /// 将value值转换为键值对
+        /// 给name和value转换为KeyValuePair对象
         /// </summary>
         /// <param name="name">名称</param>
         /// <param name="value">值</param>
@@ -100,14 +90,8 @@ namespace WebApiClient.Defaults.KeyValueFormats
             var isDateTime = value is DateTime;
             if (isDateTime == true)
             {
-                var dateTimeString = ((DateTime)value).ToString(options.DateTimeFormat, DateTimeFormatInfo.InvariantInfo);
+                var dateTimeString = options.FormatDateTime((DateTime)value);
                 return new KeyValuePair<string, string>(name, dateTimeString);
-            }
-
-            var isEnum = value is Enum;
-            if (isEnum == true)
-            {
-                return new KeyValuePair<string, string>(name, ((int)value).ToString());
             }
 
             return new KeyValuePair<string, string>(name, value.ToString());

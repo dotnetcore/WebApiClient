@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace WebApiClient
 {
@@ -66,6 +67,16 @@ namespace WebApiClient
                 DateTimeFormat = datetimeFormat,
                 UseCamelCase = this.UseCamelCase
             };
+        }
+
+        /// <summary>
+        /// 格式化时间为文本
+        /// </summary>
+        /// <param name="datetime">时间</param>
+        /// <returns></returns>
+        public string FormatDateTime(DateTime datetime)
+        {
+            return datetime.ToString(this.DateTimeFormat, DateTimeFormatInfo.InvariantInfo);
         }
 
         /// <summary>

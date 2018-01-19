@@ -24,6 +24,7 @@ namespace WebApiClient.Defaults
         private static readonly ConverterBase[] defaultConverters = new ConverterBase[]
         {
             new NullValueConverter(),
+            new EnumTypeConverter(),
             new SimpleTypeConverter(),
             new KeyValuePairConverter(),
             new EnumerableConverter(),

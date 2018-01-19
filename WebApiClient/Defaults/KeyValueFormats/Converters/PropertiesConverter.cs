@@ -43,7 +43,7 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             private readonly PropertyGetter getter;
 
             /// <summary>
-            /// 获取属性别名或名称
+            /// 获取属性名称
             /// </summary>
             public string Name { get; private set; }
 
@@ -68,9 +68,7 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             /// <param name="property">属性信息</param>
             private PropertyDescriptor(PropertyInfo property)
             {
-                var aliasAs = property.GetAttribute<AliasAsAttribute>(true);
-                this.Name = aliasAs == null ? property.Name : aliasAs.Name;
-
+                this.Name = property.Name;
                 if (property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?))
                 {
                     var formatAttribute = property.GetAttribute<DateTimeFormatAttribute>(true);

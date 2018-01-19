@@ -38,12 +38,8 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
                 type = Nullable.GetUnderlyingType(type);
             }
 
-            if (type.IsPrimitive || type.IsEnum)
-            {
-                return true;
-            }
-
-            return type == typeof(string)
+            return type.IsPrimitive
+                || type == typeof(string)
                 || type == typeof(decimal)
                 || type == typeof(DateTime)
                 || type == typeof(Guid)
