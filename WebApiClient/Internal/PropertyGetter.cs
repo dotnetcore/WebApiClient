@@ -11,7 +11,7 @@ namespace WebApiClient
     /// <summary>
     /// 表示属性的Getter
     /// </summary>
-    class Getter
+    class PropertyGetter
     {
         /// <summary>
         /// get方法委托
@@ -23,10 +23,10 @@ namespace WebApiClient
         /// </summary>
         /// <param name="property">属性</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public Getter(PropertyInfo property)
+        public PropertyGetter(PropertyInfo property)
            : this(property.DeclaringType, property.Name)
         {
-        } 
+        }
 
         /// <summary>
         /// 表示类型字段或属性的Getter
@@ -34,7 +34,7 @@ namespace WebApiClient
         /// <param name="declaringType">声名属性的类型</param>
         /// <param name="propertyName">属性的名称</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public Getter(Type declaringType, string propertyName)
+        public PropertyGetter(Type declaringType, string propertyName)
         {
             if (declaringType == null)
             {

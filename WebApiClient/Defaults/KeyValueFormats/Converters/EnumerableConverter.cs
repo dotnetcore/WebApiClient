@@ -24,9 +24,9 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             {
                 var array = context.Value as IEnumerable;
 
-                // 递归转换数据里各个元素
+                // 递归转换数组里各个元素
                 return array.Cast<object>()
-                    .SelectMany(item => base.Recursion(context.Name, item, context.Options));
+                    .SelectMany(item => base.RecurseConvert(context.Name, item, context.Options));
             }
             return this.Next.Invoke(context);
         }

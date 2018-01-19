@@ -29,7 +29,7 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
                 where p.IsSupportGet && p.IgnoreSerialized == false
                 let value = p.GetValue(context.Value)
                 let options = context.Options.CloneChange(p.DateTimeFormat)
-                select this.GetKeyValuePair(p.Name, value, options); // 只拆解第一层属性则不用递归
+                select base.ConvertToKeyValuePair(p.Name, value, options); // 只拆解第一层属性则不用递归
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             /// <summary>
             /// 获取器
             /// </summary>
-            private readonly Getter getter;
+            private readonly PropertyGetter getter;
 
             /// <summary>
             /// 获取属性别名或名称
@@ -79,7 +79,7 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
 
                 if (property.CanRead == true)
                 {
-                    this.getter = new Getter(property);
+                    this.getter = new PropertyGetter(property);
                 }
 
                 this.IgnoreSerialized = property.IsDefined(typeof(IgnoreSerializedAttribute));

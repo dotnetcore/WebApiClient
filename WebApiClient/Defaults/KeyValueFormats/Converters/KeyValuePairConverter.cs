@@ -33,7 +33,7 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
                 var key = reader.GetKey(context.Value).ToString();
                 var value = reader.GetValue(context.Value);
 
-                return new[] { this.GetKeyValuePair(key, value, context.Options) };
+                return new[] { base.ConvertToKeyValuePair(key, value, context.Options) };
             }
             return this.Next.Invoke(context);
         }
@@ -46,12 +46,12 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             /// <summary>
             /// key的getter
             /// </summary>
-            private readonly Getter keyGetter;
+            private readonly PropertyGetter keyGetter;
 
             /// <summary>
             /// value的getter
             /// </summary>
-            private readonly Getter valueGetter;
+            private readonly PropertyGetter valueGetter;
 
             /// <summary>
             /// KeyValuePair读取器
@@ -59,8 +59,8 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             /// <param name="keyValuePairType">KeyValuePair的类型</param>
             private KeyValuePairReader(Type keyValuePairType)
             {
-                this.keyGetter = new Getter(keyValuePairType, "Key");
-                this.valueGetter = new Getter(keyValuePairType, "Value");
+                this.keyGetter = new PropertyGetter(keyValuePairType, "Key");
+                this.valueGetter = new PropertyGetter(keyValuePairType, "Value");
             }
 
             /// <summary>

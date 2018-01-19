@@ -36,9 +36,9 @@ namespace WebApiClient.Defaults.KeyValueFormats
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        protected IEnumerable<KeyValuePair<string, string>> Recursion(ConvertContext context)
+        protected IEnumerable<KeyValuePair<string, string>> RecurseConvert(ConvertContext context)
         {
-            return this.Recursion(context.Name, context.Value, context.Options);
+            return this.RecurseConvert(context.Name, context.Value, context.Options);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace WebApiClient.Defaults.KeyValueFormats
         /// <param name="value">值</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        protected IEnumerable<KeyValuePair<string, string>> Recursion(string name, object value, FormatOptions options)
+        protected IEnumerable<KeyValuePair<string, string>> RecurseConvert(string name, object value, FormatOptions options)
         {
             return this.Formatter.Serialize(name, value, options);
         }
@@ -61,9 +61,9 @@ namespace WebApiClient.Defaults.KeyValueFormats
         /// <param name="context">上下文</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        protected KeyValuePair<string, string> GetKeyValuePair(ConvertContext context)
+        protected KeyValuePair<string, string> ConvertToKeyValuePair(ConvertContext context)
         {
-            return this.GetKeyValuePair(context.Name, context.Value, context.Options);
+            return this.ConvertToKeyValuePair(context.Name, context.Value, context.Options);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace WebApiClient.Defaults.KeyValueFormats
         /// <param name="options">选项</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        protected KeyValuePair<string, string> GetKeyValuePair(string name, object value, FormatOptions options)
+        protected KeyValuePair<string, string> ConvertToKeyValuePair(string name, object value, FormatOptions options)
         {
             if (string.IsNullOrEmpty(name) == true)
             {
