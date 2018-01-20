@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using WebApiClient.Interfaces;
 
 namespace WebApiClient
 {
@@ -12,16 +13,6 @@ namespace WebApiClient
     /// </summary>
     static class TypeExtend
     {
-        /// <summary>
-        /// void类型
-        /// </summary>
-        private static readonly Type voidType = typeof(void);
-
-        /// <summary>
-        /// dispose方法
-        /// </summary>
-        private static readonly MethodInfo disposeMethod = typeof(IDisposable).GetMethods().FirstOrDefault();
-
         /// <summary>
         /// 接口的方法缓存
         /// </summary>
@@ -35,13 +26,28 @@ namespace WebApiClient
 
         /// <summary>
         /// 获取接口类型及其继承的接口的所有方法
+        /// 忽略HttpApiClient类型的所有接口的方法
         /// </summary>
         /// <param name="interfaceType">接口类型</param>
-        /// <param name="excepts">排除的接口类型</param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        public static MethodInfo[] GetApiAllMethods(this Type interfaceType, params Type[] excepts)
+        public static MethodInfo[] GetAllApiMethods(this Type interfaceType)
+        {
+            return interfaceMethodsCache.GetOrAdd(
+                interfaceType,
+                type => type.GetAllApiMethodsNoCache());
+        }
+
+        /// <summary>
+        /// 获取接口类型及其继承的接口的所有方法
+        /// 忽略HttpApiClient类型的所有接口的方法
+        /// </summary>
+        /// <param name="interfaceType">接口类型</param> 
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <returns></returns>
+        private static MethodInfo[] GetAllApiMethodsNoCache(this Type interfaceType)
         {
             if (interfaceType.IsInterface == false)
             {
@@ -56,31 +62,25 @@ namespace WebApiClient
                 throw new NotSupportedException(interfaceType.Name + "必须为public修饰");
             }
 
-            return interfaceMethodsCache.GetOrAdd(interfaceType, type =>
-            {
-                var typeHashSet = new HashSet<Type>();
-                var methodHashSet = new HashSet<MethodInfo>();
-                GetInterfaceMethods(type, excepts, ref typeHashSet, ref methodHashSet);
-                return methodHashSet.ToArray();
-            });
+            // 排除HttpApiClient已实现的接口
+            var excepts = typeof(HttpApiClient).GetInterfaces();
+            var exceptHashSet = new HashSet<Type>(excepts);
+            var methodHashSet = new HashSet<MethodInfo>();
+
+            interfaceType.GetInterfaceMethods(ref exceptHashSet, ref methodHashSet);
+            return methodHashSet.ToArray();
         }
 
         /// <summary>
         /// 递归查找接口的方法
         /// </summary>
         /// <param name="interfaceType">接口类型</param>
-        /// <param name="excepts">排除的接口类型</param>
-        /// <param name="typeHashSet">接口类型集</param>
-        /// <param name="methodHashSet">方法集</param>
+        /// <param name="exceptHashSet">排除的接口类型</param>
+        /// <param name="methodHashSet">收集到的方法</param>
         /// <exception cref="NotSupportedException"></exception>
-        private static void GetInterfaceMethods(Type interfaceType, Type[] excepts, ref HashSet<Type> typeHashSet, ref HashSet<MethodInfo> methodHashSet)
+        private static void GetInterfaceMethods(this Type interfaceType, ref HashSet<Type> exceptHashSet, ref HashSet<MethodInfo> methodHashSet)
         {
-            if (excepts.Contains(interfaceType) == true)
-            {
-                return;
-            }
-
-            if (typeHashSet.Add(interfaceType) == false)
+            if (exceptHashSet.Add(interfaceType) == false)
             {
                 return;
             }
@@ -94,7 +94,7 @@ namespace WebApiClient
 
             foreach (var item in interfaceType.GetInterfaces())
             {
-                GetInterfaceMethods(item, excepts, ref typeHashSet, ref methodHashSet);
+                item.GetInterfaceMethods(ref exceptHashSet, ref methodHashSet);
             }
         }
 
@@ -104,11 +104,6 @@ namespace WebApiClient
         /// <exception cref="NotSupportedException"></exception>
         private static void EnsureApiMethod(this MethodInfo method)
         {
-            if (method.Equals(disposeMethod) == true)
-            {
-                return;
-            }
-
             if (method.IsGenericMethod == true)
             {
                 throw new NotSupportedException("不支持泛型方法：" + method);
@@ -135,7 +130,7 @@ namespace WebApiClient
                     throw new NotSupportedException(message);
                 }
             }
-        }         
+        }
 
         /// <summary>
         /// 是否可以从TBase类型派生

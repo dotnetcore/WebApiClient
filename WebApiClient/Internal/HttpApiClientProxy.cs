@@ -51,8 +51,12 @@ namespace WebApiClient
         public static TInterface CreateProxyWithInterface<TInterface>(IApiInterceptor interceptor) where TInterface : class
         {
             var interfaceType = typeof(TInterface);
-            var apiMethods = interfaceType.GetApiAllMethods(typeof(IHttpApiClient), typeof(IDisposable));
-            var proxyTypeCtor = proxyTypeCtorCache.GetOrAdd(interfaceType, type => GenerateProxyTypeCtor(type, apiMethods));
+            var apiMethods = interfaceType.GetAllApiMethods();
+
+            var proxyTypeCtor = proxyTypeCtorCache.GetOrAdd(
+                interfaceType,
+                type => HttpApiClientProxy.GenerateProxyTypeCtor(type, apiMethods));
+
             return proxyTypeCtor.Invoke(new object[] { interceptor, apiMethods }) as TInterface;
         }
 
