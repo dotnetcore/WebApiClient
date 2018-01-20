@@ -1,5 +1,6 @@
 ## 1. [Nuget](https://www.nuget.org/packages/Laojiu.WebApiClient/)
 PM> `install-package Laojiu.WebApiClient`
+<br/>依赖：.net framework4.5  netcoreapp2.0  netstandard2.0
 
 ## 2. WebApiClient是什么
 ### 2.1 接口的声明
