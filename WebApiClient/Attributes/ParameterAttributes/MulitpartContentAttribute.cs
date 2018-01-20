@@ -1,4 +1,5 @@
-﻿using WebApiClient.Contexts;
+﻿using System.Linq;
+using WebApiClient.Contexts;
 
 namespace WebApiClient.Attributes
 {
@@ -38,7 +39,7 @@ namespace WebApiClient.Attributes
         {
             var formatter = context.HttpApiConfig.KeyValueFormatter;
             var options = context.HttpApiConfig.FormatOptions.CloneChange(this.datetimeFormate);
-            var keyValues = formatter.Serialize(parameter, options);
+            var keyValues = formatter.Serialize(parameter, options).Where(item => item.Value != null);
             context.RequestMessage.AddMulitpartText(keyValues);
         }
     }

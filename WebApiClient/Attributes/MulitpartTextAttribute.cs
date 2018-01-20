@@ -69,7 +69,11 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         async Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            context.RequestMessage.AddMulitpartText(parameter.Name, parameter.ToString());
+            var willIgnore = parameter.IsNullableType && parameter.Value == null;
+            if (willIgnore == false)
+            {
+                context.RequestMessage.AddMulitpartText(parameter.Name, parameter.ToString());
+            }
             await ApiTask.CompletedTask;
         }
     }

@@ -36,22 +36,9 @@ namespace WebApiClient.Defaults
         private readonly IConverter firstConverter;
 
         /// <summary>
-        /// 获取是否忽略Null值的简单对象或属性
-        /// </summary>
-        public bool IgnoreNull { get; private set; }
-
-        /// <summary>
         /// 默认键值对列化工具
         /// </summary>
-        public KeyValueFormatter() :
-            this(true)
-        {
-        }
-
-        /// <summary>
-        /// 默认键值对列化工具
-        /// </summary>
-        public KeyValueFormatter(bool ignoreNull)
+        public KeyValueFormatter()
         {
             var notSupported = new NotSupportedConverter();
             var converters = this.GetConverters().Concat(new[] { notSupported });
@@ -63,8 +50,6 @@ namespace WebApiClient.Defaults
                 cur.First = this.firstConverter;
                 return next;
             }).First = this.firstConverter;
-
-            this.IgnoreNull = ignoreNull;
         }
 
         /// <summary>
@@ -89,12 +74,7 @@ namespace WebApiClient.Defaults
         public IEnumerable<KeyValuePair<string, string>> Serialize(string name, object obj, FormatOptions options)
         {
             var context = new ConvertContext(name, obj, 0, options);
-            var keyValues = this.firstConverter.Invoke(context);
-            if (this.IgnoreNull == false)
-            {
-                return keyValues;
-            }
-            return keyValues.Where(item => item.Value != null);
+            return this.firstConverter.Invoke(context);
         }
 
         /// <summary>

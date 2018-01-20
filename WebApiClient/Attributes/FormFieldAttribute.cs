@@ -56,7 +56,6 @@ namespace WebApiClient.Attributes
             {
                 throw new NotSupportedException("请传入name和value参数：" + this.GetType().Name);
             }
-
             await context.RequestMessage.AddFormFieldAsync(this.name, this.value);
         }
 
@@ -68,7 +67,11 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         async Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            await context.RequestMessage.AddFormFieldAsync(parameter.Name, parameter.ToString());
+            var willIgnore = parameter.IsNullableType && parameter.Value == null;
+            if (willIgnore == false)
+            {
+                await context.RequestMessage.AddFormFieldAsync(parameter.Name, parameter.ToString());
+            }
         }
     }
 }

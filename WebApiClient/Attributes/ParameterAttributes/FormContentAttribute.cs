@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using WebApiClient.Contexts;
 
 namespace WebApiClient.Attributes
@@ -39,7 +40,7 @@ namespace WebApiClient.Attributes
         {
             var formatter = context.HttpApiConfig.KeyValueFormatter;
             var options = context.HttpApiConfig.FormatOptions.CloneChange(this.datetimeFormat);
-            var keyValues = formatter.Serialize(parameter, options);
+            var keyValues = formatter.Serialize(parameter, options).Where(item => item.Value != null);
             await context.RequestMessage.AddFormFieldAsync(keyValues);
         }
     }

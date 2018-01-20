@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -81,6 +82,7 @@ namespace WebApiClient
             var parameterName = parameterAlias == null ? parameter.Name : parameterAlias.Name;
             var isHttpContent = parameterType.IsInheritFrom<HttpContent>();
             var isApiParameterable = parameterType.IsInheritFrom<IApiParameterable>() || parameterType.IsInheritFrom<IEnumerable<IApiParameterable>>();
+            var isNullableType = parameterType.IsGenericType && parameterType.GetGenericTypeDefinition() == typeof(Nullable<>);
 
             var defined = parameter.GetAttributes<IApiParameterAttribute>(true);
             var attributes = new ParameterAttributeCollection(defined);
@@ -105,7 +107,8 @@ namespace WebApiClient
                 Name = parameterName,
                 Index = parameter.Position,
                 Attributes = attributes.ToArray(),
-                ParameterType = parameterType
+                ParameterType = parameterType,
+                IsNullableType = isNullableType
             };
         }
 

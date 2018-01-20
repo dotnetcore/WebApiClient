@@ -32,6 +32,11 @@ namespace WebApiClient.Contexts
         public Type ParameterType { get; internal set; }
 
         /// <summary>
+        /// 获取参数类型是否可空类型
+        /// </summary>
+        public bool IsNullableType { get; internal set; }
+
+        /// <summary>
         /// 获取参数值
         /// </summary>
         public object Value { get; internal set; }
@@ -63,7 +68,8 @@ namespace WebApiClient.Contexts
                 Value = this.Value,
                 Member = this.Member,
                 Attributes = this.Attributes,
-                ParameterType = this.ParameterType
+                ParameterType = this.ParameterType,
+                IsNullableType = this.IsNullableType
             };
         }
     }
