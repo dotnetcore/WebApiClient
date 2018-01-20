@@ -59,22 +59,21 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 创建objectType类型获取propertyName的委托
+        /// 创建declaringType类型获取property值的委托
         /// </summary>
-        /// <param name="instanceType">实例的类型</param>
+        /// <param name="declaringType">实例的类型</param>
         /// <param name="propertyName">属性的名称</param>
         /// <returns></returns>
-        private static Func<object, object> CreateGetterDelegate(Type instanceType, string propertyName)
+        private static Func<object, object> CreateGetterDelegate(Type declaringType, string propertyName)
         {
-            // (object arg) => (object)((instanceType)arg).propertyName
+            // (object instance) => (object)((declaringType)instance).propertyName
 
-            var arg = Expression.Parameter(typeof(object));
+            var param_instance = Expression.Parameter(typeof(object));
+            var body_instance = Expression.Convert(param_instance, declaringType);
+            var body_property = Expression.Property(body_instance, propertyName);
+            var body_return = Expression.Convert(body_property, typeof(object));
 
-            var castArg = Expression.Convert(arg, instanceType);
-            var propertyAccess = Expression.Property(castArg, propertyName);
-            var objectResult = Expression.Convert(propertyAccess, typeof(object));
-
-            return Expression.Lambda<Func<object, object>>(objectResult, arg).Compile();
+            return Expression.Lambda<Func<object, object>>(body_return, param_instance).Compile();
         }
     }
 }
