@@ -1,6 +1,6 @@
 ## 1. [Nuget](https://www.nuget.org/packages/Laojiu.WebApiClient/)
 PM> `install-package Laojiu.WebApiClient`
-<br/>依赖：`.net framework4.5`  `netcoreapp2.0`  `netstandard2.0`
+<br/>依赖 `.net framework4.5`  `netcoreapp2.0`  `netstandard2.0`
 
 ## 2. WebApiClient是什么
 ### 2.1 接口的声明
@@ -42,13 +42,20 @@ static async Task TestAsync()
     var user2 = await myWebApi.UpdateUserWithFormAsync(user);
 }
 ``` 
+### 功能特性
+* 天生支持的面向切面编程方式；
+* 内置丰富的接口、方法和属性特性，支持使用自定义特性
+* 灵活和ApiAcitonFilter、GobalFilter和IParameterable
+* 功能强大且支持DataAnnotations的JsonFormatter和KeyValueFormatter
+* 支持与外部HttpClientHandler实例无缝衔接
+* 独一无二的请求异常条件重试和异常处理链式语法功能
 
-### 3. 详细文档
+### 4. 详细文档
 * [WebApiClient基础](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E5%9F%BA%E7%A1%80)
 * [WebApiClient中级](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E4%B8%AD%E7%BA%A7)
 * [WebApiClient高级](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E9%AB%98%E7%BA%A7)
 
-### 4. 怎么联系我
+### 5 怎么联系我
 * 加群439800853 注明WeApiClient
 * 366193849@qq.com，不重要的尽量不要发
 
