@@ -2,7 +2,7 @@
 PM> `install-package Laojiu.WebApiClient`
 <br/>依赖 `.net framework4.5`  `netcoreapp2.0`  `netstandard2.0`
 
-## 2. WebApiClient是什么
+## 2. Http(s)请求
 ### 2.1 接口的声明
 ```c#
 [HttpHost("http://www.webapiclient.com")] 
@@ -42,7 +42,8 @@ static async Task TestAsync()
     var user2 = await myWebApi.UpdateUserWithFormAsync(user);
 }
 ``` 
-### 功能特性
+
+### 3. 功能特性
 * 天生支持的面向切面编程方式；
 * 内置丰富的接口、方法和属性特性，支持使用自定义特性
 * 灵活和ApiAcitonFilter、GobalFilter和IParameterable
@@ -55,7 +56,7 @@ static async Task TestAsync()
 * [WebApiClient中级](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E4%B8%AD%E7%BA%A7)
 * [WebApiClient高级](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E9%AB%98%E7%BA%A7)
 
-### 5 怎么联系我
+### 5. 联系方式
 * 加群439800853 注明WeApiClient
 * 366193849@qq.com，不重要的尽量不要发
 
