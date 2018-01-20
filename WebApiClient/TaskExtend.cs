@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using WebApiClient.Interfaces;
 
 namespace WebApiClient
@@ -82,6 +83,7 @@ namespace WebApiClient
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="task"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         public static ITask<TResult> HandleAsDefaultWhenException<TResult>(this ITask<TResult> task)
         {
@@ -94,6 +96,7 @@ namespace WebApiClient
         /// <typeparam name="TResult"></typeparam>
         /// <param name="task"></param>
         /// <param name="handler">异常处理委托</param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         public static ITask<TResult> HandleAsDefaultWhenException<TResult>(this ITask<TResult> task, Action<Exception> handler)
         {
@@ -106,6 +109,23 @@ namespace WebApiClient
                 return default(TResult);
             };
             return task.Handle().WhenCatch<Exception>(func);
+        }
+
+
+        /// <summary>
+        /// 使用工作线程包装请求并同步等待结果
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="task"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns></returns>
+        public static TResult Wait<TResult>(this ITask<TResult> task)
+        {
+            if (task == null)
+            {
+                throw new ArgumentNullException(nameof(task));
+            }
+            return Task.Factory.StartNew(() => task.GetAwaiter().GetResult()).Result;
         }
     }
 }
