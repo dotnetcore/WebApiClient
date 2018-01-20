@@ -38,26 +38,25 @@ namespace WebApiClient
         /// 接口类型与代理类型的构造器缓存
         /// </summary>
         private static readonly ConcurrentDictionary<Type, ConstructorInfo> proxyTypeCtorCache = new ConcurrentDictionary<Type, ConstructorInfo>();
-
+              
         /// <summary>
         /// 创建HttpApiClient代理类
         /// 并实现指定的接口
         /// </summary>
-        /// <typeparam name="TInterface">接口类型</typeparam>
+        /// <param name="interfaceType">接口类型</param>
         /// <param name="interceptor">拦截器</param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        public static TInterface CreateProxyWithInterface<TInterface>(IApiInterceptor interceptor) where TInterface : class
+        public static object CreateProxyWithInterface(Type interfaceType, IApiInterceptor interceptor)
         {
-            var interfaceType = typeof(TInterface);
             var apiMethods = interfaceType.GetAllApiMethods();
 
             var proxyTypeCtor = proxyTypeCtorCache.GetOrAdd(
                 interfaceType,
                 type => HttpApiClientProxy.GenerateProxyTypeCtor(type, apiMethods));
 
-            return proxyTypeCtor.Invoke(new object[] { interceptor, apiMethods }) as TInterface;
+            return proxyTypeCtor.Invoke(new object[] { interceptor, apiMethods });
         }
 
         /// <summary>
