@@ -67,11 +67,7 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         async Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var willIgnore = parameter.IsNullableType && parameter.Value == null;
-            if (willIgnore == false)
-            {
-                await context.RequestMessage.AddFormFieldAsync(parameter.Name, parameter.ToString());
-            }
+            await context.RequestMessage.AddFormFieldAsync(parameter.Name, parameter.ToString());
         }
     }
 }

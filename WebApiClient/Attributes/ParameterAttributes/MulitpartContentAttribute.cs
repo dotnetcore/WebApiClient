@@ -39,7 +39,7 @@ namespace WebApiClient.Attributes
         {
             var formatter = context.HttpApiConfig.KeyValueFormatter;
             var options = context.HttpApiConfig.FormatOptions.CloneChange(this.datetimeFormate);
-            var keyValues = formatter.Serialize(parameter, options).Where(item => item.Value != null);
+            var keyValues = formatter.Serialize(parameter, options);
             context.RequestMessage.AddMulitpartText(keyValues);
         }
     }

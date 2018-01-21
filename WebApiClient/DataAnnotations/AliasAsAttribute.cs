@@ -4,11 +4,11 @@ namespace WebApiClient.DataAnnotations
 {
     /// <summary>
     /// DataAnnotation
-    /// 表示将参数名或属性名进行别名
-    /// 当修饰属性时，JsonFormatter或KeyValueFormatter序列化将使用此别名
+    /// 表示将参数别名或序列时此属性的别名
+    /// 当修饰属性时默认适用于JsonFormat和KeyValueFormat
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public sealed class AliasAsAttribute : Attribute
+    public sealed class AliasAsAttribute : AnnotateAttribute
     {
         /// <summary>
         /// 获取别名
@@ -27,6 +27,7 @@ namespace WebApiClient.DataAnnotations
                 throw new ArgumentNullException(nameof(name));
             }
             this.Name = name;
+            this.Scope = AnnotateScope.JsonFormat | AnnotateScope.KeyValueFormat;
         }
     }
 }

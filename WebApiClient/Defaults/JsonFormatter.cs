@@ -99,7 +99,9 @@ namespace WebApiClient.Defaults
                 var property = base.CreateProperty(member, memberSerialization);
                 var descriptor = PropertyDescriptor.GetDescriptor(member);
 
-                property.PropertyName = descriptor.AliasName;
+                property.PropertyName = descriptor.Name;
+                property.Ignored = descriptor.IgnoreSerialized;
+
                 if (this.useCamelCase == true)
                 {
                     property.PropertyName = FormatOptions.CamelCase(property.PropertyName);
@@ -110,7 +112,10 @@ namespace WebApiClient.Defaults
                     property.Converter = descriptor.DateTimeConverter;
                 }
 
-                property.Ignored = descriptor.IsIgnoreSerialized;
+                if (descriptor.IgnoreWhenNull == true)
+                {
+                    property.NullValueHandling = NullValueHandling.Ignore;
+                }
                 return property;
             }
 
@@ -127,7 +132,7 @@ namespace WebApiClient.Defaults
                 /// <summary>
                 /// 获取属性别名或名称
                 /// </summary>
-                public string AliasName { get; private set; }
+                public string Name { get; private set; }
 
                 /// <summary>
                 /// 获取时间转换器
@@ -135,9 +140,14 @@ namespace WebApiClient.Defaults
                 public JsonConverter DateTimeConverter { get; private set; }
 
                 /// <summary>
-                /// 获取是否序列化忽略
+                /// 获取是否忽略序列化
+                /// </summary>      
+                public bool IgnoreSerialized { get; private set; }
+
+                /// <summary>
+                /// 获取当值为null时是否忽略序列化
                 /// </summary>
-                public bool IsIgnoreSerialized { get; private set; }
+                public bool IgnoreWhenNull { get; private set; }
 
                 /// <summary>
                 /// 属性的描述
@@ -145,16 +155,24 @@ namespace WebApiClient.Defaults
                 /// <param name="member"></param>
                 private PropertyDescriptor(MemberInfo member)
                 {
-                    var aliasAs = member.GetAttribute<AliasAsAttribute>(true);
-                    this.AliasName = aliasAs == null ? member.Name : aliasAs.Name;
-
-                    var datatimeFormat = member.GetAttribute<DateTimeFormatAttribute>(true);
-                    if (datatimeFormat != null)
+                    var aliasAsAttribute = member.GetAttribute<AliasAsAttribute>(true);
+                    if (aliasAsAttribute != null && aliasAsAttribute.IsDefinedScope(AnnotateScope.JsonFormat))
                     {
-                        this.DateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = datatimeFormat.Format };
+                        this.Name = aliasAsAttribute.Name;
+                    }
+                    else
+                    {
+                        this.Name = member.Name;
                     }
 
-                    this.IsIgnoreSerialized = member.IsDefined(typeof(IgnoreSerializedAttribute));
+                    var datetimeFormatAttribute = member.GetAttribute<DateTimeFormatAttribute>(true);
+                    if (datetimeFormatAttribute != null && datetimeFormatAttribute.IsDefinedScope(AnnotateScope.JsonFormat))
+                    {
+                        this.DateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = datetimeFormatAttribute.Format };
+                    }
+
+                    this.IgnoreSerialized = member.IsDefinedAnnotateScope<IgnoreSerializedAttribute>(AnnotateScope.JsonFormat);
+                    this.IgnoreWhenNull = member.IsDefinedAnnotateScope<IgnoreWhenNullAttribute>(AnnotateScope.JsonFormat);
                 }
 
                 /// <summary>

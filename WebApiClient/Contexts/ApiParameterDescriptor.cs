@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
+using WebApiClient.DataAnnotations;
 using WebApiClient.Interfaces;
 
 namespace WebApiClient.Contexts
@@ -30,11 +31,6 @@ namespace WebApiClient.Contexts
         /// 获取参数类型
         /// </summary>
         public Type ParameterType { get; internal set; }
-
-        /// <summary>
-        /// 获取参数类型是否可空类型
-        /// </summary>
-        public bool IsNullableType { get; internal set; }
 
         /// <summary>
         /// 获取参数值
@@ -68,8 +64,7 @@ namespace WebApiClient.Contexts
                 Value = this.Value,
                 Member = this.Member,
                 Attributes = this.Attributes,
-                ParameterType = this.ParameterType,
-                IsNullableType = this.IsNullableType
+                ParameterType = this.ParameterType
             };
         }
     }

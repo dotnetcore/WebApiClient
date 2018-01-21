@@ -39,6 +39,7 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
                 from p in PropertyDescriptor.GetProperties(context.DataType)
                 where p.IsSupportGet && p.IgnoreSerialized == false
                 let value = p.GetValue(context.Data)
+                where (p.IgnoreWhenNull && value == null) == false
                 let options = context.Options.CloneChange(p.DateTimeFormat)
                 select new ConvertContext(p.Name, value, context.Depths, options);
         }
@@ -64,9 +65,14 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             public string DateTimeFormat { get; private set; }
 
             /// <summary>
-            /// 获取是否声明IgnoreSerializedAttribute
+            /// 获取是否忽略序列化
             /// </summary>      
             public bool IgnoreSerialized { get; private set; }
+
+            /// <summary>
+            /// 获取当值为null时是否忽略序列化
+            /// </summary>
+            public bool IgnoreWhenNull { get; private set; }
 
             /// <summary>
             /// 获取是否支持Get操作
@@ -79,22 +85,33 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             /// <param name="property">属性信息</param>
             private PropertyDescriptor(PropertyInfo property)
             {
-                var aliasAs = property.GetAttribute<AliasAsAttribute>(true);
-                this.Name = aliasAs == null ? property.Name : aliasAs.Name;
+                var aliasAsAttribute = property.GetAttribute<AliasAsAttribute>(true);
+                if (aliasAsAttribute != null && aliasAsAttribute.IsDefinedScope(AnnotateScope.JsonFormat))
+                {
+                    this.Name = aliasAsAttribute.Name;
+                }
+                else
+                {
+                    this.Name = property.Name;
+                }
 
                 if (property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?))
                 {
-                    var formatAttribute = property.GetAttribute<DateTimeFormatAttribute>(true);
-                    this.DateTimeFormat = formatAttribute == null ? null : formatAttribute.Format;
+                    var datetimeFormatAttribute = property.GetCustomAttribute<DateTimeFormatAttribute>();
+                    if (datetimeFormatAttribute != null && datetimeFormatAttribute.IsDefinedScope(AnnotateScope.KeyValueFormat))
+                    {
+                        this.DateTimeFormat = datetimeFormatAttribute.Format;
+                    }
                 }
 
                 if (property.CanRead == true)
                 {
                     this.getter = new PropertyGetter(property);
+                    this.IsSupportGet = true;
                 }
 
-                this.IgnoreSerialized = property.IsDefined(typeof(IgnoreSerializedAttribute));
-                this.IsSupportGet = this.getter != null;
+                this.IgnoreSerialized = property.IsDefinedAnnotateScope<IgnoreSerializedAttribute>(AnnotateScope.KeyValueFormat);
+                this.IgnoreWhenNull = property.IsDefinedAnnotateScope<IgnoreWhenNullAttribute>(AnnotateScope.KeyValueFormat);
             }
 
             /// <summary>

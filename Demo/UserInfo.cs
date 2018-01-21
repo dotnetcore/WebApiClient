@@ -15,6 +15,7 @@ namespace Demo
         [AliasAs("password")]
         public string Password { get; set; }
 
+        [IgnoreWhenNull]
         [DateTimeFormat("yyyy-MM-dd")]
         public DateTime? BirthDay { get; set; }
 

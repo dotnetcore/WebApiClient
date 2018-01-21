@@ -4,10 +4,11 @@ namespace WebApiClient.DataAnnotations
 {
     /// <summary>
     /// DataAnnotation
-    /// 表示属性在JsonFormatter或KeyValueFormatter序列化时使用的日期时间格式
+    /// 表示序列时此属性使用的日期时间格式
+    /// 默认适用于JsonFormat和KeyValueFormat
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public sealed class DateTimeFormatAttribute : Attribute
+    public sealed class DateTimeFormatAttribute : AnnotateAttribute
     {
         /// <summary>
         /// 获取格式
@@ -26,6 +27,7 @@ namespace WebApiClient.DataAnnotations
                 throw new ArgumentNullException(nameof(format));
             }
             this.Format = format;
+            this.Scope = AnnotateScope.JsonFormat | AnnotateScope.KeyValueFormat;
         }
     }
 }

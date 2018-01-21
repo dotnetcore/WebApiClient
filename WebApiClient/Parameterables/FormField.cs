@@ -44,11 +44,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         async Task IApiParameterable.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var willIgnore = parameter.IsNullableType && parameter.Value == null;
-            if (willIgnore == false)
-            {
-                await context.RequestMessage.AddFormFieldAsync(parameter.Name, this.stringValue);
-            }
+            await context.RequestMessage.AddFormFieldAsync(parameter.Name, this.stringValue);
         }
 
         /// <summary>

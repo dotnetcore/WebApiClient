@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using WebApiClient.Interfaces;
+using WebApiClient.DataAnnotations;
 
 namespace WebApiClient
 {
@@ -156,6 +156,19 @@ namespace WebApiClient
         public static bool AllowMultiple(this Type type)
         {
             return typeAllowMultipleCache.GetOrAdd(type, (t => t.IsInheritFrom<Attribute>() && t.GetAttribute<AttributeUsageAttribute>(true).AllowMultiple));
+        }
+
+        /// <summary>
+        /// 返回特性是否声明指定的Scope
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="element"></param>
+        /// <param name="scope"></param>
+        /// <returns></returns>
+        public static bool IsDefinedAnnotateScope<T>(this MemberInfo element, AnnotateScope scope) where T : AnnotateAttribute
+        {
+            var attribute = element.GetCustomAttribute<T>();
+            return attribute != null && attribute.IsDefinedScope(scope);
         }
     }
 }
