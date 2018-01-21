@@ -8,7 +8,7 @@ namespace WebApiClient.DataAnnotations
     /// 当修饰属性时默认适用于JsonFormat和KeyValueFormat
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public sealed class AliasAsAttribute : AnnotateAttribute
+    public sealed class AliasAsAttribute : DataAnnotationAttribute
     {
         /// <summary>
         /// 获取别名

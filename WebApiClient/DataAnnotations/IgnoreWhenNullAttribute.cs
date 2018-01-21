@@ -12,7 +12,7 @@ namespace WebApiClient.DataAnnotations
     /// 默认适用于KeyValueFormat
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public sealed class IgnoreWhenNullAttribute : AnnotateAttribute
+    public sealed class IgnoreWhenNullAttribute : DataAnnotationAttribute
     {
         /// <summary>
         /// 值为null此属性将忽略

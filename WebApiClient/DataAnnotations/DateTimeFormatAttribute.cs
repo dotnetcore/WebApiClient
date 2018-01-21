@@ -8,7 +8,7 @@ namespace WebApiClient.DataAnnotations
     /// 默认适用于JsonFormat和KeyValueFormat
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public sealed class DateTimeFormatAttribute : AnnotateAttribute
+    public sealed class DateTimeFormatAttribute : DataAnnotationAttribute
     {
         /// <summary>
         /// 获取格式

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace WebApiClient.DataAnnotations
 {
     /// <summary>
-    /// 表示注解特性抽象
+    /// 表示数据注解特性抽象
     /// </summary>
-    public abstract class AnnotateAttribute : Attribute
+    public abstract class DataAnnotationAttribute : Attribute
     {
         /// <summary>
         /// 获取或设置适用范围
