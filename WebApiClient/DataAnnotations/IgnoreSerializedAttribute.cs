@@ -15,7 +15,7 @@ namespace WebApiClient.DataAnnotations
         /// </summary>
         public IgnoreSerializedAttribute()
         {
-            this.Scope = AnnotateScope.JsonFormat | AnnotateScope.KeyValueFormat;
+            this.Scope = FormatScope.JsonFormat | FormatScope.KeyValueFormat;
         }
     }
 }

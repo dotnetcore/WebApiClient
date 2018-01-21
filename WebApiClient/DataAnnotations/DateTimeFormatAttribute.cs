@@ -27,7 +27,7 @@ namespace WebApiClient.DataAnnotations
                 throw new ArgumentNullException(nameof(format));
             }
             this.Format = format;
-            this.Scope = AnnotateScope.JsonFormat | AnnotateScope.KeyValueFormat;
+            this.Scope = FormatScope.JsonFormat | FormatScope.KeyValueFormat;
         }
     }
 }

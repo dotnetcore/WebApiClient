@@ -12,16 +12,16 @@ namespace WebApiClient.DataAnnotations
     public abstract class DataAnnotationAttribute : Attribute
     {
         /// <summary>
-        /// 获取或设置适用范围
+        /// 获取或设置适用的序列化范围
         /// </summary>
-        public AnnotateScope Scope { get; set; }
+        public FormatScope Scope { get; set; }
 
         /// <summary>
         /// 返回是否声明指定的scope
         /// </summary>
-        /// <param name="scope">适用范围</param>
+        /// <param name="scope">序列化范围</param>
         /// <returns></returns>
-        public bool IsDefinedScope(AnnotateScope scope)
+        public bool IsDefinedScope(FormatScope scope)
         {
             return scope == (scope & this.Scope);
         }

@@ -86,7 +86,7 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             private PropertyDescriptor(PropertyInfo property)
             {
                 var aliasAsAttribute = property.GetAttribute<AliasAsAttribute>(true);
-                if (aliasAsAttribute != null && aliasAsAttribute.IsDefinedScope(AnnotateScope.JsonFormat))
+                if (aliasAsAttribute != null && aliasAsAttribute.IsDefinedScope(FormatScope.JsonFormat))
                 {
                     this.Name = aliasAsAttribute.Name;
                 }
@@ -98,7 +98,7 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
                 if (property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?))
                 {
                     var datetimeFormatAttribute = property.GetCustomAttribute<DateTimeFormatAttribute>();
-                    if (datetimeFormatAttribute != null && datetimeFormatAttribute.IsDefinedScope(AnnotateScope.KeyValueFormat))
+                    if (datetimeFormatAttribute != null && datetimeFormatAttribute.IsDefinedScope(FormatScope.KeyValueFormat))
                     {
                         this.DateTimeFormat = datetimeFormatAttribute.Format;
                     }
@@ -110,8 +110,8 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
                     this.IsSupportGet = true;
                 }
 
-                this.IgnoreSerialized = property.IsDefinedAnnotateScope<IgnoreSerializedAttribute>(AnnotateScope.KeyValueFormat);
-                this.IgnoreWhenNull = property.IsDefinedAnnotateScope<IgnoreWhenNullAttribute>(AnnotateScope.KeyValueFormat);
+                this.IgnoreSerialized = property.IsDefinedAnnotateScope<IgnoreSerializedAttribute>(FormatScope.KeyValueFormat);
+                this.IgnoreWhenNull = property.IsDefinedAnnotateScope<IgnoreWhenNullAttribute>(FormatScope.KeyValueFormat);
             }
 
             /// <summary>

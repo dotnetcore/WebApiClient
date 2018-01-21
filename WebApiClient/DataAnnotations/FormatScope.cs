@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 namespace WebApiClient.DataAnnotations
 {
     /// <summary>
-    /// 表示注解特性的使用范围
+    /// 表示适用的序列化的范围
     /// </summary>
     [Flags]
-    public enum AnnotateScope
+    public enum FormatScope
     {
         /// <summary>
         /// 适用于Json序列化

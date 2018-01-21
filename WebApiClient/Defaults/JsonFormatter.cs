@@ -156,7 +156,7 @@ namespace WebApiClient.Defaults
                 private PropertyDescriptor(MemberInfo member)
                 {
                     var aliasAsAttribute = member.GetAttribute<AliasAsAttribute>(true);
-                    if (aliasAsAttribute != null && aliasAsAttribute.IsDefinedScope(AnnotateScope.JsonFormat))
+                    if (aliasAsAttribute != null && aliasAsAttribute.IsDefinedScope(FormatScope.JsonFormat))
                     {
                         this.Name = aliasAsAttribute.Name;
                     }
@@ -166,13 +166,13 @@ namespace WebApiClient.Defaults
                     }
 
                     var datetimeFormatAttribute = member.GetAttribute<DateTimeFormatAttribute>(true);
-                    if (datetimeFormatAttribute != null && datetimeFormatAttribute.IsDefinedScope(AnnotateScope.JsonFormat))
+                    if (datetimeFormatAttribute != null && datetimeFormatAttribute.IsDefinedScope(FormatScope.JsonFormat))
                     {
                         this.DateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = datetimeFormatAttribute.Format };
                     }
 
-                    this.IgnoreSerialized = member.IsDefinedAnnotateScope<IgnoreSerializedAttribute>(AnnotateScope.JsonFormat);
-                    this.IgnoreWhenNull = member.IsDefinedAnnotateScope<IgnoreWhenNullAttribute>(AnnotateScope.JsonFormat);
+                    this.IgnoreSerialized = member.IsDefinedAnnotateScope<IgnoreSerializedAttribute>(FormatScope.JsonFormat);
+                    this.IgnoreWhenNull = member.IsDefinedAnnotateScope<IgnoreWhenNullAttribute>(FormatScope.JsonFormat);
                 }
 
                 /// <summary>

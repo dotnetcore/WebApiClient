@@ -165,7 +165,7 @@ namespace WebApiClient
         /// <param name="element"></param>
         /// <param name="scope"></param>
         /// <returns></returns>
-        public static bool IsDefinedAnnotateScope<T>(this MemberInfo element, AnnotateScope scope) where T : DataAnnotationAttribute
+        public static bool IsDefinedAnnotateScope<T>(this MemberInfo element, FormatScope scope) where T : DataAnnotationAttribute
         {
             var attribute = element.GetCustomAttribute<T>();
             return attribute != null && attribute.IsDefinedScope(scope);

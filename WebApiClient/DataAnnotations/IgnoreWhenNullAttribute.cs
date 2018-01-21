@@ -8,7 +8,7 @@ namespace WebApiClient.DataAnnotations
 {
     /// <summary>
     /// DataAnnotation
-    /// 表示序列时，如果此属性值为null则忽略
+    /// 表示序列时属性值为null则忽略
     /// 默认适用于KeyValueFormat
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
@@ -19,7 +19,7 @@ namespace WebApiClient.DataAnnotations
         /// </summary>
         public IgnoreWhenNullAttribute()
         {
-            this.Scope = AnnotateScope.KeyValueFormat;
+            this.Scope = FormatScope.KeyValueFormat;
         }
     }
 }
