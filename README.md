@@ -6,7 +6,7 @@ PM> `install-package Laojiu.WebApiClient`
 ### 2.1 接口的声明
 ```c#
 [HttpHost("http://www.webapiclient.com")] 
-public interface MyWebApi : IDisposable
+public interface IMyWebApi : IHttpApiClient
 {
     // GET webapi/user?account=laojiu
     // Return 原始string内容
@@ -36,18 +36,18 @@ public class UserInfo
 ```c#
 static async Task TestAsync()
 {
-    var myWebApi = HttpApiClient.Create<MyWebApi>();
+    var client = HttpApiClient.Create<IMyWebApi>();
     var user = new UserInfo { Account = "laojiu", Password = "123456" }; 
-    var user1 = await myWebApi.GetUserByAccountAsync("laojiu");
-    var user2 = await myWebApi.UpdateUserWithFormAsync(user);
+    var user1 = await client.GetUserByAccountAsync("laojiu");
+    var user2 = await client.UpdateUserWithFormAsync(user);
 }
 ``` 
 
 ### 3. 功能特性
-* 天生支持的面向切面编程方式；
+* 天生支持的面向切面编程方式
 * 内置丰富的接口、方法和属性特性，支持使用自定义特性
-* 灵活和ApiAcitonFilter、GobalFilter和IParameterable
-* 功能强大且支持DataAnnotations的JsonFormatter和KeyValueFormatter
+* 适应个性化需求的多个DataAnnotations特性
+* 灵活的ApiAcitonFilter、GobalFilter和IParameterable
 * 支持与外部HttpClientHandler实例无缝衔接
 * 独一无二的请求异常条件重试和异常处理链式语法功能
 
