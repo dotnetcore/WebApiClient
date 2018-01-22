@@ -17,6 +17,9 @@ namespace Demo.HttpClients
         [DateTimeFormat("yyyy-MM-dd")]
         public DateTime? BirthDay { get; set; }
 
+        [IgnoreWhenNull]
+        public Gender? Gender { get; set; }
+
         [IgnoreSerialized]
         public string Email { get; set; }
 
@@ -24,5 +27,15 @@ namespace Demo.HttpClients
         {
             return string.Format("{{Account:{0}, Password:{1}, BirthDay:{2}}}", this.Account, this.Password, this.BirthDay);
         }
+    }
+
+    /// <summary>
+    /// 性别
+    /// </summary>
+    public enum Gender
+    {
+        Female = 0,
+
+        Male = 1
     }
 }

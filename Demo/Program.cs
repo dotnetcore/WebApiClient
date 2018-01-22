@@ -51,7 +51,7 @@ namespace Demo
 
             var user2 = await userApiClient.GetByAccountAsync("laojiu");
 
-            var user3 = await userApiClient.UpdateWithFormAsync(user, nickName: "老九", nullableAge: 18)
+            var user3 = await userApiClient.UpdateWithFormAsync(user, nickName: "老九", nullableAge: null)
                 .Retry(3, i => TimeSpan.FromSeconds(i))
                 .WhenCatch<Exception>()
                 .WhenResult(u => u == null || u.Account == null)
