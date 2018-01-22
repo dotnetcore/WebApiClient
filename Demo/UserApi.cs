@@ -28,14 +28,16 @@ namespace Demo
 
         // /GET webapi/user/GetById?id=id001
         // Return HttpResponseMessage
-        [HttpGet("/webapi/user/GetById?id={id}")]
+        [HttpGet("/webapi/user/GetById/{id}")]
         [BasicAuth("userName", "password")]
-        ITask<HttpResponseMessage> GetByIdAsync(string id);
+        ITask<HttpResponseMessage> GetByIdAsync(
+            string id);
 
         // GET /webapi/user/GetByAccount?account=laojiu
         // Return 原始string内容
         [HttpGet("/webapi/user/GetByAccount")]
-        ITask<string> GetByAccountAsync(string account);
+        ITask<string> GetByAccountAsync(
+            string account);
 
 
         // POST /webapi/user/UpdateWithForm  
@@ -43,25 +45,34 @@ namespace Demo
         // Return json或xml内容
         [HttpPost("/webapi/user/UpdateWithForm")]
         [FormField("name", "value")] // 固定的参数值可以这么写
-        ITask<UserInfo> UpdateWithFormAsync([FormContent] UserInfo user, FormField nickName, [AliasAs("age")][FormField(IgnoreWhenNull = true)] int? nullableAge);
+        ITask<UserInfo> UpdateWithFormAsync(
+            [FormContent] UserInfo user,
+            FormField nickName,
+            [AliasAs("age"), FormField(IgnoreWhenNull = true)] int? nullableAge);
 
         // POST /webapi/user/UpdateWithJson
         // Body {"Account":"laojiu","Password":"123456"}
         // Return json或xml内容
         [HttpPost("/webapi/user/UpdateWithJson")]
-        ITask<UserInfo> UpdateWithJsonAsync([JsonContent("yyyy-MM-dd HH:mm:ss")] UserInfo user);
+        ITask<UserInfo> UpdateWithJsonAsync(
+            [JsonContent("yyyy-MM-dd HH:mm:ss")] UserInfo user);
 
         // POST /webapi/user/UpdateWithXml 
         // Body <?xml version="1.0" encoding="utf-8"?><UserInfo><Account>laojiu</Account><Password>123456</Password></UserInfo>
         // Return xml内容
         [XmlReturn]
         [HttpPost("/webapi/user/UpdateWithXml")]
-        ITask<UserInfo> UpdateWithXmlAsync([XmlContent] UserInfo user);
+        ITask<UserInfo> UpdateWithXmlAsync(
+            [XmlContent] UserInfo user);
 
         // POST /webapi/user/UpdateWithMulitpart  
         // Body multipart/form-data
         // Return json或xml内容
         [HttpPost("/webapi/user/UpdateWithMulitpart")]
-        ITask<UserInfo> UpdateWithMulitpartAsync([MulitpartContent] UserInfo user, [MulitpartText] string nickName, MulitpartText age, params MulitpartFile[] files);
+        ITask<UserInfo> UpdateWithMulitpartAsync(
+            [MulitpartContent] UserInfo user,
+            [MulitpartText] string nickName,
+            MulitpartText age,
+            params MulitpartFile[] files);
     }
 }

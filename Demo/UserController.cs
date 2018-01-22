@@ -11,7 +11,7 @@ namespace Demo
     /// <summary>
     /// User控制器
     /// </summary>
-    [Route("/webapi/user/{action}")]
+    [Route("/webapi/{controller}/{action}")]
     public class UserController : HttpController
     {
         [HttpGet]
@@ -33,9 +33,11 @@ namespace Demo
         }
 
         [HttpGet]
-        public JsonResult GetById(string id)
+        [Route("/webapi/{controller}/{action}/{id}")]
+        public JsonResult GetById()
         {
-            var model = new UserInfo();
+            var id = this.CurrentContext.Action.RouteDatas["id"];
+            var model = new UserInfo { Account = id };
             return Json(model);
         }
 
@@ -67,7 +69,7 @@ namespace Demo
         }
 
         [HttpPost]
-        public ActionResult UpdateWithMulitpart(UserInfo user , string nickName, int? age)
+        public ActionResult UpdateWithMulitpart(UserInfo user, string nickName, int? age)
         {
             return Json(user);
         }
