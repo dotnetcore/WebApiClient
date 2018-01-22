@@ -43,7 +43,7 @@ namespace Demo
         // Return json或xml内容
         [HttpPost("/webapi/user/UpdateWithForm")]
         [FormField("name", "value")] // 固定的参数值可以这么写
-        ITask<UserInfo> UpdateWithFormAsync([FormContent] UserInfo user, FormField nickName, [AliasAs("age")][FormField] int? nullableAge);
+        ITask<UserInfo> UpdateWithFormAsync([FormContent] UserInfo user, FormField nickName, [AliasAs("age")][FormField(IgnoreWhenNull = true)] int? nullableAge);
 
         // POST /webapi/user/UpdateWithJson
         // Body {"Account":"laojiu","Password":"123456"}
