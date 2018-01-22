@@ -110,22 +110,5 @@ namespace WebApiClient
             };
             return task.Handle().WhenCatch<Exception>(func);
         }
-
-
-        /// <summary>
-        /// 使用工作线程包装请求并同步等待结果
-        /// </summary>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="task"></param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <returns></returns>
-        public static TResult Wait<TResult>(this ITask<TResult> task)
-        {
-            if (task == null)
-            {
-                throw new ArgumentNullException(nameof(task));
-            }
-            return Task.Run(() => task.InvokeAsync().Result).Result;
-        }
     }
 }
