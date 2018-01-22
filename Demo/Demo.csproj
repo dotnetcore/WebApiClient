@@ -47,13 +47,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HttpPlug.cs" />
-    <Compile Include="Logger.cs" />
+    <Compile Include="HttpServices\HttpPlug.cs" />
+    <Compile Include="HttpServices\HttpServer.cs" />
+    <Compile Include="HttpClients\LogFilter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserApi.cs" />
-    <Compile Include="UserController.cs" />
-    <Compile Include="UserInfo.cs" />
+    <Compile Include="HttpClients\IUserApi.cs" />
+    <Compile Include="HttpServices\UserController.cs" />
+    <Compile Include="HttpClients\UserInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebApiClient;
 using WebApiClient.DataAnnotations;
 
-namespace Demo
+namespace Demo.HttpClients
 {
+    /// <summary>
+    /// 表示用户模型
+    /// </summary>
     public class UserInfo
     {
         public string Account { get; set; }

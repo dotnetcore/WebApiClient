@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Demo.HttpClients;
+using NetworkSocket.Http;
+using System;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using NetworkSocket;
-using NetworkSocket.Http;
 
-namespace Demo
+namespace Demo.HttpServices
 {
     /// <summary>
     /// User控制器
@@ -51,7 +49,6 @@ namespace Demo
         [HttpPost]
         public JsonResult UpdateWithForm(UserInfo user, string name, string nickName, int? age)
         {
-            user.Account = "xyz";
             return Json(user);
         }
 
@@ -74,9 +71,12 @@ namespace Demo
             return Json(user);
         }
 
+
         protected override void OnExecuting(ActionContext filterContext)
         {
-            Console.WriteLine("{0} HttpServer收到http请求：{1}", DateTime.Now.ToString("HH:mm:ss.fff"), filterContext.Action.Route);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("{0} HttpServer->收到http请求：{1}", DateTime.Now.ToString("HH:mm:ss.fff"), filterContext.Action.Route);
+            Console.ForegroundColor = ConsoleColor.Gray;
         }
     }
 }
