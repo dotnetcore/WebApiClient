@@ -100,13 +100,10 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
                     this.Name = property.Name;
                 }
 
-                if (property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?))
+                var datetimeFormatAttribute = property.GetCustomAttribute<DateTimeFormatAttribute>();
+                if (datetimeFormatAttribute != null && datetimeFormatAttribute.IsDefinedScope(keyValueFormatScope))
                 {
-                    var datetimeFormatAttribute = property.GetCustomAttribute<DateTimeFormatAttribute>();
-                    if (datetimeFormatAttribute != null && datetimeFormatAttribute.IsDefinedScope(keyValueFormatScope))
-                    {
-                        this.DateTimeFormat = datetimeFormatAttribute.Format;
-                    }
+                    this.DateTimeFormat = datetimeFormatAttribute.Format;
                 }
 
                 if (property.CanRead == true)

@@ -43,16 +43,19 @@ namespace WebApiClient
                 yield break;
             }
 
-            var array = parameter.Value as IEnumerable<IApiParameterable>;
-            if (array == null)
+            var able = parameter.Value as IApiParameterable;
+            if (able != null)
             {
-                yield return parameter.Value as IApiParameterable;
+                yield return able;
+                yield break;
             }
-            else
+
+            var array = parameter.Value as IEnumerable<IApiParameterable>;
+            if (array != null)
             {
-                foreach (var item in array)
+                foreach (var ele in array)
                 {
-                    yield return item;
+                    yield return ele;
                 }
             }
         }
