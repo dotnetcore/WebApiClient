@@ -22,6 +22,12 @@ namespace WebApiClient.Attributes
         private readonly string value;
 
         /// <summary>
+        /// 获取或设置当值为null是否忽略提交
+        /// 默认为false
+        /// </summary>
+        public bool IgnoreWhenNull { get; set; }
+
+        /// <summary>
         /// 表示参数值作为multipart/form-data表单的一个文本项
         /// </summary>
         public MulitpartTextAttribute()
@@ -57,8 +63,11 @@ namespace WebApiClient.Attributes
                 throw new NotSupportedException("请传入name和value参数：" + this.GetType().Name);
             }
 
-            context.RequestMessage.AddMulitpartText(this.name, this.value);
-            await ApiTask.CompletedTask;
+            if (this.WillIgnore(this.value) == false)
+            {
+                context.RequestMessage.AddMulitpartText(this.name, this.value);
+                await ApiTask.CompletedTask;
+            }
         }
 
         /// <summary>
@@ -69,8 +78,21 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         async Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            context.RequestMessage.AddMulitpartText(parameter.Name, parameter.ToString());
-            await ApiTask.CompletedTask;
+            if (this.WillIgnore(parameter.Value) == false)
+            {
+                context.RequestMessage.AddMulitpartText(parameter.Name, parameter.ToString());
+                await ApiTask.CompletedTask;
+            }
+        }
+
+        /// <summary>
+        /// 返回是否应该忽略提交 
+        /// </summary>
+        /// <param name="val">值</param>
+        /// <returns></returns>
+        private bool WillIgnore(object val)
+        {
+            return this.IgnoreWhenNull == true && val == null;
         }
     }
 }

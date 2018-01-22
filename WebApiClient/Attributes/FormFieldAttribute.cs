@@ -22,6 +22,12 @@ namespace WebApiClient.Attributes
         private readonly string value;
 
         /// <summary>
+        /// 获取或设置当值为null是否忽略提交
+        /// 默认为false
+        /// </summary>
+        public bool IgnoreWhenNull { get; set; }
+
+        /// <summary>
         /// 表示参数值作为x-www-form-urlencoded的字段
         /// </summary>
         public FormFieldAttribute()
@@ -56,7 +62,11 @@ namespace WebApiClient.Attributes
             {
                 throw new NotSupportedException("请传入name和value参数：" + this.GetType().Name);
             }
-            await context.RequestMessage.AddFormFieldAsync(this.name, this.value);
+
+            if (this.WillIgnore(this.value) == false)
+            {
+                await context.RequestMessage.AddFormFieldAsync(this.name, this.value);
+            }
         }
 
         /// <summary>
@@ -67,7 +77,20 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         async Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            await context.RequestMessage.AddFormFieldAsync(parameter.Name, parameter.ToString());
+            if (this.WillIgnore(parameter.Value) == false)
+            {
+                await context.RequestMessage.AddFormFieldAsync(parameter.Name, parameter.ToString());
+            }
+        }
+
+        /// <summary>
+        /// 返回是否应该忽略提交 
+        /// </summary>
+        /// <param name="val">值</param>
+        /// <returns></returns>
+        private bool WillIgnore(object val)
+        {
+            return this.IgnoreWhenNull == true && val == null;
         }
     }
 }

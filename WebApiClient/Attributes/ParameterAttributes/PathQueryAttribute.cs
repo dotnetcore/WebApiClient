@@ -22,6 +22,12 @@ namespace WebApiClient.Attributes
         private readonly string datetimeFormate;
 
         /// <summary>
+        /// 获取或设置当值为null是此参数
+        /// 默认为false
+        /// </summary>
+        public bool IgnoreWhenNull { get; set; }
+
+        /// <summary>
         /// 表示Url路径参数或query参数的特性
         /// </summary>
         public PathQueryAttribute()
@@ -53,13 +59,15 @@ namespace WebApiClient.Attributes
                 throw new HttpApiConfigException("未配置HttpConfig.HttpHost或未使用HttpHostAttribute特性");
             }
 
-            var fixUrl = uri.ToString().TrimEnd('?', '&', '/');
-            var options = context.HttpApiConfig.FormatOptions.CloneChange(this.datetimeFormate);
-            var keyValues = context.HttpApiConfig.KeyValueFormatter.Serialize(parameter, options);
-            var targetUrl = new Uri(this.UsePathQuery(fixUrl, keyValues));
-
-            context.RequestMessage.RequestUri = targetUrl;
-            await ApiTask.CompletedTask;
+            if (this.WillIgnore(parameter.Value) == false)
+            {
+                var fixUrl = uri.ToString().TrimEnd('?', '&', '/');
+                var options = context.HttpApiConfig.FormatOptions.CloneChange(this.datetimeFormate);
+                var keyValues = context.HttpApiConfig.KeyValueFormatter.Serialize(parameter, options);
+                var targetUrl = new Uri(this.UsePathQuery(fixUrl, keyValues));
+                context.RequestMessage.RequestUri = targetUrl;
+                await ApiTask.CompletedTask;
+            }
         }
 
         /// <summary>
@@ -98,6 +106,17 @@ namespace WebApiClient.Attributes
             var query = string.Format("{0}={1}", key, valueEncoded);
             var concat = url.Contains('?') ? "&" : "?";
             return url + concat + query;
+        }
+
+
+        /// <summary>
+        /// 返回是否应该忽略提交 
+        /// </summary>
+        /// <param name="val">值</param>
+        /// <returns></returns>
+        private bool WillIgnore(object val)
+        {
+            return this.IgnoreWhenNull == true && val == null;
         }
     }
 }
