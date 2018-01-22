@@ -125,6 +125,11 @@ namespace WebApiClient.Defaults
             private class PropertyDescriptor
             {
                 /// <summary>
+                /// 序列化范围
+                /// </summary>
+                private const FormatScope jsonFormatScope = FormatScope.JsonFormat;
+
+                /// <summary>
                 /// 属性的描述缓存
                 /// </summary>
                 private static readonly ConcurrentDictionary<MemberInfo, PropertyDescriptor> descriptorCache;
@@ -156,7 +161,7 @@ namespace WebApiClient.Defaults
                 private PropertyDescriptor(MemberInfo member)
                 {
                     var aliasAsAttribute = member.GetAttribute<AliasAsAttribute>(true);
-                    if (aliasAsAttribute != null && aliasAsAttribute.IsDefinedScope(FormatScope.JsonFormat))
+                    if (aliasAsAttribute != null && aliasAsAttribute.IsDefinedScope(jsonFormatScope))
                     {
                         this.Name = aliasAsAttribute.Name;
                     }
@@ -166,13 +171,13 @@ namespace WebApiClient.Defaults
                     }
 
                     var datetimeFormatAttribute = member.GetAttribute<DateTimeFormatAttribute>(true);
-                    if (datetimeFormatAttribute != null && datetimeFormatAttribute.IsDefinedScope(FormatScope.JsonFormat))
+                    if (datetimeFormatAttribute != null && datetimeFormatAttribute.IsDefinedScope(jsonFormatScope))
                     {
                         this.DateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = datetimeFormatAttribute.Format };
                     }
 
-                    this.IgnoreSerialized = member.IsDefinedAnnotateScope<IgnoreSerializedAttribute>(FormatScope.JsonFormat);
-                    this.IgnoreWhenNull = member.IsDefinedAnnotateScope<IgnoreWhenNullAttribute>(FormatScope.JsonFormat);
+                    this.IgnoreSerialized = member.IsDefinedFormatScope<IgnoreSerializedAttribute>(jsonFormatScope);
+                    this.IgnoreWhenNull = member.IsDefinedFormatScope<IgnoreWhenNullAttribute>(jsonFormatScope);
                 }
 
                 /// <summary>

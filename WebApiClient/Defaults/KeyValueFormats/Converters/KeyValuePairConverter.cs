@@ -21,18 +21,17 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
         /// <returns></returns>
         public override IEnumerable<KeyValuePair<string, string>> Invoke(ConvertContext context)
         {
-            var type = context.DataType;
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == keyValuePairType)
+            var reader = KeyValuePairReader.GetReader(context.DataType);
+            if (reader == null)
             {
-                var reader = KeyValuePairReader.GetReader(type);
-                var key = reader.GetKey(context.Data).ToString();
-                var value = reader.GetValue(context.Data);
-
-                var ctx = new ConvertContext(key, value, context.Depths, context.Options);
-                return ctx.ToKeyValuePairs();
+                return this.Next.Invoke(context);
             }
 
-            return this.Next.Invoke(context);
+            var key = reader.GetKey(context.Data).ToString();
+            var value = reader.GetValue(context.Data);
+
+            var ctx = new ConvertContext(key, value, context.Depths, context.Options);
+            return ctx.ToKeyValuePairs();
         }
 
         /// <summary>
@@ -88,11 +87,15 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             /// <summary>
             /// 从类型获取KeyValuePairReader
             /// </summary>
-            /// <param name="keyValuePairType">KeyValuePair的类型</param>
+            /// <param name="type">类型</param>
             /// <returns></returns>
-            public static KeyValuePairReader GetReader(Type keyValuePairType)
+            public static KeyValuePairReader GetReader(Type type)
             {
-                return readerCache.GetOrAdd(keyValuePairType, type => new KeyValuePairReader(type));
+                if (type.IsGenericType == false || type.GetGenericTypeDefinition() != type)
+                {
+                    return null;
+                }
+                return readerCache.GetOrAdd(type, t => new KeyValuePairReader(t));
             }
         }
     }

@@ -50,6 +50,11 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
         private class PropertyDescriptor
         {
             /// <summary>
+            /// 序列化范围
+            /// </summary>
+            private const FormatScope keyValueFormatScope = FormatScope.KeyValueFormat;
+
+            /// <summary>
             /// 获取器
             /// </summary>
             private readonly PropertyGetter getter;
@@ -86,7 +91,7 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             private PropertyDescriptor(PropertyInfo property)
             {
                 var aliasAsAttribute = property.GetAttribute<AliasAsAttribute>(true);
-                if (aliasAsAttribute != null && aliasAsAttribute.IsDefinedScope(FormatScope.JsonFormat))
+                if (aliasAsAttribute != null && aliasAsAttribute.IsDefinedScope(keyValueFormatScope))
                 {
                     this.Name = aliasAsAttribute.Name;
                 }
@@ -98,7 +103,7 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
                 if (property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?))
                 {
                     var datetimeFormatAttribute = property.GetCustomAttribute<DateTimeFormatAttribute>();
-                    if (datetimeFormatAttribute != null && datetimeFormatAttribute.IsDefinedScope(FormatScope.KeyValueFormat))
+                    if (datetimeFormatAttribute != null && datetimeFormatAttribute.IsDefinedScope(keyValueFormatScope))
                     {
                         this.DateTimeFormat = datetimeFormatAttribute.Format;
                     }
@@ -110,8 +115,8 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
                     this.IsSupportGet = true;
                 }
 
-                this.IgnoreSerialized = property.IsDefinedAnnotateScope<IgnoreSerializedAttribute>(FormatScope.KeyValueFormat);
-                this.IgnoreWhenNull = property.IsDefinedAnnotateScope<IgnoreWhenNullAttribute>(FormatScope.KeyValueFormat);
+                this.IgnoreSerialized = property.IsDefinedFormatScope<IgnoreSerializedAttribute>(keyValueFormatScope);
+                this.IgnoreWhenNull = property.IsDefinedFormatScope<IgnoreWhenNullAttribute>(keyValueFormatScope);
             }
 
             /// <summary>
