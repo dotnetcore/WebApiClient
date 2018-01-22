@@ -94,7 +94,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         public static implicit operator FormField(int? value)
         {
-            return new FormField(value) { IgnoreWhenNull = true };
+            return new FormField(value);
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         public static implicit operator FormField(decimal? value)
         {
-            return new FormField(value) { IgnoreWhenNull = true };
+            return new FormField(value);
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         public static implicit operator FormField(float? value)
         {
-            return new FormField(value) { IgnoreWhenNull = true };
+            return new FormField(value);
         }
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         public static implicit operator FormField(double? value)
         {
-            return new FormField(value) { IgnoreWhenNull = true };
+            return new FormField(value);
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         public static implicit operator FormField(DateTime? value)
         {
-            return new FormField(value) { IgnoreWhenNull = true };
+            return new FormField(value);
         }
     }
 }

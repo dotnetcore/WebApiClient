@@ -87,8 +87,7 @@ namespace WebApiClient.Defaults
                 this.useCamelCase = camelCase;
             }
 
-            /// <summary> 
-            /// <summary>
+            /// <summary>        
             /// 创建属性
             /// </summary>
             /// <param name="member"></param>

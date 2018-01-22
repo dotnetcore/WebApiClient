@@ -16,10 +16,6 @@ namespace Demo.HttpServices
         [HttpGet]
         public ActionResult About(UserInfo user, string something)
         {
-            Debug.Assert(this.Request.Query.ContainsKey("BirthDay") == true);
-            Debug.Assert(this.Request.Query.ContainsKey("Gender") == false);
-            Debug.Assert(this.Request.Query.ContainsKey("Email") == false);
-
             var about = new StringBuilder()
                 .AppendLine()
                 .Append("UserInfo:").AppendLine(user.ToString())
@@ -54,11 +50,6 @@ namespace Demo.HttpServices
         [HttpPost]
         public JsonResult UpdateWithForm(UserInfo user, string name, string nickName, int? age)
         {
-            Debug.Assert(this.Request.Form.ContainsKey("BirthDay") == true);
-            Debug.Assert(this.Request.Form.ContainsKey("Gender") == false);
-            Debug.Assert(this.Request.Form.ContainsKey("Email") == false);
-            Debug.Assert(this.Request.Form.ContainsKey("age") == false);
-
             return Json(user);
         }
 
@@ -78,19 +69,20 @@ namespace Demo.HttpServices
         [HttpPost]
         public ActionResult UpdateWithMulitpart(UserInfo user, string nickName, int? age)
         {
-            Debug.Assert(this.Request.Form.ContainsKey("BirthDay") == true);
-            Debug.Assert(this.Request.Form.ContainsKey("Gender") == false);
-            Debug.Assert(this.Request.Form.ContainsKey("Email") == false);
-            Debug.Assert(this.Request.Form.ContainsKey("age") == true);
-
             return Json(user);
         }
-
 
         protected override void OnExecuting(ActionContext filterContext)
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("{0} HttpServer->收到http请求：{1}", DateTime.Now.ToString("HH:mm:ss.fff"), filterContext.Action.Route);
+            Console.ForegroundColor = ConsoleColor.Gray;
+        }
+
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("{0} HttpServer->遇到异常：{1}", DateTime.Now.ToString("HH:mm:ss.fff"), filterContext.Exception.Message);
             Console.ForegroundColor = ConsoleColor.Gray;
         }
     }

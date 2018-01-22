@@ -93,7 +93,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         public static implicit operator MulitpartText(int? value)
         {
-            return new MulitpartText(value) { IgnoreWhenNull = true };
+            return new MulitpartText(value);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         public static implicit operator MulitpartText(decimal? value)
         {
-            return new MulitpartText(value) { IgnoreWhenNull = true };
+            return new MulitpartText(value);
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         public static implicit operator MulitpartText(float? value)
         {
-            return new MulitpartText(value) { IgnoreWhenNull = true };
+            return new MulitpartText(value);
         }
 
 
@@ -154,7 +154,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         public static implicit operator MulitpartText(double? value)
         {
-            return new MulitpartText(value) { IgnoreWhenNull = true };
+            return new MulitpartText(value);
         }
 
 
@@ -175,7 +175,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         public static implicit operator MulitpartText(DateTime? value)
         {
-            return new MulitpartText(value) { IgnoreWhenNull = true };
+            return new MulitpartText(value);
         }
     }
 }

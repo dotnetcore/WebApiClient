@@ -155,5 +155,5 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 /.vs/WebApiClient/v15/Server/sqlite3
-/packages/Laojiu.WebApiClient.1.0.5
+/packages/
 /.vs/config

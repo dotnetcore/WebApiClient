@@ -48,7 +48,7 @@ namespace Demo.HttpClients
         ITask<UserInfo> UpdateWithFormAsync(
             [FormContent] UserInfo user,
             FormField nickName,
-            [AliasAs("age"), FormField(IgnoreWhenNull = true)] int? nullableAge);
+            [AliasAs("age"), FormField] int? nullableAge);
 
         // POST /webapi/user/UpdateWithJson
         // Body {"Account":"laojiu","Password":"123456"}

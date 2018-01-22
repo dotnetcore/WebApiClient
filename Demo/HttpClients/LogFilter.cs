@@ -21,6 +21,7 @@ namespace Demo.HttpClients
             var dateTime = DateTime.Now.ToString("HH:mm:ss.fff");
             Console.WriteLine("{0} {1} {2}", dateTime, request.Method, request.RequestUri);
 
+            context.Tags.Set("BeginTime", DateTime.Now);
             return base.OnBeginRequestAsync(context);
         }
 
@@ -33,9 +34,10 @@ namespace Demo.HttpClients
         {
             var request = context.RequestMessage;
             var dateTime = DateTime.Now.ToString("HH:mm:ss.fff");
-            Console.WriteLine("{0} {1} {2}完成", dateTime, request.Method, request.RequestUri.AbsolutePath);
+            var timeSpan = DateTime.Now.Subtract(context.Tags["BeginTime"].As<DateTime>());
+            Console.WriteLine("{0} {1} {2}完成，请求过程耗时{3}", dateTime, request.Method, request.RequestUri.AbsolutePath, timeSpan);
 
-            // 输入返回结果
+            // 输出响应内容
             var result = await context.ResponseMessage.Content.ReadAsStringAsync();
             Console.WriteLine(result);
             Console.WriteLine();

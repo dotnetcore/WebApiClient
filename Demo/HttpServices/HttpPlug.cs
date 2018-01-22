@@ -7,7 +7,7 @@ namespace Demo.HttpServices
     {
         protected override void OnConnected(object sender, IContenxt context)
         {
-            Console.ForegroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("{0} HttpServer->{1}连接..", DateTime.Now.ToString("HH:mm:ss.fff"), context.Session);
             Console.ForegroundColor = ConsoleColor.Gray;
         }
