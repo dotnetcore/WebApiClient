@@ -326,5 +326,40 @@ namespace WebApiClient
                 throw new NotSupportedException(message);
             }
         }
+
+        /// <summary>
+        /// 转换为字符串
+        /// </summary>
+        /// <returns></returns>
+        public async Task<string> ToStringAsync()
+        {
+            var builder = new StringBuilder()
+                .Append(this.Method).Append(" ")
+                .Append(this.RequestUri.PathAndQuery)
+                .Append(" HTTP/").Append(this.Version).AppendLine()
+                .Append("Host: ").Append(this.RequestUri.Authority).AppendLine();
+
+            foreach (var item in this.Headers)
+            {
+                builder.AppendFormat("{0}: {1}", item.Key, string.Join(",", item.Value)).AppendLine();
+            }
+
+            if (this.Content != null)
+            {
+                foreach (var item in this.Content.Headers)
+                {
+                    builder.AppendFormat("{0}: {1}", item.Key, string.Join(",", item.Value)).AppendLine();
+                }
+            }
+
+            builder.AppendLine();
+            if (this.Content != null)
+            {
+                var content = await this.Content.ReadAsStringAsync();
+                builder.Append(content);
+            }
+
+            return builder.ToString();
+        }
     }
 }

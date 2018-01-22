@@ -125,7 +125,7 @@ namespace WebApiClient
             {
                 throw new ArgumentNullException(nameof(task));
             }
-            return Task.Factory.StartNew(() => task.InvokeAsync().ConfigureAwait(false).GetAwaiter().GetResult()).Result;
+            return Task.Run(() => task.InvokeAsync().Result).Result;
         }
     }
 }
