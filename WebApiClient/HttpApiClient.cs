@@ -74,7 +74,8 @@ namespace WebApiClient
         /// <returns></returns>
         public static TInterface Create<TInterface>() where TInterface : class, IDisposable
         {
-            return Create<TInterface>(default(HttpApiConfig));
+            var config = new HttpApiConfig();
+            return Create<TInterface>(config);
         }
 
         /// <summary>
@@ -101,6 +102,7 @@ namespace WebApiClient
         /// </summary>
         /// <typeparam name="TInterface">请求接口类型</typeparam>
         /// <param name="httpApiConfig">接口配置</param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
@@ -122,7 +124,7 @@ namespace WebApiClient
         {
             if (httpApiConfig == null)
             {
-                httpApiConfig = new HttpApiConfig();
+                throw new ArgumentNullException(nameof(httpApiConfig));
             }
 
             var interceptor = new ApiInterceptor(httpApiConfig);

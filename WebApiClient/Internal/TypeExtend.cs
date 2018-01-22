@@ -123,7 +123,7 @@ namespace WebApiClient
             var isTaskType = genericType == typeof(Task<>) || genericType == typeof(ITask<>);
             if (isTaskType == false)
             {
-                var message = string.Format("接口{0}返回类型必须为Task<>或ITask<>", method.Name);
+                var message = string.Format("返回类型必须为Task<>或ITask<>：{0}", method);
                 throw new NotSupportedException(message);
             }
 

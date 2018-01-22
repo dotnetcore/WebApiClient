@@ -1,6 +1,7 @@
 ﻿using System;
+using WebApiClient.Interfaces;
 
-namespace WebApiClient.Interfaces
+namespace WebApiClient
 {
     /// <summary>
     /// 定义HttpApi客户端的接口

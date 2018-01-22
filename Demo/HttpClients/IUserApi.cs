@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using WebApiClient;
 using WebApiClient.Attributes;
@@ -14,7 +13,7 @@ namespace Demo.HttpClients
     [LogFilter] // 记录请求日志
     [HttpHost("http://localhost:9999")] // HttpHost可以在Config传入覆盖    
     [AutoReturn(EnsureSuccessStatusCode = true)]
-    public interface IUserApi : IDisposable
+    public interface IUserApi : IHttpApiClient
     {
         // GET {url}?account={account}&password={password}&something={something}
         [HttpGet]
