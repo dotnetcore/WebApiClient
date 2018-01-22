@@ -20,6 +20,11 @@ namespace WebApiClient.DataAnnotations
         /// <summary>
         /// 适用于KeyValue序列化
         /// </summary>
-        KeyValueFormat = 0x2
+        KeyValueFormat = 0x2,
+
+        /// <summary>
+        /// 适用于Json序列化和KeyValue序列化
+        /// </summary>
+        All = JsonFormat | KeyValueFormat
     }
 }

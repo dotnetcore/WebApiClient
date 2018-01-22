@@ -17,6 +17,14 @@ namespace WebApiClient.DataAnnotations
         public FormatScope Scope { get; set; }
 
         /// <summary>
+        /// 数据注解特性抽象
+        /// </summary>
+        public DataAnnotationAttribute()
+        {
+            this.Scope = FormatScope.All;
+        }
+
+        /// <summary>
         /// 返回是否声明指定的scope
         /// </summary>
         /// <param name="scope">序列化范围</param>

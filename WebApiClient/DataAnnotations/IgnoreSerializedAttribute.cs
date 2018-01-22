@@ -10,12 +10,5 @@ namespace WebApiClient.DataAnnotations
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public sealed class IgnoreSerializedAttribute : DataAnnotationAttribute
     {
-        /// <summary>
-        /// 当序列化对象时忽略此属性
-        /// </summary>
-        public IgnoreSerializedAttribute()
-        {
-            this.Scope = FormatScope.JsonFormat | FormatScope.KeyValueFormat;
-        }
     }
 }

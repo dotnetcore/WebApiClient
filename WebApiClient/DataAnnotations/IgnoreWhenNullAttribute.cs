@@ -16,6 +16,7 @@ namespace WebApiClient.DataAnnotations
     {
         /// <summary>
         /// 值为null此属性将忽略
+        /// 默认适用于KeyValueFormat
         /// </summary>
         public IgnoreWhenNullAttribute()
         {
