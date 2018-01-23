@@ -343,10 +343,12 @@ namespace WebApiClient.Defaults
         /// </summary>
         private class DefaultHttpClientHandler : HttpClientHandler
         {
+#if NET45
             /// <summary>
             /// 发送次数
             /// </summary>
             private int sendTimes = 0;
+#endif
 
             /// <summary>
             /// 获取是否短连接
@@ -375,7 +377,11 @@ namespace WebApiClient.Defaults
                 {
                     request.Headers.Connection.Add("close");
                 }
+#if NET45
                 else if (Interlocked.CompareExchange(ref this.sendTimes, 1, 0) == 1)
+#else
+                else
+#endif
                 {
                     request.Headers.Connection.Add("keep-alive");
                 }
