@@ -1,6 +1,7 @@
 ﻿using Demo.HttpClients;
 using Demo.HttpServices;
 using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using WebApiClient;
@@ -13,18 +14,25 @@ namespace Demo
         static void Main(string[] args)
         {
             HttpServer.Start(9999);
-            Program.RunIUserApi();
+            Program.RunIUserApi(1);
             Console.ReadLine();
         }
 
-
-        static async void RunIUserApi()
+        static async void RunIUserApi(int loop = 1)
         {
-            // 创建接口客户端
+            var watch = new Stopwatch();
+            watch.Start();
+
             using (var client = HttpApiClient.Create<IUserApi>())
             {
-                await Program.RunApisAsync(client);
+                for (var i = 0; i < loop; i++)
+                {
+                    await Program.RunApisAsync(client);
+                }
             }
+
+            watch.Stop();
+            Console.WriteLine($"总共耗时：{watch.Elapsed}");
         }
 
         /// <summary>
@@ -32,7 +40,6 @@ namespace Demo
         /// </summary>
         private static async Task RunApisAsync(IUserApi userApiClient)
         {
-            var file = new MulitpartFile("NetworkSocket.dll");
             var user = new UserInfo
             {
                 Account = "laojiu",
@@ -62,6 +69,8 @@ namespace Demo
 
             var user5 = await userApiClient.UpdateWithXmlAsync(user);
 
+            var stream = typeof(Program).Assembly.GetManifestResourceStream("Demo.HttpClients.about.txt");
+            var file = new MulitpartFile(stream, "about.txt");
             var user6 = await userApiClient.UpdateWithMulitpartAsync(user, "老九", 18, file);
         }
     }

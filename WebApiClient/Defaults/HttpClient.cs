@@ -359,7 +359,7 @@ namespace WebApiClient.Defaults
             public DefaultHttpClientHandler()
             {
                 this.UseProxy = false;
-                this.AutomaticDecompression = DecompressionMethods.GZip;
+                this.Proxy = null;
             }
 
             /// <summary>
