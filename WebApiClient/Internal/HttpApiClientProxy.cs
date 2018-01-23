@@ -38,7 +38,7 @@ namespace WebApiClient
         /// 接口类型与代理类型的构造器缓存
         /// </summary>
         private static readonly ConcurrentDictionary<Type, ConstructorInfo> proxyTypeCtorCache = new ConcurrentDictionary<Type, ConstructorInfo>();
-              
+
         /// <summary>
         /// 创建HttpApiClient代理类
         /// 并实现指定的接口
@@ -54,19 +54,19 @@ namespace WebApiClient
 
             var proxyTypeCtor = proxyTypeCtorCache.GetOrAdd(
                 interfaceType,
-                type => HttpApiClientProxy.GenerateProxyTypeCtor(type, apiMethods));
+                @interface => @interface.ImplementAsHttpApiClient(apiMethods));
 
             return proxyTypeCtor.Invoke(new object[] { interceptor, apiMethods });
         }
 
         /// <summary>
-        /// 生成接口的代理类
-        /// 返回其构造器
+        /// 继承HttpApiClient并实现接口
+        /// 并返回代理类的构造器
         /// </summary>
         /// <param name="interfaceType">接口类型</param>
-        /// <param name="apiMethods">拦截的方法</param>
+        /// <param name="apiMethods">接口方法集合</param>
         /// <returns></returns>
-        private static ConstructorInfo GenerateProxyTypeCtor(Type interfaceType, MethodInfo[] apiMethods)
+        private static ConstructorInfo ImplementAsHttpApiClient(this Type interfaceType, MethodInfo[] apiMethods)
         {
             var moduleName = interfaceType.Module.Name;
             var hashCode = interfaceType.Assembly.GetHashCode() ^ interfaceType.Module.GetHashCode();
@@ -79,109 +79,144 @@ namespace WebApiClient
                 .DefineDynamicModule(moduleName);
             });
 
-            var typeBuilder = moduleBuilder.DefineType(interfaceType.FullName, TypeAttributes.Class, typeof(HttpApiClient));
-            typeBuilder.AddInterfaceImplementation(interfaceType);
+            var builder = moduleBuilder.DefineType(interfaceType.FullName, TypeAttributes.Class, typeof(HttpApiClient));
+            builder.AddInterfaceImplementation(interfaceType);
+            return builder.BuildProxyType(apiMethods);
+        }
 
-            var proxyType = HttpApiClientProxy.ImplementApiMethods(typeBuilder, apiMethods);
+        /// <summary>
+        /// 生成代理类型并实现相关方法
+        /// 并返回其构造器
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="apiMethods">接口方法集合</param>
+        /// <returns></returns>
+        private static ConstructorInfo BuildProxyType(this TypeBuilder builder, MethodInfo[] apiMethods)
+        {
+            var fieldInterceptor = builder.BuildField("interceptor", typeof(IApiInterceptor));
+            var fieldApiMethods = builder.BuildField("apiMethods", typeof(MethodInfo[]));
+
+            builder.BuildCtor(fieldInterceptor, fieldApiMethods);
+            builder.BuildMethods(apiMethods, fieldInterceptor, fieldApiMethods);
+
+            var proxyType = builder.CreateTypeInfo();
             return proxyType.GetConstructor(proxyTypeCtorArgTypes);
         }
 
         /// <summary>
-        /// 实现接口方法
-        /// 返回代理类型
+        /// 生成代理类型的字段
         /// </summary>
         /// <param name="typeBuilder">类型生成器</param>
-        /// <param name="apiMethods">接口的所有方法</param>
+        /// <param name="fieldName">字段名称</param>
+        /// <param name="type">字段类型</param>
         /// <returns></returns>
-        private static Type ImplementApiMethods(TypeBuilder typeBuilder, MethodInfo[] apiMethods)
+        private static FieldBuilder BuildField(this TypeBuilder typeBuilder, string fieldName, Type type)
         {
-            // 字段
-            var filedAttribute = FieldAttributes.Private | FieldAttributes.InitOnly;
-            var fieldInterceptor = typeBuilder.DefineField("interceptor", typeof(IApiInterceptor), filedAttribute);
-            var fieldApiMethods = typeBuilder.DefineField("apiMethods", typeof(MethodInfo[]), filedAttribute);
+            const FieldAttributes filedAttribute = FieldAttributes.Private | FieldAttributes.InitOnly;
+            return typeBuilder.DefineField(fieldName, type, filedAttribute);
+        }
 
-            // 构造器         
-            // this(IApiInterceptor interceptor, MethodInfo[] methods):base(interceptor)
-            var ctorBuilder = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, proxyTypeCtorArgTypes);
-            var ctorIL = ctorBuilder.GetILGenerator();
-            ctorIL.Emit(OpCodes.Ldarg_0);
-            ctorIL.Emit(OpCodes.Ldarg_1);
-            ctorIL.Emit(OpCodes.Call, baseConstructor);
+        /// <summary>
+        /// 生成代理类型的构造器
+        /// </summary>
+        /// <param name="builder">类型生成器</param>
+        /// <param name="fieldInterceptor">拦截器字段</param>
+        /// <param name="fieldApiMethods">接口方法集合字段</param>
+        /// <returns></returns>
+        private static void BuildCtor(this TypeBuilder builder, FieldBuilder fieldInterceptor, FieldBuilder fieldApiMethods)
+        {
+            // this(IApiInterceptor interceptor, MethodInfo[] methods):base(interceptor)          
+            var ctor = builder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, proxyTypeCtorArgTypes);
+
+            var il = ctor.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldarg_1);
+            il.Emit(OpCodes.Call, baseConstructor);
 
             // this.interceptor = 第一个参数
-            ctorIL.Emit(OpCodes.Ldarg_0);
-            ctorIL.Emit(OpCodes.Ldarg_1);
-            ctorIL.Emit(OpCodes.Stfld, fieldInterceptor);
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldarg_1);
+            il.Emit(OpCodes.Stfld, fieldInterceptor);
 
             // this.apiMethods = 第二个参数
-            ctorIL.Emit(OpCodes.Ldarg_0);
-            ctorIL.Emit(OpCodes.Ldarg_2);
-            ctorIL.Emit(OpCodes.Stfld, fieldApiMethods);
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldarg_2);
+            il.Emit(OpCodes.Stfld, fieldApiMethods);
 
-            ctorIL.Emit(OpCodes.Ret);
+            il.Emit(OpCodes.Ret);
+        }
 
-            // 接口实现
-            var implementAttribute = MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot | MethodAttributes.HideBySig;
+        /// <summary>
+        /// 生成代理类型的接口实现方法
+        /// </summary>
+        /// <param name="builder">类型生成器</param>
+        /// <param name="apiMethods">接口方法集合</param>
+        /// <param name="fieldInterceptor">拦截器字段</param>
+        /// <param name="fieldApiMethods">接口方法集合字段</param>
+        private static void BuildMethods(this TypeBuilder builder, MethodInfo[] apiMethods, FieldBuilder fieldInterceptor, FieldBuilder fieldApiMethods)
+        {
+            const MethodAttributes implementAttribute = MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot | MethodAttributes.HideBySig;
+
             for (var i = 0; i < apiMethods.Length; i++)
             {
                 var apiMethod = apiMethods[i];
                 var apiParameters = apiMethod.GetParameters();
                 var parameterTypes = apiParameters.Select(p => p.ParameterType).ToArray();
 
-                var methodBuilder = typeBuilder.DefineMethod(apiMethod.Name, implementAttribute, CallingConventions.Standard, apiMethod.ReturnType, parameterTypes);
-                var apiMethodIL = methodBuilder.GetILGenerator();
+                var iL = builder
+                    .DefineMethod(apiMethod.Name, implementAttribute, CallingConventions.Standard, apiMethod.ReturnType, parameterTypes)
+                    .GetILGenerator();
 
                 // this.interceptor
-                apiMethodIL.Emit(OpCodes.Ldarg_0);
-                apiMethodIL.Emit(OpCodes.Ldfld, fieldInterceptor);
+                iL.Emit(OpCodes.Ldarg_0);
+                iL.Emit(OpCodes.Ldfld, fieldInterceptor);
 
                 // 加载target参数
-                apiMethodIL.Emit(OpCodes.Ldarg_0);
+                iL.Emit(OpCodes.Ldarg_0);
 
                 // var method = this.apiMethods[i]
-                var method = apiMethodIL.DeclareLocal(typeof(MethodInfo));
-                apiMethodIL.Emit(OpCodes.Ldarg_0);
-                apiMethodIL.Emit(OpCodes.Ldfld, fieldApiMethods);
-                apiMethodIL.Emit(OpCodes.Ldc_I4, i);
-                apiMethodIL.Emit(OpCodes.Ldelem_Ref);
-                apiMethodIL.Emit(OpCodes.Stloc, method);
+                var method = iL.DeclareLocal(typeof(MethodInfo));
+                iL.Emit(OpCodes.Ldarg_0);
+                iL.Emit(OpCodes.Ldfld, fieldApiMethods);
+                iL.Emit(OpCodes.Ldc_I4, i);
+                iL.Emit(OpCodes.Ldelem_Ref);
+                iL.Emit(OpCodes.Stloc, method);
 
                 // 加载method参数
-                apiMethodIL.Emit(OpCodes.Ldloc, method);
+                iL.Emit(OpCodes.Ldloc, method);
 
                 // var parameters = new object[parameters.Length]
-                var parameters = apiMethodIL.DeclareLocal(typeof(object[]));
-                apiMethodIL.Emit(OpCodes.Ldc_I4, apiParameters.Length);
-                apiMethodIL.Emit(OpCodes.Newarr, typeof(object));
-                apiMethodIL.Emit(OpCodes.Stloc, parameters);
+                var parameters = iL.DeclareLocal(typeof(object[]));
+                iL.Emit(OpCodes.Ldc_I4, apiParameters.Length);
+                iL.Emit(OpCodes.Newarr, typeof(object));
+                iL.Emit(OpCodes.Stloc, parameters);
 
                 for (var j = 0; j < apiParameters.Length; j++)
                 {
-                    apiMethodIL.Emit(OpCodes.Ldloc, parameters);
-                    apiMethodIL.Emit(OpCodes.Ldc_I4, j);
-                    apiMethodIL.Emit(OpCodes.Ldarg, j + 1);
+                    iL.Emit(OpCodes.Ldloc, parameters);
+                    iL.Emit(OpCodes.Ldc_I4, j);
+                    iL.Emit(OpCodes.Ldarg, j + 1);
 
                     var parameterType = parameterTypes[j];
                     if (parameterType.IsValueType || parameterType.IsGenericParameter)
                     {
-                        apiMethodIL.Emit(OpCodes.Box, parameterType);
+                        iL.Emit(OpCodes.Box, parameterType);
                     }
-                    apiMethodIL.Emit(OpCodes.Stelem_Ref);
+                    iL.Emit(OpCodes.Stelem_Ref);
                 }
 
                 // 加载parameters参数
-                apiMethodIL.Emit(OpCodes.Ldloc, parameters);
+                iL.Emit(OpCodes.Ldloc, parameters);
 
                 // Intercep(this, method, parameters)
-                apiMethodIL.Emit(OpCodes.Callvirt, interceptMethod);
+                iL.Emit(OpCodes.Callvirt, interceptMethod);
 
                 if (apiMethod.ReturnType == typeof(void))
                 {
-                    apiMethodIL.Emit(OpCodes.Pop);
+                    iL.Emit(OpCodes.Pop);
                 }
-                apiMethodIL.Emit(OpCodes.Ret);
+                iL.Emit(OpCodes.Ret);
             }
-            return typeBuilder.CreateTypeInfo();
         }
     }
 }
