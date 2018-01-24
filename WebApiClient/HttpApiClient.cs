@@ -51,6 +51,7 @@ namespace WebApiClient
 
         /// <summary>
         /// 获取或设置一个站点内的默认连接数限制
+        /// 这个值在请求时设置给HttpClientHandler
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static int ConnectionLimit { get; set; } = int.MaxValue;
