@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -127,12 +126,6 @@ namespace WebApiClient.Defaults
 
             this.Handler = handler;
             this.client = new System.Net.Http.HttpClient(this.Handler, disposeHandler);
-
-#if NETCOREAPP2_0
-            this.Handler.MaxConnectionsPerServer = HttpApiClient.ConnectionLimit;
-#else
-            MaxConnectionsPerServer.Set(this.Handler, HttpApiClient.ConnectionLimit);
-#endif
         }
 
         /// <summary>
@@ -343,113 +336,6 @@ namespace WebApiClient.Defaults
         {
             this.client.Dispose();
             this.isDisposed = true;
-        }
-
-        /// <summary>
-        /// 最多连接数
-        /// </summary>
-        private static class MaxConnectionsPerServer
-        {
-            private static readonly PropertyGetter getter;
-            private static readonly PropertySetter setter;
-
-            /// <summary>
-            /// 静态构造器
-            /// </summary>
-            static MaxConnectionsPerServer()
-            {
-                var property = typeof(HttpClientHandler).GetProperty("MaxConnectionsPerServer", typeof(int));
-                if (property != null)
-                {
-                    getter = new PropertyGetter(property);
-                    setter = new PropertySetter(property);
-                }
-            }
-
-            /// <summary>
-            /// 获取MaxConnectionsPerServer
-            /// </summary>
-            /// <param name="handler"></param>
-            /// <returns></returns>
-            public static int Get(HttpClientHandler handler)
-            {
-                if (getter == null)
-                {
-                    return ServicePointManager.DefaultConnectionLimit;
-                }
-                else
-                {
-                    return (int)getter.Invoke(handler);
-                }
-            }
-
-            /// <summary>
-            /// 设置MaxConnectionsPerServer
-            /// </summary>
-            /// <param name="handler"></param>
-            /// <param name="value">最多连接数</param>
-            public static void Set(HttpClientHandler handler, int value)
-            {
-                if (setter == null)
-                {
-                    ServicePointManager.DefaultConnectionLimit = value;
-                }
-                else
-                {
-                    setter.Invoke(handler, value);
-                }
-            }
-        }
-
-        /// <summary>
-        /// 默认的HttpClientHandler
-        /// </summary>
-        private class DefaultHttpClientHandler : HttpClientHandler
-        {
-#if NET45
-            /// <summary>
-            /// 发送次数
-            /// </summary>
-            private int sendTimes = 0;
-#endif
-
-            /// <summary>
-            /// 获取是否短连接
-            /// </summary>
-            public bool ConnectionClose { get; set; }
-
-            /// <summary>
-            /// HttpClientHandler
-            /// </summary>
-            public DefaultHttpClientHandler()
-            {
-                this.UseProxy = false;
-                this.Proxy = null;
-            }
-
-            /// <summary>
-            /// 发送请求
-            /// </summary>
-            /// <param name="request"></param>
-            /// <param name="cancellationToken"></param>
-            /// <returns></returns>
-            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-            {
-                request.Headers.Connection.Clear();
-                if (this.ConnectionClose == true)
-                {
-                    request.Headers.Connection.Add("close");
-                }
-#if NET45
-                else if (Interlocked.CompareExchange(ref this.sendTimes, 1, 0) == 1)
-#else
-                else
-#endif
-                {
-                    request.Headers.Connection.Add("keep-alive");
-                }
-                return base.SendAsync(request, cancellationToken);
-            }
         }
     }
 }
