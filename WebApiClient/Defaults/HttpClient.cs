@@ -368,6 +368,9 @@ namespace WebApiClient.Defaults
             /// <returns></returns>
             public static int Get(HttpClientHandler handler)
             {
+#if NETCOREAPP2_0
+                return handler.MaxConnectionsPerServer;
+#else
                 if (getter == null)
                 {
                     return ServicePointManager.DefaultConnectionLimit;
@@ -376,6 +379,7 @@ namespace WebApiClient.Defaults
                 {
                     return (int)getter.Invoke(handler);
                 }
+#endif
             }
 
             /// <summary>
@@ -385,6 +389,9 @@ namespace WebApiClient.Defaults
             /// <param name="value">最多连接数</param>
             public static void Set(HttpClientHandler handler, int value)
             {
+#if NETCOREAPP2_0
+                handler.MaxConnectionsPerServer = value;
+#else
                 if (setter == null)
                 {
                     ServicePointManager.DefaultConnectionLimit = value;
@@ -393,6 +400,7 @@ namespace WebApiClient.Defaults
                 {
                     setter.Invoke(handler, value);
                 }
+#endif
             }
         }
 
