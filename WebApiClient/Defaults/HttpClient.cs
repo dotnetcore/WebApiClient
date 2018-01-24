@@ -425,7 +425,6 @@ namespace WebApiClient.Defaults
             {
                 this.UseProxy = false;
                 this.Proxy = null;
-                this.MaxRequestContentBufferSize = int.MaxValue;
             }
 
             /// <summary>
