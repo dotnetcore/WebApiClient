@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace WebApiClient.Defaults
         /// HttpClient实例
         /// </summary>
         private System.Net.Http.HttpClient client;
+
 
         /// <summary>
         /// 是否已释放
@@ -82,7 +84,6 @@ namespace WebApiClient.Defaults
             }
         }
 
-
         /// <summary>
         /// 默认的HttpClient
         /// </summary>
@@ -126,6 +127,7 @@ namespace WebApiClient.Defaults
 
             this.Handler = handler;
             this.client = new System.Net.Http.HttpClient(this.Handler, disposeHandler);
+            MaxConnections.Set(handler, HttpApiClient.ConnectionLimit);
         }
 
         /// <summary>
@@ -339,6 +341,62 @@ namespace WebApiClient.Defaults
         }
 
         /// <summary>
+        /// 最多连接数
+        /// </summary>
+        private static class MaxConnections
+        {
+            private static readonly PropertyGetter getter;
+            private static readonly PropertySetter setter;
+
+            /// <summary>
+            /// 静态构造器
+            /// </summary>
+            static MaxConnections()
+            {
+                var property = typeof(HttpClientHandler).GetProperty("MaxConnectionsPerServer", typeof(int));
+                if (property != null)
+                {
+                    getter = new PropertyGetter(property);
+                    setter = new PropertySetter(property);
+                }
+            }
+
+            /// <summary>
+            /// 获取MaxConnectionsPerServer
+            /// </summary>
+            /// <param name="handler"></param>
+            /// <returns></returns>
+            public static int Get(HttpClientHandler handler)
+            {
+                if (getter == null)
+                {
+                    return ServicePointManager.DefaultConnectionLimit;
+                }
+                else
+                {
+                    return (int)getter.Invoke(handler);
+                }
+            }
+
+            /// <summary>
+            /// 设置MaxConnectionsPerServer
+            /// </summary>
+            /// <param name="handler"></param>
+            /// <param name="value">最多连接数</param>
+            public static void Set(HttpClientHandler handler, int value)
+            {
+                if (setter == null)
+                {
+                    ServicePointManager.DefaultConnectionLimit = value;
+                }
+                else
+                {
+                    setter.Invoke(handler, value);
+                }
+            }
+        }
+
+        /// <summary>
         /// 默认的HttpClientHandler
         /// </summary>
         private class DefaultHttpClientHandler : HttpClientHandler
@@ -362,6 +420,7 @@ namespace WebApiClient.Defaults
             {
                 this.UseProxy = false;
                 this.Proxy = null;
+                this.MaxRequestContentBufferSize = int.MaxValue;
             }
 
             /// <summary>

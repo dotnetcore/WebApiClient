@@ -50,20 +50,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 获取或设置一个站点内的连接数限制
+        /// 获取或设置一个站点内的默认连接数限制
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public static int ConnectionLimit
-        {
-            get
-            {
-                return ServicePointManager.DefaultConnectionLimit;
-            }
-            set
-            {
-                ServicePointManager.DefaultConnectionLimit = value;
-            }
-        }
+        public static int ConnectionLimit { get; set; } = int.MaxValue;
 
         /// <summary>
         /// 创建实现了指定接口的HttpApiClient实例
@@ -126,7 +116,6 @@ namespace WebApiClient
             {
                 throw new ArgumentNullException(nameof(httpApiConfig));
             }
-
             var interceptor = new ApiInterceptor(httpApiConfig);
             return Create(interfaceType, interceptor);
         }
