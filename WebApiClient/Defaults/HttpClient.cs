@@ -127,7 +127,12 @@ namespace WebApiClient.Defaults
 
             this.Handler = handler;
             this.client = new System.Net.Http.HttpClient(this.Handler, disposeHandler);
-            MaxConnections.Set(handler, HttpApiClient.ConnectionLimit);
+
+#if NETCOREAPP2_0
+            this.Handler.MaxConnectionsPerServer = HttpApiClient.ConnectionLimit;
+#else
+            MaxConnectionsPerServer.Set(this.Handler, HttpApiClient.ConnectionLimit);
+#endif
         }
 
         /// <summary>
@@ -343,7 +348,7 @@ namespace WebApiClient.Defaults
         /// <summary>
         /// 最多连接数
         /// </summary>
-        private static class MaxConnections
+        private static class MaxConnectionsPerServer
         {
             private static readonly PropertyGetter getter;
             private static readonly PropertySetter setter;
@@ -351,7 +356,7 @@ namespace WebApiClient.Defaults
             /// <summary>
             /// 静态构造器
             /// </summary>
-            static MaxConnections()
+            static MaxConnectionsPerServer()
             {
                 var property = typeof(HttpClientHandler).GetProperty("MaxConnectionsPerServer", typeof(int));
                 if (property != null)
@@ -368,9 +373,6 @@ namespace WebApiClient.Defaults
             /// <returns></returns>
             public static int Get(HttpClientHandler handler)
             {
-#if NETCOREAPP2_0
-                return handler.MaxConnectionsPerServer;
-#else
                 if (getter == null)
                 {
                     return ServicePointManager.DefaultConnectionLimit;
@@ -379,7 +381,6 @@ namespace WebApiClient.Defaults
                 {
                     return (int)getter.Invoke(handler);
                 }
-#endif
             }
 
             /// <summary>
@@ -389,9 +390,6 @@ namespace WebApiClient.Defaults
             /// <param name="value">最多连接数</param>
             public static void Set(HttpClientHandler handler, int value)
             {
-#if NETCOREAPP2_0
-                handler.MaxConnectionsPerServer = value;
-#else
                 if (setter == null)
                 {
                     ServicePointManager.DefaultConnectionLimit = value;
@@ -400,7 +398,6 @@ namespace WebApiClient.Defaults
                 {
                     setter.Invoke(handler, value);
                 }
-#endif
             }
         }
 
