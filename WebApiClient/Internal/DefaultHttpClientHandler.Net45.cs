@@ -1,8 +1,11 @@
 ﻿#if NET45
 
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
+using System;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace WebApiClient
@@ -18,20 +21,24 @@ namespace WebApiClient
         private int sendTimes = 0;
 
         /// <summary>
-        /// 最大连接数设置器
+        /// 站点地址
         /// </summary>
-        private static readonly PropertySetter MaxConnectionsPerServer;
+        private readonly HashSet<Uri> hashSet = new HashSet<Uri>(new UriComparer());
+
+        /// <summary>
+        /// 每个服务的最大连接数设置器
+        /// </summary>
+        private static readonly PropertySetter maxConnectionsPerServerSetter;
 
         /// <summary>
         /// 静态构造器
         /// </summary>
         static DefaultHttpClientHandler()
         {
-            // 支持st20的framework具有MaxConnectionsPerServer属性
             var property = typeof(HttpClientHandler).GetProperty("MaxConnectionsPerServer", typeof(int));
             if (property != null)
             {
-                MaxConnectionsPerServer = new PropertySetter(property);
+                maxConnectionsPerServerSetter = new PropertySetter(property);
             }
         }
 
@@ -44,13 +51,9 @@ namespace WebApiClient
             this.Proxy = null;
             this.ServerCertificateValidationCallback = (a, b, c, d) => true;
 
-            if (MaxConnectionsPerServer != null)
+            if (maxConnectionsPerServerSetter != null)
             {
-                MaxConnectionsPerServer.Invoke(this, HttpApiClient.ConnectionLimit);
-            }
-            else
-            {
-                ServicePointManager.DefaultConnectionLimit = HttpApiClient.ConnectionLimit;
+                maxConnectionsPerServerSetter.Invoke(this, HttpApiClient.ConnectionLimit);
             }
         }
 
@@ -62,6 +65,12 @@ namespace WebApiClient
         /// <returns></returns>
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            // 通过ServicePoint设置最大连接数
+            if (maxConnectionsPerServerSetter == null)
+            {
+                this.SetServicePointConnectionLimit(request.RequestUri, HttpApiClient.ConnectionLimit);
+            }
+
             var header = request.Headers;
             var isClose = header.ConnectionClose == true || header.Connection.Contains("close");
 
@@ -74,6 +83,43 @@ namespace WebApiClient
                 header.Connection.Add("keep-alive");
             }
             return base.SendAsync(request, cancellationToken);
+        }
+
+        /// <summary>
+        /// 通过ServicePoint设置最大连接数
+        /// 如果其它实例也操作ServicePoint，将影响到本实例
+        /// 每个站点只设置一次
+        /// </summary>
+        /// <param name="address">站点地址</param>
+        /// <param name="limit">最大连接数</param>
+        private void SetServicePointConnectionLimit(Uri address, int limit)
+        {
+            if (this.Proxy != null)
+            {
+                address = this.Proxy.GetProxy(address);
+            }
+
+            if (this.hashSet.Add(address) == true)
+            {
+                var point = ServicePointManager.FindServicePoint(address);
+                point.ConnectionLimit = limit;
+            }
+        }
+
+        /// <summary>
+        /// Uri比较器
+        /// </summary>
+        private class UriComparer : IEqualityComparer<Uri>
+        {
+            public bool Equals(Uri x, Uri y)
+            {
+                return true;
+            }
+
+            public int GetHashCode(Uri obj)
+            {
+                return obj.Scheme.GetHashCode() ^ obj.Authority.GetHashCode();
+            }
         }
     }
 }
