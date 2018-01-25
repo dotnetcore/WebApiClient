@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
 using WebApiClient.Interfaces;
+using System.Linq;
 
 namespace WebApiClient.Attributes
 {
@@ -29,10 +30,9 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="name">header名称</param>
         public HeaderAttribute(HttpRequestHeader name)
-            : this(name.ToString(), null)
+            : this(RequestHeader.GetName(name), null)
         {
         }
-
 
         /// <summary>
         /// 将参数值设置到Header      
@@ -44,14 +44,13 @@ namespace WebApiClient.Attributes
         {
         }
 
-
         /// <summary>
         /// 将指定值设置到Header       
         /// </summary>
         /// <param name="name">header名称</param>
         /// <param name="value">header值</param>
         public HeaderAttribute(HttpRequestHeader name, string value)
-            : this(name.ToString(), value)
+            : this(RequestHeader.GetName(name), value)
         {
         }
 
