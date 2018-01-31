@@ -22,6 +22,26 @@ namespace WebApiClient.Attributes
         private readonly string datetimeFormate;
 
         /// <summary>
+        /// 编码
+        /// </summary>
+        private Encoding encoding = System.Text.Encoding.UTF8;
+
+        /// <summary>
+        /// 获取或设置参数的编码
+        /// </summary>
+        public string Encoding
+        {
+            get
+            {
+                return this.encoding.EncodingName;
+            }
+            set
+            {
+                this.encoding = System.Text.Encoding.GetEncoding(value);
+            }
+        }
+
+        /// <summary>
         /// 获取或设置当值为null是此参数
         /// 默认为false
         /// </summary>
@@ -94,7 +114,7 @@ namespace WebApiClient.Attributes
         private string UsePathQuery(string url, KeyValuePair<string, string> keyValue)
         {
             var key = keyValue.Key;
-            var value = keyValue.Value == null ? string.Empty : keyValue.Value;
+            var value = keyValue.Value ?? string.Empty;
             var regex = new Regex("{" + key + "}", RegexOptions.IgnoreCase);
 
             if (regex.IsMatch(url) == true)
@@ -102,7 +122,8 @@ namespace WebApiClient.Attributes
                 return regex.Replace(url, value);
             }
 
-            var valueEncoded = HttpUtility.UrlEncode(value, Encoding.UTF8);
+            var encoding = System.Text.Encoding.GetEncoding(this.Encoding);
+            var valueEncoded = HttpUtility.UrlEncode(value, encoding);
             var query = string.Format("{0}={1}", key, valueEncoded);
             var concat = url.Contains('?') ? "&" : "?";
             return url + concat + query;

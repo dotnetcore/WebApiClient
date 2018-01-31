@@ -50,12 +50,25 @@ namespace WebApiClient
         /// <exception cref="HttpApiConfigException"></exception>
         public void AddUrlQuery(string key, string value)
         {
+            this.AddUrlQuery(key, value, Encoding.UTF8);
+        }
+
+        /// <summary>
+        /// 追加Query参数到请求路径
+        /// </summary>
+        /// <param name="key">参数名</param>
+        /// <param name="value">参数值</param>
+        /// <param name="encoding">编码</param>
+        /// <exception cref="HttpApiConfigException"></exception>
+        public void AddUrlQuery(string key, string value, Encoding encoding)
+        {
             if (this.RequestUri == null)
             {
                 throw new HttpApiConfigException("请配置HttpConfig.HttpHost或使用HttpHostAttribute特性");
             }
+
             var url = this.RequestUri.ToString().TrimEnd('?', '&', '/');
-            var valueEncoded = HttpUtility.UrlEncode(value, Encoding.UTF8);
+            var valueEncoded = HttpUtility.UrlEncode(value, encoding);
             var query = string.Format("{0}={1}", key, valueEncoded);
             var concat = url.Contains('?') ? "&" : "?";
             this.RequestUri = new Uri(url + concat + query);

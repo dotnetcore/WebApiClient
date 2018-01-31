@@ -22,11 +22,7 @@ namespace WebApiClient.Defaults
         /// <exception cref="ArgumentNullException"></exception>
         public ApiInterceptor(HttpApiConfig apiConfig)
         {
-            if (apiConfig == null)
-            {
-                throw new ArgumentNullException(nameof(apiConfig));
-            }
-            this.ApiConfig = apiConfig;
+            this.ApiConfig = apiConfig ?? throw new ArgumentNullException(nameof(apiConfig));
         }
 
         /// <summary>

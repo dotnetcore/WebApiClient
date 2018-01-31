@@ -102,10 +102,7 @@ namespace WebApiClient
         {
             Func<Exception, TResult> func = ex =>
             {
-                if (handler != null)
-                {
-                    handler(ex);
-                }
+                handler?.Invoke(ex);
                 return default(TResult);
             };
             return task.Handle().WhenCatch<Exception>(func);

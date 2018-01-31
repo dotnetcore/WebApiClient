@@ -21,9 +21,11 @@ namespace WebApiClient
         {
             if (this.Headers.ContentDisposition == null)
             {
-                var disposition = new ContentDispositionHeaderValue("form-data");
-                disposition.Name = string.Format("\"{0}\"", name);
-                disposition.FileName = string.Format("\"{0}\"", fileName);
+                var disposition = new ContentDispositionHeaderValue("form-data")
+                {
+                    Name = string.Format("\"{0}\"", name),
+                    FileName = string.Format("\"{0}\"", fileName)
+                };
                 this.Headers.ContentDisposition = disposition;
             }
 

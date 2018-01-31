@@ -48,7 +48,7 @@ namespace WebApiClient.Attributes
             }
 
             this.name = name;
-            this.value = value == null ? null : value.ToString();
+            this.value = value?.ToString();
         }
 
         /// <summary>

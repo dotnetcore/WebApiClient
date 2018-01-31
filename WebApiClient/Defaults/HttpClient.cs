@@ -311,7 +311,7 @@ namespace WebApiClient.Defaults
             {
                 Interlocked.Increment(ref this.pendingCount);
 
-                var timeout = request.Timeout.HasValue ? request.Timeout.Value : this.Timeout;
+                var timeout = request.Timeout ?? this.Timeout;
                 var cancellationToken = new CancellationTokenSource(timeout).Token;
                 return await this.client.SendAsync(request, cancellationToken);
             }

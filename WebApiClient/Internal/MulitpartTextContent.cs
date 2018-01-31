@@ -19,8 +19,10 @@ namespace WebApiClient
         {
             if (this.Headers.ContentDisposition == null)
             {
-                var disposition = new ContentDispositionHeaderValue("form-data");
-                disposition.Name = string.Format("\"{0}\"", name);
+                var disposition = new ContentDispositionHeaderValue("form-data")
+                {
+                    Name = string.Format("\"{0}\"", name)
+                };
                 this.Headers.ContentDisposition = disposition;
             }
             this.Headers.Remove("Content-Type");

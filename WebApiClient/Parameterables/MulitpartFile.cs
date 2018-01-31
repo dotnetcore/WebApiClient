@@ -42,11 +42,7 @@ namespace WebApiClient.Parameterables
         /// <exception cref="ArgumentNullException"></exception>
         public MulitpartFile(Stream stream, string fileName)
         {
-            if (stream == null)
-            {
-                throw new ArgumentNullException(nameof(stream));
-            }
-            this.stream = stream;
+            this.stream = stream ?? throw new ArgumentNullException(nameof(stream));
             this.FileName = fileName;
             this.ContentType = MimeTable.GetContentType(fileName);
         }

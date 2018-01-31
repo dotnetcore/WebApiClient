@@ -29,7 +29,7 @@ namespace WebApiClient.Parameterables
         /// <param name="value">文本内容</param>
         public FormField(object value)
         {
-            this.stringValue = value == null ? null : value.ToString();
+            this.stringValue = value?.ToString();
         }
 
         /// <summary>

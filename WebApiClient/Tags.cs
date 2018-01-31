@@ -59,8 +59,7 @@ namespace WebApiClient
         {
             lock (this.syncRoot)
             {
-                object value;
-                this.lazy.Value.TryGetValue(key, out value);
+                this.lazy.Value.TryGetValue(key, out object value);
                 return new TagItem(value);
             }
         }
