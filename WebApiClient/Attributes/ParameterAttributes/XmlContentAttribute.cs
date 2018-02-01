@@ -41,11 +41,7 @@ namespace WebApiClient.Attributes
         /// <exception cref="ArgumentNullException"></exception>
         private XmlContentAttribute(Encoding encoding)
         {
-            if (encoding == null)
-            {
-                throw new ArgumentNullException(nameof(encoding));
-            }
-            this.encoding = encoding;
+            this.encoding = encoding ?? throw new ArgumentNullException(nameof(encoding));
         }
 
 

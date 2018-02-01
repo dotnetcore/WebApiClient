@@ -53,8 +53,8 @@ namespace WebApiClient.Defaults.KeyValueFormats
             this.Name = name;
             this.Data = data;
             this.Depths = depths;
-            this.DataType = data == null ? null : data.GetType();
-            this.Options = options == null ? new FormatOptions() : options;
+            this.DataType = data?.GetType();
+            this.Options = options ?? new FormatOptions();
         }
 
         /// <summary>

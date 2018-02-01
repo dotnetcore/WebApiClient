@@ -24,6 +24,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="keyValue">参数</param>
         /// <exception cref="HttpApiConfigException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(IEnumerable<KeyValuePair<string, string>> keyValue)
         {
             foreach (var kv in keyValue)
@@ -37,6 +38,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="keyValue">参数</param>
         /// <exception cref="HttpApiConfigException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(KeyValuePair<string, string> keyValue)
         {
             this.AddUrlQuery(keyValue.Key, keyValue.Value);
@@ -48,6 +50,7 @@ namespace WebApiClient
         /// <param name="key">参数名</param>
         /// <param name="value">参数值</param>
         /// <exception cref="HttpApiConfigException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(string key, string value)
         {
             this.AddUrlQuery(key, value, Encoding.UTF8);
@@ -60,11 +63,22 @@ namespace WebApiClient
         /// <param name="value">参数值</param>
         /// <param name="encoding">编码</param>
         /// <exception cref="HttpApiConfigException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(string key, string value, Encoding encoding)
         {
             if (this.RequestUri == null)
             {
                 throw new HttpApiConfigException("请配置HttpConfig.HttpHost或使用HttpHostAttribute特性");
+            }
+
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            if (encoding == null)
+            {
+                throw new ArgumentNullException(nameof(encoding));
             }
 
             var url = this.RequestUri.ToString().TrimEnd('?', '&', '/');

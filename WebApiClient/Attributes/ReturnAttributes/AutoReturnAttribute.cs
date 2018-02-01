@@ -80,7 +80,7 @@ namespace WebApiClient.Attributes
             /// <param name="contenType">ContentType内容</param>
             public ContentType(MediaTypeHeaderValue contenType)
             {
-                this.contenType = contenType == null ? null : contenType.MediaType;
+                this.contenType = contenType?.MediaType;
             }
 
             /// <summary>

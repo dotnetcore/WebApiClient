@@ -17,8 +17,7 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
         /// <returns></returns>
         public override IEnumerable<KeyValuePair<string, string>> Invoke(ConvertContext context)
         {
-            var dynamicObject = context.Data as DynamicObject;
-            if (dynamicObject != null)
+            if (context.Data is DynamicObject dynamicObject)
             {
                 return from name in dynamicObject.GetDynamicMemberNames()
                        let value = this.GetValue(dynamicObject, name)
@@ -37,9 +36,8 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
         /// <returns></returns>
         private object GetValue(DynamicObject dynamicObject, string name)
         {
-            object value;
             var binder = new MemberBinder(name);
-            dynamicObject.TryGetMember(binder, out value);
+            dynamicObject.TryGetMember(binder, out object value);
             return value;
         }
 

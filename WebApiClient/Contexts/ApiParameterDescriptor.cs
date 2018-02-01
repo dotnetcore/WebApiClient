@@ -48,7 +48,7 @@ namespace WebApiClient.Contexts
         /// <returns></returns>
         public override string ToString()
         {
-            return this.Value == null ? null : this.Value.ToString();
+            return this.Value?.ToString();
         }
 
         /// <summary>
