@@ -33,7 +33,7 @@ namespace WebApiClient.Attributes
         {
             get
             {
-                return this.encoding.EncodingName;
+                return this.encoding.WebName;
             }
             set
             {
