@@ -27,9 +27,21 @@ namespace WebApiClient
         /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(IEnumerable<KeyValuePair<string, string>> keyValue)
         {
+            this.AddUrlQuery(keyValue, Encoding.UTF8);
+        }
+
+        /// <summary>
+        /// 追加Query参数到请求路径
+        /// </summary>
+        /// <param name="keyValue">参数</param>
+        /// <param name="encoding">编码</param>
+        /// <exception cref="HttpApiConfigException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        public void AddUrlQuery(IEnumerable<KeyValuePair<string, string>> keyValue, Encoding encoding)
+        {
             foreach (var kv in keyValue)
             {
-                this.AddUrlQuery(kv);
+                this.AddUrlQuery(kv, encoding);
             }
         }
 
@@ -41,8 +53,21 @@ namespace WebApiClient
         /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(KeyValuePair<string, string> keyValue)
         {
-            this.AddUrlQuery(keyValue.Key, keyValue.Value);
+            this.AddUrlQuery(keyValue, Encoding.UTF8);
         }
+
+        /// <summary>
+        /// 追加Query参数到请求路径
+        /// </summary>
+        /// <param name="keyValue">参数</param>
+        /// <param name="encoding">编码</param>
+        /// <exception cref="HttpApiConfigException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        public void AddUrlQuery(KeyValuePair<string, string> keyValue, Encoding encoding)
+        {
+            this.AddUrlQuery(keyValue.Key, keyValue.Value, encoding);
+        }
+
 
         /// <summary>
         /// 追加Query参数到请求路径
@@ -358,7 +383,7 @@ namespace WebApiClient
         /// 转换为字符串
         /// </summary>
         /// <returns></returns>
-        public async Task<string> ToStringAsync()
+        public override string ToString()
         {
             var builder = new StringBuilder()
                 .Append(this.Method).Append(" ")
@@ -380,6 +405,18 @@ namespace WebApiClient
             }
 
             builder.AppendLine();
+            return builder.ToString();
+        }
+
+        /// <summary>
+        /// 转换为字符串
+        /// </summary>
+        /// <returns></returns>
+        public async Task<string> ToStringAsync()
+        {
+            var builder = new StringBuilder()
+                .Append(this.ToString());
+
             if (this.Content != null)
             {
                 var content = await this.Content.ReadAsStringAsync();

@@ -122,13 +122,11 @@ namespace WebApiClient.Attributes
                 return regex.Replace(url, value);
             }
 
-            var encoding = System.Text.Encoding.GetEncoding(this.Encoding);
-            var valueEncoded = HttpUtility.UrlEncode(value, encoding);
+            var valueEncoded = HttpUtility.UrlEncode(value, this.encoding);
             var query = string.Format("{0}={1}", key, valueEncoded);
             var concat = url.Contains('?') ? "&" : "?";
             return url + concat + query;
         }
-
 
         /// <summary>
         /// 返回是否应该忽略提交 
