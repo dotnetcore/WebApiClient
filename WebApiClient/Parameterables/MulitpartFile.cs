@@ -33,6 +33,16 @@ namespace WebApiClient.Parameterables
         /// </summary>
         public string ContentType { get; set; }
 
+        /// <summary>
+        /// 将自身作为multipart/form-data的一个文件项
+        /// </summary>
+        /// <param name="buffer">数据</param>
+        /// <param name="fileName">文件友好名称</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public MulitpartFile(byte[] buffer, string fileName) :
+            this(new MemoryStream(buffer ?? throw new ArgumentNullException(nameof(buffer))), fileName)
+        {
+        }
 
         /// <summary>
         /// 将自身作为multipart/form-data的一个文件项
