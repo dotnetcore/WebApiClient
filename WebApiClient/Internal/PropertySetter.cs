@@ -25,6 +25,10 @@ namespace WebApiClient
         /// <exception cref="ArgumentNullException"></exception>
         public PropertySetter(PropertyInfo property)
         {
+            if (property == null)
+            {
+                throw new ArgumentNullException(nameof(property));
+            }
             this.setFunc = CreateSetterDelegate(property);
         }
 

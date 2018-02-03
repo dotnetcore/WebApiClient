@@ -24,7 +24,7 @@ namespace WebApiClient
         /// <param name="property">属性</param>
         /// <exception cref="ArgumentNullException"></exception>
         public PropertyGetter(PropertyInfo property)
-           : this(property.DeclaringType, property.Name)
+           : this(property?.DeclaringType, property?.Name)
         {
         }
 

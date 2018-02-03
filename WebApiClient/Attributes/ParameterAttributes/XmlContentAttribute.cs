@@ -30,7 +30,7 @@ namespace WebApiClient.Attributes
         /// <param name="codeName">编码</param>
         /// <exception cref="ArgumentNullException"></exception>
         public XmlContentAttribute(string codeName)
-            : this(Encoding.GetEncoding(codeName))
+            : this(Encoding.GetEncoding(codeName ?? throw new ArgumentNullException(nameof(codeName))))
         {
         }
 

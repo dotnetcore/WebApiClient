@@ -98,7 +98,7 @@ namespace WebApiClient.Defaults
         /// <param name="disposeHandler">调用Dispose方法时，是否也Dispose handler</param>
         /// <exception cref="ArgumentNullException"></exception>
         public HttpClient(HttpClientHandler handler, bool disposeHandler = false)
-            : this(handler, disposeHandler, false)
+            : this(handler ?? throw new ArgumentNullException(nameof(handler)), disposeHandler, false)
         {
         }
 
@@ -108,20 +108,12 @@ namespace WebApiClient.Defaults
         /// <param name="handler"></param>   
         /// <param name="disposeHandler">调用HttpClient.Dispose时是否也disposeHandler</param>
         /// <param name="supportCreateHandler">是否支持调用创建实例</param>
-        /// <exception cref="ArgumentNullException"></exception>
         private HttpClient(HttpClientHandler handler, bool disposeHandler, bool supportCreateHandler)
         {
             this.supportCreateHandler = supportCreateHandler;
             if (handler == null)
             {
-                if (supportCreateHandler == false)
-                {
-                    throw new ArgumentNullException(nameof(handler));
-                }
-                else
-                {
-                    handler = this.CreateHttpClientHandler();
-                }
+                handler = this.CreateHttpClientHandler();
             }
 
             this.Handler = handler;
