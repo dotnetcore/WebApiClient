@@ -10,9 +10,9 @@ namespace WebApiClient.Attributes
     public class FormContentAttribute : HttpContentAttribute
     {
         /// <summary>
-        /// 时期时间格式
+        /// 获取或设置时期时间格式
         /// </summary>
-        private readonly string datetimeFormat;
+        public string DateTimeFormat { get; set; }
 
         /// <summary>
         /// 将参数值作为x-www-form-urlencoded请求
@@ -28,7 +28,7 @@ namespace WebApiClient.Attributes
         /// <param name="datetimeFormat">时期时间格式</param>
         public FormContentAttribute(string datetimeFormat)
         {
-            this.datetimeFormat = datetimeFormat;
+            this.DateTimeFormat = datetimeFormat;
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace WebApiClient.Attributes
         protected override async Task SetHttpContentAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var formatter = context.HttpApiConfig.KeyValueFormatter;
-            var options = context.HttpApiConfig.FormatOptions.CloneChange(this.datetimeFormat);
+            var options = context.HttpApiConfig.FormatOptions.CloneChange(this.DateTimeFormat);
             var keyValues = formatter.Serialize(parameter, options);
             await context.RequestMessage.AddFormFieldAsync(keyValues);
         }

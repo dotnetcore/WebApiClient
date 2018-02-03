@@ -11,9 +11,9 @@ namespace WebApiClient.Attributes
     public class JsonContentAttribute : HttpContentAttribute
     {
         /// <summary>
-        /// 日期时间格式
+        /// 获取或设置时期时间格式
         /// </summary>
-        private readonly string datetimeFormat;
+        public string DateTimeFormat { get; set; }
 
         /// <summary>
         /// 将参数值作为application/json请求
@@ -29,7 +29,7 @@ namespace WebApiClient.Attributes
         /// <param name="datetimeFormat">日期时间格式</param>
         public JsonContentAttribute(string datetimeFormat)
         {
-            this.datetimeFormat = datetimeFormat;
+            this.DateTimeFormat = datetimeFormat;
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace WebApiClient.Attributes
         protected override void SetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var formatter = context.HttpApiConfig.JsonFormatter;
-            var options = context.HttpApiConfig.FormatOptions.CloneChange(this.datetimeFormat);
+            var options = context.HttpApiConfig.FormatOptions.CloneChange(this.DateTimeFormat);
             var content = formatter.Serialize(parameter.Value, options);
             context.RequestMessage.Content = new StringContent(content, Encoding.UTF8, "application/json");
         }

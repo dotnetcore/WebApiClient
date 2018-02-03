@@ -23,7 +23,7 @@ namespace WebApiClient
         private static readonly ConcurrentDictionary<MethodInfo, ApiActionDescriptor> cache;
 
         /// <summary>
-        /// Castle相关上下文
+        /// Api描述的缓存
         /// </summary>
         static ApiDescriptorCache()
         {
