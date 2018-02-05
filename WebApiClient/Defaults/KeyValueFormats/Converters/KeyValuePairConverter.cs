@@ -91,7 +91,7 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             /// <returns></returns>
             public static KeyValuePairReader GetReader(Type type)
             {
-                if (type.IsGenericType == false || type.GetGenericTypeDefinition() != type)
+                if (type.IsGenericType == false || type.GetGenericTypeDefinition() != keyValuePairType)
                 {
                     return null;
                 }
