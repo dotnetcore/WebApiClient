@@ -10,11 +10,6 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
     public class KeyValuePairConverter : ConverterBase
     {
         /// <summary>
-        /// KeyValuePair泛型
-        /// </summary>
-        private static readonly Type keyValuePairType = typeof(KeyValuePair<,>);
-
-        /// <summary>
         /// 执行转换
         /// </summary>
         /// <param name="context">转换上下文</param>
@@ -78,6 +73,11 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             {
                 return this.valueGetter.Invoke(instance);
             }
+
+            /// <summary>
+            /// KeyValuePair泛型
+            /// </summary>
+            private static readonly Type keyValuePairType = typeof(KeyValuePair<,>);
 
             /// <summary>
             /// 类型的KeyValuePairReader缓存
