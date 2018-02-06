@@ -14,8 +14,18 @@ namespace WebApiClient.Attributes
     /// 支持返回xml或json转换对应类型
     /// 没有任何IApiReturnAttribute特性修饰的接口方法，将默认为AutoReturn修饰
     /// </summary> 
-    public sealed class AutoReturnAttribute : ApiReturnAttribute
+    public class AutoReturnAttribute : ApiReturnAttribute
     {
+        /// <summary>
+        /// xml解析
+        /// </summary>
+        private static readonly IApiReturnAttribute xmlReturn = new XmlReturnAttribute();
+
+        /// <summary>
+        /// json解析
+        /// </summary>
+        private static readonly IApiReturnAttribute jsonReturn = new JsonReturnAttribute();
+
         /// <summary>
         /// 获取异步结果
         /// </summary>
@@ -31,14 +41,14 @@ namespace WebApiClient.Attributes
                 return response;
             }
 
-            if (dataType == typeof(byte[]))
-            {
-                return await response.Content.ReadAsByteArrayAsync();
-            }
-
             if (dataType == typeof(string))
             {
                 return await response.Content.ReadAsStringAsync();
+            }
+
+            if (dataType == typeof(byte[]))
+            {
+                return await response.Content.ReadAsByteArrayAsync();
             }
 
             if (dataType == typeof(Stream))
@@ -47,15 +57,12 @@ namespace WebApiClient.Attributes
             }
 
             var contentType = new ContentType(response.Content.Headers.ContentType);
-            if (contentType.IsApplicationJson())
+            if (contentType.IsApplicationJson() == true)
             {
-                var jsonReturn = new JsonReturnAttribute() as IApiReturnAttribute;
                 return await jsonReturn.GetTaskResult(context);
             }
-
-            if (contentType.IsApplicationXml())
+            else if (contentType.IsApplicationXml() == true)
             {
-                var xmlReturn = new XmlReturnAttribute() as IApiReturnAttribute;
                 return await xmlReturn.GetTaskResult(context);
             }
 
@@ -63,34 +70,33 @@ namespace WebApiClient.Attributes
             throw new NotSupportedException(message);
         }
 
-
         /// <summary>
         /// 表示回复的ContentType
         /// </summary>
-        class ContentType
+        private struct ContentType
         {
             /// <summary>
             /// ContentType内容
             /// </summary>
-            private readonly string contenType;
+            private readonly string contentType;
 
             /// <summary>
             /// 回复的ContentType
             /// </summary>
-            /// <param name="contenType">ContentType内容</param>
-            public ContentType(MediaTypeHeaderValue contenType)
+            /// <param name="contentType">ContentType内容</param>
+            public ContentType(MediaTypeHeaderValue contentType)
             {
-                this.contenType = contenType?.MediaType;
+                this.contentType = contentType?.MediaType;
             }
 
             /// <summary>
             /// 是否为某个Mime
             /// </summary>
-            /// <param name="mime"></param>
+            /// <param name="mediaType"></param>
             /// <returns></returns>
-            private bool Is(string mime)
+            public bool Is(string mediaType)
             {
-                return this.contenType != null && this.contenType.StartsWith(mime, StringComparison.OrdinalIgnoreCase);
+                return this.contentType != null && this.contentType.StartsWith(mediaType, StringComparison.OrdinalIgnoreCase);
             }
 
             /// <summary>
