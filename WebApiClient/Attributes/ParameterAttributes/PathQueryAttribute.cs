@@ -76,7 +76,7 @@ namespace WebApiClient.Attributes
             var uri = context.RequestMessage.RequestUri;
             if (uri == null)
             {
-                throw new HttpApiConfigException("未配置HttpConfig.HttpHost或未使用HttpHostAttribute特性");
+                throw new HttpApiConfigException($"未配置HttpHost，无法使用参数{parameter.Name}");
             }
 
             if (this.WillIgnore(parameter.Value) == false)

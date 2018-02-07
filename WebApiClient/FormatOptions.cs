@@ -48,7 +48,7 @@ namespace WebApiClient
         public FormatOptions()
         {
             this.UseCamelCase = false;
-            this.DateTimeFormat = DateTimeFormats.GetLocalDateTimeFormat();
+            this.DateTimeFormat = DateTimeFormats.LocalDateTimeFormat;
         }
 
         /// <summary>
@@ -106,11 +106,11 @@ namespace WebApiClient
                 {
                     if (char.IsSeparator(charArray[i + 1]))
                     {
-                        charArray[i] = Char.ToLowerInvariant(charArray[i]);
+                        charArray[i] = char.ToLowerInvariant(charArray[i]);
                     }
                     break;
                 }
-                charArray[i] = Char.ToLowerInvariant(charArray[i]);
+                charArray[i] = char.ToLowerInvariant(charArray[i]);
             }
             return new string(charArray);
         }

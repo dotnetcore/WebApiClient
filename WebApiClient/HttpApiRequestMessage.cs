@@ -93,7 +93,7 @@ namespace WebApiClient
         {
             if (this.RequestUri == null)
             {
-                throw new HttpApiConfigException("请配置HttpConfig.HttpHost或使用HttpHostAttribute特性");
+                throw new HttpApiConfigException("未配置RequestUri，RequestUri不能为null");
             }
 
             if (string.IsNullOrEmpty(key))
@@ -106,10 +106,12 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(encoding));
             }
 
-            var url = this.RequestUri.ToString().TrimEnd('?', '&', '/');
             var valueEncoded = HttpUtility.UrlEncode(value, encoding);
             var query = string.Format("{0}={1}", key, valueEncoded);
+
+            var url = this.RequestUri.ToString().TrimEnd('?', '&', '/');
             var concat = url.Contains('?') ? "&" : "?";
+
             this.RequestUri = new Uri(url + concat + query);
         }
 
@@ -285,7 +287,7 @@ namespace WebApiClient
             const string cookieName = "Cookie";
             this.Headers.Remove(cookieName);
 
-            var cookieText = this.EncodeCookies(cookieValues);
+            var cookieText = EncodeCookies(cookieValues, Encoding.UTF8);
             if (string.IsNullOrEmpty(cookieText) == true)
             {
                 return false;
@@ -298,15 +300,15 @@ namespace WebApiClient
         /// 给cookie编码
         /// </summary>
         /// <param name="cookieValues"></param>
+        /// <param name="encoding">编码</param>
         /// <returns></returns>
-        private string EncodeCookies(string cookieValues)
+        private static string EncodeCookies(string cookieValues, Encoding encoding)
         {
             if (cookieValues == null)
             {
                 return null;
             }
 
-            var encoding = Encoding.UTF8;
             var kvs = from item in cookieValues.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
                       let kv = item.Split('=')
                       let name = kv.FirstOrDefault().Trim()

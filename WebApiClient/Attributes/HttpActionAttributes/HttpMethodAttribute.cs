@@ -88,7 +88,7 @@ namespace WebApiClient.Attributes
                 {
                     return relative;
                 }
-                throw new HttpApiConfigException("未配置HttpConfig.HttpHost或未使用HttpHostAttribute特性");
+                throw new HttpApiConfigException($"未配置HttpHost，无法应用路径{relative}");
             }
             else
             {

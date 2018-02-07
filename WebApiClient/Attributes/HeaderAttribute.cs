@@ -134,7 +134,7 @@ namespace WebApiClient.Attributes
             var domain = context.RequestMessage.RequestUri;
             if (domain == null)
             {
-                throw new HttpApiConfigException("未配置HttpConfig.HttpHost或使用HttpHostAttribute特性，无法设置Cookie");
+                throw new HttpApiConfigException("未配置HttpHost，无法应用Cookie");
             }
             return context.HttpApiConfig.HttpClient.SetCookie(domain, cookieValues);
         }

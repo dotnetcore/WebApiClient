@@ -21,7 +21,6 @@ namespace WebApiClient.Defaults
         /// </summary>
         private System.Net.Http.HttpClient client;
 
-
         /// <summary>
         /// 是否已释放
         /// </summary>
@@ -35,7 +34,7 @@ namespace WebApiClient.Defaults
         /// <summary>
         /// 是否支持创建Handler
         /// </summary>
-        private bool supportCreateHandler = false;
+        private readonly bool supportCreateHandler = false;
 
         /// <summary>
         /// 获取关联的Http处理对象
@@ -111,12 +110,7 @@ namespace WebApiClient.Defaults
         private HttpClient(HttpClientHandler handler, bool disposeHandler, bool supportCreateHandler)
         {
             this.supportCreateHandler = supportCreateHandler;
-            if (handler == null)
-            {
-                handler = this.CreateHttpClientHandler();
-            }
-
-            this.Handler = handler;
+            this.Handler = handler ?? this.CreateHttpClientHandler();
             this.client = new System.Net.Http.HttpClient(this.Handler, disposeHandler);
         }
 
@@ -140,7 +134,7 @@ namespace WebApiClient.Defaults
                 throw new ArgumentNullException(nameof(domain));
             }
 
-            foreach (var cookie in this.EncodeCookies(cookieValues))
+            foreach (var cookie in EncodeCookies(cookieValues, Encoding.UTF8))
             {
                 this.Handler.CookieContainer.Add(domain, cookie);
             }
@@ -150,9 +144,10 @@ namespace WebApiClient.Defaults
         /// <summary>
         /// 给cookie编码
         /// </summary>
-        /// <param name="cookieValues"></param>
+        /// <param name="cookieValues">cookie文本</param>
+        /// <param name="encoding">编码</param>
         /// <returns></returns>
-        private IEnumerable<Cookie> EncodeCookies(string cookieValues)
+        private static IEnumerable<Cookie> EncodeCookies(string cookieValues, Encoding encoding)
         {
             if (cookieValues == null)
             {
@@ -163,7 +158,7 @@ namespace WebApiClient.Defaults
                    let kv = item.Split('=')
                    let name = kv.FirstOrDefault().Trim()
                    let value = kv.Length > 1 ? kv.LastOrDefault() : string.Empty
-                   let encode = HttpUtility.UrlEncode(value, Encoding.UTF8)
+                   let encode = HttpUtility.UrlEncode(value, encoding)
                    select new Cookie(name, encode);
         }
 
@@ -191,7 +186,7 @@ namespace WebApiClient.Defaults
                 return false;
             }
 
-            if (this.IsProxyEquals(this.Handler.Proxy, proxy) == true)
+            if (IsProxyEquals(this.Handler.Proxy, proxy) == true)
             {
                 return false;
             }
@@ -213,12 +208,12 @@ namespace WebApiClient.Defaults
         private void InitWithoutProxy()
         {
             var handler = this.CreateHttpClientHandler();
-            this.CopyProperties(this.Handler, handler);
+            CopyProperties(this.Handler, handler);
             handler.UseProxy = false;
             handler.Proxy = null;
 
             var httpClient = new System.Net.Http.HttpClient(handler);
-            this.CopyProperties(this.client, httpClient);
+            CopyProperties(this.client, httpClient);
             this.client.Dispose();
 
             this.client = httpClient;
@@ -243,7 +238,7 @@ namespace WebApiClient.Defaults
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        private bool CopyProperties<T>(T source, T target)
+        private static bool CopyProperties<T>(T source, T target)
         {
             var state = true;
             var properties = source.GetType()
@@ -266,12 +261,17 @@ namespace WebApiClient.Defaults
         }
 
         /// <summary>
+        /// 目录网址
+        /// </summary>
+        private static readonly Uri destination = new Uri("http://www.webapiclient.com");
+
+        /// <summary>
         /// 比较代理是否相等
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        private bool IsProxyEquals(IWebProxy x, IWebProxy y)
+        private static bool IsProxyEquals(IWebProxy x, IWebProxy y)
         {
             if (x == null && y == null)
             {
@@ -283,7 +283,6 @@ namespace WebApiClient.Defaults
                 return false;
             }
 
-            var destination = new Uri("http://www.webapiclient.com");
             return x.GetProxy(destination) == y.GetProxy(destination);
         }
 

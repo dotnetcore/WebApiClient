@@ -26,7 +26,7 @@ namespace WebApiClient
         {
             var headerNames =
                 from header in Enum.GetValues(typeof(HttpRequestHeader)).Cast<HttpRequestHeader>()
-                let name = Regex.Replace(header.ToString(), "[A-Z]", (m) => m.Index == 0 ? m.Value : "-" + m.Value)
+                let name = Regex.Replace(header.ToString(), "[A-Z][^A-Z]", (m) => m.Index == 0 ? m.Value : "-" + m.Value)
                 select new { header, name };
 
             foreach (var item in headerNames)

@@ -42,7 +42,7 @@ namespace WebApiClient.Attributes
                 var baseUri = context.RequestMessage.RequestUri;
                 if (baseUri == null)
                 {
-                    throw new HttpApiConfigException("请配置HttpConfig.HttpHost或使用HttpHostAttribute特性，否则必须使用绝对路径");
+                    throw new HttpApiConfigException("请配置HttpHost或者Url使用绝对路径");
                 }
                 context.RequestMessage.RequestUri = new Uri(baseUri, relative);
             }
