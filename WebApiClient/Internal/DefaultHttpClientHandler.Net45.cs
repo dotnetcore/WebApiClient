@@ -21,6 +21,11 @@ namespace WebApiClient
         private int sendTimes = 0;
 
         /// <summary>
+        /// 同步锁
+        /// </summary>
+        private readonly object syncRoot = new object();
+
+        /// <summary>
         /// 站点地址
         /// </summary>
         private readonly HashSet<Uri> hashSet = new HashSet<Uri>(new UriComparer());
@@ -99,10 +104,13 @@ namespace WebApiClient
                 address = this.Proxy.GetProxy(address);
             }
 
-            if (this.hashSet.Add(address) == true)
+            lock (this.syncRoot)
             {
-                var point = ServicePointManager.FindServicePoint(address);
-                point.ConnectionLimit = limit;
+                if (this.hashSet.Add(address) == true)
+                {
+                    var point = ServicePointManager.FindServicePoint(address);
+                    point.ConnectionLimit = limit;
+                }
             }
         }
 
