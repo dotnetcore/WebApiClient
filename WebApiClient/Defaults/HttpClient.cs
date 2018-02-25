@@ -119,10 +119,39 @@ namespace WebApiClient.Defaults
         /// 当Handler.UseCookies才添加
         /// </summary>
         /// <param name="domain">cookie域名</param>
-        /// <param name="cookieValues">cookie值，可以不编码，eg：key1=value1; key2=value2</param>
+        /// <param name="cookieValues">cookie值，会自动进行URL编码，eg：key1=value1; key2=value2</param>
         /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="CookieException"></exception>
         /// <returns></returns>
         public bool SetCookie(Uri domain, string cookieValues)
+        {
+            return this.SetCookie(domain, cookieValues, true);
+        }
+
+        /// <summary>
+        /// 设置Cookie值到Cookie容器
+        /// 当Handler.UseCookies才添加
+        /// </summary>
+        /// <param name="domain">cookie域名</param>
+        /// <param name="cookieValues">cookie值，不进行URL编码，eg：key1=value1; key2=value2</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="CookieException"></exception>
+        /// <returns></returns>
+        public bool SetRawCookie(Uri domain, string cookieValues)
+        {
+            return this.SetCookie(domain, cookieValues, false);
+        }
+
+        /// <summary>
+        /// 设置Cookie
+        /// </summary>
+        /// <param name="domain">cookie域名</param>
+        /// <param name="cookieValues">cookie值</param>
+        /// <param name="useUrlEncode">是否URL编码</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="CookieException"></exception>
+        /// <returns></returns>
+        private bool SetCookie(Uri domain, string cookieValues, bool useUrlEncode)
         {
             if (this.Handler.UseCookies == false)
             {
@@ -134,32 +163,11 @@ namespace WebApiClient.Defaults
                 throw new ArgumentNullException(nameof(domain));
             }
 
-            foreach (var cookie in EncodeCookies(cookieValues, Encoding.UTF8))
+            foreach (var cookie in HttpUtility.ParseCookie(cookieValues, useUrlEncode))
             {
                 this.Handler.CookieContainer.Add(domain, cookie);
             }
             return true;
-        }
-
-        /// <summary>
-        /// 给cookie编码
-        /// </summary>
-        /// <param name="cookieValues">cookie文本</param>
-        /// <param name="encoding">编码</param>
-        /// <returns></returns>
-        private static IEnumerable<Cookie> EncodeCookies(string cookieValues, Encoding encoding)
-        {
-            if (cookieValues == null)
-            {
-                return Enumerable.Empty<Cookie>();
-            }
-
-            return from item in cookieValues.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-                   let kv = item.Split('=')
-                   let name = kv.FirstOrDefault().Trim()
-                   let value = kv.Length > 1 ? kv.LastOrDefault() : string.Empty
-                   let encode = HttpUtility.UrlEncode(value, encoding)
-                   select new Cookie(name, encode);
         }
 
         /// <summary>

@@ -26,6 +26,12 @@ namespace WebApiClient.Attributes
         private readonly string value;
 
         /// <summary>
+        /// 获取是对cookie的Value进行Url utf-8编码
+        /// 默认为true
+        /// </summary>
+        public bool EncodeCookie { get; set; }
+
+        /// <summary>
         /// 将参数值设置到Header        
         /// </summary>
         /// <param name="name">header名称</param>
@@ -68,6 +74,7 @@ namespace WebApiClient.Attributes
             }
             this.name = name;
             this.value = value;
+            this.EncodeCookie = true;
         }
 
         /// <summary>
@@ -123,12 +130,15 @@ namespace WebApiClient.Attributes
         /// <param name="context">上下文</param>
         /// <param name="cookieValues">cookie值</param>
         /// <exception cref="HttpApiConfigException"></exception>
+        /// <exception cref="CookieException"></exception>
         /// <returns></returns>
         private bool SetCookie(ApiActionContext context, string cookieValues)
         {
             if (context.HttpApiConfig.HttpClient.Handler.UseCookies == false)
             {
-                return context.RequestMessage.SetCookies(cookieValues);
+                return this.EncodeCookie ?
+                     context.RequestMessage.SetCookie(cookieValues) :
+                     context.RequestMessage.SetRawCookie(cookieValues);
             }
 
             var domain = context.RequestMessage.RequestUri;
@@ -136,7 +146,10 @@ namespace WebApiClient.Attributes
             {
                 throw new HttpApiConfigException("未配置HttpHost，无法应用Cookie");
             }
-            return context.HttpApiConfig.HttpClient.SetCookie(domain, cookieValues);
+
+            return this.EncodeCookie ?
+                context.HttpApiConfig.HttpClient.SetCookie(domain, cookieValues) :
+                context.HttpApiConfig.HttpClient.SetRawCookie(domain, cookieValues);
         }
     }
 }

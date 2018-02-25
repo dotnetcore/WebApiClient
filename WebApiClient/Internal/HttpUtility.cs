@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net;
 using System.Text;
 
 namespace WebApiClient
@@ -8,6 +10,36 @@ namespace WebApiClient
     /// </summary>
     static class HttpUtility
     {
+        /// <summary>
+        /// 解析cookie
+        /// </summary>
+        /// <param name="cookieValues">cookie值</param>
+        /// <param name="useUrlEncode">是否对cookie的Value进行url utf-8编码</param>
+        /// <exception cref="CookieException"></exception>
+        /// <returns></returns>
+        public static IEnumerable<Cookie> ParseCookie(string cookieValues, bool useUrlEncode)
+        {
+            if (string.IsNullOrEmpty(cookieValues) == true)
+            {
+                yield break;
+            }
+
+            const string separator = "; ";
+            var cookieItems = cookieValues.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var item in cookieItems)
+            {
+                var index = item.IndexOf('=');
+                if (index > 0)
+                {
+                    var name = item.Substring(0, index).Trim();
+                    var value = item.Substring(index + 1);
+                    var encoded = useUrlEncode ? UrlEncode(value, Encoding.UTF8) : value;
+                    yield return new Cookie(name, encoded);
+                }
+            }
+        }
+
         /// <summary>
         /// Url编码
         /// </summary>

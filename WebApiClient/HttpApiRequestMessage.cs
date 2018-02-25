@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -281,42 +282,53 @@ namespace WebApiClient
         /// 设置Cookie值到请求头
         /// 当HttpClientHandler.UseCookies == false才会提交到服务端
         /// </summary>
-        /// <param name="cookieValues">cookie值，可以不编码，eg：key1=value1; key2=value2</param>
-        public bool SetCookies(string cookieValues)
+        /// <param name="cookieValues">cookie值，会自动进行URL编码，eg：key1=value1; key2=value2</param>
+        /// <exception cref="CookieException"></exception>
+        /// <returns></returns>
+        public bool SetCookie(string cookieValues)
+        {
+            return this.SetCookie(cookieValues, true);
+        }
+
+        /// <summary>
+        /// 设置Cookie值到请求头
+        /// 当HttpClientHandler.UseCookies == false才会提交到服务端
+        /// </summary>
+        /// <param name="cookieValues">cookie值，不进行URL编码，eg：key1=value1; key2=value2</param>
+        /// <exception cref="CookieException"></exception>
+        /// <returns></returns>
+        public bool SetRawCookie(string cookieValues)
+        {
+            return this.SetCookie(cookieValues, false);
+        }
+
+        /// <summary>
+        /// 设置Cookie值到请求头
+        /// 当HttpClientHandler.UseCookies == false才会提交到服务端
+        /// </summary>
+        /// <param name="cookieValues">cookie值，eg：key1=value1; key2=value2</param>
+        /// <param name="useUrlEncode">是否使用Url编码</param>
+        /// <exception cref="CookieException"></exception>
+        /// <returns></returns>
+        private bool SetCookie(string cookieValues, bool useUrlEncode)
         {
             const string cookieName = "Cookie";
             this.Headers.Remove(cookieName);
 
-            var cookieText = EncodeCookies(cookieValues, Encoding.UTF8);
-            if (string.IsNullOrEmpty(cookieText) == true)
+            if (cookieValues == null)
             {
                 return false;
             }
 
-            return this.Headers.TryAddWithoutValidation(cookieName, cookieText);
-        }
-
-        /// <summary>
-        /// 给cookie编码
-        /// </summary>
-        /// <param name="cookieValues"></param>
-        /// <param name="encoding">编码</param>
-        /// <returns></returns>
-        private static string EncodeCookies(string cookieValues, Encoding encoding)
-        {
-            if (cookieValues == null)
+            if (useUrlEncode == true)
             {
-                return null;
+                const string separator = "; ";
+                var cookieItems = from item in HttpUtility.ParseCookie(cookieValues, true)
+                                  select string.Format("{0}={1}", item.Name, item.Value);
+                cookieValues = string.Join(separator, cookieItems);
             }
 
-            var kvs = from item in cookieValues.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-                      let kv = item.Split('=')
-                      let name = kv.FirstOrDefault().Trim()
-                      let value = kv.Length > 1 ? kv.LastOrDefault() : string.Empty
-                      let encoded = HttpUtility.UrlEncode(value, encoding)
-                      select string.Format("{0}={1}", name, encoded);
-
-            return string.Join("; ", kvs);
+            return this.Headers.TryAddWithoutValidation(cookieName, cookieValues);
         }
 
         /// <summary>

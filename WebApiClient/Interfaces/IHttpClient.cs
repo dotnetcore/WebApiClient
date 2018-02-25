@@ -43,9 +43,18 @@ namespace WebApiClient.Interfaces
         /// 当Handler.UseCookies才添加
         /// </summary>
         /// <param name="domain">cookie域名</param>
-        /// <param name="cookieValues">cookie值，可以不编码，eg：key1=value1; key2=value2</param>
+        /// <param name="cookieValues">cookie值，会自动进行URL编码，eg：key1=value1; key2=value2</param>
         /// <returns></returns>
         bool SetCookie(Uri domain, string cookieValues);
+
+        /// <summary>
+        /// 设置Cookie值到Cookie容器
+        /// 当Handler.UseCookies才添加
+        /// </summary>
+        /// <param name="domain">cookie域名</param>
+        /// <param name="cookieValues">cookie值，不进行URL编码，eg：key1=value1; key2=value2</param>
+        /// <returns></returns>
+        bool SetRawCookie(Uri domain, string cookieValues);
 
         /// <summary>
         /// 取消正在挂起的请求
