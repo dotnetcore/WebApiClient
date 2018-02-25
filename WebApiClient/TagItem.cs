@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace WebApiClient
 {
     /// <summary>
     /// 表示Tags的一个数据项
     /// </summary>
+    [DebuggerDisplay("{Value}")]
     public struct TagItem
     {
         /// <summary>
@@ -98,7 +100,7 @@ namespace WebApiClient
         /// <returns></returns>
         public override string ToString()
         {
-            return this.IsNull ? null : this.value.ToString();
+            return this.As<string>();
         }
     }
 }

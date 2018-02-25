@@ -29,7 +29,7 @@ namespace WebApiClient
         /// </summary>
         public Tags()
         {
-            this.lazy = new Lazy<Dictionary<string, object>>(() => new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase));
+            this.lazy = new Lazy<Dictionary<string, object>>(() => new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase), true);
         }
 
         /// <summary>
