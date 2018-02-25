@@ -285,6 +285,19 @@ namespace WebApiClient
         /// <param name="cookieValues">cookie值，会自动进行URL编码，eg：key1=value1; key2=value2</param>
         /// <exception cref="CookieException"></exception>
         /// <returns></returns>
+        [Obsolete("此方法已废弃，请使用SetCookie替代", true)]
+        public bool SetCookies(string cookieValues)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 设置Cookie值到请求头
+        /// 当HttpClientHandler.UseCookies == false才会提交到服务端
+        /// </summary>
+        /// <param name="cookieValues">cookie值，会自动进行URL编码，eg：key1=value1; key2=value2</param>
+        /// <exception cref="CookieException"></exception>
+        /// <returns></returns>
         public bool SetCookie(string cookieValues)
         {
             return this.SetCookie(cookieValues, true);
