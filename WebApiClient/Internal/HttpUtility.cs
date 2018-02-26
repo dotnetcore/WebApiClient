@@ -30,10 +30,14 @@ namespace WebApiClient
             foreach (var item in cookieItems)
             {
                 var index = item.IndexOf('=');
-                if (index > 0)
+                if (index <= 0)
                 {
-                    var name = item.Substring(0, index).Trim();
-                    var value = item.Substring(index + 1);
+                    continue;
+                }
+                var name = item.Substring(0, index).Trim();
+                if (string.IsNullOrEmpty(name) == false)
+                {
+                    var value = item.Substring(index + 1).Trim();
                     var encoded = useUrlEncode ? UrlEncode(value, Encoding.UTF8) : value;
                     yield return new Cookie(name, encoded);
                 }
