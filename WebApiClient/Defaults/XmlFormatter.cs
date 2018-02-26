@@ -17,9 +17,16 @@ namespace WebApiClient.Defaults
         /// </summary>
         /// <param name="obj">对象</param>
         /// <param name="encoding">编码</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
         public virtual string Serialize(object obj, Encoding encoding)
         {
+            if (encoding == null)
+            {
+                throw new ArgumentNullException(nameof(encoding));
+            }
+
             if (obj == null)
             {
                 return null;
@@ -39,9 +46,16 @@ namespace WebApiClient.Defaults
         /// </summary>
         /// <param name="xml">xml</param>
         /// <param name="objType">对象类型</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
         public virtual object Deserialize(string xml, Type objType)
         {
+            if (objType == null)
+            {
+                throw new ArgumentNullException(nameof(objType));
+            }
+
             if (string.IsNullOrEmpty(xml))
             {
                 return null;
