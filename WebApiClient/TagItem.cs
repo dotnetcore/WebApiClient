@@ -100,7 +100,7 @@ namespace WebApiClient
         /// <returns></returns>
         public override string ToString()
         {
-            return this.As<string>();
+            return this.Value?.ToString();
         }
     }
 }
