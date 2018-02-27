@@ -126,7 +126,7 @@ namespace WebApiClient
 
             public int GetHashCode(Uri obj)
             {
-                return obj.Scheme.GetHashCode() ^ obj.Authority.GetHashCode();
+                return obj.Authority.GetHashCode();
             }
         }
     }

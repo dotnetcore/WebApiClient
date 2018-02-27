@@ -110,7 +110,7 @@ namespace WebApiClient
 
             if (targetStream.CanWrite == false)
             {
-                throw new ArgumentException(nameof(targetStream) + "cannot be write", nameof(targetStream));
+                throw new ArgumentException(nameof(targetStream) + " cannot be write", nameof(targetStream));
             }
 
             var length = 0;
