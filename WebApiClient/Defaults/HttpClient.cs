@@ -116,7 +116,7 @@ namespace WebApiClient.Defaults
         /// <exception cref="ArgumentException"></exception>
         private HttpClient(HttpMessageHandler handler, bool disposeHandler, bool supportCreateHandler)
         {
-            this.supportCreateHandler = supportCreateHandler;
+            this.supportCreateHandler = supportCreateHandler;            
             this.messageHandler = handler ?? this.CreateHttpClientHandler();
             this.httpClient = new System.Net.Http.HttpClient(this.messageHandler, disposeHandler);
             this.Handler = this.GetHttpClientHandler(this.messageHandler);
@@ -256,7 +256,7 @@ namespace WebApiClient.Defaults
 
             this.httpClient = client;
             this.messageHandler = handler;
-            this.Handler = this.GetHttpClientHandler(handler);
+            this.Handler = handler;
         }
 
         /// <summary>
