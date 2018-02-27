@@ -48,7 +48,7 @@ static async Task TestAsync()
 * 内置丰富的接口、方法和属性特性，支持使用自定义特性
 * 适应个性化需求的多个DataAnnotations特性
 * 灵活的ApiAcitonFilter、GobalFilter和IParameterable
-* 支持与外部HttpClientHandler实例无缝衔接
+* 支持与外部HttpMessageHandler实例无缝衔接
 * 独一无二的请求异常条件重试和异常处理链式语法功能
 
 ### 4. 详细文档
