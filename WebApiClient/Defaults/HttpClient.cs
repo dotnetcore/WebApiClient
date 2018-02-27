@@ -17,9 +17,14 @@ namespace WebApiClient.Defaults
     public class HttpClient : IHttpClient
     {
         /// <summary>
+        /// messageHandler实例
+        /// </summary>
+        private HttpMessageHandler messageHandler;
+
+        /// <summary>
         /// HttpClient实例
         /// </summary>
-        private System.Net.Http.HttpClient client;
+        private System.Net.Http.HttpClient httpClient;
 
         /// <summary>
         /// 是否已释放
@@ -48,7 +53,7 @@ namespace WebApiClient.Defaults
         {
             get
             {
-                return this.client.DefaultRequestHeaders;
+                return this.httpClient.DefaultRequestHeaders;
             }
         }
 
@@ -59,11 +64,11 @@ namespace WebApiClient.Defaults
         {
             get
             {
-                return this.client.Timeout;
+                return this.httpClient.Timeout;
             }
             set
             {
-                this.client.Timeout = value;
+                this.httpClient.Timeout = value;
             }
         }
 
@@ -74,11 +79,11 @@ namespace WebApiClient.Defaults
         {
             get
             {
-                return this.client.MaxResponseContentBufferSize;
+                return this.httpClient.MaxResponseContentBufferSize;
             }
             set
             {
-                this.client.MaxResponseContentBufferSize = value;
+                this.httpClient.MaxResponseContentBufferSize = value;
             }
         }
 
@@ -96,7 +101,8 @@ namespace WebApiClient.Defaults
         /// <param name="handler">关联的Http处理对象</param>
         /// <param name="disposeHandler">调用Dispose方法时，是否也Dispose handler</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public HttpClient(HttpClientHandler handler, bool disposeHandler = false)
+        /// <exception cref="ArgumentException"></exception>
+        public HttpClient(HttpMessageHandler handler, bool disposeHandler = false)
             : this(handler ?? throw new ArgumentNullException(nameof(handler)), disposeHandler, false)
         {
         }
@@ -107,11 +113,35 @@ namespace WebApiClient.Defaults
         /// <param name="handler"></param>   
         /// <param name="disposeHandler">调用HttpClient.Dispose时是否也disposeHandler</param>
         /// <param name="supportCreateHandler">是否支持调用创建实例</param>
-        private HttpClient(HttpClientHandler handler, bool disposeHandler, bool supportCreateHandler)
+        /// <exception cref="ArgumentException"></exception>
+        private HttpClient(HttpMessageHandler handler, bool disposeHandler, bool supportCreateHandler)
         {
             this.supportCreateHandler = supportCreateHandler;
-            this.Handler = handler ?? this.CreateHttpClientHandler();
-            this.client = new System.Net.Http.HttpClient(this.Handler, disposeHandler);
+            this.messageHandler = handler ?? this.CreateHttpClientHandler();
+            this.httpClient = new System.Net.Http.HttpClient(this.messageHandler, disposeHandler);
+            this.Handler = this.GetHttpClientHandler(this.messageHandler);
+        }
+
+        /// <summary>
+        /// 获取HttpMessageHandler关联的HttpClientHandler
+        /// </summary>
+        /// <param name="handler"></param>
+        /// <exception cref="ArgumentException"></exception>
+        /// <returns></returns>
+        private HttpClientHandler GetHttpClientHandler(HttpMessageHandler handler)
+        {
+            if (handler is HttpClientHandler clientHandler)
+            {
+                return clientHandler;
+            }
+
+            if (handler is DelegatingHandler delegatingHandler)
+            {
+                return this.GetHttpClientHandler(delegatingHandler.InnerHandler);
+            }
+
+            var message = "参数必须为HttpClientHandler或DelegatingHandler类型";
+            throw new ArgumentException(message, nameof(handler));
         }
 
         /// <summary>
@@ -220,12 +250,13 @@ namespace WebApiClient.Defaults
             handler.UseProxy = false;
             handler.Proxy = null;
 
-            var httpClient = new System.Net.Http.HttpClient(handler);
-            CopyProperties(this.client, httpClient);
-            this.client.Dispose();
+            var client = new System.Net.Http.HttpClient(handler);
+            CopyProperties(this.httpClient, client);
+            this.httpClient.Dispose();
 
-            this.client = httpClient;
-            this.Handler = handler;
+            this.httpClient = client;
+            this.messageHandler = handler;
+            this.Handler = this.GetHttpClientHandler(handler);
         }
 
         /// <summary>
@@ -312,7 +343,7 @@ namespace WebApiClient.Defaults
 
                 var timeout = request.Timeout ?? this.Timeout;
                 var cancellationToken = new CancellationTokenSource(timeout).Token;
-                return await this.client.SendAsync(request, cancellationToken);
+                return await this.httpClient.SendAsync(request, cancellationToken);
             }
             finally
             {
@@ -325,7 +356,7 @@ namespace WebApiClient.Defaults
         /// </summary>
         public void CancelPendingRequests()
         {
-            this.client.CancelPendingRequests();
+            this.httpClient.CancelPendingRequests();
         }
 
         /// <summary>
@@ -333,7 +364,7 @@ namespace WebApiClient.Defaults
         /// </summary>
         public void Dispose()
         {
-            this.client.Dispose();
+            this.httpClient.Dispose();
             this.isDisposed = true;
         }
     }
