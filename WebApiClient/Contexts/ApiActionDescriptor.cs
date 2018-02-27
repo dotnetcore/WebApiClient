@@ -10,7 +10,7 @@ namespace WebApiClient.Contexts
     /// 表示请求Api描述
     /// </summary>
     [DebuggerDisplay("Name = {Name}")]
-    public class ApiActionDescriptor : ICloneable
+    public class ApiActionDescriptor 
     {
         /// <summary>
         /// 获取Api名称
@@ -46,7 +46,7 @@ namespace WebApiClient.Contexts
         /// 克隆
         /// </summary>
         /// <returns></returns>
-        public object Clone()
+        public ApiActionDescriptor Clone()
         {
             return new ApiActionDescriptor
             {
@@ -55,7 +55,7 @@ namespace WebApiClient.Contexts
                 Return = this.Return,
                 Filters = this.Filters,
                 Attributes = this.Attributes,
-                Parameters = this.Parameters.Select(item => (ApiParameterDescriptor)item.Clone()).ToArray()
+                Parameters = this.Parameters.Select(item => item.Clone()).ToArray()
             };
         }
     }

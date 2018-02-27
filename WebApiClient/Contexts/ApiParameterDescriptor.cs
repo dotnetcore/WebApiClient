@@ -10,7 +10,7 @@ namespace WebApiClient.Contexts
     /// 表示请求Api的参数描述
     /// </summary>
     [DebuggerDisplay("{Name} = {Value}")]
-    public class ApiParameterDescriptor : ICloneable
+    public class ApiParameterDescriptor
     {
         /// <summary>
         /// 获取参数名称
@@ -55,7 +55,7 @@ namespace WebApiClient.Contexts
         /// 克隆
         /// </summary>
         /// <returns></returns>
-        public object Clone()
+        public ApiParameterDescriptor Clone()
         {
             return new ApiParameterDescriptor
             {

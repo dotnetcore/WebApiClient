@@ -55,9 +55,7 @@ namespace WebApiClient.Defaults
         /// <returns></returns>
         protected virtual ApiActionDescriptor GetApiActionDescriptor(MethodInfo method, object[] parameters)
         {
-            var cache = ApiDescriptorCache.GetApiActionDescriptor(method);
-            var actionDescripter = cache.Clone() as ApiActionDescriptor;
-
+            var actionDescripter = ApiDescriptorCache.GetApiActionDescriptor(method).Clone();
             for (var i = 0; i < actionDescripter.Parameters.Length; i++)
             {
                 actionDescripter.Parameters[i].Value = parameters[i];
