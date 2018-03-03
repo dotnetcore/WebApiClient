@@ -35,6 +35,8 @@ namespace WebApiClientTest
 
             Assert.True(tagNull.IsNull);
             Assert.True(tagTime.AsDateTime() == dateTime2);
+
+            Assert.True(tagTime.ToString() == dateTime2.ToString());
         }
     }
 }
