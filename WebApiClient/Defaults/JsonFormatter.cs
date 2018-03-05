@@ -106,7 +106,7 @@ namespace WebApiClient.Defaults
                     property.PropertyName = FormatOptions.CamelCase(property.PropertyName);
                 }
 
-                if (property.Converter != null)
+                if (property.Converter == null)
                 {
                     property.Converter = descriptor.DateTimeConverter;
                 }
