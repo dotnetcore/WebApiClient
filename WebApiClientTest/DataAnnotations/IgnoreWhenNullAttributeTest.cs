@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Linq;
 using WebApiClient;
 using WebApiClient.DataAnnotations;
@@ -6,11 +7,13 @@ using Xunit;
 
 namespace WebApiClientTest.DataAnnotations
 {
-    public class AliasAsAttributeTest
+    public class IgnoreWhenNullAttributeTest
     {
         class MyClass
         {
-            [AliasAs("MyName")]
+            [IgnoreWhenNull(Scope = FormatScope.All)]
+            public DateTime? Birthday { get; set; }
+
             public string Name { get; set; }
         }
 
@@ -19,10 +22,12 @@ namespace WebApiClientTest.DataAnnotations
         {
             var model = new MyClass();
             var json = HttpApiConfig.DefaultJsonFormatter.Serialize(model, null);
-            Assert.Contains("MyName", json);
+            Assert.DoesNotContain("Birthday", json);
+            Assert.Contains("Name", json);
 
             var kvs = HttpApiConfig.DefaultKeyValueFormatter.Serialize("MyClass", model, null).ToArray();
-            Assert.Contains(kvs, item => item.Key == "MyName");
+            Assert.DoesNotContain(kvs, item => item.Key == "Birthday");
+            Assert.Contains(kvs, item => item.Key == "Name");
         }
     }
 }
