@@ -37,7 +37,10 @@ namespace WebApiClient.Defaults
             {
                 var xmlWriter = new XmlTextWriter(stream, encoding);
                 xmlSerializer.Serialize(xmlWriter, obj);
-                return encoding.GetString(stream.ToArray());
+
+                stream.Position = 0;
+                var reader = new StreamReader(stream, encoding);
+                return reader.ReadToEnd();
             }
         }
 
