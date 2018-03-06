@@ -8,10 +8,9 @@ using WebApiClient.Contexts;
 using WebApiClient.Interfaces;
 using Xunit;
 
-
 namespace WebApiClientTest.Attributes.HttpActionAttributes
 {
-    public class FormContentAttributeTest
+    public class JsonContentAttributeTest
     {
         public interface IMyApi : IDisposable
         {
@@ -39,13 +38,14 @@ namespace WebApiClientTest.Attributes.HttpActionAttributes
                 birthDay = DateTime.Parse("2010-10-10")
             };
 
-            var attr = new FormContentAttribute();
+            var attr = new JsonContentAttribute();
             await ((IApiParameterAttribute)attr).BeforeRequestAsync(context, parameter);
 
             var body = await context.RequestMessage.Content.ReadAsStringAsync();
-            var time = context.HttpApiConfig.FormatOptions.CloneChange(attr.DateTimeFormat).FormatDateTime(DateTime.Parse("2010-10-10"));
-            var target = "name=laojiu&birthDay=" + HttpUtility.UrlEncode(time, Encoding.UTF8);
+            var options = context.HttpApiConfig.FormatOptions.CloneChange(attr.DateTimeFormat);
+            var target = context.HttpApiConfig.JsonFormatter.Serialize(parameter.Value, options);
             Assert.True(body == target);
         }
     }
 }
+

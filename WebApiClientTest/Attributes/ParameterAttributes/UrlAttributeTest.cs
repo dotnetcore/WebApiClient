@@ -8,14 +8,13 @@ using WebApiClient.Contexts;
 using WebApiClient.Interfaces;
 using Xunit;
 
-
 namespace WebApiClientTest.Attributes.HttpActionAttributes
 {
-    public class FormContentAttributeTest
+    public class UrlAttributeTest
     {
         public interface IMyApi : IDisposable
         {
-            ITask<HttpResponseMessage> PostAsync(object content);
+            ITask<HttpResponseMessage> PostAsync(string url);
         }
 
         [Fact]
@@ -33,19 +32,15 @@ namespace WebApiClientTest.Attributes.HttpActionAttributes
             };
 
             var parameter = context.ApiActionDescriptor.Parameters[0];
-            parameter.Value = new
-            {
-                name = "laojiu",
-                birthDay = DateTime.Parse("2010-10-10")
-            };
+            parameter.Value = "http://www.baidu.com";
 
-            var attr = new FormContentAttribute();
+            var attr = new UrlAttribute();
             await ((IApiParameterAttribute)attr).BeforeRequestAsync(context, parameter);
+            Assert.True(context.RequestMessage.RequestUri == new Uri("http://www.baidu.com"));
 
-            var body = await context.RequestMessage.Content.ReadAsStringAsync();
-            var time = context.HttpApiConfig.FormatOptions.CloneChange(attr.DateTimeFormat).FormatDateTime(DateTime.Parse("2010-10-10"));
-            var target = "name=laojiu&birthDay=" + HttpUtility.UrlEncode(time, Encoding.UTF8);
-            Assert.True(body == target);
+            parameter.Value = "/login";
+            await ((IApiParameterAttribute)attr).BeforeRequestAsync(context, parameter);
+            Assert.True(context.RequestMessage.RequestUri == new Uri("http://www.baidu.com/login"));
         }
     }
 }

@@ -8,14 +8,20 @@ using WebApiClient.Contexts;
 using WebApiClient.Interfaces;
 using Xunit;
 
-
 namespace WebApiClientTest.Attributes.HttpActionAttributes
 {
-    public class FormContentAttributeTest
+    public class XmlContentAttributeTest
     {
         public interface IMyApi : IDisposable
         {
             ITask<HttpResponseMessage> PostAsync(object content);
+        }
+
+        public class Model
+        {
+            public string name { get; set; }
+
+            public DateTime birthDay { get; set; }
         }
 
         [Fact]
@@ -33,19 +39,19 @@ namespace WebApiClientTest.Attributes.HttpActionAttributes
             };
 
             var parameter = context.ApiActionDescriptor.Parameters[0];
-            parameter.Value = new
+            parameter.Value = new Model
             {
                 name = "laojiu",
                 birthDay = DateTime.Parse("2010-10-10")
             };
 
-            var attr = new FormContentAttribute();
+            var attr = new XmlContentAttribute();
             await ((IApiParameterAttribute)attr).BeforeRequestAsync(context, parameter);
 
             var body = await context.RequestMessage.Content.ReadAsStringAsync();
-            var time = context.HttpApiConfig.FormatOptions.CloneChange(attr.DateTimeFormat).FormatDateTime(DateTime.Parse("2010-10-10"));
-            var target = "name=laojiu&birthDay=" + HttpUtility.UrlEncode(time, Encoding.UTF8);
+            var target = context.HttpApiConfig.XmlFormatter.Serialize(parameter.Value, Encoding.UTF8);
             Assert.True(body == target);
         }
     }
 }
+
