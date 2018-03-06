@@ -22,15 +22,15 @@ namespace WebApiClientTest.Parameterables
                     RequestUri = new Uri("http://www.mywebapi.com"),
                     Method = HttpMethod.Post
                 },
-                ApiActionDescriptor = ApiDescriptorCache.GetApiActionDescriptor(typeof(IMyApi).GetMethod("GetAsync"))
+                ApiActionDescriptor = ApiDescriptorCache.GetApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"))
             };
 
             var parameter = context.ApiActionDescriptor.Parameters[0];
             IApiParameterable formField = new FormField("laojiu");
             await formField.BeforeRequestAsync(context, parameter);
 
-            var body = await context.RequestMessage.ToStringAsync();
-            Assert.Contains("name=laojiu", body);
+            var body = await context.RequestMessage.Content.ReadAsStringAsync();
+            Assert.Equal("name=laojiu", body);
         }
     }
 }

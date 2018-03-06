@@ -17,7 +17,7 @@ namespace WebApiClientTest.Parameterables
             var context = new ApiActionContext
             {
                 RequestMessage = new HttpApiRequestMessage(),
-                ApiActionDescriptor = ApiDescriptorCache.GetApiActionDescriptor(typeof(IMyApi).GetMethod("GetAsync"))
+                ApiActionDescriptor = ApiDescriptorCache.GetApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"))
             };
 
             var parameter = context.ApiActionDescriptor.Parameters[0];
