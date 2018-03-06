@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using WebApiClient;
 using WebApiClient.Attributes;
@@ -12,8 +13,15 @@ using Xunit;
 
 namespace WebApiClientTest.Attributes
 {
-    public class FormFieldAttributeTest
+    public class MulitpartTextAttributeTest
     {
+        private string get(string name, string value)
+        {
+            return $@"Content-Disposition: form-data; name=""{name}""
+
+{HttpUtility.UrlEncode(value, Encoding.UTF8)}";
+        }
+
         [Fact]
         public async Task IApiParameterAttributeTest()
         {
@@ -30,17 +38,17 @@ namespace WebApiClientTest.Attributes
             var parameter = context.ApiActionDescriptor.Parameters[0];
             parameter.Value = "laojiu";
 
-            IApiParameterAttribute attr = new FormFieldAttribute();
+            IApiParameterAttribute attr = new MulitpartTextAttribute();
             await attr.BeforeRequestAsync(context, parameter);
             var body = await context.RequestMessage.Content.ReadAsStringAsync();
-            Assert.Equal("name=laojiu", body);
+            Assert.Contains(get("name", "laojiu"), body);
 
             // IgnoreWhenNull Test
             parameter.Value = null;
-            ((FormFieldAttribute)attr).IgnoreWhenNull = true;
+            ((MulitpartTextAttribute)attr).IgnoreWhenNull = true;
             await attr.BeforeRequestAsync(context, parameter);
             body = await context.RequestMessage.Content.ReadAsStringAsync();
-            Assert.Equal("name=laojiu", body);
+            Assert.DoesNotContain("age", body);
         }
 
         [Fact]
@@ -56,20 +64,20 @@ namespace WebApiClientTest.Attributes
                 ApiActionDescriptor = ApiDescriptorCache.GetApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"))
             };
 
-            var attr = new FormFieldAttribute("name", "laojiu");
+            var attr = new MulitpartTextAttribute("name", "laojiu");
             await attr.BeforeRequestAsync(context);
             var body = await context.RequestMessage.Content.ReadAsStringAsync();
-            Assert.Equal("name=laojiu", body);
+            Assert.Contains(get("name", "laojiu"), body);
 
 
             // IgnoreWhenNull Test
-            var attr2 = new FormFieldAttribute("age", null)
+            var attr2 = new MulitpartTextAttribute("age", null)
             {
                 IgnoreWhenNull = true
             };
             await attr2.BeforeRequestAsync(context);
             body = await context.RequestMessage.Content.ReadAsStringAsync();
-            Assert.Equal("name=laojiu", body);
+            Assert.DoesNotContain("age", body);
         }
     }
 }

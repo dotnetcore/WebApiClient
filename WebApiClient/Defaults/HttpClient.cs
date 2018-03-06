@@ -116,7 +116,7 @@ namespace WebApiClient.Defaults
         /// <exception cref="ArgumentException"></exception>
         private HttpClient(HttpMessageHandler handler, bool disposeHandler, bool supportCreateHandler)
         {
-            this.supportCreateHandler = supportCreateHandler;            
+            this.supportCreateHandler = supportCreateHandler;
             this.messageHandler = handler ?? this.CreateHttpClientHandler();
             this.httpClient = new System.Net.Http.HttpClient(this.messageHandler, disposeHandler);
             this.Handler = this.GetHttpClientHandler(this.messageHandler);
@@ -322,7 +322,21 @@ namespace WebApiClient.Defaults
                 return false;
             }
 
-            return x.GetProxy(destination) == y.GetProxy(destination);
+            if (x.GetProxy(destination) != y.GetProxy(destination))
+            {
+                return false;
+            }
+
+            if (x.Credentials == null && y.Credentials == null)
+            {
+                return true;
+            }
+
+            if (x.Credentials == null || y.Credentials == null)
+            {
+                return false;
+            }           
+            return true;
         }
 
         /// <summary>
