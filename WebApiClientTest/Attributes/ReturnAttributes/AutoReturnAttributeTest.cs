@@ -150,5 +150,30 @@ namespace WebApiClientTest.Attributes.HttpActionAttributes
             var result = await ((IApiReturnAttribute)attr).GetTaskResult(context) as Model;
             Assert.True(model.Name == result.Name && model.Age == result.Age);
         }
+
+        [Fact]
+        public async Task EnsureSuccessStatusCodeTest()
+        {
+            var context = new ApiActionContext
+            {
+                HttpApiConfig = new HttpApiConfig(),
+                RequestMessage = new HttpApiRequestMessage
+                {
+                    Method = HttpMethod.Post,
+                    RequestUri = new Uri("http://www.webapi.com/")
+                },
+                ResponseMessage = new HttpResponseMessage(System.Net.HttpStatusCode.NotFound),
+                ApiActionDescriptor = ApiDescriptorCache
+                .GetApiActionDescriptor(typeof(IMyApi)
+                .GetMethod("JsonXmlAsync"))
+            };
+
+            var model = new Model();
+            var xml = context.HttpApiConfig.XmlFormatter.Serialize(model, Encoding.UTF8);
+            context.ResponseMessage.Content = new StringContent(xml, Encoding.UTF8, "application/xml");
+
+            var attr = new AutoReturnAttribute() { EnsureSuccessStatusCode = true };
+            await Assert.ThrowsAsync<HttpFailureStatusException>(() => ((IApiReturnAttribute)attr).GetTaskResult(context));
+        }
     }
 }
