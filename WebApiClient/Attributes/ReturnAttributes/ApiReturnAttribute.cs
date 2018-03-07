@@ -13,6 +13,7 @@ namespace WebApiClient.Attributes
     {
         /// <summary>
         /// 获取或设置是否确保回复的http状态码是2xx码
+        /// 当设置为true之后，请求可能会引发HttpFailureStatusException
         /// </summary>
         public bool EnsureSuccessStatusCode { get; set; }
 
@@ -20,12 +21,21 @@ namespace WebApiClient.Attributes
         /// 获取异步结果
         /// </summary>
         /// <param name="context">上下文</param>
+        /// <exception cref="HttpFailureStatusException"></exception>
         /// <returns></returns>
         Task<object> IApiReturnAttribute.GetTaskResult(ApiActionContext context)
         {
             if (this.EnsureSuccessStatusCode == true)
             {
-                context.ResponseMessage.EnsureSuccessStatusCode();
+                try
+                {
+                    context.ResponseMessage.EnsureSuccessStatusCode();
+                }
+                catch (Exception ex)
+                {
+                    var inner = ex.InnerException == null ? ex : ex.InnerException;
+                    throw new HttpFailureStatusException(context.ResponseMessage.StatusCode, inner);
+                }
             }
             return this.GetTaskResult(context);
         }
