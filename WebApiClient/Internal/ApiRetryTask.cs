@@ -60,7 +60,7 @@ namespace WebApiClient
         /// <returns></returns>
         public async Task<TResult> InvokeAsync()
         {
-            var exception = default(Exception);
+            var inner = default(Exception);
             for (var i = 0; i <= this.retryMaxCount; i++)
             {
                 try
@@ -70,16 +70,12 @@ namespace WebApiClient
                 }
                 catch (RetryMarkException ex)
                 {
-                    exception = ex.InnerException;
+                    inner = ex.InnerException;
                 }
             }
 
-            if (exception == null)
-            {
-                var message = string.Format("已经重试了{0}次，但结果仍未正确", this.retryMaxCount);
-                exception = new RetryException(message);
-            }
-            throw exception;
+            var message = $"已经重试了{this.retryMaxCount}次，但结果仍未正确";
+            throw new RetryException(message, inner);
         }
 
         /// <summary>
@@ -156,7 +152,8 @@ namespace WebApiClient
                 var result = await this.invoker.Invoke();
                 if (predicate.Invoke(result) == true)
                 {
-                    throw new RetryMarkException(null);
+                    var inner = new ResultNotMatchException("结果不符合预期值", result);
+                    throw new RetryMarkException(inner);
                 }
                 return result;
             };

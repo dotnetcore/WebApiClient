@@ -16,5 +16,15 @@ namespace WebApiClient
             : base(message)
         {
         }
+
+        /// <summary>
+        /// 重试异常
+        /// </summary>
+        /// <param name="message">提示</param>
+        /// <param name="inner">内部异常</param>
+        public RetryException(string message, Exception inner)
+            : base(message, inner)
+        {
+        }
     }
 }
