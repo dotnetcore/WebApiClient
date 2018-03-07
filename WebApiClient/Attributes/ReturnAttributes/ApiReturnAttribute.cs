@@ -33,8 +33,9 @@ namespace WebApiClient.Attributes
                 }
                 catch (Exception ex)
                 {
+                    var statusCode = context.ResponseMessage.StatusCode;
                     var inner = ex.InnerException == null ? ex : ex.InnerException;
-                    throw new HttpFailureStatusException(context.ResponseMessage.StatusCode, inner);
+                    throw new HttpFailureStatusException(statusCode, context, inner);
                 }
             }
             return this.GetTaskResult(context);
