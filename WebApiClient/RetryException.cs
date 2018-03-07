@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Net.Http;
 
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示重试异常
+    /// 表示Http请求重试异常
     /// </summary>
-    public class RetryException : Exception
+    public class RetryException : HttpRequestException
     {
         /// <summary>
         /// 重试异常
