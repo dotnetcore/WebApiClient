@@ -42,7 +42,8 @@ namespace WebApiClient
         /// <returns></returns>
         public static string GetName(HttpRequestHeader header)
         {
-            return cache[header];
+            cache.TryGetValue(header, out string name);
+            return name;
         }
     }
 }
