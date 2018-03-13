@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
 using WebApiClient.Interfaces;
@@ -12,7 +14,7 @@ namespace WebApiClient.Attributes
     public abstract class ApiReturnAttribute : Attribute, IApiReturnAttribute
     {
         /// <summary>
-        /// 获取或设置是否确保回复的http状态码是2xx码
+        /// 获取或设置是否确保响应的http状态码通过IsSuccessStatusCode验证
         /// 当设置为true之后，请求可能会引发HttpFailureStatusException
         /// </summary>
         public bool EnsureSuccessStatusCode { get; set; }
@@ -27,18 +29,26 @@ namespace WebApiClient.Attributes
         {
             if (this.EnsureSuccessStatusCode == true)
             {
-                try
+                var statusCode = context.ResponseMessage.StatusCode;
+                if (this.IsSuccessStatusCode(statusCode) == false)
                 {
-                    context.ResponseMessage.EnsureSuccessStatusCode();
-                }
-                catch (Exception ex)
-                {
-                    var statusCode = context.ResponseMessage.StatusCode;
-                    var inner = ex.InnerException == null ? ex : ex.InnerException;
+                    var inner = new HttpRequestException($"响应的http状态码不成功：{(int)statusCode} {statusCode}");
                     throw new HttpFailureStatusException(statusCode, context, inner);
                 }
             }
             return this.GetTaskResult(context);
+        }
+
+
+        /// <summary>
+        /// 指示状态码是否为成功的状态码
+        /// </summary>
+        /// <param name="statusCode">状态码</param>
+        /// <returns></returns>
+        protected virtual bool IsSuccessStatusCode(HttpStatusCode statusCode)
+        {
+            var status = (int)statusCode;
+            return status >= 200 & status <= 299;
         }
 
         /// <summary>
