@@ -8,10 +8,9 @@ namespace WebApiClient.Attributes
     /// <summary>
     /// 表示请求服务http绝对完整主机域名
     /// 例如http://www.webapiclient.com
-    /// 不可继承
     /// </summary>
     [DebuggerDisplay("Host = {Host}")]
-    public sealed class HttpHostAttribute : ApiActionAttribute
+    public class HttpHostAttribute : ApiActionAttribute
     {
         /// <summary>
         /// 获取根路径
@@ -20,7 +19,7 @@ namespace WebApiClient.Attributes
 
         /// <summary>
         /// 获取顺序排序索引
-        /// 优先级最高
+        /// int.MinValue
         /// </summary>
         public override int OrderIndex
         {
