@@ -15,6 +15,11 @@ namespace WebApiClient
     static class HttpApiClientProxy
     {
         /// <summary>
+        /// 同步锁
+        /// </summary>
+        private static readonly object syncRoot = new object();
+
+        /// <summary>
         /// IApiInterceptor的Intercept方法
         /// </summary>
         private static readonly MethodInfo interceptMethod = typeof(IApiInterceptor).GetMethod("Intercept");
@@ -50,13 +55,15 @@ namespace WebApiClient
         /// <returns></returns>
         public static object CreateProxyWithInterface(Type interfaceType, IApiInterceptor interceptor)
         {
-            var apiMethods = interfaceType.GetAllApiMethods();
+            lock (syncRoot)
+            {
+                var apiMethods = interfaceType.GetAllApiMethods();
+                var proxyTypeCtor = proxyTypeCtorCache.GetOrAdd(
+                    interfaceType,
+                    @interface => @interface.ImplementAsHttpApiClient(apiMethods));
 
-            var proxyTypeCtor = proxyTypeCtorCache.GetOrAdd(
-                interfaceType,
-                @interface => @interface.ImplementAsHttpApiClient(apiMethods));
-
-            return proxyTypeCtor.Invoke(new object[] { interceptor, apiMethods });
+                return proxyTypeCtor.Invoke(new object[] { interceptor, apiMethods });
+            }
         }
 
         /// <summary>
