@@ -15,11 +15,6 @@ namespace WebApiClient
     static class HttpApiClientProxy
     {
         /// <summary>
-        /// 同步锁
-        /// </summary>
-        private static readonly object syncRoot = new object();
-
-        /// <summary>
         /// IApiInterceptor的Intercept方法
         /// </summary>
         private static readonly MethodInfo interceptMethod = typeof(IApiInterceptor).GetMethod("Intercept");
@@ -42,7 +37,7 @@ namespace WebApiClient
         /// <summary>
         /// 接口类型与代理类型的构造器缓存
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, ConstructorInfo> proxyTypeCtorCache = new ConcurrentDictionary<Type, ConstructorInfo>();
+        private static readonly ConcurrentDictionary<Type, Lazy<ConstructorInfo>> proxyTypeCtorCache = new ConcurrentDictionary<Type, Lazy<ConstructorInfo>>();
 
         /// <summary>
         /// 创建HttpApiClient代理类
@@ -55,20 +50,18 @@ namespace WebApiClient
         /// <returns></returns>
         public static object CreateProxyWithInterface(Type interfaceType, IApiInterceptor interceptor)
         {
-            lock (syncRoot)
-            {
-                var apiMethods = interfaceType.GetAllApiMethods();
-                var proxyTypeCtor = proxyTypeCtorCache.GetOrAdd(
-                    interfaceType,
-                    @interface => @interface.ImplementAsHttpApiClient(apiMethods));
+            var apiMethods = interfaceType.GetAllApiMethods();
+            var proxyTypeCtor = proxyTypeCtorCache.GetOrAdd(
+                interfaceType,
+                @interface => new Lazy<ConstructorInfo>(() => @interface.ImplementAsHttpApiClient(apiMethods)));
 
-                return proxyTypeCtor.Invoke(new object[] { interceptor, apiMethods });
-            }
+            return proxyTypeCtor.Value.Invoke(new object[] { interceptor, apiMethods });
         }
 
         /// <summary>
         /// 继承HttpApiClient并实现接口
         /// 并返回代理类的构造器
+        /// 对于相同的interfaceType，不允许并发执行
         /// </summary>
         /// <param name="interfaceType">接口类型</param>
         /// <param name="apiMethods">接口方法集合</param>
