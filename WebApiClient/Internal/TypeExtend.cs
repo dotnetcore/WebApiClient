@@ -16,13 +16,12 @@ namespace WebApiClient
         /// <summary>
         /// 接口的方法缓存
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, MethodInfo[]> interfaceMethodsCache = new ConcurrentDictionary<Type, MethodInfo[]>();
+        private static readonly ConcurrentCache<Type, MethodInfo[]> interfaceMethodsCache = new ConcurrentCache<Type, MethodInfo[]>();
 
         /// <summary>
         /// 类型是否AllowMultiple的缓存
         /// </summary>
         private static readonly ConcurrentDictionary<Type, bool> typeAllowMultipleCache = new ConcurrentDictionary<Type, bool>();
-
 
         /// <summary>
         /// 获取接口类型及其继承的接口的所有方法

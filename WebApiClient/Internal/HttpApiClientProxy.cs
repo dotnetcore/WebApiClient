@@ -37,7 +37,7 @@ namespace WebApiClient
         /// <summary>
         /// 接口类型与代理类型的构造器缓存
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, Lazy<ConstructorInfo>> proxyTypeCtorCache = new ConcurrentDictionary<Type, Lazy<ConstructorInfo>>();
+        private static readonly ConcurrentCache<Type, ConstructorInfo> proxyTypeCtorCache = new ConcurrentCache<Type, ConstructorInfo>();
 
         /// <summary>
         /// 创建HttpApiClient代理类
@@ -53,9 +53,9 @@ namespace WebApiClient
             var apiMethods = interfaceType.GetAllApiMethods();
             var proxyTypeCtor = proxyTypeCtorCache.GetOrAdd(
                 interfaceType,
-                @interface => new Lazy<ConstructorInfo>(() => @interface.ImplementAsHttpApiClient(apiMethods)));
+                @interface => @interface.ImplementAsHttpApiClient(apiMethods));
 
-            return proxyTypeCtor.Value.Invoke(new object[] { interceptor, apiMethods });
+            return proxyTypeCtor.Invoke(new object[] { interceptor, apiMethods });
         }
 
         /// <summary>
