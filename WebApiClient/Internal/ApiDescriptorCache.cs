@@ -20,14 +20,14 @@ namespace WebApiClient
         /// <summary>
         /// 缓存字典
         /// </summary>
-        private static readonly ConcurrentDictionary<MethodInfo, ApiActionDescriptor> cache;
+        private static readonly ConcurrentCache<MethodInfo, ApiActionDescriptor> cache;
 
         /// <summary>
         /// Api描述的缓存
         /// </summary>
         static ApiDescriptorCache()
         {
-            cache = new ConcurrentDictionary<MethodInfo, ApiActionDescriptor>();
+            cache = new ConcurrentCache<MethodInfo, ApiActionDescriptor>();
         }
 
         /// <summary>
