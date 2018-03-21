@@ -14,7 +14,7 @@ namespace WebApiClient
     /// </summary>
     /// <typeparam name="TKey">键</typeparam>
     /// <typeparam name="TValue">值</typeparam>
-    public class ConcurrentCache<TKey, TValue>
+    class ConcurrentCache<TKey, TValue>
     {
         /// <summary>
         /// 线程安全字典
