@@ -11,7 +11,7 @@ namespace WebApiClient.Attributes
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     [DebuggerDisplay("Method = {Method}")]
-    public abstract class HttpMethodAttribute : ApiActionAttribute
+    public class HttpMethodAttribute : ApiActionAttribute
     {
         /// <summary>
         /// 获取请求方法

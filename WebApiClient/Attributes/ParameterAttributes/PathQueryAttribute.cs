@@ -14,7 +14,7 @@ namespace WebApiClient.Attributes
     /// 没有任何特性修饰的参数，将默认被PathQueryAttribute修饰
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-    public sealed class PathQueryAttribute : Attribute, IApiParameterAttribute
+    public class PathQueryAttribute : Attribute, IApiParameterAttribute
     {
         /// <summary>
         /// 编码
@@ -91,12 +91,12 @@ namespace WebApiClient.Attributes
         }
 
         /// <summary>
-        /// url添加query
+        /// url添加query或替换segment
         /// </summary>
         /// <param name="url">url</param>
         /// <param name="keyValues">键值对</param>
         /// <returns></returns>
-        private string UsePathQuery(string url, IEnumerable<KeyValuePair<string, string>> keyValues)
+        protected string UsePathQuery(string url, IEnumerable<KeyValuePair<string, string>> keyValues)
         {
             foreach (var keyValue in keyValues)
             {
@@ -106,12 +106,12 @@ namespace WebApiClient.Attributes
         }
 
         /// <summary>
-        /// url添加query
+        /// url添加query或替换segment
         /// </summary>
         /// <param name="url">url</param>
         /// <param name="keyValue">键值对</param>
         /// <returns></returns>
-        private string UsePathQuery(string url, KeyValuePair<string, string> keyValue)
+        protected string UsePathQuery(string url, KeyValuePair<string, string> keyValue)
         {
             var key = keyValue.Key;
             var value = keyValue.Value ?? string.Empty;
