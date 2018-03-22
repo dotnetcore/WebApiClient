@@ -158,6 +158,7 @@ namespace WebApiClient
             {
                 this.EnsureMediaTypeEqual(mediaType);
                 formBody = await this.Content.ReadAsByteArrayAsync();
+                this.Content.Dispose();
             }
 
             var bytesContent = MergeFields(formBody, keyValues);
