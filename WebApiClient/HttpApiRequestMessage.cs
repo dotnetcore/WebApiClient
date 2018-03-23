@@ -145,68 +145,22 @@ namespace WebApiClient
         public async Task AddFormFieldAsync(IEnumerable<KeyValuePair<string, string>> keyValues)
         {
             this.EnsureNotGetOrHead();
+            this.EnsureMediaTypeEqual(UrlEncodedContent.MediaType);
 
             if (keyValues == null)
             {
                 return;
             }
 
-            var formBody = default(byte[]);
-            const string mediaType = "application/x-www-form-urlencoded";
-
-            if (this.Content != null)
+            var formContent = this.Content as UrlEncodedContent;
+            if (formContent == null)
             {
-                this.EnsureMediaTypeEqual(mediaType);
-                formBody = await this.Content.ReadAsByteArrayAsync();
-                this.Content.Dispose();
+                formContent = new UrlEncodedContent(this.Content);
             }
 
-            var bytesContent = MergeFields(formBody, keyValues);
-            var byteArrayContent = new ByteArrayContent(bytesContent);
-            byteArrayContent.Headers.ContentType = new MediaTypeHeaderValue(mediaType);
-            this.Content = byteArrayContent;
+            await formContent.AddFormFieldAsync(keyValues);
+            this.Content = formContent;
         }
-
-        /// <summary>
-        /// 合并内容
-        /// </summary>
-        /// <param name="formBody"></param>
-        /// <param name="keyValues"></param>
-        /// <returns></returns>
-        private static byte[] MergeFields(byte[] formBody, IEnumerable<KeyValuePair<string, string>> keyValues)
-        {
-            var encoding = Encoding.UTF8;
-            var kvs = from kv in keyValues select string.Format("{0}={1}", kv.Key, HttpUtility.UrlEncode(kv.Value, encoding));
-            var stringContent = string.Join("&", kvs);
-
-            if (formBody != null && formBody.Length > 0)
-            {
-                stringContent = "&" + stringContent;
-            }
-
-            var byteConent = encoding.GetBytes(stringContent);
-            return MergeBytes(formBody, byteConent);
-        }
-
-        /// <summary>
-        /// 合并字节组
-        /// </summary>
-        /// <param name="formBody"></param>
-        /// <param name="byteConent"></param>
-        /// <returns></returns>
-        private static byte[] MergeBytes(byte[] formBody, byte[] byteConent)
-        {
-            if (formBody == null || formBody.Length == 0 || byteConent == null)
-            {
-                return byteConent;
-            }
-
-            var bytes = new byte[formBody.Length + byteConent.Length];
-            formBody.CopyTo(bytes, 0);
-            byteConent.CopyTo(bytes, formBody.Length);
-            return bytes;
-        }
-
 
         /// <summary>
         /// 添加文件内容到已有的Content
@@ -353,10 +307,7 @@ namespace WebApiClient
         /// <returns></returns>
         private MultipartContent CastOrCreateMultipartContent()
         {
-            if (this.Content != null)
-            {
-                this.EnsureMediaTypeEqual("multipart/form-data");
-            }
+            this.EnsureMediaTypeEqual("multipart/form-data");
 
             var httpContent = this.Content as MultipartContent;
             if (httpContent == null)
@@ -378,13 +329,12 @@ namespace WebApiClient
         /// <exception cref="NotSupportedException"></exception>
         private void EnsureMediaTypeEqual(string newMediaType)
         {
-            var contentType = this.Content.Headers.ContentType;
-            if (contentType == null)
+            var existsMediaType = this.Content?.Headers.ContentType?.MediaType;
+            if (string.IsNullOrEmpty(existsMediaType) == true)
             {
                 return;
             }
 
-            var existsMediaType = contentType.MediaType;
             if (string.Equals(existsMediaType, newMediaType, StringComparison.OrdinalIgnoreCase) == false)
             {
                 var message = string.Format("Content-Type必须保持为{0}", existsMediaType);
