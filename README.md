@@ -1,4 +1,6 @@
 ## 1. [Nuget](https://www.nuget.org/packages/Laojiu.WebApiClient/)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdotnetcore%2FWebApiClient.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdotnetcore%2FWebApiClient?ref=badge_shield)
+
 PM> `install-package Laojiu.WebApiClient`
 <br/>支持 `.net framework4.5`  `netcoreapp2.0`  `netstandard2.0`
 
@@ -60,3 +62,7 @@ static async Task TestAsync()
 * 加群439800853 注明WeApiClient
 * 366193849@qq.com，不重要的尽量不要发
 
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdotnetcore%2FWebApiClient.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdotnetcore%2FWebApiClient?ref=badge_large)
