@@ -1,6 +1,4 @@
 ## 1. [Nuget](https://www.nuget.org/packages/Laojiu.WebApiClient/)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdotnetcore%2FWebApiClient.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdotnetcore%2FWebApiClient?ref=badge_shield)
-
 PM> `install-package Laojiu.WebApiClient`
 <br/>支持 `.net framework4.5`  `netcoreapp2.0`  `netstandard2.0`
 
@@ -47,7 +45,7 @@ static async Task TestAsync()
 
 ### 3. 功能特性
 * 面向切面编程方式
-* 内置丰富的接口、方法和属性特性，支持使用自定义特性
+* 内置丰富的接口、方法和参数特性，支持使用自定义特性
 * 适应个性化需求的多个DataAnnotations特性
 * 灵活的ApiAcitonFilter、GobalFilter和IParameterable
 * 支持与外部HttpMessageHandler实例无缝衔接
@@ -65,4 +63,6 @@ static async Task TestAsync()
 
 
 ## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdotnetcore%2FWebApiClient.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdotnetcore%2FWebApiClient?ref=badge_shield)
+
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdotnetcore%2FWebApiClient.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdotnetcore%2FWebApiClient?ref=badge_large)
