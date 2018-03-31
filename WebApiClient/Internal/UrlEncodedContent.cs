@@ -30,7 +30,7 @@ namespace WebApiClient
         /// <param name="content">原始表单</param>
         /// <param name="disposeContent">是否要释放原始表单</param>
         public UrlEncodedContent(HttpContent content, bool disposeContent = true)
-        { 
+        {
             if (content != null)
             {
                 content.CopyToAsync(this.stream);
@@ -49,7 +49,7 @@ namespace WebApiClient
         /// <returns></returns>
         public async Task AddFormFieldAsync(IEnumerable<KeyValuePair<string, string>> keyValues)
         {
-            if (keyValues == null)
+            if (keyValues == null || keyValues.Any() == false)
             {
                 return;
             }
