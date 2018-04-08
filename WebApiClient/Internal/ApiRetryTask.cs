@@ -117,7 +117,7 @@ namespace WebApiClient
         /// <returns></returns>
         public IRetryTask<TResult> WhenCatch<TException>(Func<TException, bool> predicate) where TException : Exception
         {
-            Func<Task<TResult>> newInvoker = async () =>
+            async Task<TResult> newInvoker()
             {
                 try
                 {
@@ -131,7 +131,7 @@ namespace WebApiClient
                     }
                     throw ex;
                 }
-            };
+            }
             return new ApiRetryTask<TResult>(newInvoker, this.retryMaxCount, this.retryDelay);
         }
 
@@ -147,7 +147,7 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(predicate));
             }
 
-            Func<Task<TResult>> newInvoker = async () =>
+            async Task<TResult> newInvoker()
             {
                 var result = await this.invoker.Invoke();
                 if (predicate.Invoke(result) == true)
@@ -156,7 +156,7 @@ namespace WebApiClient
                     throw new RetryMarkException(inner);
                 }
                 return result;
-            };
+            }
 
             return new ApiRetryTask<TResult>(newInvoker, this.retryMaxCount, this.retryDelay);
         }

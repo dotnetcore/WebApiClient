@@ -68,7 +68,7 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(func));
             }
 
-            Func<Task<TResult>> newInvoker = async () =>
+            async Task<TResult> newInvoker()
             {
                 try
                 {
@@ -78,7 +78,7 @@ namespace WebApiClient
                 {
                     return func.Invoke(ex);
                 }
-            };
+            }
 
             return new ApiHandleTask<TResult>(newInvoker);
         }
@@ -96,19 +96,17 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(func));
             }
 
-            Func<Task<TResult>> newInvoker = async () =>
+            async Task<TResult> newInvoker()
             {
-                TException _ex;
                 try
                 {
                     return await this.invoker.Invoke();
                 }
                 catch (TException ex)
                 {
-                    _ex = ex;
+                    return await func.Invoke(ex);
                 }
-                return await func.Invoke(_ex);
-            };
+            }
 
             return new ApiHandleTask<TResult>(newInvoker);
         }
