@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -32,12 +31,13 @@ namespace WebApiClient
 
         /// <summary>
         /// 从缓存获得ApiActionDescriptor
+        /// 使用缓存
         /// </summary>
         /// <param name="method">接口的方法</param>
         /// <returns></returns>
         public static ApiActionDescriptor GetApiActionDescriptor(MethodInfo method)
         {
-            return cache.GetOrAdd(method, GetActionDescriptor);
+            return cache.GetOrAdd(method, GetApiActionDescriptorNoCache);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="method">接口的方法</param>
         /// <returns></returns>
-        private static ApiActionDescriptor GetActionDescriptor(MethodInfo method)
+        private static ApiActionDescriptor GetApiActionDescriptorNoCache(MethodInfo method)
         {
             var actionAttributes = method
                 .FindDeclaringAttributes<IApiActionAttribute>(true)
