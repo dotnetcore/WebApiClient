@@ -49,7 +49,7 @@ namespace WebApiClient.Attributes
         {
             if (context.RequestMessage.Content != null)
             {
-                var message = string.Format("参数{0} {1}必须置前", parameter.ParameterType.Name, parameter.Name);
+                var message = $"参数{parameter.ParameterType.Name} {parameter.Name}必须置前";
                 throw new HttpApiConfigException(message);
             }
             context.RequestMessage.Content = parameter.Value as HttpContent;

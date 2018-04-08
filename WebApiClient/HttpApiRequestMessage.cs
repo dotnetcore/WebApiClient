@@ -108,7 +108,7 @@ namespace WebApiClient
             }
 
             var valueEncoded = HttpUtility.UrlEncode(value, encoding);
-            var query = string.Format("{0}={1}", key, valueEncoded);
+            var query = $"{key}={valueEncoded}";
 
             var url = this.RequestUri.ToString().TrimEnd('?', '&', '/');
             var concat = url.Contains('?') ? "&" : "?";
@@ -292,7 +292,7 @@ namespace WebApiClient
             {
                 const string separator = "; ";
                 var cookieItems = from item in HttpUtility.ParseCookie(cookieValues, true)
-                                  select string.Format("{0}={1}", item.Name, item.Value);
+                                  select $"{item.Name}={item.Value}";
                 cookieValues = string.Join(separator, cookieItems);
             }
 
@@ -337,7 +337,7 @@ namespace WebApiClient
 
             if (string.Equals(existsMediaType, newMediaType, StringComparison.OrdinalIgnoreCase) == false)
             {
-                var message = string.Format("Content-Type必须保持为{0}", existsMediaType);
+                var message = $"Content-Type必须保持为{existsMediaType}";
                 throw new NotSupportedException(message);
             }
         }
@@ -352,7 +352,7 @@ namespace WebApiClient
         {
             if (this.Method == HttpMethod.Get || this.Method == HttpMethod.Head)
             {
-                var message = string.Format("{0}方法不支持使用{1}", this.Method, this.GetType().Name);
+                var message = $"{this.Method}方法不支持使用{this.GetType().Name}";
                 throw new NotSupportedException(message);
             }
         }

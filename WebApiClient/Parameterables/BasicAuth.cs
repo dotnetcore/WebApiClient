@@ -46,7 +46,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         private static string GetBasicAuthValue(string userName, string password)
         {
-            var value = string.Format("{0}:{1}", userName, password);
+            var value = $"{userName}:{password}";
             var bytes = Encoding.ASCII.GetBytes(value);
             return "Basic " + Convert.ToBase64String(bytes);
         }
@@ -74,7 +74,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Format("{0}: {1}", scheme, this.authValue);
+            return $"{scheme}: {this.authValue}";
         }
     }
 }

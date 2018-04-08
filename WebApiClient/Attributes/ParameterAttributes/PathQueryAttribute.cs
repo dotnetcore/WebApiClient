@@ -123,7 +123,7 @@ namespace WebApiClient.Attributes
             }
 
             var valueEncoded = HttpUtility.UrlEncode(value, this.encoding);
-            var query = string.Format("{0}={1}", key, valueEncoded);
+            var query = $"{key}={valueEncoded}";
             var concat = url.Contains('?') ? "&" : "?";
             return url + concat + query;
         }

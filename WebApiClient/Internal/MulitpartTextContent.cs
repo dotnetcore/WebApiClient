@@ -21,7 +21,7 @@ namespace WebApiClient
             {
                 var disposition = new ContentDispositionHeaderValue("form-data")
                 {
-                    Name = string.Format("\"{0}\"", name)
+                    Name = $"\"{name}\""
                 };
                 this.Headers.ContentDisposition = disposition;
             }

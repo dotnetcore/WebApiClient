@@ -23,8 +23,8 @@ namespace WebApiClient
             {
                 var disposition = new ContentDispositionHeaderValue("form-data")
                 {
-                    Name = string.Format("\"{0}\"", name),
-                    FileName = string.Format("\"{0}\"", fileName)
+                    Name = $"\"{name}\"",
+                    FileName = $"\"{fileName}\""
                 };
                 this.Headers.ContentDisposition = disposition;
             }

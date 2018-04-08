@@ -24,6 +24,7 @@ namespace WebApiClient
         /// </summary>
         public static readonly IKeyValueFormatter DefaultKeyValueFormatter = new KeyValueFormatter();
 
+
         /// <summary>
         /// 自定义数据容器
         /// </summary>
@@ -92,28 +93,28 @@ namespace WebApiClient
         /// 获取或设置请求时序列化使用的默认格式   
         /// 影响JsonFormatter或KeyValueFormatter的序列化
         /// </summary>
-        public FormatOptions FormatOptions { get; set; }
+        public FormatOptions FormatOptions { get; set; } = new FormatOptions();
 
         /// <summary>
         /// 获取或设置Xml格式化工具
         /// </summary>
-        public IXmlFormatter XmlFormatter { get; set; }
+        public IXmlFormatter XmlFormatter { get; set; } = DefaultXmlFormatter;
 
         /// <summary>
         /// 获取或设置Json格式化工具
         /// </summary>
-        public IJsonFormatter JsonFormatter { get; set; }
+        public IJsonFormatter JsonFormatter { get; set; } = DefaultJsonFormatter;
 
         /// <summary>
         /// 获取或设置KeyValue格式化工具
         /// </summary>
-        public IKeyValueFormatter KeyValueFormatter { get; set; }
+        public IKeyValueFormatter KeyValueFormatter { get; set; } = DefaultKeyValueFormatter;
 
         /// <summary>
         /// 获取全局过滤器集合
         /// 非线程安全类型
         /// </summary>
-        public GlobalFilterCollection GlobalFilters { get; private set; }
+        public GlobalFilterCollection GlobalFilters { get; private set; } = new GlobalFilterCollection();
 
         /// <summary>
         /// Http接口的配置项   
@@ -130,11 +131,6 @@ namespace WebApiClient
         public HttpApiConfig(IHttpClient client)
         {
             this.httpClient = client;
-            this.FormatOptions = new FormatOptions();
-            this.XmlFormatter = HttpApiConfig.DefaultXmlFormatter;
-            this.JsonFormatter = HttpApiConfig.DefaultJsonFormatter;
-            this.KeyValueFormatter = HttpApiConfig.DefaultKeyValueFormatter;
-            this.GlobalFilters = new GlobalFilterCollection();
         }
 
         #region IDisposable
