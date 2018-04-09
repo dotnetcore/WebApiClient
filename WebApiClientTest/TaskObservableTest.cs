@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using WebApiClient;
 using Xunit;
@@ -45,6 +46,36 @@ namespace WebApiClientTest
             var result = await taskSource.Task;
             Assert.True(this.count2 == 1);
             Assert.True(result == 5);
+        }
+
+        [Fact]
+        public async Task TaskObservableErrorTestAsync()
+        {
+            var taskSource = new TaskCompletionSource<int>();
+
+            this.GetDelayTask(delay: 20, exception: new TimeoutException())
+                .ToObservable()
+                .Subscribe(null, ex =>
+                {
+                    taskSource.SetException(ex);
+                });
+
+            Exception exception = null;
+            try
+            {
+                await taskSource.Task;
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
+            Assert.True(exception != null && exception is TimeoutException);
+        }
+
+        private async Task<int> GetDelayTask(int delay, Exception exception)
+        {
+            await Task.Delay(delay);
+            throw exception;
         }
 
         private async Task<int> GetDelayTask(int delay, int value)
