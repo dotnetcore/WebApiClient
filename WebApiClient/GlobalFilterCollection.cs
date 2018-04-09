@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using WebApiClient.Interfaces;
+using WebApiClient;
 
 namespace WebApiClient
 {

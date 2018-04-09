@@ -1,6 +1,6 @@
 ﻿using System;
 using WebApiClient.Defaults;
-using WebApiClient.Interfaces;
+using WebApiClient;
 
 namespace WebApiClient
 {

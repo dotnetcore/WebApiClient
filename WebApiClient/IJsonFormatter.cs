@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebApiClient.Interfaces
+namespace WebApiClient
 {
     /// <summary>
     /// 定义json序列化/反序列化的行为

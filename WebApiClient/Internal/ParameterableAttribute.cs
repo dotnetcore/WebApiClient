@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
-using WebApiClient.Interfaces;
 
 namespace WebApiClient
 {

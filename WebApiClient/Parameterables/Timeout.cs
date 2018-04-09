@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
-using WebApiClient.Interfaces;
 
 namespace WebApiClient.Parameterables
 {
@@ -10,7 +9,7 @@ namespace WebApiClient.Parameterables
     /// 表示将自身作为请求的超时时间控制
     /// </summary>
     [DebuggerDisplay("Timeout = {TimeSpan}")]
-    public class Timeout : IApiParameterable
+    public class TimeOut : IApiParameterable
     {
         /// <summary>
         /// 获取超时时间
@@ -22,7 +21,7 @@ namespace WebApiClient.Parameterables
         /// </summary>
         /// <param name="milliseconds">超时时间的毫秒数</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public Timeout(int milliseconds)
+        public TimeOut(int milliseconds)
         {
             if (milliseconds <= 0)
             {
@@ -36,7 +35,7 @@ namespace WebApiClient.Parameterables
         /// </summary>
         /// <param name="timeSpan">超时时间</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public Timeout(TimeSpan timeSpan)
+        public TimeOut(TimeSpan timeSpan)
         {
             if (timeSpan <= TimeSpan.Zero)
             {
@@ -63,9 +62,9 @@ namespace WebApiClient.Parameterables
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static implicit operator Timeout(int value)
+        public static implicit operator TimeOut(int value)
         {
-            return new Timeout(value);
+            return new TimeOut(value);
         }
 
         /// <summary>
@@ -73,9 +72,9 @@ namespace WebApiClient.Parameterables
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static implicit operator Timeout(TimeSpan value)
+        public static implicit operator TimeOut(TimeSpan value)
         {
-            return new Timeout(value);
+            return new TimeOut(value);
         }
     }
 }

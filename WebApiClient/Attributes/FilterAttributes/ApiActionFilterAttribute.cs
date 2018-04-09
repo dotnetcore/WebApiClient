@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
-using WebApiClient.Interfaces;
 
 namespace WebApiClient.Attributes
 {
@@ -23,7 +22,7 @@ namespace WebApiClient.Attributes
         {
             get
             {
-                return this.GetType().AllowMultiple();
+                return this.GetType().IsAllowMultiple();
             }
         }
 

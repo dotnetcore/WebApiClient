@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClient;
 using WebApiClient.Attributes;
 using WebApiClient.Contexts;
-using WebApiClient.DataAnnotations;
-using WebApiClient.Interfaces;
 using Xunit;
 
 

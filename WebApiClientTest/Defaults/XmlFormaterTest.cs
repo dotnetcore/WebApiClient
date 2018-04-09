@@ -1,11 +1,5 @@
-﻿using System;
+﻿using System.Text;
 using Xunit;
-using WebApiClient;
-using WebApiClient.Interfaces;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using WebApiClient.Attributes;
 
 namespace WebApiClientTest.Defaults
 {

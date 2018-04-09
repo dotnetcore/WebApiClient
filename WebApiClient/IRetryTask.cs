@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebApiClient.Interfaces
+namespace WebApiClient
 {
     /// <summary>
     /// 定义重试的行为

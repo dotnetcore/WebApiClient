@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace WebApiClient.Interfaces
+namespace WebApiClient
 {
     /// <summary>
     /// 定义http接口拦截器的行为

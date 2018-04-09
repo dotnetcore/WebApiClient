@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using WebApiClient.Contexts;
-using WebApiClient.Interfaces;
 
 namespace WebApiClient.Defaults
 {

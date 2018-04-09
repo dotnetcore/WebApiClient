@@ -5,7 +5,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
-using WebApiClient.Interfaces;
 
 namespace WebApiClient.Attributes
 {
@@ -79,30 +78,32 @@ namespace WebApiClient.Attributes
                 throw new HttpApiConfigException($"未配置HttpHost，无法使用参数{parameter.Name}");
             }
 
-            if (this.WillIgnore(parameter.Value) == false)
+            if (this.WillIgnore(parameter.Value) == true)
             {
-                var fixUrl = uri.ToString().TrimEnd('?', '&', '/');
-                var options = context.HttpApiConfig.FormatOptions.CloneChange(this.DateTimeFormat);
-                var keyValues = context.HttpApiConfig.KeyValueFormatter.Serialize(parameter, options);
-                var targetUrl = new Uri(this.UsePathQuery(fixUrl, keyValues));
-                context.RequestMessage.RequestUri = targetUrl;
-                await ApiTask.CompletedTask;
+                return;
             }
+
+            var options = context.HttpApiConfig.FormatOptions.CloneChange(this.DateTimeFormat);
+            var keyValues = context.HttpApiConfig.KeyValueFormatter.Serialize(parameter, options);
+
+            context.RequestMessage.RequestUri = this.UsePathQuery(uri, keyValues);
+            await ApiTask.CompletedTask;
         }
 
         /// <summary>
         /// url添加query或替换segment
         /// </summary>
-        /// <param name="url">url</param>
+        /// <param name="uri">url</param>
         /// <param name="keyValues">键值对</param>
         /// <returns></returns>
-        protected string UsePathQuery(string url, IEnumerable<KeyValuePair<string, string>> keyValues)
+        protected Uri UsePathQuery(Uri uri, IEnumerable<KeyValuePair<string, string>> keyValues)
         {
+            var url = uri.ToString().TrimEnd('?', '&', '/');
             foreach (var keyValue in keyValues)
             {
                 url = this.UsePathQuery(url, keyValue);
             }
-            return url;
+            return new Uri(url);
         }
 
         /// <summary>
@@ -115,11 +116,18 @@ namespace WebApiClient.Attributes
         {
             var key = keyValue.Key;
             var value = keyValue.Value ?? string.Empty;
-            var regex = new Regex("{" + key + "}", RegexOptions.IgnoreCase);
+            var regex = new Regex($"{{{key}}}", RegexOptions.IgnoreCase);
 
-            if (regex.IsMatch(url) == true)
+            var isMatch = false;
+            var newUrl = regex.Replace(url, m =>
             {
-                return regex.Replace(url, value);
+                isMatch = true;
+                return value;
+            });
+
+            if (isMatch == true)
+            {
+                return newUrl;
             }
 
             var valueEncoded = HttpUtility.UrlEncode(value, this.encoding);

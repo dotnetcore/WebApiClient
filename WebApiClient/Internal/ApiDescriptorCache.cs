@@ -7,7 +7,6 @@ using System.Reflection;
 using WebApiClient.Attributes;
 using WebApiClient.Contexts;
 using WebApiClient.DataAnnotations;
-using WebApiClient.Interfaces;
 
 namespace WebApiClient
 {
@@ -130,7 +129,7 @@ namespace WebApiClient
                 ReturnType = method.ReturnType,
                 DataType = dataType,
                 IsITaskDefinition = method.ReturnType.GetGenericTypeDefinition() == typeof(ITask<>),
-                ITaskCtor = ApiTask.GetConstructor(dataType),
+                ITaskCtor = ApiTask.GetITaskConstructor(dataType),
             };
             return descriptor;
         }

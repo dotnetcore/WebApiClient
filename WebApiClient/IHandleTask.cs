@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace WebApiClient.Interfaces
+namespace WebApiClient
 {
     /// <summary>
     /// 定义异常处理的行为
@@ -31,6 +31,6 @@ namespace WebApiClient.Interfaces
         /// <typeparam name="TException"></typeparam>
         /// <param name="func">获取结果</param>
         /// <returns></returns>
-        IHandleTask<TResult> WhenCatch<TException>(Func<TException, Task<TResult>> func) where TException : Exception;
+        IHandleTask<TResult> WhenCatchAsync<TException>(Func<TException, Task<TResult>> func) where TException : Exception;
     }
 }

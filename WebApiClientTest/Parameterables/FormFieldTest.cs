@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using WebApiClient;
 using WebApiClient.Contexts;
-using WebApiClient.Interfaces;
 using WebApiClient.Parameterables;
 using Xunit;
 

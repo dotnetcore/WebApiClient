@@ -51,9 +51,9 @@ namespace WebApiClientTest.Internal
         [Fact]
         public void AllowMultipleTest()
         {
-            Assert.False(typeof(A).AllowMultiple());
-            Assert.True(typeof(B).AllowMultiple());
-            Assert.True(typeof(C).AllowMultiple());
+            Assert.False(typeof(A).IsAllowMultiple());
+            Assert.True(typeof(B).IsAllowMultiple());
+            Assert.True(typeof(C).IsAllowMultiple());
         }
 
         [Fact]

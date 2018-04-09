@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using WebApiClient.Interfaces;
 
 namespace WebApiClient
 {
@@ -89,7 +88,7 @@ namespace WebApiClient
         /// <typeparam name="TException"></typeparam>
         /// <param name="func">获取结果</param>
         /// <returns></returns>
-        public IHandleTask<TResult> WhenCatch<TException>(Func<TException, Task<TResult>> func) where TException : Exception
+        public IHandleTask<TResult> WhenCatchAsync<TException>(Func<TException, Task<TResult>> func) where TException : Exception
         {
             if (func == null)
             {

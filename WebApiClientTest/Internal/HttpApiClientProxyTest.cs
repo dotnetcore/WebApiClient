@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using WebApiClient;
-using WebApiClient.Interfaces;
 using Xunit;
 
 namespace WebApiClientTest.Internal

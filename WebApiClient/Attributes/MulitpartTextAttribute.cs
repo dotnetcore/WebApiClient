@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
-using WebApiClient.Interfaces;
 
 namespace WebApiClient.Attributes
 {

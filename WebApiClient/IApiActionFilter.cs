@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using WebApiClient.Contexts;
 
-namespace WebApiClient.Interfaces
+namespace WebApiClient
 {
     /// <summary>
     /// 定义ApiAction过滤器的行为

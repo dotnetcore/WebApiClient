@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using WebApiClient.Contexts;
 
-namespace WebApiClient.Interfaces
+namespace WebApiClient
 {
     /// <summary>
     /// 定义将对象转换为键值对的行为

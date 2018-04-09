@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
-using WebApiClient.Interfaces;
 using WebApiClient.Parameterables;
 
 namespace WebApiClient.Attributes

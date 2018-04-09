@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace WebApiClient
 {
@@ -33,6 +29,7 @@ namespace WebApiClient
         /// 线程安全的内存缓存
         /// </summary>
         /// <param name="comparer">键的比较器</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public ConcurrentCache(IEqualityComparer<TKey> comparer)
         {
             this.dictionary = new ConcurrentDictionary<TKey, Lazy<TValue>>(comparer);

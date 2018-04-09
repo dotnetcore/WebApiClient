@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using WebApiClient.Contexts;
 
-namespace WebApiClient.Interfaces
+namespace WebApiClient
 {
     /// <summary>
     /// 定义回复内容处理特性的行为

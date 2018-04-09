@@ -26,11 +26,11 @@ namespace WebApiClient
 #endif
 
         /// <summary>
-        /// 获取泛型构造器
+        /// 获取ITaskOf(dataType)的构造器
         /// </summary>
         /// <param name="dataType">泛型参数类型</param>
         /// <returns></returns>
-        public static ConstructorInfo GetConstructor(Type dataType)
+        public static ConstructorInfo GetITaskConstructor(Type dataType)
         {
             return typeof(ApiTaskOf<>)
                 .MakeGenericType(dataType)

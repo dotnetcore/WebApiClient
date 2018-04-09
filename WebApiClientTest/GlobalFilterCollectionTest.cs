@@ -1,9 +1,9 @@
 ﻿using System;
-using Xunit;
-using WebApiClient;
-using System.Threading.Tasks;
-using WebApiClient.Contexts;
 using System.Linq;
+using System.Threading.Tasks;
+using WebApiClient;
+using WebApiClient.Contexts;
+using Xunit;
 
 namespace WebApiClientTest
 {
@@ -31,7 +31,7 @@ namespace WebApiClientTest
         }
 
 
-        private class Filter : WebApiClient.Interfaces.IApiActionFilter
+        private class Filter : WebApiClient.IApiActionFilter
         {
             public Task OnBeginRequestAsync(ApiActionContext context)
             {

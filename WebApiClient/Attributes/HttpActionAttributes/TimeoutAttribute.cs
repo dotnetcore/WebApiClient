@@ -8,8 +8,8 @@ namespace WebApiClient.Attributes
     /// <summary>
     /// 表示此请求的超时时间
     /// </summary>
-    [DebuggerDisplay("Timeout = {TimeSpan}")]
-    public class TimeoutAttribute : ApiActionAttribute
+    [DebuggerDisplay("TimeOut = {TimeSpan}")]
+    public class TimeOutAttribute : ApiActionAttribute
     {
         /// <summary>
         /// 获取超时时间
@@ -21,7 +21,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="milliseconds">超时时间的毫秒数</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public TimeoutAttribute(int milliseconds)
+        public TimeOutAttribute(int milliseconds)
         {
             if (milliseconds <= 0)
             {

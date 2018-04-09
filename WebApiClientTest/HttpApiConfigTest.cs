@@ -1,7 +1,6 @@
 ﻿using System;
-using Xunit;
 using WebApiClient;
-using WebApiClient.Interfaces;
+using Xunit;
 
 namespace WebApiClientTest
 {

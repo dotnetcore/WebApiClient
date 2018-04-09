@@ -1,14 +1,5 @@
-﻿using System;
-using Xunit;
-using WebApiClient;
-using WebApiClient.Defaults;
+﻿using System.Linq;
 using WebApiClient.Defaults.KeyValueFormats;
-using WebApiClient.Interfaces;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using WebApiClient.Attributes;
-using System.Linq;
 
 namespace WebApiClientTest.Defaults.KeyValueFormats
 {

@@ -3,8 +3,6 @@ using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
-using WebApiClient.Interfaces;
-using System.Linq;
 
 namespace WebApiClient.Attributes
 {

@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -175,7 +174,7 @@ namespace WebApiClient
         {
             this.EnsureNotGetOrHead();
 
-            var httpContent = this.CastOrCreateMultipartContent();
+            var httpContent = this.CastToMultipartContent();
             var fileContent = new MulitpartFileContent(stream, name, fileName, contentType);
             httpContent.Add(fileContent);
             this.Content = httpContent;
@@ -227,7 +226,7 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(name));
             }
 
-            var httpContent = this.CastOrCreateMultipartContent();
+            var httpContent = this.CastToMultipartContent();
             var textContent = new MulitpartTextContent(name, value);
             httpContent.Add(textContent);
             this.Content = httpContent;
@@ -290,9 +289,11 @@ namespace WebApiClient
 
             if (useUrlEncode == true)
             {
+                var cookieItems =
+                    from item in HttpUtility.ParseCookie(cookieValues, true)
+                    select $"{item.Name}={item.Value}";
+
                 const string separator = "; ";
-                var cookieItems = from item in HttpUtility.ParseCookie(cookieValues, true)
-                                  select $"{item.Name}={item.Value}";
                 cookieValues = string.Join(separator, cookieItems);
             }
 
@@ -305,19 +306,14 @@ namespace WebApiClient
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        private MultipartContent CastOrCreateMultipartContent()
+        private MultipartContent CastToMultipartContent()
         {
             this.EnsureMediaTypeEqual("multipart/form-data");
 
             var httpContent = this.Content as MultipartContent;
             if (httpContent == null)
             {
-                var boundary = Guid.NewGuid().ToString();
-                var parameter = new NameValueHeaderValue("boundary", boundary);
-                httpContent = new MultipartContent("form-data", boundary);
-
-                httpContent.Headers.ContentType.Parameters.Clear();
-                httpContent.Headers.ContentType.Parameters.Add(parameter);
+                httpContent = new MultipartFormContent();
             }
             return httpContent;
         }

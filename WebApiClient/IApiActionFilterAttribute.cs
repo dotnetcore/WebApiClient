@@ -1,4 +1,4 @@
-﻿namespace WebApiClient.Interfaces
+﻿namespace WebApiClient
 {
     /// <summary>
     /// 定义ApiAction过滤器修饰特性的的行为

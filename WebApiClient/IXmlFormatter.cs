@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace WebApiClient.Interfaces
+namespace WebApiClient
 {
     /// <summary>
     /// 定义xml序列化/反序列化的行为

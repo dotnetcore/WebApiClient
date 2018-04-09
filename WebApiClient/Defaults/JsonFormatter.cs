@@ -5,7 +5,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Reflection;
 using WebApiClient.DataAnnotations;
-using WebApiClient.Interfaces;
 
 namespace WebApiClient.Defaults
 {

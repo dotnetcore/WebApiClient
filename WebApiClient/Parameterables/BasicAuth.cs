@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
-using WebApiClient.Interfaces;
 
 namespace WebApiClient.Parameterables
 {
@@ -48,7 +47,8 @@ namespace WebApiClient.Parameterables
         {
             var value = $"{userName}:{password}";
             var bytes = Encoding.ASCII.GetBytes(value);
-            return "Basic " + Convert.ToBase64String(bytes);
+            var base64 = Convert.ToBase64String(bytes);
+            return $"Basic {base64}";
         }
 
         /// <summary>

@@ -3,7 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Net;
 using WebApiClient.Defaults;
-using WebApiClient.Interfaces;
+using WebApiClient;
 
 namespace WebApiClient
 {

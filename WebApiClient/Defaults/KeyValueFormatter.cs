@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using WebApiClient.Contexts;
-using WebApiClient.DataAnnotations;
 using WebApiClient.Defaults.KeyValueFormats;
 using WebApiClient.Defaults.KeyValueFormats.Converters;
-using WebApiClient.Interfaces;
 
 namespace WebApiClient.Defaults
 {
