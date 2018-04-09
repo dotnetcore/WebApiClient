@@ -41,8 +41,8 @@ namespace WebApiClient.Attributes
         {
             var formatter = context.HttpApiConfig.JsonFormatter;
             var options = context.HttpApiConfig.FormatOptions.CloneChange(this.DateTimeFormat);
-            var content = formatter.Serialize(parameter.Value, options);
-            context.RequestMessage.Content = new StringContent(content, Encoding.UTF8, "application/json");
+            var json = formatter.Serialize(parameter.Value, options);
+            context.RequestMessage.Content = new JsonContent(json, Encoding.UTF8);
         }
     }
 }
