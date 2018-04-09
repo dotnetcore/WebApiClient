@@ -23,6 +23,63 @@ namespace WebApiClient
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <returns></returns>
+        public static HttpStatusCode Validate(string proxyHost, int proxyPort, Uri targetAddress)
+        {
+            return Validate(proxyHost, proxyPort, null, null, targetAddress);
+        }
+
+        /// <summary>
+        /// 使用http tunnel检测代理状态
+        /// </summary>
+        /// <param name="proxyHost">代理服务器域名或ip</param>
+        /// <param name="proxyPort">代理服务器端口</param>
+        /// <param name="userName">代理账号</param>
+        /// <param name="password">代理密码</param>
+        /// <param name="targetAddress">目标url地址</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        /// <returns></returns>
+        public static HttpStatusCode Validate(string proxyHost, int proxyPort, string userName, string password, Uri targetAddress)
+        {
+            var remoteEndPoint = new DnsEndPoint(proxyHost, proxyPort, AddressFamily.InterNetwork);
+            var socket = new Socket(remoteEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+
+            try
+            {
+                socket.Connect(remoteEndPoint);
+
+                var request = BuildHttpTunnelRequestString(proxyHost, proxyPort, userName, password, targetAddress);
+                var sendBuffer = Encoding.ASCII.GetBytes(request);
+                socket.Send(sendBuffer);
+
+                var recvBuffer = new byte[150];
+                var length = socket.Receive(recvBuffer);
+
+                var response = Encoding.ASCII.GetString(recvBuffer, 0, length);
+                var statusCode = int.Parse(Regex.Match(response, "(?<=HTTP/1.1 )\\d+", RegexOptions.IgnoreCase).Value);
+                return (HttpStatusCode)statusCode;
+            }
+            catch (Exception)
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+            finally
+            {
+                socket.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// 使用http tunnel检测代理状态
+        /// </summary>
+        /// <param name="proxyHost">代理服务器域名或ip</param>
+        /// <param name="proxyPort">代理服务器端口</param>
+        /// <param name="targetAddress">目标url地址</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        /// <returns></returns>
         public static async Task<HttpStatusCode> ValidateAsync(string proxyHost, int proxyPort, Uri targetAddress)
         {
             return await ValidateAsync(proxyHost, proxyPort, null, null, targetAddress);
