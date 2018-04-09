@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace WebApiClient
@@ -9,7 +8,7 @@ namespace WebApiClient
     /// 表示任务的Rx
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
-    class TaskObservable<TResult> : IObservable<TResult>
+    class TaskObservable<TResult> : ITaskObservable<TResult>
     {
         /// <summary>
         /// 任务
@@ -82,6 +81,19 @@ namespace WebApiClient
         /// <summary>
         /// 订阅
         /// </summary>
+        /// <param name="onResult">收到结果委托</param>
+        /// <param name="onError">遇到错误委托</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns></returns>
+        public IDisposable Subscribe(Action<TResult> onResult, Action<Exception> onError)
+        {
+            var observer = new TaskObserver<TResult>(onResult, onError, null);
+            return this.Subscribe(observer);
+        }
+
+        /// <summary>
+        /// 订阅
+        /// </summary>
         /// <param name="observer">观察者</param>
         /// <returns></returns>
         public IDisposable Subscribe(IObserver<TResult> observer)
@@ -96,6 +108,8 @@ namespace WebApiClient
                 return new Unsubscriber<TResult>(null);
             }
         }
+
+
 
         /// <summary>
         /// 表示观察者列表
