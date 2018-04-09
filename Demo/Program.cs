@@ -57,8 +57,21 @@ namespace Demo
 
             var user1 = await userApiClient.GetByIdAsync("id001");
 
+            // RX
+            userApiClient
+                .GetByIdAsync("id001")
+               .ToObservable()
+               .Subscribe(r =>
+               {
+                   Console.WriteLine(r);
+               }, ex =>
+               {
+                   Console.WriteLine(ex);
+               });
+
             var user2 = await userApiClient.GetByAccountAsync("laojiu");
 
+            // Retry & Handle
             var user3 = await userApiClient.UpdateWithFormAsync(user, nickName: "老九", nullableAge: null)
                 .Retry(3, i => TimeSpan.FromSeconds(i))
                 .WhenCatch<Exception>()
@@ -69,6 +82,7 @@ namespace Demo
 
             var user5 = await userApiClient.UpdateWithXmlAsync(user);
 
+            // Upload Files
             var stream = typeof(Program).Assembly.GetManifestResourceStream("Demo.HttpClients.about.txt");
             var file = new MulitpartFile(stream, "about.txt");
             var user6 = await userApiClient.UpdateWithMulitpartAsync(user, "老九", 18, file);
