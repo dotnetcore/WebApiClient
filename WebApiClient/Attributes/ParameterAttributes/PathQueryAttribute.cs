@@ -21,8 +21,9 @@ namespace WebApiClient.Attributes
         private Encoding encoding = System.Text.Encoding.UTF8;
 
         /// <summary>
-        /// 获取或设置参数的编码
+        /// 获取或设置参数的编码名称
         /// </summary>
+        /// <exception cref="ArgumentException"></exception>
         public string Encoding
         {
             get
@@ -41,7 +42,7 @@ namespace WebApiClient.Attributes
         public string DateTimeFormat { get; set; }
 
         /// <summary>
-        /// 获取或设置当值为null是此参数
+        /// 获取或设置当值为null是否忽略此参数
         /// 默认为false
         /// </summary>
         public bool IgnoreWhenNull { get; set; }
@@ -119,7 +120,7 @@ namespace WebApiClient.Attributes
             var regex = new Regex($"{{{key}}}", RegexOptions.IgnoreCase);
 
             var isMatch = false;
-            var newUrl = regex.Replace(url, m =>
+            var matchUrl = regex.Replace(url, m =>
             {
                 isMatch = true;
                 return value;
@@ -127,13 +128,13 @@ namespace WebApiClient.Attributes
 
             if (isMatch == true)
             {
-                return newUrl;
+                return matchUrl;
             }
 
             var valueEncoded = HttpUtility.UrlEncode(value, this.encoding);
             var query = $"{key}={valueEncoded}";
             var concat = url.Contains('?') ? "&" : "?";
-            return url + concat + query;
+            return string.Concat(url, concat, query);
         }
 
         /// <summary>
