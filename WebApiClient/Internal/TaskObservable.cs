@@ -98,15 +98,11 @@ namespace WebApiClient
         /// <returns></returns>
         public IDisposable Subscribe(IObserver<TResult> observer)
         {
-            if (this.observerTable.Add(observer) == true)
-            {
-                return new Unsubscriber<TResult>(() => this.observerTable.Remove(observer));
-            }
-            else
+            if (this.observerTable.Add(observer) == false)
             {
                 this.RaiseObserver(observer, this.task);
-                return new Unsubscriber<TResult>(null);
             }
+            return new Unsubscriber<TResult>(() => this.observerTable.Remove(observer));
         }
 
 
@@ -131,10 +127,11 @@ namespace WebApiClient
             /// <summary>
             /// 观察者列表
             /// </summary>
-            private readonly List<IObserver<T>> observers = new List<IObserver<T>>();
+            private readonly HashSet<IObserver<T>> observers = new HashSet<IObserver<T>>();
 
             /// <summary>
             /// 添加观察者
+            /// 如果已触发任务完成，则返回false
             /// </summary>
             /// <param name="observer">观察者</param>
             /// <returns></returns>
@@ -142,12 +139,13 @@ namespace WebApiClient
             {
                 lock (this.syncRoot)
                 {
-                    if (this.raised == false)
+                    if (this.raised == true)
                     {
-                        this.observers.Add(observer);
-                        return true;
+                        return false;
                     }
-                    return false;
+
+                    this.observers.Add(observer);
+                    return true;
                 }
             }
 
