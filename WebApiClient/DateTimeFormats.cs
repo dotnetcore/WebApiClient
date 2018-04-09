@@ -19,24 +19,15 @@ namespace WebApiClient
 
         /// <summary>
         /// 获取本地的日期时间格式
+        /// ShortDate LongTime
         /// </summary>
         public static string LocalDateTimeFormat
         {
             get
             {
-                return GetLocalDateTimeFormat();
+                var formatInfo = DateTimeFormatInfo.CurrentInfo;
+                return $"{formatInfo.ShortDatePattern} {formatInfo.LongTimePattern}";
             }
-        }
-
-        /// <summary>
-        /// 获取本地的日期时间格式
-        /// ShortDate LongTime
-        /// </summary>
-        /// <returns></returns>
-        public static string GetLocalDateTimeFormat()
-        {
-            var formatInfo = DateTimeFormatInfo.CurrentInfo;
-            return $"{formatInfo.ShortDatePattern} {formatInfo.LongTimePattern}";
         }
     }
 }

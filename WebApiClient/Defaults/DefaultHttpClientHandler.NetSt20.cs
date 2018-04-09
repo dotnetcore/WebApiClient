@@ -2,7 +2,7 @@
 
 using System.Net.Http;
 
-namespace WebApiClient
+namespace WebApiClient.Defaults
 {
     /// <summary>
     /// 默认的HttpClientHandler

@@ -10,6 +10,11 @@ namespace WebApiClient
     class MultipartFormContent : MultipartContent
     {
         /// <summary>
+        /// 获取对应的ContentType
+        /// </summary>
+        public static string MediaType => "multipart/form-data";
+
+        /// <summary>
         /// form-data表单
         /// </summary>
         public MultipartFormContent()

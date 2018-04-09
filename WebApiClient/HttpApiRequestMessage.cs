@@ -308,7 +308,7 @@ namespace WebApiClient
         /// <returns></returns>
         private MultipartContent CastToMultipartContent()
         {
-            this.EnsureMediaTypeEqual("multipart/form-data");
+            this.EnsureMediaTypeEqual(MultipartFormContent.MediaType);
 
             var httpContent = this.Content as MultipartContent;
             if (httpContent == null)
