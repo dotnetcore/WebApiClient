@@ -24,7 +24,7 @@ namespace WebApiClientTest.Parameterables
             };
 
             var parameter = context.ApiActionDescriptor.Parameters[0];
-            IApiParameterable timeout = new TimeOut(5000);
+            IApiParameterable timeout = new Timeout(5000);
             await timeout.BeforeRequestAsync(context, parameter);
 
             Assert.True(context.RequestMessage.Timeout == TimeSpan.FromMilliseconds(5000));
