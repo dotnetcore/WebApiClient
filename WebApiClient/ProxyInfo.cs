@@ -37,6 +37,19 @@ namespace WebApiClient
         /// </summary>
         /// <param name="proxyAddress">代理服务器地址</param>
         /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        /// <exception cref="UriFormatException"></exception>
+        public ProxyInfo(string proxyAddress)
+            : this(new Uri(proxyAddress ?? throw new ArgumentNullException(nameof(proxyAddress))))
+        {
+        }
+
+        /// <summary>
+        /// 代理信息
+        /// </summary>
+        /// <param name="proxyAddress">代理服务器地址</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public ProxyInfo(Uri proxyAddress)
         {
             if (proxyAddress == null)
