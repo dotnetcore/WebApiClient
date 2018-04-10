@@ -10,6 +10,11 @@ namespace WebApiClient
     public class HttpProxy : IWebProxy
     {
         /// <summary>
+        /// 授权字段
+        /// </summary>
+        private ICredentials credentials;
+
+        /// <summary>
         /// 获取代理服务器域名或ip
         /// </summary>
         public string Host { get; private set; }
@@ -32,7 +37,17 @@ namespace WebApiClient
         /// <summary>
         /// 获取或设置授权信息
         /// </summary>
-        ICredentials IWebProxy.Credentials { get; set; }
+        ICredentials IWebProxy.Credentials
+        {
+            get
+            {
+                return this.credentials;
+            }
+            set
+            {
+                this.SetCredentialsByInterface(value);
+            }
+        }
 
         /// <summary>
         /// http代理信息
@@ -69,8 +84,9 @@ namespace WebApiClient
         /// <param name="port">代理服务器端口</param>
         /// <exception cref="ArgumentNullException"></exception>
         public HttpProxy(string host, int port)
-            : this(host, port, null, null)
         {
+            this.Host = host ?? throw new ArgumentNullException(nameof(host));
+            this.Port = port;
         }
 
         /// <summary>
@@ -82,16 +98,35 @@ namespace WebApiClient
         /// <param name="password">代理服务器密码</param>
         /// <exception cref="ArgumentNullException"></exception>
         public HttpProxy(string host, int port, string userName, string password)
+            : this(host, port)
         {
-            this.Host = host ?? throw new ArgumentNullException(nameof(host));
-            this.Port = port;
             this.UserName = userName;
             this.Password = password;
 
             if (string.IsNullOrEmpty(userName + password) == false)
             {
-                ((IWebProxy)this).Credentials = new NetworkCredential(userName, password);
+                this.credentials = new NetworkCredential(userName, password);
             }
+        }
+
+        /// <summary>
+        /// 通过接口设置授权信息
+        /// </summary>
+        /// <param name="value"></param>
+        private void SetCredentialsByInterface(ICredentials value)
+        {
+            var userName = default(string);
+            var password = default(string);
+            if (value != null)
+            {
+                var networkCredentialsd = value.GetCredential(null, null);
+                userName = networkCredentialsd?.UserName;
+                password = networkCredentialsd?.Password;
+            }
+
+            this.UserName = userName;
+            this.Password = password;
+            this.credentials = value;
         }
 
         /// <summary>
@@ -115,13 +150,8 @@ namespace WebApiClient
 
             var proxyAddress = webProxy.GetProxy(targetAddress);
             var httpProxy = new HttpProxy(proxyAddress);
+            httpProxy.SetCredentialsByInterface(webProxy.Credentials);
 
-            if (webProxy.Credentials != null)
-            {
-                var credentials = webProxy.Credentials.GetCredential(null, null);
-                httpProxy.UserName = credentials?.UserName;
-                httpProxy.Password = credentials?.Password;
-            }
             return httpProxy;
         }
 
@@ -159,9 +189,9 @@ namespace WebApiClient
         /// <summary>
         /// 获取代理服务器地址
         /// </summary>
-        /// <param name="destination"></param>
+        /// <param name="destination">目标地址</param>
         /// <returns></returns>
-        Uri IWebProxy.GetProxy(Uri destination)
+        public Uri GetProxy(Uri destination)
         {
             return new Uri($"http://{this.Host}:{this.Port}/");
         }
@@ -169,9 +199,9 @@ namespace WebApiClient
         /// <summary>
         /// 是否忽略代理
         /// </summary>
-        /// <param name="host"></param>
+        /// <param name="host">目标地址</param>
         /// <returns></returns>
-        bool IWebProxy.IsBypassed(Uri host)
+        public bool IsBypassed(Uri host)
         {
             return false;
         }

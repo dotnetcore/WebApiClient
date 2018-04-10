@@ -26,8 +26,8 @@ namespace WebApiClient
         /// <param name="proxyPort">代理服务器端口</param>
         /// <exception cref="ArgumentNullException"></exception>
         public ProxyValidator(string proxyHost, int proxyPort)
+            : this(new HttpProxy(proxyHost, proxyPort))
         {
-            this.webProxy = new HttpProxy(proxyHost, proxyPort);
         }
 
         /// <summary>
