@@ -21,7 +21,7 @@ namespace WebApiClient
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="TimeoutException"></exception>
         /// <returns></returns>
-        public static async Task ConnectTaskAsync(this Socket socket, EndPoint remoteEndPoint, TimeSpan timeout)
+        public static async Task ConnectTaskAsync(this Socket socket, EndPoint remoteEndPoint, TimeSpan? timeout)
         {
             if (remoteEndPoint == null)
             {
@@ -72,7 +72,7 @@ namespace WebApiClient
         /// <exception cref="SocketException"></exception>
         /// <exception cref="TimeoutException"></exception>
         /// <returns></returns>
-        public static async Task<int> ReceiveTaskAsync(this Socket socket, ArraySegment<byte> arraySegment, TimeSpan timeout)
+        public static async Task<int> ReceiveTaskAsync(this Socket socket, ArraySegment<byte> arraySegment, TimeSpan? timeout)
         {
             var taskSetter = new TaskSetter<int>(timeout);
             var asyncEventArg = new SocketAsyncEventArgs
@@ -126,17 +126,6 @@ namespace WebApiClient
             private readonly CancellationTokenSource tokenSource;
 
             /// <summary>
-            /// 获取任务的返回值类型
-            /// </summary>
-            public Type ValueType
-            {
-                get
-                {
-                    return typeof(TResult);
-                }
-            }
-
-            /// <summary>
             /// 获取任务对象
             /// </summary>
             public Task<TResult> Task
@@ -150,12 +139,15 @@ namespace WebApiClient
             /// <summary>
             /// 任务行为
             /// </summary>
-            public TaskSetter(TimeSpan timeout)
+            public TaskSetter(TimeSpan? timeout)
             {
                 this.taskSource = new TaskCompletionSource<TResult>();
-                this.tokenSource = new CancellationTokenSource();
-                this.tokenSource.Token.Register(() => this.SetException(new TimeoutException()));
-                this.tokenSource.CancelAfter(timeout);
+                if (timeout.HasValue == true)
+                {
+                    this.tokenSource = new CancellationTokenSource();
+                    this.tokenSource.Token.Register(() => this.SetException(new TimeoutException()));
+                    this.tokenSource.CancelAfter(timeout.Value);
+                }
             }
 
             /// <summary>
@@ -165,7 +157,7 @@ namespace WebApiClient
             /// <returns></returns>
             public bool SetResult(TResult value)
             {
-                this.tokenSource.Dispose();
+                this.tokenSource?.Dispose();
                 return this.taskSource.TrySetResult(value);
             }
 
@@ -176,7 +168,7 @@ namespace WebApiClient
             /// <returns></returns>
             public bool SetException(Exception ex)
             {
-                this.tokenSource.Dispose();
+                this.tokenSource?.Dispose();
                 return this.taskSource.TrySetException(ex);
             }
 
@@ -185,7 +177,7 @@ namespace WebApiClient
             /// </summary>
             public void Dispose()
             {
-                this.tokenSource.Dispose();
+                this.tokenSource?.Dispose();
             }
         }
     }

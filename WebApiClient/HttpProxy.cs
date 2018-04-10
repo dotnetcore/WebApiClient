@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示代理信息
+    /// 表示http代理信息
     /// </summary>
-    public class ProxyInfo
+    public class HttpProxy : IWebProxy
     {
         /// <summary>
         /// 获取代理服务器域名或ip
@@ -25,32 +22,37 @@ namespace WebApiClient
         /// <summary>
         /// 获取代理服务器账号
         /// </summary>
-        public string UserName { get; set; }
+        public string UserName { get; private set; }
 
         /// <summary>
         /// 获取代理服务器密码
         /// </summary>
-        public string Password { get; set; }
+        public string Password { get; private set; }
 
         /// <summary>
-        /// 代理信息
+        /// 获取或设置授权信息
+        /// </summary>
+        ICredentials IWebProxy.Credentials { get; set; }
+
+        /// <summary>
+        /// http代理信息
         /// </summary>
         /// <param name="proxyAddress">代理服务器地址</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <exception cref="UriFormatException"></exception>
-        public ProxyInfo(string proxyAddress)
+        public HttpProxy(string proxyAddress)
             : this(new Uri(proxyAddress ?? throw new ArgumentNullException(nameof(proxyAddress))))
         {
         }
 
         /// <summary>
-        /// 代理信息
+        /// http代理信息
         /// </summary>
         /// <param name="proxyAddress">代理服务器地址</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ProxyInfo(Uri proxyAddress)
+        public HttpProxy(Uri proxyAddress)
         {
             if (proxyAddress == null)
             {
@@ -61,15 +63,35 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 代理信息
+        /// http代理信息
         /// </summary>
         /// <param name="host">代理服务器域名或ip</param>
         /// <param name="port">代理服务器端口</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ProxyInfo(string host, int port)
+        public HttpProxy(string host, int port)
+            : this(host, port, null, null)
+        {
+        }
+
+        /// <summary>
+        /// http代理信息
+        /// </summary>
+        /// <param name="host">代理服务器域名或ip</param>
+        /// <param name="port">代理服务器端口</param>
+        /// <param name="userName">代理服务器账号</param>
+        /// <param name="password">代理服务器密码</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public HttpProxy(string host, int port, string userName, string password)
         {
             this.Host = host ?? throw new ArgumentNullException(nameof(host));
-            this.Port = Port;
+            this.Port = port;
+            this.UserName = userName;
+            this.Password = password;
+
+            if (string.IsNullOrEmpty(userName + password) == false)
+            {
+                ((IWebProxy)this).Credentials = new NetworkCredential(userName, password);
+            }
         }
 
         /// <summary>
@@ -79,7 +101,7 @@ namespace WebApiClient
         /// <param name="targetAddress">目标url地址</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        public static ProxyInfo FromWebProxy(IWebProxy webProxy, Uri targetAddress)
+        public static HttpProxy FromWebProxy(IWebProxy webProxy, Uri targetAddress)
         {
             if (webProxy == null)
             {
@@ -92,15 +114,15 @@ namespace WebApiClient
             }
 
             var proxyAddress = webProxy.GetProxy(targetAddress);
-            var proxyInfo = new ProxyInfo(proxyAddress);
+            var httpProxy = new HttpProxy(proxyAddress);
 
             if (webProxy.Credentials != null)
             {
                 var credentials = webProxy.Credentials.GetCredential(null, null);
-                proxyInfo.UserName = credentials?.UserName;
-                proxyInfo.Password = credentials?.Password;
+                httpProxy.UserName = credentials?.UserName;
+                httpProxy.Password = credentials?.Password;
             }
-            return proxyInfo;
+            return httpProxy;
         }
 
         /// <summary>
@@ -109,7 +131,7 @@ namespace WebApiClient
         /// <param name="targetAddress">目标url地址</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        public string ToHttpTunnelRequestString(Uri targetAddress)
+        public string ToTunnelRequestString(Uri targetAddress)
         {
             if (targetAddress == null)
             {
@@ -135,15 +157,23 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 转换为web代理
+        /// 获取代理服务器地址
         /// </summary>
+        /// <param name="destination"></param>
         /// <returns></returns>
-        public IWebProxy ToWebProxy()
+        Uri IWebProxy.GetProxy(Uri destination)
         {
-            return new WebProxy(this.Host, this.Port)
-            {
-                Credentials = new NetworkCredential(this.UserName, this.Password)
-            };
+            return new Uri($"http://{this.Host}:{this.Port}/");
+        }
+
+        /// <summary>
+        /// 是否忽略代理
+        /// </summary>
+        /// <param name="host"></param>
+        /// <returns></returns>
+        bool IWebProxy.IsBypassed(Uri host)
+        {
+            return false;
         }
     }
 }

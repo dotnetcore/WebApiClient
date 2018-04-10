@@ -14,19 +14,9 @@ namespace WebApiClient.Attributes
     public class ProxyAttribute : ApiActionAttribute
     {
         /// <summary>
-        /// 域名或ip
+        /// http代理
         /// </summary>
-        private readonly string host;
-
-        /// <summary>
-        /// 端口
-        /// </summary>
-        private readonly int port;
-
-        /// <summary>
-        /// 凭证
-        /// </summary>
-        private readonly ICredentials credential;
+        private readonly HttpProxy httpProxy;
 
         /// <summary>
         /// http代理描述
@@ -35,8 +25,8 @@ namespace WebApiClient.Attributes
         /// <param name="port">端口</param>    
         /// <exception cref="ArgumentNullException"></exception>
         public ProxyAttribute(string host, int port)
-            : this(host, port, null, null)
         {
+            this.httpProxy = new HttpProxy(host, port);
         }
 
         /// <summary>
@@ -49,18 +39,7 @@ namespace WebApiClient.Attributes
         /// <exception cref="ArgumentNullException"></exception>
         public ProxyAttribute(string host, int port, string userName, string password)
         {
-            if (string.IsNullOrEmpty(host))
-            {
-                throw new ArgumentNullException(nameof(host));
-            }
-
-            this.host = host;
-            this.port = port;
-
-            if (string.IsNullOrEmpty(userName) == false && string.IsNullOrEmpty(password) == false)
-            {
-                this.credential = new NetworkCredential(userName, password);
-            }
+            this.httpProxy = new HttpProxy(host, port, userName, password);
         }
 
         /// <summary>
@@ -70,11 +49,7 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         public override Task BeforeRequestAsync(ApiActionContext context)
         {
-            var proxy = new WebProxy(this.host, this.port)
-            {
-                Credentials = this.credential
-            };
-            context.HttpApiConfig.HttpClient.SetProxy(proxy);
+            context.HttpApiConfig.HttpClient.SetProxy(this.httpProxy);
             return ApiTask.CompletedTask;
         }
     }

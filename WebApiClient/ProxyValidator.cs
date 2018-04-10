@@ -20,9 +20,15 @@ namespace WebApiClient
         private readonly IWebProxy webProxy;
 
         /// <summary>
-        /// 代理信息
+        /// 代理验证器
         /// </summary>
-        private readonly ProxyInfo proxyInfo;
+        /// <param name="proxyHost">代理服务器域名或ip</param>
+        /// <param name="proxyPort">代理服务器端口</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public ProxyValidator(string proxyHost, int proxyPort)
+        {
+            this.webProxy = new HttpProxy(proxyHost, proxyPort);
+        }
 
         /// <summary>
         /// 代理验证器
@@ -35,48 +41,19 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 代理验证器
-        /// </summary>
-        /// <param name="proxyInfo">代理信息</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public ProxyValidator(ProxyInfo proxyInfo)
-        {
-            this.proxyInfo = proxyInfo ?? throw new ArgumentNullException(nameof(proxyInfo));
-        }
-
-        /// <summary>
-        /// 获取代理信息
-        /// </summary>
-        /// <param name="targetAddress"></param>
-        /// <returns></returns>
-        private ProxyInfo GetProxy(Uri targetAddress)
-        {
-            if (this.webProxy != null)
-            {
-                return ProxyInfo.FromWebProxy(this.webProxy, targetAddress);
-            }
-            else
-            {
-                return this.proxyInfo;
-            }
-        }
-
-        /// <summary>
         /// 使用http tunnel检测代理状态
         /// </summary>
         /// <param name="targetAddress">目标地址</param>
         /// <param name="timeout">发送或等待数据的超时时间</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        public HttpStatusCode Validate(Uri targetAddress, TimeSpan timeout)
+        public HttpStatusCode Validate(Uri targetAddress, TimeSpan? timeout = null)
         {
             if (targetAddress == null)
             {
                 throw new ArgumentNullException(nameof(targetAddress));
             }
-
-            var proxyInfo = this.GetProxy(targetAddress);
-            return ProxyValidator.Validate(proxyInfo, targetAddress, timeout);
+            return Validate(this.webProxy, targetAddress, timeout);
         }
 
         /// <summary>
@@ -86,42 +63,49 @@ namespace WebApiClient
         /// <param name="timeout">连接或等待数据的超时时间</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        public Task<HttpStatusCode> ValidateAsync(Uri targetAddress, TimeSpan timeout)
+        public Task<HttpStatusCode> ValidateAsync(Uri targetAddress, TimeSpan? timeout = null)
         {
             if (targetAddress == null)
             {
                 throw new ArgumentNullException(nameof(targetAddress));
             }
-
-            var proxyInfo = this.GetProxy(targetAddress);
-            return ProxyValidator.ValidateAsync(proxyInfo, targetAddress, timeout);
+            return ValidateAsync(this.webProxy, targetAddress, timeout);
         }
 
         /// <summary>
         /// 使用http tunnel检测代理状态
         /// </summary>
-        /// <param name="proxyInfo">代理服务器信息</param>      
+        /// <param name="webProxy">web代理</param>      
         /// <param name="targetAddress">目标url地址</param>
         /// <param name="timeout">发送或等待数据的超时时间</param>
         /// <exception cref="ArgumentNullException"></exception>    
         /// <returns></returns>
-        public static HttpStatusCode Validate(ProxyInfo proxyInfo, Uri targetAddress, TimeSpan timeout)
+        public static HttpStatusCode Validate(IWebProxy webProxy, Uri targetAddress, TimeSpan? timeout = null)
         {
-            if (proxyInfo == null)
+            if (webProxy == null)
             {
-                throw new ArgumentNullException(nameof(proxyInfo));
+                throw new ArgumentNullException(nameof(webProxy));
             }
 
-            var remoteEndPoint = new DnsEndPoint(proxyInfo.Host, proxyInfo.Port, AddressFamily.InterNetwork);
+            var httpProxy = webProxy as HttpProxy;
+            if (httpProxy == null)
+            {
+                httpProxy = HttpProxy.FromWebProxy(webProxy, targetAddress);
+            }
+
+            var remoteEndPoint = new DnsEndPoint(httpProxy.Host, httpProxy.Port, AddressFamily.InterNetwork);
             var socket = new Socket(remoteEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
             try
             {
-                socket.SendTimeout = (int)timeout.TotalMilliseconds;
-                socket.ReceiveTimeout = (int)timeout.TotalMilliseconds;
+                if (timeout.HasValue == true)
+                {
+                    socket.SendTimeout = (int)timeout.Value.TotalMilliseconds;
+                    socket.ReceiveTimeout = (int)timeout.Value.TotalMilliseconds;
+                }
                 socket.Connect(remoteEndPoint);
 
-                var request = proxyInfo.ToHttpTunnelRequestString(targetAddress);
+                var request = httpProxy.ToTunnelRequestString(targetAddress);
                 var sendBuffer = Encoding.ASCII.GetBytes(request);
                 socket.Send(sendBuffer);
 
@@ -146,26 +130,32 @@ namespace WebApiClient
         /// <summary>
         /// 使用http tunnel检测代理状态
         /// </summary>
-        /// <param name="proxyInfo">代理服务器信息</param>      
+        /// <param name="webProxy">web代理</param>      
         /// <param name="targetAddress">目标url地址</param>
         /// <param name="timeout">连接或等待数据的超时时间</param>
         /// <exception cref="ArgumentNullException"></exception>    
         /// <returns></returns>
-        public static async Task<HttpStatusCode> ValidateAsync(ProxyInfo proxyInfo, Uri targetAddress, TimeSpan timeout)
+        public static async Task<HttpStatusCode> ValidateAsync(IWebProxy webProxy, Uri targetAddress, TimeSpan? timeout = null)
         {
-            if (proxyInfo == null)
+            if (webProxy == null)
             {
-                throw new ArgumentNullException(nameof(proxyInfo));
+                throw new ArgumentNullException(nameof(webProxy));
             }
 
-            var remoteEndPoint = new DnsEndPoint(proxyInfo.Host, proxyInfo.Port, AddressFamily.InterNetwork);
+            var httpProxy = webProxy as HttpProxy;
+            if (httpProxy == null)
+            {
+                httpProxy = HttpProxy.FromWebProxy(webProxy, targetAddress);
+            }
+
+            var remoteEndPoint = new DnsEndPoint(httpProxy.Host, httpProxy.Port, AddressFamily.InterNetwork);
             var socket = new Socket(remoteEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
             try
             {
                 await socket.ConnectTaskAsync(remoteEndPoint, timeout);
 
-                var request = proxyInfo.ToHttpTunnelRequestString(targetAddress);
+                var request = httpProxy.ToTunnelRequestString(targetAddress);
                 var sendBuffer = Encoding.ASCII.GetBytes(request);
                 var sendArraySegment = new List<ArraySegment<byte>> { new ArraySegment<byte>(sendBuffer) };
                 await Task.Factory.FromAsync(socket.BeginSend, socket.EndSend, sendArraySegment, SocketFlags.None, null);
