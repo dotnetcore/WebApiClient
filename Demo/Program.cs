@@ -36,10 +36,10 @@ namespace Demo
                 Interlocked.Increment(ref totalProxyCount);
                 if (await ProxyValidator.ValidateAsync(p, target, TimeSpan.FromMilliseconds(500d)) == HttpStatusCode.OK)
                 {
-                    Console.WriteLine($"扫描到代理服务：{p.Host}:{p.Port}");
+                    Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss.fff")}：扫描到代理服务：{p}");
                 }
                 var completed = Interlocked.Increment(ref completedProxyCount);
-                Console.Title = $"扫描进度：{completed}/{Interlocked.Read(ref totalProxyCount)}";
+                Console.Title = $"代理扫描进度：{completed}/{Interlocked.Read(ref totalProxyCount)}";
             });
             await Task.WhenAll(tasks);
         }

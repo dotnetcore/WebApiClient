@@ -217,9 +217,8 @@ namespace WebApiClient
             return $"http://{this.Host}:{this.Port}/";
         }
 
-
         /// <summary>
-        /// 生成http代理服务器范围
+        /// 指定ip范围构建http代理服务
         /// </summary>
         /// <param name="start">代理服务器起始ip</param>
         /// <param name="port">代理服务器端口</param>
