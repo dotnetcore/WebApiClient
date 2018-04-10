@@ -17,16 +17,48 @@ namespace WebApiClient
         /// <summary>
         /// 代理
         /// </summary>
-        private readonly IWebProxy proxy;
+        private readonly IWebProxy webProxy;
+
+        /// <summary>
+        /// 代理信息
+        /// </summary>
+        private readonly ProxyInfo proxyInfo;
 
         /// <summary>
         /// 代理验证器
         /// </summary>
-        /// <param name="proxy">代理</param>
+        /// <param name="webProxy">代理</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ProxyValidator(IWebProxy proxy)
+        public ProxyValidator(IWebProxy webProxy)
         {
-            this.proxy = proxy ?? throw new ArgumentNullException(nameof(proxy));
+            this.webProxy = webProxy ?? throw new ArgumentNullException(nameof(webProxy));
+        }
+
+        /// <summary>
+        /// 代理验证器
+        /// </summary>
+        /// <param name="proxyInfo">代理信息</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public ProxyValidator(ProxyInfo proxyInfo)
+        {
+            this.proxyInfo = proxyInfo ?? throw new ArgumentNullException(nameof(proxyInfo));
+        }
+
+        /// <summary>
+        /// 获取代理信息
+        /// </summary>
+        /// <param name="targetAddress"></param>
+        /// <returns></returns>
+        private ProxyInfo GetProxy(Uri targetAddress)
+        {
+            if (this.webProxy != null)
+            {
+                return ProxyInfo.FromWebProxy(this.webProxy, targetAddress);
+            }
+            else
+            {
+                return this.proxyInfo;
+            }
         }
 
         /// <summary>
@@ -43,7 +75,7 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(targetAddress));
             }
 
-            var proxyInfo = ProxyInfo.FromWebProxy(this.proxy, targetAddress);
+            var proxyInfo = this.GetProxy(targetAddress);
             return ProxyValidator.Validate(proxyInfo, targetAddress, timeout);
         }
 
@@ -61,7 +93,7 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(targetAddress));
             }
 
-            var proxyInfo = ProxyInfo.FromWebProxy(this.proxy, targetAddress);
+            var proxyInfo = this.GetProxy(targetAddress);
             return ProxyValidator.ValidateAsync(proxyInfo, targetAddress, timeout);
         }
 
