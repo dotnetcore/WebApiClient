@@ -15,9 +15,9 @@ namespace WebApiClient
     public class ProxyValidator
     {
         /// <summary>
-        /// 代理
+        /// 获取代理
         /// </summary>
-        private readonly IWebProxy webProxy;
+        public IWebProxy WebProxy { get; private set; }
 
         /// <summary>
         /// 代理验证器
@@ -37,7 +37,7 @@ namespace WebApiClient
         /// <exception cref="ArgumentNullException"></exception>
         public ProxyValidator(IWebProxy webProxy)
         {
-            this.webProxy = webProxy ?? throw new ArgumentNullException(nameof(webProxy));
+            this.WebProxy = webProxy ?? throw new ArgumentNullException(nameof(webProxy));
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace WebApiClient
             {
                 throw new ArgumentNullException(nameof(targetAddress));
             }
-            return Validate(this.webProxy, targetAddress, timeout);
+            return Validate(this.WebProxy, targetAddress, timeout);
         }
 
         /// <summary>
@@ -69,7 +69,16 @@ namespace WebApiClient
             {
                 throw new ArgumentNullException(nameof(targetAddress));
             }
-            return ValidateAsync(this.webProxy, targetAddress, timeout);
+            return ValidateAsync(this.WebProxy, targetAddress, timeout);
+        }
+
+        /// <summary>
+        /// 转换为字符串
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return this.WebProxy.ToString();
         }
 
         /// <summary>

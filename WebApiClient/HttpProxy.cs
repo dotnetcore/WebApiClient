@@ -132,32 +132,6 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 从IWebProxy实例转换获得
-        /// </summary>
-        /// <param name="webProxy">IWebProxy</param>
-        /// <param name="targetAddress">目标url地址</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <returns></returns>
-        public static HttpProxy FromWebProxy(IWebProxy webProxy, Uri targetAddress)
-        {
-            if (webProxy == null)
-            {
-                throw new ArgumentNullException(nameof(webProxy));
-            }
-
-            if (targetAddress == null)
-            {
-                throw new ArgumentNullException(nameof(targetAddress));
-            }
-
-            var proxyAddress = webProxy.GetProxy(targetAddress);
-            var httpProxy = new HttpProxy(proxyAddress);
-            httpProxy.SetCredentialsByInterface(webProxy.Credentials);
-
-            return httpProxy;
-        }
-
-        /// <summary>
         /// 转换Http Tunnel请求字符串
         /// </summary>      
         /// <param name="targetAddress">目标url地址</param>
@@ -216,6 +190,42 @@ namespace WebApiClient
         {
             return $"http://{this.Host}:{this.Port}/";
         }
+
+        /// <summary>
+        /// 转换为代理验证器
+        /// </summary>
+        /// <returns></returns>
+        public ProxyValidator ToValidator()
+        {
+            return new ProxyValidator(this);
+        }
+
+        /// <summary>
+        /// 从IWebProxy实例转换获得
+        /// </summary>
+        /// <param name="webProxy">IWebProxy</param>
+        /// <param name="targetAddress">目标url地址</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns></returns>
+        public static HttpProxy FromWebProxy(IWebProxy webProxy, Uri targetAddress)
+        {
+            if (webProxy == null)
+            {
+                throw new ArgumentNullException(nameof(webProxy));
+            }
+
+            if (targetAddress == null)
+            {
+                throw new ArgumentNullException(nameof(targetAddress));
+            }
+
+            var proxyAddress = webProxy.GetProxy(targetAddress);
+            var httpProxy = new HttpProxy(proxyAddress);
+            httpProxy.SetCredentialsByInterface(webProxy.Credentials);
+
+            return httpProxy;
+        }
+
 
         /// <summary>
         /// 指定ip范围构建http代理服务

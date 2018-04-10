@@ -28,15 +28,19 @@ namespace Demo
         /// </summary>
         static async void ScanProxy()
         {
+            var timeout = TimeSpan.FromMilliseconds(500d);
             var target = new Uri("http://www.baidu.com");
-            var proxys = HttpProxy.Range(IPAddress.Parse("221.122.13.1"), 8080, 9999);
 
-            var tasks = proxys.Select(async p =>
+            var proxyValidators = HttpProxy
+                .Range(IPAddress.Parse("221.122.13.1"), 8080, 9999)
+                .Select(p => p.ToValidator());
+
+            var tasks = proxyValidators.Select(async v =>
             {
                 Interlocked.Increment(ref totalProxyCount);
-                if (await ProxyValidator.ValidateAsync(p, target, TimeSpan.FromMilliseconds(500d)) == HttpStatusCode.OK)
+                if (await v.ValidateAsync(target, timeout) == HttpStatusCode.OK)
                 {
-                    Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss.fff")}：扫描到代理服务：{p}");
+                    Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss.fff")}：扫描到代理服务：{v}");
                 }
                 var completed = Interlocked.Increment(ref completedProxyCount);
                 Console.Title = $"代理扫描进度：{completed}/{Interlocked.Read(ref totalProxyCount)}";
