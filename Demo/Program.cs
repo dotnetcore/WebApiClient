@@ -2,7 +2,9 @@
 using Demo.HttpServices;
 using System;
 using System.Diagnostics;
-using System.Net.Http;
+using System.Linq;
+using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using WebApiClient;
 using WebApiClient.Parameterables;
@@ -11,14 +13,40 @@ namespace Demo
 {
     class Program
     {
+        private static long totalProxyCount = 0;
+        private static int completedProxyCount = 0;
+
         static void Main(string[] args)
         {
             HttpServer.Start(9999);
-            Program.RunIUserApi(1);
+            Program.RunIUserApi(1).ContinueWith(t => ScanProxy());
             Console.ReadLine();
         }
 
-        static async void RunIUserApi(int loop = 1)
+        /// <summary>
+        /// 扫描代理ip
+        /// </summary>
+        static async void ScanProxy()
+        {
+            var proxys = HttpProxy.Range(IPAddress.Parse("221.122.13.1"), 8080, 9999).ToArray();
+            var target = new Uri("http://www.baidu.com");
+            var tasks = proxys.Select(async p =>
+            {
+                Interlocked.Increment(ref totalProxyCount);
+                var state = await ProxyValidator.ValidateAsync(p, target, TimeSpan.FromMilliseconds(500d));
+                if (state == HttpStatusCode.OK)
+                {
+                    Console.WriteLine($"扫描到代理服务：{p.Host}:{p.Port}");
+                }
+
+                var completed = Interlocked.Increment(ref completedProxyCount);
+                Console.Title = $"扫描进度：{completed}/{Interlocked.Read(ref totalProxyCount)}";
+            });
+            await Task.WhenAll(tasks);
+        }
+
+
+        static async Task RunIUserApi(int loop = 1)
         {
             var watch = new Stopwatch();
             watch.Start();
