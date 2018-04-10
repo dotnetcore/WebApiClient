@@ -43,7 +43,7 @@ namespace WebApiClient
         /// <summary>
         /// 使用http tunnel检测代理状态
         /// </summary>
-        /// <param name="targetAddress">目标地址</param>
+        /// <param name="targetAddress">目标地址，可以是http或https</param>
         /// <param name="timeout">发送或等待数据的超时时间</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
@@ -59,7 +59,7 @@ namespace WebApiClient
         /// <summary>
         /// 使用http tunnel检测代理状态
         /// </summary>
-        /// <param name="targetAddress">目标地址</param>
+        /// <param name="targetAddress">目标地址，可以是http或https</param>
         /// <param name="timeout">连接或等待数据的超时时间</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
@@ -85,7 +85,7 @@ namespace WebApiClient
         /// 使用http tunnel检测代理状态
         /// </summary>
         /// <param name="webProxy">web代理</param>      
-        /// <param name="targetAddress">目标url地址</param>
+        /// <param name="targetAddress">目标地址，可以是http或https</param>
         /// <param name="timeout">发送或等待数据的超时时间</param>
         /// <exception cref="ArgumentNullException"></exception>    
         /// <returns></returns>
@@ -140,7 +140,7 @@ namespace WebApiClient
         /// 使用http tunnel检测代理状态
         /// </summary>
         /// <param name="webProxy">web代理</param>      
-        /// <param name="targetAddress">目标url地址</param>
+        /// <param name="targetAddress">目标地址，可以是http或https</param>
         /// <param name="timeout">连接或等待数据的超时时间</param>
         /// <exception cref="ArgumentNullException"></exception>    
         /// <returns></returns>
