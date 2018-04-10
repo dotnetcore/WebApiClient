@@ -133,5 +133,17 @@ namespace WebApiClient
             }
             return builder.Append(CRLF).ToString();
         }
+
+        /// <summary>
+        /// 转换为web代理
+        /// </summary>
+        /// <returns></returns>
+        public IWebProxy ToWebProxy()
+        {
+            return new WebProxy(this.Host, this.Port)
+            {
+                Credentials = new NetworkCredential(this.UserName, this.Password)
+            };
+        }
     }
 }
