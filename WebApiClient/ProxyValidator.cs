@@ -9,10 +9,97 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
+    /// 代理验证器
     /// 提供代理的验证
     /// </summary>
-    public static class ProxyValidator
+    public class ProxyValidator
     {
+        /// <summary>
+        /// 代理
+        /// </summary>
+        private readonly IWebProxy proxy;
+
+        /// <summary>
+        /// 代理验证器
+        /// </summary>
+        /// <param name="proxy">代理</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public ProxyValidator(IWebProxy proxy)
+        {
+            this.proxy = proxy ?? throw new ArgumentNullException(nameof(proxy));
+        }
+
+        /// <summary>
+        /// 使用http tunnel检测代理状态
+        /// </summary>
+        /// <param name="targetAddress">目标地址</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns></returns>
+        public HttpStatusCode Validate(Uri targetAddress)
+        {
+            if (targetAddress == null)
+            {
+                throw new ArgumentNullException(nameof(targetAddress));
+            }
+
+            var credential = this.GetCredential(this.proxy);
+            var proxyAddress = this.proxy.GetProxy(targetAddress);
+
+            return ProxyValidator.Validate(
+                proxyAddress.Host,
+                proxyAddress.Port,
+                credential.UserName,
+                credential.Password,
+                targetAddress);
+        }
+
+        /// <summary>
+        /// 使用http tunnel检测代理状态
+        /// </summary>
+        /// <param name="targetAddress">目标地址</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns></returns>
+        public Task<HttpStatusCode> ValidateAsync(Uri targetAddress)
+        {
+            if (targetAddress == null)
+            {
+                throw new ArgumentNullException(nameof(targetAddress));
+            }
+
+            var credential = this.GetCredential(this.proxy);
+            var proxyAddress = this.proxy.GetProxy(targetAddress);
+
+            return ProxyValidator.ValidateAsync(
+                proxyAddress.Host,
+                proxyAddress.Port,
+                credential.UserName,
+                credential.Password,
+                targetAddress);
+        }
+
+        /// <summary>
+        /// 获取账号和密码
+        /// </summary>
+        /// <param name="proxy">代理</param>
+        /// <returns></returns>
+        private Credential GetCredential(IWebProxy proxy)
+        {
+            var userName = default(string);
+            var password = default(string);
+            if (proxy.Credentials != null)
+            {
+                var credentials = proxy.Credentials.GetCredential(null, null);
+                userName = credentials?.UserName;
+                password = credentials?.Password;
+            }
+
+            return new Credential
+            {
+                UserName = userName,
+                Password = password
+            };
+        }
+
         /// <summary>
         /// 使用http tunnel检测代理状态
         /// </summary>
@@ -172,6 +259,15 @@ namespace WebApiClient
             }
 
             return builder.Append(CRLF).ToString();
+        }
+
+        /// <summary>
+        /// 授权信息
+        /// </summary>
+        struct Credential
+        {
+            public string UserName { get; set; }
+            public string Password { get; set; }
         }
     }
 }
