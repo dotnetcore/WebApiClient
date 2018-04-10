@@ -16,7 +16,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="socket">socket</param>
         /// <param name="remoteEndPoint">远程终结点</param>
-        /// <param name="timeout">超时时间</param>
+        /// <param name="timeout">连接的超时时间</param>
         /// <exception cref="SocketException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="TimeoutException"></exception>
@@ -68,7 +68,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="socket"></param>
         /// <param name="arraySegment">缓冲区</param>
-        /// <param name="timeout">超时时间</param>
+        /// <param name="timeout">等待数据的超时时间</param>
         /// <exception cref="SocketException"></exception>
         /// <exception cref="TimeoutException"></exception>
         /// <returns></returns>

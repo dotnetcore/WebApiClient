@@ -33,9 +33,10 @@ namespace WebApiClient
         /// 使用http tunnel检测代理状态
         /// </summary>
         /// <param name="targetAddress">目标地址</param>
+        /// <param name="timeout">发送或等待数据的超时时间</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        public HttpStatusCode Validate(Uri targetAddress)
+        public HttpStatusCode Validate(Uri targetAddress, TimeSpan timeout)
         {
             if (targetAddress == null)
             {
@@ -43,14 +44,14 @@ namespace WebApiClient
             }
 
             var proxyInfo = ProxyInfo.FromWebProxy(this.proxy, targetAddress);
-            return ProxyValidator.Validate(proxyInfo, targetAddress);
+            return ProxyValidator.Validate(proxyInfo, targetAddress, timeout);
         }
 
         /// <summary>
         /// 使用http tunnel检测代理状态
         /// </summary>
         /// <param name="targetAddress">目标地址</param>
-        /// <param name="timeout">超时时间</param>
+        /// <param name="timeout">连接或等待数据的超时时间</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         public Task<HttpStatusCode> ValidateAsync(Uri targetAddress, TimeSpan timeout)
@@ -69,9 +70,10 @@ namespace WebApiClient
         /// </summary>
         /// <param name="proxyInfo">代理服务器信息</param>      
         /// <param name="targetAddress">目标url地址</param>
+        /// <param name="timeout">发送或等待数据的超时时间</param>
         /// <exception cref="ArgumentNullException"></exception>    
         /// <returns></returns>
-        public static HttpStatusCode Validate(ProxyInfo proxyInfo, Uri targetAddress)
+        public static HttpStatusCode Validate(ProxyInfo proxyInfo, Uri targetAddress, TimeSpan timeout)
         {
             if (proxyInfo == null)
             {
@@ -83,8 +85,8 @@ namespace WebApiClient
 
             try
             {
-                socket.SendTimeout = 3 * 1000;
-                socket.ReceiveTimeout = 5 * 1000;
+                socket.SendTimeout = (int)timeout.TotalMilliseconds;
+                socket.ReceiveTimeout = (int)timeout.TotalMilliseconds;
                 socket.Connect(remoteEndPoint);
 
                 var request = proxyInfo.ToHttpTunnelRequestString(targetAddress);
@@ -114,7 +116,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="proxyInfo">代理服务器信息</param>      
         /// <param name="targetAddress">目标url地址</param>
-        /// <param name="timeout">超时时间</param>
+        /// <param name="timeout">连接或等待数据的超时时间</param>
         /// <exception cref="ArgumentNullException"></exception>    
         /// <returns></returns>
         public static async Task<HttpStatusCode> ValidateAsync(ProxyInfo proxyInfo, Uri targetAddress, TimeSpan timeout)
