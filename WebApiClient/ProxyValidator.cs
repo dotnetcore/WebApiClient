@@ -11,7 +11,7 @@ namespace WebApiClient
     /// <summary>
     /// 提供代理的验证
     /// </summary>
-    public static class ProxyValidate
+    public static class ProxyValidator
     {
         /// <summary>
         /// 使用http tunnel检测代理状态
@@ -47,6 +47,8 @@ namespace WebApiClient
 
             try
             {
+                socket.SendTimeout = 3 * 1000;
+                socket.ReceiveTimeout = 5 * 1000;
                 socket.Connect(remoteEndPoint);
 
                 var request = BuildHttpTunnelRequestString(proxyHost, proxyPort, userName, password, targetAddress);
@@ -104,6 +106,8 @@ namespace WebApiClient
 
             try
             {
+                socket.SendTimeout = 3 * 1000;
+                socket.ReceiveTimeout = 5 * 1000;
                 await Task.Factory.FromAsync(socket.BeginConnect, socket.EndConnect, remoteEndPoint, null);
 
                 var request = BuildHttpTunnelRequestString(proxyHost, proxyPort, userName, password, targetAddress);
@@ -151,22 +155,23 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(targetAddress));
             }
 
+            const string CLRF = "\r\n";
             var builder = new StringBuilder()
-                .AppendLine($"CONNECT {targetAddress.Authority} HTTP/1.1")
-                .AppendLine($"Host: {targetAddress.Authority}")
-                .AppendLine("Accept: */*")
-                .AppendLine("Content-Type: text/html")
-                .AppendLine("Proxy-Connection: Keep-Alive")
-                .AppendLine("Content-length: 0");
+                .Append($"CONNECT {targetAddress.Host}:{targetAddress.Port} HTTP/1.1{CLRF}")
+                .Append($"Host: {targetAddress.Host}:{targetAddress.Port}{CLRF}")
+                .Append("Accept: */*{CLRF}")
+                .Append($"Content-Type: text/html{CLRF}")
+                .Append($"Proxy-Connection: Keep-Alive{CLRF}")
+                .Append($"Content-length: 0{CLRF}");
 
             if (userName != null && password != null)
             {
                 var bytes = Encoding.ASCII.GetBytes($"{userName}:{password}");
                 var base64 = Convert.ToBase64String(bytes);
-                builder.AppendLine($"Proxy-Authorization: Basic {base64}");
+                builder.AppendLine($"Proxy-Authorization: Basic {base64}{CLRF}");
             }
 
-            return builder.AppendLine().AppendLine().ToString();
+            return builder.Append(CLRF).ToString();
         }
     }
 }
