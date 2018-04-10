@@ -155,23 +155,23 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(targetAddress));
             }
 
-            const string CLRF = "\r\n";
+            const string CRLF = "\r\n";
             var builder = new StringBuilder()
-                .Append($"CONNECT {targetAddress.Host}:{targetAddress.Port} HTTP/1.1{CLRF}")
-                .Append($"Host: {targetAddress.Host}:{targetAddress.Port}{CLRF}")
-                .Append($"Accept: */*{CLRF}")
-                .Append($"Content-Type: text/html{CLRF}")
-                .Append($"Proxy-Connection: Keep-Alive{CLRF}")
-                .Append($"Content-length: 0{CLRF}");
+                .Append($"CONNECT {targetAddress.Host}:{targetAddress.Port} HTTP/1.1{CRLF}")
+                .Append($"Host: {targetAddress.Host}:{targetAddress.Port}{CRLF}")
+                .Append($"Accept: */*{CRLF}")
+                .Append($"Content-Type: text/html{CRLF}")
+                .Append($"Proxy-Connection: Keep-Alive{CRLF}")
+                .Append($"Content-length: 0{CRLF}");
 
             if (userName != null && password != null)
             {
                 var bytes = Encoding.ASCII.GetBytes($"{userName}:{password}");
                 var base64 = Convert.ToBase64String(bytes);
-                builder.AppendLine($"Proxy-Authorization: Basic {base64}{CLRF}");
+                builder.AppendLine($"Proxy-Authorization: Basic {base64}{CRLF}");
             }
 
-            return builder.Append(CLRF).ToString();
+            return builder.Append(CRLF).ToString();
         }
     }
 }
