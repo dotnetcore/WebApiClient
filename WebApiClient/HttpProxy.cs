@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text;
 
@@ -193,7 +195,7 @@ namespace WebApiClient
         /// <returns></returns>
         public Uri GetProxy(Uri destination)
         {
-            return new Uri($"http://{this.Host}:{this.Port}/");
+            return new Uri(this.ToString());
         }
 
         /// <summary>
@@ -204,6 +206,93 @@ namespace WebApiClient
         public bool IsBypassed(Uri host)
         {
             return false;
+        }
+
+        /// <summary>
+        /// 转换为字符串
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return $"http://{this.Host}:{this.Port}/";
+        }
+
+
+        /// <summary>
+        /// 生成http代理服务器范围
+        /// </summary>
+        /// <param name="start">代理服务器起始ip</param>
+        /// <param name="port">代理服务器端口</param>
+        /// <param name="count">ip数量</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns></returns>
+        public static IEnumerable<HttpProxy> Range(IPAddress start, int port, int count)
+        {
+            if (start == null)
+            {
+                throw new ArgumentNullException(nameof(start));
+            }
+
+            foreach (var ip in GetIPAddressRange(start, count))
+            {
+                yield return new HttpProxy(ip.ToString(), port);
+            }
+        }
+
+        /// <summary>
+        /// 返回ip范围
+        /// </summary>
+        /// <param name="start">起始ip</param>
+        /// <param name="count">ip数量</param>
+        /// <returns></returns>
+        private static IEnumerable<IPAddress> GetIPAddressRange(IPAddress start, int count)
+        {
+            var c = 0;
+            var ip = start;
+
+            while (c++ < count)
+            {
+                yield return ip;
+                var next = IPAddressToInt32(ip) + 1;
+                ip = Int32ToIPAddress(next);
+            }
+        }
+
+        /// <summary>
+        /// ip转换为int
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <returns></returns>
+        private static int IPAddressToInt32(IPAddress ip)
+        {
+            var bytes = ip.GetAddressBytes();
+            if (BitConverter.IsLittleEndian == true)
+            {
+                return BitConverter.ToInt32(bytes.Reverse().ToArray(), 0);
+            }
+            else
+            {
+                return BitConverter.ToInt32(bytes, 0);
+            }
+        }
+
+        /// <summary>
+        /// int转换为ip
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <returns></returns>
+        private static IPAddress Int32ToIPAddress(int value)
+        {
+            if (BitConverter.IsLittleEndian == true)
+            {
+                var bytes = BitConverter.GetBytes(value).Reverse().ToArray();
+                return new IPAddress(bytes);
+            }
+            else
+            {
+                var bytes = BitConverter.GetBytes(value);
+                return new IPAddress(bytes);
+            }
         }
     }
 }

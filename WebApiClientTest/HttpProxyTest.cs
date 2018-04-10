@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text;
 using WebApiClient;
@@ -36,10 +37,14 @@ namespace WebApiClientTest
             Assert.True(proxy.Password == "123456");
             Assert.True(((IWebProxy)proxy).Credentials.GetCredential(null, null).UserName == "laojiu");
             Assert.True(((IWebProxy)proxy).Credentials.GetCredential(null, null).Password == "123456");
+        }
 
-
+        [Fact]
+        public void FromWebProxyTest()
+        {
+            var target = new Uri("https://www.baidu.com/");
             var p = new WebProxy("127.0.0.1", 5000) { Credentials = new NetworkCredential("abc", "123") };
-            proxy = HttpProxy.FromWebProxy(p, target);
+            var proxy = HttpProxy.FromWebProxy(p, target);
             Assert.True(proxy.Host == "127.0.0.1" && proxy.Port == 5000);
             Assert.True(proxy.GetProxy(target) == new Uri("http://127.0.0.1:5000"));
             Assert.True(proxy.UserName == "abc");
@@ -47,6 +52,15 @@ namespace WebApiClientTest
             Assert.True(((IWebProxy)proxy).Credentials.GetCredential(null, null).UserName == "abc");
             Assert.True(((IWebProxy)proxy).Credentials.GetCredential(null, null).Password == "123");
 
+        }
+
+        [Fact]
+        public void RangeTest()
+        {
+            var proxys = HttpProxy.Range(IPAddress.Parse("221.122.0.1"), 8080, 5).ToArray();
+            Assert.True(proxys.Length == 5);
+            Assert.True(proxys.First().Host == "221.122.0.1");
+            Assert.True(proxys.Last().Host == "221.122.0.5");
         }
     }
 }
