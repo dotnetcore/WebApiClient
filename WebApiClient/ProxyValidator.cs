@@ -159,7 +159,7 @@ namespace WebApiClient
             var builder = new StringBuilder()
                 .Append($"CONNECT {targetAddress.Host}:{targetAddress.Port} HTTP/1.1{CLRF}")
                 .Append($"Host: {targetAddress.Host}:{targetAddress.Port}{CLRF}")
-                .Append("Accept: */*{CLRF}")
+                .Append($"Accept: */*{CLRF}")
                 .Append($"Content-Type: text/html{CLRF}")
                 .Append($"Proxy-Connection: Keep-Alive{CLRF}")
                 .Append($"Content-length: 0{CLRF}");
