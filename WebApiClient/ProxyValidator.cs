@@ -50,9 +50,10 @@ namespace WebApiClient
         /// 使用http tunnel检测代理状态
         /// </summary>
         /// <param name="targetAddress">目标地址</param>
+        /// <param name="timeout">超时时间</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        public Task<HttpStatusCode> ValidateAsync(Uri targetAddress)
+        public Task<HttpStatusCode> ValidateAsync(Uri targetAddress, TimeSpan timeout)
         {
             if (targetAddress == null)
             {
@@ -60,7 +61,7 @@ namespace WebApiClient
             }
 
             var proxyInfo = ProxyInfo.FromWebProxy(this.proxy, targetAddress);
-            return ProxyValidator.ValidateAsync(proxyInfo, targetAddress);
+            return ProxyValidator.ValidateAsync(proxyInfo, targetAddress, timeout);
         }
 
         /// <summary>
@@ -113,9 +114,10 @@ namespace WebApiClient
         /// </summary>
         /// <param name="proxyInfo">代理服务器信息</param>      
         /// <param name="targetAddress">目标url地址</param>
+        /// <param name="timeout">超时时间</param>
         /// <exception cref="ArgumentNullException"></exception>    
         /// <returns></returns>
-        public static async Task<HttpStatusCode> ValidateAsync(ProxyInfo proxyInfo, Uri targetAddress)
+        public static async Task<HttpStatusCode> ValidateAsync(ProxyInfo proxyInfo, Uri targetAddress, TimeSpan timeout)
         {
             if (proxyInfo == null)
             {
@@ -127,19 +129,17 @@ namespace WebApiClient
 
             try
             {
-                socket.SendTimeout = 3 * 1000;
-                socket.ReceiveTimeout = 5 * 1000;
-                await Task.Factory.FromAsync(socket.BeginConnect, socket.EndConnect, remoteEndPoint, null);
+                await socket.ConnectTaskAsync(remoteEndPoint, timeout);
 
                 var request = proxyInfo.ToHttpTunnelRequestString(targetAddress);
                 var sendBuffer = Encoding.ASCII.GetBytes(request);
                 var sendArraySegment = new List<ArraySegment<byte>> { new ArraySegment<byte>(sendBuffer) };
                 await Task.Factory.FromAsync(socket.BeginSend, socket.EndSend, sendArraySegment, SocketFlags.None, null);
 
-                var recvArraySegment = new List<ArraySegment<byte>> { new ArraySegment<byte>(new byte[150]) };
-                var length = await Task.Factory.FromAsync(socket.BeginReceive, socket.EndReceive, recvArraySegment, SocketFlags.None, null);
+                var recvBufferSegment = new ArraySegment<byte>(new byte[150]);
+                var length = await socket.ReceiveTaskAsync(recvBufferSegment, timeout);
 
-                var response = Encoding.ASCII.GetString(recvArraySegment[0].Array, 0, length);
+                var response = Encoding.ASCII.GetString(recvBufferSegment.Array, 0, length);
                 var statusCode = int.Parse(Regex.Match(response, "(?<=HTTP/1.1 )\\d+", RegexOptions.IgnoreCase).Value);
                 return (HttpStatusCode)statusCode;
             }
