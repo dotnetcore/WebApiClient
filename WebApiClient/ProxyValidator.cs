@@ -143,8 +143,7 @@ namespace WebApiClient
 
                 var request = httpProxy.ToTunnelRequestString(targetAddress);
                 var sendBuffer = Encoding.ASCII.GetBytes(request);
-                var sendArraySegment = new List<ArraySegment<byte>> { new ArraySegment<byte>(sendBuffer) };
-                await Task.Factory.FromAsync(socket.BeginSend, socket.EndSend, sendArraySegment, SocketFlags.None, null);
+                await socket.SendTaskAsync(new ArraySegment<byte>(sendBuffer), timeout);
 
                 var recvBufferSegment = new ArraySegment<byte>(new byte[150]);
                 var length = await socket.ReceiveTaskAsync(recvBufferSegment, timeout);
