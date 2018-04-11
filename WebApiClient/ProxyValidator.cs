@@ -91,17 +91,7 @@ namespace WebApiClient
         /// <returns></returns>
         public static HttpStatusCode Validate(IWebProxy webProxy, Uri targetAddress, TimeSpan? timeout = null)
         {
-            if (webProxy == null)
-            {
-                throw new ArgumentNullException(nameof(webProxy));
-            }
-
-            var httpProxy = webProxy as HttpProxy;
-            if (httpProxy == null)
-            {
-                httpProxy = HttpProxy.FromWebProxy(webProxy, targetAddress);
-            }
-
+            var httpProxy = CastToHttpProxy(webProxy, targetAddress);
             var remoteEndPoint = new DnsEndPoint(httpProxy.Host, httpProxy.Port, AddressFamily.InterNetwork);
             var socket = new Socket(remoteEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
@@ -120,10 +110,7 @@ namespace WebApiClient
 
                 var recvBuffer = new byte[150];
                 var length = socket.Receive(recvBuffer);
-
-                var response = Encoding.ASCII.GetString(recvBuffer, 0, length);
-                var statusCode = int.Parse(Regex.Match(response, "(?<=HTTP/1.1 )\\d+", RegexOptions.IgnoreCase).Value);
-                return (HttpStatusCode)statusCode;
+                return ParseStatusCode(recvBuffer, length);
             }
 
             catch (Exception)
@@ -146,17 +133,7 @@ namespace WebApiClient
         /// <returns></returns>
         public static async Task<HttpStatusCode> ValidateAsync(IWebProxy webProxy, Uri targetAddress, TimeSpan? timeout = null)
         {
-            if (webProxy == null)
-            {
-                throw new ArgumentNullException(nameof(webProxy));
-            }
-
-            var httpProxy = webProxy as HttpProxy;
-            if (httpProxy == null)
-            {
-                httpProxy = HttpProxy.FromWebProxy(webProxy, targetAddress);
-            }
-
+            var httpProxy = CastToHttpProxy(webProxy, targetAddress);
             var remoteEndPoint = new DnsEndPoint(httpProxy.Host, httpProxy.Port, AddressFamily.InterNetwork);
             var socket = new Socket(remoteEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
@@ -171,10 +148,7 @@ namespace WebApiClient
 
                 var recvBufferSegment = new ArraySegment<byte>(new byte[150]);
                 var length = await socket.ReceiveTaskAsync(recvBufferSegment, timeout);
-
-                var response = Encoding.ASCII.GetString(recvBufferSegment.Array, 0, length);
-                var statusCode = int.Parse(Regex.Match(response, "(?<=HTTP/1.1 )\\d+", RegexOptions.IgnoreCase).Value);
-                return (HttpStatusCode)statusCode;
+                return ParseStatusCode(recvBufferSegment.Array, length);
             }
             catch (Exception)
             {
@@ -184,6 +158,50 @@ namespace WebApiClient
             {
                 socket.Dispose();
             }
+        }
+
+        /// <summary>
+        /// IWebProxy转换为HttpProxy
+        /// </summary>
+        /// <param name="webProxy"></param>
+        /// <param name="targetAddress"></param>
+        /// <returns></returns>
+        private static HttpProxy CastToHttpProxy(IWebProxy webProxy, Uri targetAddress)
+        {
+            if (webProxy == null)
+            {
+                throw new ArgumentNullException(nameof(webProxy));
+            }
+
+            if (targetAddress == null)
+            {
+                throw new ArgumentNullException(nameof(targetAddress));
+            }
+
+            var httpProxy = webProxy as HttpProxy;
+            if (httpProxy != null)
+            {
+                return httpProxy;
+            }
+            return HttpProxy.FromWebProxy(webProxy, targetAddress);
+        }
+
+        /// <summary>
+        /// 解析响应的状态码
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        private static HttpStatusCode ParseStatusCode(byte[] buffer, int length)
+        {
+            var response = Encoding.ASCII.GetString(buffer, 0, length);
+            var match = Regex.Match(response, "(?<=HTTP/1.1 )\\d+", RegexOptions.IgnoreCase);
+            if (match.Success == false)
+            {
+                return HttpStatusCode.BadRequest;
+            }
+            var statusCode = int.Parse(match.Value);
+            return (HttpStatusCode)statusCode;
         }
     }
 }
