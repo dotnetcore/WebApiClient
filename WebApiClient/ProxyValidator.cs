@@ -177,8 +177,7 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(targetAddress));
             }
 
-            var httpProxy = webProxy as HttpProxy;
-            if (httpProxy != null)
+            if (webProxy is HttpProxy httpProxy)
             {
                 return httpProxy;
             }
