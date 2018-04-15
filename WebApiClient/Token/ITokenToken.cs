@@ -3,9 +3,10 @@
 namespace WebApiClient.Token
 {
     /// <summary>
-    /// 表示Token请求的Api
+    /// 表示Token客户端接口
     /// </summary>
-    public interface ITokenApi
+    [JsonReturn]
+    public interface ITokenToken
     {
         /// <summary>
         /// 以client_credentials授权方式获取token
@@ -19,7 +20,7 @@ namespace WebApiClient.Token
         [FormField("grant_type", "client_credentials")]
         ITask<TokenResult> RequestClientCredentialsAsync(
            [FormField] string client_id,
-           [FormField(IgnoreWhenNull = true)] string client_secret,
+           [FormField] string client_secret,
            [FormField(IgnoreWhenNull = true)] string scope = null,
            [FormContent(IgnoreWhenNull = true)] object extra = null);
 
@@ -37,7 +38,7 @@ namespace WebApiClient.Token
         [FormField("grant_type", "password")]
         ITask<TokenResult> RequestPasswordCredentialsAsync(
           [FormField] string client_id,
-          [FormField(IgnoreWhenNull = true)] string client_secret,
+          [FormField] string client_secret,
           [FormField] string username,
           [FormField] string password,
           [FormField(IgnoreWhenNull = true)] string scope = null,

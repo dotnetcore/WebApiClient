@@ -10,25 +10,42 @@ namespace WebApiClient.Token
         /// <summary>
         /// 授权服务器域名的客户端实例的缓存
         /// </summary>
-        private static ConcurrentCache<Uri, ITokenApi> clientCache = new ConcurrentCache<Uri, ITokenApi>();
+        private static ConcurrentCache<Uri, ITokenToken> cache = new ConcurrentCache<Uri, ITokenToken>();
 
         /// <summary>
-        /// 返回ITokenApi的http客户端实例
+        /// 返回ITokenClient的客户端实例
         /// </summary>
         /// <param name="tokenEndpoint">授权服务器地址</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        public static ITokenApi GetClient(Uri tokenEndpoint)
+        public static ITokenToken Get(string tokenEndpoint)
+        {
+            if (string.IsNullOrEmpty(tokenEndpoint))
+            {
+                throw new ArgumentNullException(nameof(tokenEndpoint));
+            }
+
+            var endPoint = new Uri(tokenEndpoint);
+            return TokenClient.Get(endPoint);
+        }
+
+        /// <summary>
+        /// 返回ITokenClient的客户端实例
+        /// </summary>
+        /// <param name="tokenEndpoint">授权服务器地址</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns></returns>
+        public static ITokenToken Get(Uri tokenEndpoint)
         {
             if (tokenEndpoint == null)
             {
                 throw new ArgumentNullException(nameof(tokenEndpoint));
             }
 
-            return clientCache.GetOrAdd(tokenEndpoint, endpoint =>
+            return cache.GetOrAdd(tokenEndpoint, endpoint =>
             {
-                var config = new HttpApiConfig { HttpHost = tokenEndpoint };
-                return HttpApiClient.Create<ITokenApi>(config);
+                var config = new HttpApiConfig { HttpHost = endpoint };
+                return HttpApiClient.Create<ITokenToken>(config);
             });
         }
     }

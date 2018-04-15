@@ -1,5 +1,4 @@
-﻿using System;
-using WebApiClient.DataAnnotations;
+﻿using WebApiClient.DataAnnotations;
 
 namespace WebApiClient.Token
 {
@@ -48,6 +47,7 @@ namespace WebApiClient.Token
         /// <summary>
         /// 获取是否成功
         /// </summary>
+        [IgnoreSerialized]
         public bool IsSuccess => string.IsNullOrEmpty(Error);
     }
 }

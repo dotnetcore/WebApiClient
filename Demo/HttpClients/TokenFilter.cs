@@ -15,7 +15,7 @@ namespace Demo.HttpClients
     /// </summary>
     class TokenFilter : OAuthTokenFilter
     {
-        private readonly ITokenApi tokenClient = TokenClient.GetClient(new Uri("http://localhost:5000/connect/token"));
+        private readonly ITokenToken tokenClient = TokenClient.Get("http://localhost:5000/connect/token");
 
         /// <summary>
         /// 获取client_id
