@@ -43,7 +43,7 @@ namespace WebApiClient.GlobalFilters
         /// <returns></returns>
         async Task IApiActionFilter.OnBeginRequestAsync(ApiActionContext context)
         {
-            using (this.asyncRoot.LockAsync())
+            using (await this.asyncRoot.LockAsync())
             {
                 await this.SetAuthorizationAsync(context);
             }
