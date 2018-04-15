@@ -2,9 +2,8 @@
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
-using WebApiClient.Token;
 
-namespace WebApiClient.GlobalFilters
+namespace WebApiClient.Token
 {
     /// <summary>
     /// 表示OAuth授权的token过滤器抽象类
