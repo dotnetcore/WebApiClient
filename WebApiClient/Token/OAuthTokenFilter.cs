@@ -82,6 +82,7 @@ namespace WebApiClient.Token
                 return;
             }
 
+            this.lastTime = DateTime.Now;
             if (string.IsNullOrEmpty(this.tokenResult.RefreshToken) == true)
             {
                 this.tokenResult = await this.RequestTokenResultAsync();
