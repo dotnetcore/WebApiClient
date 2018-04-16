@@ -14,7 +14,7 @@ namespace WebApiClient
         /// <summary>
         /// 获取关联的Http处理对象
         /// </summary>
-        HttpClientHandler Handler { get; }
+        IHttpHandler Handler { get; }
 
         /// <summary>
         /// 获取默认的请求头管理对象

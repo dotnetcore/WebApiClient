@@ -41,7 +41,7 @@ namespace WebApiClient.Defaults
         /// <summary>
         /// 获取关联的Http处理对象
         /// </summary>
-        public HttpClientHandler Handler { get; private set; }
+        public IHttpHandler Handler { get; private set; }
 
         /// <summary>
         /// 获取默认的请求头管理对象
@@ -114,31 +114,18 @@ namespace WebApiClient.Defaults
         private HttpClient(HttpMessageHandler handler, bool disposeHandler, bool supportCreateHandler)
         {
             this.supportCreateHandler = supportCreateHandler;
-            this.messageHandler = handler ?? this.CreateHttpClientHandler();
-            this.httpClient = new System.Net.Http.HttpClient(this.messageHandler, disposeHandler);
-            this.Handler = this.GetHttpClientHandler(this.messageHandler);
-        }
-
-        /// <summary>
-        /// 获取HttpMessageHandler关联的HttpClientHandler
-        /// </summary>
-        /// <param name="handler"></param>
-        /// <exception cref="ArgumentException"></exception>
-        /// <returns></returns>
-        private HttpClientHandler GetHttpClientHandler(HttpMessageHandler handler)
-        {
-            if (handler is HttpClientHandler clientHandler)
+            if (handler == null)
             {
-                return clientHandler;
+                this.Handler = this.CreateIHandler();
+                this.messageHandler = this.Handler.InnerHanlder;
+                this.httpClient = new System.Net.Http.HttpClient(this.messageHandler, disposeHandler);
             }
-
-            if (handler is DelegatingHandler delegatingHandler)
+            else
             {
-                return this.GetHttpClientHandler(delegatingHandler.InnerHandler);
+                this.Handler = HttpHandler.From(handler);
+                this.messageHandler = handler;
+                this.httpClient = new System.Net.Http.HttpClient(this.messageHandler, disposeHandler);
             }
-
-            var message = "参数必须为HttpClientHandler或DelegatingHandler类型";
-            throw new ArgumentException(message, nameof(handler));
         }
 
         /// <summary>
@@ -242,31 +229,31 @@ namespace WebApiClient.Defaults
         /// </summary>
         private void InitWithoutProxy()
         {
-            var handler = this.CreateHttpClientHandler();
-            CopyProperties(this.Handler, handler);
+            var handler = this.CreateIHandler();
+            CopyProperties(this.Handler.InnerHanlder, handler.InnerHanlder);
             handler.UseProxy = false;
             handler.Proxy = null;
 
-            var client = new System.Net.Http.HttpClient(handler);
+            var client = new System.Net.Http.HttpClient(handler.InnerHanlder);
             CopyProperties(this.httpClient, client);
             this.httpClient.Dispose();
 
             this.httpClient = client;
-            this.messageHandler = handler;
+            this.messageHandler = handler.InnerHanlder;
             this.Handler = handler;
         }
 
         /// <summary>
-        /// 创建HttpClientHandler的新实例
+        /// 创建IHandler的新实例
         /// </summary>
         /// <returns></returns>
-        protected virtual HttpClientHandler CreateHttpClientHandler()
+        protected virtual IHttpHandler CreateIHandler()
         {
             if (this.supportCreateHandler == false)
             {
                 throw new NotSupportedException("不支持创建新的HttpClientHandler实例");
             }
-            return new DefaultHttpClientHandler();
+            return HttpHandler.CreateHanlder();
         }
 
         /// <summary>
@@ -332,7 +319,7 @@ namespace WebApiClient.Defaults
             if (x.Credentials == null || y.Credentials == null)
             {
                 return false;
-            }           
+            }
             return true;
         }
 

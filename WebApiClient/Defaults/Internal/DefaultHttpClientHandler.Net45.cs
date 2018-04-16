@@ -13,7 +13,7 @@ namespace WebApiClient.Defaults
     /// <summary>
     /// 默认的HttpClientHandler
     /// </summary>
-    class DefaultHttpClientHandler : WebRequestHandler
+    class DefaultHttpClientHandler : WebRequestHandler, IHttpHandler
     {
         /// <summary>
         /// 发送次数
@@ -34,6 +34,17 @@ namespace WebApiClient.Defaults
         /// 每个服务的最大连接数设置器
         /// </summary>
         private static readonly PropertySetter maxConnectionsPerServerSetter;
+
+        /// <summary>
+        /// 获取内部的原始Handler对象
+        /// </summary>
+        public HttpMessageHandler InnerHanlder
+        {
+            get
+            {
+                return this;
+            }
+        }
 
         /// <summary>
         /// 静态构造器
