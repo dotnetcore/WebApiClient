@@ -12,7 +12,7 @@ namespace WebApiClient.Token
         /// 以client_credentials授权方式获取token
         /// </summary>
         /// <param name="client_id">客户端id</param>
-        /// <param name="client_secret">客户端密码</param>
+        /// <param name="client_secret">客户端秘钥</param>
         /// <param name="scope">资源范围</param>
         /// <param name="extra">额外字段，支持字典或模型</param>
         /// <returns></returns>
@@ -28,8 +28,8 @@ namespace WebApiClient.Token
         /// 以password授权方式获取token
         /// </summary>
         /// <param name="client_id">客户端id</param>
-        /// <param name="client_secret">客户端密码</param>
-        /// <param name="username">用户id</param>
+        /// <param name="client_secret">客户端秘钥</param>
+        /// <param name="username">用户名</param>
         /// <param name="password">用户密码</param>
         /// <param name="scope">资源范围</param>
         /// <param name="extra">额外字段，支持字典或模型</param>
