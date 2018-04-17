@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebApiClient.Token
+namespace WebApiClient.AuthTokens
 {
     /// <summary>
     /// 提供获取ITokenApi的http客户端实例

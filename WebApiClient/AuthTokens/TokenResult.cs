@@ -1,6 +1,6 @@
 ﻿using WebApiClient.DataAnnotations;
 
-namespace WebApiClient.Token
+namespace WebApiClient.AuthTokens
 {
     /// <summary>
     /// 表示Token结果

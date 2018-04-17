@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using WebApiClient.Token;
+using WebApiClient.AuthTokens;
 
 namespace Demo.HttpClients
 {

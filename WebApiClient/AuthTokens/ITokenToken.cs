@@ -1,6 +1,6 @@
 ﻿using WebApiClient.Attributes;
 
-namespace WebApiClient.Token
+namespace WebApiClient.AuthTokens
 {
     /// <summary>
     /// 表示Token客户端接口
