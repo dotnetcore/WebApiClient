@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
@@ -11,14 +12,14 @@ namespace WebApiClient.AuthTokens
     public abstract class AuthTokenFilter : IApiActionFilter
     {
         /// <summary>
-        /// 最近请求token的时间
+        /// 最近请求到的token
         /// </summary>
-        private DateTime lastTime;
+        private TokenResult lastTokenResult;
 
         /// <summary>
-        /// 请求到的token
+        /// 最近使用token请求的计时器
         /// </summary>
-        private TokenResult tokenResult;
+        private readonly Stopwatch lastRequestWatch = new Stopwatch();
 
         /// <summary>
         /// 异步锁
@@ -44,6 +45,7 @@ namespace WebApiClient.AuthTokens
         {
             using (await this.asyncRoot.LockAsync())
             {
+                this.lastRequestWatch.Restart();
                 await this.SetAuthorizationAsync(context);
             }
         }
@@ -55,16 +57,16 @@ namespace WebApiClient.AuthTokens
         /// <returns></returns>  
         private async Task SetAuthorizationAsync(ApiActionContext context)
         {
-            if (this.tokenResult == null)
+            if (this.lastTokenResult == null)
             {
-                this.lastTime = DateTime.Now;
-                this.tokenResult = await this.RequestTokenResultAsync();
+                this.lastTokenResult = await this.RequestTokenResultAsync();
             }
             else
             {
                 await this.RefreshTokenIfExpiresAsync();
             }
-            this.AccessTokenResult(context, this.tokenResult);
+
+            this.AccessTokenResult(context, this.lastTokenResult);
         }
 
 
@@ -74,22 +76,21 @@ namespace WebApiClient.AuthTokens
         /// <returns></returns>
         private async Task RefreshTokenIfExpiresAsync()
         {
-            var curExpiresIn = DateTime.Now.Subtract(this.lastTime);
-            var tokenExpiresIn = TimeSpan.FromSeconds(this.tokenResult.ExpiresIn);
+            var curExpiresIn = this.lastRequestWatch.Elapsed;
+            var tokenExpiresIn = TimeSpan.FromSeconds(this.lastTokenResult.ExpiresIn);
 
             if (this.IsExpires(curExpiresIn, tokenExpiresIn) == false)
             {
                 return;
             }
 
-            this.lastTime = DateTime.Now;
-            if (string.IsNullOrEmpty(this.tokenResult.RefreshToken) == true)
+            if (string.IsNullOrEmpty(this.lastTokenResult.RefreshToken) == true)
             {
-                this.tokenResult = await this.RequestTokenResultAsync();
+                this.lastTokenResult = await this.RequestTokenResultAsync();
             }
             else
             {
-                this.tokenResult = await this.RequestRefreshTokenAsync(this.tokenResult.RefreshToken);
+                this.lastTokenResult = await this.RequestRefreshTokenAsync(this.lastTokenResult.RefreshToken);
             }
         }
 
