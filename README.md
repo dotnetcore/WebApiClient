@@ -1,6 +1,6 @@
 ## 1. [Nuget](https://www.nuget.org/packages/Laojiu.WebApiClient/)
 PM> `install-package Laojiu.WebApiClient`
-<br/>支持 `.net framework4.5`  `netcoreapp2.0`  `netstandard2.0`
+<br/>支持 `.net framework4.5` `netstandard2.0` `netcoreapp2.0` `netcoreapp2.1`
 
 ## 2. Http(s)请求
 ### 2.1 接口的声明
