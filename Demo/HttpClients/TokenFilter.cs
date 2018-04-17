@@ -7,7 +7,7 @@ namespace Demo.HttpClients
     /// auth2 token全局过滤器
     /// 用法：HttpApiConfig.GlobalFilters.Add( new TokenFilter() )
     /// </summary>
-    class TokenFilter : OAuthTokenFilter
+    class TokenFilter : AuthTokenFilter
     {
         private readonly ITokenToken tokenClient = TokenClient.Get("http://localhost:5000/connect/token");
 

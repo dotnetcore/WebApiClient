@@ -8,7 +8,7 @@ namespace WebApiClient.AuthTokens
     /// <summary>
     /// 表示OAuth授权的token过滤器抽象类
     /// </summary>
-    public abstract class OAuthTokenFilter : IApiActionFilter
+    public abstract class AuthTokenFilter : IApiActionFilter
     {
         /// <summary>
         /// 最近请求token的时间
