@@ -63,11 +63,8 @@ namespace WebApiClient.AuthTokens
             }
             else
             {
-                this.lastRequestWatch.Stop();
                 var curExpiresIn = this.lastRequestWatch.Elapsed;
-                this.lastRequestWatch.Reset();
-                this.lastRequestWatch.Start();
-
+                this.lastRequestWatch.Restart();
                 await this.RefreshTokenIfExpiresAsync(curExpiresIn);
             }
 
