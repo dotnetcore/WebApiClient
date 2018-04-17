@@ -218,7 +218,7 @@ namespace WebApiClient.Defaults
         {
             set
             {
-                Func<HttpRequestMessage, X509Certificate2, X509Chain, SslPolicyErrors, bool> callBack = (a, b, c, d) => value(b, c, d);
+                bool callBack(HttpRequestMessage a, X509Certificate2 b, X509Chain c, SslPolicyErrors d) => value(b, c, d);
                 this.handler.ServerCertificateCustomValidationCallback = callBack;
             }
         }

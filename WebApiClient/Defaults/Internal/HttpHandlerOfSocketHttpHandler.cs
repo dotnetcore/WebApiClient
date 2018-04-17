@@ -202,7 +202,7 @@ namespace WebApiClient.Defaults
         {
             set
             {
-                RemoteCertificateValidationCallback callBack = (a, b, c, d) => value(b, c, d);
+                bool callBack(object a, X509Certificate b, X509Chain c, SslPolicyErrors d) => value(b, c, d);
                 this.handler.SslOptions.RemoteCertificateValidationCallback = callBack;
             }
         }

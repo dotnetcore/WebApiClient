@@ -1,4 +1,4 @@
-﻿#if NETSTANDARD2_0 || NETCOREAPP2_0
+﻿#if NETSTANDARD2_0 
 
 using System;
 using System.Net.Http;
@@ -30,7 +30,7 @@ namespace WebApiClient.Defaults
         {
             set
             {
-                Func<HttpRequestMessage, X509Certificate2, X509Chain, SslPolicyErrors, bool> callBack = (a, b, c, d) => value(b, c, d);
+                bool callBack(HttpRequestMessage a, X509Certificate2 b, X509Chain c, SslPolicyErrors d) => value(b, c, d);
                 base.ServerCertificateCustomValidationCallback = callBack;
             }
         }
