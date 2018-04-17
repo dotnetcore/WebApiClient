@@ -25,8 +25,8 @@ namespace WebApiClientTest.Defaults
         public void CtorTest()
         {
             var handler = new YourHandler(new MyHandler());
-            var client = new HttpClient(handler);
-            Assert.True(client.Handler != null);
+            var client = new HttpClient(handler);          
+            Assert.True(client.Handler.InnerHanlder.GetType() == typeof(System.Net.Http.HttpClientHandler));
         }
     }
 }

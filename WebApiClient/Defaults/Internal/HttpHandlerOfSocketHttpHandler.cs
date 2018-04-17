@@ -83,7 +83,7 @@ namespace WebApiClient.Defaults
         /// <summary>
         /// 获取或设置最大请求内容字节长度
         /// </summary>
-        public long MaxRequestContentBufferSize { get; set; } = int.MaxValue;
+        public long MaxRequestContentBufferSize { get; set; } = 0;
 
         /// <summary>
         /// 获取或设置凭证信息
@@ -106,7 +106,7 @@ namespace WebApiClient.Defaults
         /// <summary>
         /// 获取或设置客户端证书选项
         /// </summary>
-        public ClientCertificateOption ClientCertificateOptions { get; set; } = ClientCertificateOption.Automatic;
+        public ClientCertificateOption ClientCertificateOptions { get; set; } = ClientCertificateOption.Manual;
 
         /// <summary>
         /// 获取或设置压缩方式
