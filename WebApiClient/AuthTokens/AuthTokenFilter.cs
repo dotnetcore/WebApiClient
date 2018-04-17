@@ -45,7 +45,6 @@ namespace WebApiClient.AuthTokens
         {
             using (await this.asyncRoot.LockAsync())
             {
-                this.lastRequestWatch.Restart();
                 await this.SetAuthorizationAsync(context);
             }
         }
@@ -59,11 +58,17 @@ namespace WebApiClient.AuthTokens
         {
             if (this.lastTokenResult == null)
             {
+                this.lastRequestWatch.Restart();
                 this.lastTokenResult = await this.RequestTokenResultAsync();
             }
             else
             {
-                await this.RefreshTokenIfExpiresAsync();
+                this.lastRequestWatch.Stop();
+                var curExpiresIn = this.lastRequestWatch.Elapsed;
+                this.lastRequestWatch.Reset();
+                this.lastRequestWatch.Start();
+
+                await this.RefreshTokenIfExpiresAsync(curExpiresIn);
             }
 
             this.AccessTokenResult(context, this.lastTokenResult);
@@ -73,12 +78,11 @@ namespace WebApiClient.AuthTokens
         /// <summary>
         /// 刷新或重新获取token
         /// </summary>
+        /// <param name="curExpiresIn">当前的累计时间</param>
         /// <returns></returns>
-        private async Task RefreshTokenIfExpiresAsync()
+        private async Task RefreshTokenIfExpiresAsync(TimeSpan curExpiresIn)
         {
-            var curExpiresIn = this.lastRequestWatch.Elapsed;
             var tokenExpiresIn = TimeSpan.FromSeconds(this.lastTokenResult.ExpiresIn);
-
             if (this.IsExpires(curExpiresIn, tokenExpiresIn) == false)
             {
                 return;
