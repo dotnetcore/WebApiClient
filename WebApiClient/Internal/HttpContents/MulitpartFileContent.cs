@@ -29,9 +29,9 @@ namespace WebApiClient
                 this.Headers.ContentDisposition = disposition;
             }
 
-            if (string.IsNullOrEmpty(contentType))
+            if (string.IsNullOrEmpty(contentType) == true)
             {
-                contentType = MimeTable.GetContentType(fileName);
+                contentType = "application/octet-stream";
             }
             this.Headers.ContentType = new MediaTypeHeaderValue(contentType);
         }

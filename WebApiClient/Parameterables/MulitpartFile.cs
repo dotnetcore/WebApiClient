@@ -30,7 +30,7 @@ namespace WebApiClient.Parameterables
         /// <summary>
         /// 获取或设置文件的Mime
         /// </summary>
-        public string ContentType { get; set; }
+        public string ContentType { get; set; } = "application/octet-stream";
 
         /// <summary>
         /// 将自身作为multipart/form-data的一个文件项
@@ -53,7 +53,6 @@ namespace WebApiClient.Parameterables
         {
             this.stream = stream ?? throw new ArgumentNullException(nameof(stream));
             this.FileName = fileName;
-            this.ContentType = MimeTable.GetContentType(fileName);
         }
 
         /// <summary>
@@ -76,7 +75,6 @@ namespace WebApiClient.Parameterables
 
             this.filePath = localFilePath;
             this.FileName = Path.GetFileName(localFilePath);
-            this.ContentType = MimeTable.GetContentType(localFilePath);
         }
 
         /// <summary>
