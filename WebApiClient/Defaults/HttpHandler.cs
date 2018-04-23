@@ -36,7 +36,7 @@ namespace WebApiClient.Defaults
             {
                 throw new ArgumentNullException(nameof(handler));
             }
-            return new HttpHandlerOfSocketHttpHandler(handler);
+            return new HttpHandlerOfSocketsHttpHandler(handler);
         }
 #endif
 
@@ -82,13 +82,13 @@ namespace WebApiClient.Defaults
                 return HttpHandler.FromHttpMessageHandler(delegatingHandler.InnerHandler);
             }
 
-            var message = "参数必须为HttpClientHandler、SocketHttpHandler或DelegatingHandler类型";
+            var message = "参数必须为HttpClientHandler、SocketsHttpHandler或DelegatingHandler类型";
             throw new ArgumentException(message, nameof(handler));
         }
 
         /// <summary>
         /// 创建默认的IHanlder
-        /// .net core2.1或以上使用SocketHttpHandler
+        /// .net core2.1或以上使用SocketsHttpHandler
         /// </summary>
         /// <returns></returns>
         public static IHttpHandler CreateHanlder()

@@ -9,9 +9,9 @@ using System.Security.Cryptography.X509Certificates;
 namespace WebApiClient.Defaults
 {
     /// <summary>
-    /// 表示SocketHttpHandler包装为IHttpClientHandler
+    /// 表示SocketsHttpHandler包装为IHttpClientHandler
     /// </summary>
-    class HttpHandlerOfSocketHttpHandler : IHttpHandler
+    class HttpHandlerOfSocketsHttpHandler : IHttpHandler
     {
         /// <summary>
         /// 外部HttpClientHandler
@@ -208,10 +208,10 @@ namespace WebApiClient.Defaults
         }
 
         /// <summary>
-        /// SocketHttpHandler包装为IHttpClientHandler
+        /// SocketsHttpHandler包装为IHttpClientHandler
         /// </summary>
         /// <param name="handler"></param>
-        public HttpHandlerOfSocketHttpHandler(SocketsHttpHandler handler)
+        public HttpHandlerOfSocketsHttpHandler(SocketsHttpHandler handler)
         {
             this.handler = handler;
         }

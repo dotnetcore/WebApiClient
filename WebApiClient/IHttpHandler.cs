@@ -14,7 +14,7 @@ namespace WebApiClient
     {
         /// <summary>
         /// 获取的原始Handler对象
-        /// 该对象为HttpClientHandler或SocketHttpHandler
+        /// 该对象为HttpClientHandler或SocketsHttpHandler
         /// </summary>
         HttpMessageHandler InnerHanlder { get; }
 
