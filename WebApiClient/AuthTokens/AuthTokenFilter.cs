@@ -42,11 +42,12 @@ namespace WebApiClient.AuthTokens
                 using (await this.asyncRoot.LockAsync())
                 {
                     await this.RefreshTokenAsync();
-                    if (this.tokenException != null)
-                    {
-                        var dueTime = this.GetDueTimeSpan(this.tokenResult.ExpiresIn);
-                        this.tokenTimer.Change(dueTime, Timeout.InfiniteTimeSpan);
-                    }
+                }
+
+                if (this.tokenException != null)
+                {
+                    var dueTime = this.GetDueTimeSpan(this.tokenResult.ExpiresIn);
+                    this.tokenTimer.Change(dueTime, Timeout.InfiniteTimeSpan);
                 }
             }, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         }
@@ -94,14 +95,13 @@ namespace WebApiClient.AuthTokens
             using (await this.asyncRoot.LockAsync())
             {
                 await this.InitTokenIfNullTokenAsync();
-
-                if (this.tokenException != null)
-                {
-                    throw this.tokenException;
-                }
-
-                this.AccessTokenResult(context, this.tokenResult);
             }
+
+            if (this.tokenException != null)
+            {
+                throw this.tokenException;
+            }
+            this.AccessTokenResult(context, this.tokenResult);
         }
 
         /// <summary>
