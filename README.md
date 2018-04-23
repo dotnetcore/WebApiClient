@@ -53,7 +53,7 @@ static async Task TestAsync()
 
 ### 4. 详细文档
 * [WebApiClient基础](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E5%9F%BA%E7%A1%80)
-* [WebApiClient进阶](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E4%B8%AD%E7%BA%A7)
+* [WebApiClient进阶](https://github.com/dotnetcore/WebApiClient/wiki/WebApiClient%E8%BF%9B%E9%98%B6)
 * [WebApiClient高级](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E9%AB%98%E7%BA%A7)
 
 ### 5. 联系方式
