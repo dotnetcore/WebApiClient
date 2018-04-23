@@ -94,6 +94,12 @@ namespace WebApiClient.Defaults
         public static IHttpHandler CreateHanlder()
         {
 #if NETCOREAPP2_1
+            var set = AppContext.TryGetSwitch("System.Net.Http.UseSocketsHttpHandler", out bool enable);
+            if (set && enable == false)
+            {
+                return new DefaultHttpClientHandler();
+            }
+
             var handler = new SocketsHttpHandler
             {
                 UseProxy = false,
