@@ -18,11 +18,6 @@ namespace WebApiClientTest.AuthTokens
 
             public TokenResult TokenResult { get; set; }
 
-            protected override bool IsExpires(TimeSpan curExpiresIn, TimeSpan tokenExpiresIn)
-            {
-                return tokenExpiresIn <= curExpiresIn;
-            }
-
             protected override Task<TokenResult> RequestTokenResultAsync()
             {
                 this.IsRequestTokenResult = true;

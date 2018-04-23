@@ -45,9 +45,11 @@ namespace WebApiClient.AuthTokens
         public string Error { get; set; }
 
         /// <summary>
-        /// 获取是否成功
+        /// 返回是否成功
         /// </summary>
-        [IgnoreSerialized]
-        public bool IsSuccess => string.IsNullOrEmpty(Error);
+        public bool IsSuccess()
+        {
+            return string.IsNullOrEmpty(Error);
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
 
@@ -9,22 +10,69 @@ namespace WebApiClient.AuthTokens
     /// <summary>
     /// 表示OAuth授权的token过滤器抽象类
     /// </summary>
-    public abstract class AuthTokenFilter : IApiActionFilter
+    public abstract class AuthTokenFilter : IApiActionFilter, IDisposable
     {
         /// <summary>
         /// 最近请求到的token
         /// </summary>
-        private TokenResult lastTokenResult;
+        private TokenResult tokenResult;
 
         /// <summary>
-        /// 最近使用token请求的计时器
+        /// token相关异常
         /// </summary>
-        private readonly Stopwatch lastRequestWatch = new Stopwatch();
+        private Exception tokenException;
+
+        /// <summary>
+        /// 计时器
+        /// </summary>
+        private readonly Timer tokenTimer;
 
         /// <summary>
         /// 异步锁
         /// </summary>
         private readonly AsyncRoot asyncRoot = new AsyncRoot();
+
+        /// <summary>
+        /// OAuth授权的token过滤器抽象类
+        /// </summary>
+        public AuthTokenFilter()
+        {
+            this.tokenTimer = new Timer(async (state) =>
+            {
+                using (await this.asyncRoot.LockAsync())
+                {
+                    await this.RefreshTokenAsync();
+                    if (this.tokenException != null)
+                    {
+                        var dueTime = this.GetDueTimeSpan(this.tokenResult.ExpiresIn);
+                        this.tokenTimer.Change(dueTime, Timeout.InfiniteTimeSpan);
+                    }
+                }
+            }, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+        }
+
+        /// <summary>
+        /// 刷新token
+        /// </summary>
+        /// <returns></returns>
+        private async Task RefreshTokenAsync()
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(this.tokenResult.RefreshToken) == true)
+                {
+                    this.tokenResult = await this.RequestTokenResultAsync();
+                }
+                else
+                {
+                    this.tokenResult = await this.RequestRefreshTokenAsync(this.tokenResult.RefreshToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.tokenException = ex;
+            }
+        }
 
         /// <summary>
         /// 请求完成之后
@@ -45,68 +93,47 @@ namespace WebApiClient.AuthTokens
         {
             using (await this.asyncRoot.LockAsync())
             {
-                await this.SetAuthorizationAsync(context);
+                await this.InitTokenIfNullTokenAsync();
+
+                if (this.tokenException != null)
+                {
+                    throw this.tokenException;
+                }
+
+                this.AccessTokenResult(context, this.tokenResult);
             }
         }
 
         /// <summary>
-        /// 设置授权信息到请求上下文
+        /// 初始化Token
         /// </summary>
-        /// <param name="context">上下文</param>
-        /// <returns></returns>  
-        private async Task SetAuthorizationAsync(ApiActionContext context)
-        {
-            if (this.lastTokenResult == null)
-            {
-                this.lastRequestWatch.Restart();
-                this.lastTokenResult = await this.RequestTokenResultAsync();
-            }
-            else
-            {
-                var curExpiresIn = this.lastRequestWatch.Elapsed;
-                this.lastRequestWatch.Restart();
-                await this.RefreshTokenIfExpiresAsync(curExpiresIn);
-            }
-
-            this.AccessTokenResult(context, this.lastTokenResult);
-        }
-
-
-        /// <summary>
-        /// 刷新或重新获取token
-        /// </summary>
-        /// <param name="curExpiresIn">当前的累计时间</param>
         /// <returns></returns>
-        private async Task RefreshTokenIfExpiresAsync(TimeSpan curExpiresIn)
+        private async Task InitTokenIfNullTokenAsync()
         {
-            var tokenExpiresIn = TimeSpan.FromSeconds(this.lastTokenResult.ExpiresIn);
-            if (this.IsExpires(curExpiresIn, tokenExpiresIn) == false)
+            try
             {
-                return;
+                if (this.tokenResult == null)
+                {
+                    this.tokenResult = await this.RequestTokenResultAsync();
+                    var dueTime = this.GetDueTimeSpan(this.tokenResult.ExpiresIn);
+                    this.tokenTimer.Change(dueTime, Timeout.InfiniteTimeSpan);
+                }
             }
-
-            if (string.IsNullOrEmpty(this.lastTokenResult.RefreshToken) == true)
+            catch (Exception ex)
             {
-                this.lastTokenResult = await this.RequestTokenResultAsync();
-            }
-            else
-            {
-                this.lastTokenResult = await this.RequestRefreshTokenAsync(this.lastTokenResult.RefreshToken);
+                this.tokenException = ex;
             }
         }
 
         /// <summary>
-        /// 计算token是否过期
-        /// 默认为在tokenExpiresIn前10分钟就当作过期处理
+        /// 返回Timer延时时间
         /// </summary>
-        /// <param name="curExpiresIn">当前的累计时间</param>
-        /// <param name="tokenExpiresIn">token的过期日间</param>
+        /// <param name="expiresIn"></param>
         /// <returns></returns>
-        protected virtual bool IsExpires(TimeSpan curExpiresIn, TimeSpan tokenExpiresIn)
+        private TimeSpan GetDueTimeSpan(long expiresIn)
         {
-            return tokenExpiresIn.Subtract(curExpiresIn) < TimeSpan.FromMinutes(10d);
+            return TimeSpan.FromSeconds((double)expiresIn * 0.9d);
         }
-
 
         /// <summary>
         /// 应用AccessToken
@@ -133,5 +160,13 @@ namespace WebApiClient.AuthTokens
         /// <param name="refresh_token">获取token时返回的refresh_token</param>
         /// <returns></returns>
         protected abstract Task<TokenResult> RequestRefreshTokenAsync(string refresh_token);
+
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        public void Dispose()
+        {
+            this.tokenTimer.Dispose();
+        }
     }
 }
