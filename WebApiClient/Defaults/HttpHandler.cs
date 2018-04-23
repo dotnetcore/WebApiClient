@@ -65,10 +65,6 @@ namespace WebApiClient.Defaults
         /// <returns></returns>
         private static IHttpHandler FromHttpMessageHandler(HttpMessageHandler handler)
         {
-            if (handler is HttpClientHandler clientHandler)
-            {
-                return HttpHandler.From(clientHandler);
-            }
 
 #if NETCOREAPP2_1
             if (handler is SocketsHttpHandler socketHandler)
@@ -76,6 +72,10 @@ namespace WebApiClient.Defaults
                 return HttpHandler.From(socketHandler);
             }
 #endif
+            if (handler is HttpClientHandler clientHandler)
+            {
+                return HttpHandler.From(clientHandler);
+            }
 
             if (handler is DelegatingHandler delegatingHandler)
             {
