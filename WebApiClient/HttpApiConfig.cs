@@ -127,6 +127,18 @@ namespace WebApiClient
         /// <summary>
         /// Http接口的配置项   
         /// </summary>
+        /// <param name="handler">HTTP消息处理程序</param>
+        /// <param name="disposeHandler">用Dispose方法时，是否也Dispose handler</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        public HttpApiConfig(System.Net.Http.HttpMessageHandler handler, bool disposeHandler = false)
+            : this(new HttpClient(handler, disposeHandler))
+        {
+        }
+
+        /// <summary>
+        /// Http接口的配置项   
+        /// </summary>
         /// <param name="client">客户端对象</param>
         public HttpApiConfig(IHttpClient client)
         {
