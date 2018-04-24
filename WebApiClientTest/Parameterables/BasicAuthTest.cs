@@ -20,7 +20,7 @@ namespace WebApiClientTest.Parameterables
             };
 
             var parameter = context.ApiActionDescriptor.Parameters[0];
-            IApiParameterable basicAuth = new BasicAuth("laojiu", "123456");
+            var basicAuth = new BasicAuth("laojiu", "123456");
             await basicAuth.BeforeRequestAsync(context, parameter);
 
             var auth = Convert.ToBase64String(Encoding.ASCII.GetBytes("laojiu:123456"));

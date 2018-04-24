@@ -15,7 +15,7 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// BasicAuth
         /// </summary>
-        private readonly IApiParameterable baiscAuth;
+        private readonly BasicAuth baiscAuth;
 
         /// <summary>
         /// 基本授权
@@ -36,6 +36,6 @@ namespace WebApiClient.Attributes
         public override Task BeforeRequestAsync(ApiActionContext context)
         {
             return this.baiscAuth.BeforeRequestAsync(context, null);
-        } 
+        }
     }
 }
