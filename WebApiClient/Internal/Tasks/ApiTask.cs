@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
+using System.Linq;
 
 namespace WebApiClient
 {
@@ -126,9 +127,19 @@ namespace WebApiClient
                     RequestMessage = new HttpApiRequestMessage { RequestUri = this.httpApiConfig.HttpHost },
                     ResponseMessage = null
                 };
-                var result = await this.RequestAsync(context);
-                return (TResult)result;
+
+                try
+                {
+                    var result = await this.RequestAsync(context);
+                    return (TResult)result;
+                }
+                catch (Exception ex)
+                {
+                    await this.RaiseOnExceptionAsync(context, ex);
+                    throw ex;
+                }
             }
+
 
             /// <summary>
             /// 异步执行http请求
@@ -177,6 +188,35 @@ namespace WebApiClient
                 }
 
                 return await apiAction.Return.Attribute.GetTaskResult(context);
+            }
+
+
+            /// <summary>
+            /// 触发异常过滤器的异常
+            /// </summary>
+            /// <param name="context">上下文</param>
+            /// <param name="exception">异常</param>
+            /// <returns></returns>
+            private async Task RaiseOnExceptionAsync(ApiActionContext context, Exception exception)
+            {
+                var apiAction = context.ApiActionDescriptor;
+                var globalFilters = context.HttpApiConfig.GlobalFilters;
+
+                foreach (var filter in globalFilters)
+                {
+                    if (await filter.OnExceptionAsync(context, exception))
+                    {
+                        return;
+                    }
+                }
+
+                foreach (var filter in apiAction.Filters)
+                {
+                    if (await filter.OnExceptionAsync(context, exception))
+                    {
+                        return;
+                    }
+                }
             }
         }
     }
