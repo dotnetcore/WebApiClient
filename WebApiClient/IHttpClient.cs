@@ -12,7 +12,7 @@ namespace WebApiClient
     public interface IHttpClient : IDisposable
     {
         /// <summary>
-        /// 获取关联的Http处理对象
+        /// 获取关联的Http处理对象的IHttpHandler包装
         /// </summary>
         IHttpHandler Handler { get; }
 

@@ -19,15 +19,9 @@ namespace WebApiClient.Defaults
         private readonly SocketsHttpHandler handler;
 
         /// <summary>
-        /// 获取内部的原始Handler对象
+        /// 获取内部原始的Handler对象
         /// </summary>
-        public HttpMessageHandler InnerHanlder
-        {
-            get
-            {
-                return this.handler;
-            }
-        }
+        public HttpMessageHandler InnerHanlder { get; private set; }
 
         /// <summary>
         /// 获取或设置是否使用CookieContainer来管理Cookies
@@ -214,6 +208,18 @@ namespace WebApiClient.Defaults
         public HttpHandlerOfSocketsHttpHandler(SocketsHttpHandler handler)
         {
             this.handler = handler;
+            this.InnerHanlder = handler;
+        }
+
+        /// <summary>
+        /// SocketsHttpHandler包装为IHttpClientHandler
+        /// </summary>
+        /// <param name="handler">设置属性的handler</param>
+        /// <param name="sourceHandler">原始Handler</param>
+        public HttpHandlerOfSocketsHttpHandler(SocketsHttpHandler handler, HttpMessageHandler sourceHandler)
+        {
+            this.handler = handler;
+            this.InnerHanlder = sourceHandler;
         }
 
         /// <summary>

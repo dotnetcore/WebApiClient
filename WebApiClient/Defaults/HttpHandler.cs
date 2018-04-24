@@ -9,7 +9,7 @@ namespace WebApiClient.Defaults
     public static class HttpHandler
     {
         /// <summary>
-        /// 从HttpClientHandler获得
+        /// 从HttpClientHandler获得IHttpHandler包装
         /// </summary>
         /// <param name="handler">HttpClientHandler实例</param>
         /// <exception cref="ArgumentNullException"></exception>
@@ -25,7 +25,7 @@ namespace WebApiClient.Defaults
 
 #if NETCOREAPP2_1
         /// <summary>
-        /// 从SocketsHttpHandler获得
+        /// 从SocketsHttpHandler获得IHttpHandler包装
         /// </summary>
         /// <param name="handler">SocketsHttpHandler实例</param>
         /// <exception cref="ArgumentNullException"></exception>
@@ -41,7 +41,7 @@ namespace WebApiClient.Defaults
 #endif
 
         /// <summary>
-        /// 从HttpMessageHandler获得
+        /// 从HttpMessageHandler获得IHttpHandler包装
         /// </summary>
         /// <param name="handler">HttpMessageHandler实例</param>
         /// <exception cref="ArgumentException"></exception>
@@ -53,37 +53,38 @@ namespace WebApiClient.Defaults
             {
                 throw new ArgumentNullException(nameof(handler));
             }
-            return HttpHandler.FromHttpMessageHandler(handler);
+            return HttpHandler.FromHttpMessageHandler(handler, handler);
         }
 
         /// <summary>
         /// 获取HttpMessageHandler关联的HttpClientHandler或SocketsHttpHandler
         /// 返回其IHttpHandler包装
-        /// </summary>
-        /// <param name="handler"></param>
+        /// </summary>       
+        /// <param name="handler">当前Handler</param>
+        /// <param name="sourceHandler">原始的Handler</param>
         /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
-        private static IHttpHandler FromHttpMessageHandler(HttpMessageHandler handler)
+        private static IHttpHandler FromHttpMessageHandler(HttpMessageHandler handler, HttpMessageHandler sourceHandler)
         {
 
 #if NETCOREAPP2_1
-            if (handler is SocketsHttpHandler socketHandler)
+            if (handler is SocketsHttpHandler socketsHandler)
             {
-                return HttpHandler.From(socketHandler);
+                return new HttpHandlerOfSocketsHttpHandler(socketsHandler, sourceHandler);
             }
 #endif
             if (handler is HttpClientHandler clientHandler)
             {
-                return HttpHandler.From(clientHandler);
+                return new HttpHandlerOfHttpClientHandler(clientHandler, sourceHandler);
             }
 
             if (handler is DelegatingHandler delegatingHandler)
             {
-                return HttpHandler.FromHttpMessageHandler(delegatingHandler.InnerHandler);
+                return HttpHandler.FromHttpMessageHandler(delegatingHandler.InnerHandler, sourceHandler);
             }
 
             var message = "参数必须为HttpClientHandler、SocketsHttpHandler或DelegatingHandler类型";
-            throw new ArgumentException(message, nameof(handler));
+            throw new ArgumentException(message, nameof(sourceHandler));
         }
 
         /// <summary>

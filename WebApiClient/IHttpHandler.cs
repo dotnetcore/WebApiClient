@@ -13,8 +13,7 @@ namespace WebApiClient
     public interface IHttpHandler : IDisposable
     {
         /// <summary>
-        /// 获取的原始Handler对象
-        /// 该对象为HttpClientHandler或SocketsHttpHandler
+        /// 获取内部原始的Handler对象
         /// </summary>
         HttpMessageHandler InnerHanlder { get; }
 

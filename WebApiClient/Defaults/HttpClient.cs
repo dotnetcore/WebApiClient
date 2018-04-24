@@ -14,16 +14,6 @@ namespace WebApiClient.Defaults
     public class HttpClient : IHttpClient
     {
         /// <summary>
-        /// messageHandler实例
-        /// </summary>
-        private HttpMessageHandler messageHandler;
-
-        /// <summary>
-        /// HttpClient实例
-        /// </summary>
-        private System.Net.Http.HttpClient httpClient;
-
-        /// <summary>
         /// 是否已释放
         /// </summary>
         private bool isDisposed;
@@ -34,24 +24,29 @@ namespace WebApiClient.Defaults
         private long pendingCount = 0L;
 
         /// <summary>
+        /// HttpClient实例
+        /// </summary>
+        private System.Net.Http.HttpClient httpClient;
+
+
+        /// <summary>
         /// 是否支持创建Handler
         /// </summary>
         private readonly bool supportCreateHandler = false;
 
+
         /// <summary>
-        /// 获取关联的Http处理对象
+        /// 获取关联的Http处理对象的IHttpHandler包装
         /// </summary>
         public IHttpHandler Handler { get; private set; }
+
 
         /// <summary>
         /// 获取默认的请求头管理对象
         /// </summary>
         public HttpRequestHeaders DefaultRequestHeaders
         {
-            get
-            {
-                return this.httpClient.DefaultRequestHeaders;
-            }
+            get => this.httpClient.DefaultRequestHeaders;
         }
 
         /// <summary>
@@ -59,14 +54,8 @@ namespace WebApiClient.Defaults
         /// </summary>
         public TimeSpan Timeout
         {
-            get
-            {
-                return this.httpClient.Timeout;
-            }
-            set
-            {
-                this.httpClient.Timeout = value;
-            }
+            get => this.httpClient.Timeout;
+            set => this.httpClient.Timeout = value;
         }
 
         /// <summary>
@@ -74,14 +63,8 @@ namespace WebApiClient.Defaults
         /// </summary>
         public long MaxResponseContentBufferSize
         {
-            get
-            {
-                return this.httpClient.MaxResponseContentBufferSize;
-            }
-            set
-            {
-                this.httpClient.MaxResponseContentBufferSize = value;
-            }
+            get => this.httpClient.MaxResponseContentBufferSize;
+            set => this.httpClient.MaxResponseContentBufferSize = value;
         }
 
         /// <summary>
@@ -114,18 +97,8 @@ namespace WebApiClient.Defaults
         private HttpClient(HttpMessageHandler handler, bool disposeHandler, bool supportCreateHandler)
         {
             this.supportCreateHandler = supportCreateHandler;
-            if (handler == null)
-            {
-                this.Handler = this.CreateIHandler();
-                this.messageHandler = this.Handler.InnerHanlder;
-                this.httpClient = new System.Net.Http.HttpClient(this.messageHandler, disposeHandler);
-            }
-            else
-            {
-                this.Handler = HttpHandler.From(handler);
-                this.messageHandler = handler;
-                this.httpClient = new System.Net.Http.HttpClient(this.messageHandler, disposeHandler);
-            }
+            this.Handler = handler == null ? this.CreateIHandler() : HttpHandler.From(handler);
+            this.httpClient = new System.Net.Http.HttpClient(this.Handler.InnerHanlder, disposeHandler);
         }
 
         /// <summary>
@@ -236,10 +209,9 @@ namespace WebApiClient.Defaults
 
             var client = new System.Net.Http.HttpClient(handler.InnerHanlder);
             CopyProperties(this.httpClient, client);
-            this.httpClient.Dispose();
 
+            this.httpClient.Dispose();
             this.httpClient = client;
-            this.messageHandler = handler.InnerHanlder;
             this.Handler = handler;
         }
 
