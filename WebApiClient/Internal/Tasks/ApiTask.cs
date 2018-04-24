@@ -177,6 +177,7 @@ namespace WebApiClient
 
                 var client = context.HttpApiConfig.HttpClient;
                 context.ResponseMessage = await client.SendAsync(context.RequestMessage);
+                var result = await apiAction.Return.Attribute.GetTaskResult(context);
 
                 foreach (var filter in globalFilters)
                 {
@@ -187,8 +188,7 @@ namespace WebApiClient
                 {
                     await filter.OnEndRequestAsync(context);
                 }
-
-                return await apiAction.Return.Attribute.GetTaskResult(context);
+                return result;
             }
 
 
