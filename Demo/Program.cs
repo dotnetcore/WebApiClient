@@ -13,43 +13,14 @@ namespace Demo
 {
     class Program
     {
-        private static long totalProxyCount = 0;
-        private static int completedProxyCount = 0;
-
         static void Main(string[] args)
         {
             HttpServer.Start(9999);
-            Program.RunIUserApi(1).ContinueWith(t => ScanProxy());
+            Program.RunIUserApi(1);
             Console.ReadLine();
         }
 
-        /// <summary>
-        /// 扫描代理ip
-        /// </summary>
-        static async void ScanProxy()
-        {
-            var timeout = TimeSpan.FromMilliseconds(500d);
-            var target = new Uri("http://www.baidu.com");
-
-            var proxyValidators = HttpProxy
-                .Range(IPAddress.Parse("221.122.13.1"), 8080, 9999)
-                .Select(p => p.ToValidator());
-
-            var tasks = proxyValidators.Select(async v =>
-            {
-                Interlocked.Increment(ref totalProxyCount);
-                if (await v.ValidateAsync(target, timeout) == HttpStatusCode.OK)
-                {
-                    Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss.fff")}：扫描到代理服务：{v}");
-                }
-                var completed = Interlocked.Increment(ref completedProxyCount);
-                Console.Title = $"代理扫描进度：{completed}/{Interlocked.Read(ref totalProxyCount)}";
-            });
-            await Task.WhenAll(tasks);
-        }
-
-
-        static async Task RunIUserApi(int loop = 1)
+        static async void RunIUserApi(int loop = 1)
         {
             var watch = new Stopwatch();
             watch.Start();
@@ -82,24 +53,9 @@ namespace Demo
 
             var aboutResult = await userApiClient.GetAboutAsync(
                 "http://localhost:9999/webapi/user/about",
-                "Basic eW91ck5hbWU6MTIzNDU2",
-                user,
-                "some -value");
+                "Basic eW91ck5hbWU6MTIzNDU2", user, "some -value");
 
             var user1 = await userApiClient.GetByIdAsync("id001");
-
-            // RX
-            userApiClient
-                .GetByIdAsync("id001")
-               .ToObservable()
-               .Subscribe(r =>
-               {
-                   Console.WriteLine(r);
-               }, ex =>
-               {
-                   Console.WriteLine(ex);
-               });
-
             var user2 = await userApiClient.GetByAccountAsync("laojiu");
 
             // Retry & Handle
@@ -110,7 +66,6 @@ namespace Demo
                 .HandleAsDefaultWhenException();
 
             var user4 = await userApiClient.UpdateWithJsonAsync(user);
-
             var user5 = await userApiClient.UpdateWithXmlAsync(user);
 
             // Upload Files
