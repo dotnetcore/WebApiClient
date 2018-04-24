@@ -192,6 +192,29 @@ namespace WebApiClient
         }
 
         /// <summary>
+        /// 获取哈希值
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return $"{this.Host}{this.Port}{this.UserName}{this.Port}".GetHashCode();
+        }
+
+        /// <summary>
+        /// 返回和obj是否相等
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            if (obj is HttpProxy proxy)
+            {
+                return proxy.GetHashCode() == this.GetHashCode();
+            }
+            return false;
+        }
+
+        /// <summary>
         /// 转换为代理验证器
         /// </summary>
         /// <returns></returns>
@@ -302,6 +325,31 @@ namespace WebApiClient
                 var bytes = BitConverter.GetBytes(value);
                 return new IPAddress(bytes);
             }
+        }
+
+
+        /// <summary>
+        /// 比较两个代理是否等效
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public static bool IsProxyEquals(IWebProxy x, IWebProxy y)
+        {
+            if (x == null && y == null)
+            {
+                return true;
+            }
+
+            if (x == null || y == null)
+            {
+                return false;
+            }
+
+            var destination = new Uri("http://www.webapiclient.com");
+            var xProxy = FromWebProxy(x, destination);
+            var yProxy = FromWebProxy(y, destination);
+            return xProxy.GetHashCode() == yProxy.GetHashCode();
         }
     }
 }

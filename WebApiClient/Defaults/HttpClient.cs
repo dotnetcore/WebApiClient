@@ -28,7 +28,6 @@ namespace WebApiClient.Defaults
         /// </summary>
         private System.Net.Http.HttpClient httpClient;
 
-
         /// <summary>
         /// 是否支持创建Handler
         /// </summary>
@@ -181,7 +180,7 @@ namespace WebApiClient.Defaults
                 return false;
             }
 
-            if (IsProxyEquals(this.Handler.Proxy, proxy) == true)
+            if (HttpProxy.IsProxyEquals(this.Handler.Proxy, proxy) == true)
             {
                 return false;
             }
@@ -202,17 +201,17 @@ namespace WebApiClient.Defaults
         /// </summary>
         private void InitWithoutProxy()
         {
-            var handler = this.CreateIHandler();
-            CopyProperties(this.Handler.InnerHanlder, handler.InnerHanlder);
-            handler.UseProxy = false;
-            handler.Proxy = null;
+            var newHandler = this.CreateIHandler();
+            Property.CopyProperties(this.Handler.InnerHanlder, newHandler.InnerHanlder);
+            newHandler.UseProxy = false;
+            newHandler.Proxy = null;
 
-            var client = new System.Net.Http.HttpClient(handler.InnerHanlder);
-            CopyProperties(this.httpClient, client);
+            var newClient = new System.Net.Http.HttpClient(newHandler.InnerHanlder);
+            Property.CopyProperties(this.httpClient, newClient);
 
             this.httpClient.Dispose();
-            this.httpClient = client;
-            this.Handler = handler;
+            this.httpClient = newClient;
+            this.Handler = newHandler;
         }
 
         /// <summary>
@@ -226,73 +225,6 @@ namespace WebApiClient.Defaults
                 throw new NotSupportedException("不支持创建新的HttpClientHandler实例");
             }
             return HttpHandler.CreateHanlder();
-        }
-
-        /// <summary>
-        /// 复制source的属性到target
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        private static bool CopyProperties<T>(T source, T target)
-        {
-            var state = true;
-            var properties = source.GetType()
-                .GetProperties()
-                .Where(item => item.CanRead && item.CanWrite);
-
-            foreach (var propery in properties)
-            {
-                try
-                {
-                    var value = propery.GetValue(source);
-                    propery.SetValue(target, value);
-                }
-                catch (Exception)
-                {
-                    state = false;
-                }
-            }
-            return state;
-        }
-
-        /// <summary>
-        /// 目录网址
-        /// </summary>
-        private static readonly Uri destination = new Uri("http://www.webapiclient.com");
-
-        /// <summary>
-        /// 比较代理是否相等
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        private static bool IsProxyEquals(IWebProxy x, IWebProxy y)
-        {
-            if (x == null && y == null)
-            {
-                return true;
-            }
-
-            if (x == null || y == null)
-            {
-                return false;
-            }
-
-            if (x.GetProxy(destination) != y.GetProxy(destination))
-            {
-                return false;
-            }
-
-            if (x.Credentials == null && y.Credentials == null)
-            {
-                return true;
-            }
-
-            if (x.Credentials == null || y.Credentials == null)
-            {
-                return false;
-            }
-            return true;
         }
 
         /// <summary>
