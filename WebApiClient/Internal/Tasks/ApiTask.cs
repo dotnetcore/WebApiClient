@@ -130,8 +130,8 @@ namespace WebApiClient
 
                 try
                 {
-                    var result = await this.RequestAsync(context);
-                    return (TResult)result;
+                    await this.RequestAsync(context);
+                    return (TResult)context.Result;
                 }
                 catch (Exception ex)
                 {
@@ -147,7 +147,7 @@ namespace WebApiClient
             /// </summary>
             /// <param name="context">上下文</param>
             /// <returns></returns>
-            private async Task<object> RequestAsync(ApiActionContext context)
+            private async Task RequestAsync(ApiActionContext context)
             {
                 var apiAction = context.ApiActionDescriptor;
                 var globalFilters = context.HttpApiConfig.GlobalFilters;
@@ -177,7 +177,7 @@ namespace WebApiClient
 
                 var client = context.HttpApiConfig.HttpClient;
                 context.ResponseMessage = await client.SendAsync(context.RequestMessage);
-                var result = await apiAction.Return.Attribute.GetTaskResult(context);
+                context.Result = await apiAction.Return.Attribute.GetTaskResult(context);
 
                 foreach (var filter in globalFilters)
                 {
@@ -188,7 +188,6 @@ namespace WebApiClient
                 {
                     await filter.OnEndRequestAsync(context);
                 }
-                return result;
             }
 
 

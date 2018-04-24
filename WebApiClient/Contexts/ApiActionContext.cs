@@ -49,7 +49,12 @@ namespace WebApiClient.Contexts
         public HttpResponseMessage ResponseMessage { get; internal set; }
 
         /// <summary>
-        /// 获取执行产生的异常
+        /// 获取调用Api得到的结果
+        /// </summary>
+        public object Result { get; internal set; }
+
+        /// <summary>
+        /// 获取调用Api产生的异常
         /// </summary>
         public Exception Exception { get; internal set; }
     }
