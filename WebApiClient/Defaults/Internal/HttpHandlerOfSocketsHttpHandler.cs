@@ -22,7 +22,7 @@ namespace WebApiClient.Defaults
         /// 获取内部原始的Handler对象
         /// </summary>
         public HttpMessageHandler InnerHanlder { get; private set; }
-       
+
 
         /// <summary>
         /// 获取是否支持重定向设置
@@ -39,23 +39,33 @@ namespace WebApiClient.Defaults
         /// </summary>
         public bool SupportsAutomaticDecompression { get; } = true;
         
+
         /// <summary>
         /// 获取或设置最大请求内容字节长度
         /// </summary>
-        public long MaxRequestContentBufferSize { get; set; } = 0;        
+        public long MaxRequestContentBufferSize
+        {
+            get => throw new NotSupportedException();
+            set => throw new NotSupportedException();
+        }
 
         /// <summary>
         /// 获取或设置客户端证书选项
         /// </summary>
-        public ClientCertificateOption ClientCertificateOptions { get; set; } = ClientCertificateOption.Manual;
+        public ClientCertificateOption ClientCertificateOptions
+        {
+            get => throw new NotSupportedException();
+            set => throw new NotSupportedException();
+        }
 
         /// <summary>
         /// 获取或设置是否使用默认的凭证信息
         /// </summary>
-        public bool UseDefaultCredentials { get; set; } = true;
-
-
-
+        public bool UseDefaultCredentials
+        {
+            get => throw new NotSupportedException();
+            set => throw new NotSupportedException();
+        }
 
         /// <summary>
         /// 获取或设置是否使用CookieContainer来管理Cookies
