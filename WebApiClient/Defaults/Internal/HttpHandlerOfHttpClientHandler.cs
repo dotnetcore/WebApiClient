@@ -36,13 +36,16 @@ namespace WebApiClient.Defaults
         /// </summary>
         public bool SupportsRedirectConfiguration
         {
-            get => this.handler.SupportsAutomaticDecompression;
+            get => this.handler.SupportsRedirectConfiguration;
         }
 
         /// <summary>
         /// 获取是否支持代理
         /// </summary>
-        public bool SupportsProxy { get => this.handler.SupportsProxy; }
+        public bool SupportsProxy
+        {
+            get => this.handler.SupportsProxy;
+        }
 
         /// <summary>
         /// 获取是否支持压缩传输

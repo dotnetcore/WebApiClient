@@ -22,15 +22,7 @@ namespace WebApiClient.Defaults
         /// 获取内部原始的Handler对象
         /// </summary>
         public HttpMessageHandler InnerHanlder { get; private set; }
-
-        /// <summary>
-        /// 获取或设置是否使用CookieContainer来管理Cookies
-        /// </summary>
-        public bool UseCookies
-        {
-            get => this.handler.UseCookies;
-            set => this.handler.UseCookies = value;
-        }
+       
 
         /// <summary>
         /// 获取是否支持重定向设置
@@ -46,6 +38,33 @@ namespace WebApiClient.Defaults
         /// 获取是否支持压缩传输
         /// </summary>
         public bool SupportsAutomaticDecompression { get; } = true;
+        
+        /// <summary>
+        /// 获取或设置最大请求内容字节长度
+        /// </summary>
+        public long MaxRequestContentBufferSize { get; set; } = 0;        
+
+        /// <summary>
+        /// 获取或设置客户端证书选项
+        /// </summary>
+        public ClientCertificateOption ClientCertificateOptions { get; set; } = ClientCertificateOption.Manual;
+
+        /// <summary>
+        /// 获取或设置是否使用默认的凭证信息
+        /// </summary>
+        public bool UseDefaultCredentials { get; set; } = true;
+
+
+
+
+        /// <summary>
+        /// 获取或设置是否使用CookieContainer来管理Cookies
+        /// </summary>
+        public bool UseCookies
+        {
+            get => this.handler.UseCookies;
+            set => this.handler.UseCookies = value;
+        }
 
         /// <summary>
         /// 获取或设置代理
@@ -74,10 +93,6 @@ namespace WebApiClient.Defaults
             set => this.handler.MaxAutomaticRedirections = value;
         }
 
-        /// <summary>
-        /// 获取或设置最大请求内容字节长度
-        /// </summary>
-        public long MaxRequestContentBufferSize { get; set; } = 0;
 
         /// <summary>
         /// 获取或设置凭证信息
@@ -98,11 +113,6 @@ namespace WebApiClient.Defaults
         }
 
         /// <summary>
-        /// 获取或设置客户端证书选项
-        /// </summary>
-        public ClientCertificateOption ClientCertificateOptions { get; set; } = ClientCertificateOption.Manual;
-
-        /// <summary>
         /// 获取或设置压缩方式
         /// </summary>
         public DecompressionMethods AutomaticDecompression
@@ -119,11 +129,6 @@ namespace WebApiClient.Defaults
             get => this.handler.AllowAutoRedirect;
             set => this.handler.AllowAutoRedirect = value;
         }
-
-        /// <summary>
-        /// 获取或设置是否使用默认的凭证信息
-        /// </summary>
-        public bool UseDefaultCredentials { get; set; } = true;
 
 
         /// <summary>
