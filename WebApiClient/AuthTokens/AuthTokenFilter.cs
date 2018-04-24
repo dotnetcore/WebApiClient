@@ -90,9 +90,9 @@ namespace WebApiClient.AuthTokens
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        Task<bool> IApiActionFilter.OnExceptionAsync(ApiActionContext context)
+        Task IApiActionFilter.OnExceptionAsync(ApiActionContext context)
         {
-            return Task.FromResult(false);
+            return ApiTask.CompletedTask;
         }
 
         /// <summary>

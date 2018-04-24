@@ -25,10 +25,9 @@ namespace WebApiClient
 
         /// <summary>
         /// 执行异常时
-        /// 返回true终止传递异常给下一下过滤器
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        Task<bool> OnExceptionAsync(ApiActionContext context);
+        Task OnExceptionAsync(ApiActionContext context);
     }
 }

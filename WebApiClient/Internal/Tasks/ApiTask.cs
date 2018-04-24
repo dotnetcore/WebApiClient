@@ -204,18 +204,12 @@ namespace WebApiClient
 
                 foreach (var filter in globalFilters)
                 {
-                    if (await filter.OnExceptionAsync(context))
-                    {
-                        return;
-                    }
+                    await filter.OnExceptionAsync(context);
                 }
 
                 foreach (var filter in apiAction.Filters)
                 {
-                    if (await filter.OnExceptionAsync(context))
-                    {
-                        return;
-                    }
+                    await filter.OnExceptionAsync(context);
                 }
             }
         }

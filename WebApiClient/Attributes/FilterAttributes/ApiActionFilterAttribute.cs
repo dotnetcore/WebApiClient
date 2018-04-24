@@ -52,9 +52,9 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public virtual Task<bool> OnExceptionAsync(ApiActionContext context )
+        public virtual Task OnExceptionAsync(ApiActionContext context)
         {
-            return Task.FromResult(false);
+            return ApiTask.CompletedTask;
         }
     }
 }
