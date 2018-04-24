@@ -135,7 +135,8 @@ namespace WebApiClient
                 }
                 catch (Exception ex)
                 {
-                    await this.RaiseOnExceptionAsync(context, ex);
+                    context.Exception = ex;
+                    await this.RaiseOnExceptionAsync(context);
                     throw ex;
                 }
             }
@@ -195,16 +196,15 @@ namespace WebApiClient
             /// 触发异常过滤器的异常
             /// </summary>
             /// <param name="context">上下文</param>
-            /// <param name="exception">异常</param>
             /// <returns></returns>
-            private async Task RaiseOnExceptionAsync(ApiActionContext context, Exception exception)
+            private async Task RaiseOnExceptionAsync(ApiActionContext context)
             {
                 var apiAction = context.ApiActionDescriptor;
                 var globalFilters = context.HttpApiConfig.GlobalFilters;
 
                 foreach (var filter in globalFilters)
                 {
-                    if (await filter.OnExceptionAsync(context, exception))
+                    if (await filter.OnExceptionAsync(context))
                     {
                         return;
                     }
@@ -212,7 +212,7 @@ namespace WebApiClient
 
                 foreach (var filter in apiAction.Filters)
                 {
-                    if (await filter.OnExceptionAsync(context, exception))
+                    if (await filter.OnExceptionAsync(context))
                     {
                         return;
                     }

@@ -89,9 +89,8 @@ namespace WebApiClient.AuthTokens
         /// 返回true终止传递异常给下一下过滤器
         /// </summary>
         /// <param name="context">上下文</param>
-        /// <param name="exception"></param>
         /// <returns></returns>
-        Task<bool> IApiActionFilter.OnExceptionAsync(ApiActionContext context, Exception exception)
+        Task<bool> IApiActionFilter.OnExceptionAsync(ApiActionContext context)
         {
             return Task.FromResult(false);
         }

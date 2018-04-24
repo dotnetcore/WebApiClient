@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 
 namespace WebApiClient.Contexts
 {
@@ -46,5 +47,10 @@ namespace WebApiClient.Contexts
         /// 获取关联的HttpResponseMessage
         /// </summary>
         public HttpResponseMessage ResponseMessage { get; internal set; }
+
+        /// <summary>
+        /// 获取执行产生的异常
+        /// </summary>
+        public Exception Exception { get; internal set; }
     }
 }

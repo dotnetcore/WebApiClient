@@ -43,7 +43,7 @@ namespace WebApiClientTest
                 throw new NotImplementedException();
             }
 
-            public Task<bool> OnExceptionAsync(ApiActionContext context, Exception exception)
+            public Task<bool> OnExceptionAsync(ApiActionContext context)
             {
                 throw new NotImplementedException();
             }

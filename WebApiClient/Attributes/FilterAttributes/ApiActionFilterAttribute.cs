@@ -51,9 +51,8 @@ namespace WebApiClient.Attributes
         /// 返回true终止传递异常给下一下过滤器
         /// </summary>
         /// <param name="context">上下文</param>
-        /// <param name="exception"></param>
         /// <returns></returns>
-        public virtual Task<bool> OnExceptionAsync(ApiActionContext context, Exception exception)
+        public virtual Task<bool> OnExceptionAsync(ApiActionContext context )
         {
             return Task.FromResult(false);
         }
