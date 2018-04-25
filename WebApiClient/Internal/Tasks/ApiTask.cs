@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
-using System.Linq;
 
 namespace WebApiClient
 {
@@ -128,17 +128,8 @@ namespace WebApiClient
                     ResponseMessage = null
                 };
 
-                try
-                {
-                    await this.RequestAsync(context);
-                    return (TResult)context.Result;
-                }
-                catch (Exception ex)
-                {
-                    context.Exception = ex;
-                    await this.RaiseOnExceptionAsync(context);
-                    throw ex;
-                }
+                await this.RequestAsync(context);
+                return (TResult)context.Result;
             }
 
 
@@ -150,8 +141,6 @@ namespace WebApiClient
             private async Task RequestAsync(ApiActionContext context)
             {
                 var apiAction = context.ApiActionDescriptor;
-                var globalFilters = context.HttpApiConfig.GlobalFilters;
-
                 foreach (var actionAttribute in apiAction.Attributes)
                 {
                     await actionAttribute.BeforeRequestAsync(context);
@@ -165,51 +154,22 @@ namespace WebApiClient
                     }
                 }
 
-                foreach (var filter in globalFilters)
+                await context.ExecAllFiltersAsync(item => item.OnBeginRequestAsync);
+
+                try
                 {
-                    await filter.OnBeginRequestAsync(context);
+                    var client = context.HttpApiConfig.HttpClient;
+                    context.ResponseMessage = await client.SendAsync(context.RequestMessage);
+                    context.Result = await apiAction.Return.Attribute.GetTaskResult(context);
+                }
+                catch (Exception ex)
+                {
+                    context.Exception = ex;
+                    await context.ExecAllFiltersAsync(item => item.OnRequestExceptionAsync);
+                    throw ex;
                 }
 
-                foreach (var filter in apiAction.Filters)
-                {
-                    await filter.OnBeginRequestAsync(context);
-                }
-
-                var client = context.HttpApiConfig.HttpClient;
-                context.ResponseMessage = await client.SendAsync(context.RequestMessage);
-                context.Result = await apiAction.Return.Attribute.GetTaskResult(context);
-
-                foreach (var filter in globalFilters)
-                {
-                    await filter.OnEndRequestAsync(context);
-                }
-
-                foreach (var filter in apiAction.Filters)
-                {
-                    await filter.OnEndRequestAsync(context);
-                }
-            }
-
-
-            /// <summary>
-            /// 触发异常过滤器的异常
-            /// </summary>
-            /// <param name="context">上下文</param>
-            /// <returns></returns>
-            private async Task RaiseOnExceptionAsync(ApiActionContext context)
-            {
-                var apiAction = context.ApiActionDescriptor;
-                var globalFilters = context.HttpApiConfig.GlobalFilters;
-
-                foreach (var filter in globalFilters)
-                {
-                    await filter.OnExceptionAsync(context);
-                }
-
-                foreach (var filter in apiAction.Filters)
-                {
-                    await filter.OnExceptionAsync(context);
-                }
+                await context.ExecAllFiltersAsync(item => item.OnEndRequestAsync);
             }
         }
     }

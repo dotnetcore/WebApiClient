@@ -38,6 +38,7 @@ namespace WebApiClient.Attributes
 
         /// <summary>
         /// 请求完成之后
+        /// 
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
@@ -47,11 +48,11 @@ namespace WebApiClient.Attributes
         }
 
         /// <summary>
-        /// 执行异常时
+        /// 执行请求异常时
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public virtual Task OnExceptionAsync(ApiActionContext context)
+        public virtual Task OnRequestExceptionAsync(ApiActionContext context)
         {
             return ApiTask.CompletedTask;
         }

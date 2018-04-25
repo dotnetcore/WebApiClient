@@ -64,7 +64,7 @@ namespace WebApiClient
         /// <summary>
         /// 异步发送请求
         /// </summary>
-        /// <param name="request">请求消息</param>
+        /// <param name="request">请求消息</param>       
         /// <returns></returns>
         Task<HttpResponseMessage> SendAsync(HttpApiRequestMessage request);
     }

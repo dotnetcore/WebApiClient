@@ -85,12 +85,11 @@ namespace WebApiClient.AuthTokens
         }
 
         /// <summary>
-        /// 执行异常时
-        /// 返回true终止传递异常给下一下过滤器
+        /// 执行请求异常时
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        Task IApiActionFilter.OnExceptionAsync(ApiActionContext context)
+        Task IApiActionFilter.OnRequestExceptionAsync(ApiActionContext context)
         {
             return ApiTask.CompletedTask;
         }

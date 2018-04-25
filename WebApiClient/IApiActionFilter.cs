@@ -24,10 +24,10 @@ namespace WebApiClient
         Task OnEndRequestAsync(ApiActionContext context);
 
         /// <summary>
-        /// 执行异常时
+        /// 执行请求异常时
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        Task OnExceptionAsync(ApiActionContext context);
+        Task OnRequestExceptionAsync(ApiActionContext context);
     }
 }

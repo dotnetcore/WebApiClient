@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace WebApiClient.Contexts
 {
@@ -57,5 +58,23 @@ namespace WebApiClient.Contexts
         /// 获取调用Api产生的异常
         /// </summary>
         public Exception Exception { get; internal set; }
+
+        /// <summary>
+        /// 执行所有过滤器
+        /// </summary>
+        /// <param name="funcSelector">方法选择</param>
+        /// <returns></returns>
+        internal async Task ExecAllFiltersAsync(Func<IApiActionFilter, Func<ApiActionContext, Task>> funcSelector)
+        {
+            foreach (var filter in this.HttpApiConfig.GlobalFilters)
+            {
+                await funcSelector(filter)(this);
+            }
+
+            foreach (var filter in this.ApiActionDescriptor.Filters)
+            {
+                await funcSelector(filter)(this);
+            }
+        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using WebApiClient.Defaults;
-using WebApiClient;
+using HTTP = System.Net.Http;
 
 namespace WebApiClient
 {
@@ -40,22 +40,13 @@ namespace WebApiClient
         /// </summary>
         private readonly object syncRoot = new object();
 
+
         /// <summary>
         /// 获取配置的自定义数据的存储和访问容器
         /// </summary>
         public Tags Tags
         {
-            get
-            {
-                lock (this.syncRoot)
-                {
-                    if (this.tags == null)
-                    {
-                        this.tags = new Tags();
-                    }
-                    return this.tags;
-                }
-            }
+            get => this.GetTagsSafeSync();
         }
 
         /// <summary>
@@ -64,22 +55,7 @@ namespace WebApiClient
         /// <exception cref="ObjectDisposedException"></exception>
         public IHttpClient HttpClient
         {
-            get
-            {
-                lock (this.syncRoot)
-                {
-                    if (this.IsDisposed == true)
-                    {
-                        throw new ObjectDisposedException(this.GetType().Name);
-                    }
-
-                    if (this.httpClient == null)
-                    {
-                        this.httpClient = new HttpClient();
-                    }
-                    return this.httpClient;
-                }
-            }
+            get => this.GetHttpClientSafeSync();
         }
 
         /// <summary>
@@ -131,7 +107,7 @@ namespace WebApiClient
         /// <param name="disposeHandler">用Dispose方法时，是否也Dispose handler</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public HttpApiConfig(System.Net.Http.HttpMessageHandler handler, bool disposeHandler = false)
+        public HttpApiConfig(HTTP.HttpMessageHandler handler, bool disposeHandler = false)
             : this(new HttpClient(handler, disposeHandler))
         {
         }
@@ -143,6 +119,44 @@ namespace WebApiClient
         public HttpApiConfig(IHttpClient client)
         {
             this.httpClient = client;
+        }
+
+        /// <summary>
+        /// 以同步安全方式获取Tags实例
+        /// </summary>
+        /// <returns></returns>
+        private Tags GetTagsSafeSync()
+        {
+            lock (this.syncRoot)
+            {
+                if (this.tags == null)
+                {
+                    this.tags = new Tags();
+                }
+                return this.tags;
+            }
+        }
+
+        /// <summary>
+        /// 以同步安全方式获取IHttpClient实例
+        /// </summary>
+        /// <exception cref="ObjectDisposedException"></exception>
+        /// <returns></returns>
+        private IHttpClient GetHttpClientSafeSync()
+        {
+            lock (this.syncRoot)
+            {
+                if (this.IsDisposed == true)
+                {
+                    throw new ObjectDisposedException(this.GetType().Name);
+                }
+
+                if (this.httpClient == null)
+                {
+                    this.httpClient = new HttpClient();
+                }
+                return this.httpClient;
+            }
         }
 
         #region IDisposable
