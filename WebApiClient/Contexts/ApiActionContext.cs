@@ -59,12 +59,56 @@ namespace WebApiClient.Contexts
         /// </summary>
         public Exception Exception { get; internal set; }
 
+
+        /// <summary>
+        /// 准备请求数据
+        /// </summary>
+        /// <returns></returns>
+        internal async Task PrepareRequestAsync()
+        {
+            var apiAction = this.ApiActionDescriptor;
+            foreach (var actionAttribute in apiAction.Attributes)
+            {
+                await actionAttribute.BeforeRequestAsync(this);
+            }
+
+            foreach (var parameter in apiAction.Parameters)
+            {
+                foreach (var parameterAttribute in parameter.Attributes)
+                {
+                    await parameterAttribute.BeforeRequestAsync(this, parameter);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 执行请求
+        /// </summary>
+        /// <returns></returns>
+        internal async Task ExecRequestAsync()
+        {
+            try
+            {
+                var apiAction = this.ApiActionDescriptor;
+                var client = this.HttpApiConfig.HttpClient;
+
+                this.ResponseMessage = await client.SendAsync(this.RequestMessage);
+                this.Result = await apiAction.Return.Attribute.GetTaskResult(this);
+            }
+            catch (Exception ex)
+            {
+                this.Exception = ex;
+                await this.ExecFiltersAsync(filter => filter.OnRequestExceptionAsync);
+                throw ex;
+            }
+        }
+
         /// <summary>
         /// 执行所有过滤器
         /// </summary>
         /// <param name="funcSelector">方法选择</param>
         /// <returns></returns>
-        internal async Task ExecAllFiltersAsync(Func<IApiActionFilter, Func<ApiActionContext, Task>> funcSelector)
+        internal async Task ExecFiltersAsync(Func<IApiActionFilter, Func<ApiActionContext, Task>> funcSelector)
         {
             foreach (var filter in this.HttpApiConfig.GlobalFilters)
             {

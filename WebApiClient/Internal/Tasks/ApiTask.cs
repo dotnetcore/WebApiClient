@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -125,51 +124,17 @@ namespace WebApiClient
                     ApiActionDescriptor = this.apiActionDescriptor,
                     HttpApiConfig = this.httpApiConfig,
                     RequestMessage = new HttpApiRequestMessage { RequestUri = this.httpApiConfig.HttpHost },
-                    ResponseMessage = null
+                    ResponseMessage = null,
+                    Exception = null,
+                    Result = null
                 };
 
-                await this.RequestAsync(context);
+                await context.PrepareRequestAsync();
+                await context.ExecFiltersAsync(filter => filter.OnBeginRequestAsync);
+                await context.ExecRequestAsync();
+                await context.ExecFiltersAsync(filter => filter.OnEndRequestAsync);
+
                 return (TResult)context.Result;
-            }
-
-
-            /// <summary>
-            /// 异步执行http请求
-            /// </summary>
-            /// <param name="context">上下文</param>
-            /// <returns></returns>
-            private async Task RequestAsync(ApiActionContext context)
-            {
-                var apiAction = context.ApiActionDescriptor;
-                foreach (var actionAttribute in apiAction.Attributes)
-                {
-                    await actionAttribute.BeforeRequestAsync(context);
-                }
-
-                foreach (var parameter in apiAction.Parameters)
-                {
-                    foreach (var parameterAttribute in parameter.Attributes)
-                    {
-                        await parameterAttribute.BeforeRequestAsync(context, parameter);
-                    }
-                }
-
-                await context.ExecAllFiltersAsync(item => item.OnBeginRequestAsync);
-
-                try
-                {
-                    var client = context.HttpApiConfig.HttpClient;
-                    context.ResponseMessage = await client.SendAsync(context.RequestMessage);
-                    context.Result = await apiAction.Return.Attribute.GetTaskResult(context);
-                }
-                catch (Exception ex)
-                {
-                    context.Exception = ex;
-                    await context.ExecAllFiltersAsync(item => item.OnRequestExceptionAsync);
-                    throw ex;
-                }
-
-                await context.ExecAllFiltersAsync(item => item.OnEndRequestAsync);
             }
         }
     }
