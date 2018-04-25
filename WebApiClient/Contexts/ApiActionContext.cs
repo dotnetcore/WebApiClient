@@ -83,9 +83,10 @@ namespace WebApiClient.Contexts
 
         /// <summary>
         /// 执行请求
+        /// 返回是否执行成功
         /// </summary>
         /// <returns></returns>
-        internal async Task ExecRequestAsync()
+        internal async Task<bool> ExecRequestAsync()
         {
             try
             {
@@ -94,10 +95,12 @@ namespace WebApiClient.Contexts
 
                 this.ResponseMessage = await client.SendAsync(this.RequestMessage);
                 this.Result = await apiAction.Return.Attribute.GetTaskResult(this);
+                return true;
             }
             catch (Exception ex)
             {
                 this.Exception = ex;
+                return false;
             }
         }
 

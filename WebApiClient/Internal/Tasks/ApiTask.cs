@@ -131,14 +131,11 @@ namespace WebApiClient
 
                 await context.PrepareRequestAsync();
                 await context.ExecFiltersAsync(filter => filter.OnBeginRequestAsync);
-                await context.ExecRequestAsync();
+
+                var state = await context.ExecRequestAsync();
                 await context.ExecFiltersAsync(filter => filter.OnEndRequestAsync);
 
-                if (context.Exception != null)
-                {
-                    throw context.Exception;
-                }
-                return (TResult)context.Result;
+                return state ? (TResult)context.Result : throw context.Exception;
             }
         }
     }
