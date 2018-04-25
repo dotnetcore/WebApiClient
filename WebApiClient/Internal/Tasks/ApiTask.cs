@@ -134,6 +134,10 @@ namespace WebApiClient
                 await context.ExecRequestAsync();
                 await context.ExecFiltersAsync(filter => filter.OnEndRequestAsync);
 
+                if (context.Exception != null)
+                {
+                    throw context.Exception;
+                }
                 return (TResult)context.Result;
             }
         }

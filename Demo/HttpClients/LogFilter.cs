@@ -32,6 +32,11 @@ namespace Demo.HttpClients
         /// <returns></returns>
         public override async Task OnEndRequestAsync(ApiActionContext context)
         {
+            if (context.Exception != null)
+            {
+                return;
+            }
+
             var request = context.RequestMessage;
             var dateTime = DateTime.Now.ToString("HH:mm:ss.fff");
             var timeSpan = DateTime.Now.Subtract(context.Tags["BeginTime"].As<DateTime>());

@@ -98,8 +98,6 @@ namespace WebApiClient.Contexts
             catch (Exception ex)
             {
                 this.Exception = ex;
-                await this.ExecFiltersAsync(filter => filter.OnRequestExceptionAsync);
-                throw ex;
             }
         }
 

@@ -85,16 +85,6 @@ namespace WebApiClient.AuthTokens
         }
 
         /// <summary>
-        /// 执行请求异常时
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <returns></returns>
-        Task IApiActionFilter.OnRequestExceptionAsync(ApiActionContext context)
-        {
-            return ApiTask.CompletedTask;
-        }
-
-        /// <summary>
         /// 准备请求之前
         /// </summary>
         /// <param name="context">上下文</param>
