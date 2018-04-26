@@ -62,5 +62,16 @@ namespace WebApiClientTest
             Assert.True(proxys.First().Host == "221.122.0.1");
             Assert.True(proxys.Last().Host == "221.122.0.5");
         }
+
+        [Fact]
+        public void IsProxyEqualsTest()
+        {
+            var x = new HttpProxy("localhost", 80, "abc", "123");
+            var y = new HttpProxy("localhost", 80, "abc", "456");
+            var z = new WebProxy("http://localhost") { Credentials = new NetworkCredential("abc", "456") };
+
+            Assert.False(HttpProxy.IsProxyEquals(x, y));
+            Assert.True(HttpProxy.IsProxyEquals(z, y));
+        }
     }
 }

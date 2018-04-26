@@ -197,7 +197,7 @@ namespace WebApiClient
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return $"{this.Host}{this.Port}{this.UserName}{this.Port}".GetHashCode();
+            return $"{this.Host}{this.Port}{this.UserName}{this.Password}".GetHashCode();
         }
 
         /// <summary>
@@ -298,13 +298,15 @@ namespace WebApiClient
         private static int IPAddressToInt32(IPAddress ip)
         {
             var bytes = ip.GetAddressBytes();
-            if (BitConverter.IsLittleEndian == true)
+            var value = BitConverter.ToInt32(bytes, 0);
+
+            if (BitConverter.IsLittleEndian == false)
             {
-                return BitConverter.ToInt32(bytes.Reverse().ToArray(), 0);
+                return value;
             }
             else
             {
-                return BitConverter.ToInt32(bytes, 0);
+                return IPAddress.NetworkToHostOrder(value);
             }
         }
 
@@ -315,18 +317,16 @@ namespace WebApiClient
         /// <returns></returns>
         private static IPAddress Int32ToIPAddress(int value)
         {
-            if (BitConverter.IsLittleEndian == true)
+            if (BitConverter.IsLittleEndian == false)
             {
-                var bytes = BitConverter.GetBytes(value).Reverse().ToArray();
-                return new IPAddress(bytes);
+                return new IPAddress(value);
             }
             else
             {
-                var bytes = BitConverter.GetBytes(value);
-                return new IPAddress(bytes);
+                value = IPAddress.HostToNetworkOrder(value);
+                return new IPAddress(value);
             }
         }
-
 
         /// <summary>
         /// 比较两个代理是否等效
