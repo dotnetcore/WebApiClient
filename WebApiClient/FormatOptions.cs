@@ -76,9 +76,13 @@ namespace WebApiClient
         /// </summary>
         /// <param name="datetime">时间</param>
         /// <returns></returns>
-        public string FormatDateTime(DateTime datetime)
+        public string FormatDateTime(DateTime? datetime)
         {
-            return datetime.ToString(this.DateTimeFormat, DateTimeFormatInfo.InvariantInfo);
+            if (datetime.HasValue == false)
+            {
+                return null;
+            }
+            return datetime.Value.ToString(this.DateTimeFormat, DateTimeFormatInfo.InvariantInfo);
         }
 
         /// <summary>

@@ -297,17 +297,12 @@ namespace WebApiClient
         /// <returns></returns>
         private static int IPAddressToInt32(IPAddress ip)
         {
-            var bytes = ip.GetAddressBytes();
-            var value = BitConverter.ToInt32(bytes, 0);
-
-            if (BitConverter.IsLittleEndian == false)
+            var value = BitConverter.ToInt32(ip.GetAddressBytes(), 0);
+            if (BitConverter.IsLittleEndian == true)
             {
-                return value;
+                value = IPAddress.NetworkToHostOrder(value);
             }
-            else
-            {
-                return IPAddress.NetworkToHostOrder(value);
-            }
+            return value;
         }
 
         /// <summary>
@@ -317,15 +312,11 @@ namespace WebApiClient
         /// <returns></returns>
         private static IPAddress Int32ToIPAddress(int value)
         {
-            if (BitConverter.IsLittleEndian == false)
-            {
-                return new IPAddress(value);
-            }
-            else
+            if (BitConverter.IsLittleEndian == true)
             {
                 value = IPAddress.HostToNetworkOrder(value);
-                return new IPAddress(value);
             }
+            return new IPAddress(value);
         }
 
         /// <summary>
