@@ -66,6 +66,10 @@ namespace WebApiClient.Defaults
         /// <returns></returns>
         private static IHttpHandler FromHttpMessageHandler(HttpMessageHandler handler, HttpMessageHandler sourceHandler)
         {
+            if (handler is HttpClientHandler clientHandler)
+            {
+                return new HttpHandlerOfHttpClientHandler(clientHandler, sourceHandler);
+            }
 
 #if NETCOREAPP2_1
             if (handler is SocketsHttpHandler socketsHandler)
@@ -73,10 +77,6 @@ namespace WebApiClient.Defaults
                 return new HttpHandlerOfSocketsHttpHandler(socketsHandler, sourceHandler);
             }
 #endif
-            if (handler is HttpClientHandler clientHandler)
-            {
-                return new HttpHandlerOfHttpClientHandler(clientHandler, sourceHandler);
-            }
 
             if (handler is DelegatingHandler delegatingHandler)
             {
@@ -89,29 +89,11 @@ namespace WebApiClient.Defaults
 
         /// <summary>
         /// 创建默认的IHanlder
-        /// .net core2.1或以上使用SocketsHttpHandler
         /// </summary>
         /// <returns></returns>
         public static IHttpHandler CreateHanlder()
         {
-#if NETCOREAPP2_1
-            var set = AppContext.TryGetSwitch("System.Net.Http.UseSocketsHttpHandler", out bool enable);
-            if (set && enable == false)
-            {
-                return new DefaultHttpClientHandler();
-            }
-
-            var handler = new SocketsHttpHandler
-            {
-                UseProxy = false,
-                Proxy = null,
-                MaxConnectionsPerServer = HttpApiClient.ConnectionLimit
-            };
-            handler.SslOptions.RemoteCertificateValidationCallback = (a, b, c, d) => true;
-            return HttpHandler.From(handler);
-#else
             return new DefaultHttpClientHandler();
-#endif
         }
     }
 }
