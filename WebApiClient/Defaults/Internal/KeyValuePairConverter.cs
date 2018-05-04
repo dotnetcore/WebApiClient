@@ -1,32 +1,58 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace WebApiClient.Defaults.KeyValueFormats.Converters
+namespace WebApiClient.Defaults
 {
     /// <summary>
-    /// 表示KeyValuePair类型转换器
+    /// 表示KeyValuePair转换器
     /// </summary>
-    public class KeyValuePairConverter : ConverterBase
+    class KeyValuePairConverter : JsonConverter
     {
         /// <summary>
-        /// 执行转换
+        /// KeyValuePair泛型
         /// </summary>
-        /// <param name="context">转换上下文</param>
+        private static readonly Type keyValuePairType = typeof(KeyValuePair<,>);
+
+        /// <summary>
+        /// 返回是否支持转换目标类型
+        /// </summary>
+        /// <param name="objectType">目标类型</param>
         /// <returns></returns>
-        public override IEnumerable<KeyValuePair<string, string>> Invoke(ConvertContext context)
+        public override bool CanConvert(Type objectType)
         {
-            var reader = KeyValuePairReader.GetReader(context.DataType);
-            if (reader == null)
-            {
-                return this.Next.Invoke(context);
-            }
+            return objectType.IsGenericType && objectType.GetGenericTypeDefinition() == keyValuePairType;
+        }
 
-            var key = reader.GetKey(context.Data).ToString();
-            var value = reader.GetValue(context.Data);
+        /// <summary>
+        /// 从json解析得到对象
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="objectType"></param>
+        /// <param name="existingValue"></param>
+        /// <param name="serializer"></param>
+        /// <returns></returns>
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
 
-            var ctx = new ConvertContext(key, value, context.Depths, context.Options);
-            return ctx.ToKeyValuePairs();
+        /// <summary>
+        /// 解析为json
+        /// 实际解析为KeyValuePair类型
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="value"></param>
+        /// <param name="serializer"></param>
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            var reader = KeyValuePairReader.GetReader(value.GetType());
+            var key = reader.GetKey(value);
+            var val = reader.GetValue(value);
+
+            writer.WritePropertyName(key.ToString());
+            writer.WriteValue(val);
         }
 
         /// <summary>
@@ -75,11 +101,6 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             }
 
             /// <summary>
-            /// KeyValuePair泛型
-            /// </summary>
-            private static readonly Type keyValuePairType = typeof(KeyValuePair<,>);
-
-            /// <summary>
             /// 类型的KeyValuePairReader缓存
             /// </summary>
             private static readonly ConcurrentDictionary<Type, KeyValuePairReader> readerCache = new ConcurrentDictionary<Type, KeyValuePairReader>();
@@ -91,10 +112,6 @@ namespace WebApiClient.Defaults.KeyValueFormats.Converters
             /// <returns></returns>
             public static KeyValuePairReader GetReader(Type type)
             {
-                if (type.IsGenericType == false || type.GetGenericTypeDefinition() != keyValuePairType)
-                {
-                    return null;
-                }
                 return readerCache.GetOrAdd(type, t => new KeyValuePairReader(t));
             }
         }

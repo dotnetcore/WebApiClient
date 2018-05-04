@@ -1,9 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using WebApiClient.Contexts;
-using WebApiClient.Defaults.KeyValueFormats;
-using WebApiClient.Defaults.KeyValueFormats.Converters;
+using WebApiClient.DataAnnotations;
 
 namespace WebApiClient.Defaults
 {
@@ -13,37 +12,40 @@ namespace WebApiClient.Defaults
     public class KeyValueFormatter : IKeyValueFormatter
     {
         /// <summary>
-        /// 默认的转换器组合
+        /// 使用CamelCase的KeyValue属性解析约定
         /// </summary>
-        private static readonly IConverter[] defaultConverters = new IConverter[]
-        {
-            new NullValueConverter(),
-            new SimpleTypeConverter(),
-            new KeyValuePairConverter(),
-            new EnumerableConverter(),
-            new PropertiesConverter()
-        };
+        private readonly static PropertyContractResolver useCamelCaseResolver = new PropertyContractResolver(true, FormatScope.KeyValueFormat);
 
         /// <summary>
-        /// 第一个转换器
+        /// 不使用CamelCase的KeyValue属性解析约定
         /// </summary>
-        private readonly IConverter firstConverter;
+        private readonly static PropertyContractResolver noCamelCaseResolver = new PropertyContractResolver(false, FormatScope.KeyValueFormat);
 
         /// <summary>
-        /// 默认键值对列化工具
+        /// 序列化对象为键值对
         /// </summary>
-        public KeyValueFormatter()
+        /// <param name="name">对象名称</param>
+        /// <param name="obj">对象实例</param>
+        /// <param name="options">选项</param>
+        /// <returns></returns>
+        public IEnumerable<KeyValuePair<string, string>> Serialize(string name, object obj, FormatOptions options)
         {
-            var notSupported = new NotSupportedConverter();
-            var converters = this.GetConverters().Concat(new[] { notSupported });
-            this.firstConverter = converters.First();
-
-            converters.Aggregate((cur, next) =>
+            if (obj == null)
             {
-                cur.Next = next;
-                cur.First = this.firstConverter;
-                return next;
-            }).First = this.firstConverter;
+                return Enumerable.Empty<KeyValuePair<string, string>>();
+            }
+
+            if (options == null)
+            {
+                options = new FormatOptions();
+            }
+
+            var setting = this.CreateSerializerSettings(options);
+            var serializer = JsonSerializer.Create(setting);
+            var keyValueWriter = new KeyValuePairWriter(name);
+
+            serializer.Serialize(keyValueWriter, obj);
+            return keyValueWriter;
         }
 
         /// <summary>
@@ -58,37 +60,17 @@ namespace WebApiClient.Defaults
         }
 
         /// <summary>
-        /// 序列化对象为键值对
+        /// 创建序列化配置     
         /// </summary>
-        /// <param name="name">对象名称</param>
-        /// <param name="obj">对象实例</param>
-        /// <param name="options">选项</param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="options">格式化选项</param>
         /// <returns></returns>
-        public IEnumerable<KeyValuePair<string, string>> Serialize(string name, object obj, FormatOptions options)
+        protected virtual JsonSerializerSettings CreateSerializerSettings(FormatOptions options)
         {
-            var context = new ConvertContext(name, obj, 0, options);
-            return this.firstConverter.Invoke(context);
-        }
-
-        /// <summary>
-        /// 返回一组按顺序的转换器
-        /// </summary>
-        /// <returns></returns>
-        protected virtual IEnumerable<IConverter> GetConverters()
-        {
-            return KeyValueFormatter.defaultConverters;
-        }
-
-        /// <summary>
-        /// 默认的转换器
-        /// </summary>
-        private class NotSupportedConverter : ConverterBase
-        {
-            public override IEnumerable<KeyValuePair<string, string>> Invoke(ConvertContext context)
-            {
-                throw new NotSupportedException("不支持的类型转换：" + context.DataType);
-            }
+            var setting = new JsonSerializerSettings();
+            setting.Converters.Add(new KeyValuePairConverter());
+            setting.DateFormatString = options.DateTimeFormat;
+            setting.ContractResolver = options.UseCamelCase ? useCamelCaseResolver : noCamelCaseResolver;
+            return setting;
         }
     }
 }
