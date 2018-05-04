@@ -33,7 +33,7 @@ namespace WebApiClient.Defaults
 
             var setting = this.CreateSerializerSettings();
             setting.DateFormatString = options.DateTimeFormat;
-            setting.ContractResolver = new PropertyContractResolver(options.UseCamelCase);
+            setting.ContractResolver = PropertyContractResolver.GetInstance(options.UseCamelCase);
 
             return JsonConvert.SerializeObject(obj, setting);
         }
@@ -52,7 +52,7 @@ namespace WebApiClient.Defaults
             }
 
             var setting = this.CreateSerializerSettings();
-            setting.ContractResolver = new PropertyContractResolver(false);
+            setting.ContractResolver = PropertyContractResolver.GetInstance(camelCase: false);
 
             return JsonConvert.DeserializeObject(json, objType, setting);
         }
@@ -78,10 +78,37 @@ namespace WebApiClient.Defaults
             private readonly bool useCamelCase;
 
             /// <summary>
+            /// 使用CamelCase的实例
+            /// </summary>
+            private static readonly PropertyContractResolver instanceCamelCase = new PropertyContractResolver(true);
+
+            /// <summary>
+            /// 不使用CamelCase的实例
+            /// </summary>
+            private static readonly PropertyContractResolver instanceNoCamelCase = new PropertyContractResolver(false);
+
+            /// <summary>
+            /// 获取实例
+            /// </summary>
+            /// <param name="camelCase"></param>
+            /// <returns></returns>
+            public static PropertyContractResolver GetInstance(bool camelCase)
+            {
+                if (camelCase == true)
+                {
+                    return instanceCamelCase;
+                }
+                else
+                {
+                    return instanceNoCamelCase;
+                }
+            }
+
+            /// <summary>
             /// 属性解析器
             /// </summary>
             /// <param name="camelCase">是否camel命名</param>
-            public PropertyContractResolver(bool camelCase)
+            private PropertyContractResolver(bool camelCase)
             {
                 this.useCamelCase = camelCase;
             }
