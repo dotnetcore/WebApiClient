@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -96,7 +95,7 @@ namespace WebApiClient.Defaults
         private HttpClient(HttpMessageHandler handler, bool disposeHandler, bool supportCreateHandler)
         {
             this.supportCreateHandler = supportCreateHandler;
-            this.Handler = handler == null ? this.CreateIHandler() : HttpHandler.From(handler);
+            this.Handler = handler == null ? this.CreateHttpHandler() : HttpHandler.From(handler);
             this.httpClient = new System.Net.Http.HttpClient(this.Handler.InnerHanlder, disposeHandler);
         }
 
@@ -201,7 +200,7 @@ namespace WebApiClient.Defaults
         /// </summary>
         private void InitWithoutProxy()
         {
-            var newHandler = this.CreateIHandler();
+            var newHandler = this.CreateHttpHandler();
             Property.CopyProperties(this.Handler.InnerHanlder, newHandler.InnerHanlder);
             newHandler.UseProxy = false;
             newHandler.Proxy = null;
@@ -215,14 +214,14 @@ namespace WebApiClient.Defaults
         }
 
         /// <summary>
-        /// 创建IHandler的新实例
+        /// 创建IHttpHandler的新实例
         /// </summary>
         /// <returns></returns>
-        protected virtual IHttpHandler CreateIHandler()
+        protected virtual IHttpHandler CreateHttpHandler()
         {
             if (this.supportCreateHandler == false)
             {
-                throw new NotSupportedException("不支持创建新的HttpClientHandler实例");
+                throw new NotSupportedException("由于使用了外部HttpMessageHandler实例，不支持创建新的IHttpHandler实例");
             }
             return HttpHandler.CreateHanlder();
         }
