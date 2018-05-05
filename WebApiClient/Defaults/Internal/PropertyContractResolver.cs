@@ -44,9 +44,9 @@ namespace WebApiClient.Defaults
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
             var property = base.CreateProperty(member, memberSerialization);
-            var descriptor = PropertyDescriptor.GetDescriptor(this.formatScope, member);
-
-            property.PropertyName = descriptor.Name;
+            var descriptor = new PropertyDescriptor(this.formatScope, member);
+            
+            property.PropertyName = descriptor.AliasName;
             property.Ignored = descriptor.IgnoreSerialized;
 
             if (this.useCamelCase == true)
@@ -54,9 +54,9 @@ namespace WebApiClient.Defaults
                 property.PropertyName = FormatOptions.CamelCase(property.PropertyName);
             }
 
-            if (property.Converter == null)
+            if (property.Converter == null && descriptor.DateTimeFormat != null)
             {
-                property.Converter = descriptor.DateTimeConverter;
+                property.Converter = new IsoDateTimeConverter { DateTimeFormat = descriptor.DateTimeFormat };
             }
 
             if (descriptor.IgnoreWhenNull == true)
@@ -75,12 +75,12 @@ namespace WebApiClient.Defaults
             /// <summary>
             /// 获取属性别名或名称
             /// </summary>
-            public string Name { get; private set; }
+            public string AliasName { get; private set; }
 
             /// <summary>
-            /// 获取时间转换器
+            /// 获取日期时间格式
             /// </summary>
-            public JsonConverter DateTimeConverter { get; private set; }
+            public string DateTimeFormat { get; private set; }
 
             /// <summary>
             /// 获取是否忽略序列化
@@ -95,110 +95,28 @@ namespace WebApiClient.Defaults
             /// <summary>
             /// 属性的描述
             /// </summary>
-            /// <param name="scopeMember"></param>
-            private PropertyDescriptor(ScopeMember scopeMember)
+            /// <param name="scope"></param>
+            /// <param name="member"></param>
+            public PropertyDescriptor(FormatScope scope, MemberInfo member)
             {
-                var member = scopeMember.MemberInfo;
-                var formatScope = scopeMember.FormatScope;
-
                 var aliasAsAttribute = member.GetAttribute<AliasAsAttribute>(true);
-                if (aliasAsAttribute != null && aliasAsAttribute.IsDefinedScope(formatScope))
+                if (aliasAsAttribute != null && aliasAsAttribute.IsDefinedScope(scope))
                 {
-                    this.Name = aliasAsAttribute.Name;
+                    this.AliasName = aliasAsAttribute.Name;
                 }
                 else
                 {
-                    this.Name = member.Name;
+                    this.AliasName = member.Name;
                 }
 
                 var datetimeFormatAttribute = member.GetAttribute<DateTimeFormatAttribute>(true);
-                if (datetimeFormatAttribute != null && datetimeFormatAttribute.IsDefinedScope(formatScope))
+                if (datetimeFormatAttribute != null && datetimeFormatAttribute.IsDefinedScope(scope))
                 {
-                    this.DateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = datetimeFormatAttribute.Format };
+                    this.DateTimeFormat = datetimeFormatAttribute.Format;
                 }
 
-                this.IgnoreSerialized = member.IsDefinedFormatScope<IgnoreSerializedAttribute>(formatScope);
-                this.IgnoreWhenNull = member.IsDefinedFormatScope<IgnoreWhenNullAttribute>(formatScope);
-            }
-
-
-            /// <summary>
-            /// 属性的描述缓存
-            /// </summary>
-            private static readonly ConcurrentDictionary<ScopeMember, PropertyDescriptor> descriptorCache;
-
-            /// <summary>
-            /// 静态构造器
-            /// </summary>
-            static PropertyDescriptor()
-            {
-                descriptorCache = new ConcurrentDictionary<ScopeMember, PropertyDescriptor>(new ScopeMemberComparer());
-            }
-
-            /// <summary>
-            /// 获取成员的描述
-            /// </summary>
-            /// <param name="scope">范围</param>
-            /// <param name="member">成员</param>
-            /// <returns></returns>
-            public static PropertyDescriptor GetDescriptor(FormatScope scope, MemberInfo member)
-            {
-                var scopeProperty = new ScopeMember(scope, member);
-                return descriptorCache.GetOrAdd(scopeProperty, (s) => new PropertyDescriptor(s));
-            }
-
-            /// <summary>
-            /// 表示序列化范围属性
-            /// </summary>
-            private class ScopeMember
-            {
-                /// <summary>
-                /// 序列化范围
-                /// </summary>
-                public FormatScope FormatScope { get; private set; }
-
-                /// <summary>
-                /// 属性
-                /// </summary>
-                public MemberInfo MemberInfo { get; private set; }
-
-                /// <summary>
-                /// 序列化范围属性
-                /// </summary>
-                /// <param name="scope"></param>
-                /// <param name="member"></param>
-                public ScopeMember(FormatScope scope, MemberInfo member)
-                {
-                    this.FormatScope = scope;
-                    this.MemberInfo = member;
-                }
-            }
-
-            /// <summary>
-            /// 表示序列化范围属性比较器
-            /// </summary>
-            private class ScopeMemberComparer : IEqualityComparer<ScopeMember>
-            {
-                /// <summary>
-                /// 是否相等
-                /// </summary>
-                /// <param name="x"></param>
-                /// <param name="y"></param>
-                /// <returns></returns>
-                public bool Equals(ScopeMember x, ScopeMember y)
-                {
-                    return true;
-                }
-
-                /// <summary>
-                /// 获取哈希值
-                /// </summary>
-                /// <param name="obj"></param>
-                /// <returns></returns>
-                public int GetHashCode(ScopeMember obj)
-                {
-                    return obj.FormatScope.GetHashCode() ^ obj.MemberInfo.GetHashCode();
-                }
+                this.IgnoreSerialized = member.IsDefinedFormatScope<IgnoreSerializedAttribute>(scope);
+                this.IgnoreWhenNull = member.IsDefinedFormatScope<IgnoreWhenNullAttribute>(scope);
             }
         }
     }
