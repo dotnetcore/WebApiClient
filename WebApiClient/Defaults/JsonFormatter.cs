@@ -71,6 +71,10 @@ namespace WebApiClient.Defaults
                 setting.DateFormatString = options.DateTimeFormat;
                 setting.ContractResolver = options.UseCamelCase ? useCamelCaseResolver : noCamelCaseResolver;
             }
+            else
+            {
+                setting.ContractResolver = noCamelCaseResolver;
+            }
             return setting;
         }
     }
