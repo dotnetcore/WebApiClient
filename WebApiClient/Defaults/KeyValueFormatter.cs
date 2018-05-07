@@ -68,8 +68,10 @@ namespace WebApiClient.Defaults
         {
             var setting = new JsonSerializerSettings();
             setting.Converters.Add(new KeyValuePairConverter());
-            setting.DateFormatString = options.DateTimeFormat;
-            setting.ContractResolver = options.UseCamelCase ? useCamelCaseResolver : noCamelCaseResolver;
+
+            setting.DateFormatString = options?.DateTimeFormat;
+            setting.ContractResolver = options?.UseCamelCase == true ? useCamelCaseResolver : noCamelCaseResolver;
+
             return setting;
         }
     }
