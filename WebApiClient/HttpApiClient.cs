@@ -11,7 +11,6 @@ namespace WebApiClient
     /// 表示HttpApi客户端
     /// 提供创建HttpApiClient实例的方法
     /// </summary>
-    [DebuggerDisplay("{typeof(HttpApiClient)}")]
     public abstract class HttpApiClient : IHttpApiClient
     {
         /// <summary>
@@ -143,7 +142,8 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(apiInterceptor));
             }
 
-            return HttpApiClientProxy.CreateProxyWithInterface(interfaceType, apiInterceptor);
+            return HttpApiClientProxy.CreateProxyInstance(interfaceType, apiInterceptor);
+            //return HttpApiClientProxy.CreateProxyWithInterface(interfaceType, apiInterceptor);
         }
     }
 }
