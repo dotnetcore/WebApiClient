@@ -3884,87 +3884,18 @@
             不支持ref/out参数的接口
             </summary>
         </member>
-        <member name="F:WebApiClient.HttpApiClientProxy.interceptMethod">
-            <summary>
-            IApiInterceptor的Intercept方法
-            </summary>
-        </member>
-        <member name="F:WebApiClient.HttpApiClientProxy.baseConstructor">
-            <summary>
-            HttpApiClient的构造器
-            </summary>
-        </member>
         <member name="F:WebApiClient.HttpApiClientProxy.proxyTypeCtorArgTypes">
             <summary>
             代理类型的构造器的参数类型
             </summary>
         </member>
-        <member name="F:WebApiClient.HttpApiClientProxy.hashCodeModuleBuilderCache">
+        <member name="M:WebApiClient.HttpApiClientProxy.CreateProxyInstance(System.Type,WebApiClient.IApiInterceptor)">
             <summary>
-            程序集HashCode^模块HashCode与模块创建器的缓存
+            创建静态代理实例
             </summary>
-        </member>
-        <member name="F:WebApiClient.HttpApiClientProxy.proxyTypeCtorCache">
-            <summary>
-            接口类型与代理类型的构造器缓存
-            </summary>
-        </member>
-        <member name="M:WebApiClient.HttpApiClientProxy.CreateProxyWithInterface(System.Type,WebApiClient.IApiInterceptor)">
-            <summary>
-            创建HttpApiClient代理类
-            并实现指定的接口
-            </summary>
-            <param name="interfaceType">接口类型</param>
-            <param name="interceptor">拦截器</param>
-            <exception cref="T:System.ArgumentException"></exception>
-            <exception cref="T:System.NotSupportedException"></exception>
+            <param name="interfaceType"></param>
+            <param name="interceptor"></param>
             <returns></returns>
-        </member>
-        <member name="M:WebApiClient.HttpApiClientProxy.ImplementAsHttpApiClient(System.Type,System.Reflection.MethodInfo[])">
-            <summary>
-            继承HttpApiClient并实现接口
-            并返回代理类的构造器
-            对于相同的interfaceType，不允许并发执行
-            </summary>
-            <param name="interfaceType">接口类型</param>
-            <param name="apiMethods">接口方法集合</param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApiClient.HttpApiClientProxy.BuildProxyType(System.Reflection.Emit.TypeBuilder,System.Reflection.MethodInfo[])">
-            <summary>
-            生成代理类型并实现相关方法
-            并返回其构造器
-            </summary>
-            <param name="builder"></param>
-            <param name="apiMethods">接口方法集合</param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApiClient.HttpApiClientProxy.BuildField(System.Reflection.Emit.TypeBuilder,System.String,System.Type)">
-            <summary>
-            生成代理类型的字段
-            </summary>
-            <param name="typeBuilder">类型生成器</param>
-            <param name="fieldName">字段名称</param>
-            <param name="type">字段类型</param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApiClient.HttpApiClientProxy.BuildCtor(System.Reflection.Emit.TypeBuilder,System.Reflection.Emit.FieldBuilder,System.Reflection.Emit.FieldBuilder)">
-            <summary>
-            生成代理类型的构造器
-            </summary>
-            <param name="builder">类型生成器</param>
-            <param name="fieldInterceptor">拦截器字段</param>
-            <param name="fieldApiMethods">接口方法集合字段</param>
-            <returns></returns>
-        </member>
-        <member name="M:WebApiClient.HttpApiClientProxy.BuildMethods(System.Reflection.Emit.TypeBuilder,System.Reflection.MethodInfo[],System.Reflection.Emit.FieldBuilder,System.Reflection.Emit.FieldBuilder)">
-            <summary>
-            生成代理类型的接口实现方法
-            </summary>
-            <param name="builder">类型生成器</param>
-            <param name="apiMethods">接口方法集合</param>
-            <param name="fieldInterceptor">拦截器字段</param>
-            <param name="fieldApiMethods">接口方法集合字段</param>
         </member>
         <member name="T:WebApiClient.JsonContent">
             <summary>
