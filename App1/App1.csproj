@@ -95,7 +95,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="IBaiduApi.cs" />
+    <Compile Include="IGithugApi.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -149,6 +149,4 @@
   <Target Name="CreateAppBundle" AfterTargets="CoreCompile">
     <Message Text="AfterCoreCompile: $(TargetFileName)" Importance="high" />
   </Target>
-
-
 </Project>

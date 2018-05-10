@@ -12,9 +12,9 @@ namespace DemoLib
 
         static async void TestAsync()
         {
-            var client = WebApiClient.HttpApiClient.Create<IBaiduApi>();
+            var client = WebApiClient.HttpApiClient.Create<IGithugApi>();          
             Console.WriteLine(client.GetType());
-            var str = await client.GetAsync("https://www.baidu.com/");
+            var str = await client.GetApiListAsync("user");
         }
     }
 }

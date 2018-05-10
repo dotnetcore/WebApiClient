@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using WebApiClient.Defaults;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -33,13 +34,13 @@ namespace App1
         {
             try
             {
-                var client = WebApiClient.HttpApiClient.Create<IBaiduApi>();
-                var str = await client.GetAsync("https://www.baidu.com/");
-                this.Btn.Content = str.Substring(0, 5);
+                var client = WebApiClient.HttpApiClient.Create<IGithugApi>();
+                var apis = await client.GetApiListAsync("user");
+                this.TxtBox.Text = new JsonFormatter().Serialize(apis, null);
             }
             catch (Exception ex)
             {
-                this.Btn.Content = ex.Message;
+                this.TxtBox.Text = ex.ToString();
             }
         }
     }
