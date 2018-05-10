@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 
 namespace ProxyGenarater
@@ -10,9 +7,22 @@ namespace ProxyGenarater
     {
         static void Main(string[] args)
         {
-            var fileName = args.FirstOrDefault();
-            var proxyBuilder = new ProxyBuilder(fileName);
-            proxyBuilder.BuildAndSave();
-        }        
+            try
+            {
+                var fileName = args.FirstOrDefault();
+                using (var assembly = new Assembly(fileName))
+                {
+                    assembly.WirteProxyTypes();
+                    assembly.Save();
+                }
+
+               // new ProxyBuilder(fileName).BuildAndSave();
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex.Message);
+                Environment.ExitCode = -1;
+            }
+        }
     }
 }

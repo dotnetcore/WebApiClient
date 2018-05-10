@@ -6,21 +6,21 @@ namespace WebApiClientTest
 {
     public class HttpApiClientTest
     {
-        public interface IMyApi : IHttpApiClient
+        public interface IMyApi : IHttpApi
         {
         }
 
-        public interface IMyApi2 : IHttpApiClient
+        public interface IMyApi2 : IHttpApi
         {
             int Value { get; set; }
         }
 
-        public interface IMyApi3 : IHttpApiClient
+        public interface IMyApi3 : IHttpApi
         {
             int GetValue();
         }
 
-        public interface IMyApi4 : IHttpApiClient
+        public interface IMyApi4 : IHttpApi
         {
             ITask<T> GetValue<T>();
         }

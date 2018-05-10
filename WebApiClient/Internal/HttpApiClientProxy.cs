@@ -20,7 +20,7 @@ namespace WebApiClient
         /// <summary>
         /// 接口对应的代理类型的构造器缓存
         /// </summary>
-        private static readonly ConcurrentCache<Type, ConstructorInfo> ctorCache = new ConcurrentCache<Type, ConstructorInfo>();
+        private static readonly ConcurrentCache<Type, ConstructorInfo> proxyCtorCache = new ConcurrentCache<Type, ConstructorInfo>();
 
         /// <summary>
         /// 接口的方法缓存
@@ -37,19 +37,16 @@ namespace WebApiClient
         /// <returns></returns>
         public static object CreateInstance(Type interfaceType, IApiInterceptor interceptor)
         {
-            var proxyTypeCtor = ctorCache.GetOrAdd(interfaceType, type =>
+            var proxyTypeCtor = proxyCtorCache.GetOrAdd(interfaceType, type =>
             {
-                var @namespace = type.GetProxyTypeNamespace();
-                var typeName = type.GetProxyTypeName();
-                var fullTypeName = $"{@namespace}.{type.GetProxyTypeName()}";
-
+                var fullTypeName = type.GetProxyTypeFullName();
                 var proxyType = interfaceType.Assembly.GetType(fullTypeName, false);
                 return proxyType?.GetConstructor(proxyTypeCtorArgTypes);
             });
 
             if (proxyTypeCtor == null)
             {
-                throw new TypeLoadException($"找不到类型{interfaceType}的代理类");
+                throw new TypeLoadException($"找不到类型{interfaceType}的代理类，请确保接口继承于IHttpApi接口");
             }
 
             var apiMethods = interfaceType.GetInterfaceAllApis();
@@ -57,72 +54,60 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 返回接口类型的代理类型的命名空间
+        /// 返回接口的代理类型全名
         /// </summary>
         /// <param name="interfaceType">接口类型</param>
         /// <returns></returns>
-        public static string GetProxyTypeNamespace(this Type interfaceType)
+        private static string GetProxyTypeFullName(this Type interfaceType)
         {
-            return $"{interfaceType.Namespace}.Proxy";
+            var @namespace = GetProxyTypeNamespace(interfaceType.Namespace);
+            var typeName = GetProxyTypeName(interfaceType.Name);
+            return $"{@namespace}.{typeName}";
+        }
+
+        /// <summary>
+        /// 返回接口类型的代理类型的命名空间
+        /// </summary>
+        /// <param name="interfaceNamespace">接口命名空间</param>
+        /// <returns></returns>
+        public static string GetProxyTypeNamespace(string interfaceNamespace)
+        {
+            return $"{interfaceNamespace}.Proxy";
         }
 
         /// <summary>
         /// 返回接口类型的代理类型的名称
         /// </summary>
-        /// <param name="interfaceType">接口类型</param>
+        /// <param name="interfaceTypeName">接口类型名称</param>
         /// <returns></returns>
-        public static string GetProxyTypeName(this Type interfaceType)
+        public static string GetProxyTypeName(string interfaceTypeName)
         {
-            if (interfaceType.Name.Length <= 1 || interfaceType.Name.StartsWith("I") == false)
+            if (interfaceTypeName.Length <= 1 || interfaceTypeName.StartsWith("I") == false)
             {
-                return interfaceType.Name;
+                return interfaceTypeName;
             }
-            return interfaceType.Name.Substring(1);
+            return interfaceTypeName.Substring(1);
         }
 
         /// <summary>
         /// 获取接口类型及其继承的接口的所有方法
         /// 忽略HttpApiClient类型的所有接口的方法
         /// </summary>
-        /// <param name="interfaceType">接口类型</param>
-        /// <exception cref="ArgumentException"></exception>
+        /// <param name="interfaceType">接口类型</param>     
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        public static MethodInfo[] GetInterfaceAllApis(this Type interfaceType)
+        private static MethodInfo[] GetInterfaceAllApis(this Type interfaceType)
         {
-            return interfaceMethodsCache.GetOrAdd(
-                interfaceType,
-                type => type.GetInterfaceAllApisNoCache());
-        }
-
-        /// <summary>
-        /// 获取接口类型及其继承的接口的所有方法
-        /// 忽略HttpApiClient类型的所有接口的方法
-        /// </summary>
-        /// <param name="interfaceType">接口类型</param> 
-        /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="NotSupportedException"></exception>
-        /// <returns></returns>
-        private static MethodInfo[] GetInterfaceAllApisNoCache(this Type interfaceType)
-        {
-            if (interfaceType.IsInterface == false)
+            return interfaceMethodsCache.GetOrAdd(interfaceType, type =>
             {
-                throw new ArgumentException("类型必须为接口类型");
-            }
+                // 排除HttpApiClient已实现的接口
+                var excepts = typeof(HttpApiClient).GetInterfaces();
+                var exceptHashSet = new HashSet<Type>(excepts);
+                var methodHashSet = new HashSet<MethodInfo>();
 
-            // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口            
-            if (interfaceType.IsVisible == false)
-            {
-                throw new NotSupportedException(interfaceType.Name + "必须为public修饰且对外可见");
-            }
-
-            // 排除HttpApiClient已实现的接口
-            var excepts = typeof(HttpApiClient).GetInterfaces();
-            var exceptHashSet = new HashSet<Type>(excepts);
-            var methodHashSet = new HashSet<MethodInfo>();
-
-            interfaceType.GetInterfaceMethods(ref exceptHashSet, ref methodHashSet);
-            return methodHashSet.ToArray();
+                type.GetInterfaceMethods(ref exceptHashSet, ref methodHashSet);
+                return methodHashSet.ToArray();
+            });
         }
 
         /// <summary>
@@ -142,52 +127,12 @@ namespace WebApiClient
             var methods = interfaceType.GetMethods();
             foreach (var item in methods)
             {
-                item.EnsureApiMethod();
                 methodHashSet.Add(item);
             }
 
             foreach (var item in interfaceType.GetInterfaces())
             {
                 item.GetInterfaceMethods(ref exceptHashSet, ref methodHashSet);
-            }
-        }
-
-        /// <summary>
-        /// 确保方法是支持的Api接口
-        /// </summary>
-        /// <exception cref="NotSupportedException"></exception>
-        private static void EnsureApiMethod(this MethodInfo method)
-        {
-            if (method.IsGenericMethod == true)
-            {
-                throw new NotSupportedException("不支持泛型方法：" + method);
-            }
-
-            if (method.IsSpecialName == true)
-            {
-                throw new NotSupportedException("不支持属性访问器：" + method);
-            }
-
-            var genericType = method.ReturnType;
-            if (genericType.IsGenericType == true)
-            {
-                genericType = genericType.GetGenericTypeDefinition();
-            }
-
-            var isTaskType = genericType == typeof(Task<>) || genericType == typeof(ITask<>);
-            if (isTaskType == false)
-            {
-                var message = $"返回类型必须为Task<>或ITask<>：{method}";
-                throw new NotSupportedException(message);
-            }
-
-            foreach (var parameter in method.GetParameters())
-            {
-                if (parameter.ParameterType.IsByRef == true)
-                {
-                    var message = $"接口参数不支持ref/out修饰：{parameter}";
-                    throw new NotSupportedException(message);
-                }
             }
         }
     }

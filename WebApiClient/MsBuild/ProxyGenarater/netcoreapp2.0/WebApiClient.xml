@@ -2645,6 +2645,7 @@
             <typeparam name="TInterface">请求接口类型</typeparam>
             <exception cref="T:System.ArgumentException"></exception>
             <exception cref="T:System.NotSupportedException"></exception>
+            <exception cref="T:System.TypeLoadException"></exception>
             <returns></returns>
         </member>
         <member name="M:WebApiClient.HttpApiClient.Create``1(System.String)">
@@ -2656,6 +2657,7 @@
             <exception cref="T:System.ArgumentException"></exception>
             <exception cref="T:System.NotSupportedException"></exception>
             <exception cref="T:System.UriFormatException"></exception>
+            <exception cref="T:System.TypeLoadException"></exception>
             <returns></returns>
         </member>
         <member name="M:WebApiClient.HttpApiClient.Create``1(WebApiClient.HttpApiConfig)">
@@ -2667,6 +2669,7 @@
             <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.ArgumentException"></exception>
             <exception cref="T:System.NotSupportedException"></exception>
+            <exception cref="T:System.TypeLoadException"></exception>
             <returns></returns>
         </member>
         <member name="M:WebApiClient.HttpApiClient.Create(System.Type,WebApiClient.HttpApiConfig)">
@@ -2678,6 +2681,7 @@
             <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.ArgumentException"></exception>
             <exception cref="T:System.NotSupportedException"></exception>
+            <exception cref="T:System.TypeLoadException"></exception>
             <returns></returns>
         </member>
         <member name="M:WebApiClient.HttpApiClient.Create(System.Type,WebApiClient.IApiInterceptor)">
@@ -2689,6 +2693,7 @@
             <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.ArgumentException"></exception>
             <exception cref="T:System.NotSupportedException"></exception>
+            <exception cref="T:System.TypeLoadException"></exception>
             <returns></returns>
         </member>
         <member name="T:WebApiClient.HttpApiConfig">
@@ -3390,19 +3395,10 @@
             <param name="func">获取结果</param>
             <returns></returns>
         </member>
-        <member name="T:WebApiClient.IHttpApiClient">
+        <member name="T:WebApiClient.IHttpApi">
             <summary>
-            定义HttpApi客户端的接口
-            </summary>
-        </member>
-        <member name="P:WebApiClient.IHttpApiClient.ApiConfig">
-            <summary>
-            获取相关配置
-            </summary>
-        </member>
-        <member name="P:WebApiClient.IHttpApiClient.ApiInterceptor">
-            <summary>
-            获取拦截器
+            定义HttpApi接口的基础接口
+            要求所有HttpApi接口都继承此接口
             </summary>
         </member>
         <member name="T:WebApiClient.IHttpClient">
@@ -3879,9 +3875,7 @@
         </member>
         <member name="T:WebApiClient.HttpApiClientProxy">
             <summary>
-            提供HttpApiClient代理类生成
-            不支持泛型方法的接口
-            不支持ref/out参数的接口
+            提供HttpApiClient代理搜索和实例化
             </summary>
         </member>
         <member name="F:WebApiClient.HttpApiClientProxy.proxyTypeCtorArgTypes">
@@ -3889,13 +3883,63 @@
             代理类型的构造器的参数类型
             </summary>
         </member>
-        <member name="M:WebApiClient.HttpApiClientProxy.CreateProxyInstance(System.Type,WebApiClient.IApiInterceptor)">
+        <member name="F:WebApiClient.HttpApiClientProxy.proxyCtorCache">
             <summary>
-            创建静态代理实例
+            接口对应的代理类型的构造器缓存
             </summary>
-            <param name="interfaceType"></param>
-            <param name="interceptor"></param>
+        </member>
+        <member name="F:WebApiClient.HttpApiClientProxy.interfaceMethodsCache">
+            <summary>
+            接口的方法缓存
+            </summary>
+        </member>
+        <member name="M:WebApiClient.HttpApiClientProxy.CreateInstance(System.Type,WebApiClient.IApiInterceptor)">
+            <summary>
+            搜索接口的代理类型并实例化
+            </summary>
+            <param name="interfaceType">接口类型</param>
+            <param name="interceptor">拦截器</param>
+            <exception cref="T:System.TypeLoadException"></exception>
             <returns></returns>
+        </member>
+        <member name="M:WebApiClient.HttpApiClientProxy.GetProxyTypeFullName(System.Type)">
+            <summary>
+            返回接口的代理类型全名
+            </summary>
+            <param name="interfaceType">接口类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApiClient.HttpApiClientProxy.GetProxyTypeNamespace(System.String)">
+            <summary>
+            返回接口类型的代理类型的命名空间
+            </summary>
+            <param name="interfaceNamespace">接口命名空间</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApiClient.HttpApiClientProxy.GetProxyTypeName(System.String)">
+            <summary>
+            返回接口类型的代理类型的名称
+            </summary>
+            <param name="interfaceTypeName">接口类型名称</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApiClient.HttpApiClientProxy.GetInterfaceAllApis(System.Type)">
+            <summary>
+            获取接口类型及其继承的接口的所有方法
+            忽略HttpApiClient类型的所有接口的方法
+            </summary>
+            <param name="interfaceType">接口类型</param>     
+            <exception cref="T:System.NotSupportedException"></exception>
+            <returns></returns>
+        </member>
+        <member name="M:WebApiClient.HttpApiClientProxy.GetInterfaceMethods(System.Type,System.Collections.Generic.HashSet{System.Type}@,System.Collections.Generic.HashSet{System.Reflection.MethodInfo}@)">
+            <summary>
+            递归查找接口的方法
+            </summary>
+            <param name="interfaceType">接口类型</param>
+            <param name="exceptHashSet">排除的接口类型</param>
+            <param name="methodHashSet">收集到的方法</param>
+            <exception cref="T:System.NotSupportedException"></exception>
         </member>
         <member name="T:WebApiClient.JsonContent">
             <summary>
@@ -4800,50 +4844,10 @@
             类型扩展
             </summary>
         </member>
-        <member name="F:WebApiClient.TypeExtend.interfaceMethodsCache">
-            <summary>
-            接口的方法缓存
-            </summary>
-        </member>
         <member name="F:WebApiClient.TypeExtend.typeAllowMultipleCache">
             <summary>
             类型是否AllowMultiple的缓存
             </summary>
-        </member>
-        <member name="M:WebApiClient.TypeExtend.GetAllApiMethods(System.Type)">
-            <summary>
-            获取接口类型及其继承的接口的所有方法
-            忽略HttpApiClient类型的所有接口的方法
-            </summary>
-            <param name="interfaceType">接口类型</param>
-            <exception cref="T:System.ArgumentException"></exception>
-            <exception cref="T:System.NotSupportedException"></exception>
-            <returns></returns>
-        </member>
-        <member name="M:WebApiClient.TypeExtend.GetAllApiMethodsNoCache(System.Type)">
-            <summary>
-            获取接口类型及其继承的接口的所有方法
-            忽略HttpApiClient类型的所有接口的方法
-            </summary>
-            <param name="interfaceType">接口类型</param> 
-            <exception cref="T:System.ArgumentException"></exception>
-            <exception cref="T:System.NotSupportedException"></exception>
-            <returns></returns>
-        </member>
-        <member name="M:WebApiClient.TypeExtend.GetInterfaceMethods(System.Type,System.Collections.Generic.HashSet{System.Type}@,System.Collections.Generic.HashSet{System.Reflection.MethodInfo}@)">
-            <summary>
-            递归查找接口的方法
-            </summary>
-            <param name="interfaceType">接口类型</param>
-            <param name="exceptHashSet">排除的接口类型</param>
-            <param name="methodHashSet">收集到的方法</param>
-            <exception cref="T:System.NotSupportedException"></exception>
-        </member>
-        <member name="M:WebApiClient.TypeExtend.EnsureApiMethod(System.Reflection.MethodInfo)">
-            <summary>
-            确保方法是支持的Api接口
-            </summary>
-            <exception cref="T:System.NotSupportedException"></exception>
         </member>
         <member name="M:WebApiClient.TypeExtend.IsInheritFrom``1(System.Type)">
             <summary>

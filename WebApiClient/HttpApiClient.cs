@@ -11,7 +11,7 @@ namespace WebApiClient
     /// 表示HttpApi客户端
     /// 提供创建HttpApiClient实例的方法
     /// </summary>
-    public abstract class HttpApiClient : IHttpApiClient
+    public abstract class HttpApiClient : IHttpApi
     {
         /// <summary>
         /// 获取相关配置

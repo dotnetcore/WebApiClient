@@ -32,6 +32,7 @@ namespace App1
 
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
+
             try
             {
                 var client = WebApiClient.HttpApiClient.Create<IGithugApi>();

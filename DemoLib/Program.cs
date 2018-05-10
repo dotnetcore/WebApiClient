@@ -12,9 +12,10 @@ namespace DemoLib
 
         static async void TestAsync()
         {
-            var client = WebApiClient.HttpApiClient.Create<IGithugApi>();          
+            var client = WebApiClient.HttpApiClient.Create<IGithugApi>();
             Console.WriteLine(client.GetType());
             var str = await client.GetApiListAsync("user");
+            Console.WriteLine(str);
         }
     }
 }

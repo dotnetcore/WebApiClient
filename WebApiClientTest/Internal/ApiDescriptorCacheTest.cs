@@ -5,7 +5,7 @@ namespace WebApiClientTest.Internal
 {
     public class ApiDescriptorCacheTest
     {
-        public interface IMyApi : IHttpApiClient
+        public interface IMyApi : IHttpApi
         {
             ITask<string> Login(int a);
         }

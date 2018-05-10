@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ProxyGenarater": {
+      "commandName": "Project",
+      "commandLineArgs": "G:\\Codes\\WebApiClient\\ConsoleApp1\\bin\\Debug\\ConsoleApp1.exe"
+    }
+  }
+}
