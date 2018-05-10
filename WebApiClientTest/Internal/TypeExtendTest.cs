@@ -77,10 +77,10 @@ namespace WebApiClientTest.Internal
         [Fact]
         public void GetAllApiMethodsTest()
         {
-            Assert.Throws<NotSupportedException>(() => typeof(InternalInterface).GetAllApiMethods());
+            Assert.Throws<NotSupportedException>(() => typeof(InternalInterface).GetInterfaceAllApis());
 
-            var m1 = typeof(IMyApi).GetAllApiMethods();
-            var m2 = typeof(IMyApi).GetAllApiMethods();
+            var m1 = typeof(IMyApi).GetInterfaceAllApis();
+            var m2 = typeof(IMyApi).GetInterfaceAllApis();
 
             Assert.True(object.ReferenceEquals(m1, m2));
             Assert.True(m1.Length == 3);

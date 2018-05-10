@@ -62,6 +62,7 @@ namespace WebApiClient
         /// <typeparam name="TInterface">请求接口类型</typeparam>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="TypeLoadException"></exception>
         /// <returns></returns>
         public static TInterface Create<TInterface>() where TInterface : class, IDisposable
         {
@@ -77,6 +78,7 @@ namespace WebApiClient
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="UriFormatException"></exception>
+        /// <exception cref="TypeLoadException"></exception>
         /// <returns></returns>
         public static TInterface Create<TInterface>(string httpHost) where TInterface : class, IDisposable
         {
@@ -96,6 +98,7 @@ namespace WebApiClient
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="TypeLoadException"></exception>
         /// <returns></returns>
         public static TInterface Create<TInterface>(HttpApiConfig httpApiConfig) where TInterface : class
         {
@@ -110,6 +113,7 @@ namespace WebApiClient
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="TypeLoadException"></exception>
         /// <returns></returns>
         public static object Create(Type interfaceType, HttpApiConfig httpApiConfig)
         {
@@ -129,6 +133,7 @@ namespace WebApiClient
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="TypeLoadException"></exception>
         /// <returns></returns>
         public static object Create(Type interfaceType, IApiInterceptor apiInterceptor)
         {
@@ -142,8 +147,7 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(apiInterceptor));
             }
 
-            return HttpApiClientProxy.CreateProxyInstance(interfaceType, apiInterceptor);
-            //return HttpApiClientProxy.CreateProxyWithInterface(interfaceType, apiInterceptor);
+            return HttpApiClientProxy.CreateInstance(interfaceType, apiInterceptor);
         }
     }
 }
