@@ -25,17 +25,20 @@ namespace WebApiClient.AOT.Task
         /// 程序集
         /// </summary>
         /// <param name="fileName">文件路径</param>
+        /// <param name="searchPaths">依赖项搜索目录</param>
         /// <exception cref="FileNotFoundException"></exception>
-        public Assembly(string fileName)
+        public Assembly(string fileName, string[] searchPaths)
         {
             if (File.Exists(fileName) == false)
             {
                 throw new FileNotFoundException("找不到文件", fileName);
             }
-
-            var searchPath = Path.GetDirectoryName(fileName);
+            
             var resolver = new DefaultAssemblyResolver();
-            resolver.AddSearchDirectory(searchPath);
+            foreach (var path in searchPaths)
+            {
+                resolver.AddSearchDirectory(path);
+            }
 
             var parameter = new ReaderParameters
             {

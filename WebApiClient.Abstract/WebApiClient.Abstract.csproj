@@ -4,6 +4,7 @@
     <RootNamespace>WebApiClient</RootNamespace>
     <TargetFrameworks>net45;netstandard1.3</TargetFrameworks>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\WebApiClient.Abstract.xml</DocumentationFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
 </Project>

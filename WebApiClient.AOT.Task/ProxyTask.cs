@@ -1,5 +1,8 @@
 ﻿using Microsoft.Build.Framework;
 using System;
+using System.Linq;
+using System.IO;
+using System.Collections.Generic;
 
 namespace WebApiClient.AOT.Task
 {
@@ -12,7 +15,37 @@ namespace WebApiClient.AOT.Task
         /// 插入代理的程序集
         /// </summary>
         [Required]
-        public string ProxyAssembly { get; set; }
+        public string TargetAssembly { get; set; }
+
+        /// <summary>
+        /// 引用的程序集
+        /// 逗号分隔
+        /// </summary>
+        [Required]
+        public string References { get; set; }
+
+        /// <summary>
+        /// 返回搜索的搜索目录
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerable<string> GetSearchPaths()
+        {
+            yield return Path.GetDirectoryName(this.TargetAssembly);
+
+            if (string.IsNullOrEmpty(this.References) == true)
+            {
+                yield break;
+            }
+
+            foreach (var file in this.References.Split(';'))
+            {
+                var path = Path.GetDirectoryName(file);
+                if (Directory.Exists(path) == true)
+                {
+                    yield return path;
+                }
+            }
+        }
 
         /// <summary>
         /// 执行任务
@@ -22,7 +55,13 @@ namespace WebApiClient.AOT.Task
         {
             try
             {
-                using (var assembly = new Assembly(this.ProxyAssembly))
+                var searchPaths = this.GetSearchPaths().Distinct().ToArray();
+                foreach (var path in searchPaths)
+                {
+                    this.Log.LogWarning($"add search path  {path}");
+                }
+
+                using (var assembly = new Assembly(this.TargetAssembly, searchPaths))
                 {
                     assembly.WirteProxyTypes();
                     assembly.Save();
