@@ -3,7 +3,7 @@ using Mono.Cecil.Cil;
 using System;
 using System.Linq;
 using WebApiClient;
-namespace ProxyGenarater
+namespace WebApiClient.AOT.Task
 {
     /// <summary>
     /// 表示代理类型生成器
@@ -23,7 +23,7 @@ namespace ProxyGenarater
         /// <summary>
         /// HttpApiClient的构造器
         /// </summary>
-        private static readonly System.Reflection.ConstructorInfo baseConstructor = typeof(HttpApiClient).GetConstructor(new Type[] { typeof(IApiInterceptor) });
+        private static readonly System.Reflection.ConstructorInfo baseConstructor = typeof(HttpApiBase).GetConstructor(new Type[] { typeof(IApiInterceptor) });
 
         /// <summary>
         /// 代理类型的构造器的参数类型

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ProxyGenarater
+namespace WebApiClient.AOT.Task
 {
     /// <summary>
     /// TypeDefinition比较器

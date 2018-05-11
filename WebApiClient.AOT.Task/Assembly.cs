@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using WebApiClient;
 
-namespace ProxyGenarater
+namespace WebApiClient.AOT.Task
 {
     /// <summary>
     /// 表示程序集

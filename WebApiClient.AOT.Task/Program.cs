@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace ProxyGenarater
+namespace WebApiClient.AOT.Task
 {
     class Program
     {
@@ -15,13 +15,10 @@ namespace ProxyGenarater
                     assembly.WirteProxyTypes();
                     assembly.Save();
                 }
-
-               // new ProxyBuilder(fileName).BuildAndSave();
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine(ex.Message);
-                Environment.ExitCode = -1;
+                Console.Error.WriteLine(ex.Message);               
             }
         }
     }

@@ -21,7 +21,7 @@ namespace WebApiClient
         /// <summary>
         /// HttpApiClient的构造器
         /// </summary>
-        private static readonly ConstructorInfo baseConstructor = typeof(HttpApiClient).GetConstructor(new Type[] { typeof(IApiInterceptor) });
+        private static readonly ConstructorInfo baseConstructor = typeof(HttpApiBase).GetConstructor(new Type[] { typeof(IDisposable) });
 
         /// <summary>
         /// 代理类型的构造器的参数类型
@@ -78,7 +78,7 @@ namespace WebApiClient
                 .DefineDynamicModule(moduleName);
             });
 
-            var builder = moduleBuilder.DefineType(interfaceType.FullName, TypeAttributes.Class, typeof(HttpApiClient));
+            var builder = moduleBuilder.DefineType(interfaceType.FullName, TypeAttributes.Class, typeof(HttpApiBase));
             builder.AddInterfaceImplementation(interfaceType);
             return builder.BuildProxyType(apiMethods);
         }
@@ -218,4 +218,4 @@ namespace WebApiClient
             }
         }
     }
-} 
+}

@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using WebApiClient;
 
-namespace ProxyGenarater
+namespace WebApiClient.AOT.Task
 {
     /// <summary>
     /// 表示接口

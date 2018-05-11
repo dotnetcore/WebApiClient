@@ -4,5 +4,13 @@
     <OutputType>Library</OutputType>
     <TargetFramework>netstandard1.3</TargetFramework>  
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Mono.Cecil" Version="0.10.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WebApiClient.Abstract\WebApiClient.Abstract.csproj" />
+  </ItemGroup>
   
 </Project>
