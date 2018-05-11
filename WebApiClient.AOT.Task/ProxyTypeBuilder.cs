@@ -2,7 +2,8 @@
 using Mono.Cecil.Cil;
 using System;
 using System.Linq;
-using WebApiClient;
+using System.Reflection;
+
 namespace WebApiClient.AOT.Task
 {
     /// <summary>
@@ -46,22 +47,23 @@ namespace WebApiClient.AOT.Task
         /// <returns></returns>
         public TypeDefinition Build()
         {
-            var @namespace = HttpApiClientProxy.GetProxyTypeNamespace(this.@interface.Type.Namespace);
-            var typeName = HttpApiClientProxy.GetProxyTypeName(this.@interface.Type.Name);
+            var @namespace = GetProxyTypeNamespace(this.@interface.Type.Namespace);
+            var typeName = GetProxyTypeName(this.@interface.Type.Name);
             var fullName = $"{@namespace}.{typeName}";
+
             if (this.@interface.Type.Module.Types.Any(item => item.FullName == fullName))
             {
                 return null;
             }
 
-            var attribue = TypeAttributes.Class;
+            var attribues = Mono.Cecil.TypeAttributes.Class;
             if (this.@interface.Type.IsPublic == true)
             {
-                attribue = attribue | TypeAttributes.Public;
+                attribues = attribues | Mono.Cecil.TypeAttributes.Public;
             }
 
-            var baseType = this.@interface.GetTypeReference(typeof(HttpApiClient));
-            var proxyType = new TypeDefinition(@namespace, typeName, attribue, baseType);
+            var baseType = this.@interface.GetTypeReference(typeof(HttpApiBase));
+            var proxyType = new TypeDefinition(@namespace, typeName, attribues, baseType);
             proxyType.Interfaces.Add(new InterfaceImplementation(this.@interface.Type));
 
             var fieldInterceptor = this.BuildField(proxyType, "interceptor", typeof(IApiInterceptor));
@@ -75,6 +77,32 @@ namespace WebApiClient.AOT.Task
             return proxyType;
         }
 
+
+
+        /// <summary>
+        /// 返回接口类型的代理类型的命名空间
+        /// </summary>
+        /// <param name="interfaceNamespace">接口命名空间</param>
+        /// <returns></returns>
+        private static string GetProxyTypeNamespace(string interfaceNamespace)
+        {
+            return $"{interfaceNamespace}.Proxy";
+        }
+
+        /// <summary>
+        /// 返回接口类型的代理类型的名称
+        /// </summary>
+        /// <param name="interfaceTypeName">接口类型名称</param>
+        /// <returns></returns>
+        private static string GetProxyTypeName(string interfaceTypeName)
+        {
+            if (interfaceTypeName.Length <= 1 || interfaceTypeName.StartsWith("I") == false)
+            {
+                return interfaceTypeName;
+            }
+            return interfaceTypeName.Substring(1);
+        }
+
         /// <summary>
         /// 生成代理类型的字段
         /// </summary>
@@ -84,7 +112,7 @@ namespace WebApiClient.AOT.Task
         /// <returns></returns>
         private FieldDefinition BuildField(TypeDefinition proxyType, string fieldName, Type type)
         {
-            const FieldAttributes filedAttribute = FieldAttributes.Private | FieldAttributes.InitOnly; ;
+            const Mono.Cecil.FieldAttributes filedAttribute = Mono.Cecil.FieldAttributes.Private | Mono.Cecil.FieldAttributes.InitOnly; ;
             var filed = new FieldDefinition(fieldName, filedAttribute, this.@interface.GetTypeReference(type));
             proxyType.Fields.Add(filed);
             return filed;
@@ -100,8 +128,8 @@ namespace WebApiClient.AOT.Task
         private void BuildCtor(TypeDefinition proxyType, FieldDefinition fieldInterceptor, FieldDefinition fieldApiMethods)
         {
             // this(IApiInterceptor interceptor, MethodInfo[] methods):base(interceptor)          
-            var ctor = new MethodDefinition(".ctor", MethodAttributes.Public, this.@interface.GetTypeReference(typeof(void)));
-            ctor.Attributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName;
+            var ctor = new MethodDefinition(".ctor", Mono.Cecil.MethodAttributes.Public, this.@interface.GetTypeReference(typeof(void)));
+            ctor.Attributes = Mono.Cecil.MethodAttributes.Public | Mono.Cecil.MethodAttributes.HideBySig | Mono.Cecil.MethodAttributes.SpecialName | Mono.Cecil.MethodAttributes.RTSpecialName;
 
             foreach (var item in proxyTypeCtorArgTypes)
             {
@@ -138,7 +166,7 @@ namespace WebApiClient.AOT.Task
         /// <param name="fieldApiMethods">接口方法集合字段</param>
         private void BuildMethods(TypeDefinition proxyType, MethodDefinition[] apiMethods, FieldDefinition fieldInterceptor, FieldDefinition fieldApiMethods)
         {
-            const MethodAttributes implementAttribute = MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot | MethodAttributes.HideBySig;
+            const Mono.Cecil.MethodAttributes implementAttribute = Mono.Cecil.MethodAttributes.Public | Mono.Cecil.MethodAttributes.Virtual | Mono.Cecil.MethodAttributes.Final | Mono.Cecil.MethodAttributes.NewSlot | Mono.Cecil.MethodAttributes.HideBySig;
 
             for (var i = 0; i < apiMethods.Length; i++)
             {
