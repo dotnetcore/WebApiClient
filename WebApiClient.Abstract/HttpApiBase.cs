@@ -8,17 +8,18 @@ namespace WebApiClient
     public abstract class HttpApiBase : IHttpApi
     {
         /// <summary>
-        /// 可释放对象
+        /// Api拦截器
         /// </summary>
-        private readonly IDisposable disposable;
+        private readonly IApiInterceptor interceptor;
 
         /// <summary>
         /// IHttpApi实现类的抽象类
         /// </summary>
-        /// <param name="disposable">可释放对象</param>
-        public HttpApiBase(IDisposable disposable)
+        /// <param name="interceptor">Api拦截器 </param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public HttpApiBase(IApiInterceptor interceptor)
         {
-            this.disposable = disposable;
+            this.interceptor = interceptor ?? throw new ArgumentNullException(nameof(interceptor));
         }
 
         /// <summary>
@@ -26,7 +27,7 @@ namespace WebApiClient
         /// </summary>
         public void Dispose()
         {
-            this.disposable?.Dispose();
+            this.interceptor.Dispose();
         }
     }
 }

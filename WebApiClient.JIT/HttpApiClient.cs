@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using WebApiClient.Defaults;
 
 namespace WebApiClient
@@ -101,7 +100,7 @@ namespace WebApiClient
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="TypeLoadException"></exception>
         /// <returns></returns>
-        public static object Create(Type interfaceType, IApiInterceptor apiInterceptor)
+        private static object Create(Type interfaceType, ApiInterceptor apiInterceptor)
         {
             if (interfaceType == null)
             {

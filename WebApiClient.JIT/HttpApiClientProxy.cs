@@ -21,7 +21,7 @@ namespace WebApiClient
         /// <summary>
         /// HttpApiClient的构造器
         /// </summary>
-        private static readonly ConstructorInfo baseConstructor = typeof(HttpApiBase).GetConstructor(new Type[] { typeof(IDisposable) });
+        private static readonly ConstructorInfo baseConstructor = typeof(HttpApiBase).GetConstructor(new Type[] { typeof(IApiInterceptor) });
 
         /// <summary>
         /// 代理类型的构造器的参数类型

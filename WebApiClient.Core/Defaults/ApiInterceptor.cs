@@ -7,21 +7,21 @@ namespace WebApiClient.Defaults
     /// <summary>
     /// 表示http接口调用的拦截器
     /// </summary>
-    public class ApiInterceptor : IApiInterceptor
+    public class ApiInterceptor : IApiInterceptor, IDisposable
     {
         /// <summary>
         /// 获取相关的配置
         /// </summary>
-        public HttpApiConfig ApiConfig { get; private set; }
+        private readonly HttpApiConfig httpApiConfig;
 
         /// <summary>
         /// http接口调用的拦截器
         /// </summary>
-        /// <param name="apiConfig">httpApi配置</param>
+        /// <param name="httpApiConfig">httpApi配置</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ApiInterceptor(HttpApiConfig apiConfig)
+        public ApiInterceptor(HttpApiConfig httpApiConfig)
         {
-            this.ApiConfig = apiConfig ?? throw new ArgumentNullException(nameof(apiConfig));
+            this.httpApiConfig = httpApiConfig ?? throw new ArgumentNullException(nameof(httpApiConfig));
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace WebApiClient.Defaults
         public virtual object Intercept(object target, MethodInfo method, object[] parameters)
         {
             var apiActionDescripter = this.GetApiActionDescriptor(method, parameters);
-            var apiTask = ApiTask.CreateInstance(this.ApiConfig, apiActionDescripter);
+            var apiTask = ApiTask.CreateInstance(this.httpApiConfig, apiActionDescripter);
 
             if (apiActionDescripter.Return.IsITaskDefinition == true)
             {
@@ -60,6 +60,14 @@ namespace WebApiClient.Defaults
                 actionDescripter.Parameters[i].Value = parameters[i];
             }
             return actionDescripter;
+        }
+
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        public void Dispose()
+        {
+            this.httpApiConfig.Dispose();
         }
     }
 }
