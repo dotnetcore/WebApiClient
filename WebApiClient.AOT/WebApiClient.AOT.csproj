@@ -28,17 +28,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="MsBuild\AOT\**" />
-    <EmbeddedResource Remove="MsBuild\AOT\**" />
-    <None Remove="MsBuild\AOT\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\WebApiClient.Core\WebApiClient.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="MsBuild\AOT\" />
+    <Folder Include="MsBuild\BuidTask\net46\" />
+    <Folder Include="MsBuild\BuidTask\netcoreapp1.0\" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -53,10 +48,13 @@
         <PackagePath>build\$(TargetFramework)</PackagePath>
       </TfmSpecificPackageFile>
 
-      <TfmSpecificPackageFile Include="MsBuild\AOT\">
-        <PackagePath>build\AOT\</PackagePath>
+      <TfmSpecificPackageFile Include="MsBuild\BuidTask\net46\">
+        <PackagePath>build\BuidTask\net46\</PackagePath>
       </TfmSpecificPackageFile>
 
+      <TfmSpecificPackageFile Include="MsBuild\BuidTask\netcoreapp1.0\">
+        <PackagePath>build\BuidTask\netcoreapp1.0\</PackagePath>
+      </TfmSpecificPackageFile>
     </ItemGroup>
   </Target>
 </Project>

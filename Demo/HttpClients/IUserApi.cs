@@ -15,6 +15,8 @@ namespace Demo.HttpClients
     [AutoReturn(EnsureSuccessStatusCode = true)]
     public interface IUserApi : IHttpApi
     {
+        string x { get; }
+
         // GET {url}?account={account}&password={password}&something={something}
         [HttpGet]
         [Header("Cookie", "a=1; b=2", EncodeCookie = false)]

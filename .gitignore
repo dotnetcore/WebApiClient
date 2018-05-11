@@ -157,3 +157,5 @@ $RECYCLE.BIN/
 /.vs/WebApiClient/v15/Server/sqlite3
 /packages/
 /.vs/config
+/WebApiClient.AOT/MsBuild/BuidTask/net46
+/WebApiClient.AOT/MsBuild/BuidTask/netcoreapp1.0

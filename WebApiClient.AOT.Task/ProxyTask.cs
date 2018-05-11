@@ -58,7 +58,7 @@ namespace WebApiClient.AOT.Task
                 var searchPaths = this.GetSearchPaths().Distinct().ToArray();
                 foreach (var path in searchPaths)
                 {
-                    this.Log.LogWarning($"add search path  {path}");
+                    this.Log.LogMessage($"Mono.Cecil: add search path  {path}");
                 }
 
                 using (var assembly = new Assembly(this.TargetAssembly, searchPaths))
@@ -70,7 +70,7 @@ namespace WebApiClient.AOT.Task
             }
             catch (Exception ex)
             {
-                this.Log.LogErrorFromException(ex);
+                this.Log.LogError(ex.ToString());
                 return false;
             }
         }
