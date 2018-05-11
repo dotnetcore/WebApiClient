@@ -17,33 +17,28 @@
     <Description>一款基于HttpClient封装，只需要定义c#接口并修饰相关特性，即可异步调用远程http接口的客户端库</Description>
     <Copyright>Copyright © xljiulang 2017</Copyright>
     <Summary>一款基于HttpClient封装，只需要定义c#接口并修饰相关特性，即可异步调用远程http接口的客户端库</Summary>
-  
+
     <Title>WebApiClient.AOT</Title>
     <PackageId>WebApiClient.AOT</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/dotnetcore/WebApiClient</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/dotnetcore/WebApiClient/blob/master/LICENSE</PackageLicenseUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageIconUrl>https://raw.githubusercontent.com/dotnetcore/WebApiClient/master/icon.png</PackageIconUrl>   
+    <PackageIconUrl>https://raw.githubusercontent.com/dotnetcore/WebApiClient/master/icon.png</PackageIconUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="MsBuild\ProxyGenarater\net45\**" />
-    <Compile Remove="MsBuild\ProxyGenarater\netcoreapp2.0\**" />
-    <EmbeddedResource Remove="MsBuild\ProxyGenarater\net45\**" />
-    <EmbeddedResource Remove="MsBuild\ProxyGenarater\netcoreapp2.0\**" />
-    <None Remove="MsBuild\ProxyGenarater\net45\**" />
-    <None Remove="MsBuild\ProxyGenarater\netcoreapp2.0\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="MsBuild\ProxyGenarater\" />
-    <Folder Include="MsBuild\ProxyGenarater\net45" />
-    <Folder Include="MsBuild\ProxyGenarater\netcoreapp2.0" />
+    <Compile Remove="MsBuild\AOT\**" />
+    <EmbeddedResource Remove="MsBuild\AOT\**" />
+    <None Remove="MsBuild\AOT\**" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\WebApiClient.Core\WebApiClient.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="MsBuild\AOT\" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -58,13 +53,10 @@
         <PackagePath>build\$(TargetFramework)</PackagePath>
       </TfmSpecificPackageFile>
 
-      <TfmSpecificPackageFile Include="MsBuild\ProxyGenarater\net45\">
-        <PackagePath>build\ProxyGenarater\net45</PackagePath>
+      <TfmSpecificPackageFile Include="MsBuild\AOT\">
+        <PackagePath>build\AOT\</PackagePath>
       </TfmSpecificPackageFile>
 
-      <TfmSpecificPackageFile Include="MsBuild\ProxyGenarater\netcoreapp2.0\">
-        <PackagePath>build\ProxyGenarater\netcoreapp2.0</PackagePath>
-      </TfmSpecificPackageFile>
     </ItemGroup>
   </Target>
 </Project>

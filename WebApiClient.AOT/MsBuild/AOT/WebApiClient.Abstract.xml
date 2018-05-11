@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WebApiClient.Abstract</name>
+    </assembly>
+    <members>
+        <member name="T:WebApiClient.HttpApiBase">
+            <summary>
+            表示IHttpApi实现类的抽象类
+            </summary>
+        </member>
+        <member name="F:WebApiClient.HttpApiBase.interceptor">
+            <summary>
+            Api拦截器
+            </summary>
+        </member>
+        <member name="M:WebApiClient.HttpApiBase.#ctor(WebApiClient.IApiInterceptor)">
+            <summary>
+            IHttpApi实现类的抽象类
+            </summary>
+            <param name="interceptor">Api拦截器 </param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:WebApiClient.HttpApiBase.Dispose">
+            <summary>
+            释放资源
+            </summary>
+        </member>
+        <member name="T:WebApiClient.IApiInterceptor">
+            <summary>
+            定义http接口拦截器的行为
+            </summary>
+        </member>
+        <member name="M:WebApiClient.IApiInterceptor.Intercept(System.Object,System.Reflection.MethodInfo,System.Object[])">
+            <summary>
+            拦截方法的调用
+            </summary>
+            <param name="target">接口的实例</param>
+            <param name="method">接口的方法</param>
+            <param name="parameters">接口的参数集合</param>
+            <returns></returns>
+        </member>
+        <member name="T:WebApiClient.IHttpApi">
+            <summary>
+            定义HttpApi接口的基础接口
+            要求所有HttpApi接口都继承此接口
+            </summary>
+        </member>
+        <member name="T:WebApiClient.ITask`1">
+            <summary>
+            定义返回结果的行为
+            </summary>
+            <typeparam name="TResult"></typeparam>
+        </member>
+        <member name="M:WebApiClient.ITask`1.InvokeAsync">
+            <summary>
+            创建请求任务
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApiClient.ITask`1.GetAwaiter">
+            <summary>
+            调用InvokeAsync
+            并返回其TaskAwaiter对象
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
