@@ -26,7 +26,11 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageIconUrl>https://raw.githubusercontent.com/dotnetcore/WebApiClient/master/icon.png</PackageIconUrl>
   </PropertyGroup>
- 
+  
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'"> 
+    <PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
+  </ItemGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\WebApiClient.Core\WebApiClient.Core.csproj" />
   </ItemGroup> 

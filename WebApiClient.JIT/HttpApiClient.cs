@@ -113,7 +113,7 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(apiInterceptor));
             }
 
-            return null;
+            return HttpApiClientProxy.CreateProxyWithInterface(interfaceType, apiInterceptor);
         }
     }
 }
