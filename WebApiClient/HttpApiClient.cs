@@ -4,7 +4,8 @@ using WebApiClient.Defaults;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示IHttpApi实现类的抽象类
+    /// 表示HttpApi客户端
+    /// 提供创建HttpApiClient实例的方法
     /// </summary>
     public abstract class HttpApiClient : IHttpApi
     {
@@ -14,9 +15,9 @@ namespace WebApiClient
         private readonly IApiInterceptor interceptor;
 
         /// <summary>
-        /// IHttpApi实现类的抽象类
+        /// http客户端的基类
         /// </summary>
-        /// <param name="interceptor">Api拦截器 </param>
+        /// <param name="interceptor">拦截器</param>
         /// <exception cref="ArgumentNullException"></exception>
         public HttpApiClient(IApiInterceptor interceptor)
         {
@@ -118,7 +119,7 @@ namespace WebApiClient
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="TypeLoadException"></exception>
         /// <returns></returns>
-        private static object Create(Type interfaceType, ApiInterceptor apiInterceptor)
+        public static object Create(Type interfaceType, IApiInterceptor apiInterceptor)
         {
             if (interfaceType == null)
             {

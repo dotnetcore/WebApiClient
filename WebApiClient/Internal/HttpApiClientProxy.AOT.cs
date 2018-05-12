@@ -18,13 +18,7 @@ namespace WebApiClient
         /// <summary>
         /// 接口对应的代理类型的构造器缓存
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, ConstructorInfo> proxyCtorCache = new ConcurrentDictionary<Type, ConstructorInfo>();
-
-        /// <summary>
-        /// 接口的方法缓存
-        /// </summary>
-        private static readonly ConcurrentDictionary<Type, MethodInfo[]> interfaceMethodsCache = new ConcurrentDictionary<Type, MethodInfo[]>();
-
+        private static readonly ConcurrentCache<Type, ConstructorInfo> proxyTypeCtorCache = new ConcurrentCache<Type, ConstructorInfo>();
 
         /// <summary>
         /// 搜索接口的代理类型并实例化
@@ -35,7 +29,7 @@ namespace WebApiClient
         /// <returns></returns>
         public static object CreateInstance(Type interfaceType, IApiInterceptor interceptor)
         {
-            var proxyTypeCtor = proxyCtorCache.GetOrAdd(interfaceType, type =>
+            var proxyTypeCtor = proxyTypeCtorCache.GetOrAdd(interfaceType, type =>
             {
                 var @namespace = GetProxyTypeNamespace(interfaceType.Namespace);
                 var typeName = GetProxyTypeName(interfaceType.Name);
@@ -47,7 +41,7 @@ namespace WebApiClient
 
             if (proxyTypeCtor == null)
             {
-                throw new TypeLoadException($"找不到类型{interfaceType}的代理类，请确保接口继承于IHttpApi接口");
+                throw new TypeLoadException($"找不到接口{interfaceType}的代理类，请使用Nuget安装WebApiClient.AOT");
             }
 
             var apiMethods = interfaceType.GetAllApiMethods();

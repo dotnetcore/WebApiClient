@@ -52,16 +52,12 @@ namespace WebApiClient
                 throw new ArgumentException("类型必须为接口类型");
             }
 
-            // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口            
-            if (interfaceType.IsVisible == false)
-            {
-                throw new NotSupportedException(interfaceType.Name + "必须为public修饰且对外可见");
-            }
-
             var apiMethods = new[] { interfaceType }.Concat(interfaceType.GetInterfaces())
                 .Except(typeof(HttpApiClient).GetInterfaces())
                 .SelectMany(item => item.GetMethods())
+#if JIT
                 .Select(item => item.EnsureApiMethod())
+#endif
                 .ToArray();
 
             return apiMethods;

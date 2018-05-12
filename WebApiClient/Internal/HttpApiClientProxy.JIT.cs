@@ -49,6 +49,12 @@ namespace WebApiClient
         /// <returns></returns>
         public static object CreateInstance(Type interfaceType, IApiInterceptor interceptor)
         {
+            // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口            
+            if (interfaceType.IsVisible == false)
+            {
+                throw new NotSupportedException($"{interfaceType}必须为public修饰且对外可见");
+            }
+
             var apiMethods = interfaceType.GetAllApiMethods();
             var proxyTypeCtor = proxyTypeCtorCache.GetOrAdd(
                 interfaceType,
