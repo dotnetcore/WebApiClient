@@ -39,7 +39,8 @@ namespace WebApiClient
             {
                 return string.Empty;
             }
-            return HttpUtility.UrlEncode(value, Encoding.UTF8);
+            return value;
+            //return HttpUtility.UrlEncode(value, Encoding.UTF8);
         }
     }
 }
