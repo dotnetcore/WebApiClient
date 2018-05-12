@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFrameworks>net46;netcoreapp2.0;</TargetFrameworks>
-    <Configurations>AOT_Debug;AOT_Release</Configurations>  
+    <Configurations>AOT_Debug;AOT_Release</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,5 +15,4 @@
   <ItemGroup>
     <ProjectReference Include="..\WebApiClient\WebApiClient.csproj" />
   </ItemGroup>
-  
 </Project>
