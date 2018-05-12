@@ -1,8 +1,8 @@
 ﻿using Microsoft.Build.Framework;
 using System;
-using System.Linq;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace WebApiClient.AOT.Task
 {
@@ -39,6 +39,11 @@ namespace WebApiClient.AOT.Task
 
             foreach (var file in this.References.Split(';'))
             {
+                if (string.IsNullOrEmpty(file) == true)
+                {
+                    continue;
+                }
+
                 var path = Path.GetDirectoryName(file);
                 if (Directory.Exists(path) == true)
                 {
@@ -58,8 +63,10 @@ namespace WebApiClient.AOT.Task
                 var searchPaths = this.GetSearchPaths().Distinct().ToArray();
                 using (var assembly = new Assembly(this.TargetAssembly, searchPaths))
                 {
-                    assembly.WirteProxyTypes();
-                    assembly.Save();
+                    if (assembly.WirteProxyTypes() > 0)
+                    {
+                        assembly.Save();
+                    }
                 }
                 return true;
             }

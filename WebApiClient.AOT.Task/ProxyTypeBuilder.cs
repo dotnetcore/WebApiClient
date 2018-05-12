@@ -2,7 +2,6 @@
 using Mono.Cecil.Cil;
 using System;
 using System.Linq;
-using System.Reflection;
 
 namespace WebApiClient.AOT.Task
 {

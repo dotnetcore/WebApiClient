@@ -2,7 +2,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using WebApiClient;
 
 namespace WebApiClient.AOT.Task
 {
@@ -33,7 +32,7 @@ namespace WebApiClient.AOT.Task
             {
                 throw new FileNotFoundException("找不到文件", fileName);
             }
-            
+
             var resolver = new DefaultAssemblyResolver();
             foreach (var path in searchPaths)
             {
@@ -53,14 +52,17 @@ namespace WebApiClient.AOT.Task
 
         /// <summary>
         /// 写入代理类型
+        /// 返回受影响的接口数
         /// </summary>
-        public void WirteProxyTypes()
+        /// <returns></returns>
+        public int WirteProxyTypes()
         {
             var iHttpApiFullName = this.module.ImportReference(typeof(IHttpApi)).FullName;
             var interfaces = this.module.Types
                 .Where(item => item.IsInterface && item.Interfaces.Any(i => i.InterfaceType.FullName == iHttpApiFullName))
                 .ToArray();
 
+            var write = 0;
             foreach (var item in interfaces)
             {
                 var @interface = new Interface(item);
@@ -68,8 +70,11 @@ namespace WebApiClient.AOT.Task
                 if (proxyType != null)
                 {
                     this.module.Types.Add(proxyType);
+                    write = write + 1;
                 }
             }
+
+            return write;
         }
         /// <summary>
         /// 插入代理并保存
