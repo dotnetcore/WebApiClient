@@ -43,7 +43,7 @@ namespace WebApiClient.Defaults
             this.UseProxy = false;
             this.Proxy = null;
             this.ServerCertificateCustomValidationCallback = (a, b, c, d) => true;
-            this.MaxConnectionsPerServer = HttpClientOptions.ConnectionLimit;
+            this.MaxConnectionsPerServer = HttpApiClient.ConnectionLimit;
         }
     }
 }

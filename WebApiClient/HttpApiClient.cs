@@ -1,26 +1,43 @@
-﻿
-using System;
+﻿using System;
 using WebApiClient.Defaults;
 
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示HttpApi客户端
-    /// 提供创建HttpApiClient实例的方法
+    /// 表示IHttpApi实现类的抽象类
     /// </summary>
-    public static class HttpApiClient
+    public abstract class HttpApiClient : IHttpApi
     {
+        /// <summary>
+        /// Api拦截器
+        /// </summary>
+        private readonly IApiInterceptor interceptor;
+
+        /// <summary>
+        /// IHttpApi实现类的抽象类
+        /// </summary>
+        /// <param name="interceptor">Api拦截器 </param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public HttpApiClient(IApiInterceptor interceptor)
+        {
+            this.interceptor = interceptor ?? throw new ArgumentNullException(nameof(interceptor));
+        }
+
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        public void Dispose()
+        {
+            this.interceptor.Dispose();
+        }
+
         /// <summary>
         /// 获取或设置一个站点内的默认连接数限制
         /// 这个值在初始化HttpClientHandler时使用
         /// 默认值为128
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public static int ConnectionLimit
-        {
-            get => HttpClientOptions.ConnectionLimit;
-            set => HttpClientOptions.ConnectionLimit = value;
-        }
+        public static int ConnectionLimit { get; set; } = 128;
 
         /// <summary>
         /// 创建实现了指定接口的HttpApiClient实例
@@ -101,7 +118,7 @@ namespace WebApiClient
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="TypeLoadException"></exception>
         /// <returns></returns>
-        public static object Create(Type interfaceType, IApiInterceptor apiInterceptor)
+        private static object Create(Type interfaceType, ApiInterceptor apiInterceptor)
         {
             if (interfaceType == null)
             {

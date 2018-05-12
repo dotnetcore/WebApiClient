@@ -60,7 +60,7 @@ namespace WebApiClient
             }
 
             // 排除HttpApiClient已实现的接口
-            var excepts = typeof(HttpApiBase).GetInterfaces();
+            var excepts = typeof(HttpApiClient).GetInterfaces();
             var exceptHashSet = new HashSet<Type>(excepts);
             var methodHashSet = new HashSet<MethodInfo>();
 

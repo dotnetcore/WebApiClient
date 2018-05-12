@@ -2,17 +2,18 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>net46;netcoreapp1.0;</TargetFrameworks>  
+    <TargetFrameworks>net46;netcoreapp2.0;</TargetFrameworks>
+    <Configurations>AOT_Debug;AOT_Release</Configurations>  
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Condition="'$(TargetFramework)' == 'net46' " Include="Microsoft.Build.Tasks.Core" Version="14.3.0"  />
-    <PackageReference Condition="'$(TargetFramework)' == 'netcoreapp1.0' " Include="Microsoft.Build.Tasks.Core" Version="15.6.85" />
+    <PackageReference Condition="'$(TargetFramework)' == 'net46' " Include="Microsoft.Build.Tasks.Core" Version="14.3.0" />
+    <PackageReference Condition="'$(TargetFramework)' == 'netcoreapp2.0' " Include="Microsoft.Build.Tasks.Core" Version="15.6.85" />
     <PackageReference Include="Mono.Cecil" Version="0.10.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WebApiClient.Abstract\WebApiClient.Abstract.csproj" />
+    <ProjectReference Include="..\WebApiClient\WebApiClient.csproj" />
   </ItemGroup>
   
 </Project>

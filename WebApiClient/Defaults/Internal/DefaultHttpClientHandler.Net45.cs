@@ -69,7 +69,7 @@ namespace WebApiClient.Defaults
 
             if (maxConnectionsPerServerSetter != null)
             {
-                maxConnectionsPerServerSetter.Invoke(this, HttpClientOptions.ConnectionLimit);
+                maxConnectionsPerServerSetter.Invoke(this, HttpApiClient.ConnectionLimit);
             }
         }
 
@@ -84,7 +84,7 @@ namespace WebApiClient.Defaults
             // 通过ServicePoint设置最大连接数
             if (maxConnectionsPerServerSetter == null)
             {
-                this.SetServicePointConnectionLimit(request.RequestUri, HttpClientOptions.ConnectionLimit);
+                this.SetServicePointConnectionLimit(request.RequestUri, HttpApiClient.ConnectionLimit);
             }
 
             var header = request.Headers;

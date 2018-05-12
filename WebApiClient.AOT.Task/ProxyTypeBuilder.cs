@@ -24,7 +24,7 @@ namespace WebApiClient.AOT.Task
         /// <summary>
         /// HttpApiClient的构造器
         /// </summary>
-        private static readonly System.Reflection.ConstructorInfo baseConstructor = typeof(HttpApiBase).GetConstructor(new Type[] { typeof(IApiInterceptor) });
+        private static readonly System.Reflection.ConstructorInfo baseConstructor = typeof(HttpApiClient).GetConstructor(new Type[] { typeof(IApiInterceptor) });
 
         /// <summary>
         /// 代理类型的构造器的参数类型
@@ -62,7 +62,7 @@ namespace WebApiClient.AOT.Task
                 attribues = attribues | Mono.Cecil.TypeAttributes.Public;
             }
 
-            var baseType = this.@interface.GetTypeReference(typeof(HttpApiBase));
+            var baseType = this.@interface.GetTypeReference(typeof(HttpApiClient));
             var proxyType = new TypeDefinition(@namespace, typeName, attribues, baseType);
             proxyType.Interfaces.Add(new InterfaceImplementation(this.@interface.Type));
 

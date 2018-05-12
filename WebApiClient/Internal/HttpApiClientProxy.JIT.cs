@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if JIT
+using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
@@ -21,7 +22,7 @@ namespace WebApiClient
         /// <summary>
         /// HttpApiClient的构造器
         /// </summary>
-        private static readonly ConstructorInfo baseConstructor = typeof(HttpApiBase).GetConstructor(new Type[] { typeof(IApiInterceptor) });
+        private static readonly ConstructorInfo baseConstructor = typeof(HttpApiClient).GetConstructor(new Type[] { typeof(IApiInterceptor) });
 
         /// <summary>
         /// 代理类型的构造器的参数类型
@@ -39,15 +40,14 @@ namespace WebApiClient
         private static readonly ConcurrentCache<Type, ConstructorInfo> proxyTypeCtorCache = new ConcurrentCache<Type, ConstructorInfo>();
 
         /// <summary>
-        /// 创建HttpApiClient代理类
-        /// 并实现指定的接口
+        /// 返回HttpApiClient代理类的实例
         /// </summary>
         /// <param name="interfaceType">接口类型</param>
         /// <param name="interceptor">拦截器</param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        public static object CreateProxyWithInterface(Type interfaceType, IApiInterceptor interceptor)
+        public static object CreateInstance(Type interfaceType, IApiInterceptor interceptor)
         {
             var apiMethods = interfaceType.GetAllApiMethods();
             var proxyTypeCtor = proxyTypeCtorCache.GetOrAdd(
@@ -78,7 +78,7 @@ namespace WebApiClient
                 .DefineDynamicModule(moduleName);
             });
 
-            var builder = moduleBuilder.DefineType(interfaceType.FullName, TypeAttributes.Class, typeof(HttpApiBase));
+            var builder = moduleBuilder.DefineType(interfaceType.FullName, TypeAttributes.Class, typeof(HttpApiClient));
             builder.AddInterfaceImplementation(interfaceType);
             return builder.BuildProxyType(apiMethods);
         }
@@ -219,3 +219,4 @@ namespace WebApiClient
         }
     }
 }
+#endif

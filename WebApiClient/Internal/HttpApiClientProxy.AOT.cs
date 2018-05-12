@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿#if AOT
+using System;
 using System.Collections.Concurrent;
+using System.Reflection;
 
 namespace WebApiClient
 {
@@ -82,3 +79,4 @@ namespace WebApiClient
         }
     }
 }
+#endif

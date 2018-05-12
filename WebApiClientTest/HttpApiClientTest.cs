@@ -25,7 +25,7 @@ namespace WebApiClientTest
             ITask<T> GetValue<T>();
         }
 
-        public class MyApi : IDisposable
+        public class MyApi : IHttpApi
         {
             public void Dispose()
             {
@@ -37,8 +37,7 @@ namespace WebApiClientTest
         public void CreateTest()
         {
             var client = HttpApiClient.Create<IMyApi>();
-            Assert.True(client.ApiConfig != null);
-            Assert.True(client.ApiInterceptor != null);
+            Assert.True(client != null);
             Assert.Throws<ArgumentException>(() => HttpApiClient.Create<MyApi>());
             Assert.Throws<NotSupportedException>(() => HttpApiClient.Create<IMyApi2>());
             Assert.Throws<NotSupportedException>(() => HttpApiClient.Create<IMyApi3>());
