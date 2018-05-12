@@ -56,11 +56,6 @@ namespace WebApiClient.AOT.Task
             try
             {
                 var searchPaths = this.GetSearchPaths().Distinct().ToArray();
-                foreach (var path in searchPaths)
-                {
-                    this.Log.LogMessage($"Mono.Cecil: add search path  {path}");
-                }
-
                 using (var assembly = new Assembly(this.TargetAssembly, searchPaths))
                 {
                     assembly.WirteProxyTypes();

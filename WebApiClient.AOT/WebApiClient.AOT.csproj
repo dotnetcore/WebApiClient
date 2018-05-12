@@ -32,8 +32,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="MsBuild\BuidTask\net46\" />
-    <Folder Include="MsBuild\BuidTask\netcoreapp1.0\" />
+    <Folder Include="MsBuild\BuildTask\net46\" />
+    <Folder Include="MsBuild\BuildTask\netcoreapp1.0\" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -48,12 +48,12 @@
         <PackagePath>build\$(TargetFramework)</PackagePath>
       </TfmSpecificPackageFile>
 
-      <TfmSpecificPackageFile Include="MsBuild\BuidTask\net46\">
-        <PackagePath>build\BuidTask\net46\</PackagePath>
+      <TfmSpecificPackageFile Include="MsBuild\BuildTask\net46\">
+        <PackagePath>build\BuildTask\net46\</PackagePath>
       </TfmSpecificPackageFile>
 
-      <TfmSpecificPackageFile Include="MsBuild\BuidTask\netcoreapp1.0\">
-        <PackagePath>build\BuidTask\netcoreapp1.0\</PackagePath>
+      <TfmSpecificPackageFile Include="MsBuild\BuildTask\netcoreapp1.0\">
+        <PackagePath>build\BuildTask\netcoreapp1.0\</PackagePath>
       </TfmSpecificPackageFile>
     </ItemGroup>
   </Target>
