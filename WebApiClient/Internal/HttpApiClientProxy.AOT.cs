@@ -53,15 +53,15 @@ namespace WebApiClient
             var apiMethods = interfaceType.GetAllApiMethods();
             return proxyTypeCtor.Invoke(new object[] { interceptor, apiMethods });
         }
-         
+
         /// <summary>
         /// 返回接口类型的代理类型的命名空间
         /// </summary>
         /// <param name="interfaceNamespace">接口命名空间</param>
         /// <returns></returns>
-        private static string GetProxyTypeNamespace(string interfaceNamespace)
+        public static string GetProxyTypeNamespace(string interfaceNamespace)
         {
-            return $"{interfaceNamespace}.Proxy";
+            return $"System.Proxy.{interfaceNamespace}";
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="interfaceTypeName">接口类型名称</param>
         /// <returns></returns>
-        private static string GetProxyTypeName(string interfaceTypeName)
+        public static string GetProxyTypeName(string interfaceTypeName)
         {
             if (interfaceTypeName.Length <= 1 || interfaceTypeName.StartsWith("I") == false)
             {

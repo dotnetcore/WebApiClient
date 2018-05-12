@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -59,47 +58,21 @@ namespace WebApiClient
                 throw new NotSupportedException(interfaceType.Name + "必须为public修饰且对外可见");
             }
 
-            // 排除HttpApiClient已实现的接口
-            var excepts = typeof(HttpApiClient).GetInterfaces();
-            var exceptHashSet = new HashSet<Type>(excepts);
-            var methodHashSet = new HashSet<MethodInfo>();
+            var apiMethods = new[] { interfaceType }.Concat(interfaceType.GetInterfaces())
+                .Except(typeof(HttpApiClient).GetInterfaces())
+                .SelectMany(item => item.GetMethods())
+                .Select(item => item.EnsureApiMethod())
+                .ToArray();
 
-            interfaceType.GetInterfaceMethods(ref exceptHashSet, ref methodHashSet);
-            return methodHashSet.ToArray();
-        }
-
-        /// <summary>
-        /// 递归查找接口的方法
-        /// </summary>
-        /// <param name="interfaceType">接口类型</param>
-        /// <param name="exceptHashSet">排除的接口类型</param>
-        /// <param name="methodHashSet">收集到的方法</param>
-        /// <exception cref="NotSupportedException"></exception>
-        private static void GetInterfaceMethods(this Type interfaceType, ref HashSet<Type> exceptHashSet, ref HashSet<MethodInfo> methodHashSet)
-        {
-            if (exceptHashSet.Add(interfaceType) == false)
-            {
-                return;
-            }
-
-            var methods = interfaceType.GetMethods();
-            foreach (var item in methods)
-            {
-                item.EnsureApiMethod();
-                methodHashSet.Add(item);
-            }
-
-            foreach (var item in interfaceType.GetInterfaces())
-            {
-                item.GetInterfaceMethods(ref exceptHashSet, ref methodHashSet);
-            }
+            return apiMethods;
         }
 
         /// <summary>
         /// 确保方法是支持的Api接口
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
-        private static void EnsureApiMethod(this MethodInfo method)
+        /// <returns></returns>
+        private static MethodInfo EnsureApiMethod(this MethodInfo method)
         {
             if (method.IsGenericMethod == true)
             {
@@ -132,6 +105,8 @@ namespace WebApiClient
                     throw new NotSupportedException(message);
                 }
             }
+
+            return method;
         }
 
         /// <summary>

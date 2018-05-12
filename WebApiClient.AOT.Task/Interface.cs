@@ -55,22 +55,21 @@ namespace WebApiClient.AOT.Task
         /// <returns></returns>
         public MethodDefinition[] GetAllApis()
         {
-            var iHttpApi = this.GetTypeReference(typeof(IHttpApi)).Resolve();
-            var iHttpApiBase = iHttpApi.Interfaces.Select(item => item.InterfaceType.Resolve());
-
-            var excepts = new[] { iHttpApi }.Concat(iHttpApiBase);
-            var hashSet = new HashSet<TypeDefinition>(excepts, TypeDefinitionComparer.Instance);
+            var excepts = this.GetTypeReference(typeof(HttpApiClient))
+                .Resolve()
+                .Interfaces
+                .Select(item => item.InterfaceType.Resolve());
 
             var interfaces = new[] { this.Type }.Concat(this.Type.Interfaces.Select(i => i.InterfaceType.Resolve()))
-                .Where(item => hashSet.Add(item) == true)
+                .Except(excepts, TypeDefinitionComparer.Instance)
                 .ToArray();
 
-            var methods = interfaces.SelectMany(item => item.Methods).ToArray();
-            foreach (var method in methods)
+            var apiMethods = interfaces.SelectMany(item => item.Methods).ToArray();
+            foreach (var method in apiMethods)
             {
                 this.EnsureApiMethod(method);
             }
-            return methods;
+            return apiMethods;
         }
 
         /// <summary>

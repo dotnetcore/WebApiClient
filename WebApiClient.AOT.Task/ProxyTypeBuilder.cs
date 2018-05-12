@@ -47,8 +47,8 @@ namespace WebApiClient.AOT.Task
         /// <returns></returns>
         public TypeDefinition Build()
         {
-            var @namespace = GetProxyTypeNamespace(this.@interface.Type.Namespace);
-            var typeName = GetProxyTypeName(this.@interface.Type.Name);
+            var @namespace = HttpApiClientProxy.GetProxyTypeNamespace(this.@interface.Type.Namespace);
+            var typeName = HttpApiClientProxy.GetProxyTypeName(this.@interface.Type.Name);
             var fullName = $"{@namespace}.{typeName}";
 
             if (this.@interface.Type.Module.Types.Any(item => item.FullName == fullName))
@@ -77,31 +77,6 @@ namespace WebApiClient.AOT.Task
             return proxyType;
         }
 
-
-
-        /// <summary>
-        /// 返回接口类型的代理类型的命名空间
-        /// </summary>
-        /// <param name="interfaceNamespace">接口命名空间</param>
-        /// <returns></returns>
-        private static string GetProxyTypeNamespace(string interfaceNamespace)
-        {
-            return $"{interfaceNamespace}.Proxy";
-        }
-
-        /// <summary>
-        /// 返回接口类型的代理类型的名称
-        /// </summary>
-        /// <param name="interfaceTypeName">接口类型名称</param>
-        /// <returns></returns>
-        private static string GetProxyTypeName(string interfaceTypeName)
-        {
-            if (interfaceTypeName.Length <= 1 || interfaceTypeName.StartsWith("I") == false)
-            {
-                return interfaceTypeName;
-            }
-            return interfaceTypeName.Substring(1);
-        }
 
         /// <summary>
         /// 生成代理类型的字段
