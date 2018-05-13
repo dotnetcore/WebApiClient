@@ -1,5 +1,5 @@
 ## 0. 新的启航
-虽然Laojiu.WebApiClient分支已经比较稳定和可靠，但由于使用了JIT的Emit动态代理，不支持AOT，新的支持JIT和AOT功能的分支将作为未来的项目发展方向，当前master和dev分支为JIT和AOT功能，使用了JIT动态代理的WebApiClient.JIT的nuget包将替代原来的Laojiu.WebApiClient，使用编译时代理的WebApiClient.AOT的nuget包将作为移动平台AOT用。<br/>
+Laojiu.WebApiClient分支已经比较稳定和可靠，但不支持AOT一直是一个痛点，目前正在开发支持JIT/AOT自动代理的新分支，相关代码在master或dev分支。未来WebApiClient.JIT的nuget包将替代原来的Laojiu.WebApiClient包，WebApiClient.AOT的nuget包将作为移动平台AOT用，两者将保持一致的使用Api，区别是前者在运行时使用Emit创建Http请求接口的代理类，后者在编译时插入Http请求接口的代理类IL指令到输出的程序集。<br/>
 
 PM> `install-package WebApiClient.JIT`
 <br/>支持 `.net framework4.5` `netstandard1.3` `netcoreapp2.1`
