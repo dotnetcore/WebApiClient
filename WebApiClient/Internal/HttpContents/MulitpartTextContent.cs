@@ -1,6 +1,5 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 
 namespace WebApiClient
 {
@@ -15,7 +14,7 @@ namespace WebApiClient
         /// <param name="name">名称</param>
         /// <param name="value">文本</param>
         public MulitpartTextContent(string name, string value)
-            : base(value == null ? string.Empty : value)
+            : base(value ?? string.Empty)
         {
             if (this.Headers.ContentDisposition == null)
             {

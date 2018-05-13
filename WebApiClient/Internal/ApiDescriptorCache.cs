@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
-
 using WebApiClient.Attributes;
 using WebApiClient.Contexts;
 using WebApiClient.DataAnnotations;
@@ -224,8 +222,7 @@ namespace WebApiClient
             /// <returns></returns> 
             public int GetHashCode(TAttributeMultiplable obj)
             {
-                var attribute = obj as Attribute;
-                return attribute.GetType().GetHashCode();
+                return obj.GetType().GetHashCode();
             }
         }
     }

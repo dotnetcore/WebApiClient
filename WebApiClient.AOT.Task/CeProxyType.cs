@@ -15,17 +15,17 @@ namespace WebApiClient.AOT.Task
         /// <summary>
         /// IApiInterceptor的Intercept方法
         /// </summary>
-        private static readonly System.Reflection.MethodInfo interceptMethod = typeof(IApiInterceptor).GetMethod("Intercept");
+        private static readonly MethodInfo interceptMethod = typeof(IApiInterceptor).GetMethod("Intercept");
 
         /// <summary>
         /// HttpApiClient的构造器
         /// </summary>
-        private static readonly System.Reflection.ConstructorInfo baseConstructor = typeof(HttpApiClient).GetConstructor(new Type[] { typeof(IApiInterceptor) });
+        private static readonly ConstructorInfo baseConstructor = typeof(HttpApiClient).GetConstructor(new Type[] { typeof(IApiInterceptor) });
 
         /// <summary>
         /// 代理类型的构造器的参数类型
         /// </summary>
-        private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IApiInterceptor), typeof(System.Reflection.MethodInfo[]) };
+        private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IApiInterceptor), typeof(MethodInfo[]) };
 
         /// <summary>
         /// 接口
@@ -50,9 +50,9 @@ namespace WebApiClient.AOT.Task
         {
             var @namespace = this.GetProxyTypeNamespace();
             var typeName = this.@interface.Type.Name;
-            var fullName = $"{@namespace}.{typeName}";
+            var proxyTypeFullName = $"{@namespace}.{typeName}";
 
-            return this.@interface.Type.Module.GetTypes().Any(item => item.FullName == fullName);
+            return this.@interface.Type.Module.GetTypes().Any(item => item.FullName == proxyTypeFullName);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace WebApiClient.AOT.Task
             proxyType.Interfaces.Add(new InterfaceImplementation(this.@interface.Type));
 
             var fieldInterceptor = this.BuildField(proxyType, "interceptor", typeof(IApiInterceptor));
-            var fieldApiMethods = this.BuildField(proxyType, "apiMethods", typeof(System.Reflection.MethodInfo[]));
+            var fieldApiMethods = this.BuildField(proxyType, "apiMethods", typeof(MethodInfo[]));
             this.BuildCtor(proxyType, fieldInterceptor, fieldApiMethods);
 
             var apiMethos = this.@interface.GetAllApis();
@@ -122,7 +122,10 @@ namespace WebApiClient.AOT.Task
         {
             // this(IApiInterceptor interceptor, MethodInfo[] methods):base(interceptor)          
             var ctor = new MethodDefinition(".ctor", Mono.Cecil.MethodAttributes.Public, this.GetTypeReference(typeof(void)));
-            ctor.Attributes = Mono.Cecil.MethodAttributes.Public | Mono.Cecil.MethodAttributes.HideBySig | Mono.Cecil.MethodAttributes.SpecialName | Mono.Cecil.MethodAttributes.RTSpecialName;
+            ctor.Attributes = Mono.Cecil.MethodAttributes.Public
+                | Mono.Cecil.MethodAttributes.HideBySig
+                | Mono.Cecil.MethodAttributes.SpecialName
+                | Mono.Cecil.MethodAttributes.RTSpecialName;
 
             foreach (var item in proxyTypeCtorArgTypes)
             {
@@ -159,7 +162,11 @@ namespace WebApiClient.AOT.Task
         /// <param name="fieldApiMethods">接口方法集合字段</param>
         private void BuildMethods(TypeDefinition proxyType, MethodDefinition[] apiMethods, FieldDefinition fieldInterceptor, FieldDefinition fieldApiMethods)
         {
-            const Mono.Cecil.MethodAttributes implementAttribute = Mono.Cecil.MethodAttributes.Public | Mono.Cecil.MethodAttributes.Virtual | Mono.Cecil.MethodAttributes.Final | Mono.Cecil.MethodAttributes.NewSlot | Mono.Cecil.MethodAttributes.HideBySig;
+            const Mono.Cecil.MethodAttributes implementAttribute = Mono.Cecil.MethodAttributes.Public
+                | Mono.Cecil.MethodAttributes.Virtual
+                | Mono.Cecil.MethodAttributes.Final
+                | Mono.Cecil.MethodAttributes.NewSlot
+                | Mono.Cecil.MethodAttributes.HideBySig;
 
             for (var i = 0; i < apiMethods.Length; i++)
             {
@@ -167,14 +174,14 @@ namespace WebApiClient.AOT.Task
                 var apiParameters = apiMethod.Parameters;
                 var parameterTypes = apiParameters.Select(p => p.ParameterType).ToArray();
 
-                var impMethod = new MethodDefinition(apiMethod.Name, implementAttribute, apiMethod.ReturnType);
+                var implMethod = new MethodDefinition(apiMethod.Name, implementAttribute, apiMethod.ReturnType);
                 foreach (var item in apiParameters)
                 {
-                    impMethod.Parameters.Add(item);
+                    implMethod.Parameters.Add(item);
                 }
-                proxyType.Methods.Add(impMethod);
+                proxyType.Methods.Add(implMethod);
 
-                var iL = impMethod.Body.GetILProcessor();
+                var iL = implMethod.Body.GetILProcessor();
 
                 // this.interceptor
                 iL.Emit(OpCodes.Ldarg_0);
@@ -187,7 +194,7 @@ namespace WebApiClient.AOT.Task
                 iL.Create(OpCodes.Localloc);
 
                 var method = new VariableDefinition(this.GetTypeReference(typeof(System.Reflection.MethodInfo)));
-                impMethod.Body.Variables.Add(method);
+                implMethod.Body.Variables.Add(method);
 
                 iL.Emit(OpCodes.Ldarg_0);
                 iL.Emit(OpCodes.Ldfld, fieldApiMethods);
@@ -200,7 +207,7 @@ namespace WebApiClient.AOT.Task
 
                 // var parameters = new object[parameters.Length]
                 var parameters = new VariableDefinition(this.GetTypeReference(typeof(object[])));
-                impMethod.Body.Variables.Add(parameters);
+                implMethod.Body.Variables.Add(parameters);
 
                 iL.Emit(OpCodes.Ldc_I4, apiParameters.Count);
                 iL.Emit(OpCodes.Newarr, this.GetTypeReference(typeof(object)));

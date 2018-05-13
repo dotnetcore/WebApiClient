@@ -44,7 +44,7 @@ namespace WebApiClient.AOT.Task
             }
             catch (Exception ex)
             {
-                this.Log.LogError(ex.ToString());
+                this.Log.LogError(ex.Message);
                 return false;
             }
         }

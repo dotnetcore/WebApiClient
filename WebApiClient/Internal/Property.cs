@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -42,7 +41,7 @@ namespace WebApiClient
         /// <summary>
         /// 类型属性缓存
         /// </summary>
-        private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, Property[]> cache = new System.Collections.Concurrent.ConcurrentDictionary<Type, Property[]>();
+        private static readonly  ConcurrentCache <Type, Property[]> cache = new ConcurrentCache<Type, Property[]>();
 
         /// <summary>
         /// 获取类型的属性

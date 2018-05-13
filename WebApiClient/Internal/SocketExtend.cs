@@ -35,13 +35,17 @@ namespace WebApiClient
                 UserToken = token
             };
 
-            e.Completed += OnEndConnect;
-            if (socket.ConnectAsync(e) == false)
+            using (e)
             {
-                OnEndConnect(socket, e);
+                e.Completed += OnEndConnect;
+                if (socket.ConnectAsync(e) == false)
+                {
+                    OnEndConnect(socket, e);
+                }
+                await token.Task;
             }
-            await token.Task;
         }
+
 
 
         /// <summary>
@@ -61,7 +65,6 @@ namespace WebApiClient
                 var ex = new SocketException((int)e.SocketError);
                 token.SetException(ex);
             }
-            e.Dispose();
         }
 
 
@@ -82,14 +85,17 @@ namespace WebApiClient
                 UserToken = token
             };
 
-            e.SetBuffer(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
-            e.Completed += OnEndSend;
-
-            if (socket.SendAsync(e) == false)
+            using (e)
             {
-                OnEndSend(socket, e);
+                e.SetBuffer(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
+                e.Completed += OnEndSend;
+
+                if (socket.SendAsync(e) == false)
+                {
+                    OnEndSend(socket, e);
+                }
+                return await token.Task;
             }
-            return await token.Task;
         }
 
         /// <summary>
@@ -109,7 +115,6 @@ namespace WebApiClient
                 var ex = new SocketException((int)e.SocketError);
                 token.SetException(ex);
             }
-            e.Dispose();
         }
 
         /// <summary>
@@ -128,14 +133,18 @@ namespace WebApiClient
             {
                 UserToken = token
             };
-            e.SetBuffer(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
-            e.Completed += OnEndSend;
 
-            if (socket.ReceiveAsync(e) == false)
+            using (e)
             {
-                OnEndReceive(socket, e);
+                e.SetBuffer(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
+                e.Completed += OnEndSend;
+
+                if (socket.ReceiveAsync(e) == false)
+                {
+                    OnEndReceive(socket, e);
+                }
+                return await token.Task;
             }
-            return await token.Task;
         }
 
         /// <summary>
@@ -143,7 +152,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private static void OnEndReceive(object sender,  SocketAsyncEventArgs e)
+        private static void OnEndReceive(object sender, SocketAsyncEventArgs e)
         {
             var token = e.UserToken as TaskSetter<int>;
             if (e.SocketError == SocketError.Success)
@@ -155,7 +164,6 @@ namespace WebApiClient
                 var ex = new SocketException((int)e.SocketError);
                 token.SetException(ex);
             }
-            e.Dispose();
         }
 
         /// <summary>
