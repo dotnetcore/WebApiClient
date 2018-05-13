@@ -66,7 +66,7 @@ namespace WebApiClient
             var attribute = method.GetAttribute<TAttribute>(inherit);
             if (attribute == null)
             {
-                attribute = method.DeclaringType.GetAttribute<TAttribute>(inherit);
+                attribute = method.DeclaringType.Detail().GetAttribute<TAttribute>(inherit);
             }
             return attribute;
         }
@@ -81,7 +81,7 @@ namespace WebApiClient
         public static IEnumerable<TAttribute> FindDeclaringAttributes<TAttribute>(this MethodInfo method, bool inherit) where TAttribute : class
         {
             var methodAttributes = method.GetAttributes<TAttribute>(true);
-            var interfaceAttributes = method.DeclaringType.GetAttributes<TAttribute>(true);
+            var interfaceAttributes = method.DeclaringType.Detail().GetAttributes<TAttribute>(true);
             return methodAttributes.Concat(interfaceAttributes);
         } 
     }

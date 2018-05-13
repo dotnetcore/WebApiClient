@@ -47,7 +47,7 @@ namespace WebApiClient
         /// <returns></returns>
         private static MethodInfo[] GetAllApiMethodsNoCache(this Type interfaceType)
         {
-            if (interfaceType.IsInterface == false)
+            if (interfaceType.Detail().IsInterface == false)
             {
                 throw new ArgumentException("类型必须为接口类型");
             }
@@ -81,7 +81,7 @@ namespace WebApiClient
             }
 
             var genericType = method.ReturnType;
-            if (genericType.IsGenericType == true)
+            if (genericType.Detail().IsGenericType == true)
             {
                 genericType = genericType.GetGenericTypeDefinition();
             }
@@ -105,6 +105,28 @@ namespace WebApiClient
             return method;
         }
 
+#if NETSTANDARD1_6 || NETSTANDARD1_3
+        /// <summary>
+        /// 返回type的详细类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static TypeInfo Detail(this Type type)
+        {
+            return type.GetTypeInfo();
+        }
+#else
+        /// <summary>
+        /// 返回type的详细类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static Type Detail(this Type type)
+        {
+            return type;
+        }
+#endif
+
         /// <summary>
         /// 是否可以从TBase类型派生
         /// </summary>
@@ -123,7 +145,7 @@ namespace WebApiClient
         /// <returns></returns>
         public static bool IsAllowMultiple(this Type type)
         {
-            return typeAllowMultipleCache.GetOrAdd(type, (t => t.IsInheritFrom<Attribute>() && t.GetAttribute<AttributeUsageAttribute>(true).AllowMultiple));
+            return typeAllowMultipleCache.GetOrAdd(type, (t => t.IsInheritFrom<Attribute>() && t.Detail().GetAttribute<AttributeUsageAttribute>(true).AllowMultiple));
         }
 
         /// <summary>

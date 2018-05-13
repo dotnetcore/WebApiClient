@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !(NETSTANDARD1_6 || NETSTANDARD1_3)
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -44,3 +45,4 @@ namespace WebApiClient
         }
     }
 }
+#endif

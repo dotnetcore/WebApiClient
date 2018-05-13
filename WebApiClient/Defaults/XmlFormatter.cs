@@ -34,7 +34,7 @@ namespace WebApiClient.Defaults
             var xmlSerializer = new XmlSerializer(obj.GetType());
             using (var stream = new MemoryStream())
             {
-                var xmlWriter = new XmlTextWriter(stream, encoding);
+                var xmlWriter = XmlWriter.Create(stream, new XmlWriterSettings { Encoding = encoding });
                 xmlSerializer.Serialize(xmlWriter, obj);
 
                 stream.Position = 0;

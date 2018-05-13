@@ -29,6 +29,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         public bool EncodeCookie { get; set; }
 
+#if! (NETSTANDARD1_6 || NETSTANDARD1_3)
         /// <summary>
         /// 将参数值设置到Header        
         /// </summary>
@@ -37,6 +38,7 @@ namespace WebApiClient.Attributes
             : this(RequestHeader.GetName(name), null)
         {
         }
+#endif
 
         /// <summary>
         /// 将参数值设置到Header      
@@ -48,6 +50,7 @@ namespace WebApiClient.Attributes
         {
         }
 
+#if! (NETSTANDARD1_6 || NETSTANDARD1_3)
         /// <summary>
         /// 将指定值设置到Header       
         /// </summary>
@@ -57,6 +60,7 @@ namespace WebApiClient.Attributes
             : this(RequestHeader.GetName(name), value)
         {
         }
+#endif
 
         /// <summary>
         /// 将指定值设置到Header      

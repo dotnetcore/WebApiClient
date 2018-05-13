@@ -225,7 +225,7 @@ namespace WebApiClient
             public int GetHashCode(TAttributeMultiplable obj)
             {
                 var attribute = obj as Attribute;
-                return attribute.TypeId.GetHashCode();
+                return attribute.GetType().GetHashCode();
             }
         }
     }
