@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace WebApiClient.Defaults
 {
@@ -22,7 +23,7 @@ namespace WebApiClient.Defaults
         /// <returns></returns>
         public override bool CanConvert(Type objectType)
         {
-            return objectType.IsGenericType && objectType.GetGenericTypeDefinition() == keyValuePairType;
+            return objectType.Detail().IsGenericType && objectType.GetGenericTypeDefinition() == keyValuePairType;
         }
 
         /// <summary>
@@ -103,7 +104,7 @@ namespace WebApiClient.Defaults
             /// <summary>
             /// 类型的KeyValuePairReader缓存
             /// </summary>
-            private static readonly ConcurrentDictionary<Type, KeyValuePairReader> readerCache = new ConcurrentDictionary<Type, KeyValuePairReader>();
+            private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, KeyValuePairReader> readerCache = new System.Collections.Concurrent.ConcurrentDictionary<Type, KeyValuePairReader>();
 
             /// <summary>
             /// 从类型获取KeyValuePairReader

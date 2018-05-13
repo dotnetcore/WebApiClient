@@ -2,8 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-
     <IsPackable>false</IsPackable>
+
+    <Configurations>JIT;AOT</Configurations>
+    
+    <JITAOT Condition="'$(Configuration)' == 'AOT'">AOT</JITAOT>
+    <JITAOT Condition="'$(Configuration)' == 'JIT'">JIT</JITAOT>
+    
+    <DefineConstants>$(JITAOT);DEBUG</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

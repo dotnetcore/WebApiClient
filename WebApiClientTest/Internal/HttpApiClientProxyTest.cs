@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿#if JIT
+using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using WebApiClient;
@@ -8,7 +10,7 @@ namespace WebApiClientTest.Internal
 {
     public class HttpApiClientProxyTest
     {
-        class MyInterceptor : IApiInterceptor
+        class MyInterceptor : IApiInterceptor,IDisposable
         {
             public HttpApiConfig ApiConfig { get; private set; }
 
@@ -26,6 +28,11 @@ namespace WebApiClientTest.Internal
                     Parameters = parameters
                 };
                 return Task.FromResult(result);
+            }
+
+            public void Dispose()
+            {
+                this.ApiConfig.Dispose();
             }
         }
 
@@ -47,7 +54,7 @@ namespace WebApiClientTest.Internal
         {
             var config = new HttpApiConfig();
             var interceptor = new MyInterceptor(config);
-            var myApi = HttpApiClientProxy.CreateProxyWithInterface(typeof(IMyApi), interceptor) as IMyApi;
+            var myApi = HttpApiClientProxy.CreateInstance(typeof(IMyApi), interceptor) as IMyApi;
 
             var result = await myApi.M1(0, 1);
             Assert.Equal(result.Method, typeof(IMyApi).GetMethod("M1"));
@@ -55,5 +62,7 @@ namespace WebApiClientTest.Internal
             Assert.True((int)result.Parameters.First() == 0);
             Assert.True((int)result.Parameters.Last() == 1);
         }
+
     }
 }
+#endif

@@ -1,17 +1,13 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace WebApiClient
 {
     /// <summary>
     /// 定义http接口拦截器的行为
     /// </summary>
-    public interface IApiInterceptor
+    public interface IApiInterceptor : IDisposable
     {
-        /// <summary>
-        /// 获取相关的配置
-        /// </summary>
-        HttpApiConfig ApiConfig { get; }
-
         /// <summary>
         /// 拦截方法的调用
         /// </summary>

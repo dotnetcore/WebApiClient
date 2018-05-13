@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if JIT
+using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
@@ -39,16 +40,21 @@ namespace WebApiClient
         private static readonly ConcurrentCache<Type, ConstructorInfo> proxyTypeCtorCache = new ConcurrentCache<Type, ConstructorInfo>();
 
         /// <summary>
-        /// 创建HttpApiClient代理类
-        /// 并实现指定的接口
+        /// 返回HttpApiClient代理类的实例
         /// </summary>
         /// <param name="interfaceType">接口类型</param>
         /// <param name="interceptor">拦截器</param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        public static object CreateProxyWithInterface(Type interfaceType, IApiInterceptor interceptor)
+        public static object CreateInstance(Type interfaceType, IApiInterceptor interceptor)
         {
+            // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口            
+            if (interfaceType.Detail().IsVisible == false)
+            {
+                throw new NotSupportedException($"{interfaceType}必须为public修饰且对外可见");
+            }
+
             var apiMethods = interfaceType.GetAllApiMethods();
             var proxyTypeCtor = proxyTypeCtorCache.GetOrAdd(
                 interfaceType,
@@ -67,8 +73,8 @@ namespace WebApiClient
         /// <returns></returns>
         private static ConstructorInfo ImplementAsHttpApiClient(this Type interfaceType, MethodInfo[] apiMethods)
         {
-            var moduleName = interfaceType.Module.Name;
-            var hashCode = interfaceType.Assembly.GetHashCode() ^ interfaceType.Module.GetHashCode();
+            var moduleName = interfaceType.Detail().Module.Name;
+            var hashCode = interfaceType.Detail().Assembly.GetHashCode() ^ interfaceType.Detail().Module.GetHashCode();
 
             // 每个动态集下面只会有一个模块
             var moduleBuilder = hashCodeModuleBuilderCache.GetOrAdd(hashCode, (hash) =>
@@ -197,7 +203,7 @@ namespace WebApiClient
                     iL.Emit(OpCodes.Ldarg, j + 1);
 
                     var parameterType = parameterTypes[j];
-                    if (parameterType.IsValueType || parameterType.IsGenericParameter)
+                    if (parameterType.Detail().IsValueType || parameterType.IsGenericParameter)
                     {
                         iL.Emit(OpCodes.Box, parameterType);
                     }
@@ -219,3 +225,4 @@ namespace WebApiClient
         }
     }
 }
+#endif

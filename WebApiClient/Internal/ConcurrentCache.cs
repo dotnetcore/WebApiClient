@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -15,14 +14,14 @@ namespace WebApiClient
         /// <summary>
         /// 线程安全字典
         /// </summary>
-        private readonly ConcurrentDictionary<TKey, Lazy<TValue>> dictionary;
+        private readonly System.Collections.Concurrent.ConcurrentDictionary<TKey, Lazy<TValue>> dictionary;
 
         /// <summary>
         /// 线程安全的内存缓存
         /// </summary>
         public ConcurrentCache()
         {
-            this.dictionary = new ConcurrentDictionary<TKey, Lazy<TValue>>();
+            this.dictionary = new System.Collections.Concurrent.ConcurrentDictionary<TKey, Lazy<TValue>>();
         }
 
         /// <summary>
@@ -32,7 +31,7 @@ namespace WebApiClient
         /// <exception cref="ArgumentNullException"></exception>
         public ConcurrentCache(IEqualityComparer<TKey> comparer)
         {
-            this.dictionary = new ConcurrentDictionary<TKey, Lazy<TValue>>(comparer);
+            this.dictionary = new System.Collections.Concurrent.ConcurrentDictionary<TKey, Lazy<TValue>>(comparer);
         }
 
         /// <summary>

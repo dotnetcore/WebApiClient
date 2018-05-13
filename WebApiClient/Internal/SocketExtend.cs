@@ -28,31 +28,42 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(remoteEndPoint));
             }
 
-            var token = new UserToken<object>
+            var token = new TaskSetter<object>(timeout);
+            var e = new SocketAsyncEventArgs
             {
-                Socket = socket,
-                TaskSetter = new TaskSetter<object>(timeout)
+                RemoteEndPoint = remoteEndPoint,
+                UserToken = token
             };
 
-            socket.BeginConnect(remoteEndPoint, OnEndConnect, token);
-            await token.TaskSetter.Task;
+            using (e)
+            {
+                e.Completed += OnEndConnect;
+                if (socket.ConnectAsync(e) == false)
+                {
+                    OnEndConnect(socket, e);
+                }
+                await token.Task;
+            }
         }
+
+
 
         /// <summary>
         /// 连接完成
         /// </summary>
-        /// <param name="ar"></param>
-        private static void OnEndConnect(IAsyncResult ar)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void OnEndConnect(object sender, SocketAsyncEventArgs e)
         {
-            var token = ar.AsyncState as UserToken<object>;
-            try
+            var token = e.UserToken as TaskSetter<object>;
+            if (e.SocketError == SocketError.Success)
             {
-                token.Socket.EndConnect(ar);
-                token.TaskSetter.SetResult(null);
+                token.SetResult(null);
             }
-            catch (Exception ex)
+            else
             {
-                token.TaskSetter.SetException(ex);
+                var ex = new SocketException((int)e.SocketError);
+                token.SetException(ex);
             }
         }
 
@@ -68,31 +79,41 @@ namespace WebApiClient
         /// <returns></returns>
         public static async Task<int> SendTaskAsync(this Socket socket, ArraySegment<byte> arraySegment, TimeSpan? timeout)
         {
-            var token = new UserToken<int>
+            var token = new TaskSetter<int>(timeout);
+            var e = new SocketAsyncEventArgs
             {
-                Socket = socket,
-                TaskSetter = new TaskSetter<int>(timeout)
+                UserToken = token
             };
 
-            socket.BeginSend(arraySegment.Array, arraySegment.Offset, arraySegment.Count, SocketFlags.None, OnEndSend, token);
-            return await token.TaskSetter.Task;
+            using (e)
+            {
+                e.SetBuffer(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
+                e.Completed += OnEndSend;
+
+                if (socket.SendAsync(e) == false)
+                {
+                    OnEndSend(socket, e);
+                }
+                return await token.Task;
+            }
         }
 
         /// <summary>
         /// 发送完成
         /// </summary>
-        /// <param name="ar"></param>
-        private static void OnEndSend(IAsyncResult ar)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void OnEndSend(object sender, SocketAsyncEventArgs e)
         {
-            var token = ar.AsyncState as UserToken<int>;
-            try
+            var token = e.UserToken as TaskSetter<int>;
+            if (e.SocketError == SocketError.Success)
             {
-                var length = token.Socket.EndSend(ar);
-                token.TaskSetter.SetResult(length);
+                token.SetResult(e.BytesTransferred);
             }
-            catch (Exception ex)
+            else
             {
-                token.TaskSetter.SetException(ex);
+                var ex = new SocketException((int)e.SocketError);
+                token.SetException(ex);
             }
         }
 
@@ -107,48 +128,42 @@ namespace WebApiClient
         /// <returns></returns>
         public static async Task<int> ReceiveTaskAsync(this Socket socket, ArraySegment<byte> arraySegment, TimeSpan? timeout)
         {
-            var token = new UserToken<int>
+            var token = new TaskSetter<int>(timeout);
+            var e = new SocketAsyncEventArgs
             {
-                Socket = socket,
-                TaskSetter = new TaskSetter<int>(timeout)
+                UserToken = token
             };
-            socket.BeginReceive(arraySegment.Array, arraySegment.Offset, arraySegment.Count, SocketFlags.None, OnEndReceive, token);
-            return await token.TaskSetter.Task;
+
+            using (e)
+            {
+                e.SetBuffer(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
+                e.Completed += OnEndSend;
+
+                if (socket.ReceiveAsync(e) == false)
+                {
+                    OnEndReceive(socket, e);
+                }
+                return await token.Task;
+            }
         }
 
         /// <summary>
         /// 接收完成
         /// </summary>
-        /// <param name="ar"></param>
-        private static void OnEndReceive(IAsyncResult ar)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void OnEndReceive(object sender, SocketAsyncEventArgs e)
         {
-            var token = ar.AsyncState as UserToken<int>;
-            try
+            var token = e.UserToken as TaskSetter<int>;
+            if (e.SocketError == SocketError.Success)
             {
-                var length = token.Socket.EndReceive(ar);
-                token.TaskSetter.SetResult(length);
+                token.SetResult(e.BytesTransferred);
             }
-            catch (Exception ex)
+            else
             {
-                token.TaskSetter.SetException(ex);
+                var ex = new SocketException((int)e.SocketError);
+                token.SetException(ex);
             }
-        }
-
-        /// <summary>
-        /// 表示用户信息
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        private class UserToken<T>
-        {
-            /// <summary>
-            /// socket
-            /// </summary>
-            public Socket Socket { get; set; }
-
-            /// <summary>
-            /// 任务
-            /// </summary>
-            public TaskSetter<T> TaskSetter { get; set; }
         }
 
         /// <summary>

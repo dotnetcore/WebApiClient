@@ -27,12 +27,6 @@ namespace WebApiClientTest.Internal
             public string Name { get; set; }
         }
 
-        interface InternalInterface
-        {
-
-        }
-
-
         public interface IGet
         {
             ITask<string> Get();
@@ -77,8 +71,6 @@ namespace WebApiClientTest.Internal
         [Fact]
         public void GetAllApiMethodsTest()
         {
-            Assert.Throws<NotSupportedException>(() => typeof(InternalInterface).GetAllApiMethods());
-
             var m1 = typeof(IMyApi).GetAllApiMethods();
             var m2 = typeof(IMyApi).GetAllApiMethods();
 
