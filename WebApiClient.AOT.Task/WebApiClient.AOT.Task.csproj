@@ -4,7 +4,7 @@
     <OutputType>Library</OutputType>
     <TargetFrameworks>net45;netcoreapp1.0;</TargetFrameworks>
     <Configurations>AOT_Debug;AOT_Release</Configurations>
-    <Version>0.0.3</Version>
+    <Version>0.0.4</Version>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net45' ">
@@ -14,7 +14,6 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp1.0' ">
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.6.85" />
-    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
     <PackageReference Include="Mono.Cecil" Version="0.10.0" />
   </ItemGroup>
 
