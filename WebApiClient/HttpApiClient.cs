@@ -10,18 +10,18 @@ namespace WebApiClient
     public abstract class HttpApiClient : IHttpApi
     {
         /// <summary>
-        /// Api拦截器
+        /// 获取Api拦截器
         /// </summary>
-        private readonly IApiInterceptor interceptor;
+        public IApiInterceptor ApiInterceptor { get; private set; }
 
         /// <summary>
         /// http客户端的基类
         /// </summary>
-        /// <param name="interceptor">拦截器</param>
+        /// <param name="apiInterceptor">拦截器</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public HttpApiClient(IApiInterceptor interceptor)
+        public HttpApiClient(IApiInterceptor apiInterceptor)
         {
-            this.interceptor = interceptor ?? throw new ArgumentNullException(nameof(interceptor));
+            this.ApiInterceptor = apiInterceptor ?? throw new ArgumentNullException(nameof(apiInterceptor));
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace WebApiClient
         /// </summary>
         public void Dispose()
         {
-            this.interceptor.Dispose();
+            this.ApiInterceptor.Dispose();
         }
 
         /// <summary>
