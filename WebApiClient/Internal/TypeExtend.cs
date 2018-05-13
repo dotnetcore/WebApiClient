@@ -105,7 +105,7 @@ namespace WebApiClient
             return method;
         }
 
-#if NETSTANDARD1_6 || NETSTANDARD1_3
+#if NETSTANDARD1_3
         /// <summary>
         /// 返回type的详细类型
         /// </summary>
@@ -114,6 +114,19 @@ namespace WebApiClient
         public static TypeInfo Detail(this Type type)
         {
             return type.GetTypeInfo();
+        }
+
+        /// <summary>
+        /// 获取构造参数
+        /// </summary>
+        /// <param name="typeInfo">类型</param>
+        /// <param name="types">参数类型</param>
+        /// <returns></returns>
+        public static ConstructorInfo GetConstructor(this TypeInfo typeInfo, Type[] types)
+        {
+            return typeInfo
+               .DeclaredConstructors
+               .FirstOrDefault(item => item.GetParameters().Select(p => p.ParameterType).SequenceEqual(types));
         }
 #else
         /// <summary>

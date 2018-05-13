@@ -1,4 +1,4 @@
-﻿#if !(NETSTANDARD1_6 || NETSTANDARD1_3)
+﻿#if !NETSTANDARD1_3
 using System;
 using System.Collections.Generic;
 using System.Linq;
