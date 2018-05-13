@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if JIT
+
+using System;
 using WebApiClient;
 using Xunit;
 
@@ -45,3 +47,4 @@ namespace WebApiClientTest
         }
     }
 }
+#endif
