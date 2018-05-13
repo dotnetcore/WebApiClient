@@ -1,4 +1,13 @@
-## 1. [Nuget](https://www.nuget.org/packages/Laojiu.WebApiClient/)
+## 0. 新的启航
+虽然Laojiu.WebApiClient分支已经比较稳定和可靠，但由于使用了JIT的Emit动态代理，不支持AOT，新的支持JIT和AOT功能的分支将作为未来的项目发展方向，当前master和dev分支为JIT和AOT功能，使用了JIT动态代理的WebApiClient.JIT的nuget包将替代原来的Laojiu.WebApiClient，使用编译时代理的WebApiClient.AOT的nuget包将作为移动平台AOT用。<br/>
+
+PM> `install-package WebApiClient.JIT`
+<br/>支持 `.net framework4.5` `netstandard1.3` `netcoreapp2.1`
+<br/><br/>
+PM> `install-package WebApiClient.AOT`
+<br/>支持 `.net framework4.5` `netstandard1.3` `netcoreapp2.1`
+
+## 1. [Laojiu.WebApiClient](https://www.nuget.org/packages/Laojiu.WebApiClient/)
 PM> `install-package Laojiu.WebApiClient`
 <br/>支持 `.net framework4.5` `netstandard2.0` `netcoreapp2.1`
 
