@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Concurrent;
 using System.Reflection;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace WebApiClient
 {
@@ -31,10 +33,7 @@ namespace WebApiClient
         {
             var proxyTypeCtor = proxyTypeCtorCache.GetOrAdd(interfaceType, type =>
             {
-                var @namespace = GetProxyTypeNamespace(interfaceType.Namespace);
-                var typeName = GetProxyTypeName(interfaceType.Name);
-                var fullTypeName = $"{@namespace}.{typeName}";
-
+                var fullTypeName = type.GetProxyTypeFullName();
                 var proxyType = interfaceType.Assembly.GetType(fullTypeName, false);
                 return proxyType?.GetConstructor(proxyTypeCtorArgTypes);
             });
@@ -49,27 +48,22 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 返回接口类型的代理类型的命名空间
+        /// 返回代理类型的完整名称
         /// </summary>
-        /// <param name="interfaceNamespace">接口命名空间</param>
+        /// <param name="interfaceType">接口类型</param>
         /// <returns></returns>
-        public static string GetProxyTypeNamespace(string interfaceNamespace)
+        private static string GetProxyTypeFullName(this Type interfaceType)
         {
-            return $"System.Proxy.{interfaceNamespace}";
-        }
-
-        /// <summary>
-        /// 返回接口类型的代理类型的名称
-        /// </summary>
-        /// <param name="interfaceTypeName">接口类型名称</param>
-        /// <returns></returns>
-        public static string GetProxyTypeName(string interfaceTypeName)
-        {
-            if (interfaceTypeName.Length <= 1 || interfaceTypeName.StartsWith("I") == false)
+            var typeFullNames = new List<string>();
+            var type = interfaceType;
+            while (type != null)
             {
-                return interfaceTypeName;
+                typeFullNames.Add(type.Name);
+                type = type.DeclaringType;
             }
-            return interfaceTypeName.Substring(1);
+
+            typeFullNames.Add("WebApiClient.AutoProxy");
+            return string.Join(".", ((IEnumerable<string>)typeFullNames).Reverse());
         }
     }
 }

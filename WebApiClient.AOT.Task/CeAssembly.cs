@@ -8,7 +8,7 @@ namespace WebApiClient.AOT.Task
     /// <summary>
     /// 表示程序集
     /// </summary>
-    class Assembly : IDisposable
+    class CeAssembly : IDisposable
     {
         /// <summary>
         /// 模块
@@ -26,7 +26,7 @@ namespace WebApiClient.AOT.Task
         /// <param name="fileName">文件路径</param>
         /// <param name="searchPaths">依赖项搜索目录</param>
         /// <exception cref="FileNotFoundException"></exception>
-        public Assembly(string fileName, string[] searchPaths)
+        public CeAssembly(string fileName, string[] searchPaths)
         {
             if (File.Exists(fileName) == false)
             {
@@ -57,25 +57,27 @@ namespace WebApiClient.AOT.Task
         /// <returns></returns>
         public int WirteProxyTypes()
         {
-            var iHttpApiFullName = this.module.ImportReference(typeof(IHttpApi)).FullName;
-            var interfaces = this.module.Types
-                .Where(item => item.IsInterface && item.Interfaces.Any(i => i.InterfaceType.FullName == iHttpApiFullName))
+            var httpApiInterfaces = this.module
+                .GetTypes()
+                .Select(item => new CeInterface(item))
+                .Where(item => item.IsHttpApiInterface())
                 .ToArray();
 
             var write = 0;
-            foreach (var item in interfaces)
+            foreach (var @interface in httpApiInterfaces)
             {
-                var @interface = new Interface(item);
-                var proxyType = new ProxyTypeBuilder(@interface).Build();
-                if (proxyType != null)
+                var proxyType = new CeProxyType(@interface);
+                if (proxyType.IsDefinded() == false)
                 {
-                    this.module.Types.Add(proxyType);
+                    this.module.Types.Add(proxyType.Build());
                     write = write + 1;
                 }
             }
 
             return write;
         }
+
+
         /// <summary>
         /// 插入代理并保存
         /// </summary>

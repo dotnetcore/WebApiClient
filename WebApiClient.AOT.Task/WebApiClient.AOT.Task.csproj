@@ -4,7 +4,7 @@
     <OutputType>Library</OutputType>
     <TargetFrameworks>net46;netcoreapp2.0;</TargetFrameworks>
     <Configurations>AOT_Debug;AOT_Release</Configurations>
-    <Version>0.0.1</Version>
+    <Version>0.0.3</Version>
   </PropertyGroup>
 
   <ItemGroup>

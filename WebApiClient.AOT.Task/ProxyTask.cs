@@ -25,6 +25,31 @@ namespace WebApiClient.AOT.Task
         public string References { get; set; }
 
         /// <summary>
+        /// 执行任务
+        /// </summary>
+        /// <returns></returns>
+        public override bool Execute()
+        {
+            try
+            {
+                var searchPaths = this.GetSearchPaths().Distinct().ToArray();
+                using (var assembly = new CeAssembly(this.TargetAssembly, searchPaths))
+                {
+                    if (assembly.WirteProxyTypes() > 0)
+                    {
+                        assembly.Save();
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                this.Log.LogError(ex.ToString());
+                return false;
+            }
+        }
+
+        /// <summary>
         /// 返回搜索的搜索目录
         /// </summary>
         /// <returns></returns>
@@ -52,29 +77,5 @@ namespace WebApiClient.AOT.Task
             }
         }
 
-        /// <summary>
-        /// 执行任务
-        /// </summary>
-        /// <returns></returns>
-        public override bool Execute()
-        {
-            try
-            {
-                var searchPaths = this.GetSearchPaths().Distinct().ToArray();
-                using (var assembly = new Assembly(this.TargetAssembly, searchPaths))
-                {
-                    if (assembly.WirteProxyTypes() > 0)
-                    {
-                        assembly.Save();
-                    }
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                this.Log.LogError(ex.ToString());
-                return false;
-            }
-        }
     }
 }

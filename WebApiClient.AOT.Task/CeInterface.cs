@@ -1,5 +1,6 @@
 ﻿using Mono.Cecil;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace WebApiClient.AOT.Task
     /// <summary>
     /// 表示接口
     /// </summary>
-    class Interface
+    class CeInterface : CeMetadata
     {
         /// <summary>
         /// 获取接口类型
@@ -20,29 +21,29 @@ namespace WebApiClient.AOT.Task
         /// 表示接口
         /// </summary>
         /// <param name="interface">接口类型</param>
-        public Interface(TypeDefinition @interface)
+        public CeInterface(TypeDefinition @interface)
+            : base(@interface.Module)
         {
             this.Type = @interface;
         }
 
         /// <summary>
-        /// 返回TypeReference
+        /// 返回是否为继承IHttpApi的接口
         /// </summary>
-        /// <param name="type">类型</param>
         /// <returns></returns>
-        public TypeReference GetTypeReference(Type type)
+        public bool IsHttpApiInterface()
         {
-            return this.Type.Module.ImportReference(type);
-        }
+            if (this.Type.IsInterface == false)
+            {
+                return false;
+            }
 
-        /// <summary>
-        /// 返回MethodReference
-        /// </summary>
-        /// <param name="method">方法</param>
-        /// <returns></returns>
-        public MethodReference GetMethodReference(MethodBase method)
-        {
-            return this.Type.Module.ImportReference(method);
+            var state = this.Type.Interfaces.Any(i => this.TypeReferenceEquals(i.InterfaceType, typeof(IHttpApi)));
+            if (state == true && this.Type.IsNestedPrivate == true)
+            {
+                throw new NotSupportedException($"接口不支持使用private修饰：{this.Type}");
+            }
+            return state;
         }
 
         /// <summary>
@@ -110,14 +111,35 @@ namespace WebApiClient.AOT.Task
         }
 
         /// <summary>
-        /// 比较类型是否相等
+        /// TypeDefinition比较器
         /// </summary>
-        /// <param name="typeReference"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        private bool TypeReferenceEquals(TypeReference typeReference, Type type)
+        private class TypeDefinitionComparer : IEqualityComparer<TypeDefinition>
         {
-            return typeReference.FullName == this.GetTypeReference(type).FullName;
+            /// <summary>
+            /// 获取唯一实例
+            /// </summary>
+            public static readonly TypeDefinitionComparer Instance = new TypeDefinitionComparer();
+
+            /// <summary>
+            /// 是否相等
+            /// </summary>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <returns></returns>
+            public bool Equals(TypeDefinition x, TypeDefinition y)
+            {
+                return true;
+            }
+
+            /// <summary>
+            /// 返回哈希值
+            /// </summary>
+            /// <param name="obj"></param>
+            /// <returns></returns>
+            public int GetHashCode(TypeDefinition obj)
+            {
+                return obj.FullName.GetHashCode();
+            }
         }
     }
 }

@@ -1,3 +1,2 @@
-﻿using System.Runtime.CompilerServices;
-[assembly: InternalsVisibleTo("WebApiClient.AOT.Task")]
+﻿using System.Runtime.CompilerServices; 
 [assembly: InternalsVisibleTo("WebApiClientTest")]
