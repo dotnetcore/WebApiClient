@@ -33,10 +33,13 @@ namespace WebApiClient.AOT.Task
             try
             {
                 var searchPaths = this.GetSearchPaths().Distinct().ToArray();
+                Action<string> logger = (message) => this.Log.LogMessage(MessageImportance.High, message);
+
                 using (var assembly = new CeAssembly(this.TargetAssembly, searchPaths))
                 {
-                    if (assembly.WirteProxyTypes() > 0)
+                    if (assembly.WirteProxyTypes(logger) > 0)
                     {
+                        logger.Invoke($"正在保存{assembly.FileName}");
                         assembly.Save();
                     }
                 }
@@ -76,6 +79,5 @@ namespace WebApiClient.AOT.Task
                 }
             }
         }
-
     }
 }

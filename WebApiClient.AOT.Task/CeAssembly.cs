@@ -11,9 +11,9 @@ namespace WebApiClient.AOT.Task
     class CeAssembly : IDisposable
     {
         /// <summary>
-        /// 模块
+        /// 程序集
         /// </summary>
-        private ModuleDefinition module;
+        private AssemblyDefinition assembly;
 
         /// <summary>
         /// 获取文件名
@@ -41,23 +41,26 @@ namespace WebApiClient.AOT.Task
 
             var parameter = new ReaderParameters
             {
-                InMemory = true,
+                ReadWrite = true,
                 ReadSymbols = true,
+                InMemory = true,
                 AssemblyResolver = resolver
             };
 
             this.FileName = fileName;
-            this.module = ModuleDefinition.ReadModule(fileName, parameter);
+            this.assembly = AssemblyDefinition.ReadAssembly(fileName, parameter);
         }
 
         /// <summary>
         /// 写入代理类型
         /// 返回受影响的接口数
         /// </summary>
+        /// <param name="logger">日志</param>
         /// <returns></returns>
-        public int WirteProxyTypes()
+        public int WirteProxyTypes(Action<string> logger)
         {
-            var httpApiInterfaces = this.module
+            var httpApiInterfaces = this.assembly
+                .MainModule
                 .GetTypes()
                 .Select(item => new CeInterface(item))
                 .Where(item => item.IsHttpApiInterface())
@@ -69,7 +72,8 @@ namespace WebApiClient.AOT.Task
                 var proxyType = new CeProxyType(@interface);
                 if (proxyType.IsDefinded() == false)
                 {
-                    this.module.Types.Add(proxyType.Build());
+                    logger?.Invoke($"正在写入{@interface.Type.FullName}代理IL指令");
+                    this.assembly.MainModule.Types.Add(proxyType.Build());
                     write = write + 1;
                 }
             }
@@ -87,7 +91,7 @@ namespace WebApiClient.AOT.Task
             {
                 WriteSymbols = true
             };
-            this.module.Write(this.FileName, parameters);
+            this.assembly.Write(this.FileName, parameters);
         }
 
         /// <summary>
@@ -95,7 +99,7 @@ namespace WebApiClient.AOT.Task
         /// </summary>
         public void Dispose()
         {
-            this.module.Dispose();
+            this.assembly.Dispose();
         }
     }
 }
