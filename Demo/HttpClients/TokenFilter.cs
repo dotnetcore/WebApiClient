@@ -9,7 +9,7 @@ namespace Demo.HttpClients
     /// </summary>
     class TokenFilter : AuthTokenFilter
     {
-        private readonly ITokenToken tokenClient = TokenClient.Get("http://localhost:5000/connect/token");
+        private readonly ITokenClient tokenClient = TokenClient.Get("http://localhost:5000/connect/token");
 
         /// <summary>
         /// 获取client_id
