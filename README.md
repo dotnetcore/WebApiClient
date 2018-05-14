@@ -1,12 +1,18 @@
-## 1. [Nuget](https://www.nuget.org/packages/Laojiu.WebApiClient/)
-PM> `install-package Laojiu.WebApiClient`
-<br/>支持 `.net framework4.5` `netstandard2.0` `netcoreapp2.1`
+## 1 Nuget包
+WebApiClient.JIT将替代旧的Laojiu.WebApiClient，在运行时使用Emit创建Http请求接口的代理类；<br/>
+WebApiClient.AOT支持需要AOT的平台，在编译时插入Http请求接口的代理类IL指令到输出的程序集；<br/> 
+
+PM> `install-package WebApiClient.JIT`
+<br/>支持 .net framework4.5 netstandard1.3 netcoreapp2.1 
+
+PM> `install-package WebApiClient.AOT` 
+<br/>支持 .net framework4.5 netstandard1.3 netcoreapp2.1
 
 ## 2. Http(s)请求
 ### 2.1 接口的声明
 ```c#
 [HttpHost("http://www.webapiclient.com")] 
-public interface IMyWebApi : IHttpApiClient
+public interface IMyWebApi : IHttpApi
 {
     // GET webapi/user?account=laojiu
     // Return 原始string内容
@@ -59,10 +65,3 @@ static async Task TestAsync()
 ### 5. 联系方式
 * 加群439800853 注明WeApiClient
 * 366193849@qq.com，不重要的尽量不要发
-
-
-
-## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdotnetcore%2FWebApiClient.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdotnetcore%2FWebApiClient?ref=badge_shield)
-
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdotnetcore%2FWebApiClient.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdotnetcore%2FWebApiClient?ref=badge_large)
