@@ -7,14 +7,9 @@
     <Version>0.0.4</Version>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net45' ">
+  <ItemGroup>
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="14.3.0" />
-    <PackageReference Include="Mono.Cecil" Version="0.10.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp1.0' ">
-    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.6.85" />
-    <PackageReference Include="Mono.Cecil" Version="0.10.0" />
+    <PackageReference Include="Mono.Cecil" Version="0.10.0" />  
   </ItemGroup>
 
   <ItemGroup>
