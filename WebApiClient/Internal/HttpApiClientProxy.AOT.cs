@@ -1,9 +1,8 @@
 ﻿#if AOT
 using System;
-using System.Collections.Concurrent;
-using System.Reflection;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace WebApiClient
 {
@@ -40,7 +39,7 @@ namespace WebApiClient
 
             if (proxyTypeCtor == null)
             {
-                throw new TypeLoadException($"找不到接口{interfaceType}的代理类，请使用Nuget安装WebApiClient.AOT");
+                throw new TypeLoadException($"找不到接口{interfaceType}的代理类，请使用Nuget安装WebApiClient.AOT，或者使用WebApiClient.JIT动态代理版本");
             }
 
             var apiMethods = interfaceType.GetAllApiMethods();

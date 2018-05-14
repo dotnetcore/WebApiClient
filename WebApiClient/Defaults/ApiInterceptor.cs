@@ -65,7 +65,7 @@ namespace WebApiClient.Defaults
         /// <summary>
         /// 释放资源
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
             this.HttpApiConfig.Dispose();
         }

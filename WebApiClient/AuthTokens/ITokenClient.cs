@@ -6,7 +6,7 @@ namespace WebApiClient.AuthTokens
     /// 表示Token客户端接口
     /// </summary>
     [JsonReturn]
-    public interface ITokenToken : IHttpApi
+    public interface ITokenClient : IHttpApi
     {
         /// <summary>
         /// 以client_credentials授权方式获取token
