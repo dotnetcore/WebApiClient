@@ -39,7 +39,7 @@ namespace WebApiClient.AOT.Task
                 {
                     if (assembly.WirteProxyTypes(logger) > 0)
                     {
-                        logger.Invoke($"正在保存{assembly.FileName}");
+                        logger.Invoke($"正在保存{this.TargetAssembly}");
                         assembly.Save();
                     }
                 }

@@ -13,12 +13,7 @@ namespace WebApiClient.AOT.Task
         /// <summary>
         /// 程序集
         /// </summary>
-        private readonly AssemblyDefinition assembly;
-
-        /// <summary>
-        /// 获取文件名
-        /// </summary>
-        public string FileName { get; private set; }
+        private readonly AssemblyDefinition assembly;        
 
         /// <summary>
         /// 程序集
@@ -43,11 +38,8 @@ namespace WebApiClient.AOT.Task
             {
                 ReadWrite = true,
                 ReadSymbols = true,
-                InMemory = true,
                 AssemblyResolver = resolver
-            };
-
-            this.FileName = fileName;
+            };            
             this.assembly = AssemblyDefinition.ReadAssembly(fileName, parameter);
         }
 
@@ -91,7 +83,7 @@ namespace WebApiClient.AOT.Task
             {
                 WriteSymbols = true
             };
-            this.assembly.Write(this.FileName, parameters);
+            this.assembly.Write(parameters);
         }
 
         /// <summary>
