@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using WebApiClient.Defaults;
 
 namespace WebApiClient
@@ -7,7 +8,8 @@ namespace WebApiClient
     /// 表示HttpApi客户端
     /// 提供创建HttpApiClient实例的方法
     /// </summary>
-    public abstract class HttpApiClient : IHttpApi
+    [DebuggerTypeProxy(typeof(DebugView))]
+    public abstract class HttpApiClient : IHttpApiClient, IHttpApi, IDisposable
     {
         /// <summary>
         /// 获取Api拦截器
@@ -132,6 +134,21 @@ namespace WebApiClient
             }
 
             return HttpApiClientProxy.CreateInstance(interfaceType, apiInterceptor);
+        }
+
+        /// <summary>
+        /// 调试视图
+        /// </summary>
+        private class DebugView : HttpApiClient
+        {
+            /// <summary>
+            /// 调试视图
+            /// </summary>
+            /// <param name="target">查看的对象</param>
+            public DebugView(HttpApiClient target)
+                : base(target.ApiInterceptor)
+            {
+            }
         }
     }
 }
