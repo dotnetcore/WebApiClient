@@ -13,7 +13,7 @@ namespace WebApiClient.AOT.Task
         /// <summary>
         /// 程序集
         /// </summary>
-        private AssemblyDefinition assembly;
+        private readonly AssemblyDefinition assembly;
 
         /// <summary>
         /// 获取文件名

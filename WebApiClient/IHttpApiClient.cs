@@ -9,8 +9,11 @@ namespace WebApiClient
     /// <summary>
     /// 定义HttpApiClient的接口
     /// </summary>
-    [Obsolete("该接口已废弃，请使用IHttpApi替代", true)]
     public interface IHttpApiClient : IHttpApi
     {
+        /// <summary>
+        /// 获取拦截器
+        /// </summary>
+        IApiInterceptor ApiInterceptor { get; }
     }
 }
