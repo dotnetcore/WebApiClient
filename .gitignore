@@ -166,3 +166,4 @@ $RECYCLE.BIN/
 /AOT_TEST/UWPApp/.vs/AOT_APP/v15/Server/sqlite3
 /WebApiClient/MsBuild/BuildTask/net45
 /WebApiClient/MsBuild/BuildTask/netcoreapp1.0
+/.vs
