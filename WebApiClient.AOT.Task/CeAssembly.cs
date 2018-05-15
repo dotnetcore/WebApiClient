@@ -11,17 +11,23 @@ namespace WebApiClient.AOT.Task
     class CeAssembly : IDisposable
     {
         /// <summary>
+        /// 日志
+        /// </summary>
+        private readonly Action<string> logger;
+
+        /// <summary>
         /// 程序集
         /// </summary>
-        private readonly AssemblyDefinition assembly;        
+        private readonly AssemblyDefinition assembly;
 
         /// <summary>
         /// 程序集
         /// </summary>
         /// <param name="fileName">文件路径</param>
-        /// <param name="searchPaths">依赖项搜索目录</param>
+        /// <param name="searchDirectories">依赖项搜索目录</param>
+        /// <param name="logger">日志</param>
         /// <exception cref="FileNotFoundException"></exception>
-        public CeAssembly(string fileName, string[] searchPaths)
+        public CeAssembly(string fileName, string[] searchDirectories, Action<string> logger)
         {
             if (File.Exists(fileName) == false)
             {
@@ -29,9 +35,10 @@ namespace WebApiClient.AOT.Task
             }
 
             var resolver = new DefaultAssemblyResolver();
-            foreach (var path in searchPaths)
+            foreach (var dir in searchDirectories)
             {
-                resolver.AddSearchDirectory(path);
+                logger($"添加搜索目录-> {dir}");
+                resolver.AddSearchDirectory(dir);
             }
 
             var parameter = new ReaderParameters
@@ -39,17 +46,17 @@ namespace WebApiClient.AOT.Task
                 ReadWrite = true,
                 ReadSymbols = true,
                 AssemblyResolver = resolver
-            };            
+            };
+
+            this.logger = logger;
             this.assembly = AssemblyDefinition.ReadAssembly(fileName, parameter);
         }
 
         /// <summary>
         /// 写入代理类型
-        /// 返回受影响的接口数
         /// </summary>
-        /// <param name="logger">日志</param>
         /// <returns></returns>
-        public int WirteProxyTypes(Action<string> logger)
+        public bool WirteProxyTypes()
         {
             var httpApiInterfaces = this.assembly
                 .MainModule
@@ -58,32 +65,27 @@ namespace WebApiClient.AOT.Task
                 .Where(item => item.IsHttpApiInterface())
                 .ToArray();
 
-            var write = 0;
+            var willSave = false;
             foreach (var @interface in httpApiInterfaces)
             {
                 var proxyType = new CeProxyType(@interface);
                 if (proxyType.IsDefinded() == false)
                 {
-                    logger?.Invoke($"正在写入{@interface.Type.FullName}代理IL指令");
+                    this.logger($"正在写入IL-> {@interface.Type.FullName}");
                     this.assembly.MainModule.Types.Add(proxyType.Build());
-                    write = write + 1;
+                    willSave = true;
                 }
             }
 
-            return write;
-        }
-
-
-        /// <summary>
-        /// 插入代理并保存
-        /// </summary>
-        public void Save()
-        {
-            var parameters = new WriterParameters
+            if (willSave == true)
             {
-                WriteSymbols = true
-            };
-            this.assembly.Write(parameters);
+                var parameters = new WriterParameters
+                {
+                    WriteSymbols = true
+                };
+                this.assembly.Write(parameters);
+            }
+            return willSave;
         }
 
         /// <summary>

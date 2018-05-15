@@ -7,7 +7,7 @@ using System.Linq;
 namespace WebApiClient.AOT.Task
 {
     /// <summary>
-    /// 代理任务
+    /// 表示插入代理IL任务
     /// </summary>
     public class ProxyTask : Microsoft.Build.Utilities.Task
     {
@@ -22,7 +22,7 @@ namespace WebApiClient.AOT.Task
         /// 逗号分隔
         /// </summary>
         [Required]
-        public string References { get; set; }
+        public ITaskItem[] References { get; set; }
 
         /// <summary>
         /// 执行任务
@@ -32,16 +32,11 @@ namespace WebApiClient.AOT.Task
         {
             try
             {
-                var searchPaths = this.GetSearchPaths().Distinct().ToArray();
+                var searchDirectories = this.GetSearchDirectories().Distinct().ToArray();
                 Action<string> logger = (message) => this.Log.LogMessage(MessageImportance.High, message);
-
-                using (var assembly = new CeAssembly(this.TargetAssembly, searchPaths))
+                using (var assembly = new CeAssembly(this.TargetAssembly, searchDirectories, logger))
                 {
-                    if (assembly.WirteProxyTypes(logger) > 0)
-                    {
-                        logger.Invoke($"正在保存{this.TargetAssembly}");
-                        assembly.Save();
-                    }
+                    assembly.WirteProxyTypes();
                 }
                 return true;
             }
@@ -53,29 +48,25 @@ namespace WebApiClient.AOT.Task
         }
 
         /// <summary>
-        /// 返回搜索的搜索目录
+        /// 返回依赖搜索目录
         /// </summary>
         /// <returns></returns>
-        private IEnumerable<string> GetSearchPaths()
+        private IEnumerable<string> GetSearchDirectories()
         {
-            yield return Path.GetDirectoryName(this.TargetAssembly);
-
-            if (string.IsNullOrEmpty(this.References) == true)
+            if (this.References == null)
             {
                 yield break;
             }
 
-            foreach (var file in this.References.Split(';'))
+            foreach (var item in this.References)
             {
-                if (string.IsNullOrEmpty(file) == true)
+                if (string.IsNullOrEmpty(item.ItemSpec) == false)
                 {
-                    continue;
-                }
-
-                var path = Path.GetDirectoryName(file);
-                if (Directory.Exists(path) == true)
-                {
-                    yield return path;
+                    var path = Path.GetDirectoryName(item.ItemSpec);
+                    if (Directory.Exists(path) == true)
+                    {
+                        yield return path;
+                    }
                 }
             }
         }
