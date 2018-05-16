@@ -167,3 +167,4 @@ $RECYCLE.BIN/
 /WebApiClient/MsBuild/BuildTask/net45
 /WebApiClient/MsBuild/BuildTask/netcoreapp1.0
 /.vs
+/WebApiClient/MsBuild/BuildTask/netcoreapp1.1

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>net45;netcoreapp1.0;</TargetFrameworks>
+    <TargetFrameworks>net45;netcoreapp1.1;</TargetFrameworks>
     <Configurations>AOT_Debug;AOT_Release</Configurations>
     <Version>0.0.5</Version>
   </PropertyGroup>
@@ -10,24 +10,24 @@
   <PropertyGroup Condition="'$(Configurations)'=='AOT_Debug'">
     <DefineConstants>TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
-  
+
   <PropertyGroup Condition="'$(Configurations)'=='AOT_Release'">
     <DefineConstants>RELEASE</DefineConstants>
     <Optimize>true</Optimize>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
-    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="14.3.0"   />
-    <PackageReference Include="Mono.Cecil" Version="0.10.0" />  
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="14.3.0" PrivateAssets="all" />
+    <PackageReference Include="Mono.Cecil" Version="0.10.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' != 'net45'">
-    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.6.85" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.1.548" PrivateAssets="all" />
     <PackageReference Include="Mono.Cecil" Version="0.10.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\WebApiClient\WebApiClient.csproj" />
   </ItemGroup>
-  
+
 </Project>

@@ -1,6 +1,6 @@
 cd WebApiClient.AOT.Task
 dotnet publish -v q -c AOT_Release -f net45 -o ..\WebApiClient\MsBuild\BuildTask\net45\
-dotnet publish -v q -c AOT_Release -f netcoreapp1.0 -o ..\WebApiClient\MsBuild\BuildTask\netcoreapp1.0\
+dotnet publish -v q -c AOT_Release -f netcoreapp1.1 -o ..\WebApiClient\MsBuild\BuildTask\netcoreapp1.1\
 
 cd ..\WebApiClient
 dotnet build -c AOT_Release -f net45
