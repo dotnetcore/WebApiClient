@@ -4,7 +4,8 @@
     <OutputType>Library</OutputType>
     <TargetFrameworks>net45;netcoreapp1.1;</TargetFrameworks>
     <Configurations>AOT_Debug;AOT_Release</Configurations>
-    <Version>0.0.5</Version>
+    <Version>0.0.6</Version>
+    <AssemblyVersion>0.0.6.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='AOT_Debug'">
