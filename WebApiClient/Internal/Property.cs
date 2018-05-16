@@ -95,9 +95,12 @@ namespace WebApiClient
                     item.Setter.Invoke(target, value);
                     count = count + 1;
                 }
-                catch (Exception ex) when (ignoreException == false)
+                catch (Exception ex)
                 {
-                    throw ex;
+                    if (ignoreException == false)
+                    {
+                        throw ex;
+                    }
                 }
             }
             return count;
