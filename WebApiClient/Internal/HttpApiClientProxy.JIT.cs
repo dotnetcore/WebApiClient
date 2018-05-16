@@ -17,7 +17,7 @@ namespace WebApiClient
         /// <summary>
         /// IApiInterceptor的Intercept方法
         /// </summary>
-        private static readonly MethodInfo interceptMethod = typeof(IApiInterceptor).GetMethod("Intercept");
+        private static readonly MethodInfo interceptMethod = typeof(IApiInterceptor).GetMethod(nameof(IApiInterceptor.Intercept));
 
         /// <summary>
         /// HttpApiClient的构造器

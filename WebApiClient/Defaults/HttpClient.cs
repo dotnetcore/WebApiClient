@@ -221,7 +221,7 @@ namespace WebApiClient.Defaults
         {
             if (this.supportCreateHandler == false)
             {
-                throw new NotSupportedException("由于使用了外部HttpMessageHandler实例，不支持创建新的IHttpHandler实例");
+                throw new NotSupportedException($"由于使用了外部HttpMessageHandler实例，不支持创建新的{nameof(IHttpHandler)}实例");
             }
             return HttpHandler.CreateHanlder();
         }

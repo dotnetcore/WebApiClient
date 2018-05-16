@@ -39,7 +39,7 @@ namespace WebApiClient
 
             if (proxyTypeCtor == null)
             {
-                throw new TypeLoadException($"找不到接口{interfaceType}的代理类，请使用Nuget安装WebApiClient.AOT，或者使用WebApiClient.JIT动态代理版本");
+                throw new TypeLoadException($"找不到接口{interfaceType}的代理类，请为接口所在项目重新使用Nuget安装WebApiClient.AOT");
             }
 
             var apiMethods = interfaceType.GetAllApiMethods();
@@ -53,6 +53,9 @@ namespace WebApiClient
         /// <returns></returns>
         private static string GetProxyTypeFullName(this Type interfaceType)
         {
+            // 约定代理类的命名空间
+            const string contractNamespace = "WebApiClient.AutoProxy";
+
             var typeFullNames = new List<string>();
             var type = interfaceType;
             while (type != null)
@@ -61,7 +64,7 @@ namespace WebApiClient
                 type = type.DeclaringType;
             }
 
-            typeFullNames.Add("WebApiClient.AutoProxy");
+            typeFullNames.Add(contractNamespace);
             return string.Join(".", ((IEnumerable<string>)typeFullNames).Reverse());
         }
     }

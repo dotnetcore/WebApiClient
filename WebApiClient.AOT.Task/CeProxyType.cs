@@ -15,7 +15,7 @@ namespace WebApiClient.AOT.Task
         /// <summary>
         /// IApiInterceptor的Intercept方法
         /// </summary>
-        private static readonly MethodInfo interceptMethod = typeof(IApiInterceptor).GetMethod("Intercept");
+        private static readonly MethodInfo interceptMethod = typeof(IApiInterceptor).GetMethod(nameof(IApiInterceptor.Intercept));
 
         /// <summary>
         /// HttpApiClient的构造器
@@ -61,6 +61,9 @@ namespace WebApiClient.AOT.Task
         /// <returns></returns>
         private string GetProxyTypeNamespace()
         {
+            // 约定代理类的命名空间
+            const string contractNamespace = "WebApiClient.AutoProxy";
+
             var namespaces = new List<string>();
             var type = this.@interface.Type.DeclaringType;
             while (type != null)
@@ -68,7 +71,7 @@ namespace WebApiClient.AOT.Task
                 namespaces.Add(type.Name);
                 type = type.DeclaringType;
             }
-            namespaces.Add("WebApiClient.AutoProxy");
+            namespaces.Add(contractNamespace);
             return string.Join(".", ((IEnumerable<string>)namespaces).Reverse());
         }
 

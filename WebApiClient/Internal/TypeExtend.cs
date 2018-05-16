@@ -72,12 +72,12 @@ namespace WebApiClient
         {
             if (method.IsGenericMethod == true)
             {
-                throw new NotSupportedException("不支持泛型方法：" + method);
+                throw new NotSupportedException($"不支持泛型方法：{method}");
             }
 
             if (method.IsSpecialName == true)
             {
-                throw new NotSupportedException("不支持属性访问器：" + method);
+                throw new NotSupportedException($"不支持属性访问器：{method}");
             }
 
             var genericType = method.ReturnType;

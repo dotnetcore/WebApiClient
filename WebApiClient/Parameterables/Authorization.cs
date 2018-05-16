@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
 
@@ -71,6 +72,15 @@ namespace WebApiClient.Parameterables
         public override string ToString()
         {
             return this.GetAuthorizationValue();
+        }
+
+        /// <summary>
+        /// 转换为AuthenticationHeaderValue类型
+        /// </summary>
+        /// <returns></returns>
+        public AuthenticationHeaderValue ToAuthenticationHeaderValue()
+        {
+            return new AuthenticationHeaderValue(this.Scheme, this.Parameter);
         }
     }
 }

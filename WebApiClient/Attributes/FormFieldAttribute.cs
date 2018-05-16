@@ -59,7 +59,7 @@ namespace WebApiClient.Attributes
         {
             if (string.IsNullOrEmpty(this.name))
             {
-                throw new NotSupportedException("请传入name和value参数：" + this.GetType().Name);
+                throw new NotSupportedException($"请传入name和value参数：{nameof(FormFieldAttribute)}");
             }
 
             if (this.WillIgnore(this.value) == false)

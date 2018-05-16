@@ -142,7 +142,7 @@ namespace WebApiClient.Attributes
             var domain = context.RequestMessage.RequestUri;
             if (domain == null)
             {
-                throw new HttpApiConfigException("未配置HttpHost，无法应用Cookie");
+                throw new HttpApiConfigException($"未配置{nameof(HttpHostAttribute)}，无法应用Cookie");
             }
 
             return this.EncodeCookie ?
