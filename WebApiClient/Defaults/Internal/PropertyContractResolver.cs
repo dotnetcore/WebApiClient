@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Reflection;
 using WebApiClient.DataAnnotations;
 

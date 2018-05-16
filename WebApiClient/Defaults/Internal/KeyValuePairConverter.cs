@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace WebApiClient.Defaults
 {
@@ -104,7 +102,7 @@ namespace WebApiClient.Defaults
             /// <summary>
             /// 类型的KeyValuePairReader缓存
             /// </summary>
-            private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, KeyValuePairReader> readerCache = new System.Collections.Concurrent.ConcurrentDictionary<Type, KeyValuePairReader>();
+            private static readonly ConcurrentCache<Type, KeyValuePairReader> readerCache = new ConcurrentCache<Type, KeyValuePairReader>();
 
             /// <summary>
             /// 从类型获取KeyValuePairReader

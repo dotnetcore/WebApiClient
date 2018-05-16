@@ -560,7 +560,7 @@ namespace WebApiClient.Defaults
             /// <summary>
             /// 查看的对象
             /// </summary>
-            private KeyValuePairWriter target;
+            private readonly KeyValuePairWriter target;
 
             /// <summary>
             /// 调试视图

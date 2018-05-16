@@ -41,7 +41,7 @@ namespace WebApiClient
         /// <summary>
         /// 类型属性缓存
         /// </summary>
-        private static readonly  ConcurrentCache <Type, Property[]> cache = new ConcurrentCache<Type, Property[]>();
+        private static readonly ConcurrentCache<Type, Property[]> cache = new ConcurrentCache<Type, Property[]>();
 
         /// <summary>
         /// 获取类型的属性
@@ -95,12 +95,9 @@ namespace WebApiClient
                     item.Setter.Invoke(target, value);
                     count = count + 1;
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (ignoreException == false)
                 {
-                    if (ignoreException == false)
-                    {
-                        throw ex;
-                    }
+                    throw ex;
                 }
             }
             return count;

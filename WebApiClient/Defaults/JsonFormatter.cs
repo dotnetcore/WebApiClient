@@ -65,9 +65,11 @@ namespace WebApiClient.Defaults
         /// <returns></returns>
         protected virtual JsonSerializerSettings CreateSerializerSettings(FormatOptions options)
         {
-            var setting = new JsonSerializerSettings();
-            setting.DateFormatString = options?.DateTimeFormat;
-            setting.ContractResolver = options?.UseCamelCase == true ? useCamelCaseResolver : noCamelCaseResolver;
+            var setting = new JsonSerializerSettings
+            {
+                DateFormatString = options?.DateTimeFormat,
+                ContractResolver = options?.UseCamelCase == true ? useCamelCaseResolver : noCamelCaseResolver
+            };
             return setting;
         }
     }

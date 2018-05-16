@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -20,7 +19,7 @@ namespace WebApiClient
         /// <summary>
         /// 类型是否AllowMultiple的缓存
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, bool> typeAllowMultipleCache = new ConcurrentDictionary<Type, bool>();
+        private static readonly ConcurrentCache<Type, bool> typeAllowMultipleCache = new ConcurrentCache<Type, bool>();
 
         /// <summary>
         /// 获取接口类型及其继承的接口的所有方法

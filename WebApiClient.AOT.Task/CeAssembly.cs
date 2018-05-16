@@ -79,6 +79,7 @@ namespace WebApiClient.AOT.Task
 
             if (willSave == true)
             {
+                this.logger($"正在保存修改-> {this.assembly.FullName}");
                 var parameters = new WriterParameters
                 {
                     WriteSymbols = true
