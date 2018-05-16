@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 
 namespace WebApiClient
 {
@@ -103,7 +102,7 @@ namespace WebApiClient
             /// <summary>
             /// 查看的对象
             /// </summary>
-            private IEnumerable<KeyValuePair<string, object>> value;
+            private readonly IEnumerable<KeyValuePair<string, object>> value;
 
             /// <summary>
             /// 调试视图

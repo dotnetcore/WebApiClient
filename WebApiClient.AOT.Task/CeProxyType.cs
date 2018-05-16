@@ -121,11 +121,13 @@ namespace WebApiClient.AOT.Task
         private void BuildCtor(TypeDefinition proxyType, FieldDefinition fieldInterceptor, FieldDefinition fieldApiMethods)
         {
             // this(IApiInterceptor interceptor, MethodInfo[] methods):base(interceptor)          
-            var ctor = new MethodDefinition(".ctor", Mono.Cecil.MethodAttributes.Public, this.GetTypeReference(typeof(void)));
-            ctor.Attributes = Mono.Cecil.MethodAttributes.Public
+            var ctor = new MethodDefinition(".ctor", Mono.Cecil.MethodAttributes.Public, this.GetTypeReference(typeof(void)))
+            {
+                Attributes = Mono.Cecil.MethodAttributes.Public
                 | Mono.Cecil.MethodAttributes.HideBySig
                 | Mono.Cecil.MethodAttributes.SpecialName
-                | Mono.Cecil.MethodAttributes.RTSpecialName;
+                | Mono.Cecil.MethodAttributes.RTSpecialName
+            };
 
             foreach (var item in proxyTypeCtorArgTypes)
             {

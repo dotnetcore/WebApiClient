@@ -33,7 +33,7 @@ namespace WebApiClient.AOT.Task
             try
             {
                 var searchDirectories = this.GetSearchDirectories().Distinct().ToArray();
-                Action<string> logger = (message) => this.Log.LogMessage(MessageImportance.High, message);
+                void logger(string message) => this.Log.LogMessage(MessageImportance.High, message);
                 using (var assembly = new CeAssembly(this.TargetAssembly, searchDirectories, logger))
                 {
                     assembly.WirteProxyTypes();
