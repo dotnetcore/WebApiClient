@@ -46,7 +46,7 @@ namespace WebApiClient
         /// <returns></returns>
         private static MethodInfo[] GetAllApiMethodsNoCache(this Type interfaceType)
         {
-            if (interfaceType.Detail().IsInterface == false)
+            if (interfaceType.GetTypeInfo().IsInterface == false)
             {
                 throw new ArgumentException("类型必须为接口类型");
             }
@@ -80,7 +80,7 @@ namespace WebApiClient
             }
 
             var genericType = method.ReturnType;
-            if (genericType.Detail().IsGenericType == true)
+            if (genericType.GetTypeInfo().IsGenericType == true)
             {
                 genericType = genericType.GetGenericTypeDefinition();
             }
@@ -104,17 +104,7 @@ namespace WebApiClient
             return method;
         }
 
-#if NETSTANDARD1_3
-        /// <summary>
-        /// 返回type的详细类型
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static TypeInfo Detail(this Type type)
-        {
-            return type.GetTypeInfo();
-        }
-
+#if NETSTANDARD1_3     
         /// <summary>
         /// 获取构造参数
         /// </summary>
@@ -133,7 +123,17 @@ namespace WebApiClient
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static Type Detail(this Type type)
+        public static Type GetTypeInfo(this Type type)
+        {
+            return type;
+        }
+
+        /// <summary>
+        /// 转换为Type类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static Type AsType(this Type type)
         {
             return type;
         }
@@ -157,7 +157,7 @@ namespace WebApiClient
         /// <returns></returns>
         public static bool IsAllowMultiple(this Type type)
         {
-            return typeAllowMultipleCache.GetOrAdd(type, (t => t.IsInheritFrom<Attribute>() && t.Detail().GetAttribute<AttributeUsageAttribute>(true).AllowMultiple));
+            return typeAllowMultipleCache.GetOrAdd(type, (t => t.IsInheritFrom<Attribute>() && t.GetTypeInfo().GetAttribute<AttributeUsageAttribute>(true).AllowMultiple));
         }
 
         /// <summary>

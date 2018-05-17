@@ -31,7 +31,7 @@ namespace WebApiClient
             var proxyTypeCtor = proxyTypeCtorCache.GetOrAdd(interfaceType, type =>
             {
                 var fullTypeName = type.GetProxyTypeFullName();
-                var proxyType = interfaceType.Detail().Assembly.GetType(fullTypeName, false, false);
+                var proxyType = interfaceType.GetTypeInfo().Assembly.GetType(fullTypeName, false, false);
                 return proxyType?.GetConstructor(proxyTypeCtorArgTypes);
             });
 

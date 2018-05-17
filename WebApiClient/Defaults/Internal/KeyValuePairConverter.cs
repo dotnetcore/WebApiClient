@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace WebApiClient.Defaults
 {
@@ -21,7 +22,7 @@ namespace WebApiClient.Defaults
         /// <returns></returns>
         public override bool CanConvert(Type objectType)
         {
-            return objectType.Detail().IsGenericType && objectType.GetGenericTypeDefinition() == keyValuePairType;
+            return objectType.GetTypeInfo().IsGenericType && objectType.GetGenericTypeDefinition() == keyValuePairType;
         }
 
         /// <summary>

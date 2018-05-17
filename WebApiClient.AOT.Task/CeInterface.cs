@@ -36,7 +36,12 @@ namespace WebApiClient.AOT.Task
             {
                 return false;
             }
-            return this.Type.Interfaces.Any(i => this.TypeReferenceEquals(i.InterfaceType, typeof(IHttpApi)));
+            var state = this.Type.Interfaces.Any(i => this.TypeReferenceEquals(i.InterfaceType, typeof(IHttpApi)));
+            if (state == true && this.Type.HasGenericParameters == true)
+            {
+                throw new NotSupportedException($"WebApiClient.AOT不支持泛型接口定义：{this.Type}");
+            }
+            return state;
         }
 
         /// <summary>
@@ -113,7 +118,7 @@ namespace WebApiClient.AOT.Task
         /// <exception cref="NotSupportedException"></exception>
         private void EnsureApiMethod(MethodDefinition method)
         {
-            if (method.IsGenericInstance == true)
+            if (method.HasGenericParameters == true)
             {
                 throw new NotSupportedException($"不支持泛型方法：{method}");
             }

@@ -50,9 +50,10 @@ namespace WebApiClient
         public static object CreateInstance(Type interfaceType, IApiInterceptor interceptor)
         {
             // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口            
-            if (interfaceType.Detail().IsVisible == false)
+            if (interfaceType.GetTypeInfo().IsVisible == false)
             {
-                throw new NotSupportedException($"{interfaceType}必须为public修饰且对外可见");
+                var message = $"WebApiClient.JIT不支持非public接口定义：{interfaceType}";
+                throw new NotSupportedException(message);
             }
 
             var apiMethods = interfaceType.GetAllApiMethods();
@@ -73,8 +74,8 @@ namespace WebApiClient
         /// <returns></returns>
         private static ConstructorInfo ImplementAsHttpApiClient(this Type interfaceType, MethodInfo[] apiMethods)
         {
-            var moduleName = interfaceType.Detail().Module.Name;
-            var hashCode = interfaceType.Detail().Assembly.GetHashCode() ^ interfaceType.Detail().Module.GetHashCode();
+            var moduleName = interfaceType.GetTypeInfo().Module.Name;
+            var hashCode = interfaceType.GetTypeInfo().Assembly.GetHashCode() ^ interfaceType.GetTypeInfo().Module.GetHashCode();
 
             // 每个动态集下面只会有一个模块
             var moduleBuilder = hashCodeModuleBuilderCache.GetOrAdd(hashCode, (hash) =>
@@ -203,7 +204,7 @@ namespace WebApiClient
                     iL.Emit(OpCodes.Ldarg, j + 1);
 
                     var parameterType = parameterTypes[j];
-                    if (parameterType.Detail().IsValueType || parameterType.IsGenericParameter)
+                    if (parameterType.GetTypeInfo().IsValueType || parameterType.IsGenericParameter)
                     {
                         iL.Emit(OpCodes.Box, parameterType);
                     }
