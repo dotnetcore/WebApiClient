@@ -65,3 +65,6 @@ static async Task TestAsync()
 ### 5. 联系方式
 * 加群439800853 注明WeApiClient
 * 366193849@qq.com，不重要的尽量不要发
+
+### 6. 功能视图
+![功能脑图](https://raw.githubusercontent.com/dotnetcore/WebApiClient/master/WebApiClient.png)
