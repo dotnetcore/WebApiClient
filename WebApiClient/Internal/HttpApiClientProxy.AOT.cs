@@ -1,7 +1,5 @@
 ﻿#if AOT
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace WebApiClient
@@ -53,19 +51,8 @@ namespace WebApiClient
         /// <returns></returns>
         private static string GetProxyTypeFullName(this Type interfaceType)
         {
-            // 约定代理类的命名空间
-            const string contractNamespace = "WebApiClient.AutoProxy";
-
-            var typeFullNames = new List<string>();
-            var type = interfaceType;
-            while (type != null)
-            {
-                typeFullNames.Add(type.Name);
-                type = type.DeclaringType;
-            }
-
-            typeFullNames.Add(contractNamespace);
-            return string.Join(".", ((IEnumerable<string>)typeFullNames).Reverse());
+            const string suffix = "<>";
+            return $"{interfaceType.FullName}{suffix}";
         }
     }
 }

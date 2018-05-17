@@ -36,13 +36,50 @@ namespace WebApiClient.AOT.Task
             {
                 return false;
             }
+            return this.Type.Interfaces.Any(i => this.TypeReferenceEquals(i.InterfaceType, typeof(IHttpApi)));
+        }
 
-            var state = this.Type.Interfaces.Any(i => this.TypeReferenceEquals(i.InterfaceType, typeof(IHttpApi)));
-            if (state == true && this.Type.IsNestedPrivate == true)
+        /// <summary>
+        /// 生成对应的代理类型
+        /// </summary>
+        /// <param name="suffix">类型名称后缀</param>
+        /// <returns></returns>
+        public TypeDefinition MakeProxyType(string suffix = "<>")
+        {
+            var @namespace = this.Type.Namespace;
+            var proxyTypeName = $"{this.Type.Name}{suffix}";
+            var classAttributes = TypeAttributes.BeforeFieldInit | this.GetProxyTypeAttributes();
+            var baseType = this.GetTypeReference(typeof(HttpApiClient));
+
+            var proxyType = new TypeDefinition(@namespace, proxyTypeName, classAttributes, baseType);
+            proxyType.DeclaringType = this.Type.DeclaringType;
+            proxyType.Interfaces.Add(new InterfaceImplementation(this.Type));
+            return proxyType;
+        }
+
+        /// <summary>
+        /// 返回代理类型的可见性
+        /// </summary>
+        /// <returns></returns>
+        private TypeAttributes GetProxyTypeAttributes()
+        {
+            if (this.Type.IsNestedPrivate)
             {
-                throw new NotSupportedException($"接口不支持使用private修饰：{this.Type}");
+                return TypeAttributes.NestedPrivate;
             }
-            return state;
+            if (this.Type.IsNestedAssembly)
+            {
+                return TypeAttributes.NestedAssembly;
+            }
+            if (this.Type.IsNestedPublic)
+            {
+                return TypeAttributes.NestedPublic;
+            }
+            if (this.Type.IsPublic)
+            {
+                return TypeAttributes.Public;
+            }
+            return TypeAttributes.NotPublic;
         }
 
         /// <summary>

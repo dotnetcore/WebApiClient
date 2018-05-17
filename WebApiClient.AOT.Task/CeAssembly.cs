@@ -68,13 +68,22 @@ namespace WebApiClient.AOT.Task
             var willSave = false;
             foreach (var @interface in httpApiInterfaces)
             {
-                var proxyType = new CeProxyType(@interface);
-                if (proxyType.IsDefinded() == false)
+                var proxyType = new CeProxyType(@interface).Build();
+                if (this.IsDefinded(proxyType) == true)
                 {
-                    this.logger($"正在写入IL-> {@interface.Type.FullName}");
-                    this.assembly.MainModule.Types.Add(proxyType.Build());
-                    willSave = true;
+                    continue;
                 }
+
+                this.logger($"正在写入IL-> {proxyType.FullName}");
+                if (proxyType.DeclaringType != null)
+                {
+                    proxyType.DeclaringType.NestedTypes.Add(proxyType);
+                }
+                else
+                {
+                    this.assembly.MainModule.Types.Add(proxyType);
+                }
+                willSave = true;
             }
 
             if (willSave == true)
@@ -87,6 +96,19 @@ namespace WebApiClient.AOT.Task
                 this.assembly.Write(parameters);
             }
             return willSave;
+        }
+
+        /// <summary>
+        /// 返回类型是否在模块中已声明
+        /// </summary>
+        /// <param name="typeDefinition">类型</param>
+        /// <returns></returns>
+        public bool IsDefinded(TypeDefinition typeDefinition)
+        {
+            return this.assembly
+                .MainModule
+                .GetTypes()
+                .Any(item => item.FullName == typeDefinition.FullName);
         }
 
         /// <summary>

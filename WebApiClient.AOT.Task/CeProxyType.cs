@@ -43,50 +43,12 @@ namespace WebApiClient.AOT.Task
         }
 
         /// <summary>
-        /// 返回代理类型是否在模块中已声明
-        /// </summary>      
-        /// <returns></returns>
-        public bool IsDefinded()
-        {
-            var @namespace = this.GetProxyTypeNamespace();
-            var typeName = this.@interface.Type.Name;
-            var proxyTypeFullName = $"{@namespace}.{typeName}";
-
-            return this.@interface.Type.Module.GetTypes().Any(item => item.FullName == proxyTypeFullName);
-        }
-
-        /// <summary>
-        /// 返回代理类型的完整空间
-        /// </summary>
-        /// <returns></returns>
-        private string GetProxyTypeNamespace()
-        {
-            // 约定代理类的命名空间
-            const string contractNamespace = "WebApiClient.AutoProxy";
-
-            var namespaces = new List<string>();
-            var type = this.@interface.Type.DeclaringType;
-            while (type != null)
-            {
-                namespaces.Add(type.Name);
-                type = type.DeclaringType;
-            }
-            namespaces.Add(contractNamespace);
-            return string.Join(".", ((IEnumerable<string>)namespaces).Reverse());
-        }
-
-        /// <summary>
         /// 转换为TypeDefinition
         /// </summary>
         /// <returns></returns>
         public TypeDefinition Build()
         {
-            var @namespace = this.GetProxyTypeNamespace();
-            var typeName = this.@interface.Type.Name;
-            var attribues = this.@interface.Type.IsPublic ? Mono.Cecil.TypeAttributes.Public : Mono.Cecil.TypeAttributes.Class;
-            var baseType = this.GetTypeReference(typeof(HttpApiClient));
-            var proxyType = new TypeDefinition(@namespace, typeName, attribues, baseType);
-            proxyType.Interfaces.Add(new InterfaceImplementation(this.@interface.Type));
+            var proxyType = this.@interface.MakeProxyType();
 
             var fieldInterceptor = this.BuildField(proxyType, "interceptor", typeof(IApiInterceptor));
             var fieldApiMethods = this.BuildField(proxyType, "apiMethods", typeof(MethodInfo[]));
