@@ -52,25 +52,40 @@ namespace WebApiClient
         /// <returns></returns>
         private static Type FindProxyType(this Type interfaceType)
         {
-            const string prefix = "$";
             var allTypes = interfaceType.GetTypeInfo().Assembly.GetTypes();
-
             if (interfaceType.GetTypeInfo().IsGenericType == false)
             {
-                var declaringType = interfaceType.DeclaringType;
-                var proxyTypeName = $"{prefix}{interfaceType.Name}";
-                return allTypes.FirstOrDefault(item => item.Name == proxyTypeName && item.DeclaringType == declaringType);
+                return allTypes.FirstOrDefault(item => IsProxyType(interfaceType, item));
             }
             else
             {
                 var definition = interfaceType.GetGenericTypeDefinition();
-                var declaringType = definition.DeclaringType;
-                var proxyTypeName = $"{prefix}{definition.Name}";
-
-                var targetType = allTypes.FirstOrDefault(item => item.Name == proxyTypeName && item.DeclaringType == declaringType);
-                var proxyType = targetType?.MakeGenericType(interfaceType.GenericTypeArguments);
-                return proxyType;
+                var targetType = allTypes.FirstOrDefault(item => IsProxyType(definition, item));
+                return targetType?.MakeGenericType(interfaceType.GenericTypeArguments);
             }
+        }
+
+        /// <summary>
+        /// 返回target类型是否为代理类型
+        /// </summary>
+        /// <param name="interfaceType">接口类型</param>
+        /// <param name="targetType">目标类型 </param>
+        /// <returns></returns>
+        private static bool IsProxyType(Type interfaceType, Type targetType)
+        {
+            if (targetType.Namespace != interfaceType.Namespace)
+            {
+                return false;
+            }
+
+            if (targetType.DeclaringType != interfaceType.DeclaringType)
+            {
+                return false;
+            }
+
+            const string prefix = "$";
+            var proxyTypeName = $"{prefix}{interfaceType.Name}";
+            return targetType.Name == proxyTypeName;
         }
     }
 }

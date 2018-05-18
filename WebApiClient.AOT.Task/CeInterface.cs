@@ -49,7 +49,7 @@ namespace WebApiClient.AOT.Task
         {
             var @namespace = this.Type.Namespace;
             var proxyTypeName = $"{prefix}{this.Type.Name}";
-            var classAttributes = TypeAttributes.BeforeFieldInit | this.GetProxyTypeAttributes();
+            var classAttributes = this.GetProxyTypeAttributes();
             var baseType = this.GetTypeReference(typeof(HttpApiClient));
 
             var proxyType = new TypeDefinition(@namespace, proxyTypeName, classAttributes, baseType)
@@ -90,15 +90,15 @@ namespace WebApiClient.AOT.Task
         {
             if (this.Type.IsNestedPrivate)
             {
-                return TypeAttributes.NestedPrivate;
+                return TypeAttributes.NestedPrivate | TypeAttributes.BeforeFieldInit;
             }
             if (this.Type.IsNestedAssembly)
             {
-                return TypeAttributes.NestedAssembly;
+                return TypeAttributes.NestedAssembly | TypeAttributes.BeforeFieldInit;
             }
             if (this.Type.IsNestedPublic)
             {
-                return TypeAttributes.NestedPublic;
+                return TypeAttributes.NestedPublic | TypeAttributes.BeforeFieldInit;
             }
             if (this.Type.IsPublic)
             {
