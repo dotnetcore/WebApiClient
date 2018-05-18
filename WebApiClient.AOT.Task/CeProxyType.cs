@@ -157,20 +157,11 @@ namespace WebApiClient.AOT.Task
                 // 加载target参数
                 iL.Emit(OpCodes.Ldarg_0);
 
-                // var method = this.apiMethods[i]
-                iL.Create(OpCodes.Localloc);
-
-                var method = new VariableDefinition(this.GetTypeReference(typeof(System.Reflection.MethodInfo)));
-                implMethod.Body.Variables.Add(method);
-
+                // 加载method参数 this.apiMethods[i]
                 iL.Emit(OpCodes.Ldarg_0);
                 iL.Emit(OpCodes.Ldfld, fieldApiMethods);
                 iL.Emit(OpCodes.Ldc_I4, i);
                 iL.Emit(OpCodes.Ldelem_Ref);
-                iL.Emit(OpCodes.Stloc, method);
-
-                // 加载method参数
-                iL.Emit(OpCodes.Ldloc, method);
 
                 // var parameters = new object[parameters.Length]
                 var parameters = new VariableDefinition(this.GetTypeReference(typeof(object[])));

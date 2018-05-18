@@ -180,16 +180,11 @@ namespace WebApiClient
                 // 加载target参数
                 iL.Emit(OpCodes.Ldarg_0);
 
-                // var method = this.apiMethods[i]
-                var method = iL.DeclareLocal(typeof(MethodInfo));
+                // 加载method参数 this.apiMethods[i]
                 iL.Emit(OpCodes.Ldarg_0);
                 iL.Emit(OpCodes.Ldfld, fieldApiMethods);
                 iL.Emit(OpCodes.Ldc_I4, i);
-                iL.Emit(OpCodes.Ldelem_Ref);
-                iL.Emit(OpCodes.Stloc, method);
-
-                // 加载method参数
-                iL.Emit(OpCodes.Ldloc, method);
+                iL.Emit(OpCodes.Ldelem_Ref);              
 
                 // var parameters = new object[parameters.Length]
                 var parameters = iL.DeclareLocal(typeof(object[]));
