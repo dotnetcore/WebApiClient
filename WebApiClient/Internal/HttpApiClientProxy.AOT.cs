@@ -1,6 +1,7 @@
 ﻿#if AOT
 using System;
 using System.Reflection;
+using System.Linq;
 
 namespace WebApiClient
 {
@@ -30,8 +31,7 @@ namespace WebApiClient
         {
             var proxyTypeCtor = proxyTypeCtorCache.GetOrAdd(interfaceType, type =>
             {
-                var fullTypeName = type.GetProxyTypeFullName();
-                var proxyType = interfaceType.GetTypeInfo().Assembly.GetType(fullTypeName, false, false);
+                var proxyType = FindProxyType(type);
                 return proxyType?.GetConstructor(proxyTypeCtorArgTypes);
             });
 
@@ -44,15 +44,33 @@ namespace WebApiClient
             return proxyTypeCtor.Invoke(new object[] { interceptor, apiMethods });
         }
 
+
         /// <summary>
-        /// 返回代理类型的完整名称
+        /// 查找代理类型
         /// </summary>
         /// <param name="interfaceType">接口类型</param>
         /// <returns></returns>
-        private static string GetProxyTypeFullName(this Type interfaceType)
+        private static Type FindProxyType(this Type interfaceType)
         {
-            const string suffix = "<>";
-            return $"{interfaceType.FullName}{suffix}";
+            const string prefix = "$";
+            var allTypes = interfaceType.GetTypeInfo().Assembly.GetTypes();
+
+            if (interfaceType.GetTypeInfo().IsGenericType == false)
+            {
+                var declaringType = interfaceType.DeclaringType;
+                var proxyTypeName = $"{prefix}{interfaceType.Name}";
+                return allTypes.FirstOrDefault(item => item.Name == proxyTypeName && item.DeclaringType == declaringType);
+            }
+            else
+            {
+                var definition = interfaceType.GetGenericTypeDefinition();
+                var declaringType = definition.DeclaringType;
+                var proxyTypeName = $"{prefix}{definition.Name}";
+
+                var targetType = allTypes.FirstOrDefault(item => item.Name == proxyTypeName && item.DeclaringType == declaringType);
+                var proxyType = targetType?.MakeGenericType(interfaceType.GenericTypeArguments);
+                return proxyType;
+            }
         }
     }
 }

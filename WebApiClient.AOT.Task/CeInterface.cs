@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Mono.Cecil.Rocks;
 
 namespace WebApiClient.AOT.Task
 {
@@ -36,29 +37,48 @@ namespace WebApiClient.AOT.Task
             {
                 return false;
             }
-            var state = this.Type.Interfaces.Any(i => this.TypeReferenceEquals(i.InterfaceType, typeof(IHttpApi)));
-            if (state == true && this.Type.HasGenericParameters == true)
-            {
-                throw new NotSupportedException($"WebApiClient.AOT不支持泛型接口定义：{this.Type}");
-            }
-            return state;
+            return this.Type.Interfaces.Any(i => this.TypeReferenceEquals(i.InterfaceType, typeof(IHttpApi)));
         }
 
         /// <summary>
         /// 生成对应的代理类型
         /// </summary>
-        /// <param name="suffix">类型名称后缀</param>
+        /// <param name="prefix">类型名称前缀</param>
         /// <returns></returns>
-        public TypeDefinition MakeProxyType(string suffix = "<>")
+        public TypeDefinition MakeProxyType(string prefix = "$")
         {
             var @namespace = this.Type.Namespace;
-            var proxyTypeName = $"{this.Type.Name}{suffix}";
+            var proxyTypeName = $"{prefix}{this.Type.Name}";
             var classAttributes = TypeAttributes.BeforeFieldInit | this.GetProxyTypeAttributes();
             var baseType = this.GetTypeReference(typeof(HttpApiClient));
 
-            var proxyType = new TypeDefinition(@namespace, proxyTypeName, classAttributes, baseType);
-            proxyType.DeclaringType = this.Type.DeclaringType;
-            proxyType.Interfaces.Add(new InterfaceImplementation(this.Type));
+            var proxyType = new TypeDefinition(@namespace, proxyTypeName, classAttributes, baseType)
+            {
+                DeclaringType = this.Type.DeclaringType
+            };
+
+            // 继承的接口，泛型接口就声明泛型类
+            // 由于mono.cecil的bug，无法获得泛型接口的泛型参数约束
+            // 所以也就无法支持泛型约束的接口声明的代理类的生成
+            if (this.Type.HasGenericParameters == true)
+            {
+                var genericParameter = this.Type
+                    .GenericParameters
+                    .Select(p => new GenericParameter(p.Name, proxyType))
+                    .ToArray();
+
+                var genericInterface = new GenericInstanceType(this.Type);
+                foreach (var arg in genericParameter)
+                {
+                    proxyType.GenericParameters.Add(arg);
+                    genericInterface.GenericArguments.Add(arg);
+                }
+                proxyType.Interfaces.Add(new InterfaceImplementation(genericInterface));
+            }
+            else
+            {
+                proxyType.Interfaces.Add(new InterfaceImplementation(this.Type));
+            }
             return proxyType;
         }
 
