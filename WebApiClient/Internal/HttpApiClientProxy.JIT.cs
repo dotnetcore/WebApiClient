@@ -184,7 +184,7 @@ namespace WebApiClient
                 iL.Emit(OpCodes.Ldarg_0);
                 iL.Emit(OpCodes.Ldfld, fieldApiMethods);
                 iL.Emit(OpCodes.Ldc_I4, i);
-                iL.Emit(OpCodes.Ldelem_Ref);              
+                iL.Emit(OpCodes.Ldelem_Ref);
 
                 // var parameters = new object[parameters.Length]
                 var parameters = iL.DeclareLocal(typeof(object[]));
@@ -216,6 +216,8 @@ namespace WebApiClient
                 {
                     iL.Emit(OpCodes.Pop);
                 }
+
+                iL.Emit(OpCodes.Castclass, apiMethod.ReturnType);
                 iL.Emit(OpCodes.Ret);
             }
         }

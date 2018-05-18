@@ -191,6 +191,7 @@ namespace WebApiClient.AOT.Task
                 // Intercep(this, method, parameters)
                 iL.Emit(OpCodes.Callvirt, this.GetMethodReference(interceptMethod));
 
+                iL.Emit(OpCodes.Castclass, apiMethod.ReturnType);
                 iL.Emit(OpCodes.Ret);
             }
         }
