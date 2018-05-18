@@ -37,7 +37,8 @@ namespace WebApiClient
 
             if (proxyTypeCtor == null)
             {
-                throw new TypeLoadException($"找不到接口{interfaceType}的代理类，请为接口所在项目重新使用Nuget安装WebApiClient.AOT");
+                var assemblyName = typeof(HttpApiClientProxy).GetTypeInfo().Assembly.GetName();
+                throw new TypeLoadException($"找不到接口{interfaceType}的代理类，请为接口所在项目重新使用Nuget安装{assemblyName.Name} {assemblyName.Version}");
             }
 
             var apiMethods = interfaceType.GetAllApiMethods();
