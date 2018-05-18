@@ -90,6 +90,8 @@ namespace WebApiClient.AOT.Task
             var parameter = new GenericParameter(source.Name, proxyType)
             {
                 Attributes = source.Attributes
+                & ~GenericParameterAttributes.Covariant
+                & ~GenericParameterAttributes.Contravariant
             };
 
             foreach (var type in source.Constraints)
