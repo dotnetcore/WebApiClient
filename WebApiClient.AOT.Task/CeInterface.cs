@@ -58,17 +58,15 @@ namespace WebApiClient.AOT.Task
             };
 
             // 继承的接口，泛型接口就声明泛型类
-            // 由于mono.cecil的bug，无法获得泛型接口的泛型参数约束
-            // 所以也就无法支持泛型约束的接口声明的代理类的生成
             if (this.Type.HasGenericParameters == true)
             {
-                var genericParameter = this.Type
+                var genericParameters = this.Type
                     .GenericParameters
-                    .Select(p => new GenericParameter(p.Name, proxyType))
+                    .Select(p => this.MakeGenericParameter(p, proxyType))
                     .ToArray();
 
                 var genericInterface = new GenericInstanceType(this.Type);
-                foreach (var arg in genericParameter)
+                foreach (var arg in genericParameters)
                 {
                     proxyType.GenericParameters.Add(arg);
                     genericInterface.GenericArguments.Add(arg);
@@ -80,6 +78,25 @@ namespace WebApiClient.AOT.Task
                 proxyType.Interfaces.Add(new InterfaceImplementation(this.Type));
             }
             return proxyType;
+        }
+
+        /// <summary>
+        /// 生成代理类的泛型参数
+        /// </summary>
+        /// <param name="proxyType">代理类型</param>
+        /// <returns></returns>
+        private GenericParameter MakeGenericParameter(GenericParameter source, TypeDefinition proxyType)
+        {
+            var parameter = new GenericParameter(source.Name, proxyType)
+            {
+                Attributes = source.Attributes
+            };
+
+            foreach (var type in source.Constraints)
+            {
+                parameter.Constraints.Add(type);
+            }
+            return parameter;
         }
 
         /// <summary>
