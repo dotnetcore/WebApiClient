@@ -1,6 +1,5 @@
 ﻿using Mono.Cecil;
 using System;
-using System.Reflection;
 using System.Linq;
 
 namespace WebApiClient.AOT.Task
@@ -16,7 +15,7 @@ namespace WebApiClient.AOT.Task
         private readonly ModuleDefinition module;
 
         /// <summary>
-        /// 获取所有已知类型
+        /// 所有已知类型
         /// </summary>
         private readonly TypeDefinition[] knowTypes;
 
@@ -37,15 +36,20 @@ namespace WebApiClient.AOT.Task
         }
 
         /// <summary>
-        /// 返回的导入类型
+        /// 返回的导入后类型
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">目标类型</typeparam>
+        /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        protected TypeReference ImportTypeReference<T>()
+        protected TypeReference ImportType<T>()
         {
             var type = typeof(T);
-            var knowType = this.knowTypes.FirstOrDefault(item => item.FullName == type.FullName);
+            if (type.IsArray == true)
+            {
+                throw new NotSupportedException("不支持数组类型");
+            }
 
+            var knowType = this.knowTypes.FirstOrDefault(item => item.FullName == type.FullName);
             if (knowType == null)
             {
                 return this.module.ImportReference(type);
@@ -57,27 +61,33 @@ namespace WebApiClient.AOT.Task
         }
 
         /// <summary>
-        /// 导入类型的指定方法
+        /// 返回导入类型的指定方法的方法
         /// </summary>
         /// <param name="methodName">方法名</param>
         /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        protected MethodReference ImportMethodReference<T>(string methodName)
+        protected MethodReference ImportMethod<T>(string methodName)
         {
-            return this.ImportMethodReference<T>(item => item.Name == methodName);
+            return this.ImportMethod<T>(item => item.Name == methodName);
         }
 
         /// <summary>
-        /// 导入类型的指定方法
+        /// 返回导入类型的指定方法的方法
         /// </summary>
-        /// <param name="filer">方法过滤器</param>
+        /// <param name="filter">方法过滤器</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
-        protected MethodReference ImportMethodReference<T>(Func<MethodDefinition, bool> filer)
+        protected MethodReference ImportMethod<T>(Func<MethodDefinition, bool> filter)
         {
-            var typeReference = this.ImportTypeReference<T>();
-            var method = typeReference.Resolve().Methods.FirstOrDefault(filer);
+            if (filter == null)
+            {
+                throw new ArgumentNullException(nameof(filter));
+            }
 
+            var method = this.ImportType<T>().Resolve().Methods.FirstOrDefault(filter);
             if (method == null)
             {
                 throw new ArgumentException("无法找到指定的方法");
@@ -86,14 +96,24 @@ namespace WebApiClient.AOT.Task
         }
 
         /// <summary>
-        /// 比较类型是否相等
+        /// 比较两类型类型是一样
         /// </summary>
-        /// <param name="typeReference"></param>
-        /// <param name="type"></param>
+        /// <param name="source">类型</param>
+        /// <param name="target">目标类型</param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        protected bool TypeReferenceEquals(TypeReference typeReference, Type type)
+        protected bool IsTypeEquals(TypeReference source, Type target)
         {
-            return typeReference.FullName == type.FullName;
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+            return source.FullName == target.FullName;
         }
     }
 }

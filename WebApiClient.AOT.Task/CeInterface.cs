@@ -37,7 +37,7 @@ namespace WebApiClient.AOT.Task
             {
                 return false;
             }
-            return this.Type.Interfaces.Any(i => this.TypeReferenceEquals(i.InterfaceType, typeof(IHttpApi)));
+            return this.Type.Interfaces.Any(i => this.IsTypeEquals(i.InterfaceType, typeof(IHttpApi)));
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace WebApiClient.AOT.Task
             var @namespace = this.Type.Namespace;
             var proxyTypeName = $"{prefix}{this.Type.Name}";
             var classAttributes = this.GetProxyTypeAttributes();
-            var baseType = this.ImportTypeReference<HttpApiClient>();
+            var baseType = this.ImportType<HttpApiClient>();
 
             var proxyType = new TypeDefinition(@namespace, proxyTypeName, classAttributes, baseType)
             {
@@ -134,7 +134,7 @@ namespace WebApiClient.AOT.Task
         /// <returns></returns>
         public MethodDefinition[] GetAllApis()
         {
-            var excepts = this.ImportTypeReference<HttpApiClient>()
+            var excepts = this.ImportType<HttpApiClient>()
                 .Resolve()
                 .Interfaces
                 .Select(item => item.InterfaceType.Resolve());
@@ -173,7 +173,7 @@ namespace WebApiClient.AOT.Task
                 genericType = genericType.GetElementType();
             }
 
-            var isTaskType = this.TypeReferenceEquals(genericType, typeof(Task<>)) || this.TypeReferenceEquals(genericType, typeof(ITask<>));
+            var isTaskType = this.IsTypeEquals(genericType, typeof(Task<>)) || this.IsTypeEquals(genericType, typeof(ITask<>));
             if (isTaskType == false)
             {
                 var message = $"返回类型必须为Task<>或ITask<>：{method}";
