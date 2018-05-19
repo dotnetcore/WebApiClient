@@ -144,7 +144,51 @@ namespace WebApiClient.AOT.Task
                 .Except(excepts, TypeDefinitionComparer.Instance)
                 .ToArray();
 
-            return interfaces.SelectMany(item => item.Methods).ToArray();
+            var apiMethods = interfaces.SelectMany(item => item.Methods).ToArray();
+            foreach (var method in apiMethods)
+            {
+                this.EnsureApiMethod(method);
+            }
+            return apiMethods;
+        }
+
+        /// <summary>
+        /// 确保方法是支持的Api接口
+        /// </summary>
+        /// <exception cref="NotSupportedException"></exception>
+        private void EnsureApiMethod(MethodDefinition method)
+        {
+            if (method.HasGenericParameters == true)
+            {
+                throw new NotSupportedException($"不支持泛型方法：{method}");
+            }
+
+            if (method.IsSpecialName == true)
+            {
+                throw new NotSupportedException($"不支持属性访问器：{method}");
+            }
+
+            var genericType = method.ReturnType;
+            if (genericType.IsGenericInstance == true)
+            {
+                genericType = genericType.GetElementType();
+            }
+
+            var isTaskType = this.TypeReferenceEquals(genericType, typeof(Task<>)) || this.TypeReferenceEquals(genericType, typeof(ITask<>));
+            if (isTaskType == false)
+            {
+                var message = $"返回类型必须为Task<>或ITask<>：{method}";
+                throw new NotSupportedException(message);
+            }
+
+            foreach (var parameter in method.Parameters)
+            {
+                if (parameter.ParameterType.IsByReference == true)
+                {
+                    var message = $"接口参数不支持ref/out修饰：{parameter}";
+                    throw new NotSupportedException(message);
+                }
+            }
         }
 
         /// <summary>
