@@ -39,11 +39,13 @@ namespace WebApiClient.AOT.Task
         /// <summary>
         /// 返回的导入类型
         /// </summary>
-        /// <param name="type">类型</param>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        protected TypeReference ImportTypeReference(Type type)
+        protected TypeReference ImportTypeReference<T>()
         {
+            var type = typeof(T);
             var knowType = this.knowTypes.FirstOrDefault(item => item.FullName == type.FullName);
+
             if (knowType == null)
             {
                 return this.module.ImportReference(type);
@@ -57,29 +59,28 @@ namespace WebApiClient.AOT.Task
         /// <summary>
         /// 导入类型的指定方法
         /// </summary>
-        /// <param name="type">类型</param>
         /// <param name="methodName">方法名</param>
         /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
-        protected MethodReference ImportMethodReference(Type type, string methodName)
+        protected MethodReference ImportMethodReference<T>(string methodName)
         {
-            var typeReference = this.ImportTypeReference(type);
-            return this.ImportMethodReference(typeReference, methodName);
+            return this.ImportMethodReference<T>(item => item.Name == methodName);
         }
 
         /// <summary>
         /// 导入类型的指定方法
         /// </summary>
-        /// <param name="type">类型</param>
-        /// <param name="methodName">方法名</param>
+        /// <param name="filer">方法过滤器</param>
         /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
-        protected MethodReference ImportMethodReference(TypeReference type, string methodName)
+        protected MethodReference ImportMethodReference<T>(Func<MethodDefinition, bool> filer)
         {
-            var method = type.Resolve().Methods.FirstOrDefault(item => item.Name == methodName);
+            var typeReference = this.ImportTypeReference<T>();
+            var method = typeReference.Resolve().Methods.FirstOrDefault(filer);
+
             if (method == null)
             {
-                throw new ArgumentException(nameof(methodName));
+                throw new ArgumentException("无法找到指定的方法");
             }
             return this.module.ImportReference(method);
         }

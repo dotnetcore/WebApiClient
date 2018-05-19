@@ -51,7 +51,7 @@ namespace WebApiClient.AOT.Task
             var @namespace = this.Type.Namespace;
             var proxyTypeName = $"{prefix}{this.Type.Name}";
             var classAttributes = this.GetProxyTypeAttributes();
-            var baseType = this.ImportTypeReference(typeof(HttpApiClient));
+            var baseType = this.ImportTypeReference<HttpApiClient>();
 
             var proxyType = new TypeDefinition(@namespace, proxyTypeName, classAttributes, baseType)
             {
@@ -135,7 +135,7 @@ namespace WebApiClient.AOT.Task
         /// <returns></returns>
         public MethodDefinition[] GetAllApis()
         {
-            var excepts = this.ImportTypeReference(typeof(HttpApiClient))
+            var excepts = this.ImportTypeReference<HttpApiClient>()
                 .Resolve()
                 .Interfaces
                 .Select(item => item.InterfaceType.Resolve());

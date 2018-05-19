@@ -36,8 +36,8 @@ namespace WebApiClient.AOT.Task
         public TypeDefinition Build()
         {
             var proxyType = this.@interface.MakeProxyType();
-            var interceptorType = this.ImportTypeReference(typeof(IApiInterceptor));
-            var apiMethodsType = this.ImportTypeReference(typeof(MemberInfo)).MakeArrayType();
+            var interceptorType = this.ImportTypeReference<IApiInterceptor>();
+            var apiMethodsType = this.ImportTypeReference<MemberInfo>().MakeArrayType();
 
             var fieldInterceptor = this.BuildField(proxyType, "interceptor", interceptorType);
             var fieldApiMethods = this.BuildField(proxyType, "apiMethods", apiMethodsType);
@@ -93,8 +93,7 @@ namespace WebApiClient.AOT.Task
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
 
-            const string ctorName = ".ctor";
-            var baseConstructor = this.ImportMethodReference(typeof(HttpApiClient), ctorName);
+            var baseConstructor = this.ImportMethodReference<HttpApiClient>(item => item.IsConstructor);
             il.Emit(OpCodes.Call, baseConstructor);
 
             // this.interceptor = 第一个参数
@@ -181,7 +180,7 @@ namespace WebApiClient.AOT.Task
                 iL.Emit(OpCodes.Ldloc, parameters);
 
                 // Intercep(this, method, parameters)
-                var interceptMethod = this.ImportMethodReference(typeof(IApiInterceptor), nameof(IApiInterceptor.Intercept));
+                var interceptMethod = this.ImportMethodReference<IApiInterceptor>(nameof(IApiInterceptor.Intercept));
                 iL.Emit(OpCodes.Callvirt, interceptMethod);
 
                 iL.Emit(OpCodes.Castclass, apiMethod.ReturnType);
