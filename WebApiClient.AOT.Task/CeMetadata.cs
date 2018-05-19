@@ -40,27 +40,18 @@ namespace WebApiClient.AOT.Task
         /// 返回的导入类型
         /// </summary>
         /// <param name="type">类型</param>
-        /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
         protected TypeReference ImportTypeReference(Type type)
         {
-            return this.ImportTypeReference(type.FullName);
-        }
-
-        /// <summary>
-        /// 返回的导入类型
-        /// </summary>
-        /// <param name="fullName"></param>
-        /// <exception cref="ArgumentException"></exception>
-        /// <returns></returns>
-        protected TypeReference ImportTypeReference(string fullName)
-        {
-            var type = this.knowTypes.FirstOrDefault(item => item.FullName == fullName);
-            if (type == null)
+            var knowType = this.knowTypes.FirstOrDefault(item => item.FullName == type.FullName);
+            if (knowType == null)
             {
-                throw new ArgumentException(nameof(fullName));
+                return this.module.ImportReference(type);
             }
-            return this.module.ImportReference(type);
+            else
+            {
+                return this.module.ImportReference(knowType);
+            }
         }
 
         /// <summary>
