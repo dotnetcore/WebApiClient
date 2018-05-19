@@ -31,7 +31,7 @@ namespace WebApiClient.AOT.Task
         {
             if (File.Exists(fileName) == false)
             {
-                throw new FileNotFoundException("找不到文件", fileName);
+                throw new FileNotFoundException("找不到文件编译输出的程序集");
             }
 
             var resolver = new DefaultAssemblyResolver();
