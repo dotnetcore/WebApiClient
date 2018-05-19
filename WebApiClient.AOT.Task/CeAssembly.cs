@@ -21,6 +21,16 @@ namespace WebApiClient.AOT.Task
         private readonly AssemblyDefinition assembly;
 
         /// <summary>
+        /// 获取所有已知类型
+        /// </summary>
+        public TypeDefinition[] KnowTypes { get; private set; }
+
+        /// <summary>
+        /// 获取主模块
+        /// </summary>
+        public ModuleDefinition MainMdule { get; private set; }
+
+        /// <summary>
         /// 程序集
         /// </summary>
         /// <param name="fileName">文件路径</param>
@@ -50,6 +60,13 @@ namespace WebApiClient.AOT.Task
 
             this.logger = logger;
             this.assembly = AssemblyDefinition.ReadAssembly(fileName, parameter);
+
+            this.MainMdule = this.assembly.MainModule;
+            this.KnowTypes = this.MainMdule
+                .AssemblyReferences
+                .Select(asm => resolver.Resolve(asm).MainModule)
+                .SelectMany(item => item.GetTypes())
+                .ToArray();
         }
 
         /// <summary>
@@ -61,14 +78,14 @@ namespace WebApiClient.AOT.Task
             var httpApiInterfaces = this.assembly
                 .MainModule
                 .GetTypes()
-                .Select(item => new CeInterface(item))
+                .Select(item => new CeInterface(this, item))
                 .Where(item => item.IsHttpApiInterface())
                 .ToArray();
 
             var willSave = false;
             foreach (var @interface in httpApiInterfaces)
             {
-                var proxyType = new CeProxyType(@interface).Build();
+                var proxyType = new CeProxyType(this, @interface).Build();
                 if (this.IsDefinded(proxyType) == true)
                 {
                     continue;

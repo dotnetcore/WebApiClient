@@ -1,5 +1,6 @@
 ﻿using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Mono.Cecil.Rocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,21 +14,6 @@ namespace WebApiClient.AOT.Task
     class CeProxyType : CeMetadata
     {
         /// <summary>
-        /// IApiInterceptor的Intercept方法
-        /// </summary>
-        private static readonly MethodInfo interceptMethod = typeof(IApiInterceptor).GetMethod(nameof(IApiInterceptor.Intercept));
-
-        /// <summary>
-        /// HttpApiClient的构造器
-        /// </summary>
-        private static readonly ConstructorInfo baseConstructor = typeof(HttpApiClient).GetConstructor(new Type[] { typeof(IApiInterceptor) });
-
-        /// <summary>
-        /// 代理类型的构造器的参数类型
-        /// </summary>
-        private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IApiInterceptor), typeof(MethodInfo[]) };
-
-        /// <summary>
         /// 接口
         /// </summary>
         private readonly CeInterface @interface;
@@ -35,9 +21,10 @@ namespace WebApiClient.AOT.Task
         /// <summary>
         /// 代理类型生成器
         /// </summary>
+        /// <param name="assembly">程序集</param>
         /// <param name="interface">接口</param>
-        public CeProxyType(CeInterface @interface)
-           : base(@interface.Type.Module)
+        public CeProxyType(CeAssembly assembly, CeInterface @interface)
+           : base(assembly)
         {
             this.@interface = @interface;
         }
@@ -49,9 +36,11 @@ namespace WebApiClient.AOT.Task
         public TypeDefinition Build()
         {
             var proxyType = this.@interface.MakeProxyType();
+            var interceptorType = this.ImportTypeReference(typeof(IApiInterceptor));
+            var apiMethodsType = this.ImportTypeReference(typeof(MemberInfo)).MakeArrayType();
 
-            var fieldInterceptor = this.BuildField(proxyType, "interceptor", typeof(IApiInterceptor));
-            var fieldApiMethods = this.BuildField(proxyType, "apiMethods", typeof(MethodInfo[]));
+            var fieldInterceptor = this.BuildField(proxyType, "interceptor", interceptorType);
+            var fieldApiMethods = this.BuildField(proxyType, "apiMethods", apiMethodsType);
             this.BuildCtor(proxyType, fieldInterceptor, fieldApiMethods);
 
             var apiMethos = this.@interface.GetAllApis();
@@ -68,10 +57,10 @@ namespace WebApiClient.AOT.Task
         /// <param name="fieldName">字段名称</param>
         /// <param name="type">字段类型</param>
         /// <returns></returns>
-        private FieldDefinition BuildField(TypeDefinition proxyType, string fieldName, Type type)
+        private FieldDefinition BuildField(TypeDefinition proxyType, string fieldName, TypeReference type)
         {
             const Mono.Cecil.FieldAttributes filedAttribute = Mono.Cecil.FieldAttributes.Private | Mono.Cecil.FieldAttributes.InitOnly; ;
-            var filed = new FieldDefinition(fieldName, filedAttribute, this.GetTypeReference(type));
+            var filed = new FieldDefinition(fieldName, filedAttribute, type);
             proxyType.Fields.Add(filed);
             return filed;
         }
@@ -85,8 +74,8 @@ namespace WebApiClient.AOT.Task
         /// <returns></returns>
         private void BuildCtor(TypeDefinition proxyType, FieldDefinition fieldInterceptor, FieldDefinition fieldApiMethods)
         {
-            // this(IApiInterceptor interceptor, MethodInfo[] methods):base(interceptor)          
-            var ctor = new MethodDefinition(".ctor", Mono.Cecil.MethodAttributes.Public, this.GetTypeReference(typeof(void)))
+            // void .ctor(IApiInterceptor interceptor, MethodInfo[] methods):base(interceptor)
+            var ctor = new MethodDefinition(".ctor", Mono.Cecil.MethodAttributes.Public, this.TypeSystem.Void)
             {
                 Attributes = Mono.Cecil.MethodAttributes.Public
                 | Mono.Cecil.MethodAttributes.HideBySig
@@ -94,16 +83,19 @@ namespace WebApiClient.AOT.Task
                 | Mono.Cecil.MethodAttributes.RTSpecialName
             };
 
-            foreach (var item in proxyTypeCtorArgTypes)
-            {
-                var parameter = new ParameterDefinition(this.GetTypeReference(item));
-                ctor.Parameters.Add(parameter);
-            }
+            var parameterInterceptor = new ParameterDefinition(fieldInterceptor.FieldType);
+            var parameterApiMethods = new ParameterDefinition(fieldApiMethods.FieldType);
+            ctor.Parameters.Add(parameterInterceptor);
+            ctor.Parameters.Add(parameterApiMethods);
 
             var il = ctor.Body.GetILProcessor();
+
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
-            il.Emit(OpCodes.Call, this.GetMethodReference(baseConstructor));
+
+            const string ctorName = ".ctor";
+            var baseConstructor = this.ImportMethodReference(typeof(HttpApiClient), ctorName);
+            il.Emit(OpCodes.Call, baseConstructor);
 
             // this.interceptor = 第一个参数
             il.Emit(OpCodes.Ldarg_0);
@@ -164,11 +156,11 @@ namespace WebApiClient.AOT.Task
                 iL.Emit(OpCodes.Ldelem_Ref);
 
                 // var parameters = new object[parameters.Length]
-                var parameters = new VariableDefinition(this.GetTypeReference(typeof(object[])));
+                var parameters = new VariableDefinition(new ArrayType(this.TypeSystem.Object));
                 implMethod.Body.Variables.Add(parameters);
 
                 iL.Emit(OpCodes.Ldc_I4, apiParameters.Count);
-                iL.Emit(OpCodes.Newarr, this.GetTypeReference(typeof(object)));
+                iL.Emit(OpCodes.Newarr, this.TypeSystem.Object);
                 iL.Emit(OpCodes.Stloc, parameters);
 
                 for (var j = 0; j < apiParameters.Count; j++)
@@ -189,7 +181,8 @@ namespace WebApiClient.AOT.Task
                 iL.Emit(OpCodes.Ldloc, parameters);
 
                 // Intercep(this, method, parameters)
-                iL.Emit(OpCodes.Callvirt, this.GetMethodReference(interceptMethod));
+                var interceptMethod = this.ImportMethodReference(typeof(IApiInterceptor), nameof(IApiInterceptor.Intercept));
+                iL.Emit(OpCodes.Callvirt, interceptMethod);
 
                 iL.Emit(OpCodes.Castclass, apiMethod.ReturnType);
                 iL.Emit(OpCodes.Ret);

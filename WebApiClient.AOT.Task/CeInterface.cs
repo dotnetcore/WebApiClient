@@ -20,9 +20,10 @@ namespace WebApiClient.AOT.Task
         /// <summary>
         /// 表示接口
         /// </summary>
+        /// <param name="assembly">程序集</param>
         /// <param name="interface">接口类型</param>
-        public CeInterface(TypeDefinition @interface)
-            : base(@interface.Module)
+        public CeInterface(CeAssembly assembly, TypeDefinition @interface)
+            : base(assembly)
         {
             this.Type = @interface;
         }
@@ -50,7 +51,7 @@ namespace WebApiClient.AOT.Task
             var @namespace = this.Type.Namespace;
             var proxyTypeName = $"{prefix}{this.Type.Name}";
             var classAttributes = this.GetProxyTypeAttributes();
-            var baseType = this.GetTypeReference(typeof(HttpApiClient));
+            var baseType = this.ImportTypeReference(typeof(HttpApiClient));
 
             var proxyType = new TypeDefinition(@namespace, proxyTypeName, classAttributes, baseType)
             {
@@ -134,7 +135,7 @@ namespace WebApiClient.AOT.Task
         /// <returns></returns>
         public MethodDefinition[] GetAllApis()
         {
-            var excepts = this.GetTypeReference(typeof(HttpApiClient))
+            var excepts = this.ImportTypeReference(typeof(HttpApiClient))
                 .Resolve()
                 .Interfaces
                 .Select(item => item.InterfaceType.Resolve());
@@ -143,51 +144,7 @@ namespace WebApiClient.AOT.Task
                 .Except(excepts, TypeDefinitionComparer.Instance)
                 .ToArray();
 
-            var apiMethods = interfaces.SelectMany(item => item.Methods).ToArray();
-            foreach (var method in apiMethods)
-            {
-                this.EnsureApiMethod(method);
-            }
-            return apiMethods;
-        }
-
-        /// <summary>
-        /// 确保方法是支持的Api接口
-        /// </summary>
-        /// <exception cref="NotSupportedException"></exception>
-        private void EnsureApiMethod(MethodDefinition method)
-        {
-            if (method.HasGenericParameters == true)
-            {
-                throw new NotSupportedException($"不支持泛型方法：{method}");
-            }
-
-            if (method.IsSpecialName == true)
-            {
-                throw new NotSupportedException($"不支持属性访问器：{method}");
-            }
-
-            var genericType = method.ReturnType;
-            if (genericType.IsGenericInstance == true)
-            {
-                genericType = genericType.GetElementType();
-            }
-
-            var isTaskType = this.TypeReferenceEquals(genericType, typeof(Task<>)) || this.TypeReferenceEquals(genericType, typeof(ITask<>));
-            if (isTaskType == false)
-            {
-                var message = $"返回类型必须为Task<>或ITask<>：{method}";
-                throw new NotSupportedException(message);
-            }
-
-            foreach (var parameter in method.Parameters)
-            {
-                if (parameter.ParameterType.IsByReference == true)
-                {
-                    var message = $"接口参数不支持ref/out修饰：{parameter}";
-                    throw new NotSupportedException(message);
-                }
-            }
+            return interfaces.SelectMany(item => item.Methods).ToArray();
         }
 
         /// <summary>

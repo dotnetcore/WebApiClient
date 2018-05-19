@@ -131,7 +131,7 @@ namespace WebApiClient
         /// <returns></returns>
         private static void BuildCtor(this TypeBuilder builder, FieldBuilder fieldInterceptor, FieldBuilder fieldApiMethods)
         {
-            // this(IApiInterceptor interceptor, MethodInfo[] methods):base(interceptor)          
+            // .ctor(IApiInterceptor interceptor, MethodInfo[] methods):base(interceptor)          
             var ctor = builder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, proxyTypeCtorArgTypes);
 
             var il = ctor.GetILGenerator();
