@@ -1,6 +1,7 @@
 ﻿using Mono.Cecil;
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace WebApiClient.AOT.Task
 {
@@ -36,10 +37,11 @@ namespace WebApiClient.AOT.Task
         }
 
         /// <summary>
-        /// 返回的导入后类型
+        /// 返回的导入外部类型后的类型
         /// </summary>
         /// <typeparam name="T">目标类型</typeparam>
         /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="TypeLoadException"></exception>
         /// <returns></returns>
         protected TypeReference ImportType<T>()
         {
@@ -52,6 +54,11 @@ namespace WebApiClient.AOT.Task
             var knowType = this.knowTypes.FirstOrDefault(item => item.FullName == type.FullName);
             if (knowType == null)
             {
+                // 本程序集的类型不作直接导入
+                if (this.IsThisAssemblyType(type) == true)
+                {
+                    throw new TypeLoadException($"找不到类型：{type.FullName}");
+                }
                 return this.module.ImportReference(type);
             }
             else
@@ -60,12 +67,29 @@ namespace WebApiClient.AOT.Task
             }
         }
 
+
         /// <summary>
-        /// 返回导入类型的指定方法的方法
+        /// 返回指定类型是在本程序集范围内
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <returns></returns>
+        private bool IsThisAssemblyType(Type type)
+        {
+#if NETCOREAPP1_1
+            return type.GetTypeInfo().Assembly == this.GetType().GetTypeInfo().Assembly;
+#else
+            return type.Assembly == this.GetType().Assembly;
+#endif
+        }
+
+
+        /// <summary>
+        /// 返回导入外部类型的指定方法后的方法
         /// </summary>
         /// <param name="methodName">方法名</param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="TypeLoadException"></exception>
         /// <returns></returns>
         protected MethodReference ImportMethod<T>(string methodName)
         {
@@ -73,12 +97,13 @@ namespace WebApiClient.AOT.Task
         }
 
         /// <summary>
-        /// 返回导入类型的指定方法的方法
+        /// 返回导入外部类型的指定方法后的方法
         /// </summary>
         /// <param name="filter">方法过滤器</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="TypeLoadException"></exception>
         /// <returns></returns>
         protected MethodReference ImportMethod<T>(Func<MethodDefinition, bool> filter)
         {
