@@ -1,7 +1,6 @@
 ﻿## WebApiClient
-* WebApiClient.JIT will replace the old Laojiu.WebApiClient, and use Emit to create the proxy class of http request interface at runtime.
-
-* WebApiClient.AOT supports all platforms, including the platform that requires AOT, inserting proxy class IL instructions from http request interface to output assembly at compile time.
+WebApiClient.JIT will replace the old Laojiu.WebApiClient, and use Emit to create the proxy class of http request interface at runtime.<br/>
+WebApiClient.AOT supports all platforms, including the platform that requires AOT, inserting proxy class IL instructions from http request interface to output assembly at compile time.<br/>
 
 ### 1 Nuget
 PM> `install-package WebApiClient.JIT`
