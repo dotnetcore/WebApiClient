@@ -3,15 +3,15 @@
 
 * WebApiClient.AOT supports all platforms, including the platform that requires AOT, inserting proxy class IL instructions from http request interface to output assembly at compile time.
 
-## 1 Nuget
+### 1 Nuget
 PM> `install-package WebApiClient.JIT`
 <br/>supports .net framework4.5 netstandard1.3 netcoreapp2.1 
 
 PM> `install-package WebApiClient.AOT` 
 <br/>supports .net framework4.5 netstandard1.3 netcoreapp2.1
 
-## 2. Http(s) request
-### 2.1 Interface declaration
+### 2. Http(s) request
+#### 2.1 Interface declaration
 ```c#
 [HttpHost("http://www.webapiclient.com")] 
 public interface IMyWebApi : IHttpApi
@@ -40,7 +40,7 @@ public class UserInfo
 }
 ```
  
-### 2.2 Call request
+#### 2.2 Call request
 ```c#
 static async Task TestAsync()
 {
@@ -52,11 +52,11 @@ static async Task TestAsync()
 ``` 
  
 
-### 3. Documents
+#### 3. Documents
 * [WebApiClient basis](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E5%9F%BA%E7%A1%80)
 * [WebApiClient advance](https://github.com/dotnetcore/WebApiClient/wiki/WebApiClient%E8%BF%9B%E9%98%B6)
 * [WebApiClient senior](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E9%AB%98%E7%BA%A7)
  
 
-### 4. Features
+#### 4. Features
 ![](https://raw.githubusercontent.com/dotnetcore/WebApiClient/master/WebApiClient.png)
