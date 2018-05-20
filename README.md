@@ -1,6 +1,6 @@
 ﻿## WebApiClient 　　　　　　　　　　　　　　　　　　　　[English](https://github.com/dotnetcore/WebApiClient/blob/master/README.en.md)
-* WebApiClient.JIT将替代旧的Laojiu.WebApiClient，在运行时使用Emit创建Http请求接口的代理类；
-* WebApiClient.AOT支持包括需要AOT的平台，在编译时插入Http请求接口的代理类IL指令到输出的程序集；
+WebApiClient.JIT将替代旧的Laojiu.WebApiClient，在运行时使用Emit创建Http请求接口的代理类；<br/>
+WebApiClient.AOT支持包括需要AOT的平台，在编译时插入Http请求接口的代理类IL指令到输出的程序集；<br/>
 
 ### 1 Nuget包
 PM> `install-package WebApiClient.JIT`
