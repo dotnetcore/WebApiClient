@@ -16,13 +16,13 @@ PM> `install-package WebApiClient.AOT`
 public interface IMyWebApi : IHttpApi
 {
     // GET webapi/user?account=laojiu
-    // Return 原始string内容
+    // Return original string
     [HttpGet("/webapi/user")]
     ITask<string> GetUserByAccountAsync(string account);
 
     // POST webapi/user  
     // Body Account=laojiu&password=123456
-    // Return json或xml内容
+    // Return json or xml content
     [HttpPost("/webapi/user")]
     ITask<UserInfo> UpdateUserWithFormAsync([FormContent] UserInfo user);
 }
