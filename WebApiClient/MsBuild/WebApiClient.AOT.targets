@@ -4,12 +4,12 @@
     <Runtime Condition="'$(MSBuildRuntimeType)' == 'Core'">netcoreapp1.1</Runtime>
     <Runtime Condition="'$(MSBuildRuntimeType)' != 'Core'">net45</Runtime>
 
-    <TaskAssembly>$(MSBuildThisFileDirectory)..\BuildTask\$(Runtime)\WebApiClient.AOT.Task.dll</TaskAssembly>
+    <TaskAssembly>$(MSBuildThisFileDirectory)..\BuildTask\$(Runtime)\WebApiClient.BuildTask.dll</TaskAssembly>
     <TargetAssembly>$(MSBuildProjectDirectory)\$(IntermediateOutputPath)$(TargetFileName)</TargetAssembly>
   </PropertyGroup>
 
-  <UsingTask TaskName="WebApiClient.AOT.Task.ProxyTask" AssemblyFile="$(TaskAssembly)" />
+  <UsingTask TaskName="WebApiClient.BuildTask.ProxyTask" AssemblyFile="$(TaskAssembly)" />
   <Target Name="BuildProxy" AfterTargets="CoreCompile" DependsOnTargets="ResolveProjectReferences;ResolveAssemblyReferences">
-    <WebApiClient.AOT.Task.ProxyTask TargetAssembly="$(TargetAssembly)" References="@(_ResolveAssemblyReferenceResolvedFiles)" />
+    <WebApiClient.BuildTask.ProxyTask TargetAssembly="$(TargetAssembly)" References="@(_ResolveAssemblyReferenceResolvedFiles)" />
   </Target>
 </Project>
