@@ -39,5 +39,6 @@
 
   <Target Name="Print" AfterTargets="AfterBuild">
     <Message Text="Optimize: $(Optimize)" Importance="high" />
+    <Message Text="DefineConstants: $(DefineConstants)" Importance="high" />
   </Target>
 </Project>
