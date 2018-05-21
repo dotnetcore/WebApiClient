@@ -9,7 +9,7 @@ using WebApiClient.Contexts;
 using Xunit;
 
 
-namespace WebApiClientTest.Attributes.ParameterAttributes
+namespace WebApiClient.Test.Attributes.ParameterAttributes
 {
     public class HeadersAttributeTest
     {

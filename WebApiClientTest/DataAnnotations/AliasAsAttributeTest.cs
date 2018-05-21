@@ -4,7 +4,7 @@ using WebApiClient;
 using WebApiClient.DataAnnotations;
 using Xunit;
 
-namespace WebApiClientTest.DataAnnotations
+namespace WebApiClient.Test.DataAnnotations
 {
     public class AliasAsAttributeTest
     {

@@ -6,7 +6,7 @@ using WebApiClient.Attributes;
 using WebApiClient.Contexts;
 using Xunit;
 
-namespace WebApiClientTest.Attributes.HttpActionAttributes
+namespace WebApiClient.Test.Attributes.HttpActionAttributes
 {
     public class JsonContentAttributeTest
     {

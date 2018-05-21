@@ -5,7 +5,7 @@ using WebApiClient;
 using Xunit;
 using System.Linq;
 
-namespace WebApiClientTest.Internal
+namespace WebApiClient.Test.Internal
 {
     public class HttpUtilityTest
     {

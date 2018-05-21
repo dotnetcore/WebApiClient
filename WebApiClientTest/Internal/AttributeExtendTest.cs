@@ -3,7 +3,7 @@ using System.Linq;
 using WebApiClient;
 using Xunit;
 
-namespace WebApiClientTest.Internal
+namespace WebApiClient.Test.Internal
 {
     public class AttributeExtendTest
     {

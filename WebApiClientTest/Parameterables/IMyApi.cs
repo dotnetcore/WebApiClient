@@ -2,7 +2,7 @@
 using System.Net.Http;
 using WebApiClient;
 
-namespace WebApiClientTest.Parameterables
+namespace WebApiClient.Test.Parameterables
 {
     public interface IMyApi : IDisposable
     {

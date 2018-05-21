@@ -6,7 +6,7 @@ using Xunit;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WebApiClientTest.Internal
+namespace WebApiClient.Test.Internal
 {
     public class ConcurrentCacheTest
     {

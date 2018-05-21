@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using WebApiClient;
 using Xunit;
 
-namespace WebApiClientTest
+namespace WebApiClient.Test
 {
     public class HttpApiRequestMessageTest
     {

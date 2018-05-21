@@ -7,7 +7,7 @@ using WebApiClient.Contexts;
 using WebApiClient.Parameterables;
 using Xunit;
 
-namespace WebApiClientTest.Parameterables
+namespace WebApiClient.Test.Parameterables
 {
     public class MulitpartTextTest
     {

@@ -4,7 +4,7 @@ using System;
 using WebApiClient;
 using Xunit;
 
-namespace WebApiClientTest
+namespace WebApiClient.Test
 {
     public class HttpApiClientTest
     {

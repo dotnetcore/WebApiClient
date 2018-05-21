@@ -5,7 +5,7 @@ using WebApiClient;
 using WebApiClient.Contexts;
 using Xunit;
 
-namespace WebApiClientTest
+namespace WebApiClient.Test
 {
     public class GlobalFilterCollectionTest
     {

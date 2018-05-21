@@ -2,7 +2,7 @@
 using Xunit;
 using WebApiClient;
 
-namespace WebApiClientTest
+namespace WebApiClient.Test
 {
     public class TagsTest
     {

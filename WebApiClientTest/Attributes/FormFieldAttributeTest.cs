@@ -7,7 +7,7 @@ using WebApiClient.Contexts;
 using Xunit;
 
 
-namespace WebApiClientTest.Attributes
+namespace WebApiClient.Test.Attributes
 {
     public class FormFieldAttributeTest
     {

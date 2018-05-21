@@ -6,7 +6,7 @@ using WebApiClient.AuthTokens;
 using WebApiClient.Contexts;
 using Xunit;
 
-namespace WebApiClientTest.AuthTokens
+namespace WebApiClient.Test.AuthTokens
 {
     public class AuthTokenFilterTest
     {

@@ -2,7 +2,7 @@
 using Xunit;
 
 
-namespace WebApiClientTest.Defaults
+namespace WebApiClient.Test.Defaults
 {
     public class KeyValueFormatterTest
     {

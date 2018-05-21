@@ -5,7 +5,7 @@ using WebApiClient;
 using WebApiClient.DataAnnotations;
 using Xunit;
 
-namespace WebApiClientTest.Internal
+namespace WebApiClient.Test.Internal
 {
     public class TypeExtendTest
     {
