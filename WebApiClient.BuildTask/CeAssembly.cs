@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Linq;
 
-namespace WebApiClient.AOT.Task
+namespace WebApiClient.BuildTask
 {
     /// <summary>
     /// 表示程序集
