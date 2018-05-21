@@ -37,8 +37,7 @@
     <Compile Include="..\WebApiClient\ITask.cs" Link="OuterTypes\ITask.cs" />
   </ItemGroup>
 
-  <Target Name="Print" AfterTargets="AfterBuild">
-    <Message Text="Optimize: $(Optimize)" Importance="high" />
+  <Target Name="Print" AfterTargets="AfterBuild">  
     <Message Text="DefineConstants: $(DefineConstants)" Importance="high" />
   </Target>
 </Project>
