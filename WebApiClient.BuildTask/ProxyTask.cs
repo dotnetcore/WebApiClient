@@ -1,15 +1,16 @@
 ﻿using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace WebApiClient.AOT.Task
+namespace WebApiClient.BuildTask
 {
     /// <summary>
     /// 表示插入代理IL任务
     /// </summary>
-    public class ProxyTask : Microsoft.Build.Utilities.Task
+    public class ProxyTask : Task
     {
         /// <summary>
         /// 插入代理的程序集

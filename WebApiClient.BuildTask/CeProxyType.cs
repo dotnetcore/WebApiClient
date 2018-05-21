@@ -4,7 +4,7 @@ using Mono.Cecil.Rocks;
 using System.Linq;
 using System.Reflection;
 
-namespace WebApiClient.AOT.Task
+namespace WebApiClient.BuildTask
 {
     /// <summary>
     /// 表示接口的代理类型

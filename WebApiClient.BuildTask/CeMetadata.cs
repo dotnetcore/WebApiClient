@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace WebApiClient.AOT.Task
+namespace WebApiClient.BuildTask
 {
     /// <summary>
     /// 表示cecil元数据抽象
@@ -37,7 +37,7 @@ namespace WebApiClient.AOT.Task
         }
 
         /// <summary>
-        /// 返回的导入外部类型后的类型
+        /// 返回导入外部类型后的类型
         /// </summary>
         /// <typeparam name="T">目标类型</typeparam>
         /// <exception cref="NotSupportedException"></exception>
