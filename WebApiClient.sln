@@ -7,11 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo", "Demo\Demo.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClient", "WebApiClient\WebApiClient.csproj", "{FB40E778-D36D-4A1A-A527-D3A7FC028D4B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3F0E061C-F247-4743-8A9D-4B538C2A72AC}"
-	ProjectSection(SolutionItems) = preProject
-		nuget.build.bat = nuget.build.bat
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClient.BuildTask", "WebApiClient.BuildTask\WebApiClient.BuildTask.csproj", "{3827568B-2F43-4904-80A9-8ED5BAAB19F6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClient.Test", "WebApiClient.Test\WebApiClient.Test.csproj", "{AF7A43AF-3F93-4186-898F-21F44E4BE03A}"
