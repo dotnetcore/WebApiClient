@@ -65,8 +65,7 @@ namespace WebApiClient.Attributes
                 return await xmlReturn.GetTaskResult(context);
             }
 
-            var message = $"请求的回复内容不支持自动映射为类型{dataType}，请为接口设置合适的ApiReturnAttribute";
-            throw new NotSupportedException(message);
+            throw new ApiReturnFormatExteption(response, dataType);
         }
 
         /// <summary>
@@ -114,6 +113,15 @@ namespace WebApiClient.Attributes
             public bool IsApplicationXml()
             {
                 return this.Is("application/xml") || this.Is("text/xml");
+            }
+
+            /// <summary>
+            /// 转换为字符串
+            /// </summary>
+            /// <returns></returns>
+            public override string ToString()
+            {
+                return this.contentType ?? "<NULL>";
             }
         }
     }

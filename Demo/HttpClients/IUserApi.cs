@@ -11,11 +11,9 @@ namespace Demo.HttpClients
     /// 用户操作接口
     /// </summary>
     [LogFilter] // 记录请求日志
-    [HttpHost("http://localhost:9999")] // HttpHost可以在Config传入覆盖    
-    [AutoReturn(EnsureSuccessStatusCode = true)]
+    [HttpHost("http://localhost:9999")] // HttpHost可以在Config传入覆盖
     public interface IUserApi : IHttpApi
     {
-
         // GET {url}?account={account}&password={password}&something={something}
         [HttpGet]
         [Header("Cookie", "a=1; b=2", EncodeCookie = false)]
