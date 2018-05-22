@@ -25,9 +25,8 @@ namespace WebApiClient
         /// </summary>
         /// <param name="statusCode">状态码</param>
         /// <param name="context">上下文</param>
-        /// <param name="exception">异常</param>
-        public HttpFailureStatusException(HttpStatusCode statusCode, ApiActionContext context, Exception exception)
-            : base(exception?.Message, exception)
+        public HttpFailureStatusException(HttpStatusCode statusCode, ApiActionContext context)
+            : base($"响应的http状态码不成功：{(int)statusCode} {statusCode}")
         {
             this.StatusCode = statusCode;
             this.ApiActionContext = context;

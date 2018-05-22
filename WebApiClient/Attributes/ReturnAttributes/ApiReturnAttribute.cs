@@ -32,8 +32,7 @@ namespace WebApiClient.Attributes
                 var statusCode = context.ResponseMessage.StatusCode;
                 if (this.IsSuccessStatusCode(statusCode) == false)
                 {
-                    var inner = new HttpRequestException($"响应的http状态码不成功：{(int)statusCode} {statusCode}");
-                    throw new HttpFailureStatusException(statusCode, context, inner);
+                    throw new HttpFailureStatusException(statusCode, context);
                 }
             }
             return this.GetTaskResult(context);

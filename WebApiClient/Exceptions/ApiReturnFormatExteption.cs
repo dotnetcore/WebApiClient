@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using WebApiClient.Contexts;
 
 namespace WebApiClient
 {
@@ -10,45 +11,44 @@ namespace WebApiClient
     public class ApiReturnFormatExteption : HttpRequestException
     {
         /// <summary>
-        /// 获取响应消息
+        /// 获取请求Api的上下文
         /// </summary>
-        public HttpResponseMessage ResponseMessage { get; private set; }
+        public ApiActionContext ApiActionContext { get; private set; }
 
         /// <summary>
         /// 获取响应内容的Content-Type
         /// </summary>
         public MediaTypeHeaderValue ContentType
         {
-            get => this.ResponseMessage.Content.Headers.ContentType;
+            get => this.ApiActionContext.RequestMessage.Content.Headers.ContentType;
         }
 
         /// <summary>
-        /// Http失败状态码异常
+        /// 接口的返回类型序列化异常
         /// </summary>
-        /// <param name="responseMessage">响应消息</param>
-        /// <param name="targetType">要反序列化的目标类型</param>  
+        /// <param name="context">请求Api的上下文</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ApiReturnFormatExteption(HttpResponseMessage responseMessage, Type targetType)
-            : base(GetErrorMessage(responseMessage, targetType))
+        public ApiReturnFormatExteption(ApiActionContext context)
+            : base(GetErrorMessage(context))
         {
-            this.ResponseMessage = responseMessage;
+            this.ApiActionContext = context;
         }
 
         /// <summary>
         /// 返回异常提示
         /// </summary>
-        /// <param name="responseMessage">响应消息</param>
-        /// <param name="targetType">要反序列化的目标类型</param>
+        /// <param name="context">请求Api的上下文</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        private static string GetErrorMessage(HttpResponseMessage responseMessage, Type targetType)
+        private static string GetErrorMessage(ApiActionContext context)
         {
-            if (responseMessage == null)
+            if (context == null)
             {
-                throw new ArgumentNullException(nameof(responseMessage));
+                throw new ArgumentNullException(nameof(context));
             }
-            var contentType = responseMessage.Content.Headers.ContentType?.MediaType ?? "<NULL>";
-            return $"响应的内容不支持反序列化为{targetType}，请检查响应的ContentType和内容是否正确，或者强制为接口指定正确的ApiReturnAttribute";
+
+            var dataType = context.ApiActionDescriptor.Return.DataType;
+            return $"响应的内容不支持反序列化为{dataType}，请检查响应的ContentType和内容是否正确，或者强制为接口指定正确的ApiReturnAttribute";
         }
     }
 }
