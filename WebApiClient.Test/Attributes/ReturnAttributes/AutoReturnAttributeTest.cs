@@ -172,7 +172,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
             context.ResponseMessage.Content = new StringContent(xml, Encoding.UTF8, "application/xml");
 
             var attr = new AutoReturnAttribute() { EnsureSuccessStatusCode = true };
-            await Assert.ThrowsAsync<HttpFailureStatusException>(() => ((IApiReturnAttribute)attr).GetTaskResult(context));
+            await Assert.ThrowsAsync<HttpStatusFailureException>(() => ((IApiReturnAttribute)attr).GetTaskResult(context));
         }
     }
 }

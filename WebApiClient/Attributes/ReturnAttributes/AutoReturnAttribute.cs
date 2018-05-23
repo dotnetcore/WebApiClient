@@ -65,7 +65,7 @@ namespace WebApiClient.Attributes
                 return await xmlReturn.GetTaskResult(context);
             }
 
-            throw new ApiReturnFormatExteption(context);
+            throw new ApiReturnNotSupportedExteption(response, dataType);
         }
 
         /// <summary>

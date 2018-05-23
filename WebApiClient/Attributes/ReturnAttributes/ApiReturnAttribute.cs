@@ -23,7 +23,7 @@ namespace WebApiClient.Attributes
         /// 获取异步结果
         /// </summary>
         /// <param name="context">上下文</param>
-        /// <exception cref="HttpFailureStatusException"></exception>
+        /// <exception cref="HttpStatusFailureException"></exception>
         /// <returns></returns>
         Task<object> IApiReturnAttribute.GetTaskResult(ApiActionContext context)
         {
@@ -32,7 +32,7 @@ namespace WebApiClient.Attributes
                 var statusCode = context.ResponseMessage.StatusCode;
                 if (this.IsSuccessStatusCode(statusCode) == false)
                 {
-                    throw new HttpFailureStatusException(context);
+                    throw new HttpStatusFailureException(context.ResponseMessage);
                 }
             }
             return this.GetTaskResult(context);
