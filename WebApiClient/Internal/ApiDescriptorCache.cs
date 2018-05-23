@@ -61,9 +61,9 @@ namespace WebApiClient
                 Member = method,
                 Name = method.Name,
                 Filters = filterAttributes,
-                Return = GetReturnDescriptor(method),
                 Attributes = actionAttributes,
-                Parameters = method.GetParameters().Select(p => GetParameterDescriptor(p)).ToArray()
+                Return = method.GetReturnDescriptor(),
+                Parameters = method.GetParameters().Select(p => p.GetParameterDescriptor()).ToArray()
             };
         }
 
@@ -72,7 +72,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="parameter">参数信息</param>
         /// <returns></returns>
-        private static ApiParameterDescriptor GetParameterDescriptor(ParameterInfo parameter)
+        private static ApiParameterDescriptor GetParameterDescriptor(this ParameterInfo parameter)
         {
             var parameterType = parameter.ParameterType;
             var parameterAlias = parameter.GetCustomAttribute(typeof(AliasAsAttribute)) as AliasAsAttribute;
@@ -112,7 +112,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="method">方法信息</param>
         /// <returns></returns>
-        private static ApiReturnDescriptor GetReturnDescriptor(MethodInfo method)
+        private static ApiReturnDescriptor GetReturnDescriptor(this MethodInfo method)
         {
             var returnAttribute = method.FindDeclaringAttribute<IApiReturnAttribute>(true);
             if (returnAttribute == null)

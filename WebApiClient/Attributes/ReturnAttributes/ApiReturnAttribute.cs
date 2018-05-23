@@ -14,7 +14,7 @@ namespace WebApiClient.Attributes
     {
         /// <summary>
         /// 获取或设置是否确保响应的http状态码通过IsSuccessStatusCode验证
-        /// 当值为true之后，请求可能会引发HttpFailureStatusException
+        /// 当值为true时，请求可能会引发HttpStatusFailureException
         /// 默认为true
         /// </summary>
         public bool EnsureSuccessStatusCode { get; set; } = true;
