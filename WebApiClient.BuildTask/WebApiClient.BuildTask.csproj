@@ -12,6 +12,7 @@
 
   <PropertyGroup Condition="'$(Configuration)'=='AOT_Debug'">
     <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <Optimize>false</Optimize>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='AOT_Release'">
@@ -37,7 +38,7 @@
     <Compile Include="..\WebApiClient\ITask.cs" Link="OuterTypes\ITask.cs" />
   </ItemGroup>
 
-  <Target Name="Print" AfterTargets="AfterBuild">  
+  <Target Name="Print" AfterTargets="AfterBuild">
     <Message Text="DefineConstants: $(DefineConstants)" Importance="high" />
   </Target>
 </Project>
