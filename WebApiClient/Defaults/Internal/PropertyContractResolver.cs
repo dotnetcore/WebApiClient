@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using System;
 using System.Reflection;
 using WebApiClient.DataAnnotations;
 
@@ -33,6 +34,21 @@ namespace WebApiClient.Defaults
             this.formatScope = scope;
         }
 
+        /// <summary>
+        /// 字典类型的CamelCase
+        /// </summary>
+        /// <param name="objectType">对象类型</param>
+        /// <returns></returns>
+        protected override JsonDictionaryContract CreateDictionaryContract(Type objectType)
+        {
+            var dictionaryContract = base.CreateDictionaryContract(objectType);
+            if (this.useCamelCase == true)
+            {
+                dictionaryContract.DictionaryKeyResolver = key => FormatOptions.CamelCase(key);
+            }
+            return dictionaryContract;
+        }
+
         /// <summary>        
         /// 创建属性
         /// </summary>
@@ -43,7 +59,7 @@ namespace WebApiClient.Defaults
         {
             var property = base.CreateProperty(member, memberSerialization);
             var descriptor = new PropertyDescriptor(this.formatScope, member);
-            
+
             property.PropertyName = descriptor.AliasName;
             property.Ignored = descriptor.IgnoreSerialized;
 

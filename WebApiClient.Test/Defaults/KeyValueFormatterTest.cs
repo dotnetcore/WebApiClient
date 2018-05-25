@@ -25,6 +25,16 @@ namespace WebApiClient.Test.Defaults
             Assert.True(kvs.Count == 1);
             Assert.True(kvs["pName"] == "30");
 
+
+
+            var dic = new System.Collections.Concurrent.ConcurrentDictionary<string, object>();
+            dic.TryAdd("Key", "Value");
+
+            var formatter2 = new WebApiClient.Defaults.KeyValueFormatter();
+            var kvs2 = formatter2.Serialize( null,dic, new FormatOptions { UseCamelCase = true });
+            var kvs3 = formatter2.Serialize(null, dic.ToArray(), new FormatOptions { UseCamelCase = true });
+            Assert.True(kvs2.First().Key == "key");
+            Assert.True(kvs3.First().Key == "key");
         }
     }
 }
