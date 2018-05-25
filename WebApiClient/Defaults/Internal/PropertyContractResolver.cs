@@ -35,18 +35,25 @@ namespace WebApiClient.Defaults
         }
 
         /// <summary>
-        /// 字典类型的CamelCase
+        /// 类型属性的的CamelCase
         /// </summary>
-        /// <param name="objectType">对象类型</param>
+        /// <param name="propertyName"></param>
         /// <returns></returns>
-        protected override JsonDictionaryContract CreateDictionaryContract(Type objectType)
+        protected override string ResolvePropertyName(string propertyName)
         {
-            var dictionaryContract = base.CreateDictionaryContract(objectType);
-            if (this.useCamelCase == true)
-            {
-                dictionaryContract.DictionaryKeyResolver = key => FormatOptions.CamelCase(key);
-            }
-            return dictionaryContract;
+            var name = base.ResolvePropertyName(propertyName);
+            return this.useCamelCase ? FormatOptions.CamelCase(name) : name;
+        }
+
+        /// <summary>
+        /// 字典Key的CamelCase
+        /// </summary>
+        /// <param name="dictionaryKey"></param>
+        /// <returns></returns>
+        protected override string ResolveDictionaryKey(string dictionaryKey)
+        {
+            var name = base.ResolveDictionaryKey(dictionaryKey);
+            return this.useCamelCase ? FormatOptions.CamelCase(name) : name;
         }
 
         /// <summary>        
@@ -63,11 +70,6 @@ namespace WebApiClient.Defaults
             property.PropertyName = descriptor.AliasName;
             property.Ignored = descriptor.IgnoreSerialized;
 
-            if (this.useCamelCase == true)
-            {
-                property.PropertyName = FormatOptions.CamelCase(property.PropertyName);
-            }
-
             if (property.Converter == null && descriptor.DateTimeFormat != null)
             {
                 property.Converter = new IsoDateTimeConverter { DateTimeFormat = descriptor.DateTimeFormat };
@@ -79,7 +81,6 @@ namespace WebApiClient.Defaults
             }
             return property;
         }
-
 
         /// <summary>
         /// 表示属性的描述
