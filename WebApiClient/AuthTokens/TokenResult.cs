@@ -17,7 +17,7 @@ namespace WebApiClient.AuthTokens
         /// id_token
         /// </summary>
         [AliasAs("id_token")]
-        public string IdTken { get; set; }
+        public string IdToken { get; set; }
 
         /// <summary>
         /// expires_in

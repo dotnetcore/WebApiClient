@@ -23,7 +23,7 @@ namespace WebApiClient.Test.AuthTokens
                 this.IsRequestTokenResult = true;
                 var token = new TokenResult
                 {
-                    IdTken = "0",
+                    IdToken = "0",
                     ExpiresIn = 1,
                     AccessToken = "AccessToken",
                     RefreshToken = "RefreshToken",
@@ -37,7 +37,7 @@ namespace WebApiClient.Test.AuthTokens
                 this.IsRequestRefreshToken = true;
                 var token = new TokenResult
                 {
-                    IdTken = "1",
+                    IdToken = "1",
                     ExpiresIn = 1,
                     AccessToken = "AccessToken",
                     RefreshToken = "RefreshToken",
@@ -59,14 +59,14 @@ namespace WebApiClient.Test.AuthTokens
             IApiActionFilter filter = tokenFilter;
 
             await filter.OnBeginRequestAsync(null);
-            Assert.True(tokenFilter.IsRequestTokenResult && tokenFilter.IsRequestRefreshToken == false && tokenFilter.TokenResult.IdTken == "0");
+            Assert.True(tokenFilter.IsRequestTokenResult && tokenFilter.IsRequestRefreshToken == false && tokenFilter.TokenResult.IdToken == "0");
             await filter.OnEndRequestAsync(null);
             tokenFilter.IsRequestTokenResult = false;
             tokenFilter.IsRequestRefreshToken = false;
 
             await Task.Delay(500);
             await filter.OnBeginRequestAsync(null);
-            Assert.True(tokenFilter.IsRequestTokenResult == false && tokenFilter.IsRequestRefreshToken == false && tokenFilter.TokenResult.IdTken == "0");
+            Assert.True(tokenFilter.IsRequestTokenResult == false && tokenFilter.IsRequestRefreshToken == false && tokenFilter.TokenResult.IdToken == "0");
             await filter.OnEndRequestAsync(null);
             tokenFilter.IsRequestTokenResult = false;
             tokenFilter.IsRequestRefreshToken = false;
@@ -74,7 +74,7 @@ namespace WebApiClient.Test.AuthTokens
 
             await Task.Delay(1100);
             await filter.OnBeginRequestAsync(null);
-            Assert.True(tokenFilter.IsRequestTokenResult == false && tokenFilter.IsRequestRefreshToken && tokenFilter.TokenResult.IdTken == "1");
+            Assert.True(tokenFilter.IsRequestTokenResult == false && tokenFilter.IsRequestRefreshToken && tokenFilter.TokenResult.IdToken == "1");
             await filter.OnEndRequestAsync(null);
         }
     }
