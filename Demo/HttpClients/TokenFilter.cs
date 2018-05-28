@@ -39,7 +39,7 @@ namespace Demo.HttpClients
 
         protected override async Task<TokenResult> RequestRefreshTokenAsync(string refresh_token)
         {
-            return await this.tokenClient.RequestRefreshTokenAsync(this.ClientSecret, refresh_token);
+            return await this.tokenClient.RequestRefreshTokenAsync(this.ClientSecret, this.ClientSecret, refresh_token);
         }
     }
 }
