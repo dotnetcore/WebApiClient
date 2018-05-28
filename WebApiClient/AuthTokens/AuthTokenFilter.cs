@@ -43,7 +43,7 @@ namespace WebApiClient.AuthTokens
                     await this.RefreshTokenAsync();
                 }
 
-                if (this.tokenException != null)
+                if (this.tokenException == null)
                 {
                     var dueTime = this.GetDueTimeSpan(this.tokenResult.ExpiresIn);
                     this.tokenTimer.Change(dueTime, Timeout.InfiniteTimeSpan);
