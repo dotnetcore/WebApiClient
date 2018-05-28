@@ -48,6 +48,7 @@ namespace WebApiClient.AuthTokens
         /// 刷新token
         /// </summary>
         /// <param name="client_id">客户端id</param>
+        /// <param name="client_secret">客户端秘钥</param>
         /// <param name="refresh_token">获取token得到的refresh_token</param>
         /// <param name="extra">额外字段，支持字典或模型</param>
         /// <returns></returns>
@@ -55,6 +56,7 @@ namespace WebApiClient.AuthTokens
         [FormField("grant_type", "refresh_token")]
         ITask<TokenResult> RequestRefreshTokenAsync(
             [FormField] string client_id,
+            [FormField] string client_secret,
             [FormField]string refresh_token,
             [FormContent(IgnoreWhenNull = true)] object extra = null);
     }
