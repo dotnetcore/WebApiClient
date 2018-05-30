@@ -57,7 +57,7 @@ namespace WebApiClient.AuthTokens
         ITask<TokenResult> RequestRefreshTokenAsync(
             [FormField] string client_id,
             [FormField] string client_secret,
-            [FormField]string refresh_token,
+            [FormField] string refresh_token,
             [FormContent(IgnoreWhenNull = true)] object extra = null);
     }
 }
