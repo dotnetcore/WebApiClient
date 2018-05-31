@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,6 +14,13 @@ namespace WebApiClient.Defaults
     /// </summary>
     public class HttpClient : IHttpClient
     {
+        /// <summary>
+        /// HttpMessageInvoker的HttpMessageHandler字段
+        /// </summary>
+        private static readonly FieldInfo handlerField = typeof(HttpMessageInvoker)
+            .GetRuntimeFields()
+            .FirstOrDefault(item => typeof(HttpMessageHandler).IsAssignableFrom(item.FieldType));
+
         /// <summary>
         /// 是否已释放
         /// </summary>
@@ -97,6 +106,24 @@ namespace WebApiClient.Defaults
             this.supportCreateHandler = supportCreateHandler;
             this.Handler = handler == null ? this.CreateHttpHandler() : HttpHandler.From(handler);
             this.httpClient = new System.Net.Http.HttpClient(this.Handler.InnerHanlder, disposeHandler);
+        }
+
+        /// <summary>
+        /// 默认的HttpClient
+        /// </summary>
+        /// <param name="httpClient">外部httpClient实例</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public HttpClient(System.Net.Http.HttpClient httpClient)
+        {
+            if (httpClient == null)
+            {
+                throw new ArgumentNullException(nameof(httpClient));
+            }
+
+            this.supportCreateHandler = false;
+            var innerHandler = handlerField.GetValue(httpClient) as HttpMessageHandler;
+            this.Handler = HttpHandler.From(innerHandler);
+            this.httpClient = httpClient;
         }
 
         /// <summary>
