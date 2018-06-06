@@ -35,17 +35,6 @@ namespace WebApiClient.Defaults
         }
 
         /// <summary>
-        /// 类型属性的的CamelCase
-        /// </summary>
-        /// <param name="propertyName"></param>
-        /// <returns></returns>
-        protected override string ResolvePropertyName(string propertyName)
-        {
-            var name = base.ResolvePropertyName(propertyName);
-            return this.useCamelCase ? FormatOptions.CamelCase(name) : name;
-        }
-
-        /// <summary>
         /// 字典Key的CamelCase
         /// </summary>
         /// <param name="dictionaryKey"></param>
@@ -67,7 +56,7 @@ namespace WebApiClient.Defaults
             var property = base.CreateProperty(member, memberSerialization);
             var descriptor = new PropertyDescriptor(this.formatScope, member);
 
-            property.PropertyName = descriptor.AliasName;
+            property.PropertyName = this.useCamelCase ? FormatOptions.CamelCase(descriptor.AliasName) : descriptor.AliasName;
             property.Ignored = descriptor.IgnoreSerialized;
 
             if (property.Converter == null && descriptor.DateTimeFormat != null)
