@@ -354,42 +354,40 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 转换为字符串
+        /// 转换为请求字符串
+        /// 只包括请求头，不包含请求体
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
             var builder = new StringBuilder()
-                .Append(this.Method).Append(" ")
-                .Append(this.RequestUri.PathAndQuery)
-                .Append(" HTTP/").Append(this.Version).AppendLine()
-                .Append("Host: ").Append(this.RequestUri.Authority).AppendLine();
+                .AppendLine($"{this.Method} {this.RequestUri.PathAndQuery} HTTP/{this.Version}")
+                .AppendLine($"Host: {this.RequestUri.Authority}");
 
             foreach (var item in this.Headers)
             {
-                builder.AppendFormat("{0}: {1}", item.Key, string.Join(",", item.Value)).AppendLine();
+                builder.AppendLine($"{item.Key}: {string.Join(",", item.Value)}");
             }
 
             if (this.Content != null)
             {
                 foreach (var item in this.Content.Headers)
                 {
-                    builder.AppendFormat("{0}: {1}", item.Key, string.Join(",", item.Value)).AppendLine();
+                    builder.AppendLine($"{item.Key}: {string.Join(",", item.Value)}");
                 }
             }
 
-            builder.AppendLine();
-            return builder.ToString();
+            return builder.AppendLine().ToString();
         }
 
         /// <summary>
-        /// 转换为字符串
+        /// 转换为请求字符串
+        /// 包含请求头和请求体
         /// </summary>
         /// <returns></returns>
         public async Task<string> ToStringAsync()
         {
-            var builder = new StringBuilder()
-                .Append(this.ToString());
+            var builder = new StringBuilder().Append(this.ToString());
 
             if (this.Content != null)
             {

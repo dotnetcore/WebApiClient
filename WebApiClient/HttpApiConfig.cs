@@ -96,7 +96,7 @@ namespace WebApiClient
         /// Http接口的配置项   
         /// </summary>
         public HttpApiConfig() :
-            this(null)
+            this(default(IHttpClient))
         {
         }
 
@@ -109,6 +109,16 @@ namespace WebApiClient
         /// <exception cref="ArgumentException"></exception>
         public HttpApiConfig(HTTP.HttpMessageHandler handler, bool disposeHandler = false)
             : this(new HttpClient(handler, disposeHandler))
+        {
+        }
+
+        /// <summary>
+        /// Http接口的配置项
+        /// </summary>
+        /// <param name="httpClient">外部HttpClient实例</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public HttpApiConfig(HTTP.HttpClient httpClient)
+            : this(new HttpClient(httpClient))
         {
         }
 

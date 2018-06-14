@@ -46,8 +46,9 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(responseMessage));
             }
 
-            var statusCode = responseMessage.StatusCode;
-            return $"服务器响应了错误的的http状态码：{(int)statusCode} {statusCode}";
+            var code = (int)responseMessage.StatusCode;
+            var reason = responseMessage.ReasonPhrase;
+            return $"服务器响应了错误的的http状态码：{code} {reason}";
         }
     }
 }
