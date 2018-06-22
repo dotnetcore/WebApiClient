@@ -23,10 +23,7 @@ namespace WebApiClient
             var ables = this.GetApiParameterables(parameter);
             foreach (var item in ables)
             {
-                if (item != null)
-                {
-                    await item.BeforeRequestAsync(context, parameter);
-                }
+                await item?.BeforeRequestAsync(context, parameter);
             }
         }
 
@@ -37,18 +34,11 @@ namespace WebApiClient
         /// <returns></returns>
         private IEnumerable<IApiParameterable> GetApiParameterables(ApiParameterDescriptor parameter)
         {
-            if (parameter.Value == null)
-            {
-                yield break;
-            }
-
             if (parameter.Value is IApiParameterable able)
             {
                 yield return able;
-                yield break;
             }
-
-            if (parameter.Value is IEnumerable<IApiParameterable> array)
+            else if (parameter.Value is IEnumerable<IApiParameterable> array)
             {
                 foreach (var ele in array)
                 {
