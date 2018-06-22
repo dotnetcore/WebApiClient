@@ -32,7 +32,7 @@ namespace WebApiClient.Attributes
                 var statusCode = context.ResponseMessage.StatusCode;
                 if (this.IsSuccessStatusCode(statusCode) == false)
                 {
-                    throw new HttpStatusFailureException(context.ResponseMessage);
+                    throw new HttpStatusFailureException(context.HttpApiConfig, context.ResponseMessage);
                 }
             }
             return this.GetTaskResult(context);
