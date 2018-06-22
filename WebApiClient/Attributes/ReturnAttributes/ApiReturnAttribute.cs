@@ -47,7 +47,7 @@ namespace WebApiClient.Attributes
         protected virtual bool IsSuccessStatusCode(HttpStatusCode statusCode)
         {
             var status = (int)statusCode;
-            return status >= 200 & status <= 299;
+            return status >= 200 && status <= 299;
         }
 
         /// <summary>
