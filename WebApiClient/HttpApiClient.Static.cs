@@ -10,12 +10,34 @@ namespace WebApiClient
     public partial class HttpApiClient
     {
         /// <summary>
+        /// 使用SocketsHttpHandler开关项的名称
+        /// </summary>
+        private const string useSocketsHttpHandlerSwitch = "System.Net.Http.UseSocketsHttpHandler";
+
+        /// <summary>
         /// 获取或设置一个站点内的默认连接数限制
         /// 这个值在初始化HttpClientHandler时使用
         /// 默认值为128
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static int ConnectionLimit { get; set; } = 128;
+
+#if NETCOREAPP2_1
+        /// <summary>
+        /// 获取或设置HttpClientHandler是否包装和使用SocketsHttpHandler
+        /// </summary>
+        public static bool UseSocketsHttpHandler
+        {
+            get
+            {
+                return AppContext.TryGetSwitch(useSocketsHttpHandlerSwitch, out bool isEnabled) && isEnabled;
+            }
+            set
+            {
+                AppContext.SetSwitch(useSocketsHttpHandlerSwitch, value);
+            }
+        }
+#endif
 
         /// <summary>
         /// 创建实现了指定接口的HttpApiClient实例
