@@ -99,42 +99,15 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         protected Uri UsePathQuery(Uri uri, IEnumerable<KeyValuePair<string, string>> keyValues)
         {
-            var url = uri.ToString().TrimEnd('?', '&');
+            var builder = new UrlBuilder(uri, this.encoding);
             foreach (var keyValue in keyValues)
             {
-                url = this.UsePathQuery(url, keyValue);
+                if (builder.Replace(keyValue.Key, keyValue.Value) == false)
+                {
+                    builder.AddQuery(keyValue.Key, keyValue.Value);
+                }
             }
-            return new Uri(url);
-        }
-
-        /// <summary>
-        /// url添加query或替换segment
-        /// </summary>
-        /// <param name="url">url</param>
-        /// <param name="keyValue">键值对</param>
-        /// <returns></returns>
-        protected string UsePathQuery(string url, KeyValuePair<string, string> keyValue)
-        {
-            var key = keyValue.Key;
-            var value = keyValue.Value ?? string.Empty;
-            var regex = new Regex($"{{{key}}}", RegexOptions.IgnoreCase);
-
-            var isMatch = false;
-            var matchUrl = regex.Replace(url, m =>
-            {
-                isMatch = true;
-                return value;
-            });
-
-            if (isMatch == true)
-            {
-                return matchUrl;
-            }
-
-            var valueEncoded = HttpUtility.UrlEncode(value, this.encoding);
-            var query = $"{key}={valueEncoded}";
-            var concat = url.Contains('?') ? "&" : "?";
-            return string.Concat(url, concat, query);
+            return builder.Uri;
         }
 
         /// <summary>

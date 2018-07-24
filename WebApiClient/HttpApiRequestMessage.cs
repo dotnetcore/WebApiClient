@@ -106,13 +106,9 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(encoding));
             }
 
-            var valueEncoded = HttpUtility.UrlEncode(value, encoding);
-            var query = $"{key}={valueEncoded}";
-
-            var url = this.RequestUri.ToString().TrimEnd('?', '&', '/');
-            var concat = url.Contains('?') ? "&" : "?";
-
-            this.RequestUri = new Uri(url + concat + query);
+            var builder = new UrlBuilder(this.RequestUri, encoding);
+            builder.AddQuery(key, value);
+            this.RequestUri = builder.Uri;
         }
 
         /// <summary>
