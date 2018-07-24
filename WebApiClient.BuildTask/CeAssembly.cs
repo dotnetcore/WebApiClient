@@ -41,7 +41,8 @@ namespace WebApiClient.BuildTask
         {
             if (File.Exists(fileName) == false)
             {
-                throw new FileNotFoundException("找不到文件编译输出的程序集");
+                logger.Invoke("找不到文件编译输出的程序集");
+                return;
             }
 
             var resolver = new DefaultAssemblyResolver();
