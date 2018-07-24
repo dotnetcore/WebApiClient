@@ -99,7 +99,7 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         protected Uri UsePathQuery(Uri uri, IEnumerable<KeyValuePair<string, string>> keyValues)
         {
-            var url = uri.ToString().TrimEnd('?', '&', '/');
+            var url = uri.ToString().TrimEnd('?', '&');
             foreach (var keyValue in keyValues)
             {
                 url = this.UsePathQuery(url, keyValue);
