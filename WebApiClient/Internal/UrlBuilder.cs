@@ -38,14 +38,12 @@ namespace WebApiClient
         /// <returns>替换成功则返回true</returns>
         public bool Replace(string name, string value)
         {
-            value = HttpUtility.UrlEncode(value, this.Encoding);
-            var regex = new Regex($"{{{name}}}", RegexOptions.IgnoreCase);
-
             var replaced = false;
+            var regex = new Regex($"{{{name}}}", RegexOptions.IgnoreCase);
             var url = regex.Replace(this.Uri.OriginalString, m =>
             {
                 replaced = true;
-                return value;
+                return HttpUtility.UrlEncode(value, this.Encoding);
             });
 
             if (replaced == true)
@@ -62,22 +60,15 @@ namespace WebApiClient
         /// <param name="value">参数的值</param>
         public void AddQuery(string name, string value)
         {
-            value = HttpUtility.UrlEncode(value, this.Encoding);
-            var append = $"{name}={value}";
-            var query = this.Uri.Query.TrimStart('?').TrimEnd('&');
+            var encode = HttpUtility.UrlEncode(value, this.Encoding);
+            var append = $"{name}={encode}";
+            var pathQuery = this.Uri.PathAndQuery.TrimEnd('&', '?');
+            var concat = pathQuery.IndexOf('?') > -1 ? "&" : "?";
+            var pathAndQuery = $"{pathQuery}{concat}{append}";
 
-            if (query.Length > 0)
-            {
-                query = string.Concat(query, "&", append);
-            }
-            else
-            {
-                query = append;
-            }
-
-            var builder = new UriBuilder(this.Uri);
-            builder.Query = query;
-            this.Uri = builder.Uri;
+            var delimiter = this.Uri.UserInfo.Length > 0 ? "@" : null;
+            var uri = $"{this.Uri.Scheme}://{this.Uri.UserInfo}{delimiter}{this.Uri.Authority}{pathAndQuery}{this.Uri.Fragment}";
+            this.Uri = new Uri(uri);
         }
 
         /// <summary>

@@ -65,6 +65,12 @@ namespace WebApiClient.Test.Internal
             builder.Replace("x", "你");
             builder.AddQuery("a", "我");
             Assert.True(builder.Uri.ToString() == "http://www.webapiclient.com/path/?x=你&a=我");
+
+            url = new Uri("http://www.webapiclient.com");
+            builder = new UrlBuilder(url, encoding);
+            builder.AddQuery("a", "我");
+            builder.AddQuery("b", "你");
+            Assert.True(builder.Uri.ToString() == "http://www.webapiclient.com/?a=我&b=你");
         }
     }
 }
