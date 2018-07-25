@@ -13,7 +13,7 @@ namespace WebApiClient.BuildTask
         /// <summary>
         /// 日志
         /// </summary>
-        private readonly Action<string> logger;
+        private readonly Logger logger;
 
         /// <summary>
         /// 程序集
@@ -37,18 +37,17 @@ namespace WebApiClient.BuildTask
         /// <param name="searchDirectories">依赖项搜索目录</param>
         /// <param name="logger">日志</param>
         /// <exception cref="FileNotFoundException"></exception>
-        public CeAssembly(string fileName, string[] searchDirectories, Action<string> logger)
+        public CeAssembly(string fileName, string[] searchDirectories, Logger logger)
         {
             if (File.Exists(fileName) == false)
             {
-                logger.Invoke("找不到文件编译输出的程序集");
-                return;
+                throw new FileNotFoundException("找不到文件编译输出的程序集");
             }
 
             var resolver = new DefaultAssemblyResolver();
             foreach (var dir in searchDirectories)
             {
-                logger($"添加搜索目录-> {dir}");
+                logger.Message("添加搜索目录", dir);
                 resolver.AddSearchDirectory(dir);
             }
 
@@ -92,7 +91,7 @@ namespace WebApiClient.BuildTask
                     continue;
                 }
 
-                this.logger($"正在写入IL-> {proxyType.FullName}");
+                this.logger.Message("正在写入IL", proxyType.FullName);
                 if (proxyType.DeclaringType != null)
                 {
                     proxyType.DeclaringType.NestedTypes.Add(proxyType);
@@ -106,7 +105,7 @@ namespace WebApiClient.BuildTask
 
             if (willSave == true)
             {
-                this.logger($"正在保存修改-> {this.assembly.FullName}");
+                this.logger.Message("正在保存修改", this.assembly.FullName);
                 var parameters = new WriterParameters
                 {
                     WriteSymbols = true

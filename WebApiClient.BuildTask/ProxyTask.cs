@@ -31,12 +31,17 @@ namespace WebApiClient.BuildTask
         /// <returns></returns>
         public override bool Execute()
         {
+            var logger = new Logger(this.Log);
+            if (File.Exists(this.TargetAssembly) == false)
+            {
+                logger.Message($"找不到文件编译输出的程序集{this.TargetAssembly}");
+                return true;
+            }
+
             try
             {
+                logger.Message(this.GetType().AssemblyQualifiedName);
                 var searchDirectories = this.GetSearchDirectories().Distinct().ToArray();
-                void logger(string message) => this.Log.LogMessage(MessageImportance.High, message);
-
-                logger(this.GetType().AssemblyQualifiedName);
                 using (var assembly = new CeAssembly(this.TargetAssembly, searchDirectories, logger))
                 {
                     assembly.WirteProxyTypes();
@@ -45,7 +50,7 @@ namespace WebApiClient.BuildTask
             }
             catch (Exception ex)
             {
-                this.Log.LogError(ex.Message);
+                logger.Error(ex.Message);
                 return false;
             }
         }
