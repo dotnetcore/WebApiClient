@@ -124,7 +124,7 @@ namespace WebApiClient
                 throw new ArgumentException("要求path值不能为空", nameof(path));
             }
 
-            var relativeUri = $"{newPath}{this.Uri.Fragment}";
+            var relativeUri = $"{newPath}{this.Uri.Query}{this.Uri.Fragment}";
             this.Uri = new Uri(this.Uri, relativeUri);
         }
 

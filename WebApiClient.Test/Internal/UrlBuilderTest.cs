@@ -71,6 +71,12 @@ namespace WebApiClient.Test.Internal
             builder.AddQuery("a", "我");
             builder.AddQuery("b", "你");
             Assert.True(builder.Uri.ToString() == "http://www.webapiclient.com/?a=我&b=你");
+
+
+            url = new Uri("http://u:p@www.webapiclient.com/x/y/z?a=1&b2=2#tag");
+            builder = new UrlBuilder(url);
+            builder.SetPath("/");
+            Assert.True(builder.Uri.ToString() == "http://u:p@www.webapiclient.com/?a=1&b2=2#tag");
         }
     }
 }
