@@ -84,14 +84,48 @@ namespace WebApiClient
             }
 
             var encode = HttpUtility.UrlEncode(value, this.Encoding);
-            var append = $"{name}={encode}";
             var pathQuery = this.Uri.PathAndQuery.TrimEnd('&', '?');
             var concat = pathQuery.IndexOf('?') > -1 ? "&" : "?";
-            var pathAndQuery = $"{pathQuery}{concat}{append}";
+            var relativeUri = $"{pathQuery}{concat}{name}={encode}{this.Uri.Fragment}";
 
-            var delimiter = this.Uri.UserInfo.Length > 0 ? "@" : null;
-            var uri = $"{this.Uri.Scheme}://{this.Uri.UserInfo}{delimiter}{this.Uri.Authority}{pathAndQuery}{this.Uri.Fragment}";
-            this.Uri = new Uri(uri);
+            this.Uri = new Uri(this.Uri, relativeUri);
+        }
+
+        /// <summary>
+        /// 设置Path
+        /// </summary>
+        /// <param name="path">新路径</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public void SetPath(string path)
+        {
+            if (string.IsNullOrEmpty(path) == true)
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+            this.SetPath(p => path);
+        }
+
+        /// <summary>
+        /// 设置Path
+        /// </summary>
+        /// <param name="path">新路径</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        public void SetPath(Func<string, string> path)
+        {
+            if (path == null)
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+
+            var newPath = path.Invoke(this.Uri.AbsolutePath);
+            if (string.IsNullOrEmpty(newPath) == true)
+            {
+                throw new ArgumentException("要求path值不能为空", nameof(path));
+            }
+
+            var relativeUri = $"{newPath}{this.Uri.Fragment}";
+            this.Uri = new Uri(this.Uri, relativeUri);
         }
 
         /// <summary>
