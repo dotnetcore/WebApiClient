@@ -1,4 +1,6 @@
-﻿using WebApiClient.DataAnnotations;
+﻿using System;
+using System.Net.Http;
+using WebApiClient.DataAnnotations;
 
 namespace WebApiClient.AuthTokens
 {
@@ -7,6 +9,11 @@ namespace WebApiClient.AuthTokens
     /// </summary>
     public class TokenResult
     {
+        /// <summary>
+        /// token创建时间
+        /// </summary>
+        private readonly DateTime createTime = DateTime.Now;
+
         /// <summary>
         /// access_token
         /// </summary>
@@ -45,11 +52,43 @@ namespace WebApiClient.AuthTokens
         public string Error { get; set; }
 
         /// <summary>
+        /// 确保token成功
+        /// </summary>
+        /// <exception cref="HttpRequestException"></exception>
+        public TokenResult EnsureSuccess()
+        {
+            if (this.IsSuccess() == true)
+            {
+                return this;
+            }
+            throw new HttpRequestException(this.Error);
+        }
+
+        /// <summary>
         /// 返回是否成功
         /// </summary>
+        /// <returns></returns>
         public bool IsSuccess()
         {
-            return string.IsNullOrEmpty(Error);
+            return string.IsNullOrEmpty(this.Error);
+        }
+
+        /// <summary>
+        /// 返回是否已过期 
+        /// </summary>
+        /// <returns></returns>
+        public bool IsExpired()
+        {
+            return DateTime.Now.Subtract(this.createTime) > TimeSpan.FromSeconds(this.ExpiresIn);
+        }
+
+        /// <summary>
+        /// 返回token是否支持刷新
+        /// </summary>
+        /// <returns></returns>
+        public bool CanRefresh()
+        {
+            return string.IsNullOrEmpty(this.RefreshToken) == false;
         }
     }
 }

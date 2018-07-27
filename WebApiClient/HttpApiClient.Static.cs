@@ -10,19 +10,16 @@ namespace WebApiClient
     public partial class HttpApiClient
     {
         /// <summary>
+        /// 一个站点内的默认连接数限制
+        /// </summary>
+        private static int connectionLimit = 128;
+
+#if NETCOREAPP2_1
+        /// <summary>
         /// 使用SocketsHttpHandler开关项的名称
         /// </summary>
         private const string useSocketsHttpHandlerSwitch = "System.Net.Http.UseSocketsHttpHandler";
 
-        /// <summary>
-        /// 获取或设置一个站点内的默认连接数限制
-        /// 这个值在初始化HttpClientHandler时使用
-        /// 默认值为128
-        /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public static int ConnectionLimit { get; set; } = 128;
-
-#if NETCOREAPP2_1
         /// <summary>
         /// 获取或设置HttpClientHandler是否包装和使用SocketsHttpHandler
         /// </summary>
@@ -38,6 +35,28 @@ namespace WebApiClient
             }
         }
 #endif
+
+        /// <summary>
+        /// 获取或设置一个站点内的默认连接数限制
+        /// 这个值在初始化HttpClientHandler时使用
+        /// 默认值为128
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public static int ConnectionLimit
+        {
+            get
+            {
+                return connectionLimit;
+            }
+            set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+                connectionLimit = value;
+            }
+        }
 
         /// <summary>
         /// 创建实现了指定接口的HttpApiClient实例

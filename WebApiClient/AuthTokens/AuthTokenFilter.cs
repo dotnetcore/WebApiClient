@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net.Http.Headers;
-using System.Threading;
+﻿using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
 
@@ -9,70 +7,17 @@ namespace WebApiClient.AuthTokens
     /// <summary>
     /// 表示OAuth授权的token过滤器抽象类
     /// </summary>
-    public abstract class AuthTokenFilter : IApiActionFilter, IDisposable
+    public abstract class AuthTokenFilter : IApiActionFilter
     {
         /// <summary>
         /// 最近请求到的token
         /// </summary>
-        private TokenResult tokenResult;
-
-        /// <summary>
-        /// token相关异常
-        /// </summary>
-        private Exception tokenException;
-
-        /// <summary>
-        /// 计时器
-        /// </summary>
-        private readonly Timer tokenTimer;
+        private TokenResult token;
 
         /// <summary>
         /// 异步锁
         /// </summary>
         private readonly AsyncRoot asyncRoot = new AsyncRoot();
-
-        /// <summary>
-        /// OAuth授权的token过滤器抽象类
-        /// </summary>
-        public AuthTokenFilter()
-        {
-            this.tokenTimer = new Timer(async (state) =>
-            {
-                using (await this.asyncRoot.LockAsync())
-                {
-                    await this.RefreshTokenAsync();
-                }
-
-                if (this.tokenException == null)
-                {
-                    var dueTime = this.GetDueTimeSpan(this.tokenResult.ExpiresIn);
-                    this.tokenTimer.Change(dueTime, Timeout.InfiniteTimeSpan);
-                }
-            }, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
-        }
-
-        /// <summary>
-        /// 刷新token
-        /// </summary>
-        /// <returns></returns>
-        private async Task RefreshTokenAsync()
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(this.tokenResult.RefreshToken) == true)
-                {
-                    this.tokenResult = await this.RequestTokenResultAsync();
-                }
-                else
-                {
-                    this.tokenResult = await this.RequestRefreshTokenAsync(this.tokenResult.RefreshToken);
-                }
-            }
-            catch (Exception ex)
-            {
-                this.tokenException = ex;
-            }
-        }
 
         /// <summary>
         /// 请求完成之后
@@ -93,45 +38,34 @@ namespace WebApiClient.AuthTokens
         {
             using (await this.asyncRoot.LockAsync())
             {
-                await this.InitTokenIfNullTokenAsync();
+                await this.InitOrRefreshTokenAsync();
             }
 
-            if (this.tokenException != null)
-            {
-                throw this.tokenException;
-            }
-            this.AccessTokenResult(context, this.tokenResult);
+            this.AccessTokenResult(context, this.token);
         }
 
         /// <summary>
-        /// 初始化Token
+        /// 初始化或刷新token
         /// </summary>
         /// <returns></returns>
-        private async Task InitTokenIfNullTokenAsync()
+        private async Task InitOrRefreshTokenAsync()
         {
-            try
+            if (this.token == null)
             {
-                if (this.tokenResult == null)
+                this.token = await this.RequestTokenResultAsync();
+            }
+            else if (this.token.IsExpired() == true)
+            {
+                if (this.token.CanRefresh() == true)
                 {
-                    this.tokenResult = await this.RequestTokenResultAsync();
-                    var dueTime = this.GetDueTimeSpan(this.tokenResult.ExpiresIn);
-                    this.tokenTimer.Change(dueTime, Timeout.InfiniteTimeSpan);
+                    this.token = await this.RequestRefreshTokenAsync(this.token.RefreshToken);
+                }
+                else
+                {
+                    this.token = await this.RequestTokenResultAsync();
                 }
             }
-            catch (Exception ex)
-            {
-                this.tokenException = ex;
-            }
-        }
-
-        /// <summary>
-        /// 返回Timer延时时间
-        /// </summary>
-        /// <param name="expiresIn"></param>
-        /// <returns></returns>
-        private TimeSpan GetDueTimeSpan(long expiresIn)
-        {
-            return TimeSpan.FromSeconds((double)expiresIn * 0.9d);
+            this.token.EnsureSuccess();
         }
 
         /// <summary>
@@ -159,13 +93,5 @@ namespace WebApiClient.AuthTokens
         /// <param name="refresh_token">获取token时返回的refresh_token</param>
         /// <returns></returns>
         protected abstract Task<TokenResult> RequestRefreshTokenAsync(string refresh_token);
-
-        /// <summary>
-        /// 释放资源
-        /// </summary>
-        public void Dispose()
-        {
-            this.tokenTimer.Dispose();
-        }
     }
 }
