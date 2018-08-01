@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -41,6 +42,11 @@ namespace WebApiClient.Contexts
         public IApiParameterAttribute[] Attributes { get; internal set; }
 
         /// <summary>
+        /// 获取关联的ValidationAttribute特性
+        /// </summary>
+        public ValidationAttribute[] ValidationAttributes { get; internal set; }
+
+        /// <summary>
         /// 值转换为字符串
         /// </summary>
         /// <returns></returns>
@@ -62,7 +68,8 @@ namespace WebApiClient.Contexts
                 Value = this.Value,
                 Member = this.Member,
                 Attributes = this.Attributes,
-                ParameterType = this.ParameterType
+                ParameterType = this.ParameterType,
+                ValidationAttributes = this.ValidationAttributes
             };
         }
     }

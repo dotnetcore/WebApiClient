@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -79,6 +80,7 @@ namespace WebApiClient
             var parameterName = parameterAlias == null ? parameter.Name : parameterAlias.Name;
             var isHttpContent = parameterType.IsInheritFrom<HttpContent>();
             var isApiParameterable = parameterType.IsInheritFrom<IApiParameterable>() || parameterType.IsInheritFrom<IEnumerable<IApiParameterable>>();
+            var validationAttributes = parameter.GetCustomAttributes<ValidationAttribute>(true).ToArray();
 
             var defined = parameter.GetAttributes<IApiParameterAttribute>(true);
             var attributes = new ParameterAttributeCollection(defined);
@@ -103,7 +105,8 @@ namespace WebApiClient
                 Name = parameterName,
                 Index = parameter.Position,
                 Attributes = attributes.ToArray(),
-                ParameterType = parameterType
+                ParameterType = parameterType,
+                ValidationAttributes = validationAttributes
             };
         }
 
