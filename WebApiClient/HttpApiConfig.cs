@@ -67,6 +67,7 @@ namespace WebApiClient
 
         /// <summary>
         /// 获取或设置是否对参数的属性值进行输入有效性验证
+        /// 默认为true
         /// </summary>
         public bool UseParameterPropertyValidate { get; set; } = true;
 

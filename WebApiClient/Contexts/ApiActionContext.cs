@@ -67,9 +67,11 @@ namespace WebApiClient.Contexts
         internal async Task PrepareRequestAsync()
         {
             var apiAction = this.ApiActionDescriptor;
+            var validateProperty = this.HttpApiConfig.UseParameterPropertyValidate;
+
             foreach (var parameter in apiAction.Parameters)
             {
-                ParameterValidator.Validate(parameter, this.HttpApiConfig.UseParameterPropertyValidate);
+                ParameterValidator.Validate(parameter, validateProperty);
             }
 
             foreach (var actionAttribute in apiAction.Attributes)
