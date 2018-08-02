@@ -55,7 +55,7 @@ namespace WebApiClient
             }
 
             var bytes = this.EncodedKeyValues(keyValues);
-            await this.stream.WriteAsync(bytes, 0, bytes.Length);
+            await this.stream.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace WebApiClient
         {
             var position = this.stream.Position;
             this.stream.Position = 0;
-            await this.stream.CopyToAsync(stream);
+            await this.stream.CopyToAsync(stream).ConfigureAwait(false);
             this.stream.Position = position;
         }
 

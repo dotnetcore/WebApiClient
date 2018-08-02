@@ -271,7 +271,7 @@ namespace WebApiClient.Defaults
 
                 var timeout = request.Timeout ?? this.Timeout;
                 var cancellationToken = new CancellationTokenSource(timeout).Token;
-                return await this.httpClient.SendAsync(request, cancellationToken);
+                return await this.httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
             }
             finally
             {

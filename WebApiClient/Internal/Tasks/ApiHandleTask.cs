@@ -35,12 +35,22 @@ namespace WebApiClient
         }
 
         /// <summary>
+        /// 配置用于等待的等待者
+        /// </summary>
+        /// <param name="continueOnCapturedContext">试图继续回夺取的原始上下文，则为 true；否则为 false</param>
+        /// <returns></returns>
+        public ConfiguredTaskAwaitable<TResult> ConfigureAwait(bool continueOnCapturedContext)
+        {
+            return this.InvokeAsync().ConfigureAwait(continueOnCapturedContext);
+        }
+
+        /// <summary>
         /// 创建请求任务
         /// </summary>
         /// <returns></returns>
         public async Task<TResult> InvokeAsync()
         {
-            return await this.invoker.Invoke();
+            return await this.invoker.Invoke().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -71,7 +81,7 @@ namespace WebApiClient
             {
                 try
                 {
-                    return await this.invoker.Invoke();
+                    return await this.invoker.Invoke().ConfigureAwait(false);
                 }
                 catch (TException ex)
                 {
@@ -99,11 +109,11 @@ namespace WebApiClient
             {
                 try
                 {
-                    return await this.invoker.Invoke();
+                    return await this.invoker.Invoke().ConfigureAwait(false);
                 }
                 catch (TException ex)
                 {
-                    return await func.Invoke(ex);
+                    return await func.Invoke(ex).ConfigureAwait(false);
                 }
             }
 

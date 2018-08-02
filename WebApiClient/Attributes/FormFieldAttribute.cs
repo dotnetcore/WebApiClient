@@ -64,7 +64,7 @@ namespace WebApiClient.Attributes
 
             if (this.WillIgnore(this.value) == false)
             {
-                await context.RequestMessage.AddFormFieldAsync(this.name, this.value);
+                await context.RequestMessage.AddFormFieldAsync(this.name, this.value).ConfigureAwait(false);
             }
         }
 
@@ -78,7 +78,7 @@ namespace WebApiClient.Attributes
         {
             if (this.WillIgnore(parameter.Value) == false)
             {
-                await context.RequestMessage.AddFormFieldAsync(parameter.Name, parameter.ToString());
+                await context.RequestMessage.AddFormFieldAsync(parameter.Name, parameter.ToString()).ConfigureAwait(false);
             }
         }
 

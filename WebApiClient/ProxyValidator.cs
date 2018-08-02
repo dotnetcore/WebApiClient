@@ -138,14 +138,14 @@ namespace WebApiClient
 
             try
             {
-                await socket.ConnectTaskAsync(remoteEndPoint, timeout);
+                await socket.ConnectTaskAsync(remoteEndPoint, timeout).ConfigureAwait(false);
 
                 var request = httpProxy.ToTunnelRequestString(targetAddress);
                 var sendBuffer = Encoding.ASCII.GetBytes(request);
-                await socket.SendTaskAsync(new ArraySegment<byte>(sendBuffer), timeout);
+                await socket.SendTaskAsync(new ArraySegment<byte>(sendBuffer), timeout).ConfigureAwait(false);
 
                 var recvBufferSegment = new ArraySegment<byte>(new byte[150]);
-                var length = await socket.ReceiveTaskAsync(recvBufferSegment, timeout);
+                var length = await socket.ReceiveTaskAsync(recvBufferSegment, timeout).ConfigureAwait(false);
                 return ParseStatusCode(recvBufferSegment.Array, length);
             }
             catch (Exception)

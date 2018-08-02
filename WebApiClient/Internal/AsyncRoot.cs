@@ -49,7 +49,7 @@ namespace WebApiClient
         /// <returns></returns>
         public async Task<IDisposable> LockAsync()
         {
-            await this.semaphoreSlim.WaitAsync();
+            await this.semaphoreSlim.WaitAsync().ConfigureAwait(false);
             return new UnLocker(this.semaphoreSlim);
         }
 

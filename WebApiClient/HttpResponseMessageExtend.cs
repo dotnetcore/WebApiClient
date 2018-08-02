@@ -19,8 +19,8 @@ namespace WebApiClient
         /// <returns></returns>
         public static async Task SaveAsync(this Task<HttpResponseMessage> response, string filePath)
         {
-            var res = await response;
-            await res.SaveAsync(filePath);
+            var res = await response.ConfigureAwait(false);
+            await res.SaveAsync(filePath).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -32,8 +32,8 @@ namespace WebApiClient
         /// <returns></returns>
         public static async Task SaveAsync(this Task<HttpResponseMessage> response, Stream targetStream)
         {
-            var res = await response;
-            await res.SaveAsync(targetStream);
+            var res = await response.ConfigureAwait(false);
+            await res.SaveAsync(targetStream).ConfigureAwait(false);
         }
 
 
@@ -46,8 +46,8 @@ namespace WebApiClient
         /// <returns></returns>
         public static async Task SaveAsync(this ITask<HttpResponseMessage> response, string filePath)
         {
-            var res = await response;
-            await res.SaveAsync(filePath);
+            var res = await response.ConfigureAwait(false);
+            await res.SaveAsync(filePath).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -59,8 +59,8 @@ namespace WebApiClient
         /// <returns></returns>
         public static async Task SaveAsync(this ITask<HttpResponseMessage> response, Stream targetStream)
         {
-            var res = await response;
-            await res.SaveAsync(targetStream);
+            var res = await response.ConfigureAwait(false);
+            await res.SaveAsync(targetStream).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace WebApiClient
 
             using (var fileStream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write))
             {
-                await response.SaveAsync(fileStream);
+                await response.SaveAsync(fileStream).ConfigureAwait(false);
             }
         }
 
@@ -115,11 +115,11 @@ namespace WebApiClient
 
             var length = 0;
             var buffer = new byte[8 * 1024];
-            var sourceStream = await response.Content.ReadAsStreamAsync();
+            var sourceStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
-            while ((length = await sourceStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+            while ((length = await sourceStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
             {
-                await targetStream.WriteAsync(buffer, 0, length);
+                await targetStream.WriteAsync(buffer, 0, length).ConfigureAwait(false);
             }
         }
     }

@@ -65,7 +65,7 @@ namespace WebApiClient.Attributes
             if (this.WillIgnore(this.value) == false)
             {
                 context.RequestMessage.AddMulitpartText(this.name, this.value);
-                await ApiTask.CompletedTask;
+                await ApiTask.CompletedTask; 
             }
         }
 

@@ -20,7 +20,7 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         async Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            await this.SetHttpContentAsync(context, parameter);
+            await this.SetHttpContentAsync(context, parameter).ConfigureAwait(false);
         }
 
         /// <summary>

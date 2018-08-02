@@ -54,6 +54,16 @@ namespace WebApiClient
         }
 
         /// <summary>
+        /// 配置用于等待的等待者
+        /// </summary>
+        /// <param name="continueOnCapturedContext">试图继续回夺取的原始上下文，则为 true；否则为 false</param>
+        /// <returns></returns>
+        public ConfiguredTaskAwaitable<TResult> ConfigureAwait(bool continueOnCapturedContext)
+        {
+            return this.InvokeAsync().ConfigureAwait(continueOnCapturedContext);
+        }
+
+        /// <summary>
         /// 创建请求任务
         /// </summary>
         /// <returns></returns>
@@ -64,8 +74,8 @@ namespace WebApiClient
             {
                 try
                 {
-                    await this.DelayBeforRetry(i);
-                    return await this.invoker.Invoke();
+                    await this.DelayBeforRetry(i).ConfigureAwait(false);
+                    return await this.invoker.Invoke().ConfigureAwait(false);
                 }
                 catch (RetryMarkException ex)
                 {
@@ -94,7 +104,7 @@ namespace WebApiClient
 
             if (delay > TimeSpan.Zero)
             {
-                await Task.Delay(delay);
+                await Task.Delay(delay).ConfigureAwait(false);
             }
         }
 
@@ -120,7 +130,7 @@ namespace WebApiClient
             {
                 try
                 {
-                    return await this.invoker.Invoke();
+                    return await this.invoker.Invoke().ConfigureAwait(false);
                 }
                 catch (TException ex)
                 {
@@ -148,7 +158,7 @@ namespace WebApiClient
 
             async Task<TResult> newInvoker()
             {
-                var result = await this.invoker.Invoke();
+                var result = await this.invoker.Invoke().ConfigureAwait(false);
                 if (predicate.Invoke(result) == true)
                 {
                     var inner = new ResultNotMatchException("结果不符合预期值", result);

@@ -23,7 +23,10 @@ namespace WebApiClient
             var ables = this.GetApiParameterables(parameter);
             foreach (var item in ables)
             {
-                await item?.BeforeRequestAsync(context, parameter);
+                if (item != null)
+                {
+                    await item.BeforeRequestAsync(context, parameter).ConfigureAwait(false);
+                }
             }
         }
 

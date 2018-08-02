@@ -42,7 +42,7 @@ namespace WebApiClient
                 {
                     OnEndConnect(socket, e);
                 }
-                await token.Task;
+                await token.Task.ConfigureAwait(false);
             }
         }
 
@@ -94,7 +94,7 @@ namespace WebApiClient
                 {
                     OnEndSend(socket, e);
                 }
-                return await token.Task;
+                return await token.Task.ConfigureAwait(false);
             }
         }
 
@@ -143,7 +143,7 @@ namespace WebApiClient
                 {
                     OnEndReceive(socket, e);
                 }
-                return await token.Task;
+                return await token.Task.ConfigureAwait(false);
             }
         }
 

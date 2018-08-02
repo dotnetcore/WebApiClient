@@ -28,7 +28,7 @@ namespace WebApiClient.Attributes
             {
                 var name = kv.Key.Replace("_", "-");
                 var header = new HeaderAttribute(name, kv.Value);
-                await header.BeforeRequestAsync(context);
+                await header.BeforeRequestAsync(context).ConfigureAwait(false);
             }
         }
     }

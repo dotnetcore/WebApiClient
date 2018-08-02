@@ -16,7 +16,7 @@ namespace WebApiClient.Attributes
         protected override async Task<object> GetTaskResult(ApiActionContext context)
         {
             var response = context.ResponseMessage;
-            var xml = await response.Content.ReadAsStringAsync();
+            var xml = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             var dataType = context.ApiActionDescriptor.Return.DataType;
             var result = context.HttpApiConfig.XmlFormatter.Deserialize(xml, dataType);

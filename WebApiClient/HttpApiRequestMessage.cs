@@ -127,7 +127,7 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(name));
             }
             var kv = new KeyValuePair<string, string>(name, value);
-            await this.AddFormFieldAsync(new[] { kv });
+            await this.AddFormFieldAsync(new[] { kv }).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace WebApiClient
                 formContent = new UrlEncodedContent(this.Content);
             }
 
-            await formContent.AddFormFieldAsync(keyValues);
+            await formContent.AddFormFieldAsync(keyValues).ConfigureAwait(false);
             this.Content = formContent;
         }
 
@@ -387,7 +387,7 @@ namespace WebApiClient
 
             if (this.Content != null)
             {
-                var content = await this.Content.ReadAsStringAsync();
+                var content = await this.Content.ReadAsStringAsync().ConfigureAwait(false);
                 builder.Append(content);
             }
 

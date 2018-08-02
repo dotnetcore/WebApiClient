@@ -21,5 +21,12 @@ namespace WebApiClient
         /// </summary>
         /// <returns></returns>
         TaskAwaiter<TResult> GetAwaiter();
+
+        /// <summary>
+        /// 配置用于等待的等待者
+        /// </summary>
+        /// <param name="continueOnCapturedContext">试图继续回夺取的原始上下文，则为 true；否则为 false</param>
+        /// <returns></returns>
+        ConfiguredTaskAwaitable<TResult> ConfigureAwait(bool continueOnCapturedContext);
     }
 }

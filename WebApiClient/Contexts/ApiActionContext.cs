@@ -76,14 +76,14 @@ namespace WebApiClient.Contexts
 
             foreach (var actionAttribute in apiAction.Attributes)
             {
-                await actionAttribute.BeforeRequestAsync(this);
+                await actionAttribute.BeforeRequestAsync(this).ConfigureAwait(false);
             }
 
             foreach (var parameter in apiAction.Parameters)
             {
                 foreach (var parameterAttribute in parameter.Attributes)
                 {
-                    await parameterAttribute.BeforeRequestAsync(this, parameter);
+                    await parameterAttribute.BeforeRequestAsync(this, parameter).ConfigureAwait(false);
                 }
             }
         }
@@ -100,8 +100,8 @@ namespace WebApiClient.Contexts
                 var apiAction = this.ApiActionDescriptor;
                 var client = this.HttpApiConfig.HttpClient;
 
-                this.ResponseMessage = await client.SendAsync(this.RequestMessage);
-                this.Result = await apiAction.Return.Attribute.GetTaskResult(this);
+                this.ResponseMessage = await client.SendAsync(this.RequestMessage).ConfigureAwait(false);
+                this.Result = await apiAction.Return.Attribute.GetTaskResult(this).ConfigureAwait(false);
                 return true;
             }
             catch (Exception ex)
@@ -120,12 +120,12 @@ namespace WebApiClient.Contexts
         {
             foreach (var filter in this.HttpApiConfig.GlobalFilters)
             {
-                await funcSelector(filter)(this);
+                await funcSelector(filter)(this).ConfigureAwait(false);
             }
 
             foreach (var filter in this.ApiActionDescriptor.Filters)
             {
-                await funcSelector(filter)(this);
+                await funcSelector(filter)(this).ConfigureAwait(false);
             }
         }
     }

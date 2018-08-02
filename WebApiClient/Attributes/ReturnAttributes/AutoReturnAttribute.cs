@@ -40,27 +40,27 @@ namespace WebApiClient.Attributes
 
             if (dataType == typeof(string))
             {
-                return await response.Content.ReadAsStringAsync();
+                return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
 
             if (dataType == typeof(byte[]))
             {
-                return await response.Content.ReadAsByteArrayAsync();
+                return await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
             }
 
             if (dataType == typeof(Stream))
             {
-                return await response.Content.ReadAsStreamAsync();
+                return await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
             }
 
             var contentType = new ContentType(response.Content.Headers.ContentType);
             if (contentType.IsApplicationJson() == true)
             {
-                return await jsonReturn.GetTaskResult(context);
+                return await jsonReturn.GetTaskResult(context).ConfigureAwait(false);
             }
             else if (contentType.IsApplicationXml() == true)
             {
-                return await xmlReturn.GetTaskResult(context);
+                return await xmlReturn.GetTaskResult(context).ConfigureAwait(false);
             }
 
             throw new ApiReturnNotSupportedExteption(response, dataType);

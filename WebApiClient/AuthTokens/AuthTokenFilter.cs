@@ -38,7 +38,7 @@ namespace WebApiClient.AuthTokens
         {
             using (await this.asyncRoot.LockAsync())
             {
-                await this.InitOrRefreshTokenAsync();
+                await this.InitOrRefreshTokenAsync().ConfigureAwait(false);
             }
 
             this.AccessTokenResult(context, this.token);
@@ -52,17 +52,17 @@ namespace WebApiClient.AuthTokens
         {
             if (this.token == null)
             {
-                this.token = await this.RequestTokenResultAsync();
+                this.token = await this.RequestTokenResultAsync().ConfigureAwait(false);
             }
             else if (this.token.IsExpired() == true)
             {
                 if (this.token.CanRefresh() == true)
                 {
-                    this.token = await this.RequestRefreshTokenAsync(this.token.RefreshToken);
+                    this.token = await this.RequestRefreshTokenAsync(this.token.RefreshToken).ConfigureAwait(false);
                 }
                 else
                 {
-                    this.token = await this.RequestTokenResultAsync();
+                    this.token = await this.RequestTokenResultAsync().ConfigureAwait(false);
                 }
             }
             this.token.EnsureSuccess();

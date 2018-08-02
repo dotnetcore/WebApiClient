@@ -52,7 +52,7 @@ namespace WebApiClient.Attributes
             var formatter = context.HttpApiConfig.KeyValueFormatter;
             var options = context.HttpApiConfig.FormatOptions.CloneChange(this.DateTimeFormat);
             var keyValues = formatter.Serialize(parameter, options);
-            await context.RequestMessage.AddFormFieldAsync(keyValues);
+            await context.RequestMessage.AddFormFieldAsync(keyValues).ConfigureAwait(false);
         }
 
         /// <summary>

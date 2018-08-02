@@ -51,7 +51,7 @@ namespace WebApiClient.Parameterables
         {
             if (this.WillIgnore(this.stringValue) == false)
             {
-                await context.RequestMessage.AddFormFieldAsync(parameter.Name, this.stringValue);
+                await context.RequestMessage.AddFormFieldAsync(parameter.Name, this.stringValue).ConfigureAwait(false);
             }
         }
 

@@ -101,12 +101,12 @@ namespace WebApiClient
 
             if (contentType.IsApplicationJson() == true)
             {
-                var json = await content.ReadAsStringAsync();
+                var json = await content.ReadAsStringAsync().ConfigureAwait(false);
                 return (TResult)this.HttpApiConfig.JsonFormatter.Deserialize(json, dataType);
             }
             else if (contentType.IsApplicationXml() == true)
             {
-                var xml = await content.ReadAsStringAsync();
+                var xml = await content.ReadAsStringAsync().ConfigureAwait(false);
                 return (TResult)this.HttpApiConfig.XmlFormatter.Deserialize(xml, dataType);
             }
             throw new ApiReturnNotSupportedExteption(this.ResponseMessage, dataType);
