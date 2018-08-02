@@ -42,8 +42,9 @@ namespace WebApiClient
         /// 验证参数的属性值输入合法性
         /// </summary>
         /// <param name="parameter">参数描述</param>
+        /// <param name="validateProperty">是否验证属性值</param>
         /// <exception cref="ValidationException"></exception>
-        public static void Validate(ApiParameterDescriptor parameter)
+        public static void Validate(ApiParameterDescriptor parameter, bool validateProperty)
         {
             var name = parameter.Name;
             var instance = parameter.Value;
@@ -53,7 +54,7 @@ namespace WebApiClient
                 validation.Validate(instance, name);
             }
 
-            if (IsNeedValidateProperty(instance) == true)
+            if (validateProperty == true && IsNeedValidateProperty(instance) == true)
             {
                 var ctx = new ValidationContext(instance) { MemberName = name };
                 Validator.ValidateObject(instance, ctx, true);

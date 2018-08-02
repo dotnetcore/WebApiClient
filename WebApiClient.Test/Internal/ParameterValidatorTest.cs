@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using WebApiClient;
-using Xunit;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 using WebApiClient.Contexts;
-using System.ComponentModel.DataAnnotations;
+using Xunit;
 
 namespace WebApiClient.Test.Internal
 {
@@ -26,16 +21,16 @@ namespace WebApiClient.Test.Internal
                 ValidationAttributes = new[] { new RequiredAttribute() },
                 Name = "user"
             };
-            Assert.Throws<ValidationException>(() => ParameterValidator.Validate(parameter));
+            Assert.Throws<ValidationException>(() => ParameterValidator.Validate(parameter, true));
 
             parameter.Value = new User { };
-            Assert.Throws<ValidationException>(() => ParameterValidator.Validate(parameter));
+            Assert.Throws<ValidationException>(() => ParameterValidator.Validate(parameter, true));
 
             parameter.Value = new User { Account = "123" };
-            ParameterValidator.Validate(parameter);
+            ParameterValidator.Validate(parameter, true);
 
             parameter.Value = new User { Account = "123456" };
-            Assert.Throws<ValidationException>(() => ParameterValidator.Validate(parameter));
+            Assert.Throws<ValidationException>(() => ParameterValidator.Validate(parameter, true));
         }
     }
 }

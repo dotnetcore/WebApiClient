@@ -2,6 +2,7 @@
 using System.Text;
 using System.Linq;
 using WebApiClient.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Demo.HttpClients
 {
@@ -10,9 +11,13 @@ namespace Demo.HttpClients
     /// </summary>
     public class UserInfo
     {
+        [Required]
+        [StringLength(10, MinimumLength = 1)]
         public string Account { get; set; }
 
+        [Required]
         [AliasAs("password")]
+        [StringLength(10, MinimumLength = 1)]
         public string Password { get; set; }
 
         [IgnoreWhenNull]

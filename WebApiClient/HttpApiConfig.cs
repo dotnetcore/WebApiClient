@@ -66,6 +66,11 @@ namespace WebApiClient
         public Uri HttpHost { get; set; }
 
         /// <summary>
+        /// 获取或设置是否对参数的属性值进行输入有效性验证
+        /// </summary>
+        public bool UseParameterPropertyValidate { get; set; } = true;
+
+        /// <summary>
         /// 获取或设置请求时序列化使用的默认格式   
         /// 影响JsonFormatter或KeyValueFormatter的序列化
         /// </summary>
