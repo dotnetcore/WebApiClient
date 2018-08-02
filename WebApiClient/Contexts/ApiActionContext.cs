@@ -69,11 +69,7 @@ namespace WebApiClient.Contexts
             var apiAction = this.ApiActionDescriptor;
             foreach (var parameter in apiAction.Parameters)
             {
-                foreach (var validation in parameter.ValidationAttributes)
-                {
-                    validation.Validate(parameter.Value, parameter.Name);
-                }
-                PropertyValidator.Validate(parameter);
+                ParameterValidator.Validate(parameter);
             }
 
             foreach (var actionAttribute in apiAction.Attributes)

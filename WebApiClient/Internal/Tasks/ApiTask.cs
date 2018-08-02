@@ -131,7 +131,6 @@ namespace WebApiClient
 
                 await context.PrepareRequestAsync();
                 await context.ExecFiltersAsync(filter => filter.OnBeginRequestAsync);
-
                 var state = await context.ExecRequestAsync();
                 await context.ExecFiltersAsync(filter => filter.OnEndRequestAsync);
 
