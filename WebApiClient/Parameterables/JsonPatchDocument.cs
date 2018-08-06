@@ -104,11 +104,6 @@ namespace WebApiClient.Parameterables
     public class JsonPatchDocument<T> : JsonPatchDocument where T : class
     {
         /// <summary>
-        /// 实例
-        /// </summary>
-        private readonly T instance;
-
-        /// <summary>
         /// path是否使用骆驼命名
         /// </summary>
         private readonly bool camelCasePath;
@@ -116,12 +111,9 @@ namespace WebApiClient.Parameterables
         /// <summary>
         /// 将自身作为JsonPatch请头内容
         /// </summary>
-        /// <param name="instance">变更后的实例</param>
         /// <param name="camelCasePath">path是否使用骆驼命名</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public JsonPatchDocument(T instance, bool camelCasePath = false)
+        public JsonPatchDocument(bool camelCasePath = false)
         {
-            this.instance = instance ?? throw new ArgumentNullException(nameof(instance));
             this.camelCasePath = camelCasePath;
         }
 
@@ -130,11 +122,11 @@ namespace WebApiClient.Parameterables
         /// </summary>
         /// <typeparam name="TField"></typeparam>
         /// <param name="pathSeletor">path选择器</param>
+        /// <param name="value">替换成的值</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public void Replace<TField>(Expression<Func<T, TField>> pathSeletor)
+        public void Replace<TField>(Expression<Func<T, TField>> pathSeletor, TField value)
         {
             var path = new PathVisitor(pathSeletor, this.camelCasePath).ToString();
-            var value = pathSeletor.Compile().Invoke(this.instance);
             base.Replace(path, value);
         }
 
