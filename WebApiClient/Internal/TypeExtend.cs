@@ -157,7 +157,7 @@ namespace WebApiClient
         /// <returns></returns>
         public static bool IsAllowMultiple(this Type type)
         {
-            return typeAllowMultipleCache.GetOrAdd(type, (t => t.IsInheritFrom<Attribute>() && t.GetTypeInfo().GetAttribute<AttributeUsageAttribute>(true).AllowMultiple));
+            return typeAllowMultipleCache.GetOrAdd(type, (t => t.IsInheritFrom<Attribute>() && t.GetTypeInfo().GetCustomAttribute<AttributeUsageAttribute>(true).AllowMultiple));
         }
 
         /// <summary>

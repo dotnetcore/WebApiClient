@@ -102,7 +102,7 @@ namespace WebApiClient.Defaults
             /// <param name="member"></param>
             public PropertyDescriptor(FormatScope scope, MemberInfo member)
             {
-                var aliasAsAttribute = member.GetAttribute<AliasAsAttribute>(true);
+                var aliasAsAttribute = member.GetCustomAttribute<AliasAsAttribute>(true);
                 if (aliasAsAttribute != null && aliasAsAttribute.IsDefinedScope(scope))
                 {
                     this.AliasName = aliasAsAttribute.Name;
@@ -112,7 +112,7 @@ namespace WebApiClient.Defaults
                     this.AliasName = member.Name;
                 }
 
-                var datetimeFormatAttribute = member.GetAttribute<DateTimeFormatAttribute>(true);
+                var datetimeFormatAttribute = member.GetCustomAttribute<DateTimeFormatAttribute>(true);
                 if (datetimeFormatAttribute != null && datetimeFormatAttribute.IsDefinedScope(scope))
                 {
                     this.DateTimeFormat = datetimeFormatAttribute.Format;
