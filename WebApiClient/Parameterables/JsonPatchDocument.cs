@@ -216,8 +216,8 @@ namespace WebApiClient.Parameterables
             /// <returns></returns>
             protected override Expression VisitBinary(BinaryExpression node)
             {
-                var name = node.Right.ToString();
-                this.path.Insert(0, $"[{name}]");
+                var index = node.Right.ToString();
+                this.path.Insert(0, $"/{index}");
                 return base.VisitBinary(node);
             }
 
