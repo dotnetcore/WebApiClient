@@ -127,7 +127,7 @@ namespace WebApiClient.Parameterables
         /// <exception cref="ArgumentNullException"></exception>
         public void Replace<TField>(Expression<Func<T, TField>> pathSeletor, TField value)
         {
-            var path = new PathVisitor(pathSeletor, this.camelCasePath).ToString();
+            var path = this.GetExpressionPath(pathSeletor);
             base.Replace(path, value);
         }
 
@@ -139,8 +139,39 @@ namespace WebApiClient.Parameterables
         /// <exception cref="ArgumentNullException"></exception>
         public void Remove<TField>(Expression<Func<T, TField>> pathSeletor)
         {
-            var path = new PathVisitor(pathSeletor, this.camelCasePath).ToString();
+            var path = this.GetExpressionPath(pathSeletor);
             base.Remove(path);
+        }
+
+        /// <summary>
+        /// 返回表示式对应的path
+        /// </summary>
+        /// <param name="pathSeletor">path选择器</param>
+        /// <returns></returns>
+        private string GetExpressionPath(LambdaExpression pathSeletor)
+        {
+            var visitor = new PathVisitor(pathSeletor, this.GetMemberName, this.camelCasePath);
+            return visitor.ToString();
+        }
+
+        /// <summary>
+        /// 返回成员的名称
+        /// </summary>
+        /// <param name="member">成员</param>
+        /// <returns></returns>
+        protected virtual string GetMemberName(MemberInfo member)
+        {
+            var aliasAs = member.GetCustomAttribute<AliasAsAttribute>();
+            if (aliasAs != null && aliasAs.IsDefinedScope(FormatScope.JsonFormat))
+            {
+                return aliasAs.Name;
+            }
+            var jsonProperty = member.GetCustomAttribute<JsonPropertyAttribute>();
+            if (jsonProperty != null)
+            {
+                return jsonProperty.PropertyName;
+            }
+            return member.Name;
         }
 
         /// <summary>
@@ -152,6 +183,11 @@ namespace WebApiClient.Parameterables
             /// path是否使用骆驼命名
             /// </summary>
             private readonly bool camelCasePath;
+
+            /// <summary>
+            /// 成员名称委托
+            /// </summary>
+            private readonly Func<MemberInfo, string> nameFunc;
 
             /// <summary>
             /// path变量
@@ -167,16 +203,18 @@ namespace WebApiClient.Parameterables
             /// Path访问器
             /// </summary>
             /// <param name="pathSeletor">表达式</param>
+            /// <param name="nameFunc">成员名称委托</param>
             /// <param name="camelCasePath">path是否使用骆驼命名</param>
             /// <exception cref="ArgumentNullException"></exception>
-            public PathVisitor(LambdaExpression pathSeletor, bool camelCasePath)
+            public PathVisitor(LambdaExpression pathSeletor, Func<MemberInfo, string> nameFunc, bool camelCasePath)
             {
                 if (pathSeletor == null)
                 {
                     throw new ArgumentNullException(nameof(pathSeletor));
                 }
-
+                this.nameFunc = nameFunc;
                 this.camelCasePath = camelCasePath;
+
                 base.Visit(pathSeletor.Body);
             }
 
@@ -187,21 +225,7 @@ namespace WebApiClient.Parameterables
             /// <returns></returns>
             protected override Expression VisitMember(MemberExpression node)
             {
-                var name = cache.GetOrAdd(node.Member, m =>
-                {
-                    var aliasAs = m.GetCustomAttribute<AliasAsAttribute>();
-                    if (aliasAs != null && aliasAs.IsDefinedScope(FormatScope.JsonFormat))
-                    {
-                        return aliasAs.Name;
-                    }
-                    var jsonProperty = m.GetCustomAttribute<JsonPropertyAttribute>();
-                    if (jsonProperty != null)
-                    {
-                        return jsonProperty.PropertyName;
-                    }
-                    return m.Name;
-                });
-
+                var name = cache.GetOrAdd(node.Member, m => this.nameFunc(m));
                 if (this.camelCasePath == true)
                 {
                     name = FormatOptions.CamelCase(name);
