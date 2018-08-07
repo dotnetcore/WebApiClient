@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
@@ -242,8 +243,20 @@ namespace WebApiClient.Parameterables
             /// <returns></returns>
             protected override Expression VisitBinary(BinaryExpression node)
             {
-                var index = node.Right.ToString();
-                this.path.Insert(0, $"/{index}");
+                if (node.NodeType == ExpressionType.ArrayIndex)
+                {
+                    if (node.Right.NodeType == ExpressionType.Constant)
+                    {
+                        var index = node.Right.ToString();
+                        this.path.Insert(0, $"/{index}");
+                    }
+                    else
+                    {
+                        var body = Expression.Convert(node.Right, typeof(object));
+                        var index = Expression.Lambda<Func<object>>(body).Compile().Invoke();
+                        this.path.Insert(0, $"/{index}");
+                    }
+                }
                 return base.VisitBinary(node);
             }
 
