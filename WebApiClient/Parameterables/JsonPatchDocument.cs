@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
@@ -12,8 +12,9 @@ using WebApiClient.DataAnnotations;
 namespace WebApiClient.Parameterables
 {
     /// <summary>
-    /// 表示将自身作为JsonPatch请头内容
+    /// 表示将自身作为JsonPatch请求内容
     /// </summary>
+    [DebuggerTypeProxy(typeof(DebugView))]
     public class JsonPatchDocument : IApiParameterable
     {
         /// <summary>
@@ -33,13 +34,7 @@ namespace WebApiClient.Parameterables
             {
                 throw new ArgumentNullException(nameof(path));
             }
-
-            this.oprations.Add(new
-            {
-                op = "add",
-                path,
-                value
-            });
+            this.oprations.Add(new { op = "add", path, value });
         }
 
         /// <summary>
@@ -53,12 +48,7 @@ namespace WebApiClient.Parameterables
             {
                 throw new ArgumentNullException(nameof(path));
             }
-
-            this.oprations.Add(new
-            {
-                op = "remove",
-                path
-            });
+            this.oprations.Add(new { op = "remove", path });
         }
 
         /// <summary>
@@ -73,13 +63,7 @@ namespace WebApiClient.Parameterables
             {
                 throw new ArgumentNullException(nameof(path));
             }
-
-            this.oprations.Add(new
-            {
-                op = "replace",
-                path,
-                value
-            });
+            this.oprations.Add(new { op = "replace", path, value });
         }
 
         /// <summary>
@@ -97,26 +81,58 @@ namespace WebApiClient.Parameterables
             context.RequestMessage.Content = new JsonPatchContent(json, Encoding.UTF8);
             return ApiTask.CompletedTask;
         }
+
+        /// <summary>
+        /// 调试视图
+        /// </summary>
+        private class DebugView
+        {
+            /// <summary>
+            /// 调试的目标
+            /// </summary>
+            private readonly JsonPatchDocument target;
+
+            /// <summary>
+            /// 调试视图
+            /// </summary>
+            /// <param name="target">查看的对象</param>
+            public DebugView(JsonPatchDocument target)
+            {
+                this.target = target;
+            }
+
+            /// <summary>
+            /// 查看的内容
+            /// </summary>
+            [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+            public List<object> Oprations
+            {
+                get
+                {
+                    return this.target.oprations;
+                }
+            }
+        }
     }
 
     /// <summary>
-    /// 表示将自身作为JsonPatch请头内容
+    /// 表示将自身作为JsonPatch请求内容
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class JsonPatchDocument<T> : JsonPatchDocument where T : class
     {
         /// <summary>
-        /// path是否使用骆驼命名
+        /// 属性名称是否使用骆驼命名
         /// </summary>
-        private readonly bool camelCasePath;
+        private readonly bool camelCase;
 
         /// <summary>
-        /// 将自身作为JsonPatch请头内容
+        /// 将自身作为JsonPatch请求内容
         /// </summary>
-        /// <param name="camelCasePath">path是否使用骆驼命名</param>
-        public JsonPatchDocument(bool camelCasePath = false)
+        /// <param name="camelCase">属性名称是否使用骆驼命名</param>
+        public JsonPatchDocument(bool camelCase = false)
         {
-            this.camelCasePath = camelCasePath;
+            this.camelCase = camelCase;
         }
 
         /// <summary>
@@ -151,7 +167,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         private string GetExpressionPath(LambdaExpression pathSeletor)
         {
-            var visitor = new PathVisitor(pathSeletor, this.GetMemberName, this.camelCasePath);
+            var visitor = new PathVisitor(pathSeletor, this.GetMemberName, this.camelCase);
             return visitor.ToString();
         }
 
@@ -181,9 +197,9 @@ namespace WebApiClient.Parameterables
         class PathVisitor : ExpressionVisitor
         {
             /// <summary>
-            /// path是否使用骆驼命名
+            /// 属性名称是否使用骆驼命名
             /// </summary>
-            private readonly bool camelCasePath;
+            private readonly bool camelCase;
 
             /// <summary>
             /// 成员名称委托
@@ -205,16 +221,16 @@ namespace WebApiClient.Parameterables
             /// </summary>
             /// <param name="pathSeletor">表达式</param>
             /// <param name="nameFunc">成员名称委托</param>
-            /// <param name="camelCasePath">path是否使用骆驼命名</param>
+            /// <param name="camelCase">属性名称是否使用骆驼命名</param>
             /// <exception cref="ArgumentNullException"></exception>
-            public PathVisitor(LambdaExpression pathSeletor, Func<MemberInfo, string> nameFunc, bool camelCasePath)
+            public PathVisitor(LambdaExpression pathSeletor, Func<MemberInfo, string> nameFunc, bool camelCase)
             {
                 if (pathSeletor == null)
                 {
                     throw new ArgumentNullException(nameof(pathSeletor));
                 }
                 this.nameFunc = nameFunc;
-                this.camelCasePath = camelCasePath;
+                this.camelCase = camelCase;
 
                 base.Visit(pathSeletor.Body);
             }
@@ -227,7 +243,7 @@ namespace WebApiClient.Parameterables
             protected override Expression VisitMember(MemberExpression node)
             {
                 var name = cache.GetOrAdd(node.Member, m => this.nameFunc(m));
-                if (this.camelCasePath == true)
+                if (this.camelCase == true)
                 {
                     name = FormatOptions.CamelCase(name);
                 }
