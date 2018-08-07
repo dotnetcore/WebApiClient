@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -189,7 +190,16 @@ namespace WebApiClient.Parameterables
                 var name = cache.GetOrAdd(node.Member, m =>
                 {
                     var aliasAs = m.GetCustomAttribute<AliasAsAttribute>();
-                    return aliasAs == null ? m.Name : aliasAs.Name;
+                    if (aliasAs != null && aliasAs.IsDefinedScope(FormatScope.JsonFormat))
+                    {
+                        return aliasAs.Name;
+                    }
+                    var jsonProperty = m.GetCustomAttribute<JsonPropertyAttribute>();
+                    if (jsonProperty != null)
+                    {
+                        return jsonProperty.PropertyName;
+                    }
+                    return m.Name;
                 });
 
                 if (this.camelCasePath == true)
