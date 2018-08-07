@@ -245,15 +245,15 @@ namespace WebApiClient.Parameterables
             {
                 if (node.NodeType == ExpressionType.ArrayIndex)
                 {
-                    if (node.Right.NodeType == ExpressionType.Constant)
+                    if (node.Right.NodeType != ExpressionType.Constant)
                     {
-                        var index = node.Right.ToString();
-                        this.path.Insert(0, $"/{index}");
+                        var index = Expression.Lambda<Func<int>>(node.Right).Compile().Invoke();
+                        var expression = node.Update(node.Left, node.Conversion, Expression.Constant(index));
+                        return base.Visit(expression);
                     }
                     else
                     {
-                        var body = Expression.Convert(node.Right, typeof(object));
-                        var index = Expression.Lambda<Func<object>>(body).Compile().Invoke();
+                        var index = ((ConstantExpression)node.Right).Value;
                         this.path.Insert(0, $"/{index}");
                     }
                 }
