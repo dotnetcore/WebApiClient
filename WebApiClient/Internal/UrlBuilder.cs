@@ -83,10 +83,12 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(name));
             }
 
-            var encode = HttpUtility.UrlEncode(value, this.Encoding);
+            name = HttpUtility.UrlEncode(name, this.Encoding);
+            value = HttpUtility.UrlEncode(value, this.Encoding);
+
             var pathQuery = this.Uri.PathAndQuery.TrimEnd('&', '?');
             var concat = pathQuery.IndexOf('?') > -1 ? "&" : "?";
-            var relativeUri = $"{pathQuery}{concat}{name}={encode}{this.Uri.Fragment}";
+            var relativeUri = $"{pathQuery}{concat}{name}={value}{this.Uri.Fragment}";
 
             this.Uri = new Uri(this.Uri, relativeUri);
         }

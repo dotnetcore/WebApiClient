@@ -43,7 +43,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
 
             var body = await context.RequestMessage.Content.ReadAsStringAsync();
             var time = context.HttpApiConfig.FormatOptions.CloneChange(attr.DateTimeFormat).FormatDateTime(DateTime.Parse("2010-10-10"));
-            var target = "name=laojiu&birthDay=" + HttpUtility.UrlEncode(time, Encoding.UTF8);
+            var target = "name=laojiu&birthDay=" + HttpUtility.UrlEncode(time, Encoding.ASCII);
             Assert.True(body == target);
         }
     }

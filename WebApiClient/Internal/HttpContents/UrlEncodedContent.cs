@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -54,29 +55,24 @@ namespace WebApiClient
                 return;
             }
 
-            var bytes = this.EncodedKeyValues(keyValues);
-            await this.stream.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
-        }
+            var builder = new StringBuilder();
+            foreach (var pair in keyValues)
+            {
+                if (builder.Length > 0)
+                {
+                    builder.Append('&');
+                }
+                builder.Append(HttpUtility.UrlEncode(pair.Key, Encoding.ASCII));
+                builder.Append('=');
+                builder.Append(HttpUtility.UrlEncode(pair.Value, Encoding.ASCII));
+            }
 
-        /// <summary>
-        /// 计算键值对的字节组
-        /// </summary>
-        /// <param name="keyValues">键值对</param>
-        /// <returns></returns>
-        private byte[] EncodedKeyValues(IEnumerable<KeyValuePair<string, string>> keyValues)
-        {
-            var encoding = Encoding.UTF8;
-            var parameters =
-                from kv in keyValues
-                let value = HttpUtility.UrlEncode(kv.Value, encoding)
-                select $"{kv.Key }={value}";
-
-            var parameterString = string.Join("&", parameters);
             if (this.stream.Length > 0)
             {
-                parameterString = "&" + parameterString;
+                builder.Insert(0, "&");
             }
-            return encoding.GetBytes(parameterString);
+            var bytes = Encoding.ASCII.GetBytes(builder.ToString());
+            await this.stream.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
         }
 
         /// <summary>

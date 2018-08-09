@@ -51,8 +51,7 @@ namespace WebApiClient.Test
             await reqeust.AddFormFieldAsync(new[] { new KeyValuePair<string, string>("age", "18") });
 
             var body = await reqeust.Content.ReadAsStringAsync();
-            Assert.Contains("name=laojiu", body);
-            Assert.Contains("age=18", body);
+            Assert.Equal("name=laojiu&age=18", body);
             Assert.True(reqeust.Content.Headers.ContentType.MediaType == "application/x-www-form-urlencoded");
         }
 
