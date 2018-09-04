@@ -99,15 +99,15 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         protected Uri UsePathQuery(Uri uri, IEnumerable<KeyValuePair<string, string>> keyValues)
         {
-            var builder = new UrlBuilder(uri, this.encoding);
+            var editor = new UriEditor(uri, this.encoding);
             foreach (var keyValue in keyValues)
             {
-                if (builder.Replace(keyValue.Key, keyValue.Value) == false)
+                if (editor.Replace(keyValue.Key, keyValue.Value) == false)
                 {
-                    builder.AddQuery(keyValue.Key, keyValue.Value);
+                    editor.AddQuery(keyValue.Key, keyValue.Value);
                 }
             }
-            return builder.Uri;
+            return editor.Uri;
         }
 
         /// <summary>

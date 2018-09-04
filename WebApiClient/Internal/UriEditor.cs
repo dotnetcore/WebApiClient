@@ -5,9 +5,9 @@ using System.Text.RegularExpressions;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示Url创建者
+    /// 表示Uri编辑器
     /// </summary>
-    class UrlBuilder
+    class UriEditor
     {
         /// <summary>
         /// 获取当前的Uri
@@ -20,12 +20,12 @@ namespace WebApiClient
         public Encoding Encoding { get; private set; }
 
         /// <summary>
-        /// Url创建者
+        /// Uri编辑器
         /// </summary>
         /// <param name="uri">绝对路径的uri</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="UriFormatException"></exception>
-        public UrlBuilder(Uri uri)
+        public UriEditor(Uri uri)
             : this(uri, Encoding.UTF8)
         {
         }
@@ -37,7 +37,7 @@ namespace WebApiClient
         /// <param name="encoding">参数的编码</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="UriFormatException"></exception>
-        public UrlBuilder(Uri uri, Encoding encoding)
+        public UriEditor(Uri uri, Encoding encoding)
         {
             this.Uri = uri ?? throw new ArgumentNullException(nameof(uri));
             this.Encoding = encoding ?? throw new ArgumentNullException(nameof(encoding));

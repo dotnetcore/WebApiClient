@@ -106,9 +106,9 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(encoding));
             }
 
-            var builder = new UrlBuilder(this.RequestUri, encoding);
-            builder.AddQuery(key, value);
-            this.RequestUri = builder.Uri;
+            var editor = new UriEditor(this.RequestUri, encoding);
+            editor.AddQuery(key, value);
+            this.RequestUri = editor.Uri;
         }
 
         /// <summary>
