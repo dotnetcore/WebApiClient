@@ -72,5 +72,21 @@ namespace Demo.HttpClients
             [MulitpartText] string nickName,
             MulitpartText age,
             params MulitpartFile[] files);
+
+
+        /// <summary>
+        /// 下载文件
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("doc/laojiu.docx")]
+        ITask<HttpResponseFile> DownloadLaojiuDocAsync();
+
+        /// <summary>
+        /// 下载文件
+        /// </summary>
+        /// <param name="uri">文件相对或绝对路径</param>
+        /// <returns></returns>
+        [HttpGet]
+        ITask<HttpResponseFile> DownloadFileAsync([Url] string uri);
     }
 }
