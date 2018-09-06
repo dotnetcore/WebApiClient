@@ -10,9 +10,30 @@ namespace WebApiClient
     class UriEditor
     {
         /// <summary>
+        /// 当前的Uri
+        /// </summary>
+        private Uri _uri;
+
+        /// <summary>
+        /// 当前的Uri是否可替换值
+        /// </summary>
+        private bool uriCanReplace = false;
+
+        /// <summary>
         /// 获取当前的Uri
         /// </summary>
-        public Uri Uri { get; private set; }
+        public Uri Uri
+        {
+            get
+            {
+                return this._uri;
+            }
+            set
+            {
+                this._uri = value;
+                this.uriCanReplace = value.OriginalString.IndexOf('{') > -1;
+            }
+        }
 
         /// <summary>
         /// 获取Uri参数的编码
@@ -55,6 +76,11 @@ namespace WebApiClient
         /// <returns>替换成功则返回true</returns>
         public bool Replace(string name, string value)
         {
+            if (this.uriCanReplace == false)
+            {
+                return false;
+            }
+
             var replaced = false;
             var regex = new Regex($"{{{name}}}", RegexOptions.IgnoreCase);
             var url = regex.Replace(this.Uri.OriginalString, m =>
