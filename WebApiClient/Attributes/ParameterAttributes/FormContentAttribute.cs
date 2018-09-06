@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
 
@@ -42,7 +43,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
-        protected override async Task SetHttpContentAsync(ApiActionContext context, ApiParameterDescriptor parameter)
+        protected sealed override async Task SetHttpContentAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             if (this.WillIgnore(parameter.Value) == true)
             {
@@ -52,7 +53,20 @@ namespace WebApiClient.Attributes
             var formatter = context.HttpApiConfig.KeyValueFormatter;
             var options = context.HttpApiConfig.FormatOptions.CloneChange(this.DateTimeFormat);
             var keyValues = formatter.Serialize(parameter, options);
-            await context.RequestMessage.AddFormFieldAsync(keyValues).ConfigureAwait(false);
+            var form = this.HandleForm(keyValues);
+            await context.RequestMessage.AddFormFieldAsync(form).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// 处理表单内容
+        /// 可以重写比方法
+        /// 实现字段排序、插入签名字段等
+        /// </summary>
+        /// <param name="form">表单</param>
+        /// <returns></returns>
+        protected virtual IEnumerable<KeyValuePair<string, string>> HandleForm(IEnumerable<KeyValuePair<string, string>> form)
+        {
+            return form;
         }
 
         /// <summary>
