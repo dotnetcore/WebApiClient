@@ -19,6 +19,16 @@ namespace WebApiClient
         public string FileName { get; private set; }
 
         /// <summary>
+        /// 获取文件的大小
+        /// </summary>
+        public long? FileSize { get; private set; }
+
+        /// <summary>
+        /// 获取文件类型
+        /// </summary>
+        public string MediaType { get; private set; }
+
+        /// <summary>
         /// Http响应的文件
         /// </summary>
         /// <param name="response">响应消息</param>
@@ -32,6 +42,8 @@ namespace WebApiClient
                 fileName = Path.GetFileName(response.RequestMessage.RequestUri.ToString());
             }
             this.FileName = fileName;
+            this.FileSize = response.Content.Headers.ContentLength;
+            this.MediaType = response.Content.Headers.ContentType?.MediaType;
         }
 
         /// <summary>
