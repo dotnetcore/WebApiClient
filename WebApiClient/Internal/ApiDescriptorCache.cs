@@ -129,6 +129,7 @@ namespace WebApiClient
                 Attribute = returnAttribute,
                 ReturnType = method.ReturnType,
                 DataType = dataType,
+                IsHttpResponseWrapper = dataType.IsInheritFrom<HttpResponseWrapper>(),
                 IsITaskDefinition = method.ReturnType.GetGenericTypeDefinition() == typeof(ITask<>),
                 ITaskCtor = ApiTask.GetITaskConstructor(dataType),
             };

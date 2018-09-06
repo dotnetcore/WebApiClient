@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
@@ -51,6 +52,11 @@ namespace WebApiClient.Attributes
             if (dataType == typeof(Stream))
             {
                 return await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            }
+
+            if (context.ApiActionDescriptor.Return.IsHttpResponseWrapper == true)
+            {
+                return Activator.CreateInstance(dataType, response);
             }
 
             var contentType = new ContentType(response.Content.Headers.ContentType);

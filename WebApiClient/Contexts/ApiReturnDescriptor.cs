@@ -26,6 +26,11 @@ namespace WebApiClient.Contexts
         public Type DataType { get; internal set; }
 
         /// <summary>
+        /// 获取DataType是否为HttpResponseWrapper子类型
+        /// </summary>
+        public bool IsHttpResponseWrapper { get; internal set; }
+
+        /// <summary>
         /// 获取返回类型是ITaskOf(T)而不是TaskOf(T)
         /// </summary>
         public bool IsITaskDefinition { get; internal set; }
