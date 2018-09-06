@@ -2,7 +2,6 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace WebApiClient
@@ -107,7 +106,7 @@ namespace WebApiClient
                 var sendBuffer = Encoding.ASCII.GetBytes(request);
                 socket.Send(sendBuffer);
 
-                var recvBuffer = new byte[150];
+                var recvBuffer = new byte[20];
                 var length = socket.Receive(recvBuffer);
                 return ParseStatusCode(recvBuffer, length);
             }
@@ -144,7 +143,7 @@ namespace WebApiClient
                 var sendBuffer = Encoding.ASCII.GetBytes(request);
                 await socket.SendTaskAsync(new ArraySegment<byte>(sendBuffer), timeout).ConfigureAwait(false);
 
-                var recvBufferSegment = new ArraySegment<byte>(new byte[150]);
+                var recvBufferSegment = new ArraySegment<byte>(new byte[20]);
                 var length = await socket.ReceiveTaskAsync(recvBufferSegment, timeout).ConfigureAwait(false);
                 return ParseStatusCode(recvBufferSegment.Array, length);
             }
@@ -192,13 +191,15 @@ namespace WebApiClient
         private static HttpStatusCode ParseStatusCode(byte[] buffer, int length)
         {
             var response = Encoding.ASCII.GetString(buffer, 0, length);
-            var match = Regex.Match(response, "(?<=HTTP/1.1 )\\d+", RegexOptions.IgnoreCase);
-            if (match.Success == false)
+            if (response.StartsWith("HTTP/", StringComparison.OrdinalIgnoreCase))
             {
-                return HttpStatusCode.BadRequest;
+                var items = response.Split(' ');
+                if (items.Length >= 2 && Enum.TryParse<HttpStatusCode>(items[1], out HttpStatusCode statusCode))
+                {
+                    return statusCode;
+                }
             }
-            var statusCode = int.Parse(match.Value);
-            return (HttpStatusCode)statusCode;
+            return HttpStatusCode.BadRequest;
         }
     }
 }
