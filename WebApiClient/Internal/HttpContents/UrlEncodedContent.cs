@@ -62,9 +62,9 @@ namespace WebApiClient
                 {
                     builder.Append('&');
                 }
-                builder.Append(HttpUtility.UrlEncode(pair.Key, Encoding.ASCII));
+                builder.Append(Encode(pair.Key));
                 builder.Append('=');
-                builder.Append(HttpUtility.UrlEncode(pair.Value, Encoding.ASCII));
+                builder.Append(Encode(pair.Value));
             }
 
             if (this.stream.Length > 0)
@@ -73,6 +73,16 @@ namespace WebApiClient
             }
             var bytes = Encoding.ASCII.GetBytes(builder.ToString());
             await this.stream.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// 表单编码
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <returns></returns>
+        private static string Encode(string value)
+        {
+            return HttpUtility.UrlEncode(value, Encoding.UTF8);
         }
 
         /// <summary>
