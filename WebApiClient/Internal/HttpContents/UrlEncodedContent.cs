@@ -21,6 +21,11 @@ namespace WebApiClient
         public static string MediaType => "application/x-www-form-urlencoded";
 
         /// <summary>
+        /// 默认的http编码
+        /// </summary>
+        private static readonly Encoding defaultHttpEncoding = Encoding.GetEncoding(28591);
+
+        /// <summary>
         /// 用于保存表单内容
         /// </summary>
         private readonly MemoryStream stream = new MemoryStream();
@@ -71,7 +76,7 @@ namespace WebApiClient
             {
                 builder.Insert(0, "&");
             }
-            var bytes = Encoding.ASCII.GetBytes(builder.ToString());
+            var bytes = defaultHttpEncoding.GetBytes(builder.ToString());
             await this.stream.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
         }
 
@@ -82,7 +87,11 @@ namespace WebApiClient
         /// <returns></returns>
         private static string Encode(string value)
         {
-            return HttpUtility.UrlEncode(value, Encoding.UTF8);
+            if (String.IsNullOrEmpty(value))
+            {
+                return String.Empty;
+            }
+            return Uri.EscapeDataString(value).Replace("%20", "+");
         }
 
         /// <summary>
