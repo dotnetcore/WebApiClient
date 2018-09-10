@@ -6,7 +6,8 @@ using WebApiClient.Contexts;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 表示参数值理解为HttpContent类型的特性    
+    /// 表示参数值理解为HttpContent类型的特性
+    /// 例如StringContent、ByteArrayContent、FormUrlEncodedContent等类型
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
     public class HttpContentAttribute : Attribute, IApiParameterAttribute
@@ -20,6 +21,12 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         async Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
+            var method = context.RequestMessage.Method;
+            if (method == HttpMethod.Get || method == HttpMethod.Head)
+            {
+                var message = $"由于使用{method}的请求方法，{parameter.Member}不支持设置为Content";
+                throw new HttpApiConfigException(message);
+            }
             await this.SetHttpContentAsync(context, parameter).ConfigureAwait(false);
         }
 
@@ -47,10 +54,22 @@ namespace WebApiClient.Attributes
         {
             if (context.RequestMessage.Content != null)
             {
-                var message = $"参数{parameter.ParameterType.Name} {parameter.Name}必须置前";
+                var message = $"参数{parameter.Member}必须置前";
                 throw new HttpApiConfigException(message);
             }
-            context.RequestMessage.Content = parameter.Value as HttpContent;
+
+            if (parameter.Value != null)
+            {
+                if (parameter.Value is HttpContent httpContent)
+                {
+                    context.RequestMessage.Content = httpContent;
+                }
+                else
+                {
+                    var message = $"参数{parameter.Member}必须为HttpContent类型";
+                    throw new HttpApiConfigException(message);
+                }
+            }
         }
     }
 }
