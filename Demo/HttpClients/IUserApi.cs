@@ -20,7 +20,7 @@ namespace Demo.HttpClients
         [Timeout(10 * 1000)] // 10s超时
         Task<string> GetAboutAsync(
             [Url] string url,
-            [Header("Authorization")] string authorization,
+            [Header(HttpRequestHeader.Authorization)] string authorization,
             UserInfo user,
             string something);
 

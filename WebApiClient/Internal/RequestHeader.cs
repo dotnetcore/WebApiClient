@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace WebApiClient
 {
@@ -20,15 +21,21 @@ namespace WebApiClient
         /// </summary>
         static RequestHeader()
         {
-            var headerNames =
-                from header in Enum.GetValues(typeof(HttpRequestHeader)).Cast<HttpRequestHeader>()
-                let name = Regex.Replace(header.ToString(), "[A-Z][^A-Z]", (m) => m.Index == 0 ? m.Value : "-" + m.Value)
-                select new { header, name };
-
-            foreach (var item in headerNames)
+            var enums = Enum.GetValues(typeof(HttpRequestHeader)).Cast<HttpRequestHeader>();
+            foreach (var item in enums)
             {
-                cache.Add(item.header, item.name);
+                cache.Add(item, GetDisplayName(item));
             }
+        }
+
+        /// <summary>
+        /// 返回枚举的DisplayName
+        /// </summary>
+        /// <param name="header">请求头枚举</param>
+        /// <returns></returns>
+        private static string GetDisplayName(HttpRequestHeader header)
+        {
+            return typeof(HttpRequestHeader).GetField(header.ToString()).GetCustomAttribute<DisplayAttribute>().Name;
         }
 
         /// <summary>
