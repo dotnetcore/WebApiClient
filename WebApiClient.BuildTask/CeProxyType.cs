@@ -35,7 +35,7 @@ namespace WebApiClient.BuildTask
         {
             var proxyType = this.@interface.MakeProxyType();
             var interceptorType = this.ImportType<IApiInterceptor>();
-            var apiMethodsType = this.ImportType<MemberInfo>().MakeArrayType();
+            var apiMethodsType = this.ImportType<MethodInfo>().MakeArrayType();
 
             var fieldInterceptor = this.BuildField(proxyType, "interceptor", interceptorType);
             var fieldApiMethods = this.BuildField(proxyType, "apiMethods", apiMethodsType);
