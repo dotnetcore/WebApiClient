@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,11 @@ namespace WebApiClient.Parameterables
     [DebuggerTypeProxy(typeof(DebugView))]
     public class JsonPatchDocument : IApiParameterable
     {
+        /// <summary>
+        /// 表示patch请求方式
+        /// </summary>
+        private static readonly HttpMethod patchMethod = new HttpMethod("PATCH");
+
         /// <summary>
         /// 操作列表
         /// </summary>
@@ -74,6 +80,11 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         Task IApiParameterable.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
+            if (context.RequestMessage.Method != patchMethod)
+            {
+                throw new HttpApiConfigException($"{nameof(JsonPatchContent)}的请求方法要求为PATCH");
+            }
+
             var formatter = context.HttpApiConfig.JsonFormatter;
             var options = context.HttpApiConfig.FormatOptions;
             var json = formatter.Serialize(this.oprations, options);
@@ -194,7 +205,7 @@ namespace WebApiClient.Parameterables
         /// <summary>
         /// 表示Path访问器
         /// </summary>
-        class PathVisitor : ExpressionVisitor
+        private class PathVisitor : ExpressionVisitor
         {
             /// <summary>
             /// 属性名称是否使用骆驼命名
