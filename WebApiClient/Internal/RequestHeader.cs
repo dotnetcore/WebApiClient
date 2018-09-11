@@ -12,6 +12,11 @@ namespace WebApiClient
     static class RequestHeader
     {
         /// <summary>
+        /// HttpRequestHeader的类型
+        /// </summary>
+        private static readonly Type httpRequestHeaderType = typeof(HttpRequestHeader);
+
+        /// <summary>
         /// 请求头枚举和名称的缓存
         /// </summary>
         private static readonly Dictionary<HttpRequestHeader, string> cache = new Dictionary<HttpRequestHeader, string>();
@@ -21,10 +26,10 @@ namespace WebApiClient
         /// </summary>
         static RequestHeader()
         {
-            var enums = Enum.GetValues(typeof(HttpRequestHeader)).Cast<HttpRequestHeader>();
+            var enums = Enum.GetValues(httpRequestHeaderType).Cast<HttpRequestHeader>();
             foreach (var item in enums)
             {
-                cache.Add(item, GetDisplayName(item));
+                cache.Add(item, item.GetDisplayName());
             }
         }
 
@@ -33,9 +38,12 @@ namespace WebApiClient
         /// </summary>
         /// <param name="header">请求头枚举</param>
         /// <returns></returns>
-        private static string GetDisplayName(HttpRequestHeader header)
+        private static string GetDisplayName(this HttpRequestHeader header)
         {
-            return typeof(HttpRequestHeader).GetField(header.ToString()).GetCustomAttribute<DisplayAttribute>().Name;
+            return httpRequestHeaderType
+                .GetField(header.ToString())
+                .GetCustomAttribute<DisplayAttribute>()
+                .Name;
         }
 
         /// <summary>
