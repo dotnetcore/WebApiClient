@@ -122,16 +122,11 @@ namespace WebApiClient
             {
                 returnAttribute = new AutoReturnAttribute();
             }
-
-            var dataType = method.ReturnType.GetGenericArguments().FirstOrDefault();
+            
             var descriptor = new ApiReturnDescriptor
             {
-                Attribute = returnAttribute,
-                ReturnType = method.ReturnType,
-                DataType = dataType,
-                IsHttpResponseWrapper = dataType.IsInheritFrom<HttpResponseWrapper>(),
-                IsITaskDefinition = method.ReturnType.GetGenericTypeDefinition() == typeof(ITask<>),
-                ITaskCtor = ApiTask.GetITaskConstructor(dataType),
+                Attribute = returnAttribute,           
+                ReturnType = new ReturnTypeDescriptor(method.ReturnType),
             };
             return descriptor;
         }

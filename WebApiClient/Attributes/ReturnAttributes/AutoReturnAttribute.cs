@@ -32,31 +32,31 @@ namespace WebApiClient.Attributes
         protected override async Task<object> GetTaskResult(ApiActionContext context)
         {
             var response = context.ResponseMessage;
-            var dataType = context.ApiActionDescriptor.Return.DataType;
+            var dataType = context.ApiActionDescriptor.Return.ReturnType.DataType;
 
-            if (dataType == typeof(HttpResponseMessage))
+            if (dataType.Type == typeof(HttpResponseMessage))
             {
                 return response;
             }
 
-            if (dataType == typeof(string))
+            if (dataType.Type == typeof(string))
             {
                 return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
 
-            if (dataType == typeof(byte[]))
+            if (dataType.Type == typeof(byte[]))
             {
                 return await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
             }
 
-            if (dataType == typeof(Stream))
+            if (dataType.Type == typeof(Stream))
             {
                 return await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
             }
 
-            if (context.ApiActionDescriptor.Return.IsHttpResponseWrapper == true)
+            if (dataType.IsHttpResponseWrapper == true)
             {
-                return Activator.CreateInstance(dataType, response);
+                return Activator.CreateInstance(dataType.Type, response);
             }
 
             var contentType = new ContentType(response.Content.Headers.ContentType);
@@ -69,7 +69,7 @@ namespace WebApiClient.Attributes
                 return await xmlReturn.GetTaskResult(context).ConfigureAwait(false);
             }
 
-            throw new ApiReturnNotSupportedExteption(response, dataType);
+            throw new ApiReturnNotSupportedExteption(response, dataType.Type);
         }
     }
 }

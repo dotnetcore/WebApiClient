@@ -46,7 +46,7 @@ namespace WebApiClient
         public static ApiTask CreateInstance(HttpApiConfig httpApiConfig, ApiActionDescriptor apiActionDescriptor)
         {
             // var instance = new ApiTask<TResult>(httpApiConfig, apiActionDescriptor);
-            var ctor = apiActionDescriptor.Return.ITaskCtor;
+            var ctor = apiActionDescriptor.Return.ReturnType.DataType.ITaskConstructor;
             return ctor.Invoke(new object[] { httpApiConfig, apiActionDescriptor }) as ApiTask;
         }
 
