@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 namespace WebApiClient.Contexts
 {
@@ -14,8 +15,23 @@ namespace WebApiClient.Contexts
         public IApiReturnAttribute Attribute { get; internal set; }
 
         /// <summary>
-        /// 获取Api的返回类型描述
+        /// 获取返回类型
         /// </summary>
-        public ReturnTypeDescriptor ReturnType { get; internal set; }
+        public Type ReturnType { get; internal set; }
+
+        /// <summary>
+        /// 获取返回类型是否为定义为Task(Of T)
+        /// </summary>
+        public bool IsTaskDefinition { get; internal set; }
+
+        /// <summary>
+        /// 获取返回类型是否为定义为ITask(Of T)
+        /// </summary>
+        public bool IsITaskDefinition { get; internal set; }
+
+        /// <summary>
+        /// 获取ITask(Of T)或Task(Of T)的T类型描述
+        /// </summary>
+        public DataTypeDescriptor DataType { get; internal set; }
     }
 }

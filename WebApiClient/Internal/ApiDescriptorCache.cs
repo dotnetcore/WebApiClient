@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
+using System.Threading.Tasks;
 using WebApiClient.Attributes;
 using WebApiClient.Contexts;
 using WebApiClient.DataAnnotations;
@@ -122,11 +123,17 @@ namespace WebApiClient
             {
                 returnAttribute = new AutoReturnAttribute();
             }
-            
+
+            var dataType = method.ReturnType.GetGenericArguments().FirstOrDefault();
+            var dataTypeDefinition = method.ReturnType.GetGenericTypeDefinition();
+
             var descriptor = new ApiReturnDescriptor
             {
-                Attribute = returnAttribute,           
-                ReturnType = new ReturnTypeDescriptor(method.ReturnType),
+                Attribute = returnAttribute,
+                ReturnType = method.ReturnType,
+                DataType = new DataTypeDescriptor(dataType),
+                IsTaskDefinition = dataTypeDefinition == typeof(Task<>),
+                IsITaskDefinition = dataTypeDefinition == typeof(ITask<>)
             };
             return descriptor;
         }

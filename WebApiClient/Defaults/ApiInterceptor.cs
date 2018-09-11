@@ -36,7 +36,7 @@ namespace WebApiClient.Defaults
             var apiActionDescripter = this.GetApiActionDescriptor(method, parameters);
             var apiTask = ApiTask.CreateInstance(this.HttpApiConfig, apiActionDescripter);
 
-            if (apiActionDescripter.Return.ReturnType.IsITaskDefinition == true)
+            if (apiActionDescripter.Return.IsITaskDefinition == true)
             {
                 return apiTask;
             }

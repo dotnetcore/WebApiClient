@@ -18,7 +18,7 @@ namespace WebApiClient.Attributes
             var response = context.ResponseMessage;
             var xml = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            var dataType = context.ApiActionDescriptor.Return.ReturnType.DataType.Type;
+            var dataType = context.ApiActionDescriptor.Return.DataType.Type;
             var result = context.HttpApiConfig.XmlFormatter.Deserialize(xml, dataType);
             return result;
         }

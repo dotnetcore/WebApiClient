@@ -32,7 +32,7 @@ namespace WebApiClient.Attributes
         protected override async Task<object> GetTaskResult(ApiActionContext context)
         {
             var response = context.ResponseMessage;
-            var dataType = context.ApiActionDescriptor.Return.ReturnType.DataType;
+            var dataType = context.ApiActionDescriptor.Return.DataType;
 
             if (dataType.Type == typeof(HttpResponseMessage))
             {
