@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace WebApiClient.Contexts
@@ -6,6 +7,7 @@ namespace WebApiClient.Contexts
     /// <summary>
     /// 表示返回的Task(Of T)的T类型描述
     /// </summary>
+    [DebuggerDisplay("Type = {Type}")]
     public class DataTypeDescriptor
     {
         /// <summary>

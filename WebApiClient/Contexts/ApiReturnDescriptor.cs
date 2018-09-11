@@ -6,7 +6,7 @@ namespace WebApiClient.Contexts
     /// <summary>
     /// 表示请求Api的返回描述
     /// </summary>
-    [DebuggerDisplay("ReturnType = {ReturnType.Type}")]
+    [DebuggerDisplay("ReturnType = {ReturnType}")]
     public class ApiReturnDescriptor
     {
         /// <summary>
