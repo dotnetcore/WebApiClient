@@ -15,6 +15,11 @@ namespace WebApiClient.Defaults
     public class HttpClient : IHttpClient
     {
         /// <summary>
+        /// 程序集信息
+        /// </summary>
+        private static readonly AssemblyName assemblyName = typeof(HttpClient).GetTypeInfo().Assembly.GetName();
+
+        /// <summary>
         /// HttpMessageInvoker的HttpMessageHandler字段
         /// </summary>
         private static readonly FieldInfo handlerField = typeof(HttpMessageInvoker)
@@ -106,6 +111,7 @@ namespace WebApiClient.Defaults
             this.supportCreateHandler = supportCreateHandler;
             this.Handler = handler == null ? this.CreateHttpHandler() : HttpHandler.From(handler);
             this.httpClient = new System.Net.Http.HttpClient(this.Handler.InnerHanlder, disposeHandler);
+            this.httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue( assemblyName.Name,assemblyName.Version.ToString()));
         }
 
         /// <summary>
@@ -124,6 +130,10 @@ namespace WebApiClient.Defaults
             var innerHandler = handlerField.GetValue(httpClient) as HttpMessageHandler;
             this.Handler = HttpHandler.From(innerHandler);
             this.httpClient = httpClient;
+            if (httpClient.DefaultRequestHeaders.UserAgent.Count == 0)
+            {
+                this.httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(assemblyName.Name, assemblyName.Version.ToString()));
+            }
         }
 
         /// <summary>
