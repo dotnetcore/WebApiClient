@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
 
@@ -13,7 +11,7 @@ namespace WebApiClient.Attributes
     /// 没有任何特性修饰的参数，将默认被PathQueryAttribute修饰
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-    public class PathQueryAttribute : Attribute, IApiParameterAttribute
+    public class PathQueryAttribute : Attribute, IApiParameterAttribute, IIgnoreWhenNullable, IDateTimeFormatable
     {
         /// <summary>
         /// 编码
@@ -37,15 +35,15 @@ namespace WebApiClient.Attributes
         }
 
         /// <summary>
-        /// 获取或设置时期时间格式
-        /// </summary>
-        public string DateTimeFormat { get; set; }
-
-        /// <summary>
-        /// 获取或设置当值为null是否忽略此参数
+        /// 获取或设置当值为null是否忽略提交
         /// 默认为false
         /// </summary>
         public bool IgnoreWhenNull { get; set; }
+
+        /// <summary>
+        /// 获取或设置时期时间格式
+        /// </summary>
+        public string DateTimeFormat { get; set; }
 
         /// <summary>
         /// 表示Url路径参数或query参数的特性
@@ -79,7 +77,7 @@ namespace WebApiClient.Attributes
                 throw new HttpApiConfigException($"未配置HttpHost，无法使用参数{parameter.Name}");
             }
 
-            if (this.WillIgnore(parameter.Value) == true)
+            if (this.IsIgnoreWith(parameter) == true)
             {
                 return;
             }
@@ -108,16 +106,6 @@ namespace WebApiClient.Attributes
                 }
             }
             return editor.Uri;
-        }
-
-        /// <summary>
-        /// 返回是否应该忽略提交 
-        /// </summary>
-        /// <param name="val">值</param>
-        /// <returns></returns>
-        private bool WillIgnore(object val)
-        {
-            return this.IgnoreWhenNull == true && val == null;
         }
     }
 }

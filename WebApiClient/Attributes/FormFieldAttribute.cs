@@ -8,7 +8,7 @@ namespace WebApiClient.Attributes
     /// 表示参数值作为x-www-form-urlencoded的字段
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method | AttributeTargets.Parameter, AllowMultiple = true, Inherited = true)]
-    public class FormFieldAttribute : ApiActionAttribute, IApiParameterAttribute
+    public class FormFieldAttribute : ApiActionAttribute, IApiParameterAttribute, IIgnoreWhenNullable
     {
         /// <summary>
         /// 字段名称
@@ -62,7 +62,7 @@ namespace WebApiClient.Attributes
                 throw new NotSupportedException($"请传入name和value参数：{nameof(FormFieldAttribute)}");
             }
 
-            if (this.WillIgnore(this.value) == false)
+            if (this.IsIgnoreWith(this.value) == false)
             {
                 await context.RequestMessage.AddFormFieldAsync(this.name, this.value).ConfigureAwait(false);
             }
@@ -76,20 +76,10 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         async Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            if (this.WillIgnore(parameter.Value) == false)
+            if (this.IsIgnoreWith(parameter) == false)
             {
                 await context.RequestMessage.AddFormFieldAsync(parameter.Name, parameter.ToString()).ConfigureAwait(false);
             }
-        }
-
-        /// <summary>
-        /// 返回是否应该忽略提交 
-        /// </summary>
-        /// <param name="val">值</param>
-        /// <returns></returns>
-        private bool WillIgnore(object val)
-        {
-            return this.IgnoreWhenNull == true && val == null;
         }
     }
 }

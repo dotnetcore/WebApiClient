@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
 
@@ -8,18 +7,18 @@ namespace WebApiClient.Attributes
     /// <summary>
     /// 使用KeyValueFormatter序列化参数值得到的键值对作为x-www-form-urlencoded请求
     /// </summary>
-    public class FormContentAttribute : HttpContentAttribute
+    public class FormContentAttribute : HttpContentAttribute, IIgnoreWhenNullable, IDateTimeFormatable
     {
-        /// <summary>
-        /// 获取或设置时期时间格式
-        /// </summary>
-        public string DateTimeFormat { get; set; }
-
         /// <summary>
         /// 获取或设置当值为null是否忽略提交
         /// 默认为false
         /// </summary>
         public bool IgnoreWhenNull { get; set; }
+
+        /// <summary>
+        /// 获取或设置时期时间格式
+        /// </summary>
+        public string DateTimeFormat { get; set; }
 
         /// <summary>
         /// 将参数值作为x-www-form-urlencoded请求
@@ -45,7 +44,7 @@ namespace WebApiClient.Attributes
         /// <param name="parameter">特性关联的参数</param>
         protected sealed override async Task SetHttpContentAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            if (this.WillIgnore(parameter.Value) == true)
+            if (this.IsIgnoreWith(parameter) == true)
             {
                 return;
             }
@@ -67,16 +66,6 @@ namespace WebApiClient.Attributes
         protected virtual IEnumerable<KeyValuePair<string, string>> HandleForm(IEnumerable<KeyValuePair<string, string>> form)
         {
             return form;
-        }
-
-        /// <summary>
-        /// 返回是否应该忽略提交 
-        /// </summary>
-        /// <param name="val">值</param>
-        /// <returns></returns>
-        private bool WillIgnore(object val)
-        {
-            return this.IgnoreWhenNull == true && val == null;
         }
     }
 }

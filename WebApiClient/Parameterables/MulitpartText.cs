@@ -9,7 +9,7 @@ namespace WebApiClient.Parameterables
     /// 表示将自身作为multipart/form-data的一个文本项
     /// </summary>
     [DebuggerDisplay("{stringValue}")]
-    public class MulitpartText : IApiParameterable
+    public class MulitpartText : IApiParameterable, IIgnoreWhenNullable
     {
         /// <summary>
         /// 文本内容
@@ -48,21 +48,11 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         async Task IApiParameterable.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            if (this.WillIgnore(this.stringValue) == false)
+            if (this.IsIgnoreWith(this.stringValue) == false)
             {
                 context.RequestMessage.AddMulitpartText(parameter.Name, this.stringValue);
                 await ApiTask.CompletedTask;
             }
-        }
-
-        /// <summary>
-        /// 返回是否应该忽略提交 
-        /// </summary>
-        /// <param name="val">值</param>
-        /// <returns></returns>
-        private bool WillIgnore(object val)
-        {
-            return this.IgnoreWhenNull == true && val == null;
         }
 
         /// <summary>
