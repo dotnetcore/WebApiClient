@@ -31,16 +31,13 @@ namespace WebApiClient.Defaults
                 return null;
             }
 
+            var builder = new StringBuilder();
             var xmlSerializer = new XmlSerializer(obj.GetType());
-            using (var stream = new MemoryStream())
+            using (var xmlWriter = XmlWriter.Create(builder, new XmlWriterSettings { Encoding = encoding }))
             {
-                var xmlWriter = XmlWriter.Create(stream, new XmlWriterSettings { Encoding = encoding });
                 xmlSerializer.Serialize(xmlWriter, obj);
-
-                stream.Position = 0;
-                var reader = new StreamReader(stream, encoding);
-                return reader.ReadToEnd();
             }
+            return builder.ToString();
         }
 
         /// <summary>
