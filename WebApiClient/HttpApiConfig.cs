@@ -139,6 +139,7 @@ namespace WebApiClient
         public HttpApiConfig(HttpClient httpClient)
         {
             this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            this.HttpHost = httpClient.BaseAddress;
         }
 
         /// <summary>
