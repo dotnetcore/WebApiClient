@@ -44,10 +44,8 @@ namespace Demo
         /// <returns></returns>
         protected override async Task<TokenResult> RequestTokenResultAsync()
         {
-            using (var tokenClient = new TokenClient(this.TokenEndpoint))
-            {
-                return await tokenClient.RequestClientCredentialsAsync(this.ClientId, this.ClientSecret);
-            }
+            var tokenClient = new TokenClient(this.TokenEndpoint);
+            return await tokenClient.RequestClientCredentialsAsync(this.ClientId, this.ClientSecret);
         }
 
         /// <summary>
@@ -58,10 +56,8 @@ namespace Demo
         /// <returns></returns>
         protected override async Task<TokenResult> RequestRefreshTokenAsync(string refresh_token)
         {
-            using (var tokenClient = new TokenClient(this.TokenEndpoint))
-            {
-                return await tokenClient.RequestRefreshTokenAsync(this.ClientId, this.ClientSecret, refresh_token);
-            }
+            var tokenClient = new TokenClient(this.TokenEndpoint);
+            return await tokenClient.RequestRefreshTokenAsync(this.ClientId, this.ClientSecret, refresh_token);
         }
     }
 }

@@ -8,13 +8,8 @@ namespace WebApiClient.AuthTokens
     /// <summary>
     /// 表示提供token获取功能的客户端
     /// </summary>
-    public class TokenClient : IDisposable
+    public class TokenClient
     {
-        /// <summary>
-        /// 关联的httpclient
-        /// </summary>
-        private readonly HttpClient httpClient = new HttpClient();
-
         /// <summary>
         /// 获取提供Token获取的Url节点
         /// </summary>
@@ -144,22 +139,16 @@ namespace WebApiClient.AuthTokens
                 .DefaultKeyValueFormatter
                 .Serialize(null, credentials, null);
 
-            var content = new UrlEncodedContent(null);
-            await content.AddFormFieldAsync(keyValues).ConfigureAwait(false);
-            var response = await this.httpClient.PostAsync(this.TokenEndpoint, content).ConfigureAwait(false);
-            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var httpContent = new UrlEncodedContent(null);
+            await httpContent.AddFormFieldAsync(keyValues).ConfigureAwait(false);
 
-            return (TokenResult)HttpApiConfig
-                .DefaultJsonFormatter
-                .Deserialize(json, typeof(TokenResult));
-        }
-
-        /// <summary>
-        /// 释放资源
-        /// </summary>
-        public void Dispose()
-        {
-            this.httpClient.Dispose();
+            using (var httpClient = new HttpClient())
+            {
+                var response = await httpClient.PostAsync(this.TokenEndpoint, httpContent).ConfigureAwait(false);
+                var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var token = HttpApiConfig.DefaultJsonFormatter.Deserialize(json, typeof(TokenResult));
+                return token as TokenResult;
+            }
         }
 
         /// <summary>
