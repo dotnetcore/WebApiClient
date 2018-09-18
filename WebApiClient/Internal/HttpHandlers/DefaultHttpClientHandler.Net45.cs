@@ -7,18 +7,13 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WebApiClient.Defaults
+namespace WebApiClient
 {
     /// <summary>
     /// 默认的HttpClientHandler
     /// </summary>
-    class DefaultHttpClientHandler : WebRequestHandler, IHttpHandler
+    class DefaultHttpClientHandler : WebRequestHandler
     {
-        /// <summary>
-        /// 发送次数
-        /// </summary>
-        private int sendTimes = 0;
-
         /// <summary>
         /// 同步锁
         /// </summary>
@@ -33,17 +28,6 @@ namespace WebApiClient.Defaults
         /// 每个服务的最大连接数设置器
         /// </summary>
         private static readonly PropertySetter maxConnectionsPerServerSetter;
-
-        /// <summary>
-        /// 获取内部的原始Handler对象
-        /// </summary>
-        public HttpMessageHandler InnerHanlder
-        {
-            get
-            {
-                return this;
-            }
-        }
 
         /// <summary>
         /// 静态构造器
@@ -84,18 +68,6 @@ namespace WebApiClient.Defaults
             if (maxConnectionsPerServerSetter == null)
             {
                 this.SetServicePointConnectionLimit(request.RequestUri, HttpApiClient.ConnectionLimit);
-            }
-
-            var header = request.Headers;
-            var isClose = header.ConnectionClose == true || header.Connection.Contains("close");
-
-            header.Connection.Clear();
-            header.ConnectionClose = isClose;
-
-            var isFirstSend = Interlocked.CompareExchange(ref this.sendTimes, 1, 0) == 0;
-            if (isClose == false && isFirstSend == false)
-            {
-                header.Connection.Add("keep-alive");
             }
             return base.SendAsync(request, cancellationToken);
         }

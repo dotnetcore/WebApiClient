@@ -6,7 +6,7 @@ using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
-namespace WebApiClient.Defaults
+namespace WebApiClient
 {
     /// <summary>
     /// 表示SocketsHttpHandler包装为IHttpClientHandler
@@ -14,14 +14,14 @@ namespace WebApiClient.Defaults
     class HttpHandlerOfSocketsHttpHandler : IHttpHandler
     {
         /// <summary>
-        /// 外部HttpClientHandler
+        /// 内部的SocketsHttpHandler
         /// </summary>
-        private readonly SocketsHttpHandler handler;
+        private readonly SocketsHttpHandler socketsHandler;
 
         /// <summary>
-        /// 获取内部原始的Handler对象
+        /// 获取原始的Handler对象
         /// </summary>
-        public HttpMessageHandler InnerHanlder { get; private set; }
+        public HttpMessageHandler SourceHanlder { get; private set; }
 
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace WebApiClient.Defaults
         /// 获取是否支持压缩传输
         /// </summary>
         public bool SupportsAutomaticDecompression { get; } = true;
-        
+
 
         /// <summary>
         /// 获取或设置最大请求内容字节长度
@@ -72,8 +72,8 @@ namespace WebApiClient.Defaults
         /// </summary>
         public bool UseCookies
         {
-            get => this.handler.UseCookies;
-            set => this.handler.UseCookies = value;
+            get => this.socketsHandler.UseCookies;
+            set => this.socketsHandler.UseCookies = value;
         }
 
         /// <summary>
@@ -81,8 +81,8 @@ namespace WebApiClient.Defaults
         /// </summary>
         public IWebProxy Proxy
         {
-            get => this.handler.Proxy;
-            set => this.handler.Proxy = value;
+            get => this.socketsHandler.Proxy;
+            set => this.socketsHandler.Proxy = value;
         }
 
         /// <summary>
@@ -90,8 +90,8 @@ namespace WebApiClient.Defaults
         /// </summary>
         public bool PreAuthenticate
         {
-            get => this.handler.PreAuthenticate;
-            set => this.handler.PreAuthenticate = value;
+            get => this.socketsHandler.PreAuthenticate;
+            set => this.socketsHandler.PreAuthenticate = value;
         }
 
         /// <summary>
@@ -99,8 +99,8 @@ namespace WebApiClient.Defaults
         /// </summary>
         public int MaxAutomaticRedirections
         {
-            get => this.handler.MaxAutomaticRedirections;
-            set => this.handler.MaxAutomaticRedirections = value;
+            get => this.socketsHandler.MaxAutomaticRedirections;
+            set => this.socketsHandler.MaxAutomaticRedirections = value;
         }
 
 
@@ -109,8 +109,8 @@ namespace WebApiClient.Defaults
         /// </summary>
         public ICredentials Credentials
         {
-            get => this.handler.Credentials;
-            set => this.handler.Credentials = value;
+            get => this.socketsHandler.Credentials;
+            set => this.socketsHandler.Credentials = value;
         }
 
         /// <summary>
@@ -118,8 +118,8 @@ namespace WebApiClient.Defaults
         /// </summary>
         public CookieContainer CookieContainer
         {
-            get => this.handler.CookieContainer;
-            set => this.handler.CookieContainer = value;
+            get => this.socketsHandler.CookieContainer;
+            set => this.socketsHandler.CookieContainer = value;
         }
 
         /// <summary>
@@ -127,8 +127,8 @@ namespace WebApiClient.Defaults
         /// </summary>
         public DecompressionMethods AutomaticDecompression
         {
-            get => this.handler.AutomaticDecompression;
-            set => this.handler.AutomaticDecompression = value;
+            get => this.socketsHandler.AutomaticDecompression;
+            set => this.socketsHandler.AutomaticDecompression = value;
         }
 
         /// <summary>
@@ -136,8 +136,8 @@ namespace WebApiClient.Defaults
         /// </summary>
         public bool AllowAutoRedirect
         {
-            get => this.handler.AllowAutoRedirect;
-            set => this.handler.AllowAutoRedirect = value;
+            get => this.socketsHandler.AllowAutoRedirect;
+            set => this.socketsHandler.AllowAutoRedirect = value;
         }
 
 
@@ -146,8 +146,8 @@ namespace WebApiClient.Defaults
         /// </summary>
         public bool UseProxy
         {
-            get => this.handler.UseProxy;
-            set => this.handler.UseProxy = value;
+            get => this.socketsHandler.UseProxy;
+            set => this.socketsHandler.UseProxy = value;
         }
 
 
@@ -156,8 +156,8 @@ namespace WebApiClient.Defaults
         /// </summary>
         public SslProtocols SslProtocols
         {
-            get => this.handler.SslOptions.EnabledSslProtocols;
-            set => this.handler.SslOptions.EnabledSslProtocols = value;
+            get => this.socketsHandler.SslOptions.EnabledSslProtocols;
+            set => this.socketsHandler.SslOptions.EnabledSslProtocols = value;
         }
 
         /// <summary>
@@ -165,8 +165,8 @@ namespace WebApiClient.Defaults
         /// </summary>
         public ICredentials DefaultProxyCredentials
         {
-            get => this.handler.DefaultProxyCredentials;
-            set => this.handler.DefaultProxyCredentials = value;
+            get => this.socketsHandler.DefaultProxyCredentials;
+            set => this.socketsHandler.DefaultProxyCredentials = value;
         }
 
         /// <summary>
@@ -174,8 +174,8 @@ namespace WebApiClient.Defaults
         /// </summary>
         public bool CheckCertificateRevocationList
         {
-            get => this.handler.SslOptions.CertificateRevocationCheckMode != X509RevocationMode.NoCheck;
-            set => this.handler.SslOptions.CertificateRevocationCheckMode = value ? X509RevocationMode.Offline : X509RevocationMode.NoCheck;
+            get => this.socketsHandler.SslOptions.CertificateRevocationCheckMode != X509RevocationMode.NoCheck;
+            set => this.socketsHandler.SslOptions.CertificateRevocationCheckMode = value ? X509RevocationMode.Offline : X509RevocationMode.NoCheck;
         }
 
         /// <summary>
@@ -183,7 +183,7 @@ namespace WebApiClient.Defaults
         /// </summary>
         public X509CertificateCollection ClientCertificates
         {
-            get => this.handler.SslOptions.ClientCertificates;
+            get => this.socketsHandler.SslOptions.ClientCertificates;
         }
 
         /// <summary>
@@ -191,8 +191,8 @@ namespace WebApiClient.Defaults
         /// </summary>
         public int MaxConnectionsPerServer
         {
-            get => this.handler.MaxConnectionsPerServer;
-            set => this.handler.MaxConnectionsPerServer = value;
+            get => this.socketsHandler.MaxConnectionsPerServer;
+            set => this.socketsHandler.MaxConnectionsPerServer = value;
         }
 
         /// <summary>
@@ -200,8 +200,8 @@ namespace WebApiClient.Defaults
         /// </summary>
         public int MaxResponseHeadersLength
         {
-            get => this.handler.MaxResponseHeadersLength;
-            set => this.handler.MaxResponseHeadersLength = value;
+            get => this.socketsHandler.MaxResponseHeadersLength;
+            set => this.socketsHandler.MaxResponseHeadersLength = value;
         }
 
         /// <summary>
@@ -212,29 +212,19 @@ namespace WebApiClient.Defaults
             set
             {
                 bool callBack(object a, X509Certificate b, X509Chain c, SslPolicyErrors d) => value(b, c, d);
-                this.handler.SslOptions.RemoteCertificateValidationCallback = callBack;
+                this.socketsHandler.SslOptions.RemoteCertificateValidationCallback = callBack;
             }
         }
 
         /// <summary>
         /// SocketsHttpHandler包装为IHttpClientHandler
         /// </summary>
-        /// <param name="handler"></param>
-        public HttpHandlerOfSocketsHttpHandler(SocketsHttpHandler handler)
-        {
-            this.handler = handler;
-            this.InnerHanlder = handler;
-        }
-
-        /// <summary>
-        /// SocketsHttpHandler包装为IHttpClientHandler
-        /// </summary>
-        /// <param name="handler">设置属性的handler</param>
+        /// <param name="socketsHandler">内部的SocketsHttpHandler</param>
         /// <param name="sourceHandler">原始Handler</param>
-        public HttpHandlerOfSocketsHttpHandler(SocketsHttpHandler handler, HttpMessageHandler sourceHandler)
+        public HttpHandlerOfSocketsHttpHandler(SocketsHttpHandler socketsHandler, HttpMessageHandler sourceHandler)
         {
-            this.handler = handler;
-            this.InnerHanlder = sourceHandler;
+            this.socketsHandler = socketsHandler;
+            this.SourceHanlder = sourceHandler;
         }
 
         /// <summary>
@@ -242,7 +232,7 @@ namespace WebApiClient.Defaults
         /// </summary>
         public void Dispose()
         {
-            this.handler.Dispose();
+            this.SourceHanlder.Dispose();
         }
     }
 }

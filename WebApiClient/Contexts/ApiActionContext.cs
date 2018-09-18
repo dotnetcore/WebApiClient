@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WebApiClient.Contexts
@@ -100,7 +101,9 @@ namespace WebApiClient.Contexts
                 var apiAction = this.ApiActionDescriptor;
                 var client = this.HttpApiConfig.HttpClient;
 
-                this.ResponseMessage = await client.SendAsync(this.RequestMessage).ConfigureAwait(false);
+                var timeout = this.RequestMessage.Timeout ?? client.Timeout;
+                var cancellationToken = new CancellationTokenSource(timeout).Token;
+                this.ResponseMessage = await client.SendAsync(this.RequestMessage, cancellationToken).ConfigureAwait(false);
                 this.Result = await apiAction.Return.Attribute.GetTaskResult(this).ConfigureAwait(false);
                 return true;
             }

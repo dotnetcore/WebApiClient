@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Net.Http;
 using WebApiClient.Defaults;
-using HTTP = System.Net.Http;
 
 namespace WebApiClient
 {
@@ -31,9 +31,14 @@ namespace WebApiClient
         private Tags tags;
 
         /// <summary>
-        /// 与HttpClientHandler实例关联的HttpClient
+        /// 关联的HttpClient
         /// </summary>
-        private IHttpClient httpClient;
+        private HttpClient httpClient;
+
+        /// <summary>
+        /// 与httpClient关联的IHttpHandler
+        /// </summary>
+        private IHttpHandler httpHandler;
 
         /// <summary>
         /// 同步锁
@@ -53,9 +58,18 @@ namespace WebApiClient
         /// 获取HttpClient实例
         /// </summary>
         /// <exception cref="ObjectDisposedException"></exception>
-        public IHttpClient HttpClient
+        public HttpClient HttpClient
         {
             get => this.GetHttpClientSafeSync();
+        }
+
+        /// <summary>
+        /// 获取与HttpClient关联的IHttpHandler
+        /// </summary>
+        /// <exception cref="ObjectDisposedException"></exception>
+        public IHttpHandler HttpHandler
+        {
+            get => this.GetHttpHandlerSafeSync();
         }
 
         /// <summary>
@@ -102,7 +116,7 @@ namespace WebApiClient
         /// Http接口的配置项   
         /// </summary>
         public HttpApiConfig() :
-            this(default(IHttpClient))
+            this(new DefaultHttpClientHandler(), true)
         {
         }
 
@@ -112,8 +126,7 @@ namespace WebApiClient
         /// <param name="handler">HTTP消息处理程序</param>
         /// <param name="disposeHandler">用Dispose方法时，是否也Dispose handler</param>
         /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="ArgumentException"></exception>
-        public HttpApiConfig(HTTP.HttpMessageHandler handler, bool disposeHandler = false)
+        public HttpApiConfig(HttpMessageHandler handler, bool disposeHandler = false)
             : this(new HttpClient(handler, disposeHandler))
         {
         }
@@ -123,18 +136,9 @@ namespace WebApiClient
         /// </summary>
         /// <param name="httpClient">外部HttpClient实例</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public HttpApiConfig(HTTP.HttpClient httpClient)
-            : this(new HttpClient(httpClient))
+        public HttpApiConfig(HttpClient httpClient)
         {
-        }
-
-        /// <summary>
-        /// Http接口的配置项   
-        /// </summary>
-        /// <param name="client">客户端对象</param>
-        public HttpApiConfig(IHttpClient client)
-        {
-            this.httpClient = client;
+            this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
         /// <summary>
@@ -154,11 +158,29 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 以同步安全方式获取IHttpClient实例
+        /// 以同步安全方式获取HttpClient实例
         /// </summary>
         /// <exception cref="ObjectDisposedException"></exception>
         /// <returns></returns>
-        private IHttpClient GetHttpClientSafeSync()
+        private HttpClient GetHttpClientSafeSync()
+        {
+            lock (this.syncRoot)
+            {
+                if (this.IsDisposed == true)
+                {
+                    throw new ObjectDisposedException(this.GetType().Name);
+                }
+                return this.httpClient;
+            }
+        }
+
+
+        /// <summary>
+        /// 以同步安全方式获取IHttpHandler实例
+        /// </summary>
+        /// <exception cref="ObjectDisposedException"></exception>
+        /// <returns></returns>
+        private IHttpHandler GetHttpHandlerSafeSync()
         {
             lock (this.syncRoot)
             {
@@ -167,11 +189,11 @@ namespace WebApiClient
                     throw new ObjectDisposedException(this.GetType().Name);
                 }
 
-                if (this.httpClient == null)
+                if (this.httpHandler == null)
                 {
-                    this.httpClient = new HttpClient();
+                    this.httpHandler = HttpHandlerProvider.CreateHandler(this.httpClient);
                 }
-                return this.httpClient;
+                return this.httpHandler;
             }
         }
 

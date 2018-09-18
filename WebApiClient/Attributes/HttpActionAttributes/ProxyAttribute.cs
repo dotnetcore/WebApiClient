@@ -48,7 +48,18 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         public override Task BeforeRequestAsync(ApiActionContext context)
         {
-            context.HttpApiConfig.HttpClient.SetProxy(this.httpProxy);
+            var handler = context.HttpApiConfig.HttpHandler;
+            var proxyUsed = handler.UseProxy && handler.Proxy != null;
+
+            if (proxyUsed == false)
+            {
+                handler.UseProxy = true;
+                handler.Proxy = this.httpProxy;
+            }
+            else if (HttpProxy.IsProxyEquals(handler.Proxy, this.httpProxy) == false)
+            {
+                throw new HttpApiConfigException("不支持在请求之后切换代理设置");
+            }
             return ApiTask.CompletedTask;
         }
     }

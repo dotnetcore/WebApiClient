@@ -13,9 +13,9 @@ namespace WebApiClient
     public interface IHttpHandler : IDisposable
     {
         /// <summary>
-        /// 获取内部原始的Handler对象
+        /// 获取原始的Handler对象
         /// </summary>
-        HttpMessageHandler InnerHanlder { get; }
+        HttpMessageHandler SourceHanlder { get; }
 
         /// <summary>
         /// 获取或设置是否使用CookieContainer来管理Cookies

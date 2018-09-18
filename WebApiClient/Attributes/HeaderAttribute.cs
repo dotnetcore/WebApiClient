@@ -132,22 +132,27 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         private bool SetCookie(ApiActionContext context, string cookieValues)
         {
-            if (context.HttpApiConfig.HttpClient.Handler.UseCookies == false)
+            var handler = context.HttpApiConfig.HttpHandler;
+            if (handler.UseCookies == false)
             {
                 return this.EncodeCookie ?
                      context.RequestMessage.SetCookie(cookieValues) :
                      context.RequestMessage.SetRawCookie(cookieValues);
             }
-
-            var domain = context.RequestMessage.RequestUri;
-            if (domain == null)
+            else
             {
-                throw new HttpApiConfigException($"未配置{nameof(HttpHostAttribute)}，无法应用Cookie");
-            }
+                var domain = context.RequestMessage.RequestUri;
+                if (domain == null)
+                {
+                    throw new HttpApiConfigException($"未配置{nameof(HttpHostAttribute)}，无法应用Cookie");
+                }
 
-            return this.EncodeCookie ?
-                context.HttpApiConfig.HttpClient.SetCookie(domain, cookieValues) :
-                context.HttpApiConfig.HttpClient.SetRawCookie(domain, cookieValues);
+                foreach (var cookie in HttpUtility.ParseCookie(cookieValues, this.EncodeCookie))
+                {
+                    handler.CookieContainer.Add(domain, cookie);
+                }
+                return true;
+            }
         }
     }
 }
