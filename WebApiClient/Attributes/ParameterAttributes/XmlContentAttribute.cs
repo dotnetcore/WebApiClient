@@ -7,7 +7,7 @@ namespace WebApiClient.Attributes
     /// <summary>
     /// 使用XmlFormatter序列化参数值得到的json文本作为application/xml请求
     /// </summary>
-    public class XmlContentAttribute : HttpContentAttribute
+    public class XmlContentAttribute : HttpContentAttribute, IEncodingable
     {
         /// <summary>
         /// 编码方式
@@ -33,7 +33,7 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// 将参数体值为application/xml请求      
         /// </summary>
-        public XmlContentAttribute()           
+        public XmlContentAttribute()
         {
         }
 

@@ -11,7 +11,7 @@ namespace WebApiClient.Attributes
     /// 没有任何特性修饰的参数，将默认被PathQueryAttribute修饰
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-    public class PathQueryAttribute : Attribute, IApiParameterAttribute, IIgnoreWhenNullable, IDateTimeFormatable
+    public class PathQueryAttribute : Attribute, IApiParameterAttribute, IIgnoreWhenNullable, IDateTimeFormatable, IEncodingable
     {
         /// <summary>
         /// 编码
