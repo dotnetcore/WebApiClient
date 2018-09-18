@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using WebApiClient.Contexts;
 
 namespace WebApiClient.Attributes
@@ -10,6 +11,27 @@ namespace WebApiClient.Attributes
     public class JsonContentAttribute : HttpContentAttribute, IDateTimeFormatable
     {
         /// <summary>
+        /// 编码方式
+        /// </summary>
+        private Encoding encoding = System.Text.Encoding.UTF8;
+
+        /// <summary>
+        /// 获取或设置编码名称
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public string Encoding
+        {
+            get
+            {
+                return this.encoding.WebName;
+            }
+            set
+            {
+                this.encoding = System.Text.Encoding.GetEncoding(value);
+            }
+        }
+
+        /// <summary>
         /// 获取或设置时期时间格式
         /// </summary>
         public string DateTimeFormat { get; set; }
@@ -17,8 +39,7 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// 将参数值作为application/json请求
         /// </summary>
-        public JsonContentAttribute()
-            : this(null)
+        public JsonContentAttribute()            
         {
         }
 
@@ -41,7 +62,7 @@ namespace WebApiClient.Attributes
             var formatter = context.HttpApiConfig.JsonFormatter;
             var options = context.HttpApiConfig.FormatOptions.CloneChange(this.DateTimeFormat);
             var json = formatter.Serialize(parameter.Value, options);
-            context.RequestMessage.Content = new JsonContent(json, Encoding.UTF8);
+            context.RequestMessage.Content = new JsonContent(json, this.encoding);
         }
     }
 }

@@ -12,24 +12,28 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// 编码方式
         /// </summary>
-        private readonly Encoding encoding;
+        private Encoding encoding = System.Text.Encoding.UTF8;
 
         /// <summary>
-        /// 将参数体值为application/xml请求
-        /// utf-8
+        /// 获取或设置编码名称
         /// </summary>
-        public XmlContentAttribute()
-            : this(Encoding.UTF8)
+        /// <exception cref="ArgumentException"></exception>
+        public string Encoding
         {
+            get
+            {
+                return this.encoding.WebName;
+            }
+            set
+            {
+                this.encoding = System.Text.Encoding.GetEncoding(value);
+            }
         }
 
         /// <summary>
-        /// 将参数体作为application/xml请求
+        /// 将参数体值为application/xml请求      
         /// </summary>
-        /// <param name="codeName">编码</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public XmlContentAttribute(string codeName)
-            : this(Encoding.GetEncoding(codeName ?? throw new ArgumentNullException(nameof(codeName))))
+        public XmlContentAttribute()           
         {
         }
 
@@ -38,11 +42,10 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="encoding">编码</param>
         /// <exception cref="ArgumentNullException"></exception>
-        private XmlContentAttribute(Encoding encoding)
+        public XmlContentAttribute(string encoding)
         {
-            this.encoding = encoding ?? throw new ArgumentNullException(nameof(encoding));
+            this.Encoding = encoding;
         }
-
 
         /// <summary>
         /// 设置参数到http请求内容
@@ -53,7 +56,6 @@ namespace WebApiClient.Attributes
         {
             var formatter = context.HttpApiConfig.XmlFormatter;
             var xml = formatter.Serialize(parameter.Value, this.encoding);
-
             context.RequestMessage.Content = new XmlContent(xml, this.encoding);
         }
     }
