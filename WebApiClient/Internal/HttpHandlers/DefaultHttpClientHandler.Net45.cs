@@ -15,14 +15,9 @@ namespace WebApiClient
     class DefaultHttpClientHandler : WebRequestHandler
     {
         /// <summary>
-        /// 同步锁
+        /// Uri集合
         /// </summary>
-        private readonly object syncRoot = new object();
-
-        /// <summary>
-        /// 站点地址
-        /// </summary>
-        private readonly HashSet<Uri> hashSet = new HashSet<Uri>(new UriComparer());
+        private UriHashSet hashSet = new UriHashSet();
 
         /// <summary>
         /// 每个服务的最大连接数设置器
@@ -67,48 +62,72 @@ namespace WebApiClient
             // 通过ServicePoint设置最大连接数
             if (maxConnectionsPerServerSetter == null)
             {
-                this.SetServicePointConnectionLimit(request.RequestUri, HttpApiClient.ConnectionLimit);
+                if (this.hashSet.Add(request.RequestUri) == true)
+                {
+                    var servicePoint = this.FindServicePoint(request.RequestUri);
+                    servicePoint.ConnectionLimit = HttpApiClient.ConnectionLimit;
+                }
             }
+
             return base.SendAsync(request, cancellationToken);
         }
 
         /// <summary>
-        /// 通过ServicePoint设置最大连接数
-        /// 如果其它实例也操作ServicePoint，将影响到本实例
-        /// 每个站点只设置一次
+        /// 查找Uri对应的ServicePoint
         /// </summary>
-        /// <param name="address">站点地址</param>
-        /// <param name="limit">最大连接数</param>
-        private void SetServicePointConnectionLimit(Uri address, int limit)
+        /// <param name="address"></param>
+        /// <returns></returns>
+        private ServicePoint FindServicePoint(Uri address)
         {
             if (this.Proxy != null)
             {
                 address = this.Proxy.GetProxy(address);
             }
-
-            lock (this.syncRoot)
-            {
-                if (this.hashSet.Add(address) == true)
-                {
-                    var point = ServicePointManager.FindServicePoint(address);
-                    point.ConnectionLimit = limit;
-                }
-            }
+            return ServicePointManager.FindServicePoint(address);
         }
 
         /// <summary>
-        /// Uri比较器
+        /// 表示Uri集合
         /// </summary>
-        private class UriComparer : IEqualityComparer<Uri>
+        private class UriHashSet
         {
-            public bool Equals(Uri x, Uri y)
+            /// <summary>
+            /// 同步锁
+            /// </summary>
+            private readonly object syncRoot = new object();
+
+            /// <summary>
+            /// 站点地址
+            /// </summary>
+            private readonly HashSet<Uri> hashSet = new HashSet<Uri>(new UriComparer());
+
+            /// <summary>
+            /// 添加Uri
+            /// </summary>
+            /// <param name="uri"></param>
+            /// <returns></returns>
+            public bool Add(Uri uri)
             {
-                return true;
+                lock (this.syncRoot)
+                {
+                    return this.hashSet.Add(uri);
+                }
             }
 
-            public int GetHashCode(Uri obj)
+            /// <summary>
+            /// Uri比较器
+            /// </summary>
+            private class UriComparer : IEqualityComparer<Uri>
             {
-                return obj.Authority.GetHashCode();
+                public bool Equals(Uri x, Uri y)
+                {
+                    return true;
+                }
+
+                public int GetHashCode(Uri obj)
+                {
+                    return obj.Authority.GetHashCode();
+                }
             }
         }
     }

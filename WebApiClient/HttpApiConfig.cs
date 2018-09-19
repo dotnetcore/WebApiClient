@@ -140,6 +140,12 @@ namespace WebApiClient
         {
             this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             this.HttpHost = httpClient.BaseAddress;
+
+            var userAgent = httpClient.DefaultRequestHeaders.UserAgent;
+            if (userAgent.Count == 0)
+            {
+                userAgent.Add(HttpHandlerProvider.DefaultUserAgent);
+            }
         }
 
         /// <summary>

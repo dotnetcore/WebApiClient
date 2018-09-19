@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reflection;
 
 namespace WebApiClient
@@ -15,7 +16,17 @@ namespace WebApiClient
         /// </summary>
         private static readonly FieldInfo handlerField = typeof(HttpMessageInvoker)
             .GetRuntimeFields()
-            .FirstOrDefault(item => typeof(HttpMessageHandler).IsAssignableFrom(item.FieldType));
+            .FirstOrDefault(field => field.FieldType.IsInheritFrom<HttpMessageHandler>());
+
+        /// <summary>
+        /// 程序集版本信息
+        /// </summary>
+        private static readonly AssemblyName assemblyName = typeof(HttpHandlerProvider).GetTypeInfo().Assembly.GetName();
+
+        /// <summary>
+        /// 默认的UserAgent
+        /// </summary>
+        public static readonly ProductInfoHeaderValue DefaultUserAgent = new ProductInfoHeaderValue(assemblyName.Name, assemblyName.Version.ToString());
 
         /// <summary>
         /// 从HttpClient获得IHttpHandler
