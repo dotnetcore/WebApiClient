@@ -77,7 +77,12 @@ namespace WebApiClient
         /// 例如http://www.webapiclient.com
         /// 设置了HttpHost值，HttpHostAttribute将失效  
         /// </summary>
-        public Uri HttpHost { get; set; }
+        /// <exception cref="ArgumentException"></exception>
+        public Uri HttpHost
+        {
+            get => this.httpClient.BaseAddress;
+            set => this.httpClient.BaseAddress = value;
+        }
 
         /// <summary>
         /// 获取或设置是否对参数的属性值进行输入有效性验证
@@ -139,8 +144,6 @@ namespace WebApiClient
         public HttpApiConfig(HttpClient httpClient)
         {
             this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            this.HttpHost = httpClient.BaseAddress;
-
             var userAgent = httpClient.DefaultRequestHeaders.UserAgent;
             if (userAgent.Count == 0)
             {
