@@ -83,12 +83,12 @@ namespace WebApiClient.Defaults
             /// <summary>
             /// key的getter
             /// </summary>
-            private readonly PropertyGetter keyGetter;
+            private readonly Func<object, object> keyGetter;
 
             /// <summary>
             /// value的getter
             /// </summary>
-            private readonly PropertyGetter valueGetter;
+            private readonly Func<object, object> valueGetter;
 
             /// <summary>
             /// KeyValuePair读取器
@@ -96,8 +96,8 @@ namespace WebApiClient.Defaults
             /// <param name="keyValuePairType">KeyValuePair的类型</param>
             private KeyValuePairReader(Type keyValuePairType)
             {
-                this.keyGetter = new PropertyGetter(keyValuePairType, "Key");
-                this.valueGetter = new PropertyGetter(keyValuePairType, "Value");
+                this.keyGetter = Lambda.CreateGetFunc<object, object>(keyValuePairType, "Key");
+                this.valueGetter = Lambda.CreateGetFunc<object, object>(keyValuePairType, "Value");
             }
 
             /// <summary>

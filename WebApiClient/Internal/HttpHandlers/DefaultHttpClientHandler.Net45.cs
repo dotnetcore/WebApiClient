@@ -22,7 +22,7 @@ namespace WebApiClient
         /// <summary>
         /// 每个服务的最大连接数设置器
         /// </summary>
-        private static readonly PropertySetter maxConnectionsPerServerSetter;
+        private static readonly Action<HttpClientHandler, int> maxConnectionsPerServerAction;
 
         /// <summary>
         /// 静态构造器
@@ -32,7 +32,7 @@ namespace WebApiClient
             var property = typeof(HttpClientHandler).GetProperty("MaxConnectionsPerServer", typeof(int));
             if (property != null)
             {
-                maxConnectionsPerServerSetter = new PropertySetter(property);
+                maxConnectionsPerServerAction = Lambda.CreateSetAction<HttpClientHandler, int>(property);
             }
         }
 
@@ -45,9 +45,9 @@ namespace WebApiClient
             this.Proxy = null;
             this.ServerCertificateValidationCallback = (a, b, c, d) => true;
 
-            if (maxConnectionsPerServerSetter != null)
+            if (maxConnectionsPerServerAction != null)
             {
-                maxConnectionsPerServerSetter.Invoke(this, HttpApiClient.ConnectionLimit);
+                maxConnectionsPerServerAction.Invoke(this, HttpApiClient.ConnectionLimit);
             }
         }
 
@@ -60,7 +60,7 @@ namespace WebApiClient
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             // 通过ServicePoint设置最大连接数
-            if (maxConnectionsPerServerSetter == null)
+            if (maxConnectionsPerServerAction == null)
             {
                 if (this.hashSet.Add(request.RequestUri) == true)
                 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
@@ -7,16 +8,14 @@ using System.Reflection;
 namespace WebApiClient
 {
     /// <summary>
-    /// 提供IHttpHandler对象的获取
+    /// HttpHandler提供者
     /// </summary>
     static class HttpHandlerProvider
     {
         /// <summary>
-        /// HttpMessageInvoker的HttpMessageHandler字段
+        /// HttpMessageInvoker的HttpMessageHandler字段获取委托
         /// </summary>
-        private static readonly FieldInfo handlerField = typeof(HttpMessageInvoker)
-            .GetRuntimeFields()
-            .FirstOrDefault(field => field.FieldType.IsInheritFrom<HttpMessageHandler>());
+        private static readonly Func<HttpMessageInvoker, HttpMessageHandler> handlerGetFunc;
 
         /// <summary>
         /// 程序集版本信息
@@ -27,6 +26,18 @@ namespace WebApiClient
         /// 默认的UserAgent
         /// </summary>
         public static readonly ProductInfoHeaderValue DefaultUserAgent = new ProductInfoHeaderValue(assemblyName.Name, assemblyName.Version.ToString());
+
+        /// <summary>
+        /// HttpHandler提供者
+        /// </summary>
+        static HttpHandlerProvider()
+        {
+            var handlerField = typeof(HttpMessageInvoker)
+                 .GetRuntimeFields()
+                 .FirstOrDefault(field => field.FieldType.IsInheritFrom<HttpMessageHandler>());
+
+            handlerGetFunc = Lambda.CreateGetFunc<HttpMessageInvoker, HttpMessageHandler>(handlerField);
+        }
 
         /// <summary>
         /// 从HttpClient获得IHttpHandler
@@ -42,7 +53,7 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(httpClient));
             }
 
-            var handler = handlerField.GetValue(httpClient) as HttpMessageHandler;
+            var handler = handlerGetFunc.Invoke(httpClient);
             return CreateHandler(handler);
         }
 
