@@ -7,8 +7,9 @@ namespace WebApiClient.Attributes
 {
     /// <summary>
     /// 表示http代理特性
+    /// 设置之后将无法改变
     /// </summary>
-    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
     [DebuggerDisplay("Proxy {host}:{port}")]
     public class ProxyAttribute : ApiActionAttribute
     {

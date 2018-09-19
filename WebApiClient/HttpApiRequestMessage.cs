@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -228,73 +226,6 @@ namespace WebApiClient
             this.Content = httpContent;
         }
 
-        /// <summary>
-        /// 设置Cookie值到请求头
-        /// 当HttpClientHandler.UseCookies == false才会提交到服务端
-        /// </summary>
-        /// <param name="cookieValues">cookie值，会自动进行URL编码，eg：key1=value1; key2=value2</param>
-        /// <exception cref="CookieException"></exception>
-        /// <returns></returns>
-        [Obsolete("此方法已废弃，请使用SetCookie替代", true)]
-        public bool SetCookies(string cookieValues)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// 设置Cookie值到请求头
-        /// 当HttpClientHandler.UseCookies == false才会提交到服务端
-        /// </summary>
-        /// <param name="cookieValues">cookie值，会自动进行URL编码，eg：key1=value1; key2=value2</param>
-        /// <exception cref="CookieException"></exception>
-        /// <returns></returns>
-        public bool SetCookie(string cookieValues)
-        {
-            return this.SetCookie(cookieValues, true);
-        }
-
-        /// <summary>
-        /// 设置Cookie值到请求头
-        /// 当HttpClientHandler.UseCookies == false才会提交到服务端
-        /// </summary>
-        /// <param name="cookieValues">cookie值，不进行URL编码，eg：key1=value1; key2=value2</param>
-        /// <exception cref="CookieException"></exception>
-        /// <returns></returns>
-        public bool SetRawCookie(string cookieValues)
-        {
-            return this.SetCookie(cookieValues, false);
-        }
-
-        /// <summary>
-        /// 设置Cookie值到请求头
-        /// 当HttpClientHandler.UseCookies == false才会提交到服务端
-        /// </summary>
-        /// <param name="cookieValues">cookie值，eg：key1=value1; key2=value2</param>
-        /// <param name="useUrlEncode">是否使用Url编码</param>
-        /// <exception cref="CookieException"></exception>
-        /// <returns></returns>
-        private bool SetCookie(string cookieValues, bool useUrlEncode)
-        {
-            const string cookieName = "Cookie";
-            this.Headers.Remove(cookieName);
-
-            if (cookieValues == null)
-            {
-                return false;
-            }
-
-            if (useUrlEncode == true)
-            {
-                var cookieItems =
-                    from item in HttpUtility.ParseCookie(cookieValues, true)
-                    select $"{item.Name}={item.Value}";
-
-                const string separator = "; ";
-                cookieValues = string.Join(separator, cookieItems);
-            }
-
-            return this.Headers.TryAddWithoutValidation(cookieName, cookieValues);
-        }
 
         /// <summary>
         /// 转换为MultipartContent

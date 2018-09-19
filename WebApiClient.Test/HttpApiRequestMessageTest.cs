@@ -78,17 +78,6 @@ namespace WebApiClient.Test
             Assert.Contains(get("name", "laojiu"), body);
             Assert.Contains(get("age", "18"), body);
             Assert.True(reqeust.Content.Headers.ContentType.MediaType == "multipart/form-data");
-        }
-
-        [Fact ]
-        public void SetCookieTest()
-        {
-            var cookie = "a=1; b=2";
-            var reqeust = new HttpApiRequestMessage();
-            reqeust.SetCookie(cookie);
-            reqeust.Headers.TryGetValues("Cookie", out IEnumerable<string> values);
-            var cookies = values.ToArray();
-            Assert.True(cookies.Length == 1 && cookies.First() == "a=1; b=2");
-        }
+        }         
     }
 }
