@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
 
@@ -132,21 +133,25 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         private bool SetCookie(ApiActionContext context, string cookieValues)
         {
-            var uri = context.RequestMessage.RequestUri;
-            if (uri == null)
-            {
-                throw new HttpApiConfigException($"未配置{nameof(HttpHostAttribute)}，无法应用Cookie");
-            }
-
             var handler = context.HttpApiConfig.HttpHandler;
             if (handler.UseCookies == true)
             {
-                foreach (var cookie in HttpUtility.ParseCookie(cookieValues, this.EncodeCookie))
-                {
-                    handler.CookieContainer.Add(uri, cookie);
-                }
+                throw new HttpApiConfigException($"已配置UseCookies为true，不支持手动设置Cookie");
             }
-            return handler.UseCookies;
+
+            var builder = new StringBuilder();
+            foreach (var cookie in HttpUtility.ParseCookie(cookieValues, this.EncodeCookie))
+            {
+                if (builder.Length > 0)
+                {
+                    builder.Append("; ");
+                }
+                builder.Append($"{cookie.Name}={cookie.Value}");
+            }
+
+            var cookies = builder.ToString();
+            var header = context.RequestMessage.Headers;
+            return header.TryAddWithoutValidation("Cookie", cookies);
         }
     }
 }

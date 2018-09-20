@@ -16,7 +16,6 @@ namespace Demo.HttpClients
     {
         // GET {url}?account={account}&password={password}&something={something}
         [HttpGet]
-        [Header("Cookie", "a=1; b=2", EncodeCookie = false)]
         [Timeout(10 * 1000)] // 10s超时
         Task<string> GetAboutAsync(
             [Url] string url,

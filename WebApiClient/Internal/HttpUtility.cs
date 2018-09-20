@@ -24,7 +24,7 @@ namespace WebApiClient
                 yield break;
             }
 
-            const string separator = "; ";
+            const string separator = ";";
             var cookieItems = cookieValues.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var item in cookieItems)
@@ -34,13 +34,17 @@ namespace WebApiClient
                 {
                     continue;
                 }
+
                 var name = item.Substring(0, index).Trim();
-                if (string.IsNullOrEmpty(name) == false)
+                if (string.IsNullOrEmpty(name) == true)
                 {
-                    var value = item.Substring(index + 1).Trim();
-                    var encoded = useUrlEncode ? UrlEncode(value, Encoding.UTF8) : value;
-                    yield return new Cookie(name, encoded);
+                    continue;
                 }
+
+                var value = item.Substring(index + 1).Trim();
+                var nameEncode = useUrlEncode ? UrlEncode(name, Encoding.UTF8) : name;
+                var valueEncode = useUrlEncode ? UrlEncode(value, Encoding.UTF8) : value;
+                yield return new Cookie(nameEncode, valueEncode);
             }
         }
 
