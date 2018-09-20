@@ -17,10 +17,10 @@ namespace Demo
         {
             HttpServer.Start(9999);
 
-            using (var userApi = HttpApiClient.Create<IUserApi>())
-            {
-                RequestAsync(userApi).Wait();
-            }
+            var host = "http://localhost:9999/";
+            var userApi = HttpApiClient.Create<IUserApi>(host);
+            Program.RequestAsync(userApi).Wait();
+
             Console.ReadLine();
         }
 
@@ -36,7 +36,7 @@ namespace Demo
             };
 
             var about = await userApi
-                .GetAboutAsync("http://localhost:9999/webapi/user/about", user, "somevalue");
+                .GetAboutAsync("webapi/user/about", user, "somevalue");
 
             var user1 = await userApi
                 .GetByIdAsync("id001");
@@ -55,7 +55,7 @@ namespace Demo
             var user5 = await userApi
                 .UpdateWithXmlAsync(user).HandleAsDefaultWhenException();
 
-            var file = new MulitpartFile("about.txt");
+            var file = new MulitpartFile("file.data");
             var user6 = await userApi
                 .UpdateWithMulitpartAsync(user, "老九", 18, file);
         }
