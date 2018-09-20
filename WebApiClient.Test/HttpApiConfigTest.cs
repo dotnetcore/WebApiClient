@@ -35,9 +35,7 @@ namespace WebApiClient.Test
         {
             var config = new HttpApiConfig();
             config.Dispose();
-
             Assert.True(config.IsDisposed);
-            Assert.Throws<ObjectDisposedException>(() => config.HttpClient);
         }
     }
 }
