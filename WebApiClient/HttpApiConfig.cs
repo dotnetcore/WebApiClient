@@ -31,14 +31,14 @@ namespace WebApiClient
         private Tags tags;
 
         /// <summary>
-        /// 关联的HttpClient
-        /// </summary>
-        private HttpClient httpClient;
-
-        /// <summary>
         /// 与httpClient关联的IHttpHandler
         /// </summary>
         private IHttpHandler httpHandler;
+
+        /// <summary>
+        /// 关联的HttpClient
+        /// </summary>
+        private readonly HttpClient httpClient;
 
         /// <summary>
         /// 同步锁
@@ -55,21 +55,19 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 获取HttpClient实例
-        /// </summary>
-        /// <exception cref="ObjectDisposedException"></exception>
-        public HttpClient HttpClient
-        {
-            get => this.GetHttpClientSafeSync();
-        }
-
-        /// <summary>
         /// 获取与HttpClient关联的IHttpHandler
         /// </summary>
-        /// <exception cref="ObjectDisposedException"></exception>
         public IHttpHandler HttpHandler
         {
             get => this.GetHttpHandlerSafeSync();
+        }
+
+        /// <summary>
+        /// 获取HttpClient实例
+        /// </summary>
+        public HttpClient HttpClient
+        {
+            get => this.httpClient;
         }
 
         /// <summary>
@@ -144,6 +142,7 @@ namespace WebApiClient
         public HttpApiConfig(HttpClient httpClient)
         {
             this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+
             var userAgent = httpClient.DefaultRequestHeaders.UserAgent;
             if (userAgent.Count == 0)
             {
@@ -168,24 +167,6 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 以同步安全方式获取HttpClient实例
-        /// </summary>
-        /// <exception cref="ObjectDisposedException"></exception>
-        /// <returns></returns>
-        private HttpClient GetHttpClientSafeSync()
-        {
-            lock (this.syncRoot)
-            {
-                if (this.IsDisposed == true)
-                {
-                    throw new ObjectDisposedException(this.GetType().Name);
-                }
-                return this.httpClient;
-            }
-        }
-
-
-        /// <summary>
         /// 以同步安全方式获取IHttpHandler实例
         /// </summary>
         /// <exception cref="ObjectDisposedException"></exception>
@@ -194,11 +175,6 @@ namespace WebApiClient
         {
             lock (this.syncRoot)
             {
-                if (this.IsDisposed == true)
-                {
-                    throw new ObjectDisposedException(this.GetType().Name);
-                }
-
                 if (this.httpHandler == null)
                 {
                     this.httpHandler = HttpHandlerProvider.CreateHandler(this.httpClient);
