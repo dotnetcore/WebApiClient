@@ -10,7 +10,7 @@ namespace Demo.HttpClients
     /// <summary>
     /// 用户操作接口
     /// </summary>
-    [LogFilter] // 记录请求日志
+    [TraceFilter] // 生产环境需要注释掉这个特性
     [HttpHost("http://localhost:9999/")] // HttpHost可以在Config传入覆盖
     public interface IUserApi : IHttpApi
     {
@@ -19,7 +19,6 @@ namespace Demo.HttpClients
         [Timeout(10 * 1000)] // 10s超时
         Task<string> GetAboutAsync(
             [Url] string url,
-            [Header(HttpRequestHeader.Authorization)] string authorization,
             UserInfo user,
             string something);
 
@@ -44,7 +43,7 @@ namespace Demo.HttpClients
         [FormField("name", "value")] // 固定的参数值可以这么写
         ITask<UserInfo> UpdateWithFormAsync(
             [FormContent] UserInfo user,
-            FormField nickName,
+            [FormField] string nickName,
             [AliasAs("age"), FormField] int? nullableAge);
 
         // POST webapi/user/UpdateWithJson
@@ -69,17 +68,9 @@ namespace Demo.HttpClients
         ITask<UserInfo> UpdateWithMulitpartAsync(
             [MulitpartContent] UserInfo user,
             [MulitpartText] string nickName,
-            MulitpartText age,
-            params MulitpartFile[] files);
-
-
-        /// <summary>
-        /// 下载文件
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("doc/laojiu.docx")]
-        ITask<HttpResponseFile> DownloadLaojiuDocAsync();
-
+            [MulitpartText] int age,
+            MulitpartFile file);
+        
         /// <summary>
         /// 下载文件
         /// </summary>

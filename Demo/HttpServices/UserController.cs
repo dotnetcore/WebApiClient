@@ -16,19 +16,7 @@ namespace Demo.HttpServices
         [HttpGet]
         public ActionResult About(UserInfo user, string something)
         {
-            var about = new StringBuilder()
-                .AppendLine()
-                .Append("UserInfo:").AppendLine(user.ToString())
-                .Append("Something:").Append(something);
-
-            var keys = Request.Headers.Keys;
-            foreach (var key in keys.Cast<string>().Reverse())
-            {
-                var value = Request.Headers.TryGet<string>(key, null);
-                about.Insert(0, key + ": " + value + "\r\n");
-            }
-
-            return Content(about.ToString());
+            return Content("This is from NetworkSocket.Http");
         }
 
         [HttpGet]
@@ -70,20 +58,6 @@ namespace Demo.HttpServices
         public ActionResult UpdateWithMulitpart(UserInfo user, string nickName, int? age)
         {
             return Json(user);
-        }
-
-        protected override void OnExecuting(ActionContext filterContext)
-        {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("{0} HttpServer->收到http请求：{1}", DateTime.Now.ToString("HH:mm:ss.fff"), filterContext.Action.Route);
-            Console.ForegroundColor = ConsoleColor.Gray;
-        }
-
-        protected override void OnException(ExceptionContext filterContext)
-        {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("{0} HttpServer->遇到异常：{1}", DateTime.Now.ToString("HH:mm:ss.fff"), filterContext.Exception.Message);
-            Console.ForegroundColor = ConsoleColor.Gray;
         }
     }
 }

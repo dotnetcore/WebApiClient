@@ -16,31 +16,15 @@ namespace Demo
         static void Main(string[] args)
         {
             HttpServer.Start(9999);
-            Program.RunIUserApi(1);
+
+            using (var userApi = HttpApiClient.Create<IUserApi>())
+            {
+                RequestAsync(userApi).Wait();
+            }
             Console.ReadLine();
         }
 
-        static async void RunIUserApi(int loop = 1)
-        {
-            var watch = new Stopwatch();
-            watch.Start();
-
-            using (var client = HttpApiClient.Create<IUserApi>())
-            {
-                for (var i = 0; i < loop; i++)
-                {
-                    await Program.RunApisAsync(client);
-                }
-            }
-
-            watch.Stop();
-            Console.WriteLine($"总共耗时：{watch.Elapsed}");
-        }
-
-        /// <summary>
-        /// 执行一遍所有请求接口
-        /// </summary>
-        private static async Task RunApisAsync(IUserApi userApiClient)
+        private static async Task RequestAsync(IUserApi userApi)
         {
             var user = new UserInfo
             {
@@ -51,27 +35,29 @@ namespace Demo
                 Gender = Gender.Male
             };
 
-            var aboutResult = await userApiClient.GetAboutAsync(
-                "http://localhost:9999/webapi/user/about",
-                "Basic eW91ck5hbWU6MTIzNDU2", user, "some -value");
+            var about = await userApi
+                .GetAboutAsync("http://localhost:9999/webapi/user/about", user, "somevalue");
 
-            var user1 = await userApiClient.GetByIdAsync("id001");
-            var user2 = await userApiClient.GetByAccountAsync("laojiu");
+            var user1 = await userApi
+                .GetByIdAsync("id001");
 
-            // Retry & Handle
-            var user3 = await userApiClient.UpdateWithFormAsync(user, nickName: "老九", nullableAge: null)
+            var user2 = await userApi
+                .GetByAccountAsync("laojiu");
+
+            var user3 = await userApi
+                .UpdateWithFormAsync(user, nickName: "老九", nullableAge: null)
                 .Retry(3, i => TimeSpan.FromSeconds(i))
-                .WhenCatch<Exception>()
-                .WhenResult(u => u == null || u.Account == null)
-                .HandleAsDefaultWhenException();
+                .WhenCatch<HttpStatusFailureException>();
 
-            var user4 = await userApiClient.UpdateWithJsonAsync(user);
-            var user5 = await userApiClient.UpdateWithXmlAsync(user);
+            var user4 = await userApi
+                .UpdateWithJsonAsync(user);
 
-            // Upload Files
-            var stream = typeof(Program).Assembly.GetManifestResourceStream("Demo.HttpClients.about.txt");
-            var file = new MulitpartFile(stream, "about.txt");
-            var user6 = await userApiClient.UpdateWithMulitpartAsync(user, "老九", 18, file);
+            var user5 = await userApi
+                .UpdateWithXmlAsync(user).HandleAsDefaultWhenException();
+
+            var file = new MulitpartFile("about.txt");
+            var user6 = await userApi
+                .UpdateWithMulitpartAsync(user, "老九", 18, file);
         }
     }
 }

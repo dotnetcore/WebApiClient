@@ -8,14 +8,14 @@ namespace Demo.HttpServices
         protected override void OnConnected(object sender, IContenxt context)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("{0} HttpServer->{1}连接..", DateTime.Now.ToString("HH:mm:ss.fff"), context.Session);
+            Console.WriteLine($"HttpServer-> {DateTime.Now} {context.Session}连接..");
             Console.ForegroundColor = ConsoleColor.Gray;
         }
 
         protected override void OnDisconnected(object sender, IContenxt context)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("{0} HttpServer->{1}断开..", DateTime.Now.ToString("HH:mm:ss.fff"), context.Session);
+            Console.WriteLine($"HttpServer-> {DateTime.Now} {context.Session}断开..");
             Console.ForegroundColor = ConsoleColor.Gray;
         }
     }
