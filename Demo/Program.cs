@@ -1,10 +1,7 @@
 ﻿using Demo.HttpClients;
 using Demo.HttpServices;
+using Microsoft.Extensions.Logging;
 using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 using WebApiClient;
 using WebApiClient.Parameterables;
@@ -17,12 +14,19 @@ namespace Demo
         {
             HttpServer.Start(9999);
 
-            var host = "http://localhost:9999/";
-            var userApi = HttpApiClient.Create<IUserApi>(host);
+            var config = new HttpApiConfig
+            {
+                HttpHost = new Uri("http://localhost:9999/"),
+                Logger = new LoggerFactory().AddConsole().CreateLogger<HttpApiClient>()
+            };
+
+            var userApi = HttpApiClient.Create<IUserApi>(config);
             Program.RequestAsync(userApi).Wait();
+            userApi.Dispose();
 
             Console.ReadLine();
         }
+
 
         private static async Task RequestAsync(IUserApi userApi)
         {

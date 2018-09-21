@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Net.Http;
 using WebApiClient.Defaults;
 
@@ -81,6 +82,11 @@ namespace WebApiClient
             get => this.httpClient.BaseAddress;
             set => this.httpClient.BaseAddress = value;
         }
+
+        /// <summary>
+        /// 获取或设置日志记录器
+        /// </summary>
+        public ILogger Logger { get; set; }
 
         /// <summary>
         /// 获取或设置是否对参数的属性值进行输入有效性验证
