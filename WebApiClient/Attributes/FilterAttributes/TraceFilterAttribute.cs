@@ -42,12 +42,16 @@ namespace WebApiClient.Attributes
         public override async Task OnEndRequestAsync(ApiActionContext context)
         {
             var request = context.Tags.Get(tagKey).As<Request>();
-            var response = new Response
+	    var response = new Response
             {
                 Time = DateTime.Now,
-                Exception = context.Exception,
-                Message = await context.ResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false)
+                Exception = context.Exception
             };
+
+            if (response.Exception == null)
+            {
+                response.Message = await context.ResponseMessage.Content.ReadAsStringAsync();
+            }
 
             WriteLine($"[{this.Name ?? context.ApiActionDescriptor.Name}]", ConsoleColor.Green);
             WriteLine($"[Request][{request.Time}]", ConsoleColor.DarkYellow);
