@@ -17,9 +17,23 @@ namespace WebApiClient.Attributes
         private static readonly string tagKey = "TraceFilter";
 
         /// <summary>
-        /// 获取或设置是否启用TraceFilter
+        /// 获取日志的EventId
+        /// </summary>
+        public int EventId { get; private set; }
+
+        /// <summary>
+        /// 获取或设置是否启用
         /// </summary>
         public bool Enable { get; set; } = true;
+
+        /// <summary>
+        /// 将请求响应内容写入HttpApiConfig.Logger的过滤器
+        /// </summary>
+        /// <param name="eventId">日志的EventId</param>
+        public TraceFilterAttribute(int eventId = 1)
+        {
+            this.EventId = eventId;
+        }
 
         /// <summary>
         /// 准备请求之前
@@ -57,7 +71,7 @@ namespace WebApiClient.Attributes
 
             const string format = "yyyy-MM-dd HH:mm:ss.fff";
             var request = context.Tags.Get(tagKey).As<Request>();
-            var method = context.ApiActionDescriptor.Member; 
+            var method = context.ApiActionDescriptor.Member;
 
             var builder = new StringBuilder()
                 .AppendLine($"{method.DeclaringType.Name}.{method.Name}")
@@ -83,12 +97,11 @@ namespace WebApiClient.Attributes
 
             if (context.Exception == null)
             {
-                logger.LogInformation(message);
+                logger.LogInformation(this.EventId, message);
             }
             else
             {
-                var id = response == null ? 0 : (int)response.StatusCode;
-                logger.LogError(id, context.Exception, message);
+                logger.LogError(this.EventId, context.Exception, message);
             }
         }
 
@@ -97,8 +110,14 @@ namespace WebApiClient.Attributes
         /// </summary>
         private class Request
         {
+            /// <summary>
+            /// 请求时间
+            /// </summary>
             public DateTime Time { get; set; }
 
+            /// <summary>
+            /// 请求消息
+            /// </summary>
             public string Message { get; set; }
         }
     }
