@@ -65,18 +65,20 @@ namespace Demo.HttpClients
         // Body multipart/form-data
         // Return json或xml内容
         [HttpPost("webapi/user/UpdateWithMulitpart")]
+        [TraceFilter(Enable = false)]
         ITask<UserInfo> UpdateWithMulitpartAsync(
             [MulitpartContent] UserInfo user,
             [MulitpartText] string nickName,
             [MulitpartText] int age,
             MulitpartFile file);
-        
+
         /// <summary>
         /// 下载文件
         /// </summary>
         /// <param name="uri">文件相对或绝对路径</param>
         /// <returns></returns>
         [HttpGet]
+        [TraceFilter(Enable = false)]
         ITask<HttpResponseFile> DownloadFileAsync([Url] string uri);
     }
 }

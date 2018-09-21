@@ -17,6 +17,11 @@ namespace WebApiClient.Attributes
         private static readonly string tagKey = "TraceFilter";
 
         /// <summary>
+        /// 获取或设置是否启用TraceFilter
+        /// </summary>
+        public bool Enable { get; set; } = true;
+
+        /// <summary>
         /// 准备请求之前
         /// </summary>
         /// <param name="context">上下文</param>
@@ -24,7 +29,7 @@ namespace WebApiClient.Attributes
         public async override Task OnBeginRequestAsync(ApiActionContext context)
         {
             var logger = context.HttpApiConfig.Logger;
-            if (logger == null)
+            if (logger == null || this.Enable == false)
             {
                 return;
             }
@@ -45,16 +50,19 @@ namespace WebApiClient.Attributes
         public async override Task OnEndRequestAsync(ApiActionContext context)
         {
             var logger = context.HttpApiConfig.Logger;
-            if (logger == null)
+            if (logger == null || this.Enable == false)
             {
                 return;
             }
 
-            var builder = new StringBuilder();
             const string format = "yyyy-MM-dd HH:mm:ss.fff";
-
             var request = context.Tags.Get(tagKey).As<Request>();
-            builder
+            var method = context.ApiActionDescriptor.Member; 
+
+            var builder = new StringBuilder()
+                .AppendLine($"{method.DeclaringType.Name}.{method.Name}")
+                .AppendLine()
+
                 .AppendLine($"[REQUEST] [{request.Time.ToString(format)}]")
                 .AppendLine($"{request.Message.TrimEnd()}");
 
