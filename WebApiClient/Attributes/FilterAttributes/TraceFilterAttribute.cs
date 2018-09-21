@@ -74,10 +74,10 @@ namespace WebApiClient.Attributes
             var method = context.ApiActionDescriptor.Member;
 
             var builder = new StringBuilder()
-                .AppendLine($"{method.DeclaringType.Name}.{method.Name}")
+                .AppendLine($"{method.DeclaringType.Name}.{method.Name}()")
                 .AppendLine()
 
-                .AppendLine($"[REQUEST] [{request.Time.ToString(format)}]")
+                .AppendLine($"[REQUEST] {request.Time.ToString(format)}")
                 .AppendLine($"{request.Message.TrimEnd()}");
 
             var response = context.ResponseMessage;
@@ -85,7 +85,7 @@ namespace WebApiClient.Attributes
             {
                 builder
                     .AppendLine()
-                    .AppendLine($"[RESPONSE] [{DateTime.Now.ToString(format)}]")
+                    .AppendLine($"[RESPONSE] {DateTime.Now.ToString(format)}")
                     .AppendLine($"{await response.Content.ReadAsStringAsync().ConfigureAwait(false)}");
             }
 
