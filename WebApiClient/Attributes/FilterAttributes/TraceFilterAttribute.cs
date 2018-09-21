@@ -22,11 +22,6 @@ namespace WebApiClient.Attributes
         public int EventId { get; private set; }
 
         /// <summary>
-        /// 获取或设置是否启用
-        /// </summary>
-        public bool Enable { get; set; } = true;
-
-        /// <summary>
         /// 将请求响应内容写入HttpApiConfig.Logger的过滤器
         /// </summary>
         /// <param name="eventId">日志的EventId</param>
@@ -43,7 +38,7 @@ namespace WebApiClient.Attributes
         public async override Task OnBeginRequestAsync(ApiActionContext context)
         {
             var logger = context.HttpApiConfig.Logger;
-            if (logger == null || this.Enable == false)
+            if (logger == null)
             {
                 return;
             }
@@ -64,7 +59,7 @@ namespace WebApiClient.Attributes
         public async override Task OnEndRequestAsync(ApiActionContext context)
         {
             var logger = context.HttpApiConfig.Logger;
-            if (logger == null || this.Enable == false)
+            if (logger == null)
             {
                 return;
             }

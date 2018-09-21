@@ -11,6 +11,11 @@ namespace WebApiClient.Attributes
     public abstract class ApiActionFilterAttribute : Attribute, IApiActionFilterAttribute
     {
         /// <summary>
+        /// 获取或设置是否启用
+        /// </summary>
+        public bool Enable { get; set; } = true;
+
+        /// <summary>
         /// 获取顺序排序索引
         /// </summary>
         public virtual int OrderIndex { get; private set; }
@@ -23,6 +28,32 @@ namespace WebApiClient.Attributes
             get
             {
                 return this.GetType().IsAllowMultiple();
+            }
+        }
+
+        /// <summary>
+        /// 准备请求之前
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <returns></returns>
+        async Task IApiActionFilter.OnBeginRequestAsync(ApiActionContext context)
+        {
+            if (this.Enable == true)
+            {
+                await this.OnBeginRequestAsync(context).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// 请求完成之后
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <returns></returns>
+        async Task IApiActionFilter.OnEndRequestAsync(ApiActionContext context)
+        {
+            if (this.Enable == true)
+            {
+                await this.OnEndRequestAsync(context).ConfigureAwait(false);
             }
         }
 
