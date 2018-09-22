@@ -22,6 +22,14 @@ namespace WebApiClient.Attributes
         public int EventId { get; set; }
 
         /// <summary>
+        /// 将请求响应内容写入统一日志的过滤器
+        /// </summary>
+        public TraceFilterAttribute()
+        {
+            this.OrderIndex = int.MaxValue;
+        }
+
+        /// <summary>
         /// 准备请求之前
         /// </summary>
         /// <param name="context">上下文</param>

@@ -16,9 +16,9 @@ namespace WebApiClient.Attributes
         public bool Enable { get; set; } = true;
 
         /// <summary>
-        /// 获取顺序排序索引
+        /// 获取或设置过滤器的执行排序索引
         /// </summary>
-        public virtual int OrderIndex { get; private set; }
+        public virtual int OrderIndex { get; set; }
 
         /// <summary>
         /// 获取本类型是否允许在接口与方法上重复

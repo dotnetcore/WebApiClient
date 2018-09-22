@@ -37,11 +37,6 @@ namespace WebApiClient
         private IHttpHandler httpHandler;
 
         /// <summary>
-        /// 关联的HttpClient
-        /// </summary>
-        private readonly HttpClient httpClient;
-
-        /// <summary>
         /// 同步锁
         /// </summary>
         private readonly object syncRoot = new object();
@@ -66,10 +61,7 @@ namespace WebApiClient
         /// <summary>
         /// 获取HttpClient实例
         /// </summary>
-        public HttpClient HttpClient
-        {
-            get => this.httpClient;
-        }
+        public HttpClient HttpClient { get; private set; }
 
         /// <summary>
         /// 获取或设置Http服务完整主机域名
@@ -79,12 +71,12 @@ namespace WebApiClient
         /// <exception cref="ArgumentException"></exception>
         public Uri HttpHost
         {
-            get => this.httpClient.BaseAddress;
-            set => this.httpClient.BaseAddress = value;
+            get => this.HttpClient.BaseAddress;
+            set => this.HttpClient.BaseAddress = value;
         }
 
         /// <summary>
-        /// 获取或设置日志记录工厂
+        /// 获取或设置统一日志工厂
         /// </summary>
         public ILoggerFactory LoggerFactory { get; set; }
 
@@ -147,7 +139,7 @@ namespace WebApiClient
         /// <exception cref="ArgumentNullException"></exception>
         public HttpApiConfig(HttpClient httpClient)
         {
-            this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            this.HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
 
             var userAgent = httpClient.DefaultRequestHeaders.UserAgent;
             if (userAgent.Count == 0)
@@ -183,7 +175,7 @@ namespace WebApiClient
             {
                 if (this.httpHandler == null)
                 {
-                    this.httpHandler = HttpHandlerProvider.CreateHandler(this.httpClient);
+                    this.httpHandler = HttpHandlerProvider.CreateHandler(this.HttpClient);
                 }
                 return this.httpHandler;
             }
@@ -222,10 +214,7 @@ namespace WebApiClient
         /// <param name="disposing">是否也释放托管资源</param>
         protected virtual void Dispose(bool disposing)
         {
-            if (this.httpClient != null)
-            {
-                this.httpClient.Dispose();
-            }
+            this.HttpClient.Dispose();
         }
         #endregion
     }
