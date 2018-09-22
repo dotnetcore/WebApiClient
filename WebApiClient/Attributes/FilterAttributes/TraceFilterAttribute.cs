@@ -7,28 +7,19 @@ using WebApiClient.Contexts;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 表示将请求响应内容写入HttpApiConfig.Logger的过滤器
+    /// 表示将请求响应内容写入统一日志的过滤器
     /// </summary>
     public class TraceFilterAttribute : ApiActionFilterAttribute
     {
         /// <summary>
         /// tag的key
         /// </summary>
-        private static readonly string tagKey = "TraceFilter";
+        private static readonly string tagKey = "$TraceFilter";
 
         /// <summary>
-        /// 获取日志的EventId
+        /// 获取或设置日志的EventId
         /// </summary>
-        public int EventId { get; private set; }
-
-        /// <summary>
-        /// 将请求响应内容写入HttpApiConfig.Logger的过滤器
-        /// </summary>
-        /// <param name="eventId">日志的EventId</param>
-        public TraceFilterAttribute(int eventId = 1)
-        {
-            this.EventId = eventId;
-        }
+        public int EventId { get; set; }
 
         /// <summary>
         /// 准备请求之前
@@ -37,8 +28,7 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         public async override Task OnBeginRequestAsync(ApiActionContext context)
         {
-            var logger = context.HttpApiConfig.Logger;
-            if (logger == null)
+            if (context.HttpApiConfig.LoggerFactory == null)
             {
                 return;
             }
@@ -58,20 +48,16 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         public async override Task OnEndRequestAsync(ApiActionContext context)
         {
-            var logger = context.HttpApiConfig.Logger;
-            if (logger == null)
+            var logging = context.HttpApiConfig.LoggerFactory;
+            if (logging == null)
             {
                 return;
             }
 
             const string format = "yyyy-MM-dd HH:mm:ss.fff";
             var request = context.Tags.Get(tagKey).As<Request>();
-            var method = context.ApiActionDescriptor.Member;
 
             var builder = new StringBuilder()
-                .AppendLine($"{method.DeclaringType.Name}.{method.Name}()")
-                .AppendLine()
-
                 .AppendLine($"[REQUEST] {request.Time.ToString(format)}")
                 .AppendLine($"{request.Message.TrimEnd()}");
 
@@ -89,6 +75,10 @@ namespace WebApiClient.Attributes
                 .AppendLine()
                 .AppendLine($"[TIMESPAN] {DateTime.Now.Subtract(request.Time)}")
                 .ToString();
+
+            var method = context.ApiActionDescriptor.Member;
+            var categoryName = $"{method.DeclaringType.Name}.{method.Name}";
+            var logger = logging.CreateLogger(categoryName);
 
             if (context.Exception == null)
             {

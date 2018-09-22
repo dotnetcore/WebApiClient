@@ -17,7 +17,7 @@ namespace Demo
             var config = new HttpApiConfig
             {
                 HttpHost = new Uri("http://localhost:9999/"),
-                Logger = new LoggerFactory().AddConsole().CreateLogger<HttpApiClient>()
+                LoggerFactory = new LoggerFactory().AddConsole()
             };
 
             var userApi = HttpApiClient.Create<IUserApi>(config);

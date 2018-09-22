@@ -84,9 +84,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 获取或设置日志记录器
+        /// 获取或设置日志记录工厂
         /// </summary>
-        public ILogger Logger { get; set; }
+        public ILoggerFactory LoggerFactory { get; set; }
 
         /// <summary>
         /// 获取或设置是否对参数的属性值进行输入有效性验证
