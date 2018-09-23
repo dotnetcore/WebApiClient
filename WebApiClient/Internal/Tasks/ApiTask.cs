@@ -9,7 +9,7 @@ namespace WebApiClient
     /// <summary>
     /// 提供ApiTask的创建
     /// </summary>
-    abstract class ApiTask
+    abstract class ApiTask : ITask
     {
 #if NET45
         /// <summary>

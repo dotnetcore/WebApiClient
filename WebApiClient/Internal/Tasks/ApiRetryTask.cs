@@ -67,6 +67,15 @@ namespace WebApiClient
         /// 创建请求任务
         /// </summary>
         /// <returns></returns>
+        Task ITask.InvokeAsync()
+        {
+            return this.InvokeAsync();
+        }
+
+        /// <summary>
+        /// 创建请求任务
+        /// </summary>
+        /// <returns></returns>
         public async Task<TResult> InvokeAsync()
         {
             var inner = default(Exception);

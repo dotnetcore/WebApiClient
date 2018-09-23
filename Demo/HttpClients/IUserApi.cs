@@ -51,7 +51,7 @@ namespace Demo.HttpClients
         // Return json或xml内容
         [HttpPost("webapi/user/UpdateWithJson")]
         ITask<UserInfo> UpdateWithJsonAsync(
-            [JsonContent("yyyy-MM-dd HH:mm:ss")] UserInfo user);
+            [JsonContent] UserInfo user);
 
         // POST webapi/user/UpdateWithXml 
         // Body <?xml version="1.0" encoding="utf-8"?><UserInfo><Account>laojiu</Account><Password>123456</Password></UserInfo>

@@ -6,14 +6,26 @@ namespace WebApiClient
     /// <summary>
     /// 定义返回结果的行为
     /// </summary>
-    /// <typeparam name="TResult"></typeparam>
-    public interface ITask<TResult>
+    public interface ITask
     {
         /// <summary>
         /// 创建请求任务
         /// </summary>
         /// <returns></returns>
-        Task<TResult> InvokeAsync();
+        Task InvokeAsync();
+    }
+
+    /// <summary>
+    /// 定义返回结果的行为
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    public interface ITask<TResult> : ITask
+    {
+        /// <summary>
+        /// 创建请求任务
+        /// </summary>
+        /// <returns></returns>
+        new Task<TResult> InvokeAsync();
 
         /// <summary>
         /// 调用InvokeAsync
