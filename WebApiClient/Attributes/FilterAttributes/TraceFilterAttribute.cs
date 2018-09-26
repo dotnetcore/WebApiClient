@@ -81,7 +81,7 @@ namespace WebApiClient.Attributes
 
             var message = builder
                 .AppendLine()
-                .AppendLine($"[TIMESPAN] {DateTime.Now.Subtract(request.Time)}")
+                .Append($"[TIMESPAN] {DateTime.Now.Subtract(request.Time)}")
                 .ToString();
 
             var method = context.ApiActionDescriptor.Member;
