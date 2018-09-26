@@ -131,20 +131,12 @@ namespace WebApiClient
             {
                 var context = new ApiActionContext
                 {
-                    ApiActionDescriptor = this.apiActionDescriptor,
                     HttpApiConfig = this.httpApiConfig,
-                    RequestMessage = new HttpApiRequestMessage { RequestUri = this.httpApiConfig.HttpHost },
-                    ResponseMessage = null,
-                    Exception = null,
-                    Result = null
+                    ApiActionDescriptor = this.apiActionDescriptor,
+                    RequestMessage = new HttpApiRequestMessage { RequestUri = this.httpApiConfig.HttpHost }
                 };
 
-                await context.PrepareRequestAsync().ConfigureAwait(false);
-                await context.ExecFiltersAsync(filter => filter.OnBeginRequestAsync).ConfigureAwait(false);
-                var state = await context.ExecRequestAsync().ConfigureAwait(false);
-                await context.ExecFiltersAsync(filter => filter.OnEndRequestAsync).ConfigureAwait(false);
-
-                return state ? (TResult)context.Result : throw context.Exception;
+                return await context.ExecuteActionAsync<TResult>().ConfigureAwait(false);
             }
         }
     }

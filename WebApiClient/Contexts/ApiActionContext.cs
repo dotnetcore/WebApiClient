@@ -60,12 +60,29 @@ namespace WebApiClient.Contexts
         /// </summary>
         public Exception Exception { get; internal set; }
 
+        /// <summary>
+        /// 执行Api方法
+        /// </summary>
+        /// <returns></returns>
+        public async Task<TResult> ExecuteActionAsync<TResult>()
+        {
+            await this.PrepareRequestAsync().ConfigureAwait(false);
+            await this.ExecFiltersAsync(filter => filter.OnBeginRequestAsync).ConfigureAwait(false);
+            await this.ExecRequestAsync().ConfigureAwait(false);
+            await this.ExecFiltersAsync(filter => filter.OnEndRequestAsync).ConfigureAwait(false);
+
+            if (this.Exception == null)
+            {
+                return (TResult)this.Result;
+            }
+            throw this.Exception;
+        }
 
         /// <summary>
         /// 准备请求数据
         /// </summary>
         /// <returns></returns>
-        internal async Task PrepareRequestAsync()
+        private async Task PrepareRequestAsync()
         {
             var apiAction = this.ApiActionDescriptor;
             var validateProperty = this.HttpApiConfig.UseParameterPropertyValidate;
@@ -91,26 +108,24 @@ namespace WebApiClient.Contexts
 
         /// <summary>
         /// 执行请求
-        /// 返回是否执行成功
         /// </summary>
         /// <returns></returns>
-        internal async Task<bool> ExecRequestAsync()
+        private async Task ExecRequestAsync()
         {
+            var apiAction = this.ApiActionDescriptor;
+            var httpClient = this.HttpApiConfig.HttpClient;
+
+            var timeout = this.RequestMessage.Timeout ?? httpClient.Timeout;
+            var cancellationToken = new CancellationTokenSource(timeout).Token;
+
             try
             {
-                var apiAction = this.ApiActionDescriptor;
-                var client = this.HttpApiConfig.HttpClient;
-
-                var timeout = this.RequestMessage.Timeout ?? client.Timeout;
-                var cancellationToken = new CancellationTokenSource(timeout).Token;
-                this.ResponseMessage = await client.SendAsync(this.RequestMessage, cancellationToken).ConfigureAwait(false);
+                this.ResponseMessage = await httpClient.SendAsync(this.RequestMessage, cancellationToken).ConfigureAwait(false);
                 this.Result = await apiAction.Return.Attribute.GetTaskResult(this).ConfigureAwait(false);
-                return true;
             }
             catch (Exception ex)
             {
                 this.Exception = ex;
-                return false;
             }
         }
 
@@ -119,7 +134,7 @@ namespace WebApiClient.Contexts
         /// </summary>
         /// <param name="funcSelector">方法选择</param>
         /// <returns></returns>
-        internal async Task ExecFiltersAsync(Func<IApiActionFilter, Func<ApiActionContext, Task>> funcSelector)
+        private async Task ExecFiltersAsync(Func<IApiActionFilter, Func<ApiActionContext, Task>> funcSelector)
         {
             foreach (var filter in this.HttpApiConfig.GlobalFilters)
             {

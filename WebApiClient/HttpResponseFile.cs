@@ -36,14 +36,10 @@ namespace WebApiClient
         public HttpResponseFile(HttpResponseMessage response)
             : base(response)
         {
-            var fileName = response.Content.Headers.ContentDisposition?.FileName;
-            if (string.IsNullOrEmpty(fileName) == true)
-            {
-                fileName = Path.GetFileName(response.RequestMessage.RequestUri.ToString());
-            }
-            this.FileName = fileName;
-            this.FileSize = response.Content.Headers.ContentLength;
-            this.MediaType = response.Content.Headers.ContentType?.MediaType;
+            var headers = response.Content.Headers;
+            this.FileSize = headers.ContentLength;
+            this.FileName = headers.ContentDisposition?.FileName;
+            this.MediaType = headers.ContentType?.MediaType;
         }
 
         /// <summary>
@@ -74,15 +70,19 @@ namespace WebApiClient
         /// <summary>
         /// 保存到目标流
         /// </summary>
-        /// <param name="targetStream">流</param>
+        /// <param name="stream">流</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
-        public async Task SaveAsAsync(Stream targetStream)
+        public async Task SaveAsAsync(Stream stream)
         {
-            if (targetStream.CanWrite == false)
+            if (stream == null)
             {
-                throw new ArgumentException(nameof(targetStream) + " cannot be write", nameof(targetStream));
+                throw new ArgumentNullException(nameof(stream));
+            }
+            if (stream.CanWrite == false)
+            {
+                throw new ArgumentException(nameof(stream) + " cannot be write", nameof(stream));
             }
 
             var length = 0;
@@ -91,7 +91,7 @@ namespace WebApiClient
 
             while ((length = await sourceStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
             {
-                await targetStream.WriteAsync(buffer, 0, length).ConfigureAwait(false);
+                await stream.WriteAsync(buffer, 0, length).ConfigureAwait(false);
             }
         }
     }
