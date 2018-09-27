@@ -22,6 +22,16 @@ namespace WebApiClient.Attributes
         public int EventId { get; set; }
 
         /// <summary>
+        /// 获取是否输出请求内容
+        /// </summary>
+        public bool TraceRequest { get; set; } = true;
+
+        /// <summary>
+        /// 获取是否输出响应内容
+        /// </summary>
+        public bool TraceResponse { get; set; } = true;
+
+        /// <summary>
         /// 将请求响应内容写入统一日志的过滤器
         /// </summary>
         public TraceFilterAttribute()
@@ -62,22 +72,27 @@ namespace WebApiClient.Attributes
                 return;
             }
 
+            var builder = new StringBuilder();
             const string format = "yyyy-MM-dd HH:mm:ss.fff";
             var request = context.Tags.Get(tagKey).As<Request>();
 
-            var builder = new StringBuilder()
-                .AppendLine($"[REQUEST] {request.Time.ToString(format)}")
-                .AppendLine($"{request.Message.TrimEnd()}");
-
-            var response = context.ResponseMessage;
-            if (response != null && response.Content != null)
+            if (this.TraceRequest == true)
             {
-                builder
-                    .AppendLine()
-                    .AppendLine($"[RESPONSE] {DateTime.Now.ToString(format)}")
-                    .AppendLine($"{await response.Content.ReadAsStringAsync().ConfigureAwait(false)}");
+                builder.AppendLine($"[REQUEST] {request.Time.ToString(format)}")
+                    .AppendLine($"{request.Message.TrimEnd()}");
             }
 
+            var response = context.ResponseMessage;
+            if (this.TraceResponse && response != null && response.Content != null)
+            {
+                if (this.TraceRequest == true)
+                {
+                    builder.AppendLine();
+                }
+
+                builder.AppendLine($"[RESPONSE] {DateTime.Now.ToString(format)}")
+                    .AppendLine($"{await response.Content.ReadAsStringAsync().ConfigureAwait(false)}");
+            }
 
             var message = builder
                 .AppendLine()
