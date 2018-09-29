@@ -19,10 +19,10 @@ namespace WebApiClient
         /// 注册http接口到默认工厂
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
-        /// <exception cref="InvalidOperationException"></exception>
-        public static void Add<TInterface>() where TInterface : class, IHttpApi
+        /// <returns></returns>
+        public static bool Add<TInterface>() where TInterface : class, IHttpApi
         {
-            Add<TInterface>(config: null);
+            return Add<TInterface>(config: null);
         }
 
         /// <summary>
@@ -30,10 +30,10 @@ namespace WebApiClient
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <param name="config">HttpApiConfig的配置</param>
-        /// <exception cref="InvalidOperationException"></exception>
-        public static void Add<TInterface>(Action<HttpApiConfig> config) where TInterface : class, IHttpApi
+        /// <returns></returns>
+        public static bool Add<TInterface>(Action<HttpApiConfig> config) where TInterface : class, IHttpApi
         {
-            Add<TInterface>(config, handlerFactory: null);
+            return Add<TInterface>(config, handlerFactory: null);
         }
 
         /// <summary>
@@ -42,16 +42,17 @@ namespace WebApiClient
         /// <typeparam name="TInterface"></typeparam>
         /// <param name="config">HttpApiConfig的配置</param>
         /// <param name="handlerFactory">HttpMessageHandler创建委托</param>
-        /// <exception cref="InvalidOperationException"></exception>
-        public static void Add<TInterface>(Action<HttpApiConfig> config, Func<HttpMessageHandler> handlerFactory) where TInterface : class, IHttpApi
+        /// <returns></returns>
+        public static bool Add<TInterface>(Action<HttpApiConfig> config, Func<HttpMessageHandler> handlerFactory) where TInterface : class, IHttpApi
         {
-            Default.AddHttpApi<TInterface>(config, handlerFactory);
+            return Default.AddHttpApi<TInterface>(config, handlerFactory);
         }
 
         /// <summary>
         /// 使用默认工厂创建指定接口的代理实例
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
+        /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
         public static TInterface Create<TInterface>() where TInterface : class, IHttpApi
         {

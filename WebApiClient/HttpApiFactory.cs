@@ -26,12 +26,12 @@ namespace WebApiClient
         /// <summary>
         /// 过期的记录
         /// </summary>
-        private readonly ConcurrentQueue<ExpiredHandlerEntry> expiredEntries;
+        private readonly ConcurrentQueue<ExpiredEntry> expiredEntries;
 
         /// <summary>
         /// 激活记录的创建工厂
         /// </summary>
-        private readonly Func<Type, Lazy<ActiveHandlerEntry>> activeEntryFactory;
+        private readonly Func<Type, Lazy<ActiveEntry>> activeEntryFactory;
 
         /// <summary>
         /// http接口代理创建选项
@@ -41,19 +41,18 @@ namespace WebApiClient
         /// <summary>
         /// 激活的记录
         /// </summary>
-        private readonly ConcurrentDictionary<Type, Lazy<ActiveHandlerEntry>> activeEntries;
-
+        private readonly ConcurrentDictionary<Type, Lazy<ActiveEntry>> activeEntries;
 
         /// <summary>
-        /// 获取已过期但还未释放的HttpMessageHandler数量
+        /// 获取已过期但还未释放的HttpApi实例数量
         /// </summary>
-        public int ExpiredHandlerCount
+        public int ExpiredCount
         {
             get => this.expiredEntries.Count;
         }
 
         /// <summary>
-        /// 获取或设置HttpMessageHandler的生命周期
+        /// 获取或设置HttpApi实例的生命周期
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public TimeSpan Lifetime
@@ -73,7 +72,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 获取或设置清理过期的HttpMessageHandler的时间间隔
+        /// 获取或设置清理过期的HttpApi实例的时间间隔
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public TimeSpan CleanupInterval
@@ -97,10 +96,10 @@ namespace WebApiClient
         /// </summary>
         public HttpApiFactory()
         {
-            this.expiredEntries = new ConcurrentQueue<ExpiredHandlerEntry>();
-            this.activeEntries = new ConcurrentDictionary<Type, Lazy<ActiveHandlerEntry>>();
+            this.expiredEntries = new ConcurrentQueue<ExpiredEntry>();
+            this.activeEntries = new ConcurrentDictionary<Type, Lazy<ActiveEntry>>();
             this.httpApiCreateOptions = new ConcurrentDictionary<Type, HttpApiCreateOption>();
-            this.activeEntryFactory = apiType => new Lazy<ActiveHandlerEntry>(() => this.CreateActiveEntry(apiType), LazyThreadSafetyMode.ExecutionAndPublication);
+            this.activeEntryFactory = apiType => new Lazy<ActiveEntry>(() => this.CreateActiveEntry(apiType), LazyThreadSafetyMode.ExecutionAndPublication);
 
             this.RegisteCleanup();
         }
@@ -111,8 +110,8 @@ namespace WebApiClient
         /// <typeparam name="TInterface"></typeparam>
         /// <param name="config">HttpApiConfig的配置</param>
         /// <param name="handlerFactory">HttpMessageHandler创建委托</param>
-        /// <exception cref="InvalidOperationException"></exception>
-        public void AddHttpApi<TInterface>(Action<HttpApiConfig> config, Func<HttpMessageHandler> handlerFactory) where TInterface : class, IHttpApi
+        /// <returns></returns>
+        public bool AddHttpApi<TInterface>(Action<HttpApiConfig> config, Func<HttpMessageHandler> handlerFactory) where TInterface : class, IHttpApi
         {
             if (handlerFactory == null)
             {
@@ -125,51 +124,49 @@ namespace WebApiClient
                 HandlerFactory = handlerFactory
             };
 
-            var state = this.httpApiCreateOptions.TryAdd(typeof(TInterface), options);
-            if (state == false)
-            {
-                throw new InvalidOperationException($"接口{typeof(TInterface)}不能重复注册");
-            }
+            return this.httpApiCreateOptions.TryAdd(typeof(TInterface), options);
         }
 
         /// <summary>
         /// 创建指定接口的代理实例
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
+        /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
         public TInterface CreateHttpApi<TInterface>() where TInterface : class, IHttpApi
         {
             var apiType = typeof(TInterface);
             var entry = this.activeEntries.GetOrAdd(apiType, this.activeEntryFactory).Value;
-            return HttpApiClient.Create<TInterface>(entry.HttpApiConfig);
+            return HttpApiClient.Create(apiType, entry.Interceptor) as TInterface;
         }
 
         /// <summary>
-        /// 创建激活状态的Handler记录
+        /// 创建激活状态的记录
         /// </summary>
         /// <param name="apiType">http接口类型</param>
+        /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
-        private ActiveHandlerEntry CreateActiveEntry(Type apiType)
+        private ActiveEntry CreateActiveEntry(Type apiType)
         {
             if (this.httpApiCreateOptions.TryGetValue(apiType, out var option) == false)
             {
                 throw new ArgumentException($"未注册的接口类型{apiType}");
             }
 
-            var innder = option.HandlerFactory.Invoke();
-            var handler = new LifeTimeTrackingHandler(innder);
+            var handler = option.HandlerFactory.Invoke();
             var httpApiConfig = new HttpApiConfig(handler, false);
+            var interceptor = new LifeTimeTrackingInterceptor(httpApiConfig);
 
             if (option.ConfigAction != null)
             {
                 option.ConfigAction.Invoke(httpApiConfig);
             }
 
-            return new ActiveHandlerEntry(this)
+            return new ActiveEntry(this)
             {
                 ApiType = apiType,
-                Disposable = innder,
-                HttpApiConfig = httpApiConfig
+                Disposable = httpApiConfig,
+                Interceptor = interceptor
             };
         }
 
@@ -177,10 +174,10 @@ namespace WebApiClient
         /// 当有记录失效时
         /// </summary>
         /// <param name="active">激活的记录</param>
-        void _IHttpApiFactory.OnEntryDeactivate(ActiveHandlerEntry active)
+        void _IHttpApiFactory.OnEntryDeactivate(ActiveEntry active)
         {
             this.activeEntries.TryRemove(active.ApiType, out var _);
-            var expired = new ExpiredHandlerEntry(active);
+            var expired = new ExpiredEntry(active);
             this.expiredEntries.Enqueue(expired);
         }
 

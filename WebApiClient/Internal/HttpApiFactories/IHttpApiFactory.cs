@@ -16,6 +16,6 @@ namespace WebApiClient
         /// 当有记录失效时
         /// </summary>
         /// <param name="entry">激活状态的记录</param>
-        void OnEntryDeactivate(ActiveHandlerEntry entry);
+        void OnEntryDeactivate(ActiveEntry entry);
     }
 }

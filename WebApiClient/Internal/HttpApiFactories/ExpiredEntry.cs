@@ -3,9 +3,9 @@
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示过期状态的Handler记录
+    /// 表示过期状态的记录
     /// </summary>
-    class ExpiredHandlerEntry : IDisposable
+    class ExpiredEntry : IDisposable
     {
         /// <summary>
         /// 用于释放资源的对象
@@ -13,7 +13,7 @@ namespace WebApiClient
         private readonly IDisposable disposable;
 
         /// <summary>
-        /// httpApiClient对象的弱引用
+        /// 监视对象的弱引用
         /// </summary>
         private readonly WeakReference weakReference;
 
@@ -27,13 +27,13 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 过期状态的Handler记录
+        /// 过期状态的记录
         /// </summary>
-        /// <param name="active">激活状态的Handler记录</param>
-        public ExpiredHandlerEntry(ActiveHandlerEntry active)
+        /// <param name="active">激活状态的记录</param>
+        public ExpiredEntry(ActiveEntry active)
         {
             this.disposable = active.Disposable;
-            this.weakReference = new WeakReference(active.HttpApiConfig);
+            this.weakReference = new WeakReference(active.Interceptor);
         }
 
         /// <summary>
