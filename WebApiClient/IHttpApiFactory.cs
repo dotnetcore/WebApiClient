@@ -6,10 +6,22 @@
     public interface IHttpApiFactory
     {
         /// <summary>
-        /// 创建指定接口的代理实例
+        /// 创建接口的代理实例
         /// </summary>
-        /// <typeparam name="TInterface"></typeparam>
         /// <returns></returns>
-        TInterface CreateHttpApi<TInterface>() where TInterface : class, IHttpApi;
+        object CreateHttpApi();
+    }
+
+    /// <summary>
+    /// 定义HttpApi工厂的接口
+    /// </summary>
+    /// <typeparam name="TInterface"></typeparam>
+    public interface IHttpApiFactory<TInterface> : IHttpApiFactory where TInterface : class, IHttpApi
+    {
+        /// <summary>
+        /// 创建接口的代理实例
+        /// </summary>
+        /// <returns></returns>
+        new TInterface CreateHttpApi();
     }
 }

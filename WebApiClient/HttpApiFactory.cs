@@ -11,8 +11,19 @@ namespace WebApiClient
     /// 提供HttpApi的配置注册和实例创建
     /// 并对实例的生命周期进行自动管理
     /// </summary>
-    public partial class HttpApiFactory : IHttpApiFactory, _IHttpApiFactory
+    public class HttpApiFactory<TInterface> : IHttpApiFactory<TInterface>, IHttpApiFactory, _IHttpApiFactory
+        where TInterface : class, IHttpApi
     {
+        /// <summary>
+        /// HttpApiConfig的配置委托
+        /// </summary>
+        private readonly Action<HttpApiConfig> configAction;
+
+        /// <summary>
+        /// HttpMessageHandler的创建委托
+        /// </summary>
+        private readonly Func<HttpMessageHandler> handlerFunc;
+
         /// <summary>
         /// handler的生命周期
         /// </summary>
@@ -24,24 +35,15 @@ namespace WebApiClient
         private TimeSpan cleanupInterval = TimeSpan.FromSeconds(10d);
 
         /// <summary>
+        /// 激活的记录
+        /// </summary>
+        private volatile Lazy<ActiveEntry> activeEntryLazy;
+
+        /// <summary>
         /// 过期的记录
         /// </summary>
         private readonly ConcurrentQueue<ExpiredEntry> expiredEntries;
 
-        /// <summary>
-        /// 激活记录的创建工厂
-        /// </summary>
-        private readonly Func<Type, Lazy<ActiveEntry>> activeEntryFactory;
-
-        /// <summary>
-        /// http接口代理创建选项
-        /// </summary>
-        private readonly ConcurrentDictionary<Type, HttpApiCreateOption> httpApiCreateOptions;
-
-        /// <summary>
-        /// 激活的记录
-        /// </summary>
-        private readonly ConcurrentDictionary<Type, Lazy<ActiveEntry>> activeEntries;
 
         /// <summary>
         /// 获取已过期但还未释放的HttpApi实例数量
@@ -95,78 +97,72 @@ namespace WebApiClient
         /// HttpApi创建工厂
         /// </summary>
         public HttpApiFactory()
+            : this(configAction: null)
         {
+        }
+
+        /// <summary>
+        /// HttpApi创建工厂
+        /// </summary>
+        /// <param name="configAction">HttpApiConfig的配置委托</param>
+        public HttpApiFactory(Action<HttpApiConfig> configAction)
+            : this(configAction, handlerFunc: null)
+        {
+        }
+
+        /// <summary>
+        /// HttpApi创建工厂
+        /// </summary>
+        /// <param name="configAction">HttpApiConfig的配置委托</param>
+        /// <param name="handlerFunc">HttpMessageHandler的创建委托</param>
+        public HttpApiFactory(Action<HttpApiConfig> configAction, Func<HttpMessageHandler> handlerFunc)
+        {
+            this.configAction = configAction;
+            this.handlerFunc = handlerFunc ?? new Func<HttpMessageHandler>(() => new DefaultHttpClientHandler());
+
             this.expiredEntries = new ConcurrentQueue<ExpiredEntry>();
-            this.activeEntries = new ConcurrentDictionary<Type, Lazy<ActiveEntry>>();
-            this.httpApiCreateOptions = new ConcurrentDictionary<Type, HttpApiCreateOption>();
-            this.activeEntryFactory = apiType => new Lazy<ActiveEntry>(() => this.CreateActiveEntry(apiType), LazyThreadSafetyMode.ExecutionAndPublication);
+            this.activeEntryLazy = new Lazy<ActiveEntry>(this.CreateActiveEntry, LazyThreadSafetyMode.ExecutionAndPublication);
 
             this.RegisteCleanup();
         }
 
         /// <summary>
-        /// 注册http接口
+        /// 创建接口的代理实例
         /// </summary>
-        /// <typeparam name="TInterface"></typeparam>
-        /// <param name="config">HttpApiConfig的配置</param>
-        /// <param name="handlerFactory">HttpMessageHandler创建委托</param>
         /// <returns></returns>
-        public bool AddHttpApi<TInterface>(Action<HttpApiConfig> config, Func<HttpMessageHandler> handlerFactory) where TInterface : class, IHttpApi
+        public TInterface CreateHttpApi()
         {
-            if (handlerFactory == null)
-            {
-                handlerFactory = () => new DefaultHttpClientHandler();
-            }
-
-            var options = new HttpApiCreateOption
-            {
-                ConfigAction = config,
-                HandlerFactory = handlerFactory
-            };
-
-            return this.httpApiCreateOptions.TryAdd(typeof(TInterface), options);
+            return ((IHttpApiFactory)this).CreateHttpApi() as TInterface;
         }
 
         /// <summary>
-        /// 创建指定接口的代理实例
+        /// 创建接口的代理实例
         /// </summary>
-        /// <typeparam name="TInterface"></typeparam>
-        /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
-        public TInterface CreateHttpApi<TInterface>() where TInterface : class, IHttpApi
+        object IHttpApiFactory.CreateHttpApi()
         {
-            var apiType = typeof(TInterface);
-            var entry = this.activeEntries.GetOrAdd(apiType, this.activeEntryFactory).Value;
-            return HttpApiClient.Create(apiType, entry.Interceptor) as TInterface;
+            var interceptor = this.activeEntryLazy.Value.Interceptor;
+            return HttpApiClient.Create(typeof(TInterface), interceptor);
         }
 
         /// <summary>
         /// 创建激活状态的记录
         /// </summary>
-        /// <param name="apiType">http接口类型</param>
-        /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
-        private ActiveEntry CreateActiveEntry(Type apiType)
+        private ActiveEntry CreateActiveEntry()
         {
-            if (this.httpApiCreateOptions.TryGetValue(apiType, out var option) == false)
-            {
-                throw new ArgumentException($"未注册的接口类型{apiType}");
-            }
-
-            var handler = option.HandlerFactory.Invoke();
-            var httpApiConfig = new HttpApiConfig(handler, false);
+            var httpApiConfig = new HttpApiConfig(this.handlerFunc.Invoke(), true);
             var interceptor = new LifeTimeTrackingInterceptor(httpApiConfig);
 
-            if (option.ConfigAction != null)
+            if (this.configAction != null)
             {
-                option.ConfigAction.Invoke(httpApiConfig);
+                this.configAction.Invoke(httpApiConfig);
             }
 
             return new ActiveEntry(this)
             {
-                ApiType = apiType,
-                Disposable = httpApiConfig,
-                Interceptor = interceptor
+                Interceptor = interceptor,
+                Disposable = httpApiConfig
             };
         }
 
@@ -176,7 +172,9 @@ namespace WebApiClient
         /// <param name="active">激活的记录</param>
         void _IHttpApiFactory.OnEntryDeactivate(ActiveEntry active)
         {
-            this.activeEntries.TryRemove(active.ApiType, out var _);
+            // 切换激活状态的记录的实例
+            this.activeEntryLazy = new Lazy<ActiveEntry>(this.CreateActiveEntry, LazyThreadSafetyMode.ExecutionAndPublication);
+
             var expired = new ExpiredEntry(active);
             this.expiredEntries.Enqueue(expired);
         }
@@ -214,5 +212,6 @@ namespace WebApiClient
 
             this.RegisteCleanup();
         }
+
     }
 }

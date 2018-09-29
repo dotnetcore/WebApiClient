@@ -9,11 +9,6 @@ namespace WebApiClient
     class ActiveEntry
     {
         /// <summary>
-        /// 获取或设置关联的http接口类型
-        /// </summary>
-        public Type ApiType { get; set; }
-
-        /// <summary>
         /// 获取或设置用于释放资源的对象
         /// </summary>
         public IDisposable Disposable { get; set; }
