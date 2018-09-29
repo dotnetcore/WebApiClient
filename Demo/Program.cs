@@ -9,15 +9,6 @@ using WebApiClient.Parameterables;
 
 namespace Demo
 {
-    class MyHandler : System.Net.Http.DelegatingHandler
-    {
-        protected override void Dispose(bool disposing)
-        {
-            Console.WriteLine($"{DateTime.Now } 我被调用disposing了");
-            base.Dispose(disposing);
-        }
-    }
-
     class Program
     {
         static void Main(string[] args)
@@ -29,9 +20,10 @@ namespace Demo
                 c.HttpHost = new Uri("http://localhost:9999/");
                 c.LoggerFactory = new LoggerFactory().AddConsole();
             });
-             
+
             var userApi = HttpApiClientFactory.Create<IUserApi>();
             Program.RequestAsync(userApi).Wait();
+
             Console.ReadLine();
         }
 

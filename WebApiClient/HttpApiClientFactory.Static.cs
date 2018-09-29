@@ -9,12 +9,12 @@ namespace WebApiClient
     public partial class HttpApiClientFactory
     {
         /// <summary>
-        /// 获取默认实例
+        /// 获取默认工厂实例
         /// </summary>
         public static readonly HttpApiClientFactory Default = new HttpApiClientFactory();
 
         /// <summary>
-        /// 注册HttpApiClient对应的http接口到默认实例
+        /// 注册HttpApiClient对应的http接口到默认工厂
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <exception cref="InvalidOperationException"></exception>
@@ -24,7 +24,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 注册HttpApiClient对应的http接口到默认实例
+        /// 注册HttpApiClient对应的http接口到默认工厂
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <param name="config">HttpApiConfig的配置</param>
@@ -35,7 +35,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 注册HttpApiClient对应的http接口到默认实例
+        /// 注册HttpApiClient对应的http接口到默认工厂
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <param name="config">HttpApiConfig的配置</param>
@@ -47,7 +47,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 使用默认实例创建实现了指定接口的HttpApiClient实例
+        /// 使用默认工厂创建实现了指定接口的HttpApiClient实例
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <returns></returns>

@@ -43,6 +43,14 @@ namespace WebApiClient
 
 
         /// <summary>
+        /// 获取已过期但还未释放的HttpMessageHandler数量
+        /// </summary>
+        public int ExpiredHandlerCount
+        {
+            get => this.expiredEntries.Count;
+        }
+
+        /// <summary>
         /// 获取或设置HttpMessageHandler的生命周期
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
