@@ -15,13 +15,13 @@ namespace Demo
         {
             HttpServer.Start(9999);
 
-            HttpApiClientFactory.Add<IUserApi>(c =>
+            HttpApiFactory.Add<IUserApi>(c =>
             {
                 c.HttpHost = new Uri("http://localhost:9999/");
                 c.LoggerFactory = new LoggerFactory().AddConsole();
             });
 
-            var userApi = HttpApiClientFactory.Create<IUserApi>();
+            var userApi = HttpApiFactory.Create<IUserApi>();           
             Program.RequestAsync(userApi).Wait();
 
             Console.ReadLine();

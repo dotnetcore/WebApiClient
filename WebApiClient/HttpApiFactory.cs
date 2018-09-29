@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示HttpApiClient创建工厂
+    /// 表示HttpApi创建工厂
+    /// 提供HttpApi的配置注册和实例创建
+    /// 并对实例的生命周期进行自动管理
     /// </summary>
-    public partial class HttpApiClientFactory : IHttpApiClientFactory
+    public partial class HttpApiFactory : IHttpApiFactory, _IHttpApiFactory
     {
         /// <summary>
         /// handler的生命周期
@@ -91,9 +93,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// HttpApiClient创建工厂
+        /// HttpApi创建工厂
         /// </summary>
-        public HttpApiClientFactory()
+        public HttpApiFactory()
         {
             this.expiredEntries = new ConcurrentQueue<ExpiredHandlerEntry>();
             this.activeEntries = new ConcurrentDictionary<Type, Lazy<ActiveHandlerEntry>>();
@@ -104,13 +106,13 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 注册HttpApiClient对应的http接口
+        /// 注册http接口
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <param name="config">HttpApiConfig的配置</param>
         /// <param name="handlerFactory">HttpMessageHandler创建委托</param>
         /// <exception cref="InvalidOperationException"></exception>
-        public void AddTypedClient<TInterface>(Action<HttpApiConfig> config, Func<HttpMessageHandler> handlerFactory) where TInterface : class, IHttpApi
+        public void AddHttpApi<TInterface>(Action<HttpApiConfig> config, Func<HttpMessageHandler> handlerFactory) where TInterface : class, IHttpApi
         {
             if (handlerFactory == null)
             {
@@ -131,11 +133,11 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 创建实现了指定接口的HttpApiClient实例
+        /// 创建指定接口的代理实例
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <returns></returns>
-        public TInterface CreateTypedClient<TInterface>() where TInterface : class, IHttpApi
+        public TInterface CreateHttpApi<TInterface>() where TInterface : class, IHttpApi
         {
             var apiType = typeof(TInterface);
             var entry = this.activeEntries.GetOrAdd(apiType, this.activeEntryFactory).Value;
@@ -175,7 +177,7 @@ namespace WebApiClient
         /// 当有记录失效时
         /// </summary>
         /// <param name="active">激活的记录</param>
-        void IHttpApiClientFactory.OnEntryDeactivate(ActiveHandlerEntry active)
+        void _IHttpApiFactory.OnEntryDeactivate(ActiveHandlerEntry active)
         {
             this.activeEntries.TryRemove(active.ApiType, out var _);
             var expired = new ExpiredHandlerEntry(active);

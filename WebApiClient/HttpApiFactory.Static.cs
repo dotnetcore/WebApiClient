@@ -4,17 +4,19 @@ using System.Net.Http;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示HttpApiClient创建工厂
+    /// 表示HttpApi创建工厂
+    /// 提供HttpApi的配置注册和实例创建
+    /// 并对实例的生命周期进行自动管理
     /// </summary>
-    public partial class HttpApiClientFactory
+    public partial class HttpApiFactory
     {
         /// <summary>
         /// 获取默认工厂实例
         /// </summary>
-        public static readonly HttpApiClientFactory Default = new HttpApiClientFactory();
+        public static readonly HttpApiFactory Default = new HttpApiFactory();
 
         /// <summary>
-        /// 注册HttpApiClient对应的http接口到默认工厂
+        /// 注册http接口到默认工厂
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <exception cref="InvalidOperationException"></exception>
@@ -24,7 +26,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 注册HttpApiClient对应的http接口到默认工厂
+        /// 注册http接口到默认工厂
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <param name="config">HttpApiConfig的配置</param>
@@ -35,7 +37,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 注册HttpApiClient对应的http接口到默认工厂
+        /// 注册http接口到默认工厂
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <param name="config">HttpApiConfig的配置</param>
@@ -43,17 +45,17 @@ namespace WebApiClient
         /// <exception cref="InvalidOperationException"></exception>
         public static void Add<TInterface>(Action<HttpApiConfig> config, Func<HttpMessageHandler> handlerFactory) where TInterface : class, IHttpApi
         {
-            Default.AddTypedClient<TInterface>(config, handlerFactory);
+            Default.AddHttpApi<TInterface>(config, handlerFactory);
         }
 
         /// <summary>
-        /// 使用默认工厂创建实现了指定接口的HttpApiClient实例
+        /// 使用默认工厂创建指定接口的代理实例
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <returns></returns>
         public static TInterface Create<TInterface>() where TInterface : class, IHttpApi
         {
-            return Default.CreateTypedClient<TInterface>();
+            return Default.CreateHttpApi<TInterface>();
         }
     }
 }
