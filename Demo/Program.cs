@@ -13,23 +13,37 @@ namespace Demo
     {
         static void Main(string[] args)
         {
+            Program.Init();
+            Program.RequestAsync().Wait();
+            Console.ReadLine();
+        }
+
+        /// <summary>
+        /// 初始化配置
+        /// </summary>
+        static void Init()
+        {
             HttpServer.Start(9999);
 
+            // 注册与配置IUserApi接口
             HttpApiFactory.Add<IUserApi>(c =>
             {
                 c.HttpHost = new Uri("http://localhost:9999/");
                 c.LoggerFactory = new LoggerFactory().AddConsole();
+                c.FormatOptions.DateTimeFormat = DateTimeFormats.ISO8601_WithMillisecond;
             });
-
-            var userApi = HttpApiFactory.Create<IUserApi>();           
-            Program.RequestAsync(userApi).Wait();
-
-            Console.ReadLine();
         }
 
-
-        private static async Task RequestAsync(IUserApi userApi)
+        /// <summary>
+        /// 请求接口
+        /// </summary>
+        /// <returns></returns>
+        private static async Task RequestAsync()
         {
+            // userApi由HttpApiFactory创建，自动接管其生命周期
+            // 不应该将其做为全局变量缓存起来
+            var userApi = HttpApiFactory.Create<IUserApi>();
+
             var user = new UserInfo
             {
                 Account = "laojiu",
