@@ -2,28 +2,36 @@
 using Demo.HttpServices;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using WebApiClient;
 using WebApiClient.Parameterables;
 
 namespace Demo
 {
+    class MyHandler : System.Net.Http.DelegatingHandler
+    {
+        protected override void Dispose(bool disposing)
+        {
+            Console.WriteLine($"{DateTime.Now } 我被调用disposing了");
+            base.Dispose(disposing);
+        }
+    }
+
     class Program
     {
         static void Main(string[] args)
         {
             HttpServer.Start(9999);
 
-            var config = new HttpApiConfig
+            HttpApiClientFactory.Add<IUserApi>(c =>
             {
-                HttpHost = new Uri("http://localhost:9999/"),
-                LoggerFactory = new LoggerFactory().AddConsole()
-            };
-
-            var userApi = HttpApiClient.Create<IUserApi>(config);
+                c.HttpHost = new Uri("http://localhost:9999/");
+                c.LoggerFactory = new LoggerFactory().AddConsole();
+            });
+             
+            var userApi = HttpApiClientFactory.Create<IUserApi>();
             Program.RequestAsync(userApi).Wait();
-            userApi.Dispose();
-
             Console.ReadLine();
         }
 
