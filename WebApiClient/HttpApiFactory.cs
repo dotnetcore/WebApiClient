@@ -34,9 +34,9 @@ namespace WebApiClient
         private readonly Func<Type, Lazy<ActiveHandlerEntry>> activeEntryFactory;
 
         /// <summary>
-        /// http接口客户端选项
+        /// http接口代理创建选项
         /// </summary>
-        private readonly ConcurrentDictionary<Type, TypedClientOption> typedClientOptions;
+        private readonly ConcurrentDictionary<Type, HttpApiCreateOption> httpApiCreateOptions;
 
         /// <summary>
         /// 激活的记录
@@ -99,7 +99,7 @@ namespace WebApiClient
         {
             this.expiredEntries = new ConcurrentQueue<ExpiredHandlerEntry>();
             this.activeEntries = new ConcurrentDictionary<Type, Lazy<ActiveHandlerEntry>>();
-            this.typedClientOptions = new ConcurrentDictionary<Type, TypedClientOption>();
+            this.httpApiCreateOptions = new ConcurrentDictionary<Type, HttpApiCreateOption>();
             this.activeEntryFactory = apiType => new Lazy<ActiveHandlerEntry>(() => this.CreateActiveEntry(apiType), LazyThreadSafetyMode.ExecutionAndPublication);
 
             this.RegisteCleanup();
@@ -119,13 +119,13 @@ namespace WebApiClient
                 handlerFactory = () => new DefaultHttpClientHandler();
             }
 
-            var options = new TypedClientOption
+            var options = new HttpApiCreateOption
             {
                 ConfigAction = config,
                 HandlerFactory = handlerFactory
             };
 
-            var state = this.typedClientOptions.TryAdd(typeof(TInterface), options);
+            var state = this.httpApiCreateOptions.TryAdd(typeof(TInterface), options);
             if (state == false)
             {
                 throw new InvalidOperationException($"接口{typeof(TInterface)}不能重复注册");
@@ -151,7 +151,7 @@ namespace WebApiClient
         /// <returns></returns>
         private ActiveHandlerEntry CreateActiveEntry(Type apiType)
         {
-            if (this.typedClientOptions.TryGetValue(apiType, out var option) == false)
+            if (this.httpApiCreateOptions.TryGetValue(apiType, out var option) == false)
             {
                 throw new ArgumentException($"未注册的接口类型{apiType}");
             }

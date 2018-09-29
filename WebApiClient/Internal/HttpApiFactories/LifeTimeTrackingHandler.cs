@@ -3,7 +3,7 @@
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示具有生命周期监视的Handler
+    /// 表示具有生命周期自动监视的Handler
     /// </summary>
     class LifeTimeTrackingHandler : DelegatingHandler
     {

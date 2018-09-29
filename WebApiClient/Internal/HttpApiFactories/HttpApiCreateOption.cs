@@ -4,17 +4,17 @@ using System.Net.Http;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示类型客户端选项 
+    /// 表示HttpApi创建选项 
     /// </summary>
-    class TypedClientOption
+    class HttpApiCreateOption
     {
         /// <summary>
-        /// 获取或设置配置项
+        /// 获取或设置配置委托
         /// </summary>
         public Action<HttpApiConfig> ConfigAction { get; set; }
 
         /// <summary>
-        /// 获取或设置Handler的创建工厂
+        /// 获取或设置HttpMessageHandler的创建工厂
         /// </summary>
         public Func<HttpMessageHandler> HandlerFactory { get; set; }
     }
