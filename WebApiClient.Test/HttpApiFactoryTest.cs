@@ -11,6 +11,15 @@ namespace WebApiClient.Test
     public class HttpApiFactoryTest
     {
         [Fact]
+        public void AddHttpApiTest()
+        {
+            var factory = new HttpApiFactory();
+            factory.AddHttpApi<IMyApi>(null, null);
+
+            Assert.Throws<InvalidOperationException>(() => factory.AddHttpApi<IMyApi>(null, null));
+        }
+
+        [Fact]
         public void CreateHttpApiTest()
         {
             var factory = new HttpApiFactory { Lifetime = TimeSpan.FromMilliseconds(100) };
@@ -18,24 +27,22 @@ namespace WebApiClient.Test
 
             var api1 = factory.CreateHttpApi<IMyApi>();
             var api2 = factory.CreateHttpApi<IMyApi>();
-            Assert.True(IsHandlerEquals(api1, api2));
+            Assert.True(IsHttpApiConfigEquals(api1, api2));
             Assert.False(api1 == api2);
 
             Thread.Sleep(TimeSpan.FromMilliseconds(150));
 
             var api3 = factory.CreateHttpApi<IMyApi>();
-            Assert.False(IsHandlerEquals(api1, api3));
+            Assert.False(IsHttpApiConfigEquals(api1, api3));
         }
 
-        private bool IsHandlerEquals(IHttpApiClient x, IHttpApiClient y)
+        private bool IsHttpApiConfigEquals(IHttpApiClient x, IHttpApiClient y)
         {
             var xInterceptor = x.ApiInterceptor as ApiInterceptor;
             var yInterceptor = y.ApiInterceptor as ApiInterceptor;
 
-            var xHandler = xInterceptor.HttpApiConfig.HttpHandler.SourceHanlder as DelegatingHandler;
-            var yHandler = yInterceptor.HttpApiConfig.HttpHandler.SourceHanlder as DelegatingHandler;
-
-            return xHandler.InnerHandler == yHandler.InnerHandler;
+            return xInterceptor.HttpApiConfig == yInterceptor.HttpApiConfig &&
+                xInterceptor.HttpApiConfig.HttpClient == yInterceptor.HttpApiConfig.HttpClient;
         }
 
         public interface IMyApi : IHttpApiClient
