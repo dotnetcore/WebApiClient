@@ -9,13 +9,13 @@ using Xunit;
 namespace WebApiClient.Test
 {
     public class HttpApiFactoryTest
-    {       
-
+    {
         [Fact]
         public void CreateHttpApiTest()
         {
-            var factory = new HttpApiFactory <IMyApi>(null, null) { Lifetime = TimeSpan.FromMilliseconds(100) };
-          
+            var factory = new HttpApiFactory<IMyApi>()
+                .SetLifetime(TimeSpan.FromMilliseconds(100d));
+
             var api1 = factory.CreateHttpApi();
             var api2 = factory.CreateHttpApi();
             Assert.True(IsHttpApiConfigEquals(api1, api2));
@@ -25,18 +25,44 @@ namespace WebApiClient.Test
 
             var api3 = factory.CreateHttpApi();
             Assert.False(IsHttpApiConfigEquals(api1, api3));
+
+            api3.Dispose();
+            Assert.True(GetHttpApiConfig(api3).IsDisposed == false);
         }
 
-        private bool IsHttpApiConfigEquals(IHttpApiClient x, IHttpApiClient y)
+        [Fact]
+        public void AddCreateTest()
         {
-            var xInterceptor = x.ApiInterceptor as ApiInterceptor;
-            var yInterceptor = y.ApiInterceptor as ApiInterceptor;
+            HttpApiFactory.Add<IMyApi>()
+               .SetLifetime(TimeSpan.FromMilliseconds(100d));
 
-            return xInterceptor.HttpApiConfig == yInterceptor.HttpApiConfig &&
-                xInterceptor.HttpApiConfig.HttpClient == yInterceptor.HttpApiConfig.HttpClient;
+            var api1 = HttpApiFactory.Create<IMyApi>();
+            var api2 = HttpApiFactory.Create<IMyApi>();
+            Assert.True(IsHttpApiConfigEquals(api1, api2));
+            Assert.False(api1 == api2);
+
+            Thread.Sleep(TimeSpan.FromMilliseconds(150));
+
+            var api3 = HttpApiFactory.Create<IMyApi>();
+            Assert.False(IsHttpApiConfigEquals(api1, api3));
+
+            api3.Dispose();
+            Assert.True(GetHttpApiConfig(api3).IsDisposed == false);
         }
 
-        public interface IMyApi : IHttpApiClient
+        private bool IsHttpApiConfigEquals(IHttpApi x, IHttpApi y)
+        {
+            return GetHttpApiConfig(x) == GetHttpApiConfig(y);
+        }
+
+        private HttpApiConfig GetHttpApiConfig(IHttpApi httpApi)
+        {
+            var httpApiClient = httpApi as HttpApiClient;
+            var interceptor = httpApiClient.ApiInterceptor as ApiInterceptor;
+            return interceptor.HttpApiConfig;
+        }
+
+        public interface IMyApi : IHttpApi
         {
         }
     }
