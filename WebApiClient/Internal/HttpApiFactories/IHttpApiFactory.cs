@@ -8,9 +8,15 @@ namespace WebApiClient
     interface _IHttpApiFactory
     {
         /// <summary>
-        /// 获取或设置生命周期
+        /// 获取生命周期
         /// </summary>
-        TimeSpan Lifetime { get; set; }
+        TimeSpan Lifetime { get; }
+
+        /// <summary>
+        /// 创建接口的代理实例
+        /// </summary>
+        /// <returns></returns>
+        object CreateHttpApi();
 
         /// <summary>
         /// 当有记录失效时

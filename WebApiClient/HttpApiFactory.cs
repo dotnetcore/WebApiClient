@@ -11,18 +11,18 @@ namespace WebApiClient
     /// 提供HttpApi的配置注册和实例创建
     /// 并对实例的生命周期进行自动管理
     /// </summary>
-    public class HttpApiFactory<TInterface> : IHttpApiFactory<TInterface>, IHttpApiFactory, _IHttpApiFactory
+    public class HttpApiFactory<TInterface> : IHttpApiFactory<TInterface>, _IHttpApiFactory
         where TInterface : class, IHttpApi
     {
         /// <summary>
         /// HttpApiConfig的配置委托
         /// </summary>
-        private readonly Action<HttpApiConfig> configAction;
+        private Action<HttpApiConfig> configAction;
 
         /// <summary>
         /// HttpMessageHandler的创建委托
         /// </summary>
-        private readonly Func<HttpMessageHandler> handlerFunc;
+        private Func<HttpMessageHandler> handlerFunc;
 
         /// <summary>
         /// handler的生命周期
@@ -46,84 +46,70 @@ namespace WebApiClient
 
 
         /// <summary>
-        /// 获取已过期但还未释放的HttpApi实例数量
+        /// HttpApi创建工厂
         /// </summary>
-        public int ExpiredCount
+        public HttpApiFactory()
         {
-            get => this.expiredEntries.Count;
+            this.expiredEntries = new ConcurrentQueue<ExpiredEntry>();
+
+            this.activeEntryLazy = new Lazy<ActiveEntry>(
+                this.CreateActiveEntry,
+                LazyThreadSafetyMode.ExecutionAndPublication);
+
+            this.RegisteCleanup();
         }
 
+
         /// <summary>
-        /// 获取或设置HttpApi实例的生命周期
+        /// 置HttpApi实例的生命周期
         /// </summary>
+        /// <param name="lifeTime">生命周期</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public TimeSpan Lifetime
+        public HttpApiFactory<TInterface> SetLifetime(TimeSpan lifeTime)
         {
-            get
+            if (lifeTime <= TimeSpan.Zero)
             {
-                return this.lifeTime;
+                throw new ArgumentOutOfRangeException();
             }
-            set
-            {
-                if (value <= TimeSpan.Zero)
-                {
-                    throw new ArgumentOutOfRangeException();
-                }
-                this.lifeTime = value;
-            }
+            this.lifeTime = lifeTime;
+            return this;
         }
 
         /// <summary>
         /// 获取或设置清理过期的HttpApi实例的时间间隔
         /// </summary>
+        /// <param name="interval">时间间隔</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public TimeSpan CleanupInterval
+        public HttpApiFactory<TInterface> SetCleanupInterval(TimeSpan interval)
         {
-            get
+            if (interval <= TimeSpan.Zero)
             {
-                return this.cleanupInterval;
+                throw new ArgumentOutOfRangeException();
             }
-            set
-            {
-                if (value <= TimeSpan.Zero)
-                {
-                    throw new ArgumentOutOfRangeException();
-                }
-                this.cleanupInterval = value;
-            }
+            this.cleanupInterval = interval;
+            return this;
         }
 
         /// <summary>
-        /// HttpApi创建工厂
+        /// 配置HttpMessageHandler的创建
         /// </summary>
-        public HttpApiFactory()
-            : this(configAction: null)
+        /// <param name="handlerFunc">创建委托</param>
+        /// <returns></returns>
+        public HttpApiFactory<TInterface> ConfigureHttpMessageHandler(Func<HttpMessageHandler> handlerFunc)
         {
+            this.handlerFunc = handlerFunc;
+            return this;
         }
 
         /// <summary>
-        /// HttpApi创建工厂
+        /// 配置HttpApiConfig
         /// </summary>
-        /// <param name="configAction">HttpApiConfig的配置委托</param>
-        public HttpApiFactory(Action<HttpApiConfig> configAction)
-            : this(configAction, handlerFunc: null)
-        {
-        }
-
-        /// <summary>
-        /// HttpApi创建工厂
-        /// </summary>
-        /// <param name="configAction">HttpApiConfig的配置委托</param>
-        /// <param name="handlerFunc">HttpMessageHandler的创建委托</param>
-        public HttpApiFactory(Action<HttpApiConfig> configAction, Func<HttpMessageHandler> handlerFunc)
+        /// <param name="configAction">配置委托</param>
+        /// <returns></returns>
+        public HttpApiFactory<TInterface> ConfigureHttpApiConfig(Action<HttpApiConfig> configAction)
         {
             this.configAction = configAction;
-            this.handlerFunc = handlerFunc ?? new Func<HttpMessageHandler>(() => new DefaultHttpClientHandler());
-
-            this.expiredEntries = new ConcurrentQueue<ExpiredEntry>();
-            this.activeEntryLazy = new Lazy<ActiveEntry>(this.CreateActiveEntry, LazyThreadSafetyMode.ExecutionAndPublication);
-
-            this.RegisteCleanup();
+            return this;
         }
 
         /// <summary>
@@ -132,14 +118,14 @@ namespace WebApiClient
         /// <returns></returns>
         public TInterface CreateHttpApi()
         {
-            return ((IHttpApiFactory)this).CreateHttpApi() as TInterface;
+            return ((_IHttpApiFactory)this).CreateHttpApi() as TInterface;
         }
 
         /// <summary>
         /// 创建接口的代理实例
         /// </summary>
         /// <returns></returns>
-        object IHttpApiFactory.CreateHttpApi()
+        object _IHttpApiFactory.CreateHttpApi()
         {
             var interceptor = this.activeEntryLazy.Value.Interceptor;
             return HttpApiClient.Create(typeof(TInterface), interceptor);
@@ -151,7 +137,8 @@ namespace WebApiClient
         /// <returns></returns>
         private ActiveEntry CreateActiveEntry()
         {
-            var httpApiConfig = new HttpApiConfig(this.handlerFunc.Invoke(), true);
+            var handler = this.handlerFunc?.Invoke() ?? new DefaultHttpClientHandler();
+            var httpApiConfig = new HttpApiConfig(handler, true);
             var interceptor = new LifeTimeTrackingInterceptor(httpApiConfig);
 
             if (this.configAction != null)
@@ -173,10 +160,20 @@ namespace WebApiClient
         void _IHttpApiFactory.OnEntryDeactivate(ActiveEntry active)
         {
             // 切换激活状态的记录的实例
-            this.activeEntryLazy = new Lazy<ActiveEntry>(this.CreateActiveEntry, LazyThreadSafetyMode.ExecutionAndPublication);
+            this.activeEntryLazy = new Lazy<ActiveEntry>(
+                this.CreateActiveEntry,
+                LazyThreadSafetyMode.ExecutionAndPublication);
 
             var expired = new ExpiredEntry(active);
             this.expiredEntries.Enqueue(expired);
+        }
+
+        /// <summary>
+        /// 获取生命周期
+        /// </summary>
+        TimeSpan _IHttpApiFactory.Lifetime
+        {
+            get => this.lifeTime;
         }
 
         /// <summary>

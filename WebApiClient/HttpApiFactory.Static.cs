@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Net.Http;
 
 namespace WebApiClient
 {
@@ -19,56 +18,35 @@ namespace WebApiClient
         /// <summary>
         /// 工厂字典
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, IHttpApiFactory> factories;
+        private static readonly ConcurrentDictionary<Type, _IHttpApiFactory> factories;
 
         /// <summary>
         /// 表示HttpApi创建工厂
         /// </summary>
         static HttpApiFactory()
         {
-            factories = new ConcurrentDictionary<Type, IHttpApiFactory>();
+            factories = new ConcurrentDictionary<Type, _IHttpApiFactory>();
         }
 
         /// <summary>
-        /// 注册http接口
+        /// 创建并记录指定接口的HttpApiFactory
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
+        /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
-        public static bool Add<TInterface>() where TInterface : class, IHttpApi
-        {
-            return Add<TInterface>(configAction: null);
-        }
-
-        /// <summary>
-        /// 注册http接口
-        /// </summary>
-        /// <typeparam name="TInterface"></typeparam>
-        /// <param name="configAction">HttpApiConfig的配置委托</param>
-        /// <returns></returns>
-        public static bool Add<TInterface>(Action<HttpApiConfig> configAction) where TInterface : class, IHttpApi
-        {
-            return Add<TInterface>(configAction, handlerFunc: null);
-        }
-
-        /// <summary>
-        /// 注册http接口
-        /// </summary>
-        /// <typeparam name="TInterface"></typeparam>
-        /// <param name="configAction">HttpApiConfig的配置</param>
-        /// <param name="handlerFunc">HttpMessageHandler创建委托</param>
-        /// <returns></returns>
-        public static bool Add<TInterface>(Action<HttpApiConfig> configAction, Func<HttpMessageHandler> handlerFunc) where TInterface : class, IHttpApi
+        public static HttpApiFactory<TInterface> Add<TInterface>() where TInterface : class, IHttpApi
         {
             lock (syncRoot)
             {
                 var apiType = typeof(TInterface);
                 if (factories.ContainsKey(apiType) == true)
                 {
-                    return false;
+                    throw new InvalidOperationException($"不允许重复注册接口：{apiType}");
                 }
 
-                var factory = new HttpApiFactory<TInterface>(configAction, handlerFunc);
-                return factories.TryAdd(apiType, factory);
+                var factory = new HttpApiFactory<TInterface>();
+                factories.TryAdd(apiType, factory);
+                return factory;
             }
         }
 

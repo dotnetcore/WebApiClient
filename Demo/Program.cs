@@ -26,7 +26,7 @@ namespace Demo
             HttpServer.Start(9999);
 
             // 注册与配置IUserApi接口
-            HttpApiFactory.Add<IUserApi>(c =>
+            HttpApiFactory.Add<IUserApi>().ConfigureHttpApiConfig(c =>
             {
                 c.HttpHost = new Uri("http://localhost:9999/");
                 c.LoggerFactory = new LoggerFactory().AddConsole();
