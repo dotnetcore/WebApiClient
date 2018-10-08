@@ -5,18 +5,18 @@ using WebApiClient.Defaults;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示激活状态的拦截器
+    /// 表示具有生命周期的拦截器
     /// </summary>
-    class ActiveInterceptor : ApiInterceptor
+    class LifetimeInterceptor : ApiInterceptor
     {
         /// <summary>
-        /// 激活状态的拦截器
+        /// 具有生命周期的拦截器
         /// </summary>
         /// <param name="httpApiConfig">httpApi配置</param>
-        /// <param name="lifeTime">生命周期</param>
-        /// <param name="deactivateAction">生效委托</param>
+        /// <param name="lifeTime">拦截器的生命周期</param>
+        /// <param name="deactivateAction">失效回调</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ActiveInterceptor(HttpApiConfig httpApiConfig, TimeSpan lifeTime, Action<ActiveInterceptor> deactivateAction)
+        public LifetimeInterceptor(HttpApiConfig httpApiConfig, TimeSpan lifeTime, Action<LifetimeInterceptor> deactivateAction)
             : base(httpApiConfig)
         {
             if (deactivateAction == null)
