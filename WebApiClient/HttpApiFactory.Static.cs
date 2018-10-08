@@ -18,14 +18,14 @@ namespace WebApiClient
         /// <summary>
         /// 工厂字典
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, _IHttpApiFactory> factories;
+        private static readonly ConcurrentDictionary<Type, IHttpApiFactory> factories;
 
         /// <summary>
         /// 表示HttpApi创建工厂
         /// </summary>
         static HttpApiFactory()
         {
-            factories = new ConcurrentDictionary<Type, _IHttpApiFactory>();
+            factories = new ConcurrentDictionary<Type, IHttpApiFactory>();
         }
 
         /// <summary>

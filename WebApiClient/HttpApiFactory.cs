@@ -11,7 +11,7 @@ namespace WebApiClient
     /// 提供HttpApi的配置注册和实例创建
     /// 并对实例的生命周期进行自动管理
     /// </summary>
-    public class HttpApiFactory<TInterface> : IHttpApiFactory<TInterface>, _IHttpApiFactory
+    public class HttpApiFactory<TInterface> : IHttpApiFactory<TInterface>, IHttpApiFactory
         where TInterface : class, IHttpApi
     {
         /// <summary>
@@ -35,23 +35,29 @@ namespace WebApiClient
         private TimeSpan cleanupInterval = TimeSpan.FromSeconds(10d);
 
         /// <summary>
+        /// 过期的记录
+        /// </summary>
+        private readonly ConcurrentQueue<ExpiredEntry> expiredEntries = new ConcurrentQueue<ExpiredEntry>();
+
+        /// <summary>
         /// 激活的记录
         /// </summary>
         private volatile Lazy<ActiveEntry> activeEntryLazy;
 
-        /// <summary>
-        /// 过期的记录
-        /// </summary>
-        private readonly ConcurrentQueue<ExpiredEntry> expiredEntries;
 
+        /// <summary>
+        /// 获取生命周期
+        /// </summary>
+        TimeSpan IHttpApiFactory.Lifetime
+        {
+            get => this.lifeTime;
+        }
 
         /// <summary>
         /// HttpApi创建工厂
         /// </summary>
         public HttpApiFactory()
         {
-            this.expiredEntries = new ConcurrentQueue<ExpiredEntry>();
-
             this.activeEntryLazy = new Lazy<ActiveEntry>(
                 this.CreateActiveEntry,
                 LazyThreadSafetyMode.ExecutionAndPublication);
@@ -118,14 +124,14 @@ namespace WebApiClient
         /// <returns></returns>
         public TInterface CreateHttpApi()
         {
-            return ((_IHttpApiFactory)this).CreateHttpApi() as TInterface;
+            return ((IHttpApiFactory)this).CreateHttpApi() as TInterface;
         }
 
         /// <summary>
         /// 创建接口的代理实例
         /// </summary>
         /// <returns></returns>
-        object _IHttpApiFactory.CreateHttpApi()
+        object IHttpApiFactory.CreateHttpApi()
         {
             var interceptor = this.activeEntryLazy.Value.Interceptor;
             return HttpApiClient.Create(typeof(TInterface), interceptor);
@@ -157,7 +163,7 @@ namespace WebApiClient
         /// 当有记录失效时
         /// </summary>
         /// <param name="active">激活的记录</param>
-        void _IHttpApiFactory.OnEntryDeactivate(ActiveEntry active)
+        void IHttpApiFactory.OnEntryDeactivate(ActiveEntry active)
         {
             // 切换激活状态的记录的实例
             this.activeEntryLazy = new Lazy<ActiveEntry>(
@@ -168,13 +174,6 @@ namespace WebApiClient
             this.expiredEntries.Enqueue(expired);
         }
 
-        /// <summary>
-        /// 获取生命周期
-        /// </summary>
-        TimeSpan _IHttpApiFactory.Lifetime
-        {
-            get => this.lifeTime;
-        }
 
         /// <summary>
         /// 注册清理任务
@@ -209,6 +208,5 @@ namespace WebApiClient
 
             this.RegisteCleanup();
         }
-
     }
 }

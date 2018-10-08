@@ -22,7 +22,7 @@ namespace WebApiClient
         /// 激活状态的记录
         /// </summary>
         /// <param name="factory">httpApiClient工厂</param>
-        public ActiveEntry(_IHttpApiFactory factory)
+        public ActiveEntry(IHttpApiFactory factory)
         {
             Task.Delay(factory.Lifetime)
                 .ConfigureAwait(false)

@@ -5,7 +5,7 @@ namespace WebApiClient
     /// <summary>
     /// 定义HttpApiFactory的接口
     /// </summary>
-    interface _IHttpApiFactory
+    interface IHttpApiFactory
     {
         /// <summary>
         /// 获取生命周期
