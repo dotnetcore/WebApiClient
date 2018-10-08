@@ -35,36 +35,29 @@ namespace WebApiClient
         private TimeSpan cleanupInterval = TimeSpan.FromSeconds(10d);
 
         /// <summary>
-        /// 过期的记录
+        /// 过期的拦截器
         /// </summary>
-        private readonly ConcurrentQueue<ExpiredEntry> expiredEntries = new ConcurrentQueue<ExpiredEntry>();
+        private readonly ConcurrentQueue<ExpiredInterceptor> expiredInterceptors = new ConcurrentQueue<ExpiredInterceptor>();
 
         /// <summary>
-        /// 激活的记录
+        /// 当前过期的拦截器的数量
         /// </summary>
-        private volatile Lazy<ActiveEntry> activeEntryLazy;
-
+        private int expiredCount = 0;
 
         /// <summary>
-        /// 获取生命周期
+        /// 激活的拦截器
         /// </summary>
-        TimeSpan IHttpApiFactory.Lifetime
-        {
-            get => this.lifeTime;
-        }
+        private Lazy<ActiveInterceptor> activeInterceptorLazy;
 
         /// <summary>
         /// HttpApi创建工厂
         /// </summary>
         public HttpApiFactory()
         {
-            this.activeEntryLazy = new Lazy<ActiveEntry>(
-                this.CreateActiveEntry,
+            this.activeInterceptorLazy = new Lazy<ActiveInterceptor>(
+                this.CreateActiveInterceptor,
                 LazyThreadSafetyMode.ExecutionAndPublication);
-
-            this.RegisteCleanup();
         }
-
 
         /// <summary>
         /// 置HttpApi实例的生命周期
@@ -133,80 +126,88 @@ namespace WebApiClient
         /// <returns></returns>
         object IHttpApiFactory.CreateHttpApi()
         {
-            var interceptor = this.activeEntryLazy.Value.Interceptor;
+            var interceptor = this.activeInterceptorLazy.Value;
             return HttpApiClient.Create(typeof(TInterface), interceptor);
         }
 
         /// <summary>
-        /// 创建激活状态的记录
+        /// 创建激活状态的拦截器
         /// </summary>
         /// <returns></returns>
-        private ActiveEntry CreateActiveEntry()
+        private ActiveInterceptor CreateActiveInterceptor()
         {
             var handler = this.handlerFunc?.Invoke() ?? new DefaultHttpClientHandler();
             var httpApiConfig = new HttpApiConfig(handler, true);
-            var interceptor = new LifeTimeTrackingInterceptor(httpApiConfig);
 
             if (this.configAction != null)
             {
                 this.configAction.Invoke(httpApiConfig);
             }
 
-            return new ActiveEntry(this)
-            {
-                Interceptor = interceptor,
-                Disposable = httpApiConfig
-            };
+            return new ActiveInterceptor(
+                httpApiConfig,
+                this.lifeTime,
+                this.OnInterceptorDeactivate);
         }
 
         /// <summary>
-        /// 当有记录失效时
+        /// 当有拦截器失效时
         /// </summary>
-        /// <param name="active">激活的记录</param>
-        void IHttpApiFactory.OnEntryDeactivate(ActiveEntry active)
+        /// <param name="active">激活的拦截器</param>
+        private void OnInterceptorDeactivate(ActiveInterceptor active)
         {
             // 切换激活状态的记录的实例
-            this.activeEntryLazy = new Lazy<ActiveEntry>(
-                this.CreateActiveEntry,
+            this.activeInterceptorLazy = new Lazy<ActiveInterceptor>(
+                this.CreateActiveInterceptor,
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
-            var expired = new ExpiredEntry(active);
-            this.expiredEntries.Enqueue(expired);
+            var expired = new ExpiredInterceptor(active);
+            this.expiredInterceptors.Enqueue(expired);
+
+            // 从0变为1，要启动清理作业
+            if (Interlocked.Increment(ref this.expiredCount) == 1)
+            {
+                this.RegisteCleanup();
+            }
         }
 
 
         /// <summary>
         /// 注册清理任务
         /// </summary>
-        private void RegisteCleanup()
+        private async void RegisteCleanup()
         {
-            Task.Delay(this.cleanupInterval)
-                .ConfigureAwait(false)
-                .GetAwaiter()
-                .OnCompleted(this.CleanupCallback);
+            while (this.Cleanup() == false)
+            {
+                await Task.Delay(this.cleanupInterval).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
-        /// 清理任务回调
+        /// 清理失效的拦截器
         /// </summary>
-        private void CleanupCallback()
+        /// <returns>是否完全清理</returns>
+        private bool Cleanup()
         {
-            var count = this.expiredEntries.Count;
-            for (var i = 0; i < count; i++)
+            var cleanCount = this.expiredInterceptors.Count;
+            for (var i = 0; i < cleanCount; i++)
             {
-                this.expiredEntries.TryDequeue(out var entry);
-                if (entry.CanDispose == true)
+                this.expiredInterceptors.TryDequeue(out var expired);
+                if (expired.CanDispose == false)
                 {
-                    entry.Dispose();
+                    this.expiredInterceptors.Enqueue(expired);
                 }
                 else
                 {
-                    this.expiredEntries.Enqueue(entry);
+                    expired.Dispose();
+                    if (Interlocked.Decrement(ref this.expiredCount) == 0)
+                    {
+                        return true;
+                    }
                 }
             }
 
-
-            this.RegisteCleanup();
+            return false;
         }
     }
 }

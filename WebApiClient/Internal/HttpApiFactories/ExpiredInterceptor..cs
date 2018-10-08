@@ -3,9 +3,9 @@
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示过期状态的记录
+    /// 表示过期状态的拦截器
     /// </summary>
-    class ExpiredEntry : IDisposable
+    class ExpiredInterceptor : IDisposable
     {
         /// <summary>
         /// 用于释放资源的对象
@@ -27,13 +27,13 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 过期状态的记录
+        /// 过期状态的拦截器
         /// </summary>
-        /// <param name="active">激活状态的记录</param>
-        public ExpiredEntry(ActiveEntry active)
+        /// <param name="active">激活状态的拦截器</param>
+        public ExpiredInterceptor(ActiveInterceptor active)
         {
-            this.disposable = active.Disposable;
-            this.weakReference = new WeakReference(active.Interceptor);
+            this.disposable = active.HttpApiConfig;
+            this.weakReference = new WeakReference(active);
         }
 
         /// <summary>
