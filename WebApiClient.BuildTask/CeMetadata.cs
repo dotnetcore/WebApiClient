@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace WebApiClient.BuildTask
 {
@@ -139,6 +140,52 @@ namespace WebApiClient.BuildTask
                 throw new ArgumentNullException(nameof(target));
             }
             return source.FullName == target.FullName;
+        }
+
+        /// <summary>
+        /// 返回方法的完整名称
+        /// </summary>
+        /// <param name="method">方法</param>
+        /// <returns></returns>
+        protected string GetMethodFullName(MethodReference method)
+        {
+            var builder = new StringBuilder();
+            foreach (var p in method.Parameters)
+            {
+                if (builder.Length > 0)
+                {
+                    builder.Append(",");
+                }
+                builder.Append(GetTypeName(p.ParameterType));
+            }
+            var insert = $"{GetTypeName(method.ReturnType)} {method.Name}(";
+            return builder.Insert(0, insert).Append(")").ToString();
+        }
+
+        /// <summary>
+        /// 返回类型不含namespace的名称
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <returns></returns>
+        private static string GetTypeName(TypeReference type)
+        {
+            if (type.IsGenericInstance == false)
+            {
+                return type.Name;
+            }
+
+            var builder = new StringBuilder();
+            var parameters = ((GenericInstanceType)type).GenericArguments;
+            foreach (var p in parameters)
+            {
+                if (builder.Length > 0)
+                {
+                    builder.Append(",");
+                }
+                builder.Append(GetTypeName(p));
+            }
+
+            return builder.Insert(0, $"{type.Name}<").Append(">").ToString();
         }
     }
 }

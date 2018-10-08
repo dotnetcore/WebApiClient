@@ -143,7 +143,11 @@ namespace WebApiClient.BuildTask
                 .Except(excepts, TypeDefinitionComparer.Instance)
                 .ToArray();
 
-            var apiMethods = interfaces.SelectMany(item => item.Methods).ToArray();
+            var apiMethods = interfaces
+                .SelectMany(item => item.Methods)
+                .OrderBy(item => base.GetMethodFullName(item))
+                .ToArray();
+
             foreach (var method in apiMethods)
             {
                 this.EnsureApiMethod(method);
