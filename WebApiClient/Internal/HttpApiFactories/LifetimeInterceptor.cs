@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Threading;
 using WebApiClient.Defaults;
 
 namespace WebApiClient
@@ -9,6 +9,11 @@ namespace WebApiClient
     /// </summary>
     class LifetimeInterceptor : ApiInterceptor
     {
+        /// <summary>
+        /// Token取消源
+        /// </summary>
+        private readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
+
         /// <summary>
         /// 具有生命周期的拦截器
         /// </summary>
@@ -24,10 +29,13 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(deactivateAction));
             }
 
-            Task.Delay(lifeTime)
-                .ConfigureAwait(false)
-                .GetAwaiter()
-                .OnCompleted(() => deactivateAction(this));
+            this.tokenSource.Token.Register(() =>
+            {
+                this.tokenSource.Dispose();
+                deactivateAction.Invoke(this);
+            }, useSynchronizationContext: false);
+
+            this.tokenSource.CancelAfter(lifeTime);
         }
 
         /// <summary>

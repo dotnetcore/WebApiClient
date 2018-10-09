@@ -47,10 +47,13 @@ namespace WebApiClient
         /// </summary>
         private async void StartCleanup()
         {
-            while (this.Cleanup() == false)
+            do
             {
-                await Task.Delay(this.CleanupInterval).ConfigureAwait(false);
+                await Task
+                    .Delay(this.CleanupInterval)
+                    .ConfigureAwait(false);
             }
+            while (this.Cleanup() == false);
         }
 
         /// <summary>
@@ -67,17 +70,15 @@ namespace WebApiClient
                 if (entry.CanDispose == false)
                 {
                     this.trackingEntries.Enqueue(entry);
+                    continue;
                 }
-                else
+
+                entry.Dispose();
+                if (Interlocked.Decrement(ref this.trackingEntryCount) == 0)
                 {
-                    entry.Dispose();
-                    if (Interlocked.Decrement(ref this.trackingEntryCount) == 0)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
-
             return false;
         }
 
