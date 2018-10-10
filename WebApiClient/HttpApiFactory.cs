@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 
@@ -38,6 +39,16 @@ namespace WebApiClient
         private readonly InterceptorCleaner interceptorCleaner = new InterceptorCleaner();
 
         /// <summary>
+        /// 是否保持cookie容器
+        /// </summary>
+        private bool keepCookieContainer = true;
+
+        /// <summary>
+        /// cookie容器
+        /// </summary>
+        private CookieContainer cookieContainer;
+
+        /// <summary>
         /// HttpApi创建工厂
         /// </summary>
         public HttpApiFactory()
@@ -74,6 +85,18 @@ namespace WebApiClient
                 throw new ArgumentOutOfRangeException();
             }
             this.interceptorCleaner.CleanupInterval = interval;
+            return this;
+        }
+
+        /// <summary>
+        /// 设置是维护一个CookieContainer实例
+        /// 该实例为首次创建时的CookieContainer
+        /// </summary>
+        /// <param name="keep">true则共用同一个CookieContainer</param>
+        /// <returns></returns>
+        public HttpApiFactory<TInterface> SetKeepCookieContainer(bool keep)
+        {
+            this.keepCookieContainer = keep;
             return this;
         }
 
@@ -130,6 +153,13 @@ namespace WebApiClient
             if (this.configAction != null)
             {
                 this.configAction.Invoke(httpApiConfig);
+            }
+
+            if (this.keepCookieContainer == true)
+            {
+                var handlerContainer = httpApiConfig.HttpHandler.CookieContainer;
+                Interlocked.CompareExchange(ref this.cookieContainer, handlerContainer, null);
+                httpApiConfig.HttpHandler.CookieContainer = this.cookieContainer;
             }
 
             return new LifetimeInterceptor(
