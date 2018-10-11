@@ -23,47 +23,38 @@ namespace WebApiClient
         /// <returns></returns>
         public static async Task ConnectTaskAsync(this Socket socket, EndPoint remoteEndPoint, TimeSpan? timeout)
         {
+            void OnEndConnect(object sender, SocketAsyncEventArgs e)
+            {
+                var setter = e.UserToken as TaskSetter<object>;
+                if (e.SocketError == SocketError.Success)
+                {
+                    setter.SetResult(null);
+                }
+                else
+                {
+                    var ex = new SocketException((int)e.SocketError);
+                    setter.SetException(ex);
+                }
+            }
+
+
             if (remoteEndPoint == null)
             {
                 throw new ArgumentNullException(nameof(remoteEndPoint));
             }
 
-            var token = new TaskSetter<object>(timeout);
-            var e = new SocketAsyncEventArgs
+            var taskSetter = new TaskSetter<object>(timeout);
+            using (var args = new SocketAsyncEventArgs())
             {
-                RemoteEndPoint = remoteEndPoint,
-                UserToken = token
-            };
+                args.UserToken = taskSetter;
+                args.RemoteEndPoint = remoteEndPoint;
+                args.Completed += OnEndConnect;
 
-            using (e)
-            {
-                e.Completed += OnEndConnect;
-                if (socket.ConnectAsync(e) == false)
+                if (socket.ConnectAsync(args) == false)
                 {
-                    OnEndConnect(socket, e);
+                    OnEndConnect(socket, args);
                 }
-                await token.Task.ConfigureAwait(false);
-            }
-        }
-
-
-
-        /// <summary>
-        /// 连接完成
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private static void OnEndConnect(object sender, SocketAsyncEventArgs e)
-        {
-            var token = e.UserToken as TaskSetter<object>;
-            if (e.SocketError == SocketError.Success)
-            {
-                token.SetResult(null);
-            }
-            else
-            {
-                var ex = new SocketException((int)e.SocketError);
-                token.SetException(ex);
+                await taskSetter.Task.ConfigureAwait(false);
             }
         }
 
@@ -79,43 +70,35 @@ namespace WebApiClient
         /// <returns></returns>
         public static async Task<int> SendTaskAsync(this Socket socket, ArraySegment<byte> arraySegment, TimeSpan? timeout)
         {
-            var token = new TaskSetter<int>(timeout);
-            var e = new SocketAsyncEventArgs
+            void OnEndSend(object sender, SocketAsyncEventArgs e)
             {
-                UserToken = token
-            };
-
-            using (e)
-            {
-                e.SetBuffer(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
-                e.Completed += OnEndSend;
-
-                if (socket.SendAsync(e) == false)
+                var setter = e.UserToken as TaskSetter<int>;
+                if (e.SocketError == SocketError.Success)
                 {
-                    OnEndSend(socket, e);
+                    setter.SetResult(e.BytesTransferred);
                 }
-                return await token.Task.ConfigureAwait(false);
+                else
+                {
+                    var ex = new SocketException((int)e.SocketError);
+                    setter.SetException(ex);
+                }
+            }
+
+            var taskSetter = new TaskSetter<int>(timeout);
+            using (var args = new SocketAsyncEventArgs { UserToken = taskSetter })
+            {
+                args.SetBuffer(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
+                args.Completed += OnEndSend;
+
+                if (socket.SendAsync(args) == false)
+                {
+                    OnEndSend(socket, args);
+                }
+                return await taskSetter.Task.ConfigureAwait(false);
             }
         }
 
-        /// <summary>
-        /// 发送完成
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private static void OnEndSend(object sender, SocketAsyncEventArgs e)
-        {
-            var token = e.UserToken as TaskSetter<int>;
-            if (e.SocketError == SocketError.Success)
-            {
-                token.SetResult(e.BytesTransferred);
-            }
-            else
-            {
-                var ex = new SocketException((int)e.SocketError);
-                token.SetException(ex);
-            }
-        }
+
 
         /// <summary>
         /// 异步接收
@@ -128,69 +111,57 @@ namespace WebApiClient
         /// <returns></returns>
         public static async Task<int> ReceiveTaskAsync(this Socket socket, ArraySegment<byte> arraySegment, TimeSpan? timeout)
         {
-            var token = new TaskSetter<int>(timeout);
-            var e = new SocketAsyncEventArgs
+            void OnEndReceive(object sender, SocketAsyncEventArgs e)
             {
-                UserToken = token
-            };
-
-            using (e)
-            {
-                e.SetBuffer(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
-                e.Completed += OnEndSend;
-
-                if (socket.ReceiveAsync(e) == false)
+                var setter = e.UserToken as TaskSetter<int>;
+                if (e.SocketError == SocketError.Success)
                 {
-                    OnEndReceive(socket, e);
+                    setter.SetResult(e.BytesTransferred);
                 }
-                return await token.Task.ConfigureAwait(false);
+                else
+                {
+                    var ex = new SocketException((int)e.SocketError);
+                    setter.SetException(ex);
+                }
+            }
+
+            var taskSetter = new TaskSetter<int>(timeout);
+            using (var args = new SocketAsyncEventArgs { UserToken = taskSetter })
+            {
+                args.SetBuffer(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
+                args.Completed += OnEndReceive;
+
+                if (socket.ReceiveAsync(args) == false)
+                {
+                    OnEndReceive(socket, args);
+                }
+                return await taskSetter.Task.ConfigureAwait(false);
             }
         }
 
-        /// <summary>
-        /// 接收完成
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private static void OnEndReceive(object sender, SocketAsyncEventArgs e)
-        {
-            var token = e.UserToken as TaskSetter<int>;
-            if (e.SocketError == SocketError.Success)
-            {
-                token.SetResult(e.BytesTransferred);
-            }
-            else
-            {
-                var ex = new SocketException((int)e.SocketError);
-                token.SetException(ex);
-            }
-        }
 
         /// <summary>
         /// 表示任务行为
         /// </summary>
         /// <typeparam name="TResult">任务结果类型</typeparam>
-        private class TaskSetter<TResult> : IDisposable
+        private class TaskSetter<TResult>
         {
-            /// <summary>
-            /// 任务源
-            /// </summary>
-            private readonly TaskCompletionSource<TResult> taskSource;
-
             /// <summary>
             /// 取消源
             /// </summary>
             private readonly CancellationTokenSource tokenSource;
 
             /// <summary>
+            /// 任务源
+            /// </summary>
+            private readonly TaskCompletionSource<TResult> taskSource = new TaskCompletionSource<TResult>();
+
+            /// <summary>
             /// 获取任务对象
             /// </summary>
             public Task<TResult> Task
             {
-                get
-                {
-                    return this.taskSource.Task;
-                }
+                get => this.taskSource.Task;
             }
 
             /// <summary>
@@ -198,7 +169,6 @@ namespace WebApiClient
             /// </summary>
             public TaskSetter(TimeSpan? timeout)
             {
-                this.taskSource = new TaskCompletionSource<TResult>();
                 if (timeout.HasValue == true)
                 {
                     this.tokenSource = new CancellationTokenSource();
@@ -227,14 +197,6 @@ namespace WebApiClient
             {
                 this.tokenSource?.Dispose();
                 return this.taskSource.TrySetException(ex);
-            }
-
-            /// <summary>
-            /// 释放资源
-            /// </summary>
-            public void Dispose()
-            {
-                this.tokenSource?.Dispose();
             }
         }
     }
