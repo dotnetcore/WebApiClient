@@ -29,7 +29,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 创建并记录指定接口的HttpApiFactory
+        /// 创建并返回指定接口的HttpApiFactory
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <exception cref="InvalidOperationException"></exception>
@@ -41,7 +41,7 @@ namespace WebApiClient
                 var apiType = typeof(TInterface);
                 if (factories.ContainsKey(apiType) == true)
                 {
-                    throw new InvalidOperationException($"不允许重复注册接口：{apiType}");
+                    throw new InvalidOperationException($"不允许重复创建指定接口的HttpApiFactory：{apiType}");
                 }
 
                 var factory = new HttpApiFactory<TInterface>();
@@ -62,7 +62,7 @@ namespace WebApiClient
             {
                 return factory.CreateHttpApi() as TInterface;
             }
-            throw new InvalidOperationException($"未注册的接口类型：{typeof(TInterface)}");
+            throw new InvalidOperationException($"请先调用HttpApiFactory.Add()方法配置指定接口：{typeof(TInterface)}");
         }
     }
 }

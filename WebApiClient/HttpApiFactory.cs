@@ -89,10 +89,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 设置是维护一个CookieContainer实例
+        /// 设置是否维护使用一个CookieContainer实例
         /// 该实例为首次创建时的CookieContainer
         /// </summary>
-        /// <param name="keep">true则共用同一个CookieContainer</param>
+        /// <param name="keep">true维护使用一个CookieContainer实例</param>
         /// <returns></returns>
         public HttpApiFactory<TInterface> SetKeepCookieContainer(bool keep)
         {
