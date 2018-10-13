@@ -326,7 +326,7 @@ namespace WebApiClient
         /// <returns></returns>
         public static bool IsProxyEquals(IWebProxy x, IWebProxy y)
         {
-            if (x == null && y == null)
+            if (x == y)
             {
                 return true;
             }

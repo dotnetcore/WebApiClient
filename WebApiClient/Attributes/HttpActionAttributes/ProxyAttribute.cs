@@ -7,10 +7,10 @@ namespace WebApiClient.Attributes
 {
     /// <summary>
     /// 表示http代理特性
-    /// 设置之后将无法改变
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
+    /// 接口实例整个生命周期内都使用这个代理
+    /// </summary>    
     [DebuggerDisplay("Proxy {host}:{port}")]
+    [AttributeUsage(AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
     public class ProxyAttribute : ApiActionAttribute
     {
         /// <summary>
@@ -23,7 +23,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="host">域名或ip</param>
         /// <param name="port">端口</param>    
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>      
         public ProxyAttribute(string host, int port)
         {
             this.httpProxy = new HttpProxy(host, port);

@@ -13,7 +13,7 @@ namespace WebApiClient
         /// <summary>
         /// 同步锁
         /// </summary>
-        private static object syncRoot = new object();
+        private static readonly object syncRoot = new object();
 
         /// <summary>
         /// 工厂字典
@@ -58,11 +58,12 @@ namespace WebApiClient
         /// <returns></returns>
         public static TInterface Create<TInterface>() where TInterface : class, IHttpApi
         {
-            if (factories.TryGetValue(typeof(TInterface), out var factory) == true)
+            var apiType = typeof(TInterface);
+            if (factories.TryGetValue(apiType, out var factory) == true)
             {
                 return factory.CreateHttpApi() as TInterface;
             }
-            throw new InvalidOperationException($"请先调用HttpApiFactory.Add()方法配置指定接口：{typeof(TInterface)}");
+            throw new InvalidOperationException($"请先调用HttpApiFactory.Add()方法配置指定接口：{apiType}");
         }
     }
 }

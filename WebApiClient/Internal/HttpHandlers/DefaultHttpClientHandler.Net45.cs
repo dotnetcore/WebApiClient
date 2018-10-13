@@ -17,7 +17,7 @@ namespace WebApiClient
         /// <summary>
         /// Uri集合
         /// </summary>
-        private UriHashSet hashSet = new UriHashSet();
+        private readonly UriHashSet hashSet = new UriHashSet();
 
         /// <summary>
         /// 每个服务的最大连接数设置器
