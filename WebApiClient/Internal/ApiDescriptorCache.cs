@@ -176,7 +176,7 @@ namespace WebApiClient
             /// <summary>
             /// 添加新特性
             /// </summary>
-            /// <param name="attribute"></param>
+            /// <param name="attribute">新特性</param>
             public void Add(IApiParameterAttribute attribute)
             {
                 this.attribueList.Add(attribute);
@@ -185,7 +185,7 @@ namespace WebApiClient
             /// <summary>
             /// 添加新特性
             /// </summary>
-            /// <param name="attribute"></param>
+            /// <param name="attribute">新特性</param>
             /// <returns></returns>
             public bool AddIfNotExists(IApiParameterAttribute attribute)
             {
