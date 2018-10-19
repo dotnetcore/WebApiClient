@@ -114,24 +114,27 @@ namespace WebApiClient.Contexts
         {
             var apiAction = this.ApiActionDescriptor;
             var httpClient = this.HttpApiConfig.HttpClient;
-            var timeout = this.RequestMessage.Timeout ?? httpClient.Timeout;
 
-            using (var tokenSource = new CancellationTokenSource(timeout))
+            var token = this.RequestMessage.CancellationToken;
+            if (this.RequestMessage.Timeout.HasValue == true)
             {
-                try
-                {
-                    this.ResponseMessage = await httpClient
-                        .SendAsync(this.RequestMessage, tokenSource.Token)
-                        .ConfigureAwait(false);
+                var tokenSource = new CancellationTokenSource(this.RequestMessage.Timeout.Value);
+                token = CancellationTokenSource.CreateLinkedTokenSource(token, tokenSource.Token).Token;
+            }
 
-                    this.Result = await apiAction.Return.Attribute
-                        .GetTaskResult(this)
-                        .ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    this.Exception = ex;
-                }
+            try
+            {
+                this.ResponseMessage = await httpClient
+                    .SendAsync(this.RequestMessage, token)
+                    .ConfigureAwait(false);
+
+                this.Result = await apiAction.Return.Attribute
+                    .GetTaskResult(this)
+                    .ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                this.Exception = ex;
             }
         }
 

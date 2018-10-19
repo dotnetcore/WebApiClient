@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using WebApiClient.Attributes;
 using WebApiClient.Contexts;
@@ -93,6 +94,10 @@ namespace WebApiClient
             else if (isHttpContent == true)
             {
                 attributes.AddIfNotExists(new HttpContentAttribute());
+            }
+            else if (parameterType == typeof(CancellationToken))
+            {
+                attributes.Add(new CancellationTokenAttribute());
             }
             else if (attributes.Count == 0)
             {

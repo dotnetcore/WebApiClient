@@ -7,10 +7,9 @@ namespace WebApiClient
 {
     /// <summary>
     /// 表示参数内容为IApiParameterable对象或其数组
-    /// 不可继承
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
-    sealed class ParameterableAttribute : Attribute, IApiParameterAttribute
+    class ParameterableAttribute : Attribute, IApiParameterAttribute
     {
         /// <summary>
         /// http请求之前
