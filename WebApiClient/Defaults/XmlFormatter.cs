@@ -31,13 +31,13 @@ namespace WebApiClient.Defaults
                 return null;
             }
 
-            var builder = new StringBuilder();
+            var stringWriter = new EncodingStringWriter(encoding);
             var xmlSerializer = new XmlSerializer(obj.GetType());
-            using (var xmlWriter = XmlWriter.Create(builder, new XmlWriterSettings { Encoding = encoding }))
+            using (var xmlWriter = XmlWriter.Create(stringWriter))
             {
                 xmlSerializer.Serialize(xmlWriter, obj);
             }
-            return builder.ToString();
+            return stringWriter.ToString();
         }
 
         /// <summary>
@@ -64,6 +64,34 @@ namespace WebApiClient.Defaults
             using (var reader = new StringReader(xml))
             {
                 return xmlSerializer.Deserialize(reader);
+            }
+        }
+
+        /// <summary>
+        /// 表示可指定编码文本写入器
+        /// </summary>
+        private class EncodingStringWriter : StringWriter
+        {
+            /// <summary>
+            /// 编码
+            /// </summary>
+            private readonly Encoding encoding;
+
+            /// <summary>
+            /// 获取编码
+            /// </summary>
+            public override Encoding Encoding
+            {
+                get => this.encoding;
+            }
+
+            /// <summary>
+            /// 可指定编码文本写入器
+            /// </summary>
+            /// <param name="encoding">编码</param>
+            public EncodingStringWriter(Encoding encoding)
+            {
+                this.encoding = encoding;
             }
         }
     }
