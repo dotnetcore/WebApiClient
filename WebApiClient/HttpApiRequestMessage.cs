@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace WebApiClient
 {
@@ -13,16 +13,6 @@ namespace WebApiClient
     /// </summary>
     public class HttpApiRequestMessage : HttpRequestMessage
     {
-        /// <summary>
-        /// 获取或设置请求的超时时间
-        /// </summary>
-        public TimeSpan? Timeout { get; set; }
-
-        /// <summary>
-        /// 获取或设置取消令牌
-        /// </summary>
-        public CancellationToken CancellationToken { get; set; } = CancellationToken.None;
-
         /// <summary>
         /// 追加Query参数到请求路径
         /// </summary>

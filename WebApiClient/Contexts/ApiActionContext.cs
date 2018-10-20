@@ -2,6 +2,8 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace WebApiClient.Contexts
 {
@@ -14,6 +16,11 @@ namespace WebApiClient.Contexts
         /// 自定义数据的存储和访问容器
         /// </summary>
         private Tags tags;
+
+        /// <summary>
+        /// 请求取消令牌集合
+        /// </summary>
+        private IList<CancellationToken> cancellationTokens;
 
         /// <summary>
         /// 获取本次请求相关的自定义数据的存储和访问容器
@@ -29,6 +36,23 @@ namespace WebApiClient.Contexts
                 return this.tags;
             }
         }
+
+        /// <summary>
+        /// 获取请求取消令牌集合
+        /// 这些令牌将被连接起来
+        /// </summary>
+        public IList<CancellationToken> CancellationTokens
+        {
+            get
+            {
+                if (this.cancellationTokens == null)
+                {
+                    this.cancellationTokens = new List<CancellationToken>();
+                }
+                return this.cancellationTokens;
+            }
+        }
+
 
         /// <summary>
         /// 获取关联的HttpApiConfig
@@ -112,29 +136,39 @@ namespace WebApiClient.Contexts
         /// <returns></returns>
         private async Task ExecRequestAsync()
         {
-            var apiAction = this.ApiActionDescriptor;
-            var httpClient = this.HttpApiConfig.HttpClient;
-
-            var token = this.RequestMessage.CancellationToken;
-            if (this.RequestMessage.Timeout.HasValue == true)
+            using (var cancellation = this.CreateLinkedTokenSource())
             {
-                var tokenSource = new CancellationTokenSource(this.RequestMessage.Timeout.Value);
-                token = CancellationTokenSource.CreateLinkedTokenSource(token, tokenSource.Token).Token;
+                try
+                {
+                    this.ResponseMessage = await this.HttpApiConfig.HttpClient
+                        .SendAsync(this.RequestMessage, cancellation.Token)
+                        .ConfigureAwait(false);
+
+                    this.Result = await this.ApiActionDescriptor.Return.Attribute
+                        .GetTaskResult(this)
+                        .ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    this.Exception = ex;
+                }
             }
+        }
 
-            try
+        /// <summary>
+        /// 创建取消令牌源
+        /// </summary>
+        /// <returns></returns>
+        private CancellationTokenSource CreateLinkedTokenSource()
+        {
+            if (this.cancellationTokens == null || this.cancellationTokens.Count == 0)
             {
-                this.ResponseMessage = await httpClient
-                    .SendAsync(this.RequestMessage, token)
-                    .ConfigureAwait(false);
-
-                this.Result = await apiAction.Return.Attribute
-                    .GetTaskResult(this)
-                    .ConfigureAwait(false);
+                return CancellationTokenSource.CreateLinkedTokenSource(CancellationToken.None);
             }
-            catch (Exception ex)
+            else
             {
-                this.Exception = ex;
+                var tokens = this.cancellationTokens.ToArray();
+                return CancellationTokenSource.CreateLinkedTokenSource(tokens);
             }
         }
 

@@ -21,9 +21,12 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
                 ApiActionDescriptor = ApiDescriptorCache.GetApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"))
             };
 
-            var attr = new TimeoutAttribute(5000);
+            var attr = new TimeoutAttribute(50);
             await attr.BeforeRequestAsync(context);
-            Assert.True(context.RequestMessage.Timeout == TimeSpan.FromSeconds(5));
+
+            await Task.Delay(100);
+            var canceled = context.CancellationTokens[0].IsCancellationRequested;
+            Assert.True(canceled);
         }
     }
 }

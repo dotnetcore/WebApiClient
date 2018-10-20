@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
 
@@ -52,7 +53,8 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         public Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            context.RequestMessage.Timeout = this.TimeSpan;
+            var cancellation = new CancellationTokenSource(this.TimeSpan);
+            context.CancellationTokens.Add(cancellation.Token);
             return ApiTask.CompletedTask;
         }
 

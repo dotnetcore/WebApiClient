@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
 
@@ -37,7 +38,8 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         public override Task BeforeRequestAsync(ApiActionContext context)
         {
-            context.RequestMessage.Timeout = this.TimeSpan;
+            var cancellation = new CancellationTokenSource(this.TimeSpan);
+            context.CancellationTokens.Add(cancellation.Token);
             return ApiTask.CompletedTask;
         }
     }

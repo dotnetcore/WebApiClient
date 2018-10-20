@@ -9,14 +9,7 @@ using Xunit;
 namespace WebApiClient.Test
 {
     public class HttpApiRequestMessageTest
-    {
-        [Fact]
-        public void TimeoutTest()
-        {
-            var request = new HttpApiRequestMessage() { Timeout = TimeSpan.FromDays(1d) };
-            Assert.True(request.Timeout == TimeSpan.FromDays(1d));
-        }
-
+    { 
         [Fact]
         public void AddUrlQueryTest()
         {

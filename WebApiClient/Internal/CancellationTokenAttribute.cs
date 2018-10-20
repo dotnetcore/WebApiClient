@@ -19,7 +19,8 @@ namespace WebApiClient
         /// <returns></returns>
         public Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            context.RequestMessage.CancellationToken = (CancellationToken)parameter.Value;
+            var token = (CancellationToken)parameter.Value;
+            context.CancellationTokens.Add(token);
             return ApiTask.CompletedTask;
         }
     }
