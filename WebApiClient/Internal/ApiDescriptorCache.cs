@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Net.Http;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using WebApiClient.Attributes;
 using WebApiClient.Contexts;
@@ -80,29 +78,10 @@ namespace WebApiClient
             var parameterType = parameter.ParameterType;
             var parameterAlias = parameter.GetCustomAttribute(typeof(AliasAsAttribute)) as AliasAsAttribute;
             var parameterName = parameterAlias == null ? parameter.Name : parameterAlias.Name;
-            var isHttpContent = parameterType.IsInheritFrom<HttpContent>();
-            var isApiParameterable = parameterType.IsInheritFrom<IApiParameterable>() || parameterType.IsInheritFrom<IEnumerable<IApiParameterable>>();
-            var validationAttributes = parameter.GetCustomAttributes<ValidationAttribute>(true).ToArray();
 
             var defined = parameter.GetAttributes<IApiParameterAttribute>(true);
-            var attributes = new ParameterAttributeCollection(defined);
-
-            if (isApiParameterable == true)
-            {
-                attributes.Add(new ParameterableAttribute());
-            }
-            else if (isHttpContent == true)
-            {
-                attributes.AddIfNotExists(new HttpContentAttribute());
-            }
-            else if (parameterType == typeof(CancellationToken))
-            {
-                attributes.Add(new CancellationTokenAttribute());
-            }
-            else if (attributes.Count == 0)
-            {
-                attributes.Add(new PathQueryAttribute());
-            }
+            var attributes = HttpApiConfig.DefaultApiParameterAttributeProvider.GetAttributes(parameterType, defined);
+            var validationAttributes = parameter.GetCustomAttributes<ValidationAttribute>(true).ToArray();
 
             return new ApiParameterDescriptor
             {
@@ -110,7 +89,7 @@ namespace WebApiClient
                 Member = parameter,
                 Name = parameterName,
                 Index = parameter.Position,
-                Attributes = attributes.ToArray(),
+                Attributes = attributes,
                 ParameterType = parameterType,
                 ValidationAttributes = validationAttributes
             };

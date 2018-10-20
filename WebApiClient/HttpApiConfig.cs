@@ -11,19 +11,25 @@ namespace WebApiClient
     public class HttpApiConfig : IDisposable
     {
         /// <summary>
-        /// 获取默认xml格式化工具唯一实例
+        /// 获取或设置全局默认xml格式化工具
         /// </summary>
-        public static readonly IXmlFormatter DefaultXmlFormatter = new XmlFormatter();
+        public static IXmlFormatter DefaultXmlFormatter { get; set; } = new XmlFormatter();
 
         /// <summary>
-        /// 获取默认json格式化工具唯一实例
+        /// 获取或设置全局默认json格式化工具
         /// </summary>
-        public static readonly IJsonFormatter DefaultJsonFormatter = new JsonFormatter();
+        public static IJsonFormatter DefaultJsonFormatter { get; set; } = new JsonFormatter();
 
         /// <summary>
-        /// 获取默认KeyValue格式化工具唯一实例
+        /// 获取或设置全局默认KeyValue格式化工具
         /// </summary>
-        public static readonly IKeyValueFormatter DefaultKeyValueFormatter = new KeyValueFormatter();
+        public static IKeyValueFormatter DefaultKeyValueFormatter { get; set; } = new KeyValueFormatter();
+
+        /// <summary>
+        /// 获取或设置全局默认的参数特性提供者
+        /// </summary>
+        public static IApiParameterAttributeProvider DefaultApiParameterAttributeProvider { get; set; } = new ApiParameterAttributeProvider();
+
 
 
         /// <summary>
