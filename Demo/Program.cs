@@ -2,7 +2,7 @@
 using Demo.HttpServices;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using WebApiClient;
 using WebApiClient.Parameterables;
@@ -57,10 +57,10 @@ namespace Demo
                 .GetAboutAsync("webapi/user/about", user, "somevalue");
 
             var user1 = await userApi
-                .GetByIdAsync("id001");
+                .GetByIdAsync("id001", CancellationToken.None);
 
             var user2 = await userApi
-                .GetByAccountAsync("laojiu");
+                .GetByAccountAsync("laojiu", CancellationToken.None);
 
             var user3 = await userApi
                 .UpdateWithFormAsync(user, nickName: "老九", nullableAge: null)

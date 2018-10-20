@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using WebApiClient;
 using WebApiClient.Attributes;
@@ -27,13 +28,15 @@ namespace Demo.HttpClients
         [HttpGet("webapi/user/GetById/{id}")]
         [BasicAuth("userName", "password")]
         ITask<HttpResponseMessage> GetByIdAsync(
-            string id);
+            string id,
+            CancellationToken token);
 
         // GET webapi/user/GetByAccount?account=laojiu
         // Return 原始string内容
         [HttpGet("webapi/user/GetByAccount")]
         ITask<string> GetByAccountAsync(
-            string account);
+            string account,
+            CancellationToken token);
 
 
         // POST webapi/user/UpdateWithForm  
