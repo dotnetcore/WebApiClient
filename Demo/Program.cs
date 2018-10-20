@@ -63,7 +63,7 @@ namespace Demo
                 .GetByAccountAsync("laojiu", CancellationToken.None);
 
             var user3 = await userApi
-                .UpdateWithFormAsync(user, nickName: "老九", nullableAge: null)
+                .UpdateWithFormAsync(user, nickName: "老九", age: 18)
                 .Retry(3, i => TimeSpan.FromSeconds(i))
                 .WhenCatch<HttpStatusFailureException>();
 

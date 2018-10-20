@@ -1,9 +1,9 @@
-﻿using System.Net.Http;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using WebApiClient;
 using WebApiClient.Attributes;
-using WebApiClient.DataAnnotations;
 using WebApiClient.Parameterables;
 
 namespace Demo.HttpClients
@@ -19,7 +19,7 @@ namespace Demo.HttpClients
         [HttpGet]
         [Timeout(10 * 1000)] // 10s超时
         Task<string> GetAboutAsync(
-            [Url] string url,
+            [Uri] string url,
             UserInfo user,
             string something);
 
@@ -28,14 +28,14 @@ namespace Demo.HttpClients
         [HttpGet("webapi/user/GetById/{id}")]
         [BasicAuth("userName", "password")]
         ITask<HttpResponseMessage> GetByIdAsync(
-            string id,
+            [Required]string id,
             CancellationToken token);
 
         // GET webapi/user/GetByAccount?account=laojiu
         // Return 原始string内容
         [HttpGet("webapi/user/GetByAccount")]
         ITask<string> GetByAccountAsync(
-            string account,
+            [Required]string account,
             CancellationToken token);
 
 
@@ -45,16 +45,16 @@ namespace Demo.HttpClients
         [HttpPost("webapi/user/UpdateWithForm")]
         [FormField("name", "value")] // 固定的参数值可以这么写
         ITask<UserInfo> UpdateWithFormAsync(
-            [FormContent] UserInfo user,
+            [FormContent, Required] UserInfo user,
             [FormField] string nickName,
-            [AliasAs("age"), FormField] int? nullableAge);
+            [FormField, Range(1, 100)] int? age);
 
         // POST webapi/user/UpdateWithJson
         // Body {"Account":"laojiu","Password":"123456"}
         // Return json或xml内容
         [HttpPost("webapi/user/UpdateWithJson")]
         ITask<UserInfo> UpdateWithJsonAsync(
-            [JsonContent] UserInfo user);
+            [JsonContent, Required] UserInfo user);
 
         // POST webapi/user/UpdateWithXml 
         // Body <?xml version="1.0" encoding="utf-8"?><UserInfo><Account>laojiu</Account><Password>123456</Password></UserInfo>
@@ -62,7 +62,7 @@ namespace Demo.HttpClients
         [XmlReturn]
         [HttpPost("webapi/user/UpdateWithXml")]
         ITask<UserInfo> UpdateWithXmlAsync(
-            [XmlContent] UserInfo user);
+            [XmlContent, Required] UserInfo user);
 
         // POST webapi/user/UpdateWithMulitpart  
         // Body multipart/form-data
@@ -70,7 +70,7 @@ namespace Demo.HttpClients
         [HttpPost("webapi/user/UpdateWithMulitpart")]
         [TraceFilter(Enable = false)]
         ITask<UserInfo> UpdateWithMulitpartAsync(
-            [MulitpartContent] UserInfo user,
+            [MulitpartContent, Required] UserInfo user,
             [MulitpartText] string nickName,
             [MulitpartText] int age,
             MulitpartFile file);
@@ -82,6 +82,6 @@ namespace Demo.HttpClients
         /// <returns></returns>
         [HttpGet]
         [TraceFilter(Enable = false)]
-        ITask<HttpResponseFile> DownloadFileAsync([Url] string uri);
+        ITask<HttpResponseFile> DownloadFileAsync([Uri, Required] string uri);
     }
 }

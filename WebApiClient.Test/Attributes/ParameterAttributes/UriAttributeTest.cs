@@ -8,7 +8,7 @@ using Xunit;
 
 namespace WebApiClient.Test.Attributes.HttpActionAttributes
 {
-    public class UrlAttributeTest
+    public class UriAttributeTest
     {
         public interface IMyApi : IDisposable
         {
@@ -32,7 +32,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
             var parameter = context.ApiActionDescriptor.Parameters[0];
             parameter.Value = "http://www.baidu.com";
 
-            var attr = new UrlAttribute();
+            var attr = new UriAttribute();
             await ((IApiParameterAttribute)attr).BeforeRequestAsync(context, parameter);
             Assert.True(context.RequestMessage.RequestUri == new Uri("http://www.baidu.com"));
 
