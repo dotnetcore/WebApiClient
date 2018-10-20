@@ -1,9 +1,8 @@
 ﻿using Demo.HttpClients;
 using NetworkSocket.Http;
-using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
+using System.IO;
+using System.Xml.Linq;
+using WebApiClient;
 
 namespace Demo.HttpServices
 {
@@ -50,8 +49,11 @@ namespace Demo.HttpServices
         [HttpPost]
         public ActionResult UpdateWithXml()
         {
-            var xml = Encoding.UTF8.GetString(Request.Body);
-            return Content(xml);
+            var stream = new MemoryStream(Request.Body);
+            var xml = XDocument.Load(stream).ToString();
+            var user = HttpApiConfig.DefaultXmlFormatter.Deserialize(xml, typeof(UserInfo))as UserInfo;
+            user.Email = "laojiu@qq.com";
+            return new XmlResult(user);
         }
 
         [HttpPost]

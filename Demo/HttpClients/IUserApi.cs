@@ -58,8 +58,7 @@ namespace Demo.HttpClients
 
         // POST webapi/user/UpdateWithXml 
         // Body <?xml version="1.0" encoding="utf-8"?><UserInfo><Account>laojiu</Account><Password>123456</Password></UserInfo>
-        // Return xml内容
-        [XmlReturn]
+        // Return xml内容       
         [HttpPost("webapi/user/UpdateWithXml")]
         ITask<UserInfo> UpdateWithXmlAsync(
             [XmlContent, Required] UserInfo user);
