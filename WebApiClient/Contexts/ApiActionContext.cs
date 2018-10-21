@@ -128,6 +128,8 @@ namespace WebApiClient.Contexts
                     await parameterAttribute.BeforeRequestAsync(this, parameter).ConfigureAwait(false);
                 }
             }
+
+            await apiAction.Return.Attribute.BeforeRequestAsync(this);
         }
 
         /// <summary>

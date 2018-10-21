@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
 
@@ -23,6 +24,19 @@ namespace WebApiClient.Attributes
         /// json解析
         /// </summary>
         private static readonly IApiReturnAttribute jsonReturn = new JsonReturnAttribute();
+
+
+        /// <summary>
+        /// 配置请求头的accept
+        /// </summary>
+        /// <param name="accept">请求头的accept</param>
+        /// <returns></returns>
+        protected override void ConfigureAccept(HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> accept)
+        {
+            accept.Add(new MediaTypeWithQualityHeaderValue(JsonContent.MediaType, 0.9d));
+            accept.Add(new MediaTypeWithQualityHeaderValue(XmlContent.MediaType, 0.8d));
+            accept.Add(new MediaTypeWithQualityHeaderValue("*/*", 0.1d));
+        }
 
         /// <summary>
         /// 获取异步结果

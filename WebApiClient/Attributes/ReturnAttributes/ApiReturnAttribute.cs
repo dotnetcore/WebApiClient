@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
 
@@ -17,6 +18,34 @@ namespace WebApiClient.Attributes
         /// 默认为true
         /// </summary>
         public bool EnsureSuccessStatusCode { get; set; } = true;
+
+        /// <summary>
+        /// 执行前
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <returns></returns>
+        Task IApiReturnAttribute.BeforeRequestAsync(ApiActionContext context)
+        {
+            this.ConfigureAccept(context.RequestMessage.Headers.Accept);
+            return this.BeforeRequestAsync(context);
+        }
+
+        /// <summary>
+        /// 执行前
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <returns></returns>
+        protected virtual Task BeforeRequestAsync(ApiActionContext context)
+        {
+            return ApiTask.CompletedTask;
+        }
+
+        /// <summary>
+        /// 配置请求头的accept
+        /// </summary>
+        /// <param name="accept">请求头的accept</param>
+        /// <returns></returns>
+        protected abstract void ConfigureAccept(HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> accept);
 
         /// <summary>
         /// 获取异步结果
