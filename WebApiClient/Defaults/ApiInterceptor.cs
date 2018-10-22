@@ -33,8 +33,9 @@ namespace WebApiClient.Defaults
         /// <returns></returns>
         public virtual object Intercept(object target, MethodInfo method, object[] parameters)
         {
+            var httpApi = target as IHttpApi;
             var apiActionDescripter = this.GetApiActionDescriptor(method, parameters);
-            var apiTask = ApiTask.CreateInstance(this.HttpApiConfig, apiActionDescripter);
+            var apiTask = ApiTask.CreateInstance(httpApi, this.HttpApiConfig, apiActionDescripter);
 
             if (apiActionDescripter.Return.IsITaskDefinition == true)
             {

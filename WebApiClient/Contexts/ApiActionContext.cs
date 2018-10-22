@@ -53,6 +53,10 @@ namespace WebApiClient.Contexts
             }
         }
 
+        /// <summary>
+        /// 获取httpApi代理类实例
+        /// </summary>
+        public IHttpApi HttpApi { get; internal set; }
 
         /// <summary>
         /// 获取关联的HttpApiConfig

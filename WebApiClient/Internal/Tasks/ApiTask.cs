@@ -34,20 +34,21 @@ namespace WebApiClient
         {
             return typeof(ApiTaskOf<>)
                 .MakeGenericType(dataType)
-                .GetConstructor(new[] { typeof(HttpApiConfig), typeof(ApiActionDescriptor) });
+                .GetConstructor(new[] { typeof(IHttpApi), typeof(HttpApiConfig), typeof(ApiActionDescriptor) });
         }
 
         /// <summary>
         /// 创建ApiTaskOf(T)的实例
         /// </summary>
+        /// <param name="httpApi">httpApi代理类实例</param>
         /// <param name="httpApiConfig">http接口配置</param>
         /// <param name="apiActionDescriptor">api描述</param>
         /// <returns></returns>
-        public static ApiTask CreateInstance(HttpApiConfig httpApiConfig, ApiActionDescriptor apiActionDescriptor)
+        public static ApiTask CreateInstance(IHttpApi httpApi, HttpApiConfig httpApiConfig, ApiActionDescriptor apiActionDescriptor)
         {
-            // var instance = new ApiTask<TResult>(httpApiConfig, apiActionDescriptor);
+            // var instance = new ApiTask<TResult>(httpApi, httpApiConfig, apiActionDescriptor);
             var ctor = apiActionDescriptor.Return.DataType.ITaskConstructor;
-            return ctor.Invoke(new object[] { httpApiConfig, apiActionDescriptor }) as ApiTask;
+            return ctor.Invoke(new object[] { httpApi, httpApiConfig, apiActionDescriptor }) as ApiTask;
         }
 
         /// <summary>
@@ -65,6 +66,11 @@ namespace WebApiClient
         private class ApiTaskOf<TResult> : ApiTask, ITask<TResult>
         {
             /// <summary>
+            /// httpApi代理类实例
+            /// </summary>
+            private readonly IHttpApi httpApi;
+
+            /// <summary>
             /// http接口配置
             /// </summary>
             private readonly HttpApiConfig httpApiConfig;
@@ -77,10 +83,12 @@ namespace WebApiClient
             /// <summary>
             /// Api请求的异步任务
             /// </summary>
+            /// <param name="httpApi">httpApi代理类实例</param>
             /// <param name="httpApiConfig">http接口配置</param>
             /// <param name="apiActionDescriptor">api描述</param>
-            public ApiTaskOf(HttpApiConfig httpApiConfig, ApiActionDescriptor apiActionDescriptor)
+            public ApiTaskOf(IHttpApi httpApi, HttpApiConfig httpApiConfig, ApiActionDescriptor apiActionDescriptor)
             {
+                this.httpApi = httpApi;
                 this.httpApiConfig = httpApiConfig;
                 this.apiActionDescriptor = apiActionDescriptor;
             }
@@ -131,6 +139,7 @@ namespace WebApiClient
             {
                 var context = new ApiActionContext
                 {
+                    HttpApi = this.httpApi,
                     HttpApiConfig = this.httpApiConfig,
                     ApiActionDescriptor = this.apiActionDescriptor,
                     RequestMessage = new HttpApiRequestMessage { RequestUri = this.httpApiConfig.HttpHost }
