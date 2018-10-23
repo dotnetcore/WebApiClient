@@ -11,6 +11,11 @@ namespace WebApiClient.Contexts
     public class DataTypeDescriptor
     {
         /// <summary>
+        /// 表示空集合类型
+        /// </summary>
+        private static readonly Type[] emptyTypes = new Type[0];
+
+        /// <summary>
         /// 获取类型
         /// </summary>
         public Type Type { get; private set; }
@@ -32,7 +37,7 @@ namespace WebApiClient.Contexts
         public DataTypeDescriptor(Type dataType)
         {
             this.Type = dataType;
-            this.ITaskConstructor = ApiTask.GetITaskConstructor(dataType);
+            this.ITaskConstructor = typeof(ApiTask<>).MakeGenericType(dataType).GetConstructor(emptyTypes);
             this.IsHttpResponseWrapper = dataType.IsInheritFrom<HttpResponseWrapper>();
         }
     }
