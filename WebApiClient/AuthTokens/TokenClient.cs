@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using WebApiClient.DataAnnotations;
+using WebApiClient.Defaults;
 
 namespace WebApiClient.AuthTokens
 {
@@ -11,9 +12,52 @@ namespace WebApiClient.AuthTokens
     public class TokenClient
     {
         /// <summary>
+        /// json序列化工具
+        /// </summary>
+        private static readonly IJsonFormatter jsonFormatter = new JsonFormatter();
+
+        /// <summary>
+        /// keyValue序列化工具
+        /// </summary>
+        private static readonly IKeyValueFormatter keyValueFormatter = new KeyValueFormatter();
+
+
+        /// <summary>
+        /// 请求超时时间
+        /// </summary>
+        private TimeSpan timeout = TimeSpan.FromSeconds(30d);
+
+        /// <summary>
+        /// 获取或设置请求超时时间
+        /// 默认为30s
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public TimeSpan TimeOut
+        {
+            get
+            {
+                return this.timeout;
+            }
+            set
+            {
+                if (value < TimeSpan.Zero)
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+                this.timeout = value;
+            }
+        }
+
+        /// <summary>
         /// 获取提供Token获取的Url节点
         /// </summary>
         public Uri TokenEndpoint { get; private set; }
+
+        /// <summary>
+        /// 获取序列化选项
+        /// </summary>
+        public FormatOptions FormatOptions { get; private set; } = new FormatOptions();
+
 
         /// <summary>
         /// 提供token获取功能的客户端
@@ -135,18 +179,15 @@ namespace WebApiClient.AuthTokens
         /// <returns></returns>
         private async Task<TokenResult> RequestTokenResultAsync(Credentials credentials)
         {
-            var keyValues = HttpApiConfig
-                .DefaultKeyValueFormatter
-                .Serialize(null, credentials, null);
-
             var httpContent = new UrlEncodedContent(null);
+            var keyValues = keyValueFormatter.Serialize(null, credentials, this.FormatOptions);
             await httpContent.AddFormFieldAsync(keyValues).ConfigureAwait(false);
 
-            using (var httpClient = new HttpClient())
+            using (var httpClient = new HttpClient { Timeout = this.timeout })
             {
                 var response = await httpClient.PostAsync(this.TokenEndpoint, httpContent).ConfigureAwait(false);
                 var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                var token = HttpApiConfig.DefaultJsonFormatter.Deserialize(json, typeof(TokenResult));
+                var token = jsonFormatter.Deserialize(json, typeof(TokenResult));
                 return token as TokenResult;
             }
         }
