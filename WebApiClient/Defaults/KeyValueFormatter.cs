@@ -11,15 +11,6 @@ namespace WebApiClient.Defaults
     /// </summary>
     public class KeyValueFormatter : IKeyValueFormatter
     {
-        /// <summary>
-        /// 使用CamelCase的KeyValue属性解析约定
-        /// </summary>
-        private readonly static PropertyContractResolver useCamelCaseResolver = new PropertyContractResolver(true, FormatScope.KeyValueFormat);
-
-        /// <summary>
-        /// 不使用CamelCase的KeyValue属性解析约定
-        /// </summary>
-        private readonly static PropertyContractResolver noCamelCaseResolver = new PropertyContractResolver(false, FormatScope.KeyValueFormat);
 
         /// <summary>
         /// 序列化对象为键值对
@@ -70,7 +61,7 @@ namespace WebApiClient.Defaults
             var setting = new JsonSerializerSettings
             {
                 DateFormatString = options.DateTimeFormat,
-                ContractResolver = useCamelCase ? useCamelCaseResolver : noCamelCaseResolver
+                ContractResolver = PropertyContractResolver.GetResolver(FormatScope.KeyValueFormat, useCamelCase)
             };
 
             setting.Converters.Add(new KeyValuePairConverter(useCamelCase));

@@ -10,16 +10,6 @@ namespace WebApiClient.Defaults
     public class JsonFormatter : IJsonFormatter
     {
         /// <summary>
-        /// 使用CamelCase的json属性解析约定
-        /// </summary>
-        private readonly static PropertyContractResolver useCamelCaseResolver = new PropertyContractResolver(true, FormatScope.JsonFormat);
-
-        /// <summary>
-        /// 不使用CamelCase的json属性解析约定
-        /// </summary>
-        private readonly static PropertyContractResolver noCamelCaseResolver = new PropertyContractResolver(false, FormatScope.JsonFormat);
-
-        /// <summary>
         /// 将对象列化为json文本
         /// </summary>
         /// <param name="obj">对象</param>
@@ -65,12 +55,12 @@ namespace WebApiClient.Defaults
         /// <returns></returns>
         protected virtual JsonSerializerSettings CreateSerializerSettings(FormatOptions options)
         {
-            var setting = new JsonSerializerSettings
+            var useCamelCase = options?.UseCamelCase == true;
+            return new JsonSerializerSettings
             {
                 DateFormatString = options?.DateTimeFormat,
-                ContractResolver = options?.UseCamelCase == true ? useCamelCaseResolver : noCamelCaseResolver
+                ContractResolver = PropertyContractResolver.GetResolver(FormatScope.JsonFormat, useCamelCase)
             };
-            return setting;
         }
     }
 }
