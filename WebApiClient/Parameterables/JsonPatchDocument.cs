@@ -189,16 +189,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         protected virtual string GetMemberName(MemberInfo member)
         {
-            var annotations = new Annotations();
-            var attributes = member.GetCustomAttributes<DataAnnotationAttribute>(true);
-            foreach (var item in attributes)
-            {
-                if (item.IsDefinedScope(FormatScope.JsonFormat) == true)
-                {
-                    item.Invoke(member, annotations);
-                }
-            }
-
+            var annotations = Annotations.GetAnnotations(member, FormatScope.JsonFormat);
             if (string.IsNullOrEmpty(annotations.AliasName) == false)
             {
                 return annotations.AliasName;

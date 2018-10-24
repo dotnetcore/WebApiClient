@@ -52,20 +52,12 @@ namespace WebApiClient.Defaults
         /// <returns></returns>
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
-            var annotation = new Annotations();
-            var attributes = member.GetCustomAttributes<DataAnnotationAttribute>(true);
-            foreach (var item in attributes)
-            {
-                if (item.IsDefinedScope(this.formatScope) == true)
-                {
-                    item.Invoke(member, annotation);
-                }
-            }
-
             var property = base.CreateProperty(member, memberSerialization);
-            if (string.IsNullOrEmpty(annotation.AliasName) == false)
+            var annotations = Annotations.GetAnnotations(member, this.formatScope);
+
+            if (string.IsNullOrEmpty(annotations.AliasName) == false)
             {
-                property.PropertyName = annotation.AliasName;
+                property.PropertyName = annotations.AliasName;
             }
 
             if (this.useCamelCase == true)
@@ -73,17 +65,17 @@ namespace WebApiClient.Defaults
                 property.PropertyName = FormatOptions.CamelCase(property.PropertyName);
             }
 
-            if (property.Converter == null && annotation.DateTimeFormat != null)
+            if (property.Converter == null && annotations.DateTimeFormat != null)
             {
-                property.Converter = new IsoDateTimeConverter { DateTimeFormat = annotation.DateTimeFormat };
+                property.Converter = new IsoDateTimeConverter { DateTimeFormat = annotations.DateTimeFormat };
             }
 
-            if (annotation.IgnoreWhenNull == true)
+            if (annotations.IgnoreWhenNull == true)
             {
                 property.NullValueHandling = NullValueHandling.Ignore;
             }
 
-            property.Ignored = annotation.IgnoreSerialized;
+            property.Ignored = annotations.IgnoreSerialized;
             return property;
         }
     }
