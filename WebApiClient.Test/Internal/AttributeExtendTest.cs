@@ -42,32 +42,7 @@ namespace WebApiClient.Test.Internal
             public void M2()
             {
             }
-        }
-
-        [Fact]
-        public void GetAttributeTest()
-        {
-            var age = typeof(MyClass).GetProperty("Age");
-            Assert.NotNull(age.GetAttribute<IAttribute>(true));
-            Assert.NotNull(age.GetAttribute<MyAttribute>(true));
-        }
-
-        [Fact]
-        public void GetAttributesTest()
-        {
-            var age = typeof(MyClass).GetProperty("Age");
-            Assert.True(age.GetAttributes<MyAttribute>(true).Count() == 1);
-
-            var name = typeof(MyClass).GetProperty("Name");
-            Assert.True(name.GetAttributes<IAttribute>(true).Count() == 2);
-
-            var set = typeof(MyClass).GetMethod("Set");
-            var p1 = set.GetParameters().First();
-            var p2 = set.GetParameters().Last();
-
-            Assert.True(p1.GetAttributes<IAttribute>(true).Count() == 0);
-            Assert.True(p2.GetAttributes<IAttribute>(true).Count() == 2);
-        }
+        }         
 
         [Fact]
         public void FindDeclaringAttributeTest()

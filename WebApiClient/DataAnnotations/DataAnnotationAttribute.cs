@@ -28,7 +28,11 @@ namespace WebApiClient.DataAnnotations
         /// <returns></returns>
         public bool IsDefinedScope(FormatScope scope)
         {
-            return scope == (scope & this.Scope);
+            if (this.Scope == FormatScope.All)
+            {
+                return true;
+            }
+            return this.Scope.HasFlag(scope);
         }
 
         /// <summary>
