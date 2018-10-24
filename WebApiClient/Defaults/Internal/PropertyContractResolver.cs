@@ -45,9 +45,9 @@ namespace WebApiClient.Defaults
         }
 
         /// <summary>        
-        /// 创建属性
+        /// 创建Json属性
         /// </summary>
-        /// <param name="member"></param>
+        /// <param name="member">属性</param>
         /// <param name="memberSerialization"></param>
         /// <returns></returns>
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
@@ -59,13 +59,12 @@ namespace WebApiClient.Defaults
             {
                 property.PropertyName = annotations.AliasName;
             }
-
-            if (this.useCamelCase == true)
+            else if (this.useCamelCase == true)
             {
                 property.PropertyName = FormatOptions.CamelCase(property.PropertyName);
             }
 
-            if (property.Converter == null && annotations.DateTimeFormat != null)
+            if (string.IsNullOrEmpty(annotations.DateTimeFormat) == false)
             {
                 property.Converter = new IsoDateTimeConverter { DateTimeFormat = annotations.DateTimeFormat };
             }
