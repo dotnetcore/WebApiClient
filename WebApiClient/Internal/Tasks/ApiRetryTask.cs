@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace WebApiClient
@@ -8,7 +7,7 @@ namespace WebApiClient
     /// 表示支持重试的Api请求任务
     /// </summary>
     /// <typeparam name="TResult">结果类型</typeparam>
-    class ApiRetryTask<TResult> : IRetryTask<TResult>
+    class ApiRetryTask<TResult> : ApiTask<TResult>, IRetryTask<TResult>
     {
         /// <summary>
         /// 请求任务创建的委托
@@ -44,39 +43,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 执行InvokeAsync
-        /// 并返回其TaskAwaiter对象
-        /// </summary>
-        /// <returns></returns>
-        public TaskAwaiter<TResult> GetAwaiter()
-        {
-            return this.InvokeAsync().GetAwaiter();
-        }
-
-        /// <summary>
-        /// 配置用于等待的等待者
-        /// </summary>
-        /// <param name="continueOnCapturedContext">试图继续回夺取的原始上下文，则为 true；否则为 false</param>
-        /// <returns></returns>
-        public ConfiguredTaskAwaitable<TResult> ConfigureAwait(bool continueOnCapturedContext)
-        {
-            return this.InvokeAsync().ConfigureAwait(continueOnCapturedContext);
-        }
-
-        /// <summary>
         /// 创建请求任务
         /// </summary>
         /// <returns></returns>
-        Task ITask.InvokeAsync()
-        {
-            return this.InvokeAsync();
-        }
-
-        /// <summary>
-        /// 创建请求任务
-        /// </summary>
-        /// <returns></returns>
-        public async Task<TResult> InvokeAsync()
+        public override async Task<TResult> InvokeAsync()
         {
             var inner = default(Exception);
             for (var i = 0; i <= this.retryMaxCount; i++)

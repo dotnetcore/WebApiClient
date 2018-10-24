@@ -42,7 +42,7 @@ namespace WebApiClient.Defaults
 
             if (descriptor.Return.IsITaskDefinition == false)
             {
-                return apiTask.InvokeAsync();
+                return apiTask.Execute();
             }
             else
             {

@@ -7,7 +7,7 @@ namespace WebApiClient
     /// <summary>
     /// 表示Api请求的异步任务抽象类
     /// </summary>
-    abstract class ApiTask : ITask
+    abstract class ApiTask
     {
 #if NET45
         /// <summary>
@@ -36,14 +36,13 @@ namespace WebApiClient
         /// <summary>
         /// 获取或设置api描述
         /// </summary>
-        public ApiActionDescriptor ApiActionDescriptor { get; set; }       
+        public ApiActionDescriptor ApiActionDescriptor { get; set; }
 
         /// <summary>
-        /// 创建请求任务
-        /// 返回请求结果
+        /// 执行任务
         /// </summary>
         /// <returns></returns>
-        public abstract Task InvokeAsync();
+        public abstract Task Execute();
     }
 
 
@@ -51,7 +50,7 @@ namespace WebApiClient
     /// 表示Api请求的异步任务
     /// </summary>
     /// <typeparam name="TResult">结果类型</typeparam>
-    class ApiTask<TResult> : ApiTask, ITask<TResult>
+    class ApiTask<TResult> : ApiTask, ITask<TResult>, ITask
     {
         /// <summary>
         /// 执行InvokeAsync
@@ -60,7 +59,7 @@ namespace WebApiClient
         /// <returns></returns>
         public TaskAwaiter<TResult> GetAwaiter()
         {
-            return this.RequestAsync().GetAwaiter();
+            return this.InvokeAsync().GetAwaiter();
         }
 
         /// <summary>
@@ -70,32 +69,32 @@ namespace WebApiClient
         /// <returns></returns>
         public ConfiguredTaskAwaitable<TResult> ConfigureAwait(bool continueOnCapturedContext)
         {
-            return this.RequestAsync().ConfigureAwait(continueOnCapturedContext);
+            return this.InvokeAsync().ConfigureAwait(continueOnCapturedContext);
+        }
+
+        /// <summary>
+        /// 执行任务
+        /// </summary>
+        /// <returns></returns>
+        public override Task Execute()
+        {
+            return this.InvokeAsync();
         }
 
         /// <summary>
         /// 创建请求任务
         /// </summary>
         /// <returns></returns>
-        public override Task InvokeAsync()
+        Task ITask.InvokeAsync()
         {
-            return this.RequestAsync();
+            return this.InvokeAsync();
         }
 
         /// <summary>
         /// 创建请求任务
         /// </summary>
         /// <returns></returns>
-        Task<TResult> ITask<TResult>.InvokeAsync()
-        {
-            return this.RequestAsync();
-        }
-
-        /// <summary>
-        /// 执行一次请求
-        /// </summary>
-        /// <returns></returns>
-        private async Task<TResult> RequestAsync()
+        public virtual async Task<TResult> InvokeAsync()
         {
             var context = new ApiActionContext
             {
