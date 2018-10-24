@@ -11,27 +11,27 @@ namespace WebApiClient.Defaults
     /// 表示属性解析约定
     /// 用于实现DataAnnotations的功能
     /// </summary>
-    class PropertyContractResolver : DefaultContractResolver
+    class AnnotationsContractResolver : DefaultContractResolver
     {
         /// <summary>
         /// json范围使用CamelCase的KeyValue属性解析约定
         /// </summary>
-        private readonly static PropertyContractResolver jsonCamelCaseResolver = new PropertyContractResolver(true, FormatScope.JsonFormat);
+        private readonly static AnnotationsContractResolver jsonCamelCaseResolver = new AnnotationsContractResolver(true, FormatScope.JsonFormat);
 
         /// <summary>
         /// json范围不使用CamelCase的KeyValue属性解析约定
         /// </summary>
-        private readonly static PropertyContractResolver jsonNoCamelCaseResolver = new PropertyContractResolver(false, FormatScope.JsonFormat);
+        private readonly static AnnotationsContractResolver jsonNoCamelCaseResolver = new AnnotationsContractResolver(false, FormatScope.JsonFormat);
 
         /// <summary>
         /// keyValue范围使用CamelCase的json属性解析约定
         /// </summary>
-        private readonly static PropertyContractResolver keyValueCamelCaseResolver = new PropertyContractResolver(true, FormatScope.KeyValueFormat);
+        private readonly static AnnotationsContractResolver keyValueCamelCaseResolver = new AnnotationsContractResolver(true, FormatScope.KeyValueFormat);
 
         /// <summary>
         /// keyValue范围不使用CamelCase的json属性解析约定
         /// </summary>
-        private readonly static PropertyContractResolver keyValueNoCamelCaseResolver = new PropertyContractResolver(false, FormatScope.KeyValueFormat);
+        private readonly static AnnotationsContractResolver keyValueNoCamelCaseResolver = new AnnotationsContractResolver(false, FormatScope.KeyValueFormat);
 
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace WebApiClient.Defaults
         /// <param name="scope">序列化范围</param>
         /// <param name="camelCase">是否使用CamelCase</param>
         /// <returns></returns>
-        public static PropertyContractResolver GetResolver(FormatScope scope, bool camelCase)
+        public static AnnotationsContractResolver GetResolver(FormatScope scope, bool camelCase)
         {
             switch (scope)
             {
@@ -71,7 +71,7 @@ namespace WebApiClient.Defaults
         /// </summary>
         /// <param name="camelCase">是否camel命名</param>
         /// <param name="scope">序列化范围</param>
-        private PropertyContractResolver(bool camelCase, FormatScope scope)
+        private AnnotationsContractResolver(bool camelCase, FormatScope scope)
         {
             this.useCamelCase = camelCase;
             this.formatScope = scope;

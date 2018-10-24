@@ -11,7 +11,6 @@ namespace WebApiClient.Defaults
     /// </summary>
     public class KeyValueFormatter : IKeyValueFormatter
     {
-
         /// <summary>
         /// 序列化对象为键值对
         /// </summary>
@@ -33,10 +32,10 @@ namespace WebApiClient.Defaults
 
             var setting = this.CreateSerializerSettings(options);
             var serializer = JsonSerializer.Create(setting);
-            var keyValueWriter = new KeyValuePairWriter(name);
+            var keyValuesWriter = new KeyValuesWriter(name);
 
-            serializer.Serialize(keyValueWriter, obj);
-            return keyValueWriter;
+            serializer.Serialize(keyValuesWriter, obj);
+            return keyValuesWriter;
         }
 
         /// <summary>
@@ -61,7 +60,7 @@ namespace WebApiClient.Defaults
             var setting = new JsonSerializerSettings
             {
                 DateFormatString = options.DateTimeFormat,
-                ContractResolver = PropertyContractResolver.GetResolver(FormatScope.KeyValueFormat, useCamelCase)
+                ContractResolver = AnnotationsContractResolver.GetResolver(FormatScope.KeyValueFormat, useCamelCase)
             };
 
             setting.Converters.Add(new KeyValuePairConverter(useCamelCase));

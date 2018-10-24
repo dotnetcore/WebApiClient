@@ -8,10 +8,10 @@ using System.Globalization;
 namespace WebApiClient.Defaults
 {
     /// <summary>
-    /// 表示KeyValuePair写入对象
+    /// 表示键值对写入对象
     /// </summary>
     [DebuggerTypeProxy(typeof(DebugView))]
-    class KeyValuePairWriter : JsonWriter, IEnumerable<KeyValuePair<string, string>>
+    class KeyValuesWriter : JsonWriter, IEnumerable<KeyValuePair<string, string>>
     {
         /// <summary>
         /// 当前属性名称
@@ -24,10 +24,10 @@ namespace WebApiClient.Defaults
         private readonly List<KeyValuePair<string, string>> keyValues = new List<KeyValuePair<string, string>>();
 
         /// <summary>
-        /// KeyValuePair写入对象
+        ///键值对写入对象
         /// </summary>
         /// <param name="name">对象名称</param>
-        public KeyValuePairWriter(string name)
+        public KeyValuesWriter(string name)
         {
             this.properyName = name;
         }
@@ -560,13 +560,13 @@ namespace WebApiClient.Defaults
             /// <summary>
             /// 查看的对象
             /// </summary>
-            private readonly KeyValuePairWriter target;
+            private readonly KeyValuesWriter target;
 
             /// <summary>
             /// 调试视图
             /// </summary>
             /// <param name="target">查看的对象</param>
-            public DebugView(KeyValuePairWriter target)
+            public DebugView(KeyValuesWriter target)
             {
                 this.target = target;
             }
