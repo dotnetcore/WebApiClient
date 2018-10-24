@@ -12,14 +12,69 @@ namespace WebApiClient
     static class TypeExtensions
     {
         /// <summary>
+        /// 类型是否AllowMultiple的缓存
+        /// </summary>
+        private static readonly ConcurrentCache<Type, bool> typeAllowMultipleCache = new ConcurrentCache<Type, bool>();
+
+        /// <summary>
         /// 接口的方法缓存
         /// </summary>
         private static readonly ConcurrentCache<Type, MethodInfo[]> interfaceMethodsCache = new ConcurrentCache<Type, MethodInfo[]>();
 
         /// <summary>
-        /// 类型是否AllowMultiple的缓存
+        /// 关联的AttributeUsageAttribute是否AllowMultiple
         /// </summary>
-        private static readonly ConcurrentCache<Type, bool> typeAllowMultipleCache = new ConcurrentCache<Type, bool>();
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsAllowMultiple(this Type type)
+        {
+            return typeAllowMultipleCache.GetOrAdd(type, (t => t.IsInheritFrom<Attribute>() && t.GetTypeInfo().GetCustomAttribute<AttributeUsageAttribute>(true).AllowMultiple));
+        }
+
+        /// <summary>
+        /// 是否可以从TBase类型派生
+        /// </summary>
+        /// <typeparam name="TBase"></typeparam>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsInheritFrom<TBase>(this Type type)
+        {
+            return typeof(TBase).IsAssignableFrom(type);
+        }
+
+
+#if NETSTANDARD1_3
+        /// <summary>
+        /// 获取构造参数
+        /// </summary>
+        /// <param name="typeInfo">类型</param>
+        /// <param name="types">参数类型</param>
+        /// <returns></returns>
+        public static ConstructorInfo GetConstructor(this TypeInfo typeInfo, Type[] types)
+        {
+            return typeInfo.AsType().GetConstructor(types);
+        }
+#else
+        /// <summary>
+        /// 返回type的详细类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static Type GetTypeInfo(this Type type)
+        {
+            return type;
+        }
+
+        /// <summary>
+        /// 转换为Type类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static Type AsType(this Type type)
+        {
+            return type;
+        }
+#endif
 
         /// <summary>
         /// 获取接口类型及其继承的接口的所有方法
@@ -103,62 +158,6 @@ namespace WebApiClient
             }
 
             return method;
-        }
-
-#if NETSTANDARD1_3     
-        /// <summary>
-        /// 获取构造参数
-        /// </summary>
-        /// <param name="typeInfo">类型</param>
-        /// <param name="types">参数类型</param>
-        /// <returns></returns>
-        public static ConstructorInfo GetConstructor(this TypeInfo typeInfo, Type[] types)
-        {
-            return typeInfo
-               .DeclaredConstructors
-               .FirstOrDefault(item => item.GetParameters().Select(p => p.ParameterType).SequenceEqual(types));
-        }
-#else
-        /// <summary>
-        /// 返回type的详细类型
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static Type GetTypeInfo(this Type type)
-        {
-            return type;
-        }
-
-        /// <summary>
-        /// 转换为Type类型
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static Type AsType(this Type type)
-        {
-            return type;
-        }
-#endif
-
-        /// <summary>
-        /// 是否可以从TBase类型派生
-        /// </summary>
-        /// <typeparam name="TBase"></typeparam>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsInheritFrom<TBase>(this Type type)
-        {
-            return typeof(TBase).IsAssignableFrom(type);
-        }
-
-        /// <summary>
-        /// 关联的AttributeUsageAttribute是否AllowMultiple
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsAllowMultiple(this Type type)
-        {
-            return typeAllowMultipleCache.GetOrAdd(type, (t => t.IsInheritFrom<Attribute>() && t.GetTypeInfo().GetCustomAttribute<AttributeUsageAttribute>(true).AllowMultiple));
         }
 
         /// <summary>
