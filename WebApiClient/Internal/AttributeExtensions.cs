@@ -7,38 +7,8 @@ namespace WebApiClient
     /// <summary>
     /// 成员特性扩展
     /// </summary>
-    static class AttributeExtend
+    static class AttributeExtensions
     {
-        /// <summary>
-        /// 获取成员的特性
-        /// </summary>
-        /// <typeparam name="TAttribute"></typeparam>
-        /// <param name="member">成员</param>
-        /// <param name="inherit"></param>
-        /// <returns></returns>
-        public static TAttribute GetAttribute<TAttribute>(this MemberInfo member, bool inherit) where TAttribute : class
-        {
-            return member
-                .GetCustomAttributes(inherit)
-                .Select(item => item as TAttribute)
-                .FirstOrDefault(item => item != null);
-        }
-
-        /// <summary>
-        /// 获取成员的特性
-        /// </summary>
-        /// <typeparam name="TAttribute"></typeparam>
-        /// <param name="member">成员</param>
-        /// <param name="inherit"></param>
-        /// <returns></returns>
-        public static IEnumerable<TAttribute> GetAttributes<TAttribute>(this MemberInfo member, bool inherit) where TAttribute : class
-        {
-            return member
-                .GetCustomAttributes(inherit)
-                .Select(item => item as TAttribute)
-                .Where(item => item != null);
-        }
-
         /// <summary>
         /// 获取成员的特性
         /// </summary>
@@ -83,6 +53,37 @@ namespace WebApiClient
             var methodAttributes = method.GetAttributes<TAttribute>(true);
             var interfaceAttributes = method.DeclaringType.GetTypeInfo().GetAttributes<TAttribute>(true);
             return methodAttributes.Concat(interfaceAttributes);
-        } 
+        }
+
+
+        /// <summary>
+        /// 获取成员的特性
+        /// </summary>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <param name="member">成员</param>
+        /// <param name="inherit"></param>
+        /// <returns></returns>
+        private static TAttribute GetAttribute<TAttribute>(this MemberInfo member, bool inherit) where TAttribute : class
+        {
+            return member
+                .GetCustomAttributes(inherit)
+                .Select(item => item as TAttribute)
+                .FirstOrDefault(item => item != null);
+        }
+
+        /// <summary>
+        /// 获取成员的特性
+        /// </summary>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <param name="member">成员</param>
+        /// <param name="inherit"></param>
+        /// <returns></returns>
+        private static IEnumerable<TAttribute> GetAttributes<TAttribute>(this MemberInfo member, bool inherit) where TAttribute : class
+        {
+            return member
+                .GetCustomAttributes(inherit)
+                .Select(item => item as TAttribute)
+                .Where(item => item != null);
+        }
     }
 }

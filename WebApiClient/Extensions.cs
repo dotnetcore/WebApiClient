@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace WebApiClient
 {
     /// <summary>
-    /// 提供ITask的扩展
+    /// 提供项目相关扩展
     /// </summary>
-    public static class RetryHandleExtend
+    public static class Extensions
     {
         /// <summary>
         /// 返回提供请求重试的请求任务对象
@@ -104,6 +105,38 @@ namespace WebApiClient
                 return default(TResult);
             }
             return task.Handle().WhenCatch<Exception>(func);
+        }
+
+        /// <summary>
+        /// 转换为ITaskObservable对象
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="task"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns></returns>
+        public static ITaskObservable<TResult> ToObservable<TResult>(this Task<TResult> task)
+        {
+            if (task == null)
+            {
+                throw new ArgumentNullException(nameof(task));
+            }
+            return new TaskObservable<TResult>(task);
+        }
+
+        /// <summary>
+        /// 转换为ITaskObservable对象
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="task"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns></returns>
+        public static ITaskObservable<TResult> ToObservable<TResult>(this ITask<TResult> task)
+        {
+            if (task == null)
+            {
+                throw new ArgumentNullException(nameof(task));
+            }
+            return task.InvokeAsync().ToObservable();
         }
     }
 }

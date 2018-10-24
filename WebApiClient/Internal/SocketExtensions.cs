@@ -9,7 +9,7 @@ namespace WebApiClient
     /// <summary>
     /// Socket扩展
     /// </summary>
-    static class SocketExtend
+    static class SocketExtensions
     {
         /// <summary>
         /// 异步连接

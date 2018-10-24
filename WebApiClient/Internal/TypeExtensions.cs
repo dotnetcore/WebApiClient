@@ -3,14 +3,13 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using WebApiClient.DataAnnotations;
 
 namespace WebApiClient
 {
     /// <summary>
     /// 类型扩展
     /// </summary>
-    static class TypeExtend
+    static class TypeExtensions
     {
         /// <summary>
         /// 接口的方法缓存
@@ -207,6 +206,5 @@ namespace WebApiClient
 
             return builder.Insert(0, $"{type.Name}<").Append(">").ToString();
         }
-
     }
 }
