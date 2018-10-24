@@ -163,19 +163,6 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 返回特性是否声明指定的FormatScope
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="element"></param>
-        /// <param name="scope"></param>
-        /// <returns></returns>
-        public static bool IsDefinedFormatScope<T>(this MemberInfo element, FormatScope scope) where T : DataAnnotationAttribute
-        {
-            var attribute = element.GetCustomAttribute<T>();
-            return attribute != null && attribute.IsDefinedScope(scope);
-        }
-
-        /// <summary>
         /// 返回方法的完整名称
         /// </summary>
         /// <param name="method">方法</param>

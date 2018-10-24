@@ -56,17 +56,7 @@ namespace WebApiClient.Test.Internal
             Assert.True(typeof(C).IsInheritFrom<B>());
             Assert.False(typeof(B).IsInheritFrom<A>());
         }
-
-        [Fact]
-        public void IsDefinedFormatScopeTest()
-        {
-            var age = typeof(C).GetProperty("Age");
-            var name = typeof(C).GetProperty("Name");
-
-            Assert.True(age.IsDefinedFormatScope<AliasAsAttribute>(FormatScope.JsonFormat));
-            Assert.False(age.IsDefinedFormatScope<AliasAsAttribute>(FormatScope.KeyValueFormat));
-            Assert.False(name.IsDefinedFormatScope<AliasAsAttribute>(FormatScope.JsonFormat));
-        }
+       
 
         [Fact]
         public void GetAllApiMethodsTest()

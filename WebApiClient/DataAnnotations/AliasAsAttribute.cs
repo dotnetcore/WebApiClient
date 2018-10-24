@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace WebApiClient.DataAnnotations
 {
@@ -8,7 +9,7 @@ namespace WebApiClient.DataAnnotations
     /// 当修饰属性时默认适用于JsonFormat和KeyValueFormat
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public sealed class AliasAsAttribute : DataAnnotationAttribute
+    public class AliasAsAttribute : DataAnnotationAttribute
     {
         /// <summary>
         /// 获取别名
@@ -27,6 +28,16 @@ namespace WebApiClient.DataAnnotations
                 throw new ArgumentNullException(nameof(name));
             }
             this.Name = name;
+        }
+
+        /// <summary>
+        /// 执行特性
+        /// </summary>
+        /// <param name="member">成员</param>
+        /// <param name="annotations">注解信息</param>
+        public override void Invoke(MemberInfo member, Annotations annotations)
+        {
+            annotations.AliasName = this.Name;
         }
     }
 }

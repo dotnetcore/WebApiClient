@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace WebApiClient.DataAnnotations
 {
@@ -8,7 +9,7 @@ namespace WebApiClient.DataAnnotations
     /// 默认适用于KeyValueFormat
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public sealed class IgnoreWhenNullAttribute : DataAnnotationAttribute
+    public class IgnoreWhenNullAttribute : DataAnnotationAttribute
     {
         /// <summary>
         /// 值为null此属性将忽略
@@ -17,6 +18,16 @@ namespace WebApiClient.DataAnnotations
         public IgnoreWhenNullAttribute()
         {
             this.Scope = FormatScope.KeyValueFormat;
+        }
+
+        /// <summary>
+        /// 执行特性
+        /// </summary>
+        /// <param name="member">成员</param>
+        /// <param name="annotations">注解信息</param>
+        public override void Invoke(MemberInfo member, Annotations annotations)
+        {
+            annotations.IgnoreWhenNull = true;
         }
     }
 }

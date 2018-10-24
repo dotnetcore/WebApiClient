@@ -52,75 +52,39 @@ namespace WebApiClient.Defaults
         /// <returns></returns>
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
-            var property = base.CreateProperty(member, memberSerialization);
-            var descriptor = new PropertyDescriptor(this.formatScope, member);
-
-            property.PropertyName = this.useCamelCase ? FormatOptions.CamelCase(descriptor.AliasName) : descriptor.AliasName;
-            property.Ignored = descriptor.IgnoreSerialized;
-
-            if (property.Converter == null && descriptor.DateTimeFormat != null)
+            var annotation = new Annotations();
+            var attributes = member.GetCustomAttributes<DataAnnotationAttribute>(true);
+            foreach (var item in attributes)
             {
-                property.Converter = new IsoDateTimeConverter { DateTimeFormat = descriptor.DateTimeFormat };
+                if (item.IsDefinedScope(this.formatScope) == true)
+                {
+                    item.Invoke(member, annotation);
+                }
             }
 
-            if (descriptor.IgnoreWhenNull == true)
+            var property = base.CreateProperty(member, memberSerialization);
+            if (string.IsNullOrEmpty(annotation.AliasName) == false)
+            {
+                property.PropertyName = annotation.AliasName;
+            }
+
+            if (this.useCamelCase == true)
+            {
+                property.PropertyName = FormatOptions.CamelCase(property.PropertyName);
+            }
+
+            if (property.Converter == null && annotation.DateTimeFormat != null)
+            {
+                property.Converter = new IsoDateTimeConverter { DateTimeFormat = annotation.DateTimeFormat };
+            }
+
+            if (annotation.IgnoreWhenNull == true)
             {
                 property.NullValueHandling = NullValueHandling.Ignore;
             }
+
+            property.Ignored = annotation.IgnoreSerialized;
             return property;
-        }
-
-        /// <summary>
-        /// 表示属性的描述
-        /// </summary>
-        private class PropertyDescriptor
-        {
-            /// <summary>
-            /// 获取属性别名或名称
-            /// </summary>
-            public string AliasName { get; private set; }
-
-            /// <summary>
-            /// 获取日期时间格式
-            /// </summary>
-            public string DateTimeFormat { get; private set; }
-
-            /// <summary>
-            /// 获取是否忽略序列化
-            /// </summary>      
-            public bool IgnoreSerialized { get; private set; }
-
-            /// <summary>
-            /// 获取当值为null时是否忽略序列化
-            /// </summary>
-            public bool IgnoreWhenNull { get; private set; }
-
-            /// <summary>
-            /// 属性的描述
-            /// </summary>
-            /// <param name="scope"></param>
-            /// <param name="member"></param>
-            public PropertyDescriptor(FormatScope scope, MemberInfo member)
-            {
-                var aliasAsAttribute = member.GetCustomAttribute<AliasAsAttribute>(true);
-                if (aliasAsAttribute != null && aliasAsAttribute.IsDefinedScope(scope))
-                {
-                    this.AliasName = aliasAsAttribute.Name;
-                }
-                else
-                {
-                    this.AliasName = member.Name;
-                }
-
-                var datetimeFormatAttribute = member.GetCustomAttribute<DateTimeFormatAttribute>(true);
-                if (datetimeFormatAttribute != null && datetimeFormatAttribute.IsDefinedScope(scope))
-                {
-                    this.DateTimeFormat = datetimeFormatAttribute.Format;
-                }
-
-                this.IgnoreSerialized = member.IsDefinedFormatScope<IgnoreSerializedAttribute>(scope);
-                this.IgnoreWhenNull = member.IsDefinedFormatScope<IgnoreWhenNullAttribute>(scope);
-            }
         }
     }
 }
