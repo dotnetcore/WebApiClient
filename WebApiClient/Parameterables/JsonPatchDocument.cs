@@ -189,16 +189,27 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         protected virtual string GetMemberName(MemberInfo member)
         {
-            var aliasAs = member.GetCustomAttribute<AliasAsAttribute>();
-            if (aliasAs != null && aliasAs.IsDefinedScope(FormatScope.JsonFormat))
+            var annotations = new Annotations();
+            var attributes = member.GetCustomAttributes<DataAnnotationAttribute>(true);
+            foreach (var item in attributes)
             {
-                return aliasAs.Name;
+                if (item.IsDefinedScope(FormatScope.JsonFormat) == true)
+                {
+                    item.Invoke(member, annotations);
+                }
             }
+
+            if (string.IsNullOrEmpty(annotations.AliasName) == false)
+            {
+                return annotations.AliasName;
+            }
+
             var jsonProperty = member.GetCustomAttribute<JsonPropertyAttribute>();
-            if (jsonProperty != null)
+            if (jsonProperty != null && string.IsNullOrEmpty(jsonProperty.PropertyName) == false)
             {
                 return jsonProperty.PropertyName;
             }
+
             return member.Name;
         }
 
@@ -223,9 +234,9 @@ namespace WebApiClient.Parameterables
             private readonly StringBuilder path = new StringBuilder();
 
             /// <summary>
-            /// 缓存
+            /// 属性名称缓存
             /// </summary>
-            private static readonly ConcurrentCache<MemberInfo, string> cache = new ConcurrentCache<MemberInfo, string>();
+            private static readonly ConcurrentCache<MemberInfo, string> nameCache = new ConcurrentCache<MemberInfo, string>();
 
             /// <summary>
             /// Path访问器
@@ -253,7 +264,7 @@ namespace WebApiClient.Parameterables
             /// <returns></returns>
             protected override Expression VisitMember(MemberExpression node)
             {
-                var name = cache.GetOrAdd(node.Member, m => this.nameFunc(m));
+                var name = nameCache.GetOrAdd(node.Member, m => this.nameFunc(m));
                 if (this.camelCase == true)
                 {
                     name = FormatOptions.CamelCase(name);
