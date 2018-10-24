@@ -15,17 +15,15 @@ namespace WebApiClient.Test.DataAnnotations
         }
 
         [Fact]
-        public void Test()
+        public void DateTimeFormatTest()
         {
-            var model = new MyClass()
-            {
-                Birthday = DateTime.Parse("2000-1-1")
-            };
-            var json = HttpApiConfig.DefaultJsonFormatter.Serialize(model, null);
-            Assert.Contains("2000年01月", json);
+            var member = typeof(MyClass).GetProperty("Birthday");
 
-            var kvs = HttpApiConfig.DefaultKeyValueFormatter.Serialize("MyClass", model, null).ToArray();
-            Assert.Contains(kvs, item => item.Value == "2000年01月");
+            var annotations = Annotations.GetAnnotations(member, FormatScope.JsonFormat);
+            Assert.Equal("yyyy年MM月", annotations.DateTimeFormat);
+
+            annotations = Annotations.GetAnnotations(member, FormatScope.KeyValueFormat);
+            Assert.Equal("yyyy年MM月", annotations.DateTimeFormat);
         }
     }
 }

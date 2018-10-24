@@ -10,19 +10,21 @@ namespace WebApiClient.Test.DataAnnotations
     {
         class MyClass
         {
-            [IgnoreSerialized(Scope = FormatScope.All)]
+            [IgnoreSerialized]
             public DateTime Birthday { get; set; }
         }
 
-        [Fact]
-        public void Test()
-        {
-            var model = new MyClass();
-            var json = HttpApiConfig.DefaultJsonFormatter.Serialize(model, null);
-            Assert.DoesNotContain("Birthday", json);
 
-            var kvs = HttpApiConfig.DefaultKeyValueFormatter.Serialize("MyClass", model, null).ToArray();
-            Assert.DoesNotContain(kvs, item => item.Key == "Birthday");
+        [Fact]
+        public void IgnoreSerializedTest()
+        {
+            var member = typeof(MyClass).GetProperty("Birthday");
+
+            var annotations = Annotations.GetAnnotations(member, FormatScope.JsonFormat);
+            Assert.True(annotations.IgnoreSerialized);
+
+            annotations = Annotations.GetAnnotations(member, FormatScope.KeyValueFormat);
+            Assert.True(annotations.IgnoreSerialized);
         }
     }
 }

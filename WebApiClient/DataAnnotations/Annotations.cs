@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace WebApiClient.DataAnnotations
 {
@@ -32,9 +33,15 @@ namespace WebApiClient.DataAnnotations
         /// </summary>
         /// <param name="member">成员信息</param>
         /// <param name="scope">序列化范围</param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         public static Annotations GetAnnotations(MemberInfo member, FormatScope scope)
         {
+            if (member == null)
+            {
+                throw new ArgumentNullException(nameof(member));
+            }
+
             var annotations = new Annotations();
             var attributes = member.GetCustomAttributes<DataAnnotationAttribute>(true);
             foreach (var item in attributes)

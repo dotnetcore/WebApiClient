@@ -11,23 +11,26 @@ namespace WebApiClient.Test.DataAnnotations
     {
         class MyClass
         {
-            [IgnoreWhenNull(Scope = FormatScope.All)]
+            [IgnoreWhenNull]
             public DateTime? Birthday { get; set; }
 
             public string Name { get; set; }
         }
 
         [Fact]
-        public void Test()
+        public void IgnoreWhenNullTest()
         {
-            var model = new MyClass();
-            var json = HttpApiConfig.DefaultJsonFormatter.Serialize(model, null);
-            Assert.DoesNotContain("Birthday", json);
-            Assert.Contains("Name", json);
+            var birthday = typeof(MyClass).GetProperty("Birthday");
+            var name = typeof(MyClass).GetProperty("Name");
 
-            var kvs = HttpApiConfig.DefaultKeyValueFormatter.Serialize("MyClass", model, null).ToArray();
-            Assert.DoesNotContain(kvs, item => item.Key == "Birthday");
-            Assert.Contains(kvs, item => item.Key == "Name");
+            var annotations = Annotations.GetAnnotations(birthday, FormatScope.JsonFormat);
+            Assert.False(annotations.IgnoreWhenNull);
+
+            annotations = Annotations.GetAnnotations(birthday, FormatScope.KeyValueFormat);
+            Assert.True(annotations.IgnoreWhenNull);
+
+            annotations = Annotations.GetAnnotations(name, FormatScope.KeyValueFormat);
+            Assert.False(annotations.IgnoreWhenNull);
         }
     }
 }

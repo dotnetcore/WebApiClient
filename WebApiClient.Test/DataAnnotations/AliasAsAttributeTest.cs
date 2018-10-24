@@ -15,14 +15,15 @@ namespace WebApiClient.Test.DataAnnotations
         }
 
         [Fact]
-        public void Test()
+        public void AliasNameTest()
         {
-            var model = new MyClass();
-            var json = HttpApiConfig.DefaultJsonFormatter.Serialize(model, null);
-            Assert.Contains("MyName", json);
+            var member = typeof(MyClass).GetProperty("Name");
 
-            var kvs = HttpApiConfig.DefaultKeyValueFormatter.Serialize("MyClass", model, null).ToArray();
-            Assert.Contains(kvs, item => item.Key == "MyName");
+            var annotations = Annotations.GetAnnotations(member, FormatScope.JsonFormat);
+            Assert.Equal("MyName", annotations.AliasName);
+
+            annotations = Annotations.GetAnnotations(member, FormatScope.KeyValueFormat);
+            Assert.Equal("MyName", annotations.AliasName);
         }
     }
 }
