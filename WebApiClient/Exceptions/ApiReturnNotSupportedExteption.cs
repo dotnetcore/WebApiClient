@@ -19,6 +19,7 @@ namespace WebApiClient
         /// </summary>
         public Type ReturnDataType { get; private set; }
 
+
         /// <summary>
         /// 获取响应内容的Content-Type
         /// </summary>
@@ -28,33 +29,26 @@ namespace WebApiClient
         }
 
         /// <summary>
+        /// 获取异常提示信息
+        /// </summary>
+        public override string Message
+        {
+            get
+            {
+                return $"找不到匹配的ApiReturnAttribute将ContentType: {this.ContentType}的内容映射为{this.ReturnDataType}";
+            }
+        }
+
+        /// <summary>
         /// 不支持处理的响应消息异常
         /// </summary>
         /// <param name="responseMessage">响应消息</param>
         /// <param name="returnDataType">反序列化的目标类型</param>
         /// <exception cref="ArgumentNullException"></exception>
         public ApiReturnNotSupportedExteption(HttpResponseMessage responseMessage, Type returnDataType)
-            : base(GetErrorMessage(responseMessage, returnDataType))
         {
-            this.ResponseMessage = responseMessage;
-            this.ReturnDataType = returnDataType;
-        }
-
-        /// <summary>
-        /// 返回异常提示
-        /// </summary>
-        /// <param name="responseMessage">响应消息</param>
-        /// <param name="returnDataType">反序列化的目标类型</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <returns></returns>
-        private static string GetErrorMessage(HttpResponseMessage responseMessage, Type returnDataType)
-        {
-            if (responseMessage == null)
-            {
-                throw new ArgumentNullException(nameof(responseMessage));
-            }
-
-            return $"响应的内容不支持反序列化为{returnDataType}，请检查响应的ContentType和内容是否正确，或者强制为接口指定正确的ApiReturnAttribute";
+            this.ResponseMessage = responseMessage ?? throw new ArgumentNullException(nameof(responseMessage));
+            this.ReturnDataType = returnDataType ?? throw new ArgumentNullException(nameof(returnDataType));
         }
     }
 }

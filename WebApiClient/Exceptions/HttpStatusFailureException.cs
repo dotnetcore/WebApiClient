@@ -30,34 +30,28 @@ namespace WebApiClient
         }
 
         /// <summary>
+        /// 返回异常提示
+        /// </summary>
+        public override string Message
+        {
+            get
+            {
+                var code = (int)this.ResponseMessage.StatusCode;
+                var reason = this.ResponseMessage.ReasonPhrase;
+                return $"服务器响应了错误的的http状态码：{code} {reason}";
+            }
+        }
+
+        /// <summary>
         /// Http失败状态码异常
         /// </summary>
         /// <param name="httpApiConfig">Http接口的配置项</param>
         /// <param name="responseMessage">响应消息</param>
         /// <exception cref="ArgumentNullException"></exception>
         public HttpStatusFailureException(HttpApiConfig httpApiConfig, HttpResponseMessage responseMessage)
-           : base(GetErrorMessage(responseMessage))
         {
-            this.HttpApiConfig = httpApiConfig;
-            this.ResponseMessage = responseMessage;
-        }
-
-        /// <summary>
-        /// 返回异常提示
-        /// </summary>
-        /// <param name="responseMessage">响应消息</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <returns></returns>
-        private static string GetErrorMessage(HttpResponseMessage responseMessage)
-        {
-            if (responseMessage == null)
-            {
-                throw new ArgumentNullException(nameof(responseMessage));
-            }
-
-            var code = (int)responseMessage.StatusCode;
-            var reason = responseMessage.ReasonPhrase;
-            return $"服务器响应了错误的的http状态码：{code} {reason}";
+            this.HttpApiConfig = httpApiConfig ?? throw new ArgumentNullException(nameof(httpApiConfig));
+            this.ResponseMessage = responseMessage ?? throw new ArgumentNullException(nameof(responseMessage));
         }
 
         /// <summary>
