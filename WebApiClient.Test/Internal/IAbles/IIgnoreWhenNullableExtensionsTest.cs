@@ -6,9 +6,9 @@ using Xunit;
 using System.Linq;
 using WebApiClient.Contexts;
 
-namespace WebApiClient.Test.Internal
+namespace WebApiClient.Test.Internal.IAbles
 {
-    public class IIgnoreWhenNullableExtendTest
+    public class IIgnoreWhenNullableExtensionsTest
     {
         [Fact]
         public void IsIgnoreWithTest()

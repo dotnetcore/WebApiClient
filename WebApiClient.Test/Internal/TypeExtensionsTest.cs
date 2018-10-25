@@ -7,7 +7,7 @@ using Xunit;
 
 namespace WebApiClient.Test.Internal
 {
-    public class TypeExtendTest
+    public class TypeExtensionsTest
     {
         [AttributeUsage(AttributeTargets.All, AllowMultiple = false)]
         class A : Attribute

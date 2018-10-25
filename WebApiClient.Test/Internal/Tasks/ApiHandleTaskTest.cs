@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace WebApiClient.Test.Internal
+namespace WebApiClient.Test.Internal.Tasks
 {
     public class ApiHandleTaskTest
     {

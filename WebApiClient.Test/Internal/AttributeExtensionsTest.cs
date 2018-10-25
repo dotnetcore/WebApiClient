@@ -5,7 +5,7 @@ using Xunit;
 
 namespace WebApiClient.Test.Internal
 {
-    public class AttributeExtendTest
+    public class AttributeExtensionsTest
     {
         interface IAttribute
         {
