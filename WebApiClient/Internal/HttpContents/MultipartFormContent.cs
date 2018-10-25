@@ -18,7 +18,7 @@ namespace WebApiClient
         /// form-data表单
         /// </summary>
         public MultipartFormContent()
-            : this(Guid.NewGuid().ToString())
+            : this(Guid16.NewGuid16().ToString())
         {
         }
 
