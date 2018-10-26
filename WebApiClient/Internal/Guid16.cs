@@ -33,7 +33,16 @@ namespace WebApiClient
         /// <returns></returns>
         public override string ToString()
         {
-            return this.val.ToString("x").PadLeft(16, '0');
+            return this.val.ToString("x16");
+        }
+
+        /// <summary>
+        /// 转换为64位整数
+        /// </summary>
+        /// <returns></returns>
+        public long ToInt64()
+        {
+            return this.val;
         }
 
         /// <summary>
@@ -81,8 +90,8 @@ namespace WebApiClient
         /// <returns></returns>
         public static Guid16 NewGuid16()
         {
-            var g = Guid.NewGuid().ToByteArray().Aggregate<byte, long>(1, (current, b) => current * (b + 1));
-            return new Guid16(g - DateTime.Now.Ticks);
+            var val = Guid.NewGuid().ToByteArray().Aggregate<byte, long>(1, (current, b) => current * (b + 1));
+            return new Guid16(val - DateTime.Now.Ticks);
         }
 
         /// <summary>
