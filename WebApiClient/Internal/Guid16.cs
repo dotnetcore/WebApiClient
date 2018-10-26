@@ -61,7 +61,11 @@ namespace WebApiClient
         /// <returns></returns>
         public override bool Equals(object obj)
         {
-            return this.val.Equals(obj);
+            if (obj is Guid16 other)
+            {
+                return this.Equals(other);
+            }
+            return false;
         }
 
         /// <summary>
