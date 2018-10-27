@@ -35,9 +35,9 @@ namespace WebApiClient
         private static readonly ConcurrentDictionary<int, ModuleBuilder> hashCodeModuleBuilderCache = new ConcurrentDictionary<int, ModuleBuilder>();
 
         /// <summary>
-        /// 接口类型与代理类型的构造器缓存
+        /// 接口类型与代理类型创建工厂缓存
         /// </summary>
-        private static readonly ConcurrentCache<Type, ConstructorInfo> proxyTypeCtorCache = new ConcurrentCache<Type, ConstructorInfo>();
+        private static readonly ConcurrentCache<Type, Func<IApiInterceptor, MethodInfo[], HttpApiClient>> proxyTypeFactoryCache = new ConcurrentCache<Type, Func<IApiInterceptor, MethodInfo[], HttpApiClient>>();
 
         /// <summary>
         /// 返回HttpApiClient代理类的实例
@@ -47,7 +47,7 @@ namespace WebApiClient
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        public static object CreateInstance(Type interfaceType, IApiInterceptor interceptor)
+        public static HttpApiClient CreateInstance(Type interfaceType, IApiInterceptor interceptor)
         {
             // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口            
             if (interfaceType.GetTypeInfo().IsVisible == false)
@@ -57,11 +57,13 @@ namespace WebApiClient
             }
 
             var apiMethods = interfaceType.GetAllApiMethods();
-            var proxyTypeCtor = proxyTypeCtorCache.GetOrAdd(
-                interfaceType,
-                @interface => @interface.ImplementAsHttpApiClient(apiMethods));
+            var proxyTypeFactory = proxyTypeFactoryCache.GetOrAdd(interfaceType, @interface =>
+            {
+                var proxyType = @interface.ImplementAsHttpApiClient(apiMethods);
+                return Lambda.CreateNewFunc<HttpApiClient, IApiInterceptor, MethodInfo[]>(proxyType);
+            });
 
-            return proxyTypeCtor.Invoke(new object[] { interceptor, apiMethods });
+            return proxyTypeFactory.Invoke(interceptor, apiMethods);
         }
 
         /// <summary>
@@ -72,7 +74,7 @@ namespace WebApiClient
         /// <param name="interfaceType">接口类型</param>
         /// <param name="apiMethods">接口方法集合</param>
         /// <returns></returns>
-        private static ConstructorInfo ImplementAsHttpApiClient(this Type interfaceType, MethodInfo[] apiMethods)
+        private static Type ImplementAsHttpApiClient(this Type interfaceType, MethodInfo[] apiMethods)
         {
             var moduleName = interfaceType.GetTypeInfo().Module.Name;
             var hashCode = interfaceType.GetTypeInfo().Assembly.GetHashCode() ^ interfaceType.GetTypeInfo().Module.GetHashCode();
@@ -97,16 +99,14 @@ namespace WebApiClient
         /// <param name="builder"></param>
         /// <param name="apiMethods">接口方法集合</param>
         /// <returns></returns>
-        private static ConstructorInfo BuildProxyType(this TypeBuilder builder, MethodInfo[] apiMethods)
+        private static Type BuildProxyType(this TypeBuilder builder, MethodInfo[] apiMethods)
         {
             var fieldInterceptor = builder.BuildField("interceptor", typeof(IApiInterceptor));
             var fieldApiMethods = builder.BuildField("apiMethods", typeof(MethodInfo[]));
 
             builder.BuildCtor(fieldInterceptor, fieldApiMethods);
             builder.BuildMethods(apiMethods, fieldInterceptor, fieldApiMethods);
-
-            var proxyType = builder.CreateTypeInfo();
-            return proxyType.GetConstructor(proxyTypeCtorArgTypes);
+            return builder.CreateTypeInfo().AsType();
         }
 
         /// <summary>

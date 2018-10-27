@@ -117,7 +117,7 @@ namespace WebApiClient
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="TypeLoadException"></exception>
         /// <returns></returns>
-        public static object Create(Type interfaceType, HttpApiConfig httpApiConfig)
+        public static HttpApiClient Create(Type interfaceType, HttpApiConfig httpApiConfig)
         {
             if (httpApiConfig == null)
             {
@@ -137,7 +137,7 @@ namespace WebApiClient
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="TypeLoadException"></exception>
         /// <returns></returns>
-        public static object Create(Type interfaceType, IApiInterceptor apiInterceptor)
+        public static HttpApiClient Create(Type interfaceType, IApiInterceptor apiInterceptor)
         {
             if (interfaceType == null)
             {

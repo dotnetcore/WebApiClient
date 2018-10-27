@@ -1,7 +1,7 @@
 ﻿#if AOT
 using System;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 
 namespace WebApiClient
 {
@@ -16,9 +16,9 @@ namespace WebApiClient
         private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IApiInterceptor), typeof(MethodInfo[]) };
 
         /// <summary>
-        /// 接口对应的代理类型的构造器缓存
+        /// 接口类型与代理类型创建工厂缓存
         /// </summary>
-        private static readonly ConcurrentCache<Type, ConstructorInfo> proxyTypeCtorCache = new ConcurrentCache<Type, ConstructorInfo>();
+        private static readonly ConcurrentCache<Type, Func<IApiInterceptor, MethodInfo[], HttpApiClient>> proxyTypeFactoryCache = new ConcurrentCache<Type, Func<IApiInterceptor, MethodInfo[], HttpApiClient>>();
 
         /// <summary>
         /// 搜索接口的代理类型并实例化
@@ -27,22 +27,26 @@ namespace WebApiClient
         /// <param name="interceptor">拦截器</param>
         /// <exception cref="TypeLoadException"></exception>
         /// <returns></returns>
-        public static object CreateInstance(Type interfaceType, IApiInterceptor interceptor)
+        public static HttpApiClient CreateInstance(Type interfaceType, IApiInterceptor interceptor)
         {
-            var proxyTypeCtor = proxyTypeCtorCache.GetOrAdd(interfaceType, type =>
+            var proxyTypeFactory = proxyTypeFactoryCache.GetOrAdd(interfaceType, type =>
             {
                 var proxyType = FindProxyType(type);
-                return proxyType?.GetConstructor(proxyTypeCtorArgTypes);
+                if (proxyType == null)
+                {
+                    return null;
+                }
+                return Lambda.CreateNewFunc<HttpApiClient, IApiInterceptor, MethodInfo[]>(proxyType);
             });
 
-            if (proxyTypeCtor == null)
+            if (proxyTypeFactory == null)
             {
                 var assemblyName = typeof(HttpApiClientProxy).GetTypeInfo().Assembly.GetName();
                 throw new TypeLoadException($"找不到接口{interfaceType}的代理类，请为接口所在项目重新使用Nuget安装{assemblyName.Name} {assemblyName.Version}");
             }
 
             var apiMethods = interfaceType.GetAllApiMethods();
-            return proxyTypeCtor.Invoke(new object[] { interceptor, apiMethods });
+            return proxyTypeFactory.Invoke(interceptor, apiMethods);
         }
 
 

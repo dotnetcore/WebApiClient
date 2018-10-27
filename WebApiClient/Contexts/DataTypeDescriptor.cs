@@ -26,6 +26,11 @@ namespace WebApiClient.Contexts
         public bool IsHttpResponseWrapper { get; private set; }
 
         /// <summary>
+        /// 获取包装为ITask的创建工厂
+        /// </summary>
+        public Func<ITask> ITaskFactory { get; private set; }
+
+        /// <summary>
         /// 获取包装为ITask的泛型构造器
         /// </summary>
         public ConstructorInfo ITaskConstructor { get; private set; }
@@ -36,8 +41,11 @@ namespace WebApiClient.Contexts
         /// <param name="dataType">数据类型</param>
         public DataTypeDescriptor(Type dataType)
         {
+            var taskType = typeof(ApiTask<>).MakeGenericType(dataType);
+
             this.Type = dataType;
-            this.ITaskConstructor = typeof(ApiTask<>).MakeGenericType(dataType).GetConstructor(emptyTypes);
+            this.ITaskFactory = Lambda.CreateNewFunc<ITask>(taskType);
+            this.ITaskConstructor = taskType.GetConstructor(emptyTypes);
             this.IsHttpResponseWrapper = dataType.IsInheritFrom<HttpResponseWrapper>();
         }
     }

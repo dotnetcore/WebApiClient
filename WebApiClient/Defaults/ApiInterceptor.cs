@@ -34,7 +34,7 @@ namespace WebApiClient.Defaults
         public virtual object Intercept(object target, MethodInfo method, object[] parameters)
         {
             var descriptor = this.GetApiActionDescriptor(method, parameters);
-            var apiTask = descriptor.Return.DataType.ITaskConstructor.Invoke(null) as ApiTask;
+            var apiTask = descriptor.Return.DataType.ITaskFactory.Invoke() as ApiTask;
 
             apiTask.HttpApi = target as IHttpApi;
             apiTask.HttpApiConfig = this.HttpApiConfig;
