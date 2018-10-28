@@ -11,14 +11,9 @@ namespace WebApiClient
     static class HttpApiClientProxy
     {
         /// <summary>
-        /// 代理类型的构造器的参数类型
+        /// 接口类型与代理描述缓存
         /// </summary>
-        private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IApiInterceptor), typeof(MethodInfo[]) };
-
-        /// <summary>
-        /// 接口类型与代理类型创建工厂缓存
-        /// </summary>
-        private static readonly ConcurrentCache<Type, Func<IApiInterceptor, MethodInfo[], HttpApiClient>> proxyTypeFactoryCache = new ConcurrentCache<Type, Func<IApiInterceptor, MethodInfo[], HttpApiClient>>();
+        private static readonly ConcurrentCache<Type, ProxyDescriptor> proxyDescriptorCache = new ConcurrentCache<Type, ProxyDescriptor>();
 
         /// <summary>
         /// 搜索接口的代理类型并实例化
@@ -29,24 +24,24 @@ namespace WebApiClient
         /// <returns></returns>
         public static HttpApiClient CreateInstance(Type interfaceType, IApiInterceptor interceptor)
         {
-            var proxyTypeFactory = proxyTypeFactoryCache.GetOrAdd(interfaceType, type =>
+            var descriptor = proxyDescriptorCache.GetOrAdd(interfaceType, @interface =>
             {
-                var proxyType = FindProxyType(type);
+                var proxyType = FindProxyType(@interface);
                 if (proxyType == null)
                 {
                     return null;
                 }
-                return Lambda.CreateNewFunc<HttpApiClient, IApiInterceptor, MethodInfo[]>(proxyType);
+
+                var apiMethods = @interface.GetAllApiMethods();
+                return new ProxyDescriptor(proxyType, apiMethods);
             });
 
-            if (proxyTypeFactory == null)
+            if (descriptor == null)
             {
                 var assemblyName = typeof(HttpApiClientProxy).GetTypeInfo().Assembly.GetName();
                 throw new TypeLoadException($"找不到接口{interfaceType}的代理类，请为接口所在项目重新使用Nuget安装{assemblyName.Name} {assemblyName.Version}");
             }
-
-            var apiMethods = interfaceType.GetAllApiMethods();
-            return proxyTypeFactory.Invoke(interceptor, apiMethods);
+            return descriptor.CreateInstance(interceptor);
         }
 
 

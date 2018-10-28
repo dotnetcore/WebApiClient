@@ -1,6 +1,5 @@
 ﻿#if JIT
 using System;
-using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -30,14 +29,9 @@ namespace WebApiClient
         private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IApiInterceptor), typeof(MethodInfo[]) };
 
         /// <summary>
-        /// 程序集HashCode^模块HashCode与模块创建器的缓存
+        /// 接口类型与代理描述缓存
         /// </summary>
-        private static readonly ConcurrentDictionary<int, ModuleBuilder> hashCodeModuleBuilderCache = new ConcurrentDictionary<int, ModuleBuilder>();
-
-        /// <summary>
-        /// 接口类型与代理类型创建工厂缓存
-        /// </summary>
-        private static readonly ConcurrentCache<Type, Func<IApiInterceptor, MethodInfo[], HttpApiClient>> proxyTypeFactoryCache = new ConcurrentCache<Type, Func<IApiInterceptor, MethodInfo[], HttpApiClient>>();
+        private static readonly ConcurrentCache<Type, ProxyDescriptor> proxyDescriptorCache = new ConcurrentCache<Type, ProxyDescriptor>();
 
         /// <summary>
         /// 返回HttpApiClient代理类的实例
@@ -56,14 +50,14 @@ namespace WebApiClient
                 throw new NotSupportedException(message);
             }
 
-            var apiMethods = interfaceType.GetAllApiMethods();
-            var proxyTypeFactory = proxyTypeFactoryCache.GetOrAdd(interfaceType, @interface =>
+            var descriptor = proxyDescriptorCache.GetOrAdd(interfaceType, @interface =>
             {
+                var apiMethods = @interface.GetAllApiMethods();
                 var proxyType = @interface.ImplementAsHttpApiClient(apiMethods);
-                return Lambda.CreateNewFunc<HttpApiClient, IApiInterceptor, MethodInfo[]>(proxyType);
+                return new ProxyDescriptor(proxyType, apiMethods);
             });
 
-            return proxyTypeFactory.Invoke(interceptor, apiMethods);
+            return descriptor.CreateInstance(interceptor);
         }
 
         /// <summary>
@@ -77,19 +71,15 @@ namespace WebApiClient
         private static Type ImplementAsHttpApiClient(this Type interfaceType, MethodInfo[] apiMethods)
         {
             var moduleName = interfaceType.GetTypeInfo().Module.Name;
-            var hashCode = interfaceType.GetTypeInfo().Assembly.GetHashCode() ^ interfaceType.GetTypeInfo().Module.GetHashCode();
+            var assemblyName = new AssemblyName(Guid16.NewGuid16().ToString());
 
-            // 每个动态集下面只会有一个模块
-            var moduleBuilder = hashCodeModuleBuilderCache.GetOrAdd(hashCode, (hash) =>
-            {
-                return AssemblyBuilder
-                .DefineDynamicAssembly(new AssemblyName(hash.ToString()), AssemblyBuilderAccess.Run)
+            var moduleBuilder = AssemblyBuilder
+                .DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run)
                 .DefineDynamicModule(moduleName);
-            });
 
-            var builder = moduleBuilder.DefineType(interfaceType.FullName, TypeAttributes.Class, typeof(HttpApiClient));
-            builder.AddInterfaceImplementation(interfaceType);
-            return builder.BuildProxyType(apiMethods);
+            var typeBuilder = moduleBuilder.DefineType(interfaceType.FullName, TypeAttributes.Class, typeof(HttpApiClient));
+            typeBuilder.AddInterfaceImplementation(interfaceType);
+            return typeBuilder.BuildProxyType(apiMethods);
         }
 
         /// <summary>

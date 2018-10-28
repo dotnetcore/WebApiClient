@@ -17,11 +17,6 @@ namespace WebApiClient
         private static readonly ConcurrentCache<Type, bool> typeAllowMultipleCache = new ConcurrentCache<Type, bool>();
 
         /// <summary>
-        /// 接口的方法缓存
-        /// </summary>
-        private static readonly ConcurrentCache<Type, MethodInfo[]> interfaceMethodsCache = new ConcurrentCache<Type, MethodInfo[]>();
-
-        /// <summary>
         /// 关联的AttributeUsageAttribute是否AllowMultiple
         /// </summary>
         /// <param name="type"></param>
@@ -80,26 +75,11 @@ namespace WebApiClient
         /// 获取接口类型及其继承的接口的所有方法
         /// 忽略HttpApiClient类型的所有接口的方法
         /// </summary>
-        /// <param name="interfaceType">接口类型</param>
-        /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="NotSupportedException"></exception>
-        /// <returns></returns>
-        public static MethodInfo[] GetAllApiMethods(this Type interfaceType)
-        {
-            return interfaceMethodsCache.GetOrAdd(
-                interfaceType,
-                type => type.GetAllApiMethodsNoCache());
-        }
-
-        /// <summary>
-        /// 获取接口类型及其继承的接口的所有方法
-        /// 忽略HttpApiClient类型的所有接口的方法
-        /// </summary>
         /// <param name="interfaceType">接口类型</param> 
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        private static MethodInfo[] GetAllApiMethodsNoCache(this Type interfaceType)
+        public static MethodInfo[] GetAllApiMethods(this Type interfaceType)
         {
             if (interfaceType.GetTypeInfo().IsInterface == false)
             {
