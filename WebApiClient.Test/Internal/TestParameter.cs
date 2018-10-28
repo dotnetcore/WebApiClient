@@ -15,7 +15,7 @@ namespace WebApiClient.Test.Internal
         public static ApiParameterDescriptor Create(object value)
         {
             var p = typeof(TestParameter).GetMethod("Test").GetParameters()[0];
-            return ApiParameterDescriptor.Create(p).Clone(value);
+            return new ApiParameterDescriptor(p).Clone(value);
         }
     }
 }

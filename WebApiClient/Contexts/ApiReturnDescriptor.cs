@@ -40,18 +40,16 @@ namespace WebApiClient.Contexts
 
 
         /// <summary>
-        /// 创建ApiReturnDescriptor
+        /// 请求Api的返回描述
         /// </summary>
         /// <param name="method">方法信息</param>
         /// <exception cref="ArgumentNullException"></exception>
-        /// <returns></returns>
-        public static ApiReturnDescriptor Create(MethodInfo method)
+        public ApiReturnDescriptor(MethodInfo method)
         {
             if (method == null)
             {
                 throw new ArgumentNullException(nameof(method));
             }
-
 
             var returnAttribute = method.FindDeclaringAttribute<IApiReturnAttribute>(true);
             if (returnAttribute == null)
@@ -62,14 +60,12 @@ namespace WebApiClient.Contexts
             var dataType = method.ReturnType.GetGenericArguments().FirstOrDefault();
             var dataTypeDefinition = method.ReturnType.GetGenericTypeDefinition();
 
-            return new ApiReturnDescriptor
-            {
-                Attribute = returnAttribute,
-                ReturnType = method.ReturnType,
-                DataType = new DataTypeDescriptor(dataType),
-                IsTaskDefinition = dataTypeDefinition == typeof(Task<>),
-                IsITaskDefinition = dataTypeDefinition == typeof(ITask<>)
-            };
+
+            this.Attribute = returnAttribute;
+            this.ReturnType = method.ReturnType;
+            this.DataType = new DataTypeDescriptor(dataType);
+            this.IsTaskDefinition = dataTypeDefinition == typeof(Task<>);
+            this.IsITaskDefinition = dataTypeDefinition == typeof(ITask<>);
         }
     }
 }

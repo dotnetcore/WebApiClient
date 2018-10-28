@@ -72,7 +72,7 @@ namespace WebApiClient.Defaults
         /// <returns></returns>
         protected virtual ApiActionDescriptor GetApiActionDescriptor(MethodInfo method, object[] parameters)
         {
-            return descriptorCache.GetOrAdd(method, m => ApiActionDescriptor.Create(m)).Clone(parameters);
+            return descriptorCache.GetOrAdd(method, m => new ApiActionDescriptor(m)).Clone(parameters);
         }
 
         /// <summary>

@@ -48,6 +48,42 @@ namespace WebApiClient.Contexts
         /// </summary>
         public ValidationAttribute[] ValidationAttributes { get; protected set; }
 
+        /// <summary>
+        /// 请求Api的参数描述
+        /// </summary>
+        protected ApiParameterDescriptor()
+        {
+        }
+
+        /// <summary>
+        /// 请求Api的参数描述
+        /// </summary>
+        /// <param name="parameter">参数信息</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public ApiParameterDescriptor(ParameterInfo parameter)
+        {
+            if (parameter == null)
+            {
+                throw new ArgumentNullException(nameof(parameter));
+            }
+
+            var parameterType = parameter.ParameterType;
+            var parameterAlias = parameter.GetCustomAttribute(typeof(AliasAsAttribute)) as AliasAsAttribute;
+            var parameterName = parameterAlias == null ? parameter.Name : parameterAlias.Name;
+
+            var defined = parameter.GetAttributes<IApiParameterAttribute>(true);
+            var attributes = HttpApiConfig.DefaultApiParameterAttributeProvider.GetAttributes(parameterType, defined);
+            var validationAttributes = parameter.GetCustomAttributes<ValidationAttribute>(true).ToArray();
+
+
+            this.Value = null;
+            this.Member = parameter;
+            this.Name = parameterName;
+            this.Index = parameter.Position;
+            this.Attributes = attributes;
+            this.ParameterType = parameterType;
+            this.ValidationAttributes = validationAttributes;
+        }
 
         /// <summary>
         /// 值转换为字符串
@@ -74,39 +110,6 @@ namespace WebApiClient.Contexts
                 Attributes = this.Attributes,
                 ParameterType = this.ParameterType,
                 ValidationAttributes = this.ValidationAttributes
-            };
-        }
-
-        /// <summary>
-        /// 创建ApiParameterDescriptor
-        /// </summary>
-        /// <param name="parameter">参数信息</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <returns></returns>
-        public static ApiParameterDescriptor Create(ParameterInfo parameter)
-        {
-            if (parameter == null)
-            {
-                throw new ArgumentNullException(nameof(parameter));
-            }
-
-            var parameterType = parameter.ParameterType;
-            var parameterAlias = parameter.GetCustomAttribute(typeof(AliasAsAttribute)) as AliasAsAttribute;
-            var parameterName = parameterAlias == null ? parameter.Name : parameterAlias.Name;
-
-            var defined = parameter.GetAttributes<IApiParameterAttribute>(true);
-            var attributes = HttpApiConfig.DefaultApiParameterAttributeProvider.GetAttributes(parameterType, defined);
-            var validationAttributes = parameter.GetCustomAttributes<ValidationAttribute>(true).ToArray();
-
-            return new ApiParameterDescriptor
-            {
-                Value = null,
-                Member = parameter,
-                Name = parameterName,
-                Index = parameter.Position,
-                Attributes = attributes,
-                ParameterType = parameterType,
-                ValidationAttributes = validationAttributes
             };
         }
     }

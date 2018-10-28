@@ -22,7 +22,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
             var context = new TestActionContext(
                 httpApi: null,
                 httpApiConfig: new HttpApiConfig(),
-                apiActionDescriptor: ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("PostAsync")));
+                apiActionDescriptor: new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync")));
 
             context.RequestMessage.RequestUri = new Uri("http://www.webapi.com/");
             context.RequestMessage.Method = HttpMethod.Post; 

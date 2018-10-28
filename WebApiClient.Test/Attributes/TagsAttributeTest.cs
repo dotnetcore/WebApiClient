@@ -18,7 +18,7 @@ namespace WebApiClient.Test.Attributes
             var context = new TestActionContext(
                 httpApi: null,
                 httpApiConfig: new HttpApiConfig { HttpHost = new Uri("http://www.mywebapi.com") },
-                apiActionDescriptor: ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("PostAsync")));
+                apiActionDescriptor: new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync")));
 
             var parameter = context.ApiActionDescriptor.Parameters[0].Clone("laojiu");
 
@@ -33,7 +33,7 @@ namespace WebApiClient.Test.Attributes
             var context = new TestActionContext(
                 httpApi: null,
                 httpApiConfig: new HttpApiConfig { HttpHost = new Uri("http://www.mywebapi.com") },
-                apiActionDescriptor: ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("PostAsync")));
+                apiActionDescriptor: new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync")));
 
             var attr = new TagsAttribute("key", "laojiu");
             await attr.BeforeRequestAsync(context);

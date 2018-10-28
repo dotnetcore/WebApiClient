@@ -34,7 +34,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
             var context = new TestActionContext(
                 httpApi: null,
                 httpApiConfig: new HttpApiConfig(),
-                apiActionDescriptor: ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("HttpResponseMessageAsync")));
+                apiActionDescriptor: new ApiActionDescriptor(typeof(IMyApi).GetMethod("HttpResponseMessageAsync")));
 
             context.RequestMessage.RequestUri = new Uri("http://www.mywebapi.com");
             context.RequestMessage.Method = HttpMethod.Post; 
@@ -52,7 +52,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
             var context = new TestActionContext(
                 httpApi: null,
                 httpApiConfig: new HttpApiConfig(),
-                apiActionDescriptor: ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("StringAsync")));
+                apiActionDescriptor: new ApiActionDescriptor(typeof(IMyApi).GetMethod("StringAsync")));
 
             context.RequestMessage.RequestUri = new Uri("http://www.mywebapi.com");
             context.RequestMessage.Method = HttpMethod.Post; 
@@ -69,7 +69,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
             var context = new TestActionContext(
                 httpApi: null,
                 httpApiConfig: new HttpApiConfig(),
-                apiActionDescriptor: ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("ByteArrayAsync")));
+                apiActionDescriptor: new ApiActionDescriptor(typeof(IMyApi).GetMethod("ByteArrayAsync")));
 
             context.RequestMessage.RequestUri = new Uri("http://www.mywebapi.com");
             context.RequestMessage.Method = HttpMethod.Post;           
@@ -87,7 +87,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
             var context = new TestActionContext(
                 httpApi: null,
                 httpApiConfig: new HttpApiConfig(),
-                apiActionDescriptor: ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("JsonXmlAsync")));
+                apiActionDescriptor: new ApiActionDescriptor(typeof(IMyApi).GetMethod("JsonXmlAsync")));
 
             context.RequestMessage.RequestUri = new Uri("http://www.mywebapi.com");
             context.RequestMessage.Method = HttpMethod.Post; 
@@ -108,7 +108,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
             var context = new TestActionContext(
               httpApi: null,
               httpApiConfig: new HttpApiConfig(),
-              apiActionDescriptor: ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("JsonXmlAsync")));
+              apiActionDescriptor: new ApiActionDescriptor(typeof(IMyApi).GetMethod("JsonXmlAsync")));
 
             context.RequestMessage.RequestUri = new Uri("http://www.mywebapi.com");
             context.RequestMessage.Method = HttpMethod.Post;
@@ -129,7 +129,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
             var context = new TestActionContext(
                 httpApi: null,
                 httpApiConfig: new HttpApiConfig(),
-                apiActionDescriptor: ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("JsonXmlAsync")));
+                apiActionDescriptor: new ApiActionDescriptor(typeof(IMyApi).GetMethod("JsonXmlAsync")));
 
             context.RequestMessage.RequestUri = new Uri("http://www.mywebapi.com");
             context.RequestMessage.Method = HttpMethod.Post;

@@ -43,30 +43,18 @@ namespace WebApiClient.Contexts
         public ApiReturnDescriptor Return { get; protected set; }
 
         /// <summary>
-        /// 克隆并设置新的参数值
+        /// 请求Api描述
         /// </summary>
-        /// <param name="parameterValues">新的参数值集合</param>
-        /// <returns></returns>
-        public virtual ApiActionDescriptor Clone(object[] parameterValues)
+        protected ApiActionDescriptor()
         {
-            return new ApiActionDescriptor
-            {
-                Name = this.Name,
-                Member = this.Member,
-                Return = this.Return,
-                Filters = this.Filters,
-                Attributes = this.Attributes,
-                Parameters = this.Parameters.Select((p, i) => p.Clone(parameterValues[i])).ToArray()
-            };
         }
 
         /// <summary>
-        /// 创建ApiActionDescriptor
+        /// 请求Api描述
         /// </summary>
         /// <param name="method">接口的方法</param>
         /// <exception cref="ArgumentNullException"></exception>
-        /// <returns></returns>
-        public static ApiActionDescriptor Create(MethodInfo method)
+        public ApiActionDescriptor(MethodInfo method)
         {
             if (method == null)
             {
@@ -86,16 +74,32 @@ namespace WebApiClient.Contexts
                 .ToArray();
 
 
+            this.Member = method;
+            this.Name = method.Name;
+            this.Filters = filterAttributes;
+            this.Attributes = actionAttributes;
+            this.Return = new ApiReturnDescriptor(method);
+            this.Parameters = method.GetParameters().Select(p => new ApiParameterDescriptor(p)).ToArray();
+        }
+
+        /// <summary>
+        /// 克隆并设置新的参数值
+        /// </summary>
+        /// <param name="parameterValues">新的参数值集合</param>
+        /// <returns></returns>
+        public virtual ApiActionDescriptor Clone(object[] parameterValues)
+        {
             return new ApiActionDescriptor
             {
-                Member = method,
-                Name = method.Name,
-                Filters = filterAttributes,
-                Attributes = actionAttributes,
-                Return = ApiReturnDescriptor.Create(method),
-                Parameters = method.GetParameters().Select(p => ApiParameterDescriptor.Create(p)).ToArray()
+                Name = this.Name,
+                Member = this.Member,
+                Return = this.Return,
+                Filters = this.Filters,
+                Attributes = this.Attributes,
+                Parameters = this.Parameters.Select((p, i) => p.Clone(parameterValues[i])).ToArray()
             };
         }
+
 
         /// <summary>
         /// 是否允许重复的特性比较器
