@@ -4,9 +4,10 @@ using System.Reflection;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示代理描述
+    /// 表示HttpApiClient代理描述
+    /// 提供HttpApiClient代理类的实例化
     /// </summary>
-    class ProxyDescriptor
+    partial class HttpApiClientProxy
     {
         /// <summary>
         /// 代理类型的创建工厂
@@ -29,7 +30,7 @@ namespace WebApiClient
         /// <param name="proxyType">代理类型</param>
         /// <param name="apiMethods">接口声明的api方法</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ProxyDescriptor(Type proxyType, MethodInfo[] apiMethods)
+        private HttpApiClientProxy(Type proxyType, MethodInfo[] apiMethods)
         {
             this.ProxyType = proxyType ?? throw new ArgumentNullException(nameof(proxyType));
             this.ApiMethods = apiMethods ?? throw new ArgumentNullException(nameof(apiMethods));
@@ -41,7 +42,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="interceptor">拦截器</param>
         /// <returns></returns>
-        public HttpApiClient CreateInstance(IApiInterceptor interceptor)
+        private HttpApiClient CreateInstance(IApiInterceptor interceptor)
         {
             return this.proxyFactory.Invoke(interceptor, this.ApiMethods);
         }
