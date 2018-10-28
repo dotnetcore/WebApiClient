@@ -1,13 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <IsPackable>false</IsPackable>
 
-    <Configurations>JIT;AOT</Configurations>
-    
-    <JITAOT Condition="'$(Configuration)' == 'AOT'">AOT</JITAOT>
-    <JITAOT Condition="'$(Configuration)' == 'JIT'">JIT</JITAOT>
+    <Configurations>JIT_Debug;JIT_Release;AOT_Debug;AOT_Release</Configurations>
+
+    <JITAOT Condition="'$(Configuration)' == 'AOT_Debug' Or '$(Configuration)' == 'AOT_Release'">AOT</JITAOT>
+    <JITAOT Condition="'$(Configuration)' == 'JIT_Debug' Or '$(Configuration)' == 'JIT_Release'">JIT</JITAOT>
     
     <DefineConstants>$(JITAOT);DEBUG</DefineConstants>
     
