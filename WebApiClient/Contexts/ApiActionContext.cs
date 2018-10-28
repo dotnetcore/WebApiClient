@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace WebApiClient.Contexts
 {
@@ -56,43 +56,61 @@ namespace WebApiClient.Contexts
         /// <summary>
         /// 获取httpApi代理类实例
         /// </summary>
-        public IHttpApi HttpApi { get; internal set; }
+        public IHttpApi HttpApi { get; private set; }
 
         /// <summary>
         /// 获取关联的HttpApiConfig
         /// </summary>
-        public HttpApiConfig HttpApiConfig { get; internal set; }
+        public HttpApiConfig HttpApiConfig { get; private set; }
 
         /// <summary>
         /// 获取关联的ApiActionDescriptor
         /// </summary>
-        public ApiActionDescriptor ApiActionDescriptor { get; internal set; }
+        public ApiActionDescriptor ApiActionDescriptor { get; private set; }
 
         /// <summary>
         /// 获取关联的HttpRequestMessage
         /// </summary>
-        public HttpApiRequestMessage RequestMessage { get; internal set; }
+        public HttpApiRequestMessage RequestMessage { get; private set; }
+
+
 
         /// <summary>
         /// 获取关联的HttpResponseMessage
         /// </summary>
-        public HttpResponseMessage ResponseMessage { get; internal set; }
+        public HttpResponseMessage ResponseMessage { get; protected set; }
 
         /// <summary>
         /// 获取调用Api得到的结果
         /// </summary>
-        public object Result { get; internal set; }
+        public object Result { get; protected set; }
 
         /// <summary>
         /// 获取调用Api产生的异常
         /// </summary>
-        public Exception Exception { get; internal set; }
+        public Exception Exception { get; protected set; }
+
+
+        /// <summary>
+        /// 请求Api的上下文
+        /// </summary>
+        /// <param name="httpApi">httpApi代理类实例</param>
+        /// <param name="httpApiConfig">关联的HttpApiConfig</param>
+        /// <param name="apiActionDescriptor">关联的ApiActionDescriptor</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public ApiActionContext(IHttpApi httpApi, HttpApiConfig httpApiConfig, ApiActionDescriptor apiActionDescriptor)
+        {
+            this.HttpApi = httpApi;
+            this.HttpApiConfig = httpApiConfig ?? throw new ArgumentNullException(nameof(httpApiConfig));
+            this.ApiActionDescriptor = apiActionDescriptor ?? throw new ArgumentNullException(nameof(apiActionDescriptor));
+            this.RequestMessage = new HttpApiRequestMessage { RequestUri = httpApiConfig.HttpHost };
+        }
 
         /// <summary>
         /// 执行Api方法
         /// </summary>
         /// <returns></returns>
-        public async Task<TResult> ExecuteActionAsync<TResult>()
+        public virtual async Task<TResult> ExecuteActionAsync<TResult>()
         {
             await this.PrepareRequestAsync().ConfigureAwait(false);
             await this.ExecFiltersAsync(filter => filter.OnBeginRequestAsync).ConfigureAwait(false);

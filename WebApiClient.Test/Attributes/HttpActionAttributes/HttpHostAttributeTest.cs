@@ -14,12 +14,10 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
         [Fact]
         public async Task BeforeRequestAsyncTest()
         {
-            var context = new ApiActionContext
-            {
-                HttpApiConfig = new HttpApiConfig(),
-                RequestMessage = new HttpApiRequestMessage(),
-                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("PostAsync"))
-            };
+            var context = new TestActionContext(
+                httpApi: null,
+                httpApiConfig: new HttpApiConfig(),
+                apiActionDescriptor: ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("PostAsync")));
 
             Assert.Throws<ArgumentNullException>(() => new HttpHostAttribute(null));
             Assert.Throws<UriFormatException>(() => new HttpHostAttribute("/"));

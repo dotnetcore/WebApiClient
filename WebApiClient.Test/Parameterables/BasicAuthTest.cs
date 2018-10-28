@@ -13,11 +13,10 @@ namespace WebApiClient.Test.Parameterables
         [Fact]
         public async Task Test()
         {
-            var context = new ApiActionContext
-            {
-                RequestMessage = new HttpApiRequestMessage(),
-                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("PostAsync"))
-            };
+            var context = new TestActionContext(
+                httpApi: null,
+                httpApiConfig: new HttpApiConfig(),
+                apiActionDescriptor: ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("PostAsync")));
 
             var parameter = context.ApiActionDescriptor.Parameters[0];
             var basicAuth = new BasicAuth("laojiu", "123456");

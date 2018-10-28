@@ -19,16 +19,13 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
         [Fact]
         public async Task BeforeRequestAsyncTest()
         {
-            var context = new ApiActionContext
-            {
-                HttpApiConfig = new HttpApiConfig(),
-                RequestMessage = new HttpApiRequestMessage
-                {
-                    Method = HttpMethod.Post,
-                    RequestUri = new Uri("http://www.webapi.com/")
-                },
-                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("PostAsync"))
-            };
+            var context = new TestActionContext(
+                httpApi: null,
+                httpApiConfig: new HttpApiConfig(),
+                apiActionDescriptor: ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("PostAsync")));
+
+            context.RequestMessage.RequestUri = new Uri("http://www.webapi.com/");
+            context.RequestMessage.Method = HttpMethod.Post; 
 
             var parameter = context.ApiActionDescriptor.Parameters[0].Clone(new
             {

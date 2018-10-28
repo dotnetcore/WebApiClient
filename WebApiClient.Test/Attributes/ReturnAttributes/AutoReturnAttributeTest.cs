@@ -31,18 +31,15 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
         [Fact]
         public async Task HttpResponseMessageResultTest()
         {
-            var context = new ApiActionContext
-            {
-                HttpApiConfig = new HttpApiConfig(),
-                RequestMessage = new HttpApiRequestMessage
-                {
-                    Method = HttpMethod.Post,
-                    RequestUri = new Uri("http://www.webapi.com/")
-                },
-                ResponseMessage = new HttpResponseMessage(System.Net.HttpStatusCode.OK),
-                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("HttpResponseMessageAsync"))
-            };
-            context.ResponseMessage.Content = new StringContent("laojiu");
+            var context = new TestActionContext(
+                httpApi: null,
+                httpApiConfig: new HttpApiConfig(),
+                apiActionDescriptor: ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("HttpResponseMessageAsync")));
+
+            context.RequestMessage.RequestUri = new Uri("http://www.mywebapi.com");
+            context.RequestMessage.Method = HttpMethod.Post; 
+            context.ResponseMessage.Content = new StringContent("laojiu", Encoding.UTF8);
+
 
             var attr = new AutoReturnAttribute();
             var result = await ((IApiReturnAttribute)attr).GetTaskResult(context);
@@ -52,17 +49,13 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
         [Fact]
         public async Task StringResultTest()
         {
-            var context = new ApiActionContext
-            {
-                HttpApiConfig = new HttpApiConfig(),
-                RequestMessage = new HttpApiRequestMessage
-                {
-                    Method = HttpMethod.Post,
-                    RequestUri = new Uri("http://www.webapi.com/")
-                },
-                ResponseMessage = new HttpResponseMessage(System.Net.HttpStatusCode.OK),
-                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("StringAsync"))
-            };
+            var context = new TestActionContext(
+                httpApi: null,
+                httpApiConfig: new HttpApiConfig(),
+                apiActionDescriptor: ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("StringAsync")));
+
+            context.RequestMessage.RequestUri = new Uri("http://www.mywebapi.com");
+            context.RequestMessage.Method = HttpMethod.Post; 
             context.ResponseMessage.Content = new StringContent("laojiu");
 
             var attr = new AutoReturnAttribute();
@@ -73,17 +66,13 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
         [Fact]
         public async Task ByteArrayResultTest()
         {
-            var context = new ApiActionContext
-            {
-                HttpApiConfig = new HttpApiConfig(),
-                RequestMessage = new HttpApiRequestMessage
-                {
-                    Method = HttpMethod.Post,
-                    RequestUri = new Uri("http://www.webapi.com/")
-                },
-                ResponseMessage = new HttpResponseMessage(System.Net.HttpStatusCode.OK),
-                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("ByteArrayAsync"))
-            };
+            var context = new TestActionContext(
+                httpApi: null,
+                httpApiConfig: new HttpApiConfig(),
+                apiActionDescriptor: ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("ByteArrayAsync")));
+
+            context.RequestMessage.RequestUri = new Uri("http://www.mywebapi.com");
+            context.RequestMessage.Method = HttpMethod.Post;           
             context.ResponseMessage.Content = new StringContent("laojiu", Encoding.UTF8);
 
             var attr = new AutoReturnAttribute();
@@ -95,17 +84,14 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
         [Fact]
         public async Task JsonResultTest()
         {
-            var context = new ApiActionContext
-            {
-                HttpApiConfig = new HttpApiConfig(),
-                RequestMessage = new HttpApiRequestMessage
-                {
-                    Method = HttpMethod.Post,
-                    RequestUri = new Uri("http://www.webapi.com/")
-                },
-                ResponseMessage = new HttpResponseMessage(System.Net.HttpStatusCode.OK),
-                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("JsonXmlAsync"))
-            };
+            var context = new TestActionContext(
+                httpApi: null,
+                httpApiConfig: new HttpApiConfig(),
+                apiActionDescriptor: ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("JsonXmlAsync")));
+
+            context.RequestMessage.RequestUri = new Uri("http://www.mywebapi.com");
+            context.RequestMessage.Method = HttpMethod.Post; 
+
 
             var model = new Model();
             var json = context.HttpApiConfig.JsonFormatter.Serialize(model, context.HttpApiConfig.FormatOptions);
@@ -119,17 +105,14 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
         [Fact]
         public async Task XmlResultTest()
         {
-            var context = new ApiActionContext
-            {
-                HttpApiConfig = new HttpApiConfig(),
-                RequestMessage = new HttpApiRequestMessage
-                {
-                    Method = HttpMethod.Post,
-                    RequestUri = new Uri("http://www.webapi.com/")
-                },
-                ResponseMessage = new HttpResponseMessage(System.Net.HttpStatusCode.OK),
-                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("JsonXmlAsync"))
-            };
+            var context = new TestActionContext(
+              httpApi: null,
+              httpApiConfig: new HttpApiConfig(),
+              apiActionDescriptor: ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("JsonXmlAsync")));
+
+            context.RequestMessage.RequestUri = new Uri("http://www.mywebapi.com");
+            context.RequestMessage.Method = HttpMethod.Post;
+            
 
             var model = new Model();
             var xml = context.HttpApiConfig.XmlFormatter.Serialize(model, Encoding.UTF8);
@@ -143,17 +126,14 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
         [Fact]
         public async Task EnsureSuccessStatusCodeTest()
         {
-            var context = new ApiActionContext
-            {
-                HttpApiConfig = new HttpApiConfig(),
-                RequestMessage = new HttpApiRequestMessage
-                {
-                    Method = HttpMethod.Post,
-                    RequestUri = new Uri("http://www.webapi.com/")
-                },
-                ResponseMessage = new HttpResponseMessage(System.Net.HttpStatusCode.NotFound),
-                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("JsonXmlAsync"))
-            };
+            var context = new TestActionContext(
+                httpApi: null,
+                httpApiConfig: new HttpApiConfig(),
+                apiActionDescriptor: ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("JsonXmlAsync")));
+
+            context.RequestMessage.RequestUri = new Uri("http://www.mywebapi.com");
+            context.RequestMessage.Method = HttpMethod.Post;
+            context.ResponseMessage.StatusCode = System.Net.HttpStatusCode.InternalServerError;
 
             var model = new Model();
             var xml = context.HttpApiConfig.XmlFormatter.Serialize(model, Encoding.UTF8);

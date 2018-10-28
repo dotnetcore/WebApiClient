@@ -96,14 +96,7 @@ namespace WebApiClient
         /// <returns></returns>
         public virtual async Task<TResult> InvokeAsync()
         {
-            var context = new ApiActionContext
-            {
-                HttpApi = this.HttpApi,
-                HttpApiConfig = this.HttpApiConfig,
-                ApiActionDescriptor = this.ApiActionDescriptor,
-                RequestMessage = new HttpApiRequestMessage { RequestUri = this.HttpApiConfig.HttpHost }
-            };
-
+            var context = new ApiActionContext(this.HttpApi, this.HttpApiConfig, this.ApiActionDescriptor);
             return await context.ExecuteActionAsync<TResult>().ConfigureAwait(false);
         }
     }

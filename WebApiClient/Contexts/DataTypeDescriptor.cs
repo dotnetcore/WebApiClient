@@ -18,22 +18,22 @@ namespace WebApiClient.Contexts
         /// <summary>
         /// 获取类型
         /// </summary>
-        public Type Type { get; private set; }
+        public Type Type { get; protected set; }
 
         /// <summary>
         /// 获取是否为HttpResponseWrapper子类型
         /// </summary>
-        public bool IsHttpResponseWrapper { get; private set; }
+        public bool IsHttpResponseWrapper { get; protected set; }
 
         /// <summary>
         /// 获取包装为ITask的创建工厂
         /// </summary>
-        public Func<ITask> ITaskFactory { get; private set; }
+        public Func<ITask> ITaskFactory { get; protected set; }
 
         /// <summary>
         /// 获取包装为ITask的泛型构造器
         /// </summary>
-        public ConstructorInfo ITaskConstructor { get; private set; }
+        public ConstructorInfo ITaskConstructor { get; protected set; }
 
         /// <summary>
         /// 返回的Task(Of T)的T类型描述

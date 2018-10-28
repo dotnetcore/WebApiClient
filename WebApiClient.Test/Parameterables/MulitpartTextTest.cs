@@ -21,15 +21,14 @@ namespace WebApiClient.Test.Parameterables
 {HttpUtility.UrlEncode(value, Encoding.UTF8)}";
             }
 
-            var context = new ApiActionContext
-            {
-                RequestMessage = new HttpApiRequestMessage
-                {
-                    RequestUri = new Uri("http://www.mywebapi.com"),
-                    Method = HttpMethod.Post
-                },
-                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("PostAsync"))
-            };
+            var context = new TestActionContext(
+                httpApi: null,
+                httpApiConfig: new HttpApiConfig(),
+                apiActionDescriptor: ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("PostAsync")));
+
+            context.RequestMessage.RequestUri = new Uri("http://www.webapi.com/");
+            context.RequestMessage.Method = HttpMethod.Post;
+           
 
             var parameter = context.ApiActionDescriptor.Parameters[0];
             IApiParameterable mulitpartText = new MulitpartText("laojiu");

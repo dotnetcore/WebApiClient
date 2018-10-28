@@ -15,39 +15,39 @@ namespace WebApiClient.Contexts
         /// <summary>
         /// 获取Api名称
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; protected set; }
 
         /// <summary>
         /// 获取关联的方法信息
         /// </summary>
-        public MethodInfo Member { get; private set; }
+        public MethodInfo Member { get; protected set; }
 
         /// <summary>
         /// 获取Api关联的特性
         /// </summary>
-        public IApiActionAttribute[] Attributes { get; private set; }
+        public IApiActionAttribute[] Attributes { get; protected set; }
 
         /// <summary>
         /// 获取Api关联的过滤器特性
         /// </summary>
-        public IApiActionFilterAttribute[] Filters { get; private set; }
+        public IApiActionFilterAttribute[] Filters { get; protected set; }
 
         /// <summary>
         /// 获取Api的参数描述
         /// </summary>
-        public ApiParameterDescriptor[] Parameters { get; private set; }
+        public ApiParameterDescriptor[] Parameters { get; protected set; }
 
         /// <summary>
         /// 获取Api的返回描述
         /// </summary>
-        public ApiReturnDescriptor Return { get; private set; }
+        public ApiReturnDescriptor Return { get; protected set; }
 
         /// <summary>
         /// 克隆并设置新的参数值
         /// </summary>
         /// <param name="parameterValues">新的参数值集合</param>
         /// <returns></returns>
-        public ApiActionDescriptor Clone(object[] parameterValues)
+        public virtual ApiActionDescriptor Clone(object[] parameterValues)
         {
             return new ApiActionDescriptor
             {

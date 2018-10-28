@@ -16,27 +16,27 @@ namespace WebApiClient.Contexts
         /// <summary>
         /// 获取关联的ApiReturnAttribute
         /// </summary>
-        public IApiReturnAttribute Attribute { get; private set; }
+        public IApiReturnAttribute Attribute { get; protected set; }
 
         /// <summary>
         /// 获取返回类型
         /// </summary>
-        public Type ReturnType { get; private set; }
+        public Type ReturnType { get; protected set; }
 
         /// <summary>
         /// 获取返回类型是否为定义为Task(Of T)
         /// </summary>
-        public bool IsTaskDefinition { get; private set; }
+        public bool IsTaskDefinition { get; protected set; }
 
         /// <summary>
         /// 获取返回类型是否为定义为ITask(Of T)
         /// </summary>
-        public bool IsITaskDefinition { get; private set; }
+        public bool IsITaskDefinition { get; protected set; }
 
         /// <summary>
         /// 获取ITask(Of T)或Task(Of T)的T类型描述
         /// </summary>
-        public DataTypeDescriptor DataType { get; private set; }
+        public DataTypeDescriptor DataType { get; protected set; }
 
 
         /// <summary>

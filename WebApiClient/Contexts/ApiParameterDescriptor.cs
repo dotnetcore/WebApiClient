@@ -16,37 +16,37 @@ namespace WebApiClient.Contexts
         /// <summary>
         /// 获取参数名称
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; protected set; }
 
         /// <summary>
         /// 获取关联的参数信息
         /// </summary>
-        public ParameterInfo Member { get; private set; }
+        public ParameterInfo Member { get; protected set; }
 
         /// <summary>
         /// 获取参数索引
         /// </summary>
-        public int Index { get; private set; }
+        public int Index { get; protected set; }
 
         /// <summary>
         /// 获取参数类型
         /// </summary>
-        public Type ParameterType { get; private set; }
+        public Type ParameterType { get; protected set; }
 
         /// <summary>
         /// 获取参数值
         /// </summary>
-        public object Value { get; private set; }
+        public object Value { get; protected set; }
 
         /// <summary>
         /// 获取关联的参数特性
         /// </summary>
-        public IApiParameterAttribute[] Attributes { get; private set; }
+        public IApiParameterAttribute[] Attributes { get; protected set; }
 
         /// <summary>
         /// 获取关联的ValidationAttribute特性
         /// </summary>
-        public ValidationAttribute[] ValidationAttributes { get; private set; }
+        public ValidationAttribute[] ValidationAttributes { get; protected set; }
 
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace WebApiClient.Contexts
         /// </summary>
         /// <param name="value">新的参数值</param>
         /// <returns></returns>
-        public ApiParameterDescriptor Clone(object value)
+        public virtual ApiParameterDescriptor Clone(object value)
         {
             return new ApiParameterDescriptor
             {
