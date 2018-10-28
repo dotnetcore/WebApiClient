@@ -162,6 +162,8 @@ namespace WebApiClient
         /// <typeparam name="TType"></typeparam>
         /// <typeparam name="T1">第一个参数类型</typeparam>
         /// <param name="type">类型</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
         public static Func<T1, TType> CreateNewFunc<TType, T1>(Type type)
         {
@@ -172,10 +174,12 @@ namespace WebApiClient
         /// <summary>
         /// 创建类型的创建工厂
         /// </summary>
-        /// <typeparam name="TType">类型</typeparam>
+        /// <typeparam name="TType"></typeparam>
         /// <typeparam name="T1">第一个参数类型</typeparam>
         /// <typeparam name="T2">第二个参数类型</typeparam>
-        /// <param name="type"></param>
+        /// <param name="type">类型</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
         public static Func<T1, T2, TType> CreateNewFunc<TType, T1, T2>(Type type)
         {
