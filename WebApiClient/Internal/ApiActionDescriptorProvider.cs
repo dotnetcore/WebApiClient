@@ -10,9 +10,9 @@ using WebApiClient.DataAnnotations;
 namespace WebApiClient
 {
     /// <summary>
-    /// 提供Api描述的缓存
+    /// 提供Api描述的创建与获取
     /// </summary>
-    static class ApiDescriptorCache
+    static class ApiActionDescriptorProvider
     {
         /// <summary>
         /// 缓存字典
@@ -20,22 +20,32 @@ namespace WebApiClient
         private static readonly ConcurrentCache<MethodInfo, ApiActionDescriptor> cache;
 
         /// <summary>
-        /// Api描述的缓存
+        /// Api描述的创建与获取
         /// </summary>
-        static ApiDescriptorCache()
+        static ApiActionDescriptorProvider()
         {
             cache = new ConcurrentCache<MethodInfo, ApiActionDescriptor>();
         }
 
         /// <summary>
-        /// 从缓存获得ApiActionDescriptor
-        /// 使用缓存
+        /// 返回方法的ApiActionDescriptor
         /// </summary>
         /// <param name="method">接口的方法</param>
         /// <returns></returns>
-        public static ApiActionDescriptor GetApiActionDescriptor(this MethodInfo method)
+        public static ApiActionDescriptor GetDescriptor(MethodInfo method)
         {
-            return cache.GetOrAdd(method, GetApiActionDescriptorNoCache);
+            return GetDescriptor(method, null);
+        }
+
+        /// <summary>
+        /// 返回方法的ApiActionDescriptor
+        /// </summary>
+        /// <param name="method">接口的方法</param>
+        /// <param name="parameterValues">参数值集合</param>
+        /// <returns></returns>
+        public static ApiActionDescriptor GetDescriptor(MethodInfo method, object[] parameterValues)
+        {
+            return cache.GetOrAdd(method, GetDescriptorNoCache).Clone(parameterValues);
         }
 
         /// <summary>
@@ -43,7 +53,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="method">接口的方法</param>
         /// <returns></returns>
-        private static ApiActionDescriptor GetApiActionDescriptorNoCache(MethodInfo method)
+        private static ApiActionDescriptor GetDescriptorNoCache(MethodInfo method)
         {
             var actionAttributes = method
                 .FindDeclaringAttributes<IApiActionAttribute>(true)

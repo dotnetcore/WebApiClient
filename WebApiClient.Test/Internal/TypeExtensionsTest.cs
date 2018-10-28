@@ -56,7 +56,7 @@ namespace WebApiClient.Test.Internal
             Assert.True(typeof(C).IsInheritFrom<B>());
             Assert.False(typeof(B).IsInheritFrom<A>());
         }
-       
+
 
         [Fact]
         public void GetAllApiMethodsTest()
@@ -64,7 +64,7 @@ namespace WebApiClient.Test.Internal
             var m1 = typeof(IMyApi).GetAllApiMethods();
             var m2 = typeof(IMyApi).GetAllApiMethods();
 
-            Assert.True(object.ReferenceEquals(m1, m2));
+            Assert.False(object.ReferenceEquals(m1, m2));
             Assert.True(m1.Length == 3);
         }
     }

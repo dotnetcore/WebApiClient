@@ -58,8 +58,7 @@ namespace WebApiClient.Defaults
         /// <returns></returns>
         protected virtual ApiActionDescriptor GetApiActionDescriptor(MethodInfo method, object[] parameters)
         {
-            var descriptor = ApiDescriptorCache.GetApiActionDescriptor(method);
-            return descriptor.Clone(parameters);
+            return ApiActionDescriptorProvider.GetDescriptor(method, parameters);
         }
 
         /// <summary>

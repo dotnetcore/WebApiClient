@@ -3,7 +3,7 @@ using Xunit;
 
 namespace WebApiClient.Test.Internal
 {
-    public class ApiDescriptorCacheTest
+    public class ApiActionDescriptorDescriptorTest
     {
         public interface IMyApi : IHttpApi
         {
@@ -14,9 +14,9 @@ namespace WebApiClient.Test.Internal
         public void GetApiActionDescriptorTest()
         {
             var method = typeof(IMyApi).GetMethod("Login");
-            var descriptor1 = ApiDescriptorCache.GetApiActionDescriptor(method);
-            var descriptor2 = ApiDescriptorCache.GetApiActionDescriptor(method);
-            Assert.True(object.ReferenceEquals(descriptor1, descriptor2));
+            var descriptor1 = ApiActionDescriptorProvider.GetDescriptor(method);
+            var descriptor2 = ApiActionDescriptorProvider.GetDescriptor(method);
+            Assert.False(object.ReferenceEquals(descriptor1, descriptor2));
 
             Assert.True(descriptor1.Name == "Login");
             Assert.True(descriptor1.Parameters.Length == 1);

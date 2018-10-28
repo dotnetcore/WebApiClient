@@ -20,7 +20,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
                 {
                     RequestUri = new Uri("http://www.webapi.com/")
                 },
-                ApiActionDescriptor = ApiDescriptorCache.GetApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"))
+                ApiActionDescriptor = ApiActionDescriptorProvider.GetDescriptor(typeof(IMyApi).GetMethod("PostAsync"))
             };
 
             var attr = new HttpOptionsAttribute();

@@ -34,7 +34,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
                     Method = HttpMethod.Post,
                     RequestUri = new Uri("http://www.webapi.com/")
                 },
-                ApiActionDescriptor = ApiDescriptorCache.GetApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"))
+                ApiActionDescriptor = ApiActionDescriptorProvider.GetDescriptor(typeof(IMyApi).GetMethod("PostAsync"))
             };
 
             var parameter = context.ApiActionDescriptor.Parameters[0];

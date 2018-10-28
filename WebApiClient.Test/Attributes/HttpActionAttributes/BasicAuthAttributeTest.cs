@@ -17,7 +17,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
             var context = new ApiActionContext
             {
                 RequestMessage = new HttpApiRequestMessage(),
-                ApiActionDescriptor = ApiDescriptorCache.GetApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"))
+                ApiActionDescriptor = ApiActionDescriptorProvider.GetDescriptor(typeof(IMyApi).GetMethod("PostAsync"))
             };
 
             var attr = new BasicAuthAttribute("laojiu", "123456");
