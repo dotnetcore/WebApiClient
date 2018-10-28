@@ -25,17 +25,17 @@ namespace WebApiClient.Contexts
         /// <summary>
         /// 获取Api关联的特性
         /// </summary>
-        public IApiActionAttribute[] Attributes { get; protected set; }
+        public IReadOnlyList<IApiActionAttribute> Attributes { get; protected set; }
 
         /// <summary>
         /// 获取Api关联的过滤器特性
         /// </summary>
-        public IApiActionFilterAttribute[] Filters { get; protected set; }
+        public IReadOnlyList<IApiActionFilterAttribute> Filters { get; protected set; }
 
         /// <summary>
         /// 获取Api的参数描述
         /// </summary>
-        public ApiParameterDescriptor[] Parameters { get; protected set; }
+        public IReadOnlyList<ApiParameterDescriptor> Parameters { get; protected set; }
 
         /// <summary>
         /// 获取Api的返回描述
@@ -65,13 +65,13 @@ namespace WebApiClient.Contexts
                 .FindDeclaringAttributes<IApiActionAttribute>(true)
                 .Distinct(new MultiplableComparer<IApiActionAttribute>())
                 .OrderBy(item => item.OrderIndex)
-                .ToArray();
+                .ToReadOnlyList();
 
             var filterAttributes = method
                 .FindDeclaringAttributes<IApiActionFilterAttribute>(true)
                 .Distinct(new MultiplableComparer<IApiActionFilterAttribute>())
                 .OrderBy(item => item.OrderIndex)
-                .ToArray();
+                .ToReadOnlyList();
 
 
             this.Member = method;
@@ -79,7 +79,7 @@ namespace WebApiClient.Contexts
             this.Filters = filterAttributes;
             this.Attributes = actionAttributes;
             this.Return = new ApiReturnDescriptor(method);
-            this.Parameters = method.GetParameters().Select(p => new ApiParameterDescriptor(p)).ToArray();
+            this.Parameters = method.GetParameters().Select(p => new ApiParameterDescriptor(p)).ToReadOnlyList();
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace WebApiClient.Contexts
                 Return = this.Return,
                 Filters = this.Filters,
                 Attributes = this.Attributes,
-                Parameters = this.Parameters.Select((p, i) => p.Clone(parameterValues[i])).ToArray()
+                Parameters = this.Parameters.Select((p, i) => p.Clone(parameterValues[i])).ToReadOnlyList()
             };
         }
 

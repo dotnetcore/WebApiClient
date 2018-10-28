@@ -20,9 +20,9 @@ namespace WebApiClient.Test.Internal
             Assert.False(object.ReferenceEquals(descriptor1, descriptor2));
 
             Assert.True(descriptor1.Name == "Login");
-            Assert.True(descriptor1.Parameters.Length == 1);
-            Assert.True(descriptor1.Filters.Length == 0);
-            Assert.True(descriptor1.Attributes.Length == 0);
+            Assert.True(descriptor1.Parameters.Count == 1);
+            Assert.True(descriptor1.Filters.Count == 0);
+            Assert.True(descriptor1.Attributes.Count == 0);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using WebApiClient.DataAnnotations;
 
@@ -41,12 +41,12 @@ namespace WebApiClient.Contexts
         /// <summary>
         /// 获取关联的参数特性
         /// </summary>
-        public IApiParameterAttribute[] Attributes { get; protected set; }
+        public IReadOnlyList<IApiParameterAttribute> Attributes { get; protected set; }
 
         /// <summary>
         /// 获取关联的ValidationAttribute特性
         /// </summary>
-        public ValidationAttribute[] ValidationAttributes { get; protected set; }
+        public IReadOnlyList<ValidationAttribute> ValidationAttributes { get; protected set; }
 
         /// <summary>
         /// 请求Api的参数描述
@@ -72,9 +72,14 @@ namespace WebApiClient.Contexts
             var parameterName = parameterAlias == null ? parameter.Name : parameterAlias.Name;
 
             var defined = parameter.GetAttributes<IApiParameterAttribute>(true);
-            var attributes = HttpApiConfig.DefaultApiParameterAttributeProvider.GetAttributes(parameterType, defined);
-            var validationAttributes = parameter.GetCustomAttributes<ValidationAttribute>(true).ToArray();
+            var attributes = HttpApiConfig
+                .DefaultApiParameterAttributeProvider
+                .GetAttributes(parameterType, defined)
+                .ToReadOnlyList();
 
+            var validationAttributes = parameter
+                .GetCustomAttributes<ValidationAttribute>(true)
+                .ToReadOnlyList();
 
             this.Value = null;
             this.Member = parameter;

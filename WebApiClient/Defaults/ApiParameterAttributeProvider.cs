@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -18,7 +19,7 @@ namespace WebApiClient.Defaults
         /// <param name="parameterType">参数类型</param>
         /// <param name="defined">参数上声明的特性</param>
         /// <returns></returns>
-        public virtual IApiParameterAttribute[] GetAttributes(Type parameterType, IEnumerable<IApiParameterAttribute> defined)
+        public virtual IEnumerable<IApiParameterAttribute> GetAttributes(Type parameterType, IEnumerable<IApiParameterAttribute> defined)
         {
             var attributes = new ParameterAttributeCollection(defined);
             var isHttpContent = parameterType.IsInheritFrom<HttpContent>();
@@ -40,13 +41,13 @@ namespace WebApiClient.Defaults
             {
                 attributes.Add(new PathQueryAttribute());
             }
-            return attributes.ToArray();
+            return attributes;
         }
 
         /// <summary>
         /// 表示参数特性集合
         /// </summary>
-        private class ParameterAttributeCollection
+        private class ParameterAttributeCollection : IEnumerable<IApiParameterAttribute>
         {
             /// <summary>
             /// 特性列表
@@ -106,6 +107,24 @@ namespace WebApiClient.Defaults
             public IApiParameterAttribute[] ToArray()
             {
                 return this.attribueList.ToArray();
+            }
+
+            /// <summary>
+            /// 返回迭代器
+            /// </summary>
+            /// <returns></returns>
+            public IEnumerator<IApiParameterAttribute> GetEnumerator()
+            {
+                return this.attribueList.GetEnumerator();
+            }
+
+            /// <summary>
+            /// 返回迭代器
+            /// </summary>
+            /// <returns></returns>
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return this.GetEnumerator();
             }
         }
     }

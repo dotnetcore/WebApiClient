@@ -14,6 +14,6 @@ namespace WebApiClient
         /// <param name="parameterType">参数类型</param>
         /// <param name="defined">参数上声明的特性</param>
         /// <returns></returns>
-        IApiParameterAttribute[] GetAttributes(Type parameterType, IEnumerable<IApiParameterAttribute> defined);
+        IEnumerable<IApiParameterAttribute> GetAttributes(Type parameterType, IEnumerable<IApiParameterAttribute> defined);
     }
 }
