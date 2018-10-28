@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
+using WebApiClient.DataAnnotations;
 
 namespace WebApiClient.Contexts
 {
@@ -14,37 +16,38 @@ namespace WebApiClient.Contexts
         /// <summary>
         /// 获取参数名称
         /// </summary>
-        public string Name { get; internal set; }
+        public string Name { get; private set; }
 
         /// <summary>
         /// 获取关联的参数信息
         /// </summary>
-        public ParameterInfo Member { get; internal set; }
+        public ParameterInfo Member { get; private set; }
 
         /// <summary>
         /// 获取参数索引
         /// </summary>
-        public int Index { get; internal set; }
+        public int Index { get; private set; }
 
         /// <summary>
         /// 获取参数类型
         /// </summary>
-        public Type ParameterType { get; internal set; }
+        public Type ParameterType { get; private set; }
 
         /// <summary>
         /// 获取参数值
         /// </summary>
-        public object Value { get; internal set; }
+        public object Value { get; private set; }
 
         /// <summary>
         /// 获取关联的参数特性
         /// </summary>
-        public IApiParameterAttribute[] Attributes { get; internal set; }
+        public IApiParameterAttribute[] Attributes { get; private set; }
 
         /// <summary>
         /// 获取关联的ValidationAttribute特性
         /// </summary>
-        public ValidationAttribute[] ValidationAttributes { get; internal set; }
+        public ValidationAttribute[] ValidationAttributes { get; private set; }
+
 
         /// <summary>
         /// 值转换为字符串
@@ -53,15 +56,6 @@ namespace WebApiClient.Contexts
         public override string ToString()
         {
             return this.Value?.ToString();
-        }
-
-        /// <summary>
-        /// 克隆
-        /// </summary>
-        /// <returns></returns>
-        public ApiParameterDescriptor Clone()
-        {
-            return this.Clone(this.Value);
         }
 
         /// <summary>
@@ -80,6 +74,39 @@ namespace WebApiClient.Contexts
                 Attributes = this.Attributes,
                 ParameterType = this.ParameterType,
                 ValidationAttributes = this.ValidationAttributes
+            };
+        }
+
+        /// <summary>
+        /// 创建ApiParameterDescriptor
+        /// </summary>
+        /// <param name="parameter">参数信息</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns></returns>
+        public static ApiParameterDescriptor Create(ParameterInfo parameter)
+        {
+            if (parameter == null)
+            {
+                throw new ArgumentNullException(nameof(parameter));
+            }
+
+            var parameterType = parameter.ParameterType;
+            var parameterAlias = parameter.GetCustomAttribute(typeof(AliasAsAttribute)) as AliasAsAttribute;
+            var parameterName = parameterAlias == null ? parameter.Name : parameterAlias.Name;
+
+            var defined = parameter.GetAttributes<IApiParameterAttribute>(true);
+            var attributes = HttpApiConfig.DefaultApiParameterAttributeProvider.GetAttributes(parameterType, defined);
+            var validationAttributes = parameter.GetCustomAttributes<ValidationAttribute>(true).ToArray();
+
+            return new ApiParameterDescriptor
+            {
+                Value = null,
+                Member = parameter,
+                Name = parameterName,
+                Index = parameter.Position,
+                Attributes = attributes,
+                ParameterType = parameterType,
+                ValidationAttributes = validationAttributes
             };
         }
     }

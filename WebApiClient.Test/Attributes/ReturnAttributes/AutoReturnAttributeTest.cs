@@ -40,9 +40,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
                     RequestUri = new Uri("http://www.webapi.com/")
                 },
                 ResponseMessage = new HttpResponseMessage(System.Net.HttpStatusCode.OK),
-                ApiActionDescriptor = ApiActionDescriptorProvider
-                .GetDescriptor(typeof(IMyApi)
-                .GetMethod("HttpResponseMessageAsync"))
+                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("HttpResponseMessageAsync"))
             };
             context.ResponseMessage.Content = new StringContent("laojiu");
 
@@ -63,9 +61,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
                     RequestUri = new Uri("http://www.webapi.com/")
                 },
                 ResponseMessage = new HttpResponseMessage(System.Net.HttpStatusCode.OK),
-                ApiActionDescriptor = ApiActionDescriptorProvider
-                .GetDescriptor(typeof(IMyApi)
-                .GetMethod("StringAsync"))
+                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("StringAsync"))
             };
             context.ResponseMessage.Content = new StringContent("laojiu");
 
@@ -86,9 +82,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
                     RequestUri = new Uri("http://www.webapi.com/")
                 },
                 ResponseMessage = new HttpResponseMessage(System.Net.HttpStatusCode.OK),
-                ApiActionDescriptor = ApiActionDescriptorProvider
-                .GetDescriptor(typeof(IMyApi)
-                .GetMethod("ByteArrayAsync"))
+                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("ByteArrayAsync"))
             };
             context.ResponseMessage.Content = new StringContent("laojiu", Encoding.UTF8);
 
@@ -110,9 +104,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
                     RequestUri = new Uri("http://www.webapi.com/")
                 },
                 ResponseMessage = new HttpResponseMessage(System.Net.HttpStatusCode.OK),
-                ApiActionDescriptor = ApiActionDescriptorProvider
-                .GetDescriptor(typeof(IMyApi)
-                .GetMethod("JsonXmlAsync"))
+                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("JsonXmlAsync"))
             };
 
             var model = new Model();
@@ -136,9 +128,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
                     RequestUri = new Uri("http://www.webapi.com/")
                 },
                 ResponseMessage = new HttpResponseMessage(System.Net.HttpStatusCode.OK),
-                ApiActionDescriptor = ApiActionDescriptorProvider
-                .GetDescriptor(typeof(IMyApi)
-                .GetMethod("JsonXmlAsync"))
+                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("JsonXmlAsync"))
             };
 
             var model = new Model();
@@ -162,9 +152,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
                     RequestUri = new Uri("http://www.webapi.com/")
                 },
                 ResponseMessage = new HttpResponseMessage(System.Net.HttpStatusCode.NotFound),
-                ApiActionDescriptor = ApiActionDescriptorProvider
-                .GetDescriptor(typeof(IMyApi)
-                .GetMethod("JsonXmlAsync"))
+                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("JsonXmlAsync"))
             };
 
             var model = new Model();

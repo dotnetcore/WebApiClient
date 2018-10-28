@@ -20,10 +20,10 @@ namespace WebApiClient.Test.Internal.IAbles
             value = 1;
             Assert.False(ableFalse.IsIgnoreWith(value));
 
-            var parameter = new ApiParameterDescriptor { Value = null };
+            var parameter = TestParameter.Create(null);
             Assert.False(ableFalse.IsIgnoreWith(parameter));
 
-            parameter = new ApiParameterDescriptor { Value = "laojiu" };
+            parameter = TestParameter.Create("laojiu");
             Assert.False(ableFalse.IsIgnoreWith(parameter));
 
 
@@ -35,10 +35,10 @@ namespace WebApiClient.Test.Internal.IAbles
             value = 1;
             Assert.False(ableTrue.IsIgnoreWith(value));
 
-            parameter = new ApiParameterDescriptor { Value = null };
+            parameter = TestParameter.Create(null);
             Assert.True(ableTrue.IsIgnoreWith(parameter));
 
-            parameter = new ApiParameterDescriptor { Value = "laojiu" };
+            parameter = TestParameter.Create("laojiu");
             Assert.False(ableTrue.IsIgnoreWith(parameter));
         }
 

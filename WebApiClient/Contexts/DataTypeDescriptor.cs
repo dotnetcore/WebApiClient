@@ -39,8 +39,14 @@ namespace WebApiClient.Contexts
         /// 返回的Task(Of T)的T类型描述
         /// </summary>
         /// <param name="dataType">数据类型</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public DataTypeDescriptor(Type dataType)
         {
+            if (dataType == null)
+            {
+                throw new ArgumentNullException(nameof(dataType));
+            }
+
             var taskType = typeof(ApiTask<>).MakeGenericType(dataType);
 
             this.Type = dataType;

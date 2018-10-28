@@ -26,17 +26,16 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
                     Method = HttpMethod.Post,
                     RequestUri = new Uri("http://www.webapi.com/")
                 },
-                ApiActionDescriptor = ApiActionDescriptorProvider.GetDescriptor(typeof(IMyApi).GetMethod("PostAsync"))
+                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("PostAsync"))
             };
 
-            var parameter = context.ApiActionDescriptor.Parameters[0];
-            parameter.Value = "http://www.baidu.com";
+            var parameter = context.ApiActionDescriptor.Parameters[0].Clone("http://www.baidu.com");
 
             var attr = new UriAttribute();
             await ((IApiParameterAttribute)attr).BeforeRequestAsync(context, parameter);
             Assert.True(context.RequestMessage.RequestUri == new Uri("http://www.baidu.com"));
 
-            parameter.Value = "/login";
+            parameter = parameter.Clone("/login");
             await ((IApiParameterAttribute)attr).BeforeRequestAsync(context, parameter);
             Assert.True(context.RequestMessage.RequestUri == new Uri("http://www.baidu.com/login"));
         }

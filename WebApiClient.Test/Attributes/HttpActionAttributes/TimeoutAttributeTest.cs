@@ -18,7 +18,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
             {
                 HttpApiConfig = new HttpApiConfig(),
                 RequestMessage = new HttpApiRequestMessage(),
-                ApiActionDescriptor = ApiActionDescriptorProvider.GetDescriptor(typeof(IMyApi).GetMethod("PostAsync"))
+                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("PostAsync"))
             };
 
             var attr = new TimeoutAttribute(50);

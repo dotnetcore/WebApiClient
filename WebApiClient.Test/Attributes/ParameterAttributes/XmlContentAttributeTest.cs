@@ -34,15 +34,14 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
                     Method = HttpMethod.Post,
                     RequestUri = new Uri("http://www.webapi.com/")
                 },
-                ApiActionDescriptor = ApiActionDescriptorProvider.GetDescriptor(typeof(IMyApi).GetMethod("PostAsync"))
+                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("PostAsync"))
             };
 
-            var parameter = context.ApiActionDescriptor.Parameters[0];
-            parameter.Value = new Model
+            var parameter = context.ApiActionDescriptor.Parameters[0].Clone(new Model
             {
                 name = "laojiu",
                 birthDay = DateTime.Parse("2010-10-10")
-            };
+            });
 
             var attr = new XmlContentAttribute();
             await ((IApiParameterAttribute)attr).BeforeRequestAsync(context, parameter);

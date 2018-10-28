@@ -29,11 +29,14 @@ namespace WebApiClient.Test.Attributes.ParameterAttributes
                     RequestUri = new Uri("http://www.mywebapi.com"),
                     Method = HttpMethod.Post
                 },
-                ApiActionDescriptor = ApiActionDescriptorProvider.GetDescriptor(typeof(IMyApi).GetMethod("PostAsync"))
+                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("PostAsync"))
             };
 
-            var parameter = context.ApiActionDescriptor.Parameters[0];
-            parameter.Value = new { @class = 123, User_Agent = "WebApiClient" };
+            var parameter = context.ApiActionDescriptor.Parameters[0].Clone(new
+            {
+                @class = 123,
+                User_Agent = "WebApiClient"
+            });
 
             var attr = new HeadersAttribute();
             await attr.BeforeRequestAsync(context, parameter);

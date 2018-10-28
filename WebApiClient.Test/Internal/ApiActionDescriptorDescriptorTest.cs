@@ -1,4 +1,5 @@
 ﻿using WebApiClient;
+using WebApiClient.Contexts;
 using Xunit;
 
 namespace WebApiClient.Test.Internal
@@ -14,8 +15,8 @@ namespace WebApiClient.Test.Internal
         public void GetApiActionDescriptorTest()
         {
             var method = typeof(IMyApi).GetMethod("Login");
-            var descriptor1 = ApiActionDescriptorProvider.GetDescriptor(method);
-            var descriptor2 = ApiActionDescriptorProvider.GetDescriptor(method);
+            var descriptor1 = ApiActionDescriptor.Create(method);
+            var descriptor2 = ApiActionDescriptor.Create(method);
             Assert.False(object.ReferenceEquals(descriptor1, descriptor2));
 
             Assert.True(descriptor1.Name == "Login");

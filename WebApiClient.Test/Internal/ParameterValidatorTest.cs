@@ -16,20 +16,16 @@ namespace WebApiClient.Test.Internal
         [Fact]
         public void ValidateTest()
         {
-            var parameter = new ApiParameterDescriptor
-            {
-                ValidationAttributes = new[] { new RequiredAttribute() },
-                Name = "user"
-            };
+            var parameter = TestParameter.Create(null);
             Assert.Throws<ValidationException>(() => ParameterValidator.Validate(parameter, true));
 
-            parameter.Value = new User { };
+            parameter = TestParameter.Create(new User { });
             Assert.Throws<ValidationException>(() => ParameterValidator.Validate(parameter, true));
 
-            parameter.Value = new User { Account = "123" };
+            parameter = TestParameter.Create(new User { Account = "123" });
             ParameterValidator.Validate(parameter, true);
 
-            parameter.Value = new User { Account = "123456" };
+            parameter = TestParameter.Create(new User { Account = "123456" });
             Assert.Throws<ValidationException>(() => ParameterValidator.Validate(parameter, true));
         }
     }

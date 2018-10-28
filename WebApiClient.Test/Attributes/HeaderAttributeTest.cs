@@ -22,11 +22,10 @@ namespace WebApiClient.Test.Attributes
                     RequestUri = new Uri("http://www.mywebapi.com"),
                     Method = HttpMethod.Post
                 },
-                ApiActionDescriptor = ApiActionDescriptorProvider.GetDescriptor(typeof(IMyApi).GetMethod("PostAsync"))
+                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("PostAsync"))
             };
 
-            var parameter = context.ApiActionDescriptor.Parameters[0];
-            parameter.Value = "laojiu";
+            var parameter = context.ApiActionDescriptor.Parameters[0].Clone("laojiu");
 
             IApiParameterAttribute attr = new HeaderAttribute("MyHeader");
             await attr.BeforeRequestAsync(context, parameter);
@@ -45,7 +44,7 @@ namespace WebApiClient.Test.Attributes
                     RequestUri = new Uri("http://www.mywebapi.com"),
                     Method = HttpMethod.Post
                 },
-                ApiActionDescriptor = ApiActionDescriptorProvider.GetDescriptor(typeof(IMyApi).GetMethod("PostAsync"))
+                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("PostAsync"))
             };
 
             var attr = new HeaderAttribute("MyHeader", "laojiu");

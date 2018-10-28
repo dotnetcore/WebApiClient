@@ -10,9 +10,23 @@ namespace WebApiClient.Defaults
     public class ApiInterceptor : IApiInterceptor
     {
         /// <summary>
+        /// ApiActionDescriptor缓存
+        /// </summary>
+        private static readonly ConcurrentCache<MethodInfo, ApiActionDescriptor> descriptorCache;
+
+        /// <summary>
         /// 获取相关的配置
         /// </summary>
         public HttpApiConfig HttpApiConfig { get; private set; }
+
+
+        /// <summary>
+        /// http接口调用的拦截器
+        /// </summary>
+        static ApiInterceptor()
+        {
+            descriptorCache = new ConcurrentCache<MethodInfo, ApiActionDescriptor>();
+        }
 
         /// <summary>
         /// http接口调用的拦截器
@@ -58,7 +72,7 @@ namespace WebApiClient.Defaults
         /// <returns></returns>
         protected virtual ApiActionDescriptor GetApiActionDescriptor(MethodInfo method, object[] parameters)
         {
-            return ApiActionDescriptorProvider.GetDescriptor(method, parameters);
+            return descriptorCache.GetOrAdd(method, m => ApiActionDescriptor.Create(m)).Clone(parameters);
         }
 
         /// <summary>

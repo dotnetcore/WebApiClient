@@ -21,11 +21,10 @@ namespace WebApiClient.Test.Attributes
                     RequestUri = new Uri("http://www.mywebapi.com"),
                     Method = HttpMethod.Post
                 },
-                ApiActionDescriptor = ApiActionDescriptorProvider.GetDescriptor(typeof(IMyApi).GetMethod("PostAsync"))
+                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("PostAsync"))
             };
 
-            var parameter = context.ApiActionDescriptor.Parameters[0];
-            parameter.Value = "laojiu";
+            var parameter = context.ApiActionDescriptor.Parameters[0].Clone("laojiu");
 
             IApiParameterAttribute attr = new FormFieldAttribute();
             await attr.BeforeRequestAsync(context, parameter);
@@ -33,7 +32,7 @@ namespace WebApiClient.Test.Attributes
             Assert.Equal("name=laojiu", body);
 
             // IgnoreWhenNull Test
-            parameter.Value = null;
+            parameter = parameter.Clone(null);
             ((FormFieldAttribute)attr).IgnoreWhenNull = true;
             await attr.BeforeRequestAsync(context, parameter);
             body = await context.RequestMessage.Content.ReadAsStringAsync();
@@ -50,7 +49,7 @@ namespace WebApiClient.Test.Attributes
                     RequestUri = new Uri("http://www.mywebapi.com"),
                     Method = HttpMethod.Post
                 },
-                ApiActionDescriptor = ApiActionDescriptorProvider.GetDescriptor(typeof(IMyApi).GetMethod("PostAsync"))
+                ApiActionDescriptor = ApiActionDescriptor.Create(typeof(IMyApi).GetMethod("PostAsync"))
             };
 
             var attr = new FormFieldAttribute("name", "laojiu");
