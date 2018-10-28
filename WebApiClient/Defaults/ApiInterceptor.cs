@@ -54,16 +54,12 @@ namespace WebApiClient.Defaults
         /// 获取api的描述
         /// </summary>
         /// <param name="method">接口的方法</param>
-        /// <param name="parameters">参数集合</param>
+        /// <param name="parameters">参数值集合</param>
         /// <returns></returns>
         protected virtual ApiActionDescriptor GetApiActionDescriptor(MethodInfo method, object[] parameters)
         {
-            var actionDescripter = ApiDescriptorCache.GetApiActionDescriptor(method).Clone();
-            for (var i = 0; i < actionDescripter.Parameters.Length; i++)
-            {
-                actionDescripter.Parameters[i].Value = parameters[i];
-            }
-            return actionDescripter;
+            var descriptor = ApiDescriptorCache.GetApiActionDescriptor(method);
+            return descriptor.Clone(parameters);
         }
 
         /// <summary>

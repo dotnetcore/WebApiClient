@@ -33,7 +33,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="method">接口的方法</param>
         /// <returns></returns>
-        public static ApiActionDescriptor GetApiActionDescriptor(MethodInfo method)
+        public static ApiActionDescriptor GetApiActionDescriptor(this MethodInfo method)
         {
             return cache.GetOrAdd(method, GetApiActionDescriptorNoCache);
         }
@@ -120,72 +120,6 @@ namespace WebApiClient
                 IsITaskDefinition = dataTypeDefinition == typeof(ITask<>)
             };
             return descriptor;
-        }
-
-        /// <summary>
-        /// 表示参数特性集合
-        /// </summary>
-        private class ParameterAttributeCollection
-        {
-            /// <summary>
-            /// 特性列表
-            /// </summary>
-            private readonly List<IApiParameterAttribute> attribueList = new List<IApiParameterAttribute>();
-
-            /// <summary>
-            /// 获取元素数量
-            /// </summary>
-            public int Count
-            {
-                get
-                {
-                    return this.attribueList.Count;
-                }
-            }
-
-            /// <summary>
-            /// 参数特性集合
-            /// </summary>
-            /// <param name="defined">声明的特性</param>
-            public ParameterAttributeCollection(IEnumerable<IApiParameterAttribute> defined)
-            {
-                this.attribueList.AddRange(defined);
-            }
-
-            /// <summary>
-            /// 添加新特性
-            /// </summary>
-            /// <param name="attribute">新特性</param>
-            public void Add(IApiParameterAttribute attribute)
-            {
-                this.attribueList.Add(attribute);
-            }
-
-            /// <summary>
-            /// 添加新特性
-            /// </summary>
-            /// <param name="attribute">新特性</param>
-            /// <returns></returns>
-            public bool AddIfNotExists(IApiParameterAttribute attribute)
-            {
-                var type = attribute.GetType();
-                if (this.attribueList.Any(item => item.GetType() == type) == true)
-                {
-                    return false;
-                }
-
-                this.attribueList.Add(attribute);
-                return true;
-            }
-
-            /// <summary>
-            /// 转换为数组
-            /// </summary>
-            /// <returns></returns>
-            public IApiParameterAttribute[] ToArray()
-            {
-                return this.attribueList.ToArray();
-            }
         }
 
         /// <summary>

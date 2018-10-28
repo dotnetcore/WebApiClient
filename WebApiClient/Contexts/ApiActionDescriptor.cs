@@ -8,7 +8,7 @@ namespace WebApiClient.Contexts
     /// 表示请求Api描述
     /// </summary>
     [DebuggerDisplay("Name = {Name}")]
-    public class ApiActionDescriptor 
+    public class ApiActionDescriptor
     {
         /// <summary>
         /// 获取Api名称
@@ -38,7 +38,7 @@ namespace WebApiClient.Contexts
         /// <summary>
         /// 获取Api的返回描述
         /// </summary>
-        public ApiReturnDescriptor Return { get; internal set; }      
+        public ApiReturnDescriptor Return { get; internal set; }
 
         /// <summary>
         /// 克隆
@@ -46,6 +46,20 @@ namespace WebApiClient.Contexts
         /// <returns></returns>
         public ApiActionDescriptor Clone()
         {
+            return this.Clone(null);
+        }
+
+        /// <summary>
+        /// 克隆并设置新的参数值
+        /// </summary>
+        /// <param name="parameterValues">新的参数值集合</param>
+        /// <returns></returns>
+        public ApiActionDescriptor Clone(object[] parameterValues)
+        {
+            var parameters = parameterValues == null ?
+                this.Parameters.Select(p => p.Clone()).ToArray() :
+                this.Parameters.Select((p, i) => p.Clone(parameterValues[i])).ToArray();
+
             return new ApiActionDescriptor
             {
                 Name = this.Name,
@@ -53,7 +67,7 @@ namespace WebApiClient.Contexts
                 Return = this.Return,
                 Filters = this.Filters,
                 Attributes = this.Attributes,
-                Parameters = this.Parameters.Select(item => item.Clone()).ToArray()
+                Parameters = parameters
             };
         }
     }

@@ -61,11 +61,21 @@ namespace WebApiClient.Contexts
         /// <returns></returns>
         public ApiParameterDescriptor Clone()
         {
+            return this.Clone(this.Value);
+        }
+
+        /// <summary>
+        /// 克隆新设置新的值
+        /// </summary>
+        /// <param name="value">新的参数值</param>
+        /// <returns></returns>
+        public ApiParameterDescriptor Clone(object value)
+        {
             return new ApiParameterDescriptor
             {
                 Name = this.Name,
                 Index = this.Index,
-                Value = this.Value,
+                Value = value,
                 Member = this.Member,
                 Attributes = this.Attributes,
                 ParameterType = this.ParameterType,
