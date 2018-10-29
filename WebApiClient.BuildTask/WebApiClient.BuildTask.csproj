@@ -4,7 +4,7 @@
     <OutputType>Library</OutputType>
     <TargetFrameworks>net45;netcoreapp1.1;</TargetFrameworks>
     <Configurations>AOT_Debug;AOT_Release</Configurations>
-    <Version>0.1.4</Version>
+    <Version>0.1.5</Version>
     <AssemblyVersion>0.1.4.0</AssemblyVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>sign.snk</AssemblyOriginatorKeyFile>

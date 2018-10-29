@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v1.1": {
-      "WebApiClient.BuildTask/0.1.2": {
+      "WebApiClient.BuildTask/0.1.5": {
         "dependencies": {
           "Microsoft.Build.Tasks.Core": "15.1.548",
           "Mono.Cecil": "0.10.0"
@@ -150,7 +150,7 @@
     }
   },
   "libraries": {
-    "WebApiClient.BuildTask/0.1.2": {
+    "WebApiClient.BuildTask/0.1.5": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

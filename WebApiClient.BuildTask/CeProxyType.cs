@@ -133,7 +133,8 @@ namespace WebApiClient.BuildTask
                 var implMethod = new MethodDefinition(apiMethod.Name, implementAttribute, apiMethod.ReturnType);
                 foreach (var item in apiParameters)
                 {
-                    implMethod.Parameters.Add(item);
+                    var parameter = new ParameterDefinition(item.ParameterType);
+                    implMethod.Parameters.Add(parameter);
                 }
                 proxyType.Methods.Add(implMethod);
 
