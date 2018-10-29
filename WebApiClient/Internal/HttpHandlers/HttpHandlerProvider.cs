@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
@@ -33,10 +32,13 @@ namespace WebApiClient
         static HttpHandlerProvider()
         {
             var handlerField = typeof(HttpMessageInvoker)
-                 .GetRuntimeFields()
-                 .FirstOrDefault(field => field.FieldType.IsInheritFrom<HttpMessageHandler>());
+                .GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
+                .FirstOrDefault(field => field.FieldType.IsInheritFrom<HttpMessageHandler>());
 
-            handlerGetFunc = Lambda.CreateGetFunc<HttpMessageInvoker, HttpMessageHandler>(handlerField);
+            if (handlerField != null)
+            {
+                handlerGetFunc = Lambda.CreateGetFunc<HttpMessageInvoker, HttpMessageHandler>(handlerField);
+            }
         }
 
         /// <summary>
@@ -45,9 +47,15 @@ namespace WebApiClient
         /// <param name="httpClient">httpClient</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
         public static IHttpHandler CreateHandler(HttpClient httpClient)
         {
+            if (handlerGetFunc == null)
+            {
+                throw new NotSupportedException("无法从HttpClient反射出必须的HttpMessageHandler字段");
+            }
+
             if (httpClient == null)
             {
                 throw new ArgumentNullException(nameof(httpClient));
