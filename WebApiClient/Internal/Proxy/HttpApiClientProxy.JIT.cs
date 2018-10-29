@@ -49,12 +49,12 @@ namespace WebApiClient
                 throw new NotSupportedException(message);
             }
 
-            var proxy = interfaceProxyCache.GetOrAdd(interfaceType, (Func<Type, HttpApiClientProxy>)(@interface =>
+            var proxy = interfaceProxyCache.GetOrAdd(interfaceType, @interface =>
             {
                 var apiMethods = @interface.GetAllApiMethods();
                 var proxyType = BuildProxyType(@interface, apiMethods);
                 return new HttpApiClientProxy(proxyType, apiMethods);
-            }));
+            });
 
             return proxy.CreateInstance(interceptor);
         }
