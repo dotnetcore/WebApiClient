@@ -19,8 +19,12 @@ namespace WebApiClient
         {
             this.UseProxy = false;
             this.Proxy = null;
-            this.ServerCertificateCustomValidationCallback = (a, b, c, d) => true;
-            this.MaxConnectionsPerServer = HttpApiClient.ConnectionLimit;
+
+            Try.Catch<PlatformNotSupportedException>(() =>
+                this.MaxConnectionsPerServer = HttpApiClient.ConnectionLimit);
+
+            Try.Catch<PlatformNotSupportedException>(() =>
+                this.ServerCertificateCustomValidationCallback = (a, b, c, d) => true);
         }
     }
 }

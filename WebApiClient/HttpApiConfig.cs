@@ -59,6 +59,7 @@ namespace WebApiClient
         /// <summary>
         /// 获取与HttpClient关联的IHttpHandler
         /// </summary>
+        /// <exception cref="PlatformNotSupportedException"></exception>
         public IHttpHandler HttpHandler
         {
             get => this.GetHttpHandlerSafeSync();
@@ -173,7 +174,7 @@ namespace WebApiClient
         /// <summary>
         /// 以同步安全方式获取IHttpHandler实例
         /// </summary>
-        /// <exception cref="ObjectDisposedException"></exception>
+        /// <exception cref="PlatformNotSupportedException"></exception>
         /// <returns></returns>
         private IHttpHandler GetHttpHandlerSafeSync()
         {

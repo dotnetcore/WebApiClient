@@ -47,13 +47,13 @@ namespace WebApiClient
         /// <param name="httpClient">httpClient</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="PlatformNotSupportedException"></exception>
         /// <returns></returns>
         public static IHttpHandler CreateHandler(HttpClient httpClient)
         {
             if (handlerGetFunc == null)
             {
-                throw new NotSupportedException("无法从HttpClient反射出必须的HttpMessageHandler字段");
+                throw new PlatformNotSupportedException("无法从HttpClient反射出必须的HttpMessageHandler字段");
             }
 
             if (httpClient == null)
