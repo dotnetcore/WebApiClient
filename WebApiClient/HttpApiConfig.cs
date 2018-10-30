@@ -66,6 +66,14 @@ namespace WebApiClient
         }
 
         /// <summary>
+        /// 获取是否支持HttpHandler属性
+        /// </summary>
+        public bool HttpHandlerSupported
+        {
+            get => HttpHandlerProvider.IsSupportedFromHttpClient;
+        }
+
+        /// <summary>
         /// 获取HttpClient实例
         /// </summary>
         public HttpClient HttpClient { get; private set; }

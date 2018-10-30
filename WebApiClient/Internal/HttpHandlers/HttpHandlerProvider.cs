@@ -22,7 +22,12 @@ namespace WebApiClient
         private static readonly AssemblyName assemblyName = typeof(HttpHandlerProvider).GetTypeInfo().Assembly.GetName();
 
         /// <summary>
-        /// 默认的UserAgent
+        /// 获取是否支持从HttpClient创建
+        /// </summary>
+        public static bool IsSupportedFromHttpClient => handlerGetFunc != null;
+
+        /// <summary>
+        /// 获取默认的UserAgent
         /// </summary>
         public static readonly ProductInfoHeaderValue DefaultUserAgent = new ProductInfoHeaderValue(assemblyName.Name, assemblyName.Version.ToString());
 
@@ -51,7 +56,7 @@ namespace WebApiClient
         /// <returns></returns>
         public static IHttpHandler CreateHandler(HttpClient httpClient)
         {
-            if (handlerGetFunc == null)
+            if (IsSupportedFromHttpClient == false)
             {
                 throw new PlatformNotSupportedException("无法从HttpClient反射出必须的HttpMessageHandler字段");
             }

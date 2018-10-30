@@ -157,7 +157,10 @@ namespace WebApiClient
 
             if (this.keepCookieContainer == true)
             {
-                var handlerContainer = httpApiConfig.HttpHandler.CookieContainer;
+                var handlerContainer = httpApiConfig.HttpHandlerSupported ?
+                    httpApiConfig.HttpHandler.CookieContainer :
+                    new CookieContainer();
+
                 Interlocked.CompareExchange(ref this.cookieContainer, handlerContainer, null);
                 httpApiConfig.HttpHandler.CookieContainer = this.cookieContainer;
             }
