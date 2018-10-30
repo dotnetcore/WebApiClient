@@ -46,11 +46,11 @@ namespace WebApiClient
 
             if (maxConnectionsPerServerAction != null)
             {
-                Try.Catch<PlatformNotSupportedException>(() =>
+                Exceptions.Catch<PlatformNotSupportedException>(() =>
                     maxConnectionsPerServerAction.Invoke(this, HttpApiClient.ConnectionLimit));
             }
 
-            Try.Catch<PlatformNotSupportedException>(() =>
+            Exceptions.Catch<PlatformNotSupportedException>(() =>
                 this.ServerCertificateValidationCallback = (a, b, c, d) => true);
         }
 

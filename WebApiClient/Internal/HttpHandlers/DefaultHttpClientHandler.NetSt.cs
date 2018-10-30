@@ -20,10 +20,10 @@ namespace WebApiClient
             this.UseProxy = false;
             this.Proxy = null;
 
-            Try.Catch<PlatformNotSupportedException>(() =>
+            Exceptions.Catch<PlatformNotSupportedException>(() =>
                 this.MaxConnectionsPerServer = HttpApiClient.ConnectionLimit);
 
-            Try.Catch<PlatformNotSupportedException>(() =>
+            Exceptions.Catch<PlatformNotSupportedException>(() =>
                 this.ServerCertificateCustomValidationCallback = (a, b, c, d) => true);
         }
     }
