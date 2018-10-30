@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
-using System.Threading;
 
 namespace WebApiClient
 {
@@ -55,7 +54,7 @@ namespace WebApiClient
         {
             this.lifeTimeInterceptorLazy = new Lazy<LifetimeInterceptor>(
                 this.CreateInterceptor,
-                LazyThreadSafetyMode.ExecutionAndPublication);
+                true);
         }
 
         /// <summary>
@@ -164,9 +163,14 @@ namespace WebApiClient
 
             if (this.keepCookieContainer == true)
             {
-                var handlerContainer = httpApiConfig.HttpHandler.CookieContainer;
-                Interlocked.CompareExchange(ref this.cookieContainer, handlerContainer, null);
-                httpApiConfig.HttpHandler.CookieContainer = this.cookieContainer;
+                if (this.cookieContainer == null)
+                {
+                    this.cookieContainer = httpApiConfig.HttpHandler.CookieContainer;
+                }
+                if (httpApiConfig.HttpHandler.CookieContainer != this.cookieContainer)
+                {
+                    httpApiConfig.HttpHandler.CookieContainer = this.cookieContainer;
+                }
             }
 
             return new LifetimeInterceptor(
@@ -184,7 +188,7 @@ namespace WebApiClient
             // 切换激活状态的记录的实例
             this.lifeTimeInterceptorLazy = new Lazy<LifetimeInterceptor>(
                 this.CreateInterceptor,
-                LazyThreadSafetyMode.ExecutionAndPublication);
+                true);
 
             this.interceptorCleaner.Add(interceptor);
         }

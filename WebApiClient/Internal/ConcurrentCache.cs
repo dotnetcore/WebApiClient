@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace WebApiClient
 {
@@ -43,9 +42,7 @@ namespace WebApiClient
         /// <returns></returns>
         public TValue GetOrAdd(TKey key, Func<TKey, TValue> valueFactory)
         {
-            return this.dictionary
-                .GetOrAdd(key, k => new Lazy<TValue>(() => valueFactory(k), LazyThreadSafetyMode.ExecutionAndPublication))
-                .Value;
+            return this.dictionary.GetOrAdd(key, k => new Lazy<TValue>(() => valueFactory(k), true)).Value;
         }
     }
 }
