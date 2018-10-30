@@ -41,7 +41,7 @@ namespace WebApiClient
         /// <summary>
         /// 是否保持cookie容器
         /// </summary>
-        private bool keepCookieContainer = true;
+        private bool keepCookieContainer = HttpHandlerProvider.IsSupported;
 
         /// <summary>
         /// cookie容器
@@ -93,9 +93,16 @@ namespace WebApiClient
         /// 该实例为首次创建时的CookieContainer
         /// </summary>
         /// <param name="keep">true维护使用一个CookieContainer实例</param>
+        /// <exception cref="PlatformNotSupportedException"></exception>
         /// <returns></returns>
         public HttpApiFactory<TInterface> SetKeepCookieContainer(bool keep)
         {
+            if (keep == true && HttpHandlerProvider.IsSupported == false)
+            {
+                var message = $"无法设置KeepCookieContainer，请在{nameof(ConfigureHttpMessageHandler)}为Handler设置固定的{nameof(CookieContainer)}";
+                throw new PlatformNotSupportedException(message);
+            }
+
             this.keepCookieContainer = keep;
             return this;
         }
@@ -157,10 +164,7 @@ namespace WebApiClient
 
             if (this.keepCookieContainer == true)
             {
-                var handlerContainer = httpApiConfig.HttpHandlerSupported ?
-                    httpApiConfig.HttpHandler.CookieContainer :
-                    new CookieContainer();
-
+                var handlerContainer = httpApiConfig.HttpHandler.CookieContainer;
                 Interlocked.CompareExchange(ref this.cookieContainer, handlerContainer, null);
                 httpApiConfig.HttpHandler.CookieContainer = this.cookieContainer;
             }
