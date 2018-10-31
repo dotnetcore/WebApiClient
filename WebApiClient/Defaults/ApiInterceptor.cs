@@ -47,12 +47,11 @@ namespace WebApiClient.Defaults
         /// <returns></returns>
         public virtual object Intercept(object target, MethodInfo method, object[] parameters)
         {
+            var httpApi = target as IHttpApi;
             var descriptor = this.GetApiActionDescriptor(method, parameters);
-            var apiTask = descriptor.Return.DataType.ITaskFactory.Invoke() as ApiTask;
 
-            apiTask.HttpApi = target as IHttpApi;
-            apiTask.HttpApiConfig = this.HttpApiConfig;
-            apiTask.ApiActionDescriptor = descriptor;
+            var apiTask = descriptor.Return.DataType.ITaskFactory.Invoke() as ApiTask;
+            apiTask.ContextFactory = () => this.CreateApiActionContext(httpApi, descriptor);
 
             if (descriptor.Return.IsITaskDefinition == false)
             {
@@ -66,6 +65,7 @@ namespace WebApiClient.Defaults
 
         /// <summary>
         /// 获取api的描述
+        /// 默认实现使用了缓存
         /// </summary>
         /// <param name="method">接口的方法</param>
         /// <param name="parameters">参数值集合</param>
@@ -73,6 +73,17 @@ namespace WebApiClient.Defaults
         protected virtual ApiActionDescriptor GetApiActionDescriptor(MethodInfo method, object[] parameters)
         {
             return descriptorCache.GetOrAdd(method, m => new ApiActionDescriptor(m)).Clone(parameters);
+        }
+
+        /// <summary>
+        /// 返回创建ApiActionContext新实例
+        /// </summary>
+        /// <param name="httpApi">httpApi代理类实例</param>
+        /// <param name="apiActionDescriptor">api的描述</param>
+        /// <returns></returns>
+        protected virtual ApiActionContext CreateApiActionContext(IHttpApi httpApi, ApiActionDescriptor apiActionDescriptor)
+        {
+            return new ApiActionContext(httpApi, this.HttpApiConfig, apiActionDescriptor);
         }
 
         /// <summary>

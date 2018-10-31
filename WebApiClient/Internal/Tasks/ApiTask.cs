@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
 
@@ -24,19 +25,9 @@ namespace WebApiClient
 #endif
 
         /// <summary>
-        /// 获取或设置httpApi代理类实例
+        /// 获取或设置上下文创建工厂
         /// </summary>
-        public IHttpApi HttpApi { get; set; }
-
-        /// <summary>
-        /// 获取或设置http接口配置
-        /// </summary>
-        public HttpApiConfig HttpApiConfig { get; set; }
-
-        /// <summary>
-        /// 获取或设置api描述
-        /// </summary>
-        public ApiActionDescriptor ApiActionDescriptor { get; set; }
+        public Func<ApiActionContext> ContextFactory { get; set; }
 
         /// <summary>
         /// 执行任务
@@ -96,7 +87,7 @@ namespace WebApiClient
         /// <returns></returns>
         public virtual async Task<TResult> InvokeAsync()
         {
-            var context = new ApiActionContext(this.HttpApi, this.HttpApiConfig, this.ApiActionDescriptor);
+            var context = this.ContextFactory.Invoke();
             return await context.ExecuteActionAsync<TResult>().ConfigureAwait(false);
         }
     }
