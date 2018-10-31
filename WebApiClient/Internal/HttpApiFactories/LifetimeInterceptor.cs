@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using WebApiClient.Defaults;
 
@@ -7,8 +8,14 @@ namespace WebApiClient
     /// <summary>
     /// 表示具有生命周期的拦截器
     /// </summary>
+    [DebuggerDisplay("LifeTime = {lifeTime}")]
     class LifetimeInterceptor : ApiInterceptor
     {
+        /// <summary>
+        /// 生命周期
+        /// </summary>
+        private readonly TimeSpan lifeTime;
+
         /// <summary>
         /// Token取消源
         /// </summary>
@@ -28,6 +35,8 @@ namespace WebApiClient
             {
                 throw new ArgumentNullException(nameof(deactivateAction));
             }
+
+            this.lifeTime = lifeTime;
 
             this.tokenSource.Token.Register(() =>
             {

@@ -9,6 +9,6 @@
         /// 创建接口的代理实例
         /// </summary>
         /// <returns></returns>
-        object CreateHttpApi();        
+        HttpApiClient CreateHttpApi();
     }
 }

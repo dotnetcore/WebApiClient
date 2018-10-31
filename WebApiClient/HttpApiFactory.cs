@@ -32,10 +32,11 @@ namespace WebApiClient
         /// </summary>
         private Lazy<LifetimeInterceptor> lifeTimeInterceptorLazy;
 
+
         /// <summary>
-        /// 拦截器清理器
+        /// cookie容器
         /// </summary>
-        private readonly InterceptorCleaner interceptorCleaner = new InterceptorCleaner();
+        private CookieContainer cookieContainer;
 
         /// <summary>
         /// 是否保持cookie容器
@@ -43,9 +44,25 @@ namespace WebApiClient
         private bool keepCookieContainer = HttpHandlerProvider.IsSupported;
 
         /// <summary>
-        /// cookie容器
+        /// 拦截器清理器
         /// </summary>
-        private CookieContainer cookieContainer;
+        private readonly InterceptorCleaner interceptorCleaner = new InterceptorCleaner();
+
+        /// <summary>
+        /// 获取handler的生命周期
+        /// </summary>
+        public TimeSpan LifeTime
+        {
+            get => this.lifeTime;
+        }
+
+        /// <summary>
+        /// 获取是否保持cookie容器
+        /// </summary>
+        public bool KeepCookieContainer
+        {
+            get => this.keepCookieContainer;
+        }
 
         /// <summary>
         /// HttpApi创建工厂
@@ -141,7 +158,7 @@ namespace WebApiClient
         /// 创建接口的代理实例
         /// </summary>
         /// <returns></returns>
-        object IHttpApiFactory.CreateHttpApi()
+        HttpApiClient IHttpApiFactory.CreateHttpApi()
         {
             var interceptor = this.lifeTimeInterceptorLazy.Value;
             return HttpApiClient.Create(typeof(TInterface), interceptor);
