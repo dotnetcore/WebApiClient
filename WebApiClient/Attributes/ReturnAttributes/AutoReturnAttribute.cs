@@ -48,22 +48,22 @@ namespace WebApiClient.Attributes
             var response = context.ResponseMessage;
             var dataType = context.ApiActionDescriptor.Return.DataType;
 
-            if (dataType.Type == typeof(HttpResponseMessage))
+            if (dataType.IsHttpResponseMessage == true)
             {
                 return response;
             }
 
-            if (dataType.Type == typeof(string))
+            if (dataType.IsString == true)
             {
                 return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
 
-            if (dataType.Type == typeof(byte[]))
+            if (dataType.IsByteArray == true)
             {
                 return await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
             }
 
-            if (dataType.Type == typeof(Stream))
+            if (dataType.IsStream == true)
             {
                 return await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
             }

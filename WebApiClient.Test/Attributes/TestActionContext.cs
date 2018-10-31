@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using WebApiClient.Contexts;
 
 namespace WebApiClient.Test
 {
-    class TestActionContext : Contexts.ApiActionContext
+    class TestActionContext : ApiActionContext
     {
         /// <summary>
         /// 请求Api的上下文
