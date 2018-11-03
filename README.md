@@ -64,6 +64,7 @@ var user2 = await client.UpdateUserWithFormAsync(user);
 2. [WebApiClient进阶](https://github.com/dotnetcore/WebApiClient/wiki/WebApiClient%E8%BF%9B%E9%98%B6)
 3. [WebApiClient高级](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E9%AB%98%E7%BA%A7)
 4. [WebApiClient.Extensions](https://github.com/xljiulang/WebApiClient.Extensions)
+5. [WebApiClient.Tools.Swagger](https://github.com/xljiulang/WebApiClient.Tools)
 
 #### 4. 联系方式
 1. 加Q群439800853 注明WeApiClient
