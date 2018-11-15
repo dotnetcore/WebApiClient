@@ -11,22 +11,6 @@ namespace WebApiClient
     public static class Extensions
     {
         /// <summary>
-        /// 转换为只读列表
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="source"></param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <returns></returns>
-        public static IReadOnlyList<T> ToReadOnlyList<T>(this IEnumerable<T> source)
-        {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-            return source.ToList().AsReadOnly();
-        }
-
-        /// <summary>
         /// 返回提供请求重试的请求任务对象
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
