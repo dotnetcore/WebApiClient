@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
@@ -46,6 +47,11 @@ namespace WebApiClient.Attributes
         public string DateTimeFormat { get; set; }
 
         /// <summary>
+        /// 获取或设置集合格式化方式
+        /// </summary>
+        public CollectionFormat CollectionFormat = CollectionFormat.Multi;
+
+        /// <summary>
         /// 表示Url路径参数或query参数的特性
         /// </summary>
         public PathQueryAttribute()
@@ -84,21 +90,64 @@ namespace WebApiClient.Attributes
 
             var options = context.HttpApiConfig.FormatOptions.CloneChange(this.DateTimeFormat);
             var keyValues = context.HttpApiConfig.KeyValueFormatter.Serialize(parameter, options);
+            var query = this.FormateCollection(keyValues);
 
-            context.RequestMessage.RequestUri = this.UsePathQuery(uri, keyValues);
+            context.RequestMessage.RequestUri = this.UsePathQuery(uri, query);
             await ApiTask.CompletedTask;
         }
+
+        /// <summary>
+        /// 格式化集合
+        /// </summary>
+        /// <param name="keyValues">键值对</param>
+        /// <returns></returns>
+        private IEnumerable<KeyValuePair<string, string>> FormateCollection(IEnumerable<KeyValuePair<string, string>> keyValues)
+        {
+            IEnumerable<KeyValuePair<string, string>> JoinValue(IEnumerable<IGrouping<string, KeyValuePair<string, string>>> grouping, string separator)
+            {
+                return grouping.Select(item =>
+                {
+                    var value = string.Join(separator, item.Select(i => i.Value));
+                    return new KeyValuePair<string, string>(item.Key, value);
+                });
+            }
+
+            if (this.CollectionFormat == CollectionFormat.Multi)
+            {
+                return keyValues;
+            }
+
+            var groups = keyValues.GroupBy(item => item.Key);
+            switch (this.CollectionFormat)
+            {
+                case CollectionFormat.Csv:
+                    return JoinValue(groups, @",");
+
+                case CollectionFormat.Ssv:
+                    return JoinValue(groups, @" ");
+
+                case CollectionFormat.Tsv:
+                    return JoinValue(groups, @"\");
+
+                case CollectionFormat.Pipes:
+                    return JoinValue(groups, @"|");
+
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
 
         /// <summary>
         /// url添加query或替换segment
         /// </summary>
         /// <param name="uri">url</param>
-        /// <param name="keyValues">键值对</param>
+        /// <param name="query">键值对</param>
         /// <returns></returns>
-        protected Uri UsePathQuery(Uri uri, IEnumerable<KeyValuePair<string, string>> keyValues)
+        protected Uri UsePathQuery(Uri uri, IEnumerable<KeyValuePair<string, string>> query)
         {
             var editor = new UriEditor(uri, this.encoding);
-            foreach (var keyValue in keyValues)
+            foreach (var keyValue in query)
             {
                 if (editor.Replace(keyValue.Key, keyValue.Value) == false)
                 {
