@@ -101,15 +101,6 @@ namespace WebApiClient.Defaults
             }
 
             /// <summary>
-            /// 转换为数组
-            /// </summary>
-            /// <returns></returns>
-            public IApiParameterAttribute[] ToArray()
-            {
-                return this.attribueList.ToArray();
-            }
-
-            /// <summary>
             /// 返回迭代器
             /// </summary>
             /// <returns></returns>
