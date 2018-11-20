@@ -21,27 +21,17 @@ namespace WebApiClient.Parameterables
         /// 请求的超时时间
         /// </summary>
         /// <param name="milliseconds">超时时间的毫秒数</param>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public Timeout(int milliseconds)
+        public Timeout(double milliseconds)
+            : this(TimeSpan.FromMilliseconds(milliseconds))
         {
-            if (milliseconds <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(milliseconds));
-            }
-            this.TimeSpan = TimeSpan.FromMilliseconds(milliseconds);
         }
 
         /// <summary>
         /// 请求的超时时间
         /// </summary>
         /// <param name="timeSpan">超时时间</param>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public Timeout(TimeSpan timeSpan)
         {
-            if (timeSpan <= TimeSpan.Zero)
-            {
-                throw new ArgumentOutOfRangeException(nameof(timeSpan));
-            }
             this.TimeSpan = timeSpan;
         }
 
@@ -50,9 +40,15 @@ namespace WebApiClient.Parameterables
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="parameter">特性关联的参数</param>
+        /// <exception cref="HttpApiConfigException"></exception>
         /// <returns></returns>
         public Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
+            if (this.TimeSpan > context.HttpApiConfig.HttpClient.Timeout)
+            {
+                throw new HttpApiConfigException($"Timeout值{this.TimeSpan}不能超时HttpApiConfig.HttpClient.Timeout");
+            }
+
             var cancellation = new CancellationTokenSource(this.TimeSpan);
             context.CancellationTokens.Add(cancellation.Token);
             return ApiTask.CompletedTask;
