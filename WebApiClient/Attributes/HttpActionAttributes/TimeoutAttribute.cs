@@ -34,7 +34,8 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         public override Task BeforeRequestAsync(ApiActionContext context)
         {
-            if (this.TimeSpan > context.HttpApiConfig.HttpClient.Timeout)
+            var maxTimeout = context.HttpApiConfig.HttpClient.Timeout;
+            if (maxTimeout >= TimeSpan.Zero && this.TimeSpan > maxTimeout)
             {
                 throw new HttpApiConfigException($"Timeout值{this.TimeSpan}不能超时HttpApiConfig.HttpClient.Timeout");
             }

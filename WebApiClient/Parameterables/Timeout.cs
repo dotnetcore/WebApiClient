@@ -44,7 +44,8 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         public Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            if (this.TimeSpan > context.HttpApiConfig.HttpClient.Timeout)
+            var maxTimeout = context.HttpApiConfig.HttpClient.Timeout;
+            if (maxTimeout >= TimeSpan.Zero && this.TimeSpan > maxTimeout)
             {
                 throw new HttpApiConfigException($"Timeout值{this.TimeSpan}不能超时HttpApiConfig.HttpClient.Timeout");
             }
