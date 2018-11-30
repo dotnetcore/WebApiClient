@@ -51,6 +51,16 @@ namespace WebApiClient.Test.Internal
         }
 
         [Fact]
+        public void DefaultValueTest()
+        {
+            Assert.True(typeof(A).DefaultValue() == null);
+            Assert.True(typeof(int?).DefaultValue() == null);
+            Assert.True((int)typeof(int).DefaultValue() == 0);
+            Assert.True((float)typeof(float).DefaultValue() == 0f);
+            Assert.True((Guid)typeof(Guid).DefaultValue() == Guid.Empty);
+        }
+
+        [Fact]
         public void IsInheritFromTest()
         {
             Assert.True(typeof(C).IsInheritFrom<B>());

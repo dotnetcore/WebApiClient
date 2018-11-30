@@ -41,7 +41,7 @@ namespace WebApiClient.Defaults
         {
             if (string.IsNullOrEmpty(json))
             {
-                return null;
+                return objType.DefaultValue();
             }
 
             var setting = this.CreateSerializerSettings(null);

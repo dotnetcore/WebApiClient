@@ -57,7 +57,7 @@ namespace WebApiClient.Defaults
 
             if (string.IsNullOrEmpty(xml))
             {
-                return null;
+                return objType.DefaultValue();
             }
 
             var xmlSerializer = new XmlSerializer(objType);

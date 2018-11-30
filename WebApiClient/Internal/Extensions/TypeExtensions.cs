@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,11 @@ namespace WebApiClient
         private static readonly ConcurrentCache<Type, bool> typeAllowMultipleCache = new ConcurrentCache<Type, bool>();
 
         /// <summary>
+        /// 类型的默认值缓存
+        /// </summary>
+        private static readonly ConcurrentCache<Type, object> typeDefaultValueCache = new ConcurrentCache<Type, object>();
+
+        /// <summary>
         /// 关联的AttributeUsageAttribute是否AllowMultiple
         /// </summary>
         /// <param name="type"></param>
@@ -24,6 +30,25 @@ namespace WebApiClient
         public static bool IsAllowMultiple(this Type type)
         {
             return typeAllowMultipleCache.GetOrAdd(type, (t => t.IsInheritFrom<Attribute>() && t.GetTypeInfo().GetCustomAttribute<AttributeUsageAttribute>(true).AllowMultiple));
+        }
+
+        /// <summary>
+        /// 返回类型的默认值
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static object DefaultValue(this Type type)
+        {
+            if (type == null)
+            {
+                return null;
+            }
+
+            return typeDefaultValueCache.GetOrAdd(type, t =>
+            {
+                var value = Expression.Convert(Expression.Default(t), typeof(object));
+                return Expression.Lambda<Func<object>>(value).Compile().Invoke();
+            });
         }
 
         /// <summary>
