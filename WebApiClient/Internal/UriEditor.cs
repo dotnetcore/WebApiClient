@@ -12,7 +12,7 @@ namespace WebApiClient
         /// <summary>
         /// 当前的Uri
         /// </summary>
-        private Uri _uri;
+        private Uri uriValue;
 
         /// <summary>
         /// 当前的Uri是否可替换值
@@ -26,11 +26,11 @@ namespace WebApiClient
         {
             get
             {
-                return this._uri;
+                return this.uriValue;
             }
-            set
+            private set
             {
-                this._uri = value;
+                this.uriValue = value;
                 this.uriCanReplace = value.OriginalString.IndexOf('{') > -1;
             }
         }
