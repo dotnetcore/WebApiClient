@@ -19,7 +19,7 @@ namespace WebApiClient
         /// <param name="xml">xml内容</param>
         /// <param name="encoding">编码</param>
         public XmlContent(string xml, Encoding encoding)
-            : base(xml, encoding, MediaType)
+            : base(xml ?? string.Empty, encoding, MediaType)
         {
         }
     }

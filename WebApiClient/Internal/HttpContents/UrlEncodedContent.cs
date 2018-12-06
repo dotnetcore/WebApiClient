@@ -48,6 +48,7 @@ namespace WebApiClient
             this.Headers.ContentType = new MediaTypeHeaderValue(MediaType);
         }
 
+
         /// <summary>
         /// 添加字段到内存流
         /// </summary>
@@ -72,13 +73,31 @@ namespace WebApiClient
                 builder.Append(Encode(pair.Value));
             }
 
+            await this.AddRawFormAsync(builder.ToString()).ConfigureAwait(false);
+        }
+
+
+        /// <summary>
+        /// 添加原始表单
+        /// </summary>
+        /// <param name="form">表单内容</param>
+        /// <returns></returns>
+        public async Task AddRawFormAsync(string form)
+        {
+            if (string.IsNullOrEmpty(form) == true)
+            {
+                return;
+            }
+
             if (this.stream.Length > 0)
             {
-                builder.Insert(0, "&");
+                this.stream.WriteByte((byte)'&');
             }
-            var bytes = defaultHttpEncoding.GetBytes(builder.ToString());
+
+            var bytes = defaultHttpEncoding.GetBytes(form);
             await this.stream.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
         }
+
 
         /// <summary>
         /// 表单编码

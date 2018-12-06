@@ -19,7 +19,7 @@ namespace WebApiClient
         /// <param name="json">json内容</param>
         /// <param name="encoding">编码</param>
         public JsonContent(string json, Encoding encoding)
-            : base(json, encoding, MediaType)
+            : base(json ?? string.Empty, encoding, MediaType)
         {
         }
     }
