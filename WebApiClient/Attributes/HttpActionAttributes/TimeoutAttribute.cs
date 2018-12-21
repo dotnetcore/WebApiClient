@@ -21,6 +21,15 @@ namespace WebApiClient.Attributes
         /// 请求的超时时间
         /// </summary>
         /// <param name="milliseconds">超时时间的毫秒数</param>
+        public TimeoutAttribute(int milliseconds)
+            : this((double)milliseconds)
+        {
+        }
+
+        /// <summary>
+        /// 请求的超时时间
+        /// </summary>
+        /// <param name="milliseconds">超时时间的毫秒数</param>
         public TimeoutAttribute(double milliseconds)
         {
             this.TimeSpan = TimeSpan.FromMilliseconds(milliseconds);
