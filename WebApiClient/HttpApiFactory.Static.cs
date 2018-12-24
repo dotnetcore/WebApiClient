@@ -18,14 +18,14 @@ namespace WebApiClient
         /// <summary>
         /// 工厂字典
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, IHttpApiFactory> factories;
+        private static readonly ConcurrentDictionary<string, IHttpApiFactory> factories;
 
         /// <summary>
         /// 表示HttpApi创建工厂
         /// </summary>
         static HttpApiFactory()
         {
-            factories = new ConcurrentDictionary<Type, IHttpApiFactory>();
+            factories = new ConcurrentDictionary<string, IHttpApiFactory>();
         }
 
         /// <summary>
@@ -36,16 +36,34 @@ namespace WebApiClient
         /// <returns></returns>
         public static HttpApiFactory<TInterface> Add<TInterface>() where TInterface : class, IHttpApi
         {
+            var name = GetFactoryName<TInterface>();
+            return Add<TInterface>(name);
+        }
+
+        /// <summary>
+        /// 创建并返回指定接口的HttpApiFactory
+        /// </summary>
+        /// <typeparam name="TInterface"></typeparam>
+        /// <param name="name">工厂名称</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <returns></returns>
+        public static HttpApiFactory<TInterface> Add<TInterface>(string name) where TInterface : class, IHttpApi
+        {
+            if (string.IsNullOrEmpty(name) == true)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
             lock (syncRoot)
             {
-                var apiType = typeof(TInterface);
-                if (factories.ContainsKey(apiType) == true)
+                if (factories.ContainsKey(name) == true)
                 {
-                    throw new InvalidOperationException($"不允许重复创建指定接口的HttpApiFactory：{apiType}");
+                    throw new InvalidOperationException($"不允许创建重复名称的HttpApiFactory：{name}");
                 }
 
                 var factory = new HttpApiFactory<TInterface>();
-                factories.TryAdd(apiType, factory);
+                factories.TryAdd(name, factory);
                 return factory;
             }
         }
@@ -58,12 +76,40 @@ namespace WebApiClient
         /// <returns></returns>
         public static TInterface Create<TInterface>() where TInterface : class, IHttpApi
         {
-            var apiType = typeof(TInterface);
-            if (factories.TryGetValue(apiType, out var factory) == true)
+            var name = GetFactoryName<TInterface>();
+            return Create<TInterface>(name);
+        }
+
+        /// <summary>
+        /// 创建指定接口的代理实例
+        /// </summary>
+        /// <typeparam name="TInterface"></typeparam>
+        /// <param name="name">工厂名称</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <returns></returns>
+        public static TInterface Create<TInterface>(string name) where TInterface : class, IHttpApi
+        {
+            if (string.IsNullOrEmpty(name) == true)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            if (factories.TryGetValue(name, out var factory) == true)
             {
                 return factory.CreateHttpApi() as TInterface;
             }
-            throw new InvalidOperationException($"请先调用HttpApiFactory.Add()方法配置指定接口：{apiType}");
+            throw new InvalidOperationException($"请先调用HttpApiFactory.Add()方法配置指定接口：{typeof(TInterface)}");
+        }
+
+        /// <summary>
+        /// 返回类型的工厂名称
+        /// </summary>
+        /// <typeparam name="TInterface"></typeparam>
+        /// <returns></returns>
+        private static string GetFactoryName<TInterface>()
+        {
+            return typeof(TInterface).FullName;
         }
     }
 }
