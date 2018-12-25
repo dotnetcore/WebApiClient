@@ -164,8 +164,12 @@ namespace WebApiClient.Contexts
             {
                 try
                 {
+                    var completionOption = this.ApiActionDescriptor.Return.DataType.IsHttpResponseWrapper ?
+                        HttpCompletionOption.ResponseHeadersRead :
+                        HttpCompletionOption.ResponseContentRead;
+
                     this.ResponseMessage = await this.HttpApiConfig.HttpClient
-                        .SendAsync(this.RequestMessage, cancellation.Token)
+                        .SendAsync(this.RequestMessage, completionOption, cancellation.Token)
                         .ConfigureAwait(false);
 
                     this.Result = await this.ApiActionDescriptor.Return.Attribute
