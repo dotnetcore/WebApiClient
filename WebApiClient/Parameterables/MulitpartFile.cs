@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
 
@@ -13,19 +14,34 @@ namespace WebApiClient.Parameterables
     public class MulitpartFile : IApiParameterable
     {
         /// <summary>
-        /// 流
+        /// 数据流
         /// </summary>
         private readonly Stream stream;
 
         /// <summary>
-        /// 文件路径
+        /// 本机文件路径
         /// </summary>
         private readonly string filePath;
 
         /// <summary>
-        /// 文件名
+        /// 文件好友名称
         /// </summary>
-        public string FileName { get; private set; }
+        private readonly string fileName;
+
+        /// <summary>
+        /// 获取文件好友名称
+        /// </summary>
+        public string FileName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(this.fileName))
+                {
+                    return this.fileName;
+                }
+                return HttpUtility.UrlEncode(this.fileName, Encoding.UTF8);
+            }
+        }
 
         /// <summary>
         /// 获取或设置文件的Mime
@@ -52,7 +68,7 @@ namespace WebApiClient.Parameterables
         public MulitpartFile(Stream stream, string fileName)
         {
             this.stream = stream ?? throw new ArgumentNullException(nameof(stream));
-            this.FileName = fileName;
+            this.fileName = fileName;
         }
 
         /// <summary>
@@ -74,7 +90,7 @@ namespace WebApiClient.Parameterables
             }
 
             this.filePath = localFilePath;
-            this.FileName = Path.GetFileName(localFilePath);
+            this.fileName = Path.GetFileName(localFilePath);
         }
 
         /// <summary>
