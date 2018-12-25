@@ -16,7 +16,7 @@ namespace WebApiClient
         /// <summary>
         /// 下载进度变化事件
         /// </summary>
-        public event EventHandler<DownloadProgressEventArgs> DownloadProgressChanged;
+        public event EventHandler<ProgressEventArgs> DownloadProgressChanged;
 
         /// <summary>
         /// 获取响应的友好文件名称
@@ -95,20 +95,20 @@ namespace WebApiClient
             var buffer = new byte[8 * 1024];
             var sourceStream = await this.HttpResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
-            var args = new DownloadProgressEventArgs(current, this.FileSize, false);
+            var args = new ProgressEventArgs(current, this.FileSize, false);
             this.DownloadProgressChanged?.Invoke(this, args);
 
             while ((length = await sourceStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
             {
                 current = current + length;
 
-                args = new DownloadProgressEventArgs(current, this.FileSize, false);
+                args = new ProgressEventArgs(current, this.FileSize, false);
                 this.DownloadProgressChanged?.Invoke(this, args);
 
                 await stream.WriteAsync(buffer, 0, length).ConfigureAwait(false);
             }
 
-            args = new DownloadProgressEventArgs(current, this.FileSize, true);
+            args = new ProgressEventArgs(current, this.FileSize, true);
             this.DownloadProgressChanged?.Invoke(this, args);
         }
     }

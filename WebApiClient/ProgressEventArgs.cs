@@ -3,12 +3,12 @@
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示下载进度
+    /// 表示上传或下载进度
     /// </summary>
-    public class DownloadProgressEventArgs : EventArgs
+    public class ProgressEventArgs : EventArgs
     {
         /// <summary>
-        /// 获取当前收到的字节数
+        /// 获取当前完成的字节数
         /// </summary>
         public long CurrentBytes { get; }
 
@@ -38,12 +38,12 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 下载进度
+        /// 上传或下载进度
         /// </summary>
-        /// <param name="current">当前收到的字节数</param>
+        /// <param name="current">当前完成的字节数</param>
         /// <param name="total">总字节数</param>
         /// <param name="isCompleted">是否已完成</param>
-        public DownloadProgressEventArgs(long current, long? total, bool isCompleted)
+        public ProgressEventArgs(long current, long? total, bool isCompleted)
         {
             this.CurrentBytes = current;
             this.TotalBytes = total;
