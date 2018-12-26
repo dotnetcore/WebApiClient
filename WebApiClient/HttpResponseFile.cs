@@ -90,26 +90,31 @@ namespace WebApiClient
                 throw new ArgumentException(nameof(stream) + " cannot be write", nameof(stream));
             }
 
-            var length = 0;
             var current = 0L;
             var buffer = new byte[8 * 1024];
             var sourceStream = await this.HttpResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
-            var args = new ProgressEventArgs(current, this.FileSize, false);
-            this.DownloadProgressChanged?.Invoke(this, args);
-
-            while ((length = await sourceStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
+            while (true)
             {
-                current = current + length;
+                var length = await sourceStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                var isCompleted = length == 0;
 
-                args = new ProgressEventArgs(current, this.FileSize, false);
+                current = current + length;
+                var total = this.FileSize;
+                if (isCompleted == true && total == null)
+                {
+                    total = current;
+                }
+
+                var args = new ProgressEventArgs(current, total, isCompleted);
                 this.DownloadProgressChanged?.Invoke(this, args);
 
+                if (isCompleted == true)
+                {
+                    break;
+                }
                 await stream.WriteAsync(buffer, 0, length).ConfigureAwait(false);
             }
-
-            args = new ProgressEventArgs(current, this.FileSize, true);
-            this.DownloadProgressChanged?.Invoke(this, args);
         }
     }
 }

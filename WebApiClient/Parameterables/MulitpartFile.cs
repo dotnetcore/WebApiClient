@@ -116,18 +116,17 @@ namespace WebApiClient.Parameterables
         private UploadStream GetUploadStream()
         {
             var inner = this.stream ?? new FileStream(this.filePath, FileMode.Open, FileAccess.Read);
-            return new UploadStream(inner, this.RaiseUploadProgressChanged);
+            return new UploadStream(inner, this.OnUploadProgressChanged);
         }
 
         /// <summary>
         /// 触发上传进度变化事件
         /// </summary>
         /// <param name="e"></param>
-        private void RaiseUploadProgressChanged(ProgressEventArgs e)
+        protected virtual void OnUploadProgressChanged(ProgressEventArgs e)
         {
             this.UploadProgressChanged?.Invoke(this, e);
         }
-
 
         /// <summary>
         /// 表示上传数据流
@@ -147,7 +146,7 @@ namespace WebApiClient.Parameterables
             /// <summary>
             /// 进度事件处理者
             /// </summary>
-            private readonly Action<ProgressEventArgs> eventArgsHandler;
+            private readonly Action<ProgressEventArgs> progressChangedHandler;
 
             /// <summary>
             /// 记录当前字节数
@@ -158,12 +157,12 @@ namespace WebApiClient.Parameterables
             /// 上传数据流
             /// </summary>
             /// <param name="inner">内部流</param>
-            /// <param name="eventArgsHandler">进度事件处理者</param>
+            /// <param name="progressChangedHandler">进度事件处理者</param>
             /// <exception cref="ArgumentNullException"></exception>
-            public UploadStream(Stream inner, Action<ProgressEventArgs> eventArgsHandler)
+            public UploadStream(Stream inner, Action<ProgressEventArgs> progressChangedHandler)
             {
                 this.inner = inner ?? throw new ArgumentNullException(nameof(inner));
-                this.eventArgsHandler = eventArgsHandler ?? throw new ArgumentNullException(nameof(eventArgsHandler));
+                this.progressChangedHandler = progressChangedHandler ?? throw new ArgumentNullException(nameof(progressChangedHandler));
 
                 try
                 {
@@ -193,7 +192,7 @@ namespace WebApiClient.Parameterables
             public override long Length => this.inner.Length;
 
             /// <summary>
-            /// 获取数据指针公交车
+            /// 获取数据指针位置
             /// </summary>
             public override long Position
             {
@@ -223,7 +222,7 @@ namespace WebApiClient.Parameterables
 
                 this.currentBytes = this.currentBytes + length;
                 var args = new ProgressEventArgs(this.currentBytes, this.totalBytes, isCompleted);
-                this.eventArgsHandler.Invoke(args);
+                this.progressChangedHandler.Invoke(args);
 
                 return length;
             }
