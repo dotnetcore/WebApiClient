@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WebApiClient
@@ -46,7 +47,6 @@ namespace WebApiClient
             this.FileName = headers.ContentDisposition?.FileName;
             this.MediaType = headers.ContentType?.MediaType;
         }
-
         /// <summary>
         /// 保存到指定路径
         /// </summary>
@@ -54,6 +54,19 @@ namespace WebApiClient
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         public async Task SaveAsAsync(string filePath)
+        {
+            await this.SaveAsAsync(filePath, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// 保存到指定路径
+        /// </summary>
+        /// <param name="filePath">文件路径和文件名</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="OperationCanceledException"></exception>
+        /// <returns></returns>
+        public async Task SaveAsAsync(string filePath, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(filePath) == true)
             {
@@ -68,7 +81,7 @@ namespace WebApiClient
 
             using (var fileStream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write))
             {
-                await this.SaveAsAsync(fileStream).ConfigureAwait(false);
+                await this.SaveAsAsync(fileStream, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -80,6 +93,20 @@ namespace WebApiClient
         /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
         public async Task SaveAsAsync(Stream stream)
+        {
+            await this.SaveAsAsync(stream, CancellationToken.None).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// 保存到目标流
+        /// </summary>
+        /// <param name="stream">流</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="OperationCanceledException"></exception>
+        /// <returns></returns>
+        public async Task SaveAsAsync(Stream stream, CancellationToken cancellationToken)
         {
             if (stream == null)
             {
@@ -96,6 +123,8 @@ namespace WebApiClient
 
             while (true)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 var length = await sourceStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
                 var isCompleted = length == 0;
 
