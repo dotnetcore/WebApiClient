@@ -64,9 +64,29 @@ namespace WebApiClient.BuildTask
             this.MainMdule = this.assembly.MainModule;
             this.KnowTypes = this.MainMdule
                 .AssemblyReferences
-                .Select(asm => resolver.Resolve(asm).MainModule)
+                .Select(asm => this.ResolveAssemblyNameReference(resolver, asm))
+                .Where(item => item != null)
                 .SelectMany(item => item.GetTypes())
                 .ToArray();
+        }
+
+        /// <summary>
+        /// 解析依赖项
+        /// </summary>
+        /// <param name="resolver">解析器</param>
+        /// <param name="assembly">依赖的程序集</param>
+        /// <returns></returns>
+        private ModuleDefinition ResolveAssemblyNameReference(DefaultAssemblyResolver resolver, AssemblyNameReference assembly)
+        {
+            try
+            {
+                return resolver.Resolve(assembly).MainModule;
+            }
+            catch (Exception ex)
+            {
+                logger.Message(ex.Message);
+                return null;
+            }
         }
 
         /// <summary>
