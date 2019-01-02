@@ -16,17 +16,7 @@ namespace WebApiClient.Parameterables
         /// <summary>
         /// 数据流
         /// </summary>
-        private readonly Stream stream;
-
-        /// <summary>
-        /// 本机文件路径
-        /// </summary>
-        private readonly string filePath;
-
-        /// <summary>
-        /// 文件好友名称
-        /// </summary>
-        private readonly string fileName;
+        private readonly Lazy<Stream> stream;
 
         /// <summary>
         /// 上传进度变化事件
@@ -36,15 +26,16 @@ namespace WebApiClient.Parameterables
         /// <summary>
         /// 获取文件好友名称
         /// </summary>
-        public string FileName
+        public string FileName { get; private set; }
+
+        /// <summary>
+        /// 获取编码后的文件好友名称
+        /// </summary>
+        public virtual string EncodedFileName
         {
             get
             {
-                if (string.IsNullOrEmpty(this.fileName))
-                {
-                    return this.fileName;
-                }
-                return HttpUtility.UrlEncode(this.fileName, Encoding.UTF8);
+                return HttpUtility.UrlEncode(this.FileName, Encoding.UTF8);
             }
         }
 
@@ -72,8 +63,13 @@ namespace WebApiClient.Parameterables
         /// <exception cref="ArgumentNullException"></exception>
         public MulitpartFile(Stream stream, string fileName)
         {
-            this.stream = stream ?? throw new ArgumentNullException(nameof(stream));
-            this.fileName = fileName;
+            if (stream == null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+
+            this.stream = new Lazy<Stream>(() => stream);
+            this.FileName = fileName;
         }
 
         /// <summary>
@@ -94,8 +90,8 @@ namespace WebApiClient.Parameterables
                 throw new FileNotFoundException(localFilePath);
             }
 
-            this.filePath = localFilePath;
-            this.fileName = Path.GetFileName(localFilePath);
+            this.stream = new Lazy<Stream>(() => new FileStream(localFilePath, FileMode.Open, FileAccess.Read));
+            this.FileName = Path.GetFileName(localFilePath);
         }
 
         /// <summary>
@@ -105,18 +101,19 @@ namespace WebApiClient.Parameterables
         /// <param name="parameter">特性关联的参数</param>
         async Task IApiParameterable.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            context.RequestMessage.AddMulitpartFile(this.GetUploadStream(), parameter.Name, this.FileName, this.ContentType);
-            await ApiTask.CompletedTask;
+            await this.BeforeRequestAsync(context, parameter).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// 获取文件流
+        /// 执行请求前
         /// </summary>
-        /// <returns></returns>
-        private UploadStream GetUploadStream()
+        /// <param name="context">上下文</param>
+        /// <param name="parameter">特性关联的参数</param>
+        protected virtual async Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var inner = this.stream ?? new FileStream(this.filePath, FileMode.Open, FileAccess.Read);
-            return new UploadStream(inner, this.OnUploadProgressChanged);
+            var uploadStream = new UploadStream(this.stream.Value, this.OnUploadProgressChanged);
+            context.RequestMessage.AddMulitpartFile(uploadStream, parameter.Name, this.EncodedFileName, this.ContentType);
+            await ApiTask.CompletedTask;
         }
 
         /// <summary>
