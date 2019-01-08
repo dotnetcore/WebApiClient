@@ -151,7 +151,7 @@ namespace WebApiClient.Contexts
                 }
             }
 
-            await apiAction.Return.Attribute.BeforeRequestAsync(this);
+            await apiAction.Return.Attribute.BeforeRequestAsync(this).ConfigureAwait(false);
         }
 
         /// <summary>

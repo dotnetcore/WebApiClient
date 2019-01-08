@@ -139,7 +139,7 @@ namespace WebApiClient
             {
                 if (handler != null)
                 {
-                    await handler.Invoke(ex);
+                    await handler.Invoke(ex).ConfigureAwait(false);
                 }
                 return true;
             });
@@ -161,7 +161,7 @@ namespace WebApiClient
                 }
                 catch (TException ex)
                 {
-                    if (predicate == null || await predicate.Invoke(ex))
+                    if (predicate == null || await predicate.Invoke(ex).ConfigureAwait(false))
                     {
                         throw new RetryMarkException(ex);
                     }
@@ -205,7 +205,7 @@ namespace WebApiClient
             async Task<TResult> newInvoker()
             {
                 var result = await this.invoker.Invoke().ConfigureAwait(false);
-                if (await predicate.Invoke(result) == true)
+                if (await predicate.Invoke(result).ConfigureAwait(false) == true)
                 {
                     var inner = new ResultNotMatchException("结果不符合预期值", result);
                     throw new RetryMarkException(inner);

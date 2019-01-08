@@ -55,7 +55,7 @@ namespace WebApiClient
         /// <returns></returns>
         public async Task SaveAsAsync(string filePath)
         {
-            await this.SaveAsAsync(filePath, CancellationToken.None);
+            await this.SaveAsAsync(filePath, CancellationToken.None).ConfigureAwait(false);
         }
 
         /// <summary>
