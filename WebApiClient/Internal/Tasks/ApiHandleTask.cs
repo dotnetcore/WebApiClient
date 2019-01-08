@@ -40,6 +40,10 @@ namespace WebApiClient
         /// <returns></returns>
         public IHandleTask<TResult> WhenCatch<TException>(Func<TResult> func) where TException : Exception
         {
+            if (func == null)
+            {
+                throw new ArgumentNullException(nameof(func));
+            }
             return this.WhenCatch<TException>(ex => func());
         }
 
@@ -56,19 +60,11 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(func));
             }
 
-            async Task<TResult> newInvoker()
+            return this.WhenCatchAsync<TException>(ex =>
             {
-                try
-                {
-                    return await this.invoker.Invoke().ConfigureAwait(false);
-                }
-                catch (TException ex)
-                {
-                    return func.Invoke(ex);
-                }
-            }
-
-            return new ApiHandleTask<TResult>(newInvoker);
+                var result = func.Invoke(ex);
+                return Task.FromResult(result);
+            });
         }
 
         /// <summary>

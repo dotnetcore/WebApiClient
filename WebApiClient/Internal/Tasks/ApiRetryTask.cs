@@ -94,7 +94,22 @@ namespace WebApiClient
         /// <returns></returns>
         public IRetryTask<TResult> WhenCatch<TException>() where TException : Exception
         {
-            return this.WhenCatch<TException>(null);
+            return this.WhenCatch<TException>(ex => true);
+        }
+
+        /// <summary>
+        /// 当捕获到异常时进行Retry
+        /// </summary>
+        /// <typeparam name="TException">异常类型</typeparam>
+        /// <param name="handler">捕获到指定异常时</param>
+        /// <returns></returns>
+        public IRetryTask<TResult> WhenCatch<TException>(Action<TException> handler) where TException : Exception
+        {
+            return this.WhenCatch<TException>(ex =>
+            {
+                handler?.Invoke(ex);
+                return true;
+            });
         }
 
         /// <summary>
@@ -105,6 +120,39 @@ namespace WebApiClient
         /// <returns></returns>
         public IRetryTask<TResult> WhenCatch<TException>(Func<TException, bool> predicate) where TException : Exception
         {
+            return this.WhenCatchAsync<TException>(ex =>
+            {
+                var result = predicate == null || predicate.Invoke(ex);
+                return Task.FromResult(result);
+            });
+        }
+
+        /// <summary>
+        /// 当捕获到异常时进行Retry
+        /// </summary>
+        /// <typeparam name="TException">异常类型</typeparam>
+        /// <param name="handler">捕获到指定异常时</param>
+        /// <returns></returns>
+        public IRetryTask<TResult> WhenCatchAsync<TException>(Func<TException, Task> handler) where TException : Exception
+        {
+            return this.WhenCatchAsync<TException>(async ex =>
+            {
+                if (handler != null)
+                {
+                    await handler.Invoke(ex);
+                }
+                return true;
+            });
+        }
+
+        /// <summary>
+        /// 当捕获到异常时进行Retry
+        /// </summary>
+        /// <typeparam name="TException">异常类型</typeparam>
+        /// <param name="predicate">返回true才Retry</param>
+        /// <returns></returns>
+        public IRetryTask<TResult> WhenCatchAsync<TException>(Func<TException, Task<bool>> predicate) where TException : Exception
+        {
             async Task<TResult> newInvoker()
             {
                 try
@@ -113,7 +161,7 @@ namespace WebApiClient
                 }
                 catch (TException ex)
                 {
-                    if (predicate == null || predicate.Invoke(ex))
+                    if (predicate == null || await predicate.Invoke(ex))
                     {
                         throw new RetryMarkException(ex);
                     }
@@ -135,10 +183,29 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(predicate));
             }
 
+            return this.WhenResultAsync(r =>
+            {
+                var result = predicate.Invoke(r);
+                return Task.FromResult(result);
+            });
+        }
+
+        /// <summary>
+        /// 当结果符合条件时进行Retry
+        /// </summary>
+        /// <param name="predicate">条件</param>
+        /// <returns></returns>
+        public IRetryTask<TResult> WhenResultAsync(Func<TResult, Task<bool>> predicate)
+        {
+            if (predicate == null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
             async Task<TResult> newInvoker()
             {
                 var result = await this.invoker.Invoke().ConfigureAwait(false);
-                if (predicate.Invoke(result) == true)
+                if (await predicate.Invoke(result) == true)
                 {
                     var inner = new ResultNotMatchException("结果不符合预期值", result);
                     throw new RetryMarkException(inner);

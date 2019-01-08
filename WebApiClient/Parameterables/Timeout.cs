@@ -76,6 +76,16 @@ namespace WebApiClient.Parameterables
         }
 
         /// <summary>
+        /// 从double类型隐式转换
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static implicit operator Timeout(double value)
+        {
+            return new Timeout(value);
+        }
+
+        /// <summary>
         /// 从TimeSpan类型隐式转换
         /// </summary>
         /// <param name="value"></param>
