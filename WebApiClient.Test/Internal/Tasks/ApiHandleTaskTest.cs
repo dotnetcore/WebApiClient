@@ -26,8 +26,11 @@ namespace WebApiClient.Test.Internal.Tasks
             result = await apiTask.Handle().WhenCatch<Exception>((ex) => "xyz");
             Assert.True(result == "xyz");
 
+            result = await apiTask.Handle().WhenCatchAsync<Exception>((ex) => Task.FromResult("xyz"));
+            Assert.True(result == "xyz");
+
             await Assert.ThrowsAsync<NotImplementedException>(async () =>
-               await apiTask.Handle().WhenCatch<NotSupportedException>(() => "xyz"));
+                await apiTask.Handle().WhenCatchAsync<NotSupportedException>((ex) => Task.FromResult("xyz")));
         }
     }
 }

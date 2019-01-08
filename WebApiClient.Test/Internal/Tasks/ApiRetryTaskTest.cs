@@ -35,11 +35,30 @@ namespace WebApiClient.Test.Internal.Tasks
         }
 
         [Fact]
+        public async Task WhenCatchAsyncTest()
+        {
+            var apiTask = new NotImplementedApiTask<string>();
+            await Assert.ThrowsAsync<RetryException>(async () =>
+                await apiTask.Retry(3).WhenCatchAsync<NotImplementedException>(async ex => await Task.CompletedTask));
+        }
+
+
+        [Fact]
         public async Task WhenResultTest()
         {
             var apiTask = new ResultApiTask<string> { Result = "abc" };
+            await apiTask.Retry(3).WhenResult(r => r == null);
+
             await Assert.ThrowsAsync<RetryException>(async () =>
                 await apiTask.Retry(3).WhenResult(r => r == apiTask.Result));
+        }
+
+        [Fact]
+        public async Task WhenResultAsyncTest()
+        {
+            var apiTask = new ResultApiTask<string> { Result = "abc" };
+            await Assert.ThrowsAsync<RetryException>(async () =>
+                await apiTask.Retry(3).WhenResultAsync(r => Task.FromResult(r == apiTask.Result)));
         }
     }
 }
