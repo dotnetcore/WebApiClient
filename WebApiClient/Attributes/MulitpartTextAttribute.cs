@@ -59,7 +59,7 @@ namespace WebApiClient.Attributes
         {
             if (string.IsNullOrEmpty(this.name))
             {
-                throw new NotSupportedException($"请传入name和value参数：{nameof(MulitpartTextAttribute)}");
+                throw new HttpApiConfigException($"请传入name和value参数：{nameof(MulitpartTextAttribute)}");
             }
 
             if (this.IsIgnoreWith(this.value) == false)
