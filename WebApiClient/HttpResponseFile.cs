@@ -123,9 +123,7 @@ namespace WebApiClient
 
             while (true)
             {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var length = await sourceStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                var length = await sourceStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
                 var isCompleted = length == 0;
 
                 current = current + length;
@@ -142,7 +140,7 @@ namespace WebApiClient
                 {
                     break;
                 }
-                await stream.WriteAsync(buffer, 0, length).ConfigureAwait(false);
+                await stream.WriteAsync(buffer, 0, length, cancellationToken).ConfigureAwait(false);
             }
         }
     }
