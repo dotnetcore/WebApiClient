@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using WebApiClient.Defaults;
 
 namespace WebApiClient
@@ -147,12 +148,17 @@ namespace WebApiClient
         public HttpApiConfig(HttpClient httpClient)
         {
             this.HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            this.SetDefaultRequestHeaders(httpClient.DefaultRequestHeaders);
+        }
 
-            var userAgent = httpClient.DefaultRequestHeaders.UserAgent;
-            if (userAgent.Count == 0)
-            {
-                userAgent.Add(HttpHandlerProvider.DefaultUserAgent);
-            }
+        /// <summary>
+        /// 设置默认的请求头
+        /// </summary>
+        /// <param name="headers">请求头</param>
+        private void SetDefaultRequestHeaders(HttpRequestHeaders headers)
+        {
+            headers.ExpectContinue = false;
+            headers.UserAgent.Add(HttpHandlerProvider.DefaultUserAgent);
         }
 
         /// <summary>
