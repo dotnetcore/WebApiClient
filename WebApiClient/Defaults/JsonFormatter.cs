@@ -10,6 +10,11 @@ namespace WebApiClient.Defaults
     public class JsonFormatter : IJsonFormatter
     {
         /// <summary>
+        /// 获取或设置配置
+        /// </summary>
+        public Action<JsonSerializerSettings> Settings { get; set; }
+
+        /// <summary>
         /// 将对象列化为json文本
         /// </summary>
         /// <param name="obj">对象</param>
@@ -28,6 +33,7 @@ namespace WebApiClient.Defaults
             }
 
             var setting = this.CreateSerializerSettings(options);
+            this.Settings?.Invoke(setting);
             return JsonConvert.SerializeObject(obj, setting);
         }
 
@@ -45,6 +51,7 @@ namespace WebApiClient.Defaults
             }
 
             var setting = this.CreateSerializerSettings(null);
+            this.Settings?.Invoke(setting);
             return JsonConvert.DeserializeObject(json, objType, setting);
         }
 

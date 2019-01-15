@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using WebApiClient.Contexts;
@@ -11,6 +12,11 @@ namespace WebApiClient.Defaults
     /// </summary>
     public class KeyValueFormatter : IKeyValueFormatter
     {
+        /// <summary>
+        /// 获取或设置配置
+        /// </summary>
+        public Action<JsonSerializerSettings> Settings { get; set; }
+
         /// <summary>
         /// 序列化对象为键值对
         /// </summary>
@@ -31,6 +37,7 @@ namespace WebApiClient.Defaults
             }
 
             var setting = this.CreateSerializerSettings(options);
+            this.Settings?.Invoke(setting);
             var serializer = JsonSerializer.Create(setting);
             var keyValuesWriter = new KeyValuesWriter(name);
 
