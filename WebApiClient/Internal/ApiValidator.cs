@@ -7,9 +7,9 @@ using WebApiClient.Contexts;
 namespace WebApiClient
 {
     /// <summary>
-    /// 提供参数值和参数的属性值输入合法性验证
+    /// Api验证器，提供返回值的属性验证、参数值和参数的属性值验证
     /// </summary>
-    static class ParameterValidator
+    static class ApiValidator
     {
         /// <summary>
         /// 类型的属性否需要验证缓存
@@ -44,7 +44,7 @@ namespace WebApiClient
         /// <param name="parameter">参数描述</param>
         /// <param name="validateProperty">是否验证属性值</param>
         /// <exception cref="ValidationException"></exception>
-        public static void Validate(ApiParameterDescriptor parameter, bool validateProperty)
+        public static void ValidateParameter(ApiParameterDescriptor parameter, bool validateProperty)
         {
             var name = parameter.Name;
             var instance = parameter.Value;
@@ -57,7 +57,22 @@ namespace WebApiClient
             if (validateProperty == true && IsNeedValidateProperty(instance) == true)
             {
                 var ctx = new ValidationContext(instance) { MemberName = name };
-                Validator.ValidateObject(instance, ctx, true);
+                Validator.ValidateObject(instance, ctx, false);
+            }
+        }
+
+        /// <summary>
+        /// 验证参返回的结果
+        /// </summary>
+        /// <param name="value">结果值</param>
+        /// <param name="validateProperty">是否验证属性值</param>
+        /// <exception cref="ValidationException"></exception>
+        public static void ValidateReturnValue(object value, bool validateProperty)
+        {
+            if (validateProperty == true && IsNeedValidateProperty(value) == true)
+            {
+                var ctx = new ValidationContext(value);
+                Validator.ValidateObject(value, ctx, false);
             }
         }
     }

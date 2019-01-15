@@ -95,6 +95,12 @@ namespace WebApiClient
         public bool UseParameterPropertyValidate { get; set; } = true;
 
         /// <summary>
+        /// 获取或设置是否对返回值的属性值进行输入有效性验证
+        /// 默认为true
+        /// </summary>
+        public bool UseReturnValuePropertyValidate { get; set; } = true;
+
+        /// <summary>
         /// 获取或设置请求时序列化使用的默认格式   
         /// 影响JsonFormatter或KeyValueFormatter的序列化
         /// </summary>

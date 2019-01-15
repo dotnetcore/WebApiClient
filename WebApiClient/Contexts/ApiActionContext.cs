@@ -135,7 +135,7 @@ namespace WebApiClient.Contexts
 
             foreach (var parameter in apiAction.Parameters)
             {
-                ParameterValidator.Validate(parameter, validateProperty);
+                ApiValidator.ValidateParameter(parameter, validateProperty);
             }
 
             foreach (var actionAttribute in apiAction.Attributes)
@@ -172,9 +172,12 @@ namespace WebApiClient.Contexts
                         .SendAsync(this.RequestMessage, completionOption, cancellation.Token)
                         .ConfigureAwait(false);
 
-                    this.Result = await this.ApiActionDescriptor.Return.Attribute
+                    var result = await this.ApiActionDescriptor.Return.Attribute
                         .GetTaskResult(this)
                         .ConfigureAwait(false);
+
+                    ApiValidator.ValidateReturnValue(result, this.HttpApiConfig.UseReturnValuePropertyValidate);
+                    this.Result = result;
                 }
                 catch (Exception ex)
                 {
