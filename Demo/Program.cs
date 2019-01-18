@@ -79,7 +79,6 @@ namespace Demo
             var user6 = await userApi
                 .UpdateWithMulitpartAsync(user, "老九", 18, file);
 
-            file.Dispose();
         }
     }
 }

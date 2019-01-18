@@ -49,17 +49,7 @@ namespace WebApiClient.Parameterables
         /// </summary>
         public string ContentType { get; set; } = "application/octet-stream";
 
-        /// <summary>
-        /// 将自身作为multipart/form-data的一个文件项
-        /// </summary>
-        /// <param name="buffer">数据</param>
-        /// <param name="fileName">文件友好名称</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public MulitpartFile(byte[] buffer, string fileName) :
-            this(new MemoryStream(buffer ?? throw new ArgumentNullException(nameof(buffer))), fileName)
-        {
-        }
-
+      
         /// <summary>
         /// multipart/form-data的一个文件项
         /// </summary>
@@ -67,7 +57,7 @@ namespace WebApiClient.Parameterables
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="FileNotFoundException"></exception>
         public MulitpartFile(string localFilePath)
-            : this(CreateFileStream(localFilePath), Path.GetFileName(localFilePath))
+            : this(CreateFileStream(localFilePath), Path.GetFileName(localFilePath), true)
         {
         }
 
@@ -85,11 +75,33 @@ namespace WebApiClient.Parameterables
         /// <summary>
         /// 将自身作为multipart/form-data的一个文件项
         /// </summary>
+        /// <param name="buffer">数据</param>
+        /// <param name="fileName">文件友好名称</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public MulitpartFile(byte[] buffer, string fileName) :
+            this(new MemoryStream(buffer ?? throw new ArgumentNullException(nameof(buffer))), fileName, true)
+        {
+        }
+
+        /// <summary>
+        /// 将自身作为multipart/form-data的一个文件项
+        /// </summary>
+        /// <param name="stream">数据流</param>
+        /// <param name="fileName">文件友好名称</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public MulitpartFile(Stream stream, string fileName)
+            : this(stream, fileName, false)
+        {
+        }
+
+        /// <summary>
+        /// 将自身作为multipart/form-data的一个文件项
+        /// </summary>
         /// <param name="stream">数据流</param>
         /// <param name="fileName">文件友好名称</param>
         /// <param name="disposeStream">指示是否可以dispose传入的stream</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public MulitpartFile(Stream stream, string fileName, bool disposeStream = true)
+        public MulitpartFile(Stream stream, string fileName, bool disposeStream)
         {
             this.stream = stream ?? throw new ArgumentNullException(nameof(stream));
             this.disposeStream = disposeStream;
