@@ -16,7 +16,12 @@ namespace WebApiClient.Parameterables
         /// <summary>
         /// 数据流
         /// </summary>
-        private readonly Lazy<Stream> stream;
+        private readonly Stream stream;
+
+        /// <summary>
+        /// 指示是否可以dispose传入的stream
+        /// </summary>
+        private readonly bool disposeStream;
 
         /// <summary>
         /// 上传进度变化事件
@@ -56,42 +61,39 @@ namespace WebApiClient.Parameterables
         }
 
         /// <summary>
-        /// 将自身作为multipart/form-data的一个文件项
-        /// </summary>
-        /// <param name="stream">数据流</param>
-        /// <param name="fileName">文件友好名称</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public MulitpartFile(Stream stream, string fileName)
-        {
-            if (stream == null)
-            {
-                throw new ArgumentNullException(nameof(stream));
-            }
-
-            this.stream = new Lazy<Stream>(() => stream);
-            this.FileName = fileName;
-        }
-
-        /// <summary>
         /// multipart/form-data的一个文件项
         /// </summary>
         /// <param name="localFilePath">本地文件路径</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="FileNotFoundException"></exception>
         public MulitpartFile(string localFilePath)
+            : this(CreateFileStream(localFilePath), Path.GetFileName(localFilePath))
         {
-            if (string.IsNullOrEmpty(localFilePath))
-            {
-                throw new ArgumentNullException(nameof(localFilePath));
-            }
+        }
 
-            if (File.Exists(localFilePath) == false)
-            {
-                throw new FileNotFoundException(localFilePath);
-            }
+        /// <summary>
+        /// 创建文件流
+        /// </summary>
+        /// <param name="localFilePath">本地文件路径</param>
+        /// <returns></returns>
+        private static Stream CreateFileStream(string localFilePath)
+        {
+            const int bufferSize = 1024 * 4;
+            return new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, bufferSize, true);
+        }
 
-            this.stream = new Lazy<Stream>(() => new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 1024 * 4, true));
-            this.FileName = Path.GetFileName(localFilePath);
+        /// <summary>
+        /// 将自身作为multipart/form-data的一个文件项
+        /// </summary>
+        /// <param name="stream">数据流</param>
+        /// <param name="fileName">文件友好名称</param>
+        /// <param name="disposeStream">指示是否可以dispose传入的stream</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public MulitpartFile(Stream stream, string fileName, bool disposeStream = true)
+        {
+            this.stream = stream ?? throw new ArgumentNullException(nameof(stream));
+            this.disposeStream = disposeStream;
+            this.FileName = fileName;
         }
 
         /// <summary>
@@ -112,8 +114,7 @@ namespace WebApiClient.Parameterables
         protected virtual async Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
             var uploadStream = this.UploadProgressChanged == null ?
-                this.stream.Value :
-                new UploadStream(this.stream.Value, this.OnUploadProgressChanged);
+                this.stream : new UploadStream(this.stream, this.disposeStream, this.OnUploadProgressChanged);
 
             context.RequestMessage.AddMulitpartFile(uploadStream, parameter.Name, this.EncodedFileName, this.ContentType);
             await ApiTask.CompletedTask;
@@ -133,9 +134,9 @@ namespace WebApiClient.Parameterables
         /// </summary>
         public void Dispose()
         {
-            if (this.stream.IsValueCreated == true)
+            if (this.disposeStream == true)
             {
-                this.stream.Value.Dispose();
+                this.stream.Dispose();
             }
         }
 
@@ -148,6 +149,11 @@ namespace WebApiClient.Parameterables
             /// 内部流
             /// </summary>
             private readonly Stream inner;
+
+            /// <summary>
+            /// 是否要释放内部流
+            /// </summary>
+            private readonly bool disposeInner;
 
             /// <summary>
             /// 总字节数
@@ -168,11 +174,13 @@ namespace WebApiClient.Parameterables
             /// 上传数据流
             /// </summary>
             /// <param name="inner">内部流</param>
+            /// <param name="disposeInner">是否要释放内部流</param>
             /// <param name="progressChangedHandler">进度事件处理者</param>
             /// <exception cref="ArgumentNullException"></exception>
-            public UploadStream(Stream inner, Action<ProgressEventArgs> progressChangedHandler)
+            public UploadStream(Stream inner, bool disposeInner, Action<ProgressEventArgs> progressChangedHandler)
             {
                 this.inner = inner ?? throw new ArgumentNullException(nameof(inner));
+                this.disposeInner = disposeInner;
                 this.progressChangedHandler = progressChangedHandler ?? throw new ArgumentNullException(nameof(progressChangedHandler));
 
                 try
@@ -275,7 +283,7 @@ namespace WebApiClient.Parameterables
             /// <param name="disposing"></param>
             protected override void Dispose(bool disposing)
             {
-                if (disposing == true)
+                if (disposing && this.disposeInner)
                 {
                     this.inner.Dispose();
                 }
