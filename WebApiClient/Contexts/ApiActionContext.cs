@@ -10,7 +10,7 @@ namespace WebApiClient.Contexts
     /// <summary>
     /// 表示请求Api的上下文
     /// </summary>
-    public class ApiActionContext
+    public class ApiActionContext : IDisposable
     {
         /// <summary>
         /// 自定义数据的存储和访问容器
@@ -112,31 +112,24 @@ namespace WebApiClient.Contexts
         /// <returns></returns>
         public virtual async Task<TResult> ExecuteActionAsync<TResult>()
         {
+            await this.PrepareRequestAsync().ConfigureAwait(false);
+            await this.ExecFiltersAsync(filter => filter.OnBeginRequestAsync).ConfigureAwait(false);
+
             try
             {
-                await this.PrepareRequestAsync().ConfigureAwait(false);
-                await this.ExecFiltersAsync(filter => filter.OnBeginRequestAsync).ConfigureAwait(false);
-
-                try
-                {
-                    this.Result = await this.ExecRequestAsync().ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    this.Exception = ex;
-                    throw this.Exception;
-                }
-                finally
-                {
-                    await this.ExecFiltersAsync(filter => filter.OnEndRequestAsync).ConfigureAwait(false);
-                }
-
-                return (TResult)this.Result;
+                this.Result = await this.ExecRequestAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                this.Exception = ex;
+                throw this.Exception;
             }
             finally
             {
-                this.RequestMessage.Content?.Dispose();
+                await this.ExecFiltersAsync(filter => filter.OnEndRequestAsync).ConfigureAwait(false);
             }
+
+            return (TResult)this.Result;
         }
 
         /// <summary>
@@ -227,6 +220,14 @@ namespace WebApiClient.Contexts
             {
                 await funcSelector(filter)(this).ConfigureAwait(false);
             }
+        }
+
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        public void Dispose()
+        {
+            this.RequestMessage.Content?.Dispose();
         }
     }
 }

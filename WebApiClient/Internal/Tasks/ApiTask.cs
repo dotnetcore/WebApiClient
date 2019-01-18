@@ -87,8 +87,10 @@ namespace WebApiClient
         /// <returns></returns>
         public virtual async Task<TResult> InvokeAsync()
         {
-            var context = this.ContextFactory.Invoke();
-            return await context.ExecuteActionAsync<TResult>().ConfigureAwait(false);
+            using (var context = this.ContextFactory.Invoke())
+            {
+                return await context.ExecuteActionAsync<TResult>().ConfigureAwait(false);
+            }
         }
     }
 }
