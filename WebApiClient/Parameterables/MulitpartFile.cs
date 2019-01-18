@@ -11,7 +11,7 @@ namespace WebApiClient.Parameterables
     /// 表示将自身作为multipart/form-data的一个文件项
     /// </summary>
     [DebuggerDisplay("FileName = {FileName}")]
-    public class MulitpartFile : IApiParameterable
+    public class MulitpartFile : IApiParameterable, IDisposable
     {
         /// <summary>
         /// 数据流
@@ -90,7 +90,7 @@ namespace WebApiClient.Parameterables
                 throw new FileNotFoundException(localFilePath);
             }
 
-            this.stream = new Lazy<Stream>(() => new FileStream(localFilePath, FileMode.Open, FileAccess.Read));
+            this.stream = new Lazy<Stream>(() => new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 1024 * 4, true));
             this.FileName = Path.GetFileName(localFilePath);
         }
 
@@ -111,7 +111,10 @@ namespace WebApiClient.Parameterables
         /// <param name="parameter">特性关联的参数</param>
         protected virtual async Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var uploadStream = new UploadStream(this.stream.Value, this.OnUploadProgressChanged);
+            var uploadStream = this.UploadProgressChanged == null ?
+                this.stream.Value :
+                new UploadStream(this.stream.Value, this.OnUploadProgressChanged);
+
             context.RequestMessage.AddMulitpartFile(uploadStream, parameter.Name, this.EncodedFileName, this.ContentType);
             await ApiTask.CompletedTask;
         }
@@ -123,6 +126,17 @@ namespace WebApiClient.Parameterables
         protected virtual void OnUploadProgressChanged(ProgressEventArgs e)
         {
             this.UploadProgressChanged?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        public void Dispose()
+        {
+            if (this.stream.IsValueCreated == true)
+            {
+                this.stream.Value.Dispose();
+            }
         }
 
         /// <summary>
@@ -241,7 +255,7 @@ namespace WebApiClient.Parameterables
             /// <param name="value"></param>
             public override void SetLength(long value)
             {
-                this.inner.SetLength(value);
+                throw new NotSupportedException();
             }
 
             /// <summary>
@@ -252,7 +266,17 @@ namespace WebApiClient.Parameterables
             /// <param name="count"></param>
             public override void Write(byte[] buffer, int offset, int count)
             {
-                this.inner.Write(buffer, offset, count);
+                throw new NotSupportedException();
+            }
+
+            /// <summary>
+            /// 释放资源
+            /// </summary>
+            /// <param name="disposing"></param>
+            protected override void Dispose(bool disposing)
+            {
+                this.inner.Dispose();
+                base.Dispose(disposing);
             }
         }
     }

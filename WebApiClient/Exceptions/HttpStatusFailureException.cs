@@ -38,7 +38,7 @@ namespace WebApiClient
             {
                 var code = (int)this.ResponseMessage.StatusCode;
                 var reason = this.ResponseMessage.ReasonPhrase;
-                return $"服务器响应了错误的的http状态码：{code} {reason}";
+                return $"服务器响应了错误的http状态码：{code} {reason}";
             }
         }
 
