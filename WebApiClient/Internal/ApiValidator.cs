@@ -57,7 +57,7 @@ namespace WebApiClient
             if (validateProperty == true && IsNeedValidateProperty(instance) == true)
             {
                 var ctx = new ValidationContext(instance) { MemberName = name };
-                Validator.ValidateObject(instance, ctx, false);
+                Validator.ValidateObject(instance, ctx, true);
             }
         }
 
@@ -72,7 +72,7 @@ namespace WebApiClient
             if (validateProperty == true && IsNeedValidateProperty(value) == true)
             {
                 var ctx = new ValidationContext(value);
-                Validator.ValidateObject(value, ctx, false);
+                Validator.ValidateObject(value, ctx, true);
             }
         }
     }
