@@ -112,16 +112,31 @@ namespace WebApiClient.Contexts
         /// <returns></returns>
         public virtual async Task<TResult> ExecuteActionAsync<TResult>()
         {
-            await this.PrepareRequestAsync().ConfigureAwait(false);
-            await this.ExecFiltersAsync(filter => filter.OnBeginRequestAsync).ConfigureAwait(false);
-            await this.ExecRequestAsync().ConfigureAwait(false);
-            await this.ExecFiltersAsync(filter => filter.OnEndRequestAsync).ConfigureAwait(false);
-
-            if (this.Exception == null)
+            try
             {
+                await this.PrepareRequestAsync().ConfigureAwait(false);
+                await this.ExecFiltersAsync(filter => filter.OnBeginRequestAsync).ConfigureAwait(false);
+
+                try
+                {
+                    this.Result = await this.ExecRequestAsync().ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    this.Exception = ex;
+                    throw this.Exception;
+                }
+                finally
+                {
+                    await this.ExecFiltersAsync(filter => filter.OnEndRequestAsync).ConfigureAwait(false);
+                }
+
                 return (TResult)this.Result;
             }
-            throw this.Exception;
+            finally
+            {
+                this.RequestMessage.Content?.Dispose();
+            }
         }
 
         /// <summary>
@@ -158,31 +173,24 @@ namespace WebApiClient.Contexts
         /// 执行请求
         /// </summary>
         /// <returns></returns>
-        private async Task ExecRequestAsync()
+        private async Task<object> ExecRequestAsync()
         {
             using (var cancellation = this.CreateLinkedTokenSource())
             {
-                try
-                {
-                    var completionOption = this.ApiActionDescriptor.Return.DataType.IsHttpResponseWrapper ?
-                        HttpCompletionOption.ResponseHeadersRead :
-                        HttpCompletionOption.ResponseContentRead;
+                var completionOption = this.ApiActionDescriptor.Return.DataType.IsHttpResponseWrapper ?
+                    HttpCompletionOption.ResponseHeadersRead :
+                    HttpCompletionOption.ResponseContentRead;
 
-                    this.ResponseMessage = await this.HttpApiConfig.HttpClient
-                        .SendAsync(this.RequestMessage, completionOption, cancellation.Token)
-                        .ConfigureAwait(false);
+                this.ResponseMessage = await this.HttpApiConfig.HttpClient
+                    .SendAsync(this.RequestMessage, completionOption, cancellation.Token)
+                    .ConfigureAwait(false);
 
-                    var result = await this.ApiActionDescriptor.Return.Attribute
-                        .GetTaskResult(this)
-                        .ConfigureAwait(false);
+                var result = await this.ApiActionDescriptor.Return.Attribute
+                    .GetTaskResult(this)
+                    .ConfigureAwait(false);
 
-                    ApiValidator.ValidateReturnValue(result, this.HttpApiConfig.UseReturnValuePropertyValidate);
-                    this.Result = result;
-                }
-                catch (Exception ex)
-                {
-                    this.Exception = ex;
-                }
+                ApiValidator.ValidateReturnValue(result, this.HttpApiConfig.UseReturnValuePropertyValidate);
+                return result;
             }
         }
 

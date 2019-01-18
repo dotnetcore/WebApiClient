@@ -275,7 +275,10 @@ namespace WebApiClient.Parameterables
             /// <param name="disposing"></param>
             protected override void Dispose(bool disposing)
             {
-                this.inner.Dispose();
+                if (disposing == true)
+                {
+                    this.inner.Dispose();
+                }
                 base.Dispose(disposing);
             }
         }
