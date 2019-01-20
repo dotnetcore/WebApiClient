@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
 
@@ -11,17 +12,28 @@ namespace WebApiClient.Parameterables
     /// 表示将自身作为multipart/form-data的一个文件项
     /// </summary>
     [DebuggerDisplay("FileName = {FileName}")]
-    public class MulitpartFile : IApiParameterable, IDisposable
+    public class MulitpartFile : Stream, IApiParameterable
     {
         /// <summary>
         /// 数据流
         /// </summary>
-        private readonly Stream stream;
+        private readonly Stream innerStream;
 
         /// <summary>
         /// 指示是否可以dispose传入的stream
         /// </summary>
-        private readonly bool disposeStream;
+        private readonly bool disposeInnerStream;
+
+        /// <summary>
+        /// 总字节数
+        /// </summary>
+        private readonly long? totalBytes;
+
+        /// <summary>
+        /// 记录当前字节数
+        /// </summary>
+        private long currentBytes = 0L;
+
 
         /// <summary>
         /// 上传进度变化事件
@@ -49,7 +61,47 @@ namespace WebApiClient.Parameterables
         /// </summary>
         public string ContentType { get; set; } = "application/octet-stream";
 
-      
+        /// <summary>
+        /// 返回是否可读
+        /// </summary>
+        public override bool CanRead
+        {
+            get => this.innerStream.CanRead;
+        }
+
+        /// <summary>
+        /// 返回是否可探索位置
+        /// </summary>
+        public override bool CanSeek
+        {
+            get => this.innerStream.CanSeek;
+        }
+
+        /// <summary>
+        /// 返回是否可写
+        /// </summary>
+        public override bool CanWrite
+        {
+            get => this.innerStream.CanWrite;
+        }
+
+        /// <summary>
+        /// 返回数据流长度
+        /// </summary>
+        public override long Length
+        {
+            get => this.innerStream.Length;
+        }
+
+        /// <summary>
+        /// 返回数据流当前的指针位置
+        /// </summary>
+        public override long Position
+        {
+            get => this.innerStream.Position;
+            set => this.innerStream.Position = value;
+        }
+
         /// <summary>
         /// multipart/form-data的一个文件项
         /// </summary>
@@ -57,19 +109,9 @@ namespace WebApiClient.Parameterables
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="FileNotFoundException"></exception>
         public MulitpartFile(string localFilePath)
-            : this(CreateFileStream(localFilePath), Path.GetFileName(localFilePath), true)
+            : this(new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 4 * 1024, true),
+                  Path.GetFileName(localFilePath), true)
         {
-        }
-
-        /// <summary>
-        /// 创建文件流
-        /// </summary>
-        /// <param name="localFilePath">本地文件路径</param>
-        /// <returns></returns>
-        private static Stream CreateFileStream(string localFilePath)
-        {
-            const int bufferSize = 1024 * 4;
-            return new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, bufferSize, true);
         }
 
         /// <summary>
@@ -103,9 +145,15 @@ namespace WebApiClient.Parameterables
         /// <exception cref="ArgumentNullException"></exception>
         public MulitpartFile(Stream stream, string fileName, bool disposeStream)
         {
-            this.stream = stream ?? throw new ArgumentNullException(nameof(stream));
-            this.disposeStream = disposeStream;
+            this.innerStream = stream ?? throw new ArgumentNullException(nameof(stream));
+            this.disposeInnerStream = disposeStream;
             this.FileName = fileName;
+
+            try
+            {
+                this.totalBytes = this.Length;
+            }
+            catch (Exception) { }
         }
 
         /// <summary>
@@ -125,11 +173,125 @@ namespace WebApiClient.Parameterables
         /// <param name="parameter">特性关联的参数</param>
         protected virtual async Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var uploadStream = this.UploadProgressChanged == null ?
-                this.stream : new UploadStream(this.stream, this.disposeStream, this.OnUploadProgressChanged);
-
-            context.RequestMessage.AddMulitpartFile(uploadStream, parameter.Name, this.EncodedFileName, this.ContentType);
+            context.RequestMessage.AddMulitpartFile(this, parameter.Name, this.EncodedFileName, this.ContentType);
             await ApiTask.CompletedTask;
+        }
+
+
+        /// <summary>
+        /// 冲刷缓冲
+        /// </summary>
+        public sealed override void Flush()
+        {
+            this.innerStream.Flush();
+        }
+
+        /// <summary>
+        /// 冲刷缓冲
+        /// </summary>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns></returns>
+        public sealed override async Task FlushAsync(CancellationToken cancellationToken)
+        {
+            await this.innerStream.FlushAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// 定位到指定指针位置
+        /// </summary>
+        /// <param name="offset">偏移量</param>
+        /// <param name="origin">定位源</param>
+        /// <returns></returns>
+        public sealed override long Seek(long offset, SeekOrigin origin)
+        {
+            return this.innerStream.Seek(offset, origin);
+        }
+
+        /// <summary>
+        /// 设置流的长度
+        /// </summary>
+        /// <param name="value">长度值</param>
+        public sealed override void SetLength(long value)
+        {
+            this.innerStream.SetLength(value);
+        }
+
+#if !NETSTANDARD1_3
+        /// <summary>
+        /// 开始读取数据流
+        /// </summary>
+        /// <param name="buffer">缓冲区</param>
+        /// <param name="offset">缓冲区偏移量</param>
+        /// <param name="count">读取的大小</param>
+        /// <param name="callback">回调</param>
+        /// <param name="state">用户状态数据</param>
+        /// <returns></returns>
+        public sealed override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
+        {
+            return this.innerStream.BeginRead(buffer, offset, count, callback, state);
+        }
+
+        /// <summary>
+        /// 读取完成
+        /// </summary>
+        /// <param name="asyncResult">异步结果</param>
+        /// <returns></returns>
+        public sealed override int EndRead(IAsyncResult asyncResult)
+        {
+            var length = this.innerStream.EndRead(asyncResult);
+            this.OnRead(length);
+            return length;
+        }
+
+        /// <summary>
+        /// 关闭流
+        /// </summary>
+        public sealed override void Close()
+        {
+            this.innerStream.Close();
+        }
+#endif
+
+        /// <summary>
+        /// 读取流到缓冲区
+        /// </summary>
+        /// <param name="buffer">缓冲区</param>
+        /// <param name="offset">偏移量</param>
+        /// <param name="count">读取的大小</param>
+        /// <returns></returns>
+        public sealed override int Read(byte[] buffer, int offset, int count)
+        {
+            var length = this.innerStream.Read(buffer, offset, count);
+            this.OnRead(length);
+            return length;
+        }
+
+        /// <summary>
+        /// 读取流到缓冲区
+        /// </summary>
+        /// <param name="buffer">缓冲区</param>
+        /// <param name="offset">偏移量</param>
+        /// <param name="count">读取的大小</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns></returns>
+        public sealed override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            var length = await this.innerStream.ReadAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
+            this.OnRead(length);
+            return length;
+        }
+
+        /// <summary>
+        /// 读取数据
+        /// </summary>
+        /// <param name="length">数据长度</param>
+        protected virtual void OnRead(int length)
+        {
+            var isCompleted = length == 0;
+            this.currentBytes = this.currentBytes + length;
+
+            var args = new ProgressEventArgs(this.currentBytes, this.totalBytes, isCompleted);
+            this.OnUploadProgressChanged(args);
         }
 
         /// <summary>
@@ -142,165 +304,27 @@ namespace WebApiClient.Parameterables
         }
 
         /// <summary>
-        /// 释放资源
+        /// 写入数据到流
         /// </summary>
-        public void Dispose()
+        /// <param name="buffer">数据</param>
+        /// <param name="offset">偏移量</param>
+        /// <param name="count">写入的长度</param>
+        public override void Write(byte[] buffer, int offset, int count)
         {
-            if (this.disposeStream == true)
-            {
-                this.stream.Dispose();
-            }
+            this.innerStream.Write(buffer, offset, count);
         }
 
         /// <summary>
-        /// 表示上传数据流
+        /// 释放资源
         /// </summary>
-        private class UploadStream : Stream
+        /// <param name="disposing"></param>
+        protected override void Dispose(bool disposing)
         {
-            /// <summary>
-            /// 内部流
-            /// </summary>
-            private readonly Stream inner;
-
-            /// <summary>
-            /// 是否要释放内部流
-            /// </summary>
-            private readonly bool disposeInner;
-
-            /// <summary>
-            /// 总字节数
-            /// </summary>
-            private readonly long? totalBytes;
-
-            /// <summary>
-            /// 进度事件处理者
-            /// </summary>
-            private readonly Action<ProgressEventArgs> progressChangedHandler;
-
-            /// <summary>
-            /// 记录当前字节数
-            /// </summary>
-            private long currentBytes = 0L;
-
-            /// <summary>
-            /// 上传数据流
-            /// </summary>
-            /// <param name="inner">内部流</param>
-            /// <param name="disposeInner">是否要释放内部流</param>
-            /// <param name="progressChangedHandler">进度事件处理者</param>
-            /// <exception cref="ArgumentNullException"></exception>
-            public UploadStream(Stream inner, bool disposeInner, Action<ProgressEventArgs> progressChangedHandler)
+            if (disposing && this.disposeInnerStream)
             {
-                this.inner = inner ?? throw new ArgumentNullException(nameof(inner));
-                this.disposeInner = disposeInner;
-                this.progressChangedHandler = progressChangedHandler ?? throw new ArgumentNullException(nameof(progressChangedHandler));
-
-                try
-                {
-                    this.totalBytes = inner.Length;
-                }
-                catch (Exception) { }
+                this.innerStream.Dispose();
             }
-
-            /// <summary>
-            /// 获取是否可读
-            /// </summary>
-            public override bool CanRead => this.inner.CanRead;
-
-            /// <summary>
-            /// 获取是否可定位
-            /// </summary>
-            public override bool CanSeek => this.inner.CanSeek;
-
-            /// <summary>
-            /// 获取是否可写
-            /// </summary>
-            public override bool CanWrite => this.inner.CanWrite;
-
-            /// <summary>
-            /// 获取数据长度
-            /// </summary>
-            public override long Length => this.inner.Length;
-
-            /// <summary>
-            /// 获取数据指针位置
-            /// </summary>
-            public override long Position
-            {
-                get => this.inner.Position;
-                set => this.inner.Position = value;
-            }
-
-            /// <summary>
-            /// 冲刷
-            /// </summary>
-            public override void Flush()
-            {
-                this.inner.Flush();
-            }
-
-            /// <summary>
-            /// 读取数据
-            /// </summary>
-            /// <param name="buffer"></param>
-            /// <param name="offset"></param>
-            /// <param name="count"></param>
-            /// <returns></returns>
-            public override int Read(byte[] buffer, int offset, int count)
-            {
-                var length = this.inner.Read(buffer, offset, count);
-                var isCompleted = length == 0;
-
-                this.currentBytes = this.currentBytes + length;
-                var args = new ProgressEventArgs(this.currentBytes, this.totalBytes, isCompleted);
-                this.progressChangedHandler.Invoke(args);
-
-                return length;
-            }
-
-            /// <summary>
-            /// 定位
-            /// </summary>
-            /// <param name="offset"></param>
-            /// <param name="origin"></param>
-            /// <returns></returns>
-            public override long Seek(long offset, SeekOrigin origin)
-            {
-                return this.inner.Seek(offset, origin);
-            }
-
-            /// <summary>
-            /// 设置长度
-            /// </summary>
-            /// <param name="value"></param>
-            public override void SetLength(long value)
-            {
-                throw new NotSupportedException();
-            }
-
-            /// <summary>
-            /// 写入数据
-            /// </summary>
-            /// <param name="buffer"></param>
-            /// <param name="offset"></param>
-            /// <param name="count"></param>
-            public override void Write(byte[] buffer, int offset, int count)
-            {
-                throw new NotSupportedException();
-            }
-
-            /// <summary>
-            /// 释放资源
-            /// </summary>
-            /// <param name="disposing"></param>
-            protected override void Dispose(bool disposing)
-            {
-                if (disposing && this.disposeInner)
-                {
-                    this.inner.Dispose();
-                }
-                base.Dispose(disposing);
-            }
+            base.Dispose(disposing);
         }
     }
 }
