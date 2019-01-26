@@ -143,7 +143,8 @@ namespace WebApiClient
             var formContent = this.Content as UrlEncodedContent;
             if (formContent == null)
             {
-                formContent = new UrlEncodedContent(this.Content);
+                formContent = new UrlEncodedContent();
+                await formContent.AddHttpContentAsync(this.Content).ConfigureAwait(false);
             }
 
             await formContent.AddFormFieldAsync(keyValues).ConfigureAwait(false);

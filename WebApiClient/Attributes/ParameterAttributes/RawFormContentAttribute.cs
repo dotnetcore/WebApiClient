@@ -20,7 +20,8 @@ namespace WebApiClient.Attributes
             var httpContent = context.RequestMessage.Content as UrlEncodedContent;
             if (httpContent == null)
             {
-                httpContent = new UrlEncodedContent(context.RequestMessage.Content);
+                httpContent = new UrlEncodedContent();
+                await httpContent.AddHttpContentAsync(context.RequestMessage.Content).ConfigureAwait(false);
             }
 
             var form = parameter.ToString();

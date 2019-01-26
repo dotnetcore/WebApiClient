@@ -16,9 +16,9 @@ namespace WebApiClient
     class UrlEncodedContent : HttpContent
     {
         /// <summary>
-        /// 获取对应的ContentType
+        /// 用于保存表单内容
         /// </summary>
-        public static string MediaType => "application/x-www-form-urlencoded";
+        private readonly MemoryStream stream = new MemoryStream();
 
         /// <summary>
         /// 默认的http编码
@@ -26,31 +26,47 @@ namespace WebApiClient
         private static readonly Encoding defaultHttpEncoding = Encoding.GetEncoding(28591);
 
         /// <summary>
-        /// 用于保存表单内容
+        /// 获取对应的ContentType
         /// </summary>
-        private readonly MemoryStream stream = new MemoryStream();
+        public static string MediaType => "application/x-www-form-urlencoded";
+
 
         /// <summary>
         /// 键值对表单内容
         /// </summary>
-        /// <param name="content">原始表单</param>
-        /// <param name="disposeContent">是否要释放原始表单</param>
-        public UrlEncodedContent(HttpContent content, bool disposeContent = true)
+        public UrlEncodedContent()
         {
-            if (content != null)
-            {
-                content.CopyToAsync(this.stream);
-                if (disposeContent == true)
-                {
-                    content.Dispose();
-                }
-            }
             this.Headers.ContentType = new MediaTypeHeaderValue(MediaType);
+        }
+
+        /// <summary>
+        /// 添加http内容
+        /// </summary>
+        /// <param name="content">http内容</param>
+        /// <param name="disposeContent">是否要释放原始内容</param>
+        /// <returns></returns>
+        public async Task AddHttpContentAsync(HttpContent content, bool disposeContent = true)
+        {
+            if (content == null)
+            {
+                return;
+            }
+
+            if (this.stream.Length > 0)
+            {
+                this.stream.WriteByte((byte)'&');
+            }
+            await content.CopyToAsync(this.stream).ConfigureAwait(false);
+
+            if (disposeContent == true)
+            {
+                content.Dispose();
+            }
         }
 
 
         /// <summary>
-        /// 添加字段到内存流
+        /// 添加键值对
         /// </summary>
         /// <param name="keyValues">键值对</param>
         /// <returns></returns>
