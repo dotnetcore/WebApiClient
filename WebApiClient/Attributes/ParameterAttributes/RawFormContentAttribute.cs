@@ -4,7 +4,7 @@ using WebApiClient.Contexts;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 表示将参数的原始表单内容作为请求内容
+    /// 表示将参数值的已编码原始表单内容作为请求内容
     /// </summary>
     public class RawFormContentAttribute : HttpContentAttribute
     {

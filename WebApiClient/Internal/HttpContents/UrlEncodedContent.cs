@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -53,14 +52,7 @@ namespace WebApiClient
             }
 
             var buffer = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
-            if (buffer.Length > 0)
-            {
-                if (this.stream.Length > 0)
-                {
-                    this.stream.WriteByte((byte)'&');
-                }
-                await this.stream.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
-            }
+            await this.AddByteArrayAsync(buffer).ConfigureAwait(false);
 
             if (disposeContent == true)
             {
@@ -76,24 +68,24 @@ namespace WebApiClient
         /// <returns></returns>
         public async Task AddFormFieldAsync(IEnumerable<KeyValuePair<string, string>> keyValues)
         {
-            if (keyValues == null || keyValues.Any() == false)
+            if (keyValues == null)
             {
                 return;
             }
 
-            var builder = new StringBuilder();
+            var form = new StringBuilder();
             foreach (var pair in keyValues)
             {
-                if (builder.Length > 0)
+                if (form.Length > 0)
                 {
-                    builder.Append('&');
+                    form.Append('&');
                 }
-                builder.Append(Encode(pair.Key));
-                builder.Append('=');
-                builder.Append(Encode(pair.Value));
+                form.Append(Encode(pair.Key));
+                form.Append('=');
+                form.Append(Encode(pair.Value));
             }
 
-            await this.AddRawFormAsync(builder.ToString()).ConfigureAwait(false);
+            await this.AddRawFormAsync(form.ToString()).ConfigureAwait(false);
         }
 
 
@@ -109,13 +101,28 @@ namespace WebApiClient
                 return;
             }
 
+            var buffer = defaultHttpEncoding.GetBytes(form);
+            await this.AddByteArrayAsync(buffer).ConfigureAwait(false);
+        }
+
+
+        /// <summary>
+        /// 添加二进制数据内容
+        /// </summary>
+        /// <param name="buffer">数据内容</param>
+        /// <returns></returns>
+        private async Task AddByteArrayAsync(byte[] buffer)
+        {
+            if (buffer == null || buffer.Length == 0)
+            {
+                return;
+            }
+
             if (this.stream.Length > 0)
             {
                 this.stream.WriteByte((byte)'&');
             }
-
-            var bytes = defaultHttpEncoding.GetBytes(form);
-            await this.stream.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
+            await this.stream.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
         }
 
 
@@ -126,9 +133,9 @@ namespace WebApiClient
         /// <returns></returns>
         private static string Encode(string value)
         {
-            if (String.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value))
             {
-                return String.Empty;
+                return string.Empty;
             }
             return Uri.EscapeDataString(value).Replace("%20", "+");
         }
