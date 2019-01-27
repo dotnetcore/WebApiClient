@@ -52,11 +52,15 @@ namespace WebApiClient
                 return;
             }
 
-            if (this.stream.Length > 0)
+            var buffer = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
+            if (buffer.Length > 0)
             {
-                this.stream.WriteByte((byte)'&');
+                if (this.stream.Length > 0)
+                {
+                    this.stream.WriteByte((byte)'&');
+                }
+                await this.stream.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
             }
-            await content.CopyToAsync(this.stream).ConfigureAwait(false);
 
             if (disposeContent == true)
             {
