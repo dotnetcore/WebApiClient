@@ -13,25 +13,17 @@ namespace WebApiClient
     public class HttpApiFactory<TInterface> : IHttpApiFactory<TInterface>, IHttpApiFactory
         where TInterface : class, IHttpApi
     {
-        /// <summary>
-        /// HttpApiConfig的配置委托
-        /// </summary>
-        private Action<HttpApiConfig> configAction;
-
-        /// <summary>
-        /// HttpMessageHandler的创建委托
-        /// </summary>
-        private Func<HttpMessageHandler> handlerFunc;
-
-        /// <summary>
-        /// handler的生命周期
-        /// </summary>
-        private TimeSpan lifeTime = TimeSpan.FromMinutes(2d);
 
         /// <summary>
         /// 具有生命周期的httpHandler延时创建对象
         /// </summary>
         private Lazy<LifetimeHttpHandler> lifeTimeHttpHandlerLazy;
+
+        /// <summary>
+        /// HttpHandler清理器
+        /// </summary>
+        private readonly LifetimeHttpHandlerCleaner httpHandlerCleaner = new LifetimeHttpHandlerCleaner();
+
 
 
         /// <summary>
@@ -45,35 +37,50 @@ namespace WebApiClient
         private bool keepCookieContainer = HttpHandlerProvider.IsSupported;
 
         /// <summary>
-        /// HttpHandler清理器
+        /// 生命周期
         /// </summary>
-        private readonly LifetimeHttpHandlerCleaner httpHandlerCleaner = new LifetimeHttpHandlerCleaner();
+        private TimeSpan lifeTime = TimeSpan.FromMinutes(2d);
 
         /// <summary>
-        /// 获取handler的生命周期
+        /// HttpApiConfig的配置委托
         /// </summary>
-        public TimeSpan LifeTime
-        {
-            get => this.lifeTime;
-        }
+        private Action<HttpApiConfig> configOptions { get; set; }
 
         /// <summary>
-        /// 获取是否保持cookie容器
+        /// HttpMessageHandler的创建委托
         /// </summary>
-        public bool KeepCookieContainer
-        {
-            get => this.keepCookieContainer;
-        }
+        private Func<HttpMessageHandler> handlerFactory { get; set; }
+
 
         /// <summary>
         /// HttpApi创建工厂
         /// </summary>
         public HttpApiFactory()
         {
-            this.lifeTimeHttpHandlerLazy = new Lazy<LifetimeHttpHandler>(
-                this.CreateHttpHandler,
-                true);
+            this.lifeTimeHttpHandlerLazy = new Lazy<LifetimeHttpHandler>(this.CreateHttpHandler, true);
         }
+
+        /// <summary>
+        /// 创建LifetimeHttpHandler
+        /// </summary>
+        /// <returns></returns>
+        private LifetimeHttpHandler CreateHttpHandler()
+        {
+            var handler = this.handlerFactory?.Invoke() ?? new DefaultHttpClientHandler();
+            return new LifetimeHttpHandler(handler, this.lifeTime, this.OnHttpHandlerDeactivate);
+        }
+
+        /// <summary>
+        /// 当有httpHandler失效时
+        /// </summary>
+        /// <param name="handler">httpHandler</param>
+        private void OnHttpHandlerDeactivate(LifetimeHttpHandler handler)
+        {
+            // 切换激活状态的记录的实例
+            this.lifeTimeHttpHandlerLazy = new Lazy<LifetimeHttpHandler>(this.CreateHttpHandler, true);
+            this.httpHandlerCleaner.Add(handler);
+        }
+
 
         /// <summary>
         /// 置HttpApi实例的生命周期
@@ -127,22 +134,32 @@ namespace WebApiClient
         /// <summary>
         /// 配置HttpMessageHandler的创建
         /// </summary>
-        /// <param name="handlerFunc">创建委托</param>
+        /// <param name="factory">创建委托</param>
         /// <returns></returns>
-        public HttpApiFactory<TInterface> ConfigureHttpMessageHandler(Func<HttpMessageHandler> handlerFunc)
+        public HttpApiFactory<TInterface> ConfigureHttpMessageHandler(Func<HttpMessageHandler> factory)
         {
-            this.handlerFunc = handlerFunc;
+            this.handlerFactory = factory;
             return this;
+        }
+
+
+        /// <summary>
+        /// 配置HttpApiConfig
+        /// </summary>
+        /// <param name="options">配置委托</param>
+        void IHttpApiFactory<TInterface>.ConfigureHttpApiConfig(Action<HttpApiConfig> options)
+        {
+            this.ConfigureHttpApiConfig(options);
         }
 
         /// <summary>
         /// 配置HttpApiConfig
         /// </summary>
-        /// <param name="configAction">配置委托</param>
+        /// <param name="options">配置委托</param>
         /// <returns></returns>
-        public HttpApiFactory<TInterface> ConfigureHttpApiConfig(Action<HttpApiConfig> configAction)
+        public HttpApiFactory<TInterface> ConfigureHttpApiConfig(Action<HttpApiConfig> options)
         {
-            this.configAction = configAction;
+            this.configOptions = options;
             return this;
         }
 
@@ -150,7 +167,7 @@ namespace WebApiClient
         /// 创建接口的代理实例
         /// </summary>
         /// <returns></returns>
-        public TInterface CreateHttpApi()
+        TInterface IHttpApiFactory<TInterface>.CreateHttpApi()
         {
             return ((IHttpApiFactory)this).CreateHttpApi() as TInterface;
         }
@@ -164,9 +181,9 @@ namespace WebApiClient
             var handler = this.lifeTimeHttpHandlerLazy.Value;
             var httpApiConfig = new LifetimeHttpApiConfig(handler);
 
-            if (this.configAction != null)
+            if (this.configOptions != null)
             {
-                this.configAction.Invoke(httpApiConfig);
+                this.configOptions.Invoke(httpApiConfig);
             }
 
             if (this.keepCookieContainer == true)
@@ -179,27 +196,6 @@ namespace WebApiClient
             }
 
             return HttpApiClient.Create(typeof(TInterface), httpApiConfig);
-        }
-
-        /// <summary>
-        /// 创建LifetimeHttpHandler
-        /// </summary>
-        /// <returns></returns>
-        private LifetimeHttpHandler CreateHttpHandler()
-        {
-            var handler = this.handlerFunc?.Invoke() ?? new DefaultHttpClientHandler();
-            return new LifetimeHttpHandler(handler, this.lifeTime, this.OnHttpHandlerDeactivate);
-        }
-
-        /// <summary>
-        /// 当有httpHandler失效时
-        /// </summary>
-        /// <param name="handler">httpHandler</param>
-        private void OnHttpHandlerDeactivate(LifetimeHttpHandler handler)
-        {
-            // 切换激活状态的记录的实例
-            this.lifeTimeHttpHandlerLazy = new Lazy<LifetimeHttpHandler>(this.CreateHttpHandler, true);
-            this.httpHandlerCleaner.Add(handler);
         }
     }
 }

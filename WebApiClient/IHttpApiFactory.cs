@@ -1,4 +1,6 @@
-﻿namespace WebApiClient
+﻿using System;
+
+namespace WebApiClient
 {
     /// <summary>
     /// 定义HttpApi工厂的接口
@@ -11,5 +13,11 @@
         /// </summary>
         /// <returns></returns>
         TInterface CreateHttpApi();
+
+        /// <summary>
+        /// 配置HttpApiConfig
+        /// </summary>
+        /// <param name="options">配置委托</param>
+        void ConfigureHttpApiConfig(Action<HttpApiConfig> options);
     }
 }
