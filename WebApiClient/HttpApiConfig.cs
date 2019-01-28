@@ -44,6 +44,11 @@ namespace WebApiClient
         private IHttpHandler httpHandler;
 
         /// <summary>
+        /// 日志工厂
+        /// </summary>
+        private ILoggerFactory loggerFactory;
+        
+        /// <summary>
         /// 同步锁
         /// </summary>
         private readonly object syncRoot = new object();
@@ -84,9 +89,33 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 获取或设置统一日志工厂
+        /// 获取或设置服务提供者
         /// </summary>
-        public ILoggerFactory LoggerFactory { get; set; }
+        public IServiceProvider ServiceProvider { get; set; }
+
+        /// <summary>
+        /// 获取或设置统一日志工厂
+        /// 默认从ServiceProvider获取实例 
+        /// </summary>
+        public ILoggerFactory LoggerFactory
+        {
+            get
+            {
+                if (this.loggerFactory != null)
+                {
+                    return this.loggerFactory;
+                }
+                if (this.ServiceProvider == null)
+                {
+                    return null;
+                }
+                return (ILoggerFactory)this.ServiceProvider.GetService(typeof(ILoggerFactory));
+            }
+            set
+            {
+                this.loggerFactory = value;
+            }
+        }
 
         /// <summary>
         /// 获取或设置是否对参数的属性值进行输入有效性验证
@@ -151,7 +180,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="httpClient">外部HttpClient实例</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public HttpApiConfig(HttpClient httpClient)
+        public HttpApiConfig(HttpClient httpClient)          
         {
             this.HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             this.SetDefaultRequestHeaders(httpClient.DefaultRequestHeaders);

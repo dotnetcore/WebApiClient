@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示拦截器清理器
+    /// 表示LifetimeHttpHandler清理器
     /// </summary>
-    class InterceptorCleaner
+    class LifetimeHttpHandlerCleaner
     {
         /// <summary>
         /// 当前监视生命周期的记录的数量
@@ -27,12 +27,12 @@ namespace WebApiClient
         public TimeSpan CleanupInterval { get; set; } = TimeSpan.FromSeconds(10d);
 
         /// <summary>
-        /// 添加要清除的拦截器
+        /// 添加要清除的httpHandler
         /// </summary>
-        /// <param name="interceptor">拦截器</param>
-        public void Add(LifetimeInterceptor interceptor)
+        /// <param name="handler">httpHandler</param>
+        public void Add(LifetimeHttpHandler handler)
         {
-            var entry = new TrackingEntry(interceptor);
+            var entry = new TrackingEntry(handler);
             this.trackingEntries.Enqueue(entry);
 
             // 从0变为1，要启动清理作业
@@ -110,11 +110,11 @@ namespace WebApiClient
             /// <summary>
             /// 监视生命周期的记录
             /// </summary>
-            /// <param name="interceptor">激活状态的拦截器</param>
-            public TrackingEntry(LifetimeInterceptor interceptor)
+            /// <param name="handler">激活状态的httpHandler</param>
+            public TrackingEntry(LifetimeHttpHandler handler)
             {
-                this.disposable = interceptor.HttpApiConfig;
-                this.weakReference = new WeakReference(interceptor);
+                this.disposable = handler.InnerHandler;
+                this.weakReference = new WeakReference(handler);
             }
 
             /// <summary>

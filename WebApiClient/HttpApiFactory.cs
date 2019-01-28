@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 
 namespace WebApiClient
 {
@@ -28,9 +29,9 @@ namespace WebApiClient
         private TimeSpan lifeTime = TimeSpan.FromMinutes(2d);
 
         /// <summary>
-        /// 具有生命周期的拦截器延时创建对象
+        /// 具有生命周期的httpHandler延时创建对象
         /// </summary>
-        private Lazy<LifetimeInterceptor> lifeTimeInterceptorLazy;
+        private Lazy<LifetimeHttpHandler> lifeTimeHttpHandlerLazy;
 
 
         /// <summary>
@@ -44,9 +45,9 @@ namespace WebApiClient
         private bool keepCookieContainer = HttpHandlerProvider.IsSupported;
 
         /// <summary>
-        /// 拦截器清理器
+        /// HttpHandler清理器
         /// </summary>
-        private readonly InterceptorCleaner interceptorCleaner = new InterceptorCleaner();
+        private readonly LifetimeHttpHandlerCleaner httpHandlerCleaner = new LifetimeHttpHandlerCleaner();
 
         /// <summary>
         /// 获取handler的生命周期
@@ -69,8 +70,8 @@ namespace WebApiClient
         /// </summary>
         public HttpApiFactory()
         {
-            this.lifeTimeInterceptorLazy = new Lazy<LifetimeInterceptor>(
-                this.CreateInterceptor,
+            this.lifeTimeHttpHandlerLazy = new Lazy<LifetimeHttpHandler>(
+                this.CreateHttpHandler,
                 true);
         }
 
@@ -100,7 +101,7 @@ namespace WebApiClient
             {
                 throw new ArgumentOutOfRangeException();
             }
-            this.interceptorCleaner.CleanupInterval = interval;
+            this.httpHandlerCleaner.CleanupInterval = interval;
             return this;
         }
 
@@ -146,6 +147,15 @@ namespace WebApiClient
         }
 
         /// <summary>
+        /// 配置HttpApiConfig
+        /// </summary>
+        /// <param name="configAction">配置委托</param>
+        void IHttpApiFactory<TInterface>.ConfigureHttpApiConfig(Action<HttpApiConfig> configAction)
+        {
+            this.configAction = configAction;
+        }
+
+        /// <summary>
         /// 创建接口的代理实例
         /// </summary>
         /// <returns></returns>
@@ -160,18 +170,8 @@ namespace WebApiClient
         /// <returns></returns>
         HttpApiClient IHttpApiFactory.CreateHttpApi()
         {
-            var interceptor = this.lifeTimeInterceptorLazy.Value;
-            return HttpApiClient.Create(typeof(TInterface), interceptor);
-        }
-
-        /// <summary>
-        /// 创建LifetimeInterceptor
-        /// </summary>
-        /// <returns></returns>
-        private LifetimeInterceptor CreateInterceptor()
-        {
-            var handler = this.handlerFunc?.Invoke() ?? new DefaultHttpClientHandler();
-            var httpApiConfig = new HttpApiConfig(handler, true);
+            var handler = this.lifeTimeHttpHandlerLazy.Value;
+            var httpApiConfig = new LifetimeHttpApiConfig(handler);
 
             if (this.configAction != null)
             {
@@ -180,34 +180,35 @@ namespace WebApiClient
 
             if (this.keepCookieContainer == true)
             {
-                if (this.cookieContainer == null)
-                {
-                    this.cookieContainer = httpApiConfig.HttpHandler.CookieContainer;
-                }
+                Interlocked.CompareExchange(ref this.cookieContainer, httpApiConfig.HttpHandler.CookieContainer, null);
                 if (httpApiConfig.HttpHandler.CookieContainer != this.cookieContainer)
                 {
                     httpApiConfig.HttpHandler.CookieContainer = this.cookieContainer;
                 }
             }
 
-            return new LifetimeInterceptor(
-                httpApiConfig,
-                this.lifeTime,
-                this.OnInterceptorDeactivate);
+            return HttpApiClient.Create(typeof(TInterface), httpApiConfig);
         }
 
         /// <summary>
-        /// 当有拦截器失效时
+        /// 创建LifetimeHttpHandler
         /// </summary>
-        /// <param name="interceptor">拦截器</param>
-        private void OnInterceptorDeactivate(LifetimeInterceptor interceptor)
+        /// <returns></returns>
+        private LifetimeHttpHandler CreateHttpHandler()
+        {
+            var handler = this.handlerFunc?.Invoke() ?? new DefaultHttpClientHandler();
+            return new LifetimeHttpHandler(handler, this.lifeTime, this.OnHttpHandlerDeactivate);
+        }
+
+        /// <summary>
+        /// 当有httpHandler失效时
+        /// </summary>
+        /// <param name="handler">httpHandler</param>
+        private void OnHttpHandlerDeactivate(LifetimeHttpHandler handler)
         {
             // 切换激活状态的记录的实例
-            this.lifeTimeInterceptorLazy = new Lazy<LifetimeInterceptor>(
-                this.CreateInterceptor,
-                true);
-
-            this.interceptorCleaner.Add(interceptor);
+            this.lifeTimeHttpHandlerLazy = new Lazy<LifetimeHttpHandler>(this.CreateHttpHandler, true);
+            this.httpHandlerCleaner.Add(handler);
         }
     }
 }
