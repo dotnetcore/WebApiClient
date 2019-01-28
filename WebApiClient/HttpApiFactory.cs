@@ -147,15 +147,6 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 配置HttpApiConfig
-        /// </summary>
-        /// <param name="configAction">配置委托</param>
-        void IHttpApiFactory<TInterface>.ConfigureHttpApiConfig(Action<HttpApiConfig> configAction)
-        {
-            this.configAction = configAction;
-        }
-
-        /// <summary>
         /// 创建接口的代理实例
         /// </summary>
         /// <returns></returns>

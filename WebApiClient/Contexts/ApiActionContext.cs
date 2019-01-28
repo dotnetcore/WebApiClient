@@ -107,6 +107,20 @@ namespace WebApiClient.Contexts
         }
 
         /// <summary>
+        /// 从HttpApiConfig.ServiceProvider获取服务实例
+        /// </summary>
+        /// <typeparam name="T">服务类型</typeparam>
+        /// <returns></returns>
+        public T GetService<T>()
+        {
+            if (this.HttpApiConfig.ServiceProvider == null)
+            {
+                return default(T);
+            }
+            return (T)this.HttpApiConfig.ServiceProvider.GetService(typeof(T));
+        }
+
+        /// <summary>
         /// 执行Api方法
         /// </summary>
         /// <returns></returns>
