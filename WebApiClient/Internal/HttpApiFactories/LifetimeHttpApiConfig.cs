@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示自主生命周期管理的HttpApiConfig
+    /// 表示自主管理生命周期的HttpApiConfig
     /// </summary>
     class LifetimeHttpApiConfig : HttpApiConfig
     {

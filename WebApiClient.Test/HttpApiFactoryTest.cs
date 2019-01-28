@@ -17,18 +17,15 @@ namespace WebApiClient.Test
             var factory = new HttpApiFactory<IMyApi>()
                 .SetLifetime(TimeSpan.FromMilliseconds(100d));
 
-            var api1 = factory.CreateHttpApi();
-            var api2 = factory.CreateHttpApi();
-            Assert.True(IsHttpApiConfigEquals(api1, api2));
+            var api1 = ((IHttpApiFactory)factory).CreateHttpApi();
+            var api2 = ((IHttpApiFactory)factory).CreateHttpApi();
+            Assert.True(IsHttpHandlerEquals(api1, api2));
             Assert.False(api1 == api2);
 
             Thread.Sleep(TimeSpan.FromMilliseconds(150));
 
-            var api3 = factory.CreateHttpApi();
-            Assert.False(IsHttpApiConfigEquals(api1, api3));
-
-            api3.Dispose();
-            Assert.True(GetHttpApiConfig(api3).IsDisposed == false);
+            var api3 = ((IHttpApiFactory)factory).CreateHttpApi();
+            Assert.False(IsHttpHandlerEquals(api1, api3));
         }
 
         [Fact]
@@ -39,28 +36,25 @@ namespace WebApiClient.Test
 
             var api1 = HttpApiFactory.Create<IMyApi>();
             var api2 = HttpApiFactory.Create<IMyApi>();
-            Assert.True(IsHttpApiConfigEquals(api1, api2));
+            Assert.True(IsHttpHandlerEquals(api1, api2));
             Assert.False(api1 == api2);
 
             Thread.Sleep(TimeSpan.FromMilliseconds(150));
 
             var api3 = HttpApiFactory.Create<IMyApi>();
-            Assert.False(IsHttpApiConfigEquals(api1, api3));
-
-            api3.Dispose();
-            Assert.True(GetHttpApiConfig(api3).IsDisposed == false);
+            Assert.False(IsHttpHandlerEquals(api1, api3));
         }
 
-        private bool IsHttpApiConfigEquals(IHttpApi x, IHttpApi y)
+        private bool IsHttpHandlerEquals(IHttpApi x, IHttpApi y)
         {
-            return GetHttpApiConfig(x) == GetHttpApiConfig(y);
+            return GetHttpHandler(x) == GetHttpHandler(y);
         }
 
-        private HttpApiConfig GetHttpApiConfig(IHttpApi httpApi)
+        private HttpMessageHandler GetHttpHandler(IHttpApi httpApi)
         {
             var httpApiClient = httpApi as HttpApiClient;
             var interceptor = httpApiClient.ApiInterceptor as ApiInterceptor;
-            return interceptor.HttpApiConfig;
+            return interceptor.HttpApiConfig.HttpHandler.SourceHanlder;
         }
 
         public interface IMyApi : IHttpApi

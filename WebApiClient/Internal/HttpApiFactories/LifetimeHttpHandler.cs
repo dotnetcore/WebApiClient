@@ -6,7 +6,7 @@ using System.Threading;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示具有生命周期的HttpHandler
+    /// 表示自主管理生命周期的的HttpMessageHandler
     /// </summary>
     [DebuggerDisplay("LifeTime = {lifeTime}")]
     class LifetimeHttpHandler : DelegatingHandler
