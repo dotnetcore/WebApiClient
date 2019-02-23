@@ -49,7 +49,7 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// 获取或设置集合格式化方式
         /// </summary>
-        public CollectionFormat CollectionFormat = CollectionFormat.Multi;
+        public CollectionFormat CollectionFormat { get; set; } = CollectionFormat.Multi;
 
         /// <summary>
         /// 表示Url路径参数或query参数的特性
