@@ -24,12 +24,13 @@ namespace Demo
         static void Init()
         {
             HttpServer.Start(9999);
+            var logging = new LoggerFactory().AddConsole();
 
             // 注册与配置IUserApi接口
             HttpApiFactory.Add<IUserApi>().ConfigureHttpApiConfig(c =>
             {
+                c.LoggerFactory = logging;
                 c.HttpHost = new Uri("http://localhost:9999/");
-                c.LoggerFactory = new LoggerFactory().AddConsole();
                 c.FormatOptions.DateTimeFormat = DateTimeFormats.ISO8601_WithMillisecond;
             });
         }
