@@ -169,7 +169,7 @@ namespace WebApiClient
         /// <returns></returns>
         TInterface IHttpApiFactory<TInterface>.CreateHttpApi()
         {
-            return ((IHttpApiFactory)this).CreateHttpApi() as TInterface;
+            return this.CreateHttpApi();
         }
 
         /// <summary>
@@ -177,6 +177,15 @@ namespace WebApiClient
         /// </summary>
         /// <returns></returns>
         HttpApiClient IHttpApiFactory.CreateHttpApi()
+        {
+            return this.CreateHttpApi() as HttpApiClient;
+        }
+
+        /// <summary>
+        /// 创建HttpApi代理实例
+        /// </summary>
+        /// <returns></returns>
+        private TInterface CreateHttpApi()
         {
             var handler = this.lifeTimeHttpHandlerLazy.Value;
             var httpApiConfig = new LifetimeHttpApiConfig(handler);
@@ -195,7 +204,17 @@ namespace WebApiClient
                 }
             }
 
-            return HttpApiClient.Create(typeof(TInterface), httpApiConfig);
+            return this.CreateHttpApi(httpApiConfig);
+        }
+
+        /// <summary>
+        /// 创建HttpApi代理实例
+        /// </summary>
+        /// <param name="httpApiConfig">httpApi配置</param>
+        /// <returns></returns>
+        protected virtual TInterface CreateHttpApi(HttpApiConfig httpApiConfig)
+        {
+            return HttpApiClient.Create<TInterface>(httpApiConfig);
         }
     }
 }
