@@ -35,12 +35,30 @@ namespace WebApiClient.Attributes
             }
         }
 
+        /// <summary>
+        /// http请求方法描述特性
+        /// </summary>
+        /// <param name="method">请求方法</param>
+        public HttpMethodAttribute(string method)
+            : this(new HttpMethod(method))
+        {
+        }
 
         /// <summary>
         /// http请求方法描述特性
         /// </summary>
         /// <param name="method">请求方法</param>
-        public HttpMethodAttribute(HttpMethod method)
+        /// <param name="path">请求绝对或相对路径</param>
+        public HttpMethodAttribute(string method, string path)
+            : this(new HttpMethod(method), path)
+        {
+        }
+
+        /// <summary>
+        /// http请求方法描述特性
+        /// </summary>
+        /// <param name="method">请求方法</param>
+        protected HttpMethodAttribute(HttpMethod method)
             : this(method, null)
         {
         }
@@ -50,7 +68,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="method">请求方法</param>
         /// <param name="path">请求绝对或相对路径</param>
-        public HttpMethodAttribute(HttpMethod method, string path)
+        protected HttpMethodAttribute(HttpMethod method, string path)
         {
             this.Method = method;
             this.Path = path;
