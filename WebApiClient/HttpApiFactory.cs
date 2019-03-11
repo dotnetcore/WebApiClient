@@ -44,12 +44,12 @@ namespace WebApiClient
         /// <summary>
         /// HttpApiConfig的配置委托
         /// </summary>
-        private Action<HttpApiConfig> configOptions { get; set; }
+        private Action<HttpApiConfig> configOptions;
 
         /// <summary>
         /// HttpMessageHandler的创建委托
         /// </summary>
-        private Func<HttpMessageHandler> handlerFactory { get; set; }
+        private Func<HttpMessageHandler> handlerFactory;
 
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace WebApiClient
             if (this.keepCookieContainer == true)
             {
                 Interlocked.CompareExchange(ref this.cookieContainer, httpApiConfig.HttpHandler.CookieContainer, null);
-                if (httpApiConfig.HttpHandler.CookieContainer != this.cookieContainer)
+                if (object.ReferenceEquals(httpApiConfig.HttpHandler.CookieContainer, this.cookieContainer) == false)
                 {
                     httpApiConfig.HttpHandler.CookieContainer = this.cookieContainer;
                 }
