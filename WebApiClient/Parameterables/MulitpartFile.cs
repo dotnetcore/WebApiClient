@@ -12,6 +12,7 @@ namespace WebApiClient.Parameterables
     /// 表示将自身作为multipart/form-data的一个文件项
     /// </summary>
     [DebuggerDisplay("FileName = {FileName}")]
+    [DebuggerTypeProxy(typeof(DebugView))]
     public class MulitpartFile : Stream, IApiParameterable
     {
         /// <summary>
@@ -325,6 +326,58 @@ namespace WebApiClient.Parameterables
                 this.innerStream.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        /// <summary>
+        /// 调试视图
+        /// </summary>
+        private class DebugView
+        {
+            /// <summary>
+            /// 查看的对象
+            /// </summary>
+            private readonly MulitpartFile target;
+
+            /// <summary>
+            /// 调试视图
+            /// </summary>
+            /// <param name="target">查看的对象</param>
+            public DebugView(MulitpartFile target)
+            {
+                this.target = target;
+            }
+
+            /// <summary>
+            /// 获取文件好友名称
+            /// </summary>
+            public string FileName
+            {
+                get => this.target.FileName;
+            }
+
+            /// <summary>
+            /// 获取编码后的文件好友名称
+            /// </summary>
+            public virtual string EncodedFileName
+            {
+                get => this.target.EncodedFileName;
+            }
+
+            /// <summary>
+            /// 获取或设置文件的Mime
+            /// </summary>
+            public string ContentType
+            {
+                get => this.target.ContentType;
+            }
+
+            /// <summary>
+            /// 返回数据流长度
+            /// </summary>
+            public long Length
+            {
+                get => this.target.Length;
+            } 
         }
     }
 }
