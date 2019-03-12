@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
+using WebApiClient.Attributes;
 
 namespace WebApiClient
 {
@@ -35,7 +37,11 @@ namespace WebApiClient
         {
             get
             {
-                return $"找不到匹配的ApiReturnAttribute将ContentType: {this.ContentType}的内容映射为{this.ReturnDataType}";
+                return new StringBuilder()
+                    .AppendLine($"不支持将ContentType为{this.ContentType}的内容反序列化为{this.ReturnDataType}")
+                    .AppendLine($"如果实际返回的内容为Xml，请为方法声明{nameof(XmlReturnAttribute)}")
+                    .Append($"如果实际返回的内容为Json，请为方法声明{nameof(JsonReturnAttribute)}")
+                    .ToString();
             }
         }
 
