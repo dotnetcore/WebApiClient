@@ -54,7 +54,7 @@ namespace WebApiClient.Attributes
             var request = new Request
             {
                 Time = DateTime.Now,
-                Message = await context.RequestMessage.ToStringAsync().ConfigureAwait(false)
+                Message = await context.RequestMessage.GetRequestStringAsync().ConfigureAwait(false)
             };
             context.Tags.Set(tagKey, request);
         }

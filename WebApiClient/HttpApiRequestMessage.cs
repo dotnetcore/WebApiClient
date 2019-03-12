@@ -277,15 +277,14 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 转换为请求字符串
-        /// 只包括请求头，不包含请求体
+        /// 返回请求头数据
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
+        public string GetHeadersString()
         {
             var builder = new StringBuilder()
-                .AppendLine($"{this.Method} {this.RequestUri.PathAndQuery} HTTP/{this.Version}")
-                .AppendLine($"Host: {this.RequestUri.Authority}");
+               .AppendLine($"{this.Method} {this.RequestUri.PathAndQuery} HTTP/{this.Version}")
+               .AppendLine($"Host: {this.RequestUri.Authority}");
 
             foreach (var item in this.Headers)
             {
@@ -303,22 +302,40 @@ namespace WebApiClient
             return builder.AppendLine().ToString();
         }
 
+
         /// <summary>
-        /// 转换为请求字符串
-        /// 包含请求头和请求体
+        /// 返回请求数据
         /// </summary>
         /// <returns></returns>
-        public async Task<string> ToStringAsync()
+        public async Task<string> GetRequestStringAsync()
         {
-            var builder = new StringBuilder().Append(this.ToString());
-
+            var builder = new StringBuilder().Append(this.GetHeadersString());
             if (this.Content != null)
             {
                 var content = await this.Content.ReadAsStringAsync().ConfigureAwait(false);
                 builder.Append(content);
             }
-
             return builder.ToString();
+        }
+
+
+        /// <summary>
+        /// 返回请求头数据
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return this.GetHeadersString();
+        }
+
+        /// <summary>
+        /// 返回请求数据
+        /// </summary>
+        /// <returns></returns>
+        [Obsolete("该方法已过时，请使用GetRequestStringAsync替代", false)]
+        public async Task<string> ToStringAsync()
+        {
+            return await this.GetRequestStringAsync().ConfigureAwait(false);
         }
     }
 }
