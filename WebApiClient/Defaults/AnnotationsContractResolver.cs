@@ -130,9 +130,14 @@ namespace WebApiClient.Defaults
                 this.FormatScope = formatScope;
             }
 
+            /// <summary>
+            /// ContractKey的哈希一样时，才调用此方法
+            /// </summary>
+            /// <param name="other"></param>
+            /// <returns></returns>
             public bool Equals(ContractKey other)
             {
-                return this.CamelCase == other.CamelCase && this.FormatScope == other.FormatScope;
+                return true;
             }
 
             public override int GetHashCode()
