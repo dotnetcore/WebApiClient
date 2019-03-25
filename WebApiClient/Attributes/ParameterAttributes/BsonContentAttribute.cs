@@ -58,7 +58,7 @@ namespace WebApiClient.Attributes
             return new JsonSerializerSettings
             {
                 DateFormatString = options?.DateTimeFormat,
-                ContractResolver = AnnotationsContractResolver.GetResolver(FormatScope.All, useCamelCase)
+                ContractResolver = AnnotationsContractResolver.GetResolver(FormatScope.BsonFormat, useCamelCase)
             };
         }
     }

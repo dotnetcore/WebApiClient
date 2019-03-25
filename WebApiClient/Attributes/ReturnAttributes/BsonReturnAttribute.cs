@@ -35,7 +35,7 @@ namespace WebApiClient.Attributes
             var setting = this.CreateSerializerSettings(options);
             var serializer = JsonSerializer.Create(setting);
 
-            var stream = await context.ResponseMessage.Content.ReadAsStreamAsync();
+            var stream = await context.ResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
             var bsonReader = new BsonReader(stream);
             var dataType = context.ApiActionDescriptor.Return.DataType.Type;
             return serializer.Deserialize(bsonReader, dataType);
@@ -52,7 +52,7 @@ namespace WebApiClient.Attributes
             return new JsonSerializerSettings
             {
                 DateFormatString = options?.DateTimeFormat,
-                ContractResolver = AnnotationsContractResolver.GetResolver(FormatScope.All, useCamelCase)
+                ContractResolver = AnnotationsContractResolver.GetResolver(FormatScope.BsonFormat, useCamelCase)
             };
         }
     }

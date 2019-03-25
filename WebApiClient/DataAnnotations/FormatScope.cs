@@ -22,5 +22,10 @@ namespace WebApiClient.DataAnnotations
         /// 适用于KeyValue序列化
         /// </summary>
         KeyValueFormat = 0x2,
+
+        /// <summary>
+        /// 适用于Bson序列化
+        /// </summary>
+        BsonFormat = 0x4,
     }
 }
