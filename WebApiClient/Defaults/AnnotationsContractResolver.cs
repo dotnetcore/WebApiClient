@@ -11,8 +11,19 @@ namespace WebApiClient.Defaults
     /// 表示属性解析约定
     /// 用于实现DataAnnotations的功能
     /// </summary>
-    class AnnotationsContractResolver : DefaultContractResolver
+    public class AnnotationsContractResolver : DefaultContractResolver
     {
+        /// <summary>
+        /// 所有范围使用CamelCase的KeyValue属性解析约定
+        /// </summary>
+        private readonly static AnnotationsContractResolver allCamelCaseResolver = new AnnotationsContractResolver(true, FormatScope.All);
+
+        /// <summary>
+        /// 所有范围不使用CamelCase的KeyValue属性解析约定
+        /// </summary>
+        private readonly static AnnotationsContractResolver allNoCamelCaseResolver = new AnnotationsContractResolver(false, FormatScope.All);
+
+
         /// <summary>
         /// json范围使用CamelCase的KeyValue属性解析约定
         /// </summary>
@@ -39,16 +50,20 @@ namespace WebApiClient.Defaults
         /// </summary>
         /// <param name="scope">序列化范围</param>
         /// <param name="camelCase">是否使用CamelCase</param>
+        /// <exception cref="NotImplementedException"></exception>
         /// <returns></returns>
         public static AnnotationsContractResolver GetResolver(FormatScope scope, bool camelCase)
         {
             switch (scope)
-            {
+            {             
                 case FormatScope.JsonFormat:
                     return camelCase ? jsonCamelCaseResolver : jsonNoCamelCaseResolver;
 
                 case FormatScope.KeyValueFormat:
                     return camelCase ? keyValueCamelCaseResolver : keyValueNoCamelCaseResolver;
+
+                case FormatScope.All:
+                    return camelCase ? allCamelCaseResolver : allNoCamelCaseResolver;
 
                 default:
                     throw new NotImplementedException();
@@ -71,7 +86,7 @@ namespace WebApiClient.Defaults
         /// </summary>
         /// <param name="camelCase">是否camel命名</param>
         /// <param name="scope">序列化范围</param>
-        private AnnotationsContractResolver(bool camelCase, FormatScope scope)
+        public AnnotationsContractResolver(bool camelCase, FormatScope scope)
         {
             this.useCamelCase = camelCase;
             this.formatScope = scope;
