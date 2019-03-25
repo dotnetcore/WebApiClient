@@ -37,14 +37,14 @@ namespace WebApiClient.Attributes
         public string DateTimeFormat { get; set; }
 
         /// <summary>
-        /// 将参数值作为application/json请求
+        /// 序列化参数值得到的json文本作为application/json请求
         /// </summary>
         public JsonContentAttribute()
         {
         }
 
         /// <summary>
-        /// 将参数体作为application/json请求
+        /// 序列化参数值得到的json文本作为application/json请求
         /// </summary>
         /// <param name="datetimeFormat">日期时间格式</param>
         public JsonContentAttribute(string datetimeFormat)

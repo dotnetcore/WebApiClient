@@ -14,8 +14,13 @@ namespace WebApiClient.Attributes
     /// 序列化参数值得到的bson作为application/bson请求
     /// 每个Api只能注明于其中的一个参数
     /// </summary>
-    public class BsonContentAttribute : HttpContentAttribute
+    public class BsonContentAttribute : HttpContentAttribute, IDateTimeFormatable
     {
+        /// <summary>
+        /// 获取或设置时期时间格式
+        /// </summary>
+        public string DateTimeFormat { get; set; }
+
         /// <summary>
         /// 设置参数到http请求内容
         /// </summary>
@@ -33,7 +38,7 @@ namespace WebApiClient.Attributes
         /// <param name="parameter">特性关联的参数</param>
         protected sealed override void SetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var options = context.HttpApiConfig.FormatOptions;
+            var options = context.HttpApiConfig.FormatOptions.CloneChange(this.DateTimeFormat);
             var setting = this.CreateSerializerSettings(options);
             var serializer = JsonSerializer.Create(setting);
 

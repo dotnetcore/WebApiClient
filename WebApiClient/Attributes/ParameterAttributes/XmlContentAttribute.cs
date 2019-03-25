@@ -31,14 +31,14 @@ namespace WebApiClient.Attributes
         }
 
         /// <summary>
-        /// 将参数体值为application/xml请求      
+        /// 序列化参数值得到的json文本作为application/xml请求      
         /// </summary>
         public XmlContentAttribute()
         {
         }
 
         /// <summary>
-        /// 将参数体作为application/xml请求
+        /// 序列化参数值得到的json文本作为application/xml请求
         /// </summary>
         /// <param name="encoding">编码</param>
         /// <exception cref="ArgumentNullException"></exception>
