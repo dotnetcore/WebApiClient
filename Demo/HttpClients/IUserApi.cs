@@ -11,7 +11,8 @@ namespace Demo.HttpClients
     /// <summary>
     /// 用户操作接口
     /// </summary>
-    [TraceFilter] // 生产环境需要注释掉这个特性
+    [TraceFilter]
+    [DebugFilter]
     [HttpHost("http://localhost:9999/")] // HttpHost可以在Config传入覆盖
     public interface IUserApi : IHttpApi
     {
