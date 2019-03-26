@@ -49,14 +49,5 @@ namespace WebApiClient
         {
             return this.IsMediaType(XmlContent.MediaType) || this.IsMediaType("text/xml");
         }
-
-        /// <summary>
-        /// 是否为bson
-        /// </summary>
-        /// <returns></returns>
-        public bool IsApplicationBson()
-        {
-            return this.IsMediaType(BsonContent.MediaType);
-        }
     }
 }
