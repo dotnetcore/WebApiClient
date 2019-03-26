@@ -19,7 +19,7 @@ namespace WebApiClient.Attributes
         public string DateTimeFormat { get; set; }
 
         /// <summary>
-        /// 将参数值作为multipart/form-data表单或表单的一个项
+        /// 序列化参数值得到的键值对分别作为multipart/form-data表单的一个文本项 
         /// </summary>
         public MulitpartContentAttribute()
             : this(null)
@@ -27,7 +27,7 @@ namespace WebApiClient.Attributes
         }
 
         /// <summary>
-        /// 将参数值作为multipart/form-data表单或表单的一个项
+        /// 序列化参数值得到的键值对分别作为multipart/form-data表单的一个文本项 
         /// </summary>
         /// <param name="datetimeFormat">时期时间格式</param>
         public MulitpartContentAttribute(string datetimeFormat)

@@ -25,6 +25,11 @@ namespace WebApiClient.Attributes
         /// </summary>
         private static readonly IApiReturnAttribute jsonReturn = new JsonReturnAttribute();
 
+        /// <summary>
+        /// bson解析
+        /// </summary>
+        private static readonly IApiReturnAttribute bsonReturn = new BsonReturnAttribute();
+
 
         /// <summary>
         /// 配置请求头的accept
@@ -81,6 +86,10 @@ namespace WebApiClient.Attributes
             else if (contentType.IsApplicationXml() == true)
             {
                 return await xmlReturn.GetTaskResult(context).ConfigureAwait(false);
+            }
+            else if (contentType.IsApplicationBson() == true)
+            {
+                return await bsonReturn.GetTaskResult(context).ConfigureAwait(false);
             }
 
             throw new ApiReturnNotSupportedExteption(response, dataType.Type);

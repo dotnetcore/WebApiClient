@@ -21,7 +21,7 @@ namespace WebApiClient.Attributes
         public string DateTimeFormat { get; set; }
 
         /// <summary>
-        /// 将参数值作为x-www-form-urlencoded请求
+        /// 序列化参数值得到的键值对作为x-www-form-urlencoded请求
         /// </summary>
         public FormContentAttribute()
             : this(null)
@@ -29,7 +29,7 @@ namespace WebApiClient.Attributes
         }
 
         /// <summary>
-        /// 将参数值作为x-www-form-urlencoded请求
+        /// 序列化参数值得到的键值对作为x-www-form-urlencoded请求
         /// </summary>
         /// <param name="datetimeFormat">时期时间格式</param>
         public FormContentAttribute(string datetimeFormat)

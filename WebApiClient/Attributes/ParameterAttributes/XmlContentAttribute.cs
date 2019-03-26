@@ -5,7 +5,7 @@ using WebApiClient.Contexts;
 namespace WebApiClient.Attributes
 {
     /// <summary>
-    /// 使用XmlFormatter序列化参数值得到的json文本作为application/xml请求
+    /// 使用JsonFormatter序列化参数值得到的xml文本作为application/xml请求
     /// </summary>
     public class XmlContentAttribute : HttpContentAttribute, IEncodingable
     {
@@ -31,14 +31,14 @@ namespace WebApiClient.Attributes
         }
 
         /// <summary>
-        /// 序列化参数值得到的json文本作为application/xml请求      
+        /// 序列化参数值得到的xml文本作为application/xml请求    
         /// </summary>
         public XmlContentAttribute()
         {
         }
 
         /// <summary>
-        /// 序列化参数值得到的json文本作为application/xml请求
+        /// 序列化参数值得到的xml文本作为application/xml请求
         /// </summary>
         /// <param name="encoding">编码</param>
         /// <exception cref="ArgumentNullException"></exception>
