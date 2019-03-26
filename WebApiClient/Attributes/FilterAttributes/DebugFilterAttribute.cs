@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks;
 using WebApiClient.Contexts;
 
 namespace WebApiClient.Attributes
@@ -10,6 +11,55 @@ namespace WebApiClient.Attributes
     /// </summary>
     public class DebugFilterAttribute : TraceFilterBaseAttribute
     {
+        /// <summary>
+        /// 是否为Debug模式
+        /// </summary>
+        private bool isDebugDefined = false;
+
+        /// <summary>
+        /// 将请求响应内容打印到输出调试窗口的过滤器
+        /// </summary>
+        public DebugFilterAttribute()
+        {
+            this.CheckDebugDefine();
+        }
+
+        /// <summary>
+        /// 检测模式
+        /// </summary>
+        /// <returns></returns>
+        [Conditional("DEBUG")]
+        private void CheckDebugDefine()
+        {
+            this.isDebugDefined = true;
+        }
+
+        /// <summary>
+        /// 准备请求之前
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <returns></returns>
+        public async override Task OnBeginRequestAsync(ApiActionContext context)
+        {
+            if (this.isDebugDefined == true)
+            {
+                await base.OnBeginRequestAsync(context).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// 请求完成之后
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <returns></returns>
+        public async override Task OnEndRequestAsync(ApiActionContext context)
+        {
+            if (this.isDebugDefined == true)
+            {
+                await base.OnEndRequestAsync(context).ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// 输出异常
         /// </summary>
@@ -36,8 +86,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="context"></param>
         /// <param name="message"></param>
-        /// <param name="ex"></param>
-        [Conditional("DEBUG")]
+        /// <param name="ex"></param>       
         private void Log(ApiActionContext context, string message, Exception ex)
         {
             var method = context.ApiActionDescriptor.Member;
