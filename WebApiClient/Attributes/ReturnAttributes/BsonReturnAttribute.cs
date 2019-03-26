@@ -20,7 +20,7 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         protected override void ConfigureAccept(HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> accept)
         {
-            accept.Add(new MediaTypeWithQualityHeaderValue("application/bson"));
+            accept.Add(new MediaTypeWithQualityHeaderValue(BsonContent.MediaType));
         }
 
         /// <summary>

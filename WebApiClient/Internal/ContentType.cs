@@ -38,7 +38,7 @@ namespace WebApiClient
         /// <returns></returns>
         public bool IsApplicationJson()
         {
-            return this.IsMediaType("application/json") || this.IsMediaType("text/json");
+            return this.IsMediaType(JsonContent.MediaType) || this.IsMediaType("text/json");
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace WebApiClient
         /// <returns></returns>
         public bool IsApplicationXml()
         {
-            return this.IsMediaType("application/xml") || this.IsMediaType("text/xml");
+            return this.IsMediaType(XmlContent.MediaType) || this.IsMediaType("text/xml");
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace WebApiClient
         /// <returns></returns>
         public bool IsApplicationBson()
         {
-            return this.IsMediaType("application/bson");
+            return this.IsMediaType(BsonContent.MediaType);
         }
     }
 }

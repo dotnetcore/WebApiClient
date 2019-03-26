@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
@@ -40,6 +38,7 @@ namespace WebApiClient.Attributes
         {
             accept.Add(new MediaTypeWithQualityHeaderValue(JsonContent.MediaType, 0.9d));
             accept.Add(new MediaTypeWithQualityHeaderValue(XmlContent.MediaType, 0.8d));
+            accept.Add(new MediaTypeWithQualityHeaderValue(BsonContent.MediaType, 0.7d));
             accept.Add(new MediaTypeWithQualityHeaderValue("*/*", 0.1d));
         }
 

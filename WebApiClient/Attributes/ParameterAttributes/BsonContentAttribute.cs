@@ -46,10 +46,7 @@ namespace WebApiClient.Attributes
             var bsonWriter = new BsonWriter(stream);
             serializer.Serialize(bsonWriter, parameter.Value);
             stream.Seek(0L, SeekOrigin.Begin);
-
-            var content = new StreamContent(stream);
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/bson");
-            context.RequestMessage.Content = content;
+            context.RequestMessage.Content = new BsonContent(stream);
         }
 
         /// <summary>
