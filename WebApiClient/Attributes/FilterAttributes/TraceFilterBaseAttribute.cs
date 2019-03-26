@@ -86,7 +86,7 @@ namespace WebApiClient.Attributes
             }
 
             var message = builder
-                .Append($"[TIMESPAN] {DateTime.Now.Subtract(request.DateTime)}")
+                .AppendLine($"[TIMESPAN] {DateTime.Now.Subtract(request.DateTime)}")
                 .ToString();
 
             if (context.Exception == null)
@@ -106,7 +106,9 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         private async Task<string> GetResponseStringAsync(HttpResponseMessage response)
         {
-            var builder = new StringBuilder();
+            var builder = new StringBuilder()
+                .AppendLine($"HTTP/{response.Version} {(int)response.StatusCode} {response.ReasonPhrase}");
+
             foreach (var item in response.Headers)
             {
                 builder.AppendLine($"{item.Key}: {string.Join(",", item.Value)}");

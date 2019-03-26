@@ -83,7 +83,7 @@ namespace WebApiClient
 
 
         /// <summary>
-        /// 置HttpApi实例的生命周期
+        /// 设置HttpApi实例的生命周期
         /// </summary>
         /// <param name="lifeTime">生命周期</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
@@ -98,7 +98,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 获取或设置清理过期的HttpApi实例的时间间隔
+        /// 设置清理过期的HttpApi实例的时间间隔
         /// </summary>
         /// <param name="interval">时间间隔</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
@@ -182,7 +182,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 创建HttpApi代理实例
+        /// 创建TInterface接口的代理实例
         /// </summary>
         /// <returns></returns>
         private TInterface CreateHttpApi()
@@ -208,7 +208,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 创建HttpApi代理实例
+        /// 创建TInterface接口的代理实例
         /// </summary>
         /// <param name="httpApiConfig">httpApi配置</param>
         /// <returns></returns>
