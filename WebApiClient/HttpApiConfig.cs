@@ -30,9 +30,9 @@ namespace WebApiClient
         /// 获取或设置全局默认的参数特性提供者
         /// </summary>
         public static IApiParameterAttributeProvider DefaultApiParameterAttributeProvider { get; set; } = new ApiParameterAttributeProvider();
-
-
-
+      
+        
+        
         /// <summary>
         /// 自定义数据容器
         /// </summary>
@@ -47,7 +47,7 @@ namespace WebApiClient
         /// 日志工厂
         /// </summary>
         private ILoggerFactory loggerFactory;
-        
+
         /// <summary>
         /// 同步锁
         /// </summary>
@@ -136,6 +136,11 @@ namespace WebApiClient
         public FormatOptions FormatOptions { get; set; } = new FormatOptions();
 
         /// <summary>
+        /// 获取或设置Api的缓存提供者
+        /// </summary>
+        public IApiCacheProvider ApiCacheProvider { get; set; }
+
+        /// <summary>
         /// 获取或设置Xml格式化工具
         /// </summary>
         public IXmlFormatter XmlFormatter { get; set; } = DefaultXmlFormatter;
@@ -180,7 +185,7 @@ namespace WebApiClient
         /// </summary>
         /// <param name="httpClient">外部HttpClient实例</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public HttpApiConfig(HttpClient httpClient)          
+        public HttpApiConfig(HttpClient httpClient)
         {
             this.HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             this.SetDefaultRequestHeaders(httpClient.DefaultRequestHeaders);

@@ -28,6 +28,7 @@ namespace Demo.HttpClients
         // Return HttpResponseMessage
         [HttpGet("webapi/user/GetById/{id}")]
         [BasicAuth("userName", "password")]
+        [Cache(10 * 1000, IncludeHeaders = "Authorization")]
         ITask<HttpResponseMessage> GetByIdAsync(
             [Required]string id,
             CancellationToken token);

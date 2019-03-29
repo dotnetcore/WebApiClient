@@ -63,7 +63,7 @@ namespace WebApiClient
         /// <param name="member">成员</param>
         /// <param name="inherit"></param>
         /// <returns></returns>
-        private static TAttribute GetAttribute<TAttribute>(this MemberInfo member, bool inherit) where TAttribute : class
+        public static TAttribute GetAttribute<TAttribute>(this MemberInfo member, bool inherit) where TAttribute : class
         {
             return member
                 .GetCustomAttributes(inherit)
