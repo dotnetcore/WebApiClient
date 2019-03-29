@@ -129,16 +129,9 @@ namespace WebApiClient.Contexts
             await this.PrepareRequestAsync().ConfigureAwait(false);
             await this.ExecFiltersAsync(filter => filter.OnBeginRequestAsync).ConfigureAwait(false);
 
-            var cacheResult = await this.GetCacheResultAsync<TResult>().ConfigureAwait(false);
-            if (cacheResult.HasValue == true)
-            {
-                return cacheResult.Value.Item;
-            }
-
             try
             {
-                this.Result = await this.ExecRequestAsync().ConfigureAwait(false);
-                await this.SetCacheResultAsync((TResult)this.Result).ConfigureAwait(false);
+                this.Result = await this.ExecRequestAsync<TResult>().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -183,40 +176,35 @@ namespace WebApiClient.Contexts
             await apiAction.Return.Attribute.BeforeRequestAsync(this).ConfigureAwait(false);
         }
 
+
         /// <summary>
-        /// 从缓存获取请求结果
+        /// 结合缓存执行请求 
         /// </summary>
-        /// <typeparam name="TResult"></typeparam>
         /// <returns></returns>
-        private async Task<CacheResult<CacheValue<TResult>>> GetCacheResultAsync<TResult>()
+        private async Task<TResult> ExecRequestAsync<TResult>()
         {
             var cacheAttribute = this.ApiActionDescriptor.Cache;
             var cacheProvider = this.HttpApiConfig.ApiCacheProvider;
+            var cacheEnable = cacheAttribute != null && cacheProvider != null;
 
-            if (cacheAttribute != null && cacheProvider != null)
+            if (cacheEnable == false)
             {
-                var cacheKey = await cacheAttribute.GetCacheKeyAsync(this).ConfigureAwait(false);
-                return await cacheProvider.GetAsync<CacheValue<TResult>>(cacheKey).ConfigureAwait(false);
+                return (TResult)await this.ExecRequestAsync().ConfigureAwait(false);
             }
-            return new CacheResult<CacheValue<TResult>>(null, false);
-        }
 
-        /// <summary>
-        /// 设置请求结果到缓存
-        /// </summary>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="result">请求结果</param>
-        /// <returns></returns>
-        private async Task SetCacheResultAsync<TResult>(TResult result)
-        {
-            var cacheAttribute = this.ApiActionDescriptor.Cache;
-            var cacheProvider = this.HttpApiConfig.ApiCacheProvider;
+            var cacheKey = await cacheAttribute.GetCacheKeyAsync(this).ConfigureAwait(false);
+            var cacheResult = await cacheProvider.GetAsync<CacheValue<TResult>>(cacheKey).ConfigureAwait(false);
 
-            if (cacheAttribute != null && cacheProvider != null)
+            if (cacheResult.HasValue == true)
             {
-                var cacheKey = await cacheAttribute.GetCacheKeyAsync(this).ConfigureAwait(false);
+                return cacheResult.Value.Item;
+            }
+            else
+            {
+                var result = (TResult)await this.ExecRequestAsync().ConfigureAwait(false);
                 var cacheValue = new CacheValue<TResult> { Item = result };
                 await cacheProvider.SetAsync(cacheKey, cacheValue, cacheAttribute.Expiration).ConfigureAwait(false);
+                return result;
             }
         }
 
