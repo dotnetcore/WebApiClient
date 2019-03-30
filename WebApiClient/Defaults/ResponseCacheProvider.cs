@@ -21,6 +21,11 @@ namespace WebApiClient.Defaults
         private readonly MemoryCache cache = new MemoryCache(Guid16.NewGuid16().ToString());
 
         /// <summary>
+        /// 获取提供者的友好名称
+        /// </summary>
+        public string Name { get; } = nameof(ResponseCacheProvider);
+
+        /// <summary>
         /// 从缓存中获取响应实体
         /// </summary>
         /// <param name="key">键</param>

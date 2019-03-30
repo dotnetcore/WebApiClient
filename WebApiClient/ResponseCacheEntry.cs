@@ -47,8 +47,9 @@ namespace WebApiClient
         /// 转换为HttpResponseMessage
         /// </summary>
         /// <param name="requestMessage">请求信息</param>
+        /// <param name="xPoweredBy">xPoweredBy</param>
         /// <returns></returns>
-        public HttpResponseMessage ToResponseMessage(HttpRequestMessage requestMessage)
+        public HttpResponseMessage ToResponseMessage(HttpRequestMessage requestMessage, string xPoweredBy)
         {
             var response = new HttpResponseMessage
             {
@@ -67,8 +68,10 @@ namespace WebApiClient
             {
                 response.Content.Headers.TryAddWithoutValidation(item.Key, item.Value);
             }
-
-            response.Headers.TryAddWithoutValidation("Server", "cached");
+            if (string.IsNullOrEmpty(xPoweredBy) == false)
+            {
+                response.Headers.TryAddWithoutValidation("X-Powered-By", xPoweredBy);
+            }
             return response;
         }
 

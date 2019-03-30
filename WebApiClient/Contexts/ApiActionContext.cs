@@ -199,7 +199,7 @@ namespace WebApiClient.Contexts
 
                 if (cacheResult.HasValue == true)
                 {
-                    this.ResponseMessage = cacheResult.Value.ToResponseMessage(this.RequestMessage);
+                    this.ResponseMessage = cacheResult.Value.ToResponseMessage(this.RequestMessage, cacheProvider.Name);
                 }
                 else
                 {

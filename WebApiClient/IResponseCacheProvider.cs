@@ -9,6 +9,11 @@ namespace WebApiClient
     public interface IResponseCacheProvider
     {
         /// <summary>
+        /// 获取提供者的友好名称
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
         /// 从缓存中获取响应实体
         /// </summary>
         /// <param name="key">键</param>
