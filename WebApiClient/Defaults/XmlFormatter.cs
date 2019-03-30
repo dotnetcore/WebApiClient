@@ -14,7 +14,7 @@ namespace WebApiClient.Defaults
         /// <summary>
         /// 默认实例
         /// </summary>
-        public static readonly XmlFormatter Default = new XmlFormatter();
+        public static readonly XmlFormatter Instance = new XmlFormatter();
 
         /// <summary>
         /// 将对象序列化为xml文本

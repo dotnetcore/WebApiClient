@@ -24,7 +24,7 @@ namespace Demo.HttpServices
 
         public override void ExecuteResult(RequestContext context)
         {
-            var xml = XmlFormatter.Default.Serialize(this.data, this.encoding);
+            var xml = XmlFormatter.Instance.Serialize(this.data, this.encoding);
             context.Response.Charset = encoding;
             context.Response.ContentType = "application/xml";
             context.Response.WriteResponse(xml);

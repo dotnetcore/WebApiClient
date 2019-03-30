@@ -117,23 +117,23 @@ namespace WebApiClient
         /// </summary>
         public IResponseCacheProvider ResponseCacheProvider { get; set; }
 #if !NETSTANDARD1_3
-        = Defaults.ResponseCacheProvider.Default;
+        = Defaults.ResponseCacheProvider.Instance;
 #endif
 
         /// <summary>
         /// 获取或设置Xml格式化工具
         /// </summary>
-        public IXmlFormatter XmlFormatter { get; set; } = Defaults.XmlFormatter.Default;
+        public IXmlFormatter XmlFormatter { get; set; } = Defaults.XmlFormatter.Instance;
 
         /// <summary>
         /// 获取或设置Json格式化工具
         /// </summary>
-        public IJsonFormatter JsonFormatter { get; set; } = Defaults.JsonFormatter.Default;
+        public IJsonFormatter JsonFormatter { get; set; } = Defaults.JsonFormatter.Instance;
 
         /// <summary>
         /// 获取或设置KeyValue格式化工具
         /// </summary>
-        public IKeyValueFormatter KeyValueFormatter { get; set; } = Defaults.KeyValueFormatter.Default;
+        public IKeyValueFormatter KeyValueFormatter { get; set; } = Defaults.KeyValueFormatter.Instance;
 
         /// <summary>
         /// 获取全局过滤器集合

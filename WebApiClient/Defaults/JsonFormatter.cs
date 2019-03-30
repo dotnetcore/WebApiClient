@@ -12,7 +12,7 @@ namespace WebApiClient.Defaults
         /// <summary>
         /// 默认实例
         /// </summary>
-        public static readonly JsonFormatter Default = new JsonFormatter();
+        public static readonly JsonFormatter Instance = new JsonFormatter();
 
         /// <summary>
         /// 获取或设置配置

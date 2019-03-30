@@ -73,7 +73,7 @@ namespace WebApiClient.Contexts
             }
 
             var parameterType = parameter.ParameterType;
-            var parameterAlias = parameter.GetCustomAttribute(typeof(AliasAsAttribute)) as AliasAsAttribute;
+            var parameterAlias = parameter.GetCustomAttribute<AliasAsAttribute>();
             var parameterName = parameterAlias == null ? parameter.Name : parameterAlias.Name;
 
             var defined = parameter.GetAttributes<IApiParameterAttribute>(true);

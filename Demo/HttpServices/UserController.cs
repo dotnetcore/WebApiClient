@@ -53,7 +53,7 @@ namespace Demo.HttpServices
         {
             var stream = new MemoryStream(Request.Body);
             var xml = XDocument.Load(stream).ToString();
-            var user = XmlFormatter.Default.Deserialize(xml, typeof(UserInfo)) as UserInfo;
+            var user = XmlFormatter.Instance.Deserialize(xml, typeof(UserInfo)) as UserInfo;
             user.Email = "laojiu@qq.com";
             return new XmlResult(user);
         }

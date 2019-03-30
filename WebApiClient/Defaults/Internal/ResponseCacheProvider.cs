@@ -8,12 +8,12 @@ namespace WebApiClient.Defaults
     /// <summary>
     /// 表示Api响应结果缓存提供者的接口
     /// </summary>
-    public class ResponseCacheProvider : IResponseCacheProvider
+    class ResponseCacheProvider : IResponseCacheProvider
     {
         /// <summary>
         /// 默认实例
         /// </summary>
-        public static readonly ResponseCacheProvider Default = new ResponseCacheProvider();
+        public static readonly ResponseCacheProvider Instance = new ResponseCacheProvider();
 
         /// <summary>
         /// 内存缓存

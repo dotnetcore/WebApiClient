@@ -15,7 +15,7 @@ namespace WebApiClient.Defaults
         /// <summary>
         /// 默认实例
         /// </summary>
-        public static readonly KeyValueFormatter Default = new KeyValueFormatter();
+        public static readonly KeyValueFormatter Instance = new KeyValueFormatter();
 
         /// <summary>
         /// 获取或设置配置
