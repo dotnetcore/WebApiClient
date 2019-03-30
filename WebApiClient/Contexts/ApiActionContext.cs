@@ -131,7 +131,7 @@ namespace WebApiClient.Contexts
 
             try
             {
-                this.Result = await this.ExecRequestAsync<TResult>().ConfigureAwait(false);
+                this.Result = await this.ExecRequestAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -176,38 +176,6 @@ namespace WebApiClient.Contexts
             await apiAction.Return.Attribute.BeforeRequestAsync(this).ConfigureAwait(false);
         }
 
-
-        /// <summary>
-        /// 结合缓存执行请求 
-        /// </summary>
-        /// <returns></returns>
-        private async Task<TResult> ExecRequestAsync<TResult>()
-        {
-            var cacheAttribute = this.ApiActionDescriptor.Cache;
-            var cacheProvider = this.HttpApiConfig.ApiCacheProvider;
-            var cacheEnable = cacheAttribute != null && cacheProvider != null;
-
-            if (cacheEnable == false)
-            {
-                return (TResult)await this.ExecRequestAsync().ConfigureAwait(false);
-            }
-
-            var cacheKey = await cacheAttribute.GetCacheKeyAsync(this).ConfigureAwait(false);
-            var cacheResult = await cacheProvider.GetAsync<CacheValue<TResult>>(cacheKey).ConfigureAwait(false);
-
-            if (cacheResult.HasValue == true)
-            {
-                return cacheResult.Value.Item;
-            }
-            else
-            {
-                var result = (TResult)await this.ExecRequestAsync().ConfigureAwait(false);
-                var cacheValue = new CacheValue<TResult> { Item = result };
-                await cacheProvider.SetAsync(cacheKey, cacheValue, cacheAttribute.Expiration).ConfigureAwait(false);
-                return result;
-            }
-        }
-
         /// <summary>
         /// 执行请求
         /// </summary>
@@ -216,13 +184,39 @@ namespace WebApiClient.Contexts
         {
             using (var cancellation = this.CreateLinkedTokenSource())
             {
-                var completionOption = this.ApiActionDescriptor.Return.DataType.IsHttpResponseWrapper ?
-                    HttpCompletionOption.ResponseHeadersRead :
-                    HttpCompletionOption.ResponseContentRead;
+                var cacheAttribute = this.ApiActionDescriptor.Cache;
+                var cacheProvider = this.HttpApiConfig.ResponseCacheProvider;
 
-                this.ResponseMessage = await this.HttpApiConfig.HttpClient
-                    .SendAsync(this.RequestMessage, completionOption, cancellation.Token)
-                    .ConfigureAwait(false);
+                var cacheKey = default(string);
+                var cacheResult = new ResponseCacheResult(null, false);
+                var cacheEnable = cacheAttribute != null && cacheProvider != null;
+
+                if (cacheEnable == true)
+                {
+                    cacheKey = await cacheAttribute.GetCacheKeyAsync(this).ConfigureAwait(false);
+                    cacheResult = await cacheProvider.GetAsync(cacheKey).ConfigureAwait(false);
+                }
+
+                if (cacheResult.HasValue == true)
+                {
+                    this.ResponseMessage = cacheResult.Value.ToResponseMessage(this.RequestMessage);
+                }
+                else
+                {
+                    var completionOption = this.ApiActionDescriptor.Return.DataType.IsHttpResponseWrapper ?
+                        HttpCompletionOption.ResponseHeadersRead :
+                        HttpCompletionOption.ResponseContentRead;
+
+                    this.ResponseMessage = await this.HttpApiConfig.HttpClient
+                        .SendAsync(this.RequestMessage, completionOption, cancellation.Token)
+                        .ConfigureAwait(false);
+
+                    if (cacheEnable == true)
+                    {
+                        var cacheEntry = await ResponseCacheEntry.FromResponseMessageAsync(this.ResponseMessage).ConfigureAwait(false);
+                        await cacheProvider.SetAsync(cacheKey, cacheEntry, cacheAttribute.Expiration).ConfigureAwait(false);
+                    }
+                }
 
                 var result = await this.ApiActionDescriptor.Return.Attribute
                     .GetTaskResult(this)

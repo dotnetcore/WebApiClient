@@ -13,6 +13,11 @@ namespace WebApiClient.Defaults
     public class KeyValueFormatter : IKeyValueFormatter
     {
         /// <summary>
+        /// 默认实例
+        /// </summary>
+        public static readonly KeyValueFormatter Default = new KeyValueFormatter();
+
+        /// <summary>
         /// 获取或设置配置
         /// </summary>
         public Action<JsonSerializerSettings> Settings { get; set; }

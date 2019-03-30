@@ -18,7 +18,7 @@ namespace Demo.HttpClients
     {
         // GET {url}?account={account}&password={password}&something={something}
         [HttpGet]
-        [Timeout(10 * 1000)] // 10s超时
+        [Cache(10 * 1000)]
         Task<string> GetAboutAsync(
             [Uri] string url,
             UserInfo user,
@@ -28,7 +28,7 @@ namespace Demo.HttpClients
         // Return HttpResponseMessage
         [HttpGet("webapi/user/GetById/{id}")]
         [BasicAuth("userName", "password")]
-        [Cache(10 * 1000, IncludeHeaders = "Authorization")]
+        [Timeout(10 * 1000)] // 10s超时
         ITask<HttpResponseMessage> GetByIdAsync(
             [Required]string id,
             CancellationToken token);

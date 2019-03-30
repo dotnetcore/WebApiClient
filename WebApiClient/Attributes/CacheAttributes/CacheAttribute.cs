@@ -11,7 +11,7 @@ namespace WebApiClient.Attributes
     /// <summary>
     /// 表示使用缓存的特性
     /// 使用请求Uri作请求结果的缓存键
-    /// 缓存功能依赖于HttpApiConfig.ApiCacheProvider
+    /// 缓存功能依赖于HttpApiConfig.ResponseCacheProvider
     /// </summary>
     [DebuggerDisplay("Expiration = {Expiration}")]
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
@@ -20,12 +20,12 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// 缓存键的请求头名称
         /// </summary>
-        private string headersString;
+        private string includeHeaderString;
 
         /// <summary>
         /// 获取缓存键的请求头名称
         /// </summary>
-        protected string[] IncludeHeaderNames { get; private set; }
+        protected string[] IncludeHeaderNames { get; private set; } = new string[0];
 
         /// <summary>
         /// 获取缓存的时间戳
@@ -38,7 +38,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         public string IncludeHeaders
         {
-            get => this.headersString;
+            get => this.includeHeaderString;
             set => this.SetHeaders(value);
         }
 
@@ -54,13 +54,13 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// 设置请求头
         /// </summary>
-        /// <param name="headers"></param>
-        private void SetHeaders(string headers)
+        /// <param name="headersString"></param>
+        private void SetHeaders(string headersString)
         {
-            this.headersString = headers;
-            if (headers != null)
+            this.includeHeaderString = headersString;
+            if (headersString != null)
             {
-                this.IncludeHeaderNames = headers
+                this.IncludeHeaderNames = headersString
                     .Split(new[] { ',', '|' })
                     .Select(h => h.Trim())
                     .Where(h => string.IsNullOrEmpty(h) == false)
@@ -84,7 +84,7 @@ namespace WebApiClient.Attributes
                 var value = string.Empty;
                 if (request.Headers.TryGetValues(name, out IEnumerable<string> values))
                 {
-                    value = string.Join(";", values);
+                    value = string.Join(",", values);
                 }
                 builder.Append($"{name}:{value}");
             }

@@ -10,6 +10,11 @@ namespace WebApiClient.Defaults
     public class JsonFormatter : IJsonFormatter
     {
         /// <summary>
+        /// 默认实例
+        /// </summary>
+        public static readonly JsonFormatter Default = new JsonFormatter();
+
+        /// <summary>
         /// 获取或设置配置
         /// </summary>
         public Action<JsonSerializerSettings> Settings { get; set; }

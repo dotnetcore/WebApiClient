@@ -57,6 +57,9 @@ namespace Demo
             var about = await userApi
                 .GetAboutAsync("webapi/user/about", user, "somevalue");
 
+            var aboutCache = await userApi
+                .GetAboutAsync("webapi/user/about", user, "somevalue");
+
             var user1 = await userApi
                 .GetByIdAsync("id001", CancellationToken.None);
 

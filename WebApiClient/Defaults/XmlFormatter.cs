@@ -12,6 +12,11 @@ namespace WebApiClient.Defaults
     public class XmlFormatter : IXmlFormatter
     {
         /// <summary>
+        /// 默认实例
+        /// </summary>
+        public static readonly XmlFormatter Default = new XmlFormatter();
+
+        /// <summary>
         /// 将对象序列化为xml文本
         /// </summary>
         /// <param name="obj">对象</param>

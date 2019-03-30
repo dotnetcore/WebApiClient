@@ -1,6 +1,7 @@
 ﻿using NetworkSocket.Http;
 using System.Text;
 using WebApiClient;
+using WebApiClient.Defaults;
 
 namespace Demo.HttpServices
 {
@@ -23,7 +24,7 @@ namespace Demo.HttpServices
 
         public override void ExecuteResult(RequestContext context)
         {
-            var xml = HttpApiConfig.DefaultXmlFormatter.Serialize(this.data, this.encoding);
+            var xml = XmlFormatter.Default.Serialize(this.data, this.encoding);
             context.Response.Charset = encoding;
             context.Response.ContentType = "application/xml";
             context.Response.WriteResponse(xml);
