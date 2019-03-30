@@ -10,7 +10,7 @@ namespace WebApiClient
     /// 提供HttpApi的配置注册和实例创建
     /// 并对实例的生命周期进行自动管理
     /// </summary>
-    public class HttpApiFactory<TInterface> : IHttpApiFactory<TInterface>, IHttpApiFactory
+    public class HttpApiFactory<TInterface> : IHttpApiFactory<TInterface>
         where TInterface : class, IHttpApi
     {
 
@@ -136,6 +136,16 @@ namespace WebApiClient
         /// </summary>
         /// <param name="factory">创建委托</param>
         /// <returns></returns>
+        void IHttpApiFactory.ConfigureHttpMessageHandler(Func<HttpMessageHandler> factory)
+        {
+            this.ConfigureHttpMessageHandler(factory);
+        }
+
+        /// <summary>
+        /// 配置HttpMessageHandler的创建
+        /// </summary>
+        /// <param name="factory">创建委托</param>
+        /// <returns></returns>
         public HttpApiFactory<TInterface> ConfigureHttpMessageHandler(Func<HttpMessageHandler> factory)
         {
             this.handlerFactory = factory;
@@ -147,7 +157,7 @@ namespace WebApiClient
         /// 配置HttpApiConfig
         /// </summary>
         /// <param name="options">配置委托</param>
-        void IHttpApiFactory<TInterface>.ConfigureHttpApiConfig(Action<HttpApiConfig> options)
+        void IHttpApiFactory.ConfigureHttpApiConfig(Action<HttpApiConfig> options)
         {
             this.ConfigureHttpApiConfig(options);
         }
