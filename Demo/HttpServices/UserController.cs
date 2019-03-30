@@ -16,7 +16,6 @@ namespace Demo.HttpServices
         [HttpGet]
         public ActionResult About(UserInfo user, string something)
         {
-            System.Threading.Thread.Sleep(100);
             return Content("This is from NetworkSocket.Http");
         }
 

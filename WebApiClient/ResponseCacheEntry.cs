@@ -47,9 +47,9 @@ namespace WebApiClient
         /// 转换为HttpResponseMessage
         /// </summary>
         /// <param name="requestMessage">请求信息</param>
-        /// <param name="xPoweredBy">xPoweredBy</param>
+        /// <param name="cacheProviderName">缓存提供者名</param>
         /// <returns></returns>
-        public HttpResponseMessage ToResponseMessage(HttpRequestMessage requestMessage, string xPoweredBy)
+        public HttpResponseMessage ToResponseMessage(HttpRequestMessage requestMessage, string cacheProviderName)
         {
             var response = new HttpResponseMessage
             {
@@ -68,9 +68,9 @@ namespace WebApiClient
             {
                 response.Content.Headers.TryAddWithoutValidation(item.Key, item.Value);
             }
-            if (string.IsNullOrEmpty(xPoweredBy) == false)
+            if (string.IsNullOrEmpty(cacheProviderName) == false)
             {
-                response.Headers.TryAddWithoutValidation("X-Powered-By", xPoweredBy);
+                response.Headers.TryAddWithoutValidation("Response-Cache-Provider", cacheProviderName);
             }
             return response;
         }

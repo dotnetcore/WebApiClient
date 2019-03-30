@@ -23,7 +23,7 @@ namespace WebApiClient.Defaults
         /// <summary>
         /// 获取提供者的友好名称
         /// </summary>
-        public string Name { get; } = nameof(ResponseCacheProvider);
+        public string Name { get; } = nameof(MemoryCache);
 
         /// <summary>
         /// 从缓存中获取响应实体
