@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示HttpApi创建工厂表示操作
+    /// 表示HttpApi创建工厂
     /// 提供HttpApi的配置注册和实例创建
     /// 并对实例的生命周期进行自动管理
     /// </summary>
@@ -137,7 +137,7 @@ namespace WebApiClient
             {
                 return factory.CreateHttpApi();
             }
-            throw new InvalidOperationException($"请先调用HttpApiFactory.Add()方法配置{nameof(name)}为{name}的接口名");
+            throw new InvalidOperationException($"尚未添加{nameof(name)}为{name}的接口名");
         }
 
         /// <summary>
