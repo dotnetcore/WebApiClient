@@ -39,7 +39,7 @@ namespace WebApiClient.Attributes
         public string IncludeHeaders
         {
             get => this.includeHeaderString;
-            set => this.SetHeaders(value);
+            set => this.SetIncludeHeaders(value);
         }
 
         /// <summary>
@@ -52,10 +52,10 @@ namespace WebApiClient.Attributes
         }
 
         /// <summary>
-        /// 设置请求头
+        /// 设置作为缓存键的请求头
         /// </summary>
         /// <param name="headersString"></param>
-        private void SetHeaders(string headersString)
+        private void SetIncludeHeaders(string headersString)
         {
             this.includeHeaderString = headersString;
             if (headersString != null)
@@ -77,8 +77,13 @@ namespace WebApiClient.Attributes
         {
             var request = context.RequestMessage;
             var uri = request.RequestUri.ToString();
-            var builder = new StringBuilder(uri);
 
+            if (this.IncludeHeaderNames.Length == 0)
+            {
+                return Task.FromResult(uri);
+            }
+
+            var builder = new StringBuilder(uri);
             foreach (var name in this.IncludeHeaderNames)
             {
                 var value = string.Empty;

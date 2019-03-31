@@ -117,7 +117,7 @@ namespace WebApiClient
         /// </summary>
         public IResponseCacheProvider ResponseCacheProvider { get; set; }
 #if !NETSTANDARD1_3
-        = Defaults.ResponseCacheProvider.Instance;
+        = WebApiClient.ResponseCacheProvider.Instance;
 #endif
 
         /// <summary>

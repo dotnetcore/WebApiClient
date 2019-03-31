@@ -9,6 +9,11 @@ namespace WebApiClient
     public struct ResponseCacheResult
     {
         /// <summary>
+        /// 表示无Value的缓存结果 
+        /// </summary>
+        public static readonly ResponseCacheResult NoValue = new ResponseCacheResult(null, false);
+
+        /// <summary>
         /// 获取缓存的值
         /// </summary>
         public ResponseCacheEntry Value { get; }

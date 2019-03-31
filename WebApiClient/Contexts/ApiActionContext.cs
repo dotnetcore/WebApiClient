@@ -188,7 +188,7 @@ namespace WebApiClient.Contexts
                 var cacheProvider = this.HttpApiConfig.ResponseCacheProvider;
 
                 var cacheKey = default(string);
-                var cacheResult = new ResponseCacheResult(null, false);
+                var cacheResult =  ResponseCacheResult.NoValue;
                 var cacheEnable = cacheAttribute != null && cacheProvider != null;
 
                 if (cacheEnable == true)

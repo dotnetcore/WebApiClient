@@ -3,7 +3,7 @@ using System;
 using System.Runtime.Caching;
 using System.Threading.Tasks;
 
-namespace WebApiClient.Defaults
+namespace WebApiClient
 {
     /// <summary>
     /// 表示Api响应结果缓存提供者的接口
