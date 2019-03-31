@@ -13,11 +13,6 @@ namespace WebApiClient.Contexts
     public class DataTypeDescriptor
     {
         /// <summary>
-        /// 表示空集合类型
-        /// </summary>
-        private static readonly Type[] emptyTypes = new Type[0];
-
-        /// <summary>
         /// 获取类型
         /// </summary>
         public Type Type { get; protected set; }
@@ -69,7 +64,7 @@ namespace WebApiClient.Contexts
 
             var taskType = typeof(ApiTask<>).MakeGenericType(dataType);
             this.ITaskFactory = Lambda.CreateNewFunc<ITask>(taskType);
-            this.ITaskConstructor = taskType.GetConstructor(emptyTypes);
+            this.ITaskConstructor = taskType.GetConstructor(TypeExtensions.EmptyTypes);
 
             this.IsString = dataType == typeof(string);
             this.IsStream = dataType == typeof(Stream);

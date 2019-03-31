@@ -152,7 +152,7 @@ namespace WebApiClient
         /// <returns></returns>
         public static Func<TType> CreateNewFunc<TType>(Type type)
         {
-            var args = new Type[0];
+            var args = TypeExtensions.EmptyTypes;
             return CreateNewFactory<Func<TType>>(type, args);
         }
 
