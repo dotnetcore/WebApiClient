@@ -251,5 +251,62 @@ namespace WebApiClient
         {
             return ((IHttpApiFactory)this).CreateHttpApi() as TInterface;
         }
+
+
+        #region new覆盖
+        /// <summary>
+        /// 设置HttpApi实例的生命周期
+        /// </summary>
+        /// <param name="lifeTime">生命周期</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        /// <returns></returns>
+        public new HttpApiFactory<TInterface> SetLifetime(TimeSpan lifeTime)
+        {
+            return base.SetLifetime(lifeTime) as HttpApiFactory<TInterface>;
+        }
+
+        /// <summary>
+        /// 设置清理过期的HttpApi实例的时间间隔
+        /// </summary>
+        /// <param name="interval">时间间隔</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        /// <returns></returns>
+        public new HttpApiFactory<TInterface> SetCleanupInterval(TimeSpan interval)
+        {
+            return base.SetCleanupInterval(interval) as HttpApiFactory<TInterface>;
+        }
+
+        /// <summary>
+        /// 设置是否维护使用一个CookieContainer实例
+        /// 该实例为首次创建时的CookieContainer
+        /// </summary>
+        /// <param name="keep">true维护使用一个CookieContainer实例</param>
+        /// <exception cref="PlatformNotSupportedException"></exception>
+        /// <returns></returns>
+        public new HttpApiFactory<TInterface> SetKeepCookieContainer(bool keep)
+        {
+            return base.SetKeepCookieContainer(keep) as HttpApiFactory<TInterface>;
+        }
+
+        /// <summary>
+        /// 配置HttpMessageHandler的创建
+        /// </summary>
+        /// <param name="factory">创建委托</param>
+        /// <returns></returns>
+        public new HttpApiFactory<TInterface> ConfigureHttpMessageHandler(Func<HttpMessageHandler> factory)
+        {
+            return base.ConfigureHttpMessageHandler(factory) as HttpApiFactory<TInterface>;
+        }
+
+        /// <summary>
+        /// 配置HttpApiConfig
+        /// </summary>
+        /// <param name="options">配置委托</param>
+        /// <returns></returns>
+        public new HttpApiFactory<TInterface> ConfigureHttpApiConfig(Action<HttpApiConfig> options)
+        {
+            return base.ConfigureHttpApiConfig(options) as HttpApiFactory<TInterface>;
+        }
+        #endregion
     }
 }
