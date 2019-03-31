@@ -8,6 +8,7 @@ namespace WebApiClient.Attributes
 {
     /// <summary>
     /// 表示将请求响应内容打印到输出调试窗口的过滤器
+    /// 仅在DEBUG模式下输出
     /// </summary>
     public class DebugFilterAttribute : TraceFilterBaseAttribute
     {
@@ -18,6 +19,7 @@ namespace WebApiClient.Attributes
 
         /// <summary>
         /// 将请求响应内容打印到输出调试窗口的过滤器
+        /// 仅在DEBUG模式下输出
         /// </summary>
         public DebugFilterAttribute()
         {
