@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using WebApiClient.Contexts;
 
 namespace WebApiClient
 {
@@ -16,17 +17,19 @@ namespace WebApiClient
         /// <summary>
         /// 从缓存中获取响应实体
         /// </summary>
+        /// <param name="context">上下文</param>
         /// <param name="key">键</param>
         /// <returns></returns>
-        Task<ResponseCacheResult> GetAsync(string key);
+        Task<ResponseCacheResult> GetAsync(ApiActionContext context,string key);
 
         /// <summary>
         /// 设置响应实体到缓存
         /// </summary>
+        /// <param name="context">上下文</param>
         /// <param name="key">键</param>
         /// <param name="entry">缓存实体</param>
         /// <param name="expiration">有效时间</param>
         /// <returns></returns>
-        Task SetAsync(string key, ResponseCacheEntry entry, TimeSpan expiration);
+        Task SetAsync(ApiActionContext context, string key, ResponseCacheEntry entry, TimeSpan expiration);
     }
 }

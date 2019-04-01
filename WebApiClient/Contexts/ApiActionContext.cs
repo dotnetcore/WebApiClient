@@ -188,13 +188,13 @@ namespace WebApiClient.Contexts
                 var cacheProvider = this.HttpApiConfig.ResponseCacheProvider;
 
                 var cacheKey = default(string);
-                var cacheResult =  ResponseCacheResult.NoValue;
+                var cacheResult = ResponseCacheResult.NoValue;
                 var cacheEnable = cacheAttribute != null && cacheProvider != null;
 
                 if (cacheEnable == true)
                 {
                     cacheKey = await cacheAttribute.GetCacheKeyAsync(this).ConfigureAwait(false);
-                    cacheResult = await cacheProvider.GetAsync(cacheKey).ConfigureAwait(false);
+                    cacheResult = await cacheProvider.GetAsync(this, cacheKey).ConfigureAwait(false);
                 }
 
                 if (cacheResult.HasValue == true)
@@ -214,7 +214,7 @@ namespace WebApiClient.Contexts
                     if (cacheEnable == true)
                     {
                         var cacheEntry = await ResponseCacheEntry.FromResponseMessageAsync(this.ResponseMessage).ConfigureAwait(false);
-                        await cacheProvider.SetAsync(cacheKey, cacheEntry, cacheAttribute.Expiration).ConfigureAwait(false);
+                        await cacheProvider.SetAsync(this, cacheKey, cacheEntry, cacheAttribute.Expiration).ConfigureAwait(false);
                     }
                 }
 

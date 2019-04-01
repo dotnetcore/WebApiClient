@@ -2,6 +2,7 @@
 using System;
 using System.Runtime.Caching;
 using System.Threading.Tasks;
+using WebApiClient.Contexts;
 
 namespace WebApiClient
 {
@@ -28,9 +29,10 @@ namespace WebApiClient
         /// <summary>
         /// 从缓存中获取响应实体
         /// </summary>
+        /// <param name="context">上下文</param>
         /// <param name="key">键</param>
         /// <returns></returns>
-        public Task<ResponseCacheResult> GetAsync(string key)
+        public Task<ResponseCacheResult> GetAsync(ApiActionContext context, string key)
         {
             var cacheItem = this.cache.GetCacheItem(key);
             if (cacheItem == null)
@@ -48,11 +50,12 @@ namespace WebApiClient
         /// <summary>
         /// 设置响应实体到缓存
         /// </summary>
+        /// <param name="context">上下文</param>
         /// <param name="key">键</param>
         /// <param name="entry">缓存实体</param>
         /// <param name="expiration">有效时间</param>
         /// <returns></returns>
-        public Task SetAsync(string key, ResponseCacheEntry entry, TimeSpan expiration)
+        public Task SetAsync(ApiActionContext context, string key, ResponseCacheEntry entry, TimeSpan expiration)
         {
             this.cache.Set(key, entry, new DateTimeOffset(DateTime.Now.Add(expiration)));
             return ApiTask.CompletedTask;
