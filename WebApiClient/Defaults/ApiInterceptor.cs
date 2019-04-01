@@ -72,7 +72,17 @@ namespace WebApiClient.Defaults
         /// <returns></returns>
         protected virtual ApiActionDescriptor GetApiActionDescriptor(MethodInfo method, object[] parameters)
         {
-            return descriptorCache.GetOrAdd(method, m => new ApiActionDescriptor(m)).Clone(parameters);
+            return descriptorCache.GetOrAdd(method, m => this.CreateApiActionDescriptor(m)).Clone(parameters);
+        }
+
+        /// <summary>
+        /// 返回创建ApiActionDescriptor新实例
+        /// </summary>
+        /// <param name="method">接口的方法</param>
+        /// <returns></returns>
+        protected virtual ApiActionDescriptor CreateApiActionDescriptor(MethodInfo method)
+        {
+            return new ApiActionDescriptor(method);
         }
 
         /// <summary>
