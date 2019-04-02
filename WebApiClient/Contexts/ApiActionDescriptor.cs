@@ -23,6 +23,11 @@ namespace WebApiClient.Contexts
         public MethodInfo Member { get; protected set; }
 
         /// <summary>
+        /// 获取Api调用参数值
+        /// </summary>
+        public object[] Arguments { get; protected set; }
+
+        /// <summary>
         /// 获取Api关联的缓存特性
         /// </summary>
         public IApiActionCacheAttribute Cache { get; protected set; }
@@ -102,7 +107,8 @@ namespace WebApiClient.Contexts
                 Member = this.Member,
                 Return = this.Return,
                 Filters = this.Filters,
-                Attributes = this.Attributes,
+                Arguments = parameterValues,
+                Attributes = this.Attributes,              
                 Parameters = this.Parameters.Select((p, i) => p.Clone(parameterValues[i])).ToReadOnlyList()
             };
         }
