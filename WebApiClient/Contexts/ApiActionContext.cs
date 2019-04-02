@@ -188,7 +188,7 @@ namespace WebApiClient.Contexts
                 var cacheProvider = this.HttpApiConfig.ResponseCacheProvider;
 
                 var cacheKey = default(string);
-                var cacheResult =  ResponseCacheResult.NoValue;
+                var cacheResult = ResponseCacheResult.NoValue;
                 var cacheEnable = cacheAttribute != null && cacheProvider != null;
 
                 if (cacheEnable == true)
@@ -265,7 +265,7 @@ namespace WebApiClient.Contexts
         /// <summary>
         /// 释放资源
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
             this.RequestMessage.Content?.Dispose();
         }

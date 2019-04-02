@@ -2,7 +2,6 @@
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using System;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
 using WebApiClient.DataAnnotations;
@@ -19,7 +18,7 @@ namespace WebApiClient.Defaults
         /// <summary>
         /// ContractResolver缓存
         /// </summary>
-        private static readonly ConcurrentDictionary<ContractKey, AnnotationsContractResolver> cache = new ConcurrentDictionary<ContractKey, AnnotationsContractResolver>();
+        private static readonly ConcurrentCache<ContractKey, AnnotationsContractResolver> cache = new ConcurrentCache<ContractKey, AnnotationsContractResolver>();
 
         /// <summary>
         /// 返回属性解析约定
@@ -115,8 +114,14 @@ namespace WebApiClient.Defaults
         /// </summary>
         private struct ContractKey : IEquatable<ContractKey>
         {
+            /// <summary>
+            /// 获取是否使用CamelCase
+            /// </summary>
             public bool CamelCase { get; private set; }
 
+            /// <summary>
+            /// 获取序列化范围;
+            /// </summary>
             public FormatScope FormatScope { get; private set; }
 
             /// <summary>
@@ -140,9 +145,22 @@ namespace WebApiClient.Defaults
                 return true;
             }
 
+            /// <summary>
+            /// 获取哈希
+            /// </summary>
+            /// <returns></returns>
             public override int GetHashCode()
             {
                 return this.CamelCase.GetHashCode() ^ this.FormatScope.GetHashCode();
+            }
+
+            /// <summary>
+            /// 转换为字符串
+            /// </summary>
+            /// <returns></returns>
+            public override string ToString()
+            {
+                return this.FormatScope.ToString();
             }
         }
     }

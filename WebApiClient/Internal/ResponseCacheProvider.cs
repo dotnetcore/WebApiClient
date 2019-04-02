@@ -35,12 +35,13 @@ namespace WebApiClient
             var cacheItem = this.cache.GetCacheItem(key);
             if (cacheItem == null)
             {
-                var result = new ResponseCacheResult(null, false);
+                var result = ResponseCacheResult.NoValue;
                 return Task.FromResult(result);
             }
             else
             {
-                var result = new ResponseCacheResult((ResponseCacheEntry)cacheItem.Value, true);
+                var value = cacheItem.Value as ResponseCacheEntry;
+                var result = new ResponseCacheResult(value, true);
                 return Task.FromResult(result);
             }
         }

@@ -12,21 +12,12 @@ namespace WebApiClient.Defaults
         /// <summary>
         /// ApiActionDescriptor缓存
         /// </summary>
-        private static readonly ConcurrentCache<MethodInfo, ApiActionDescriptor> descriptorCache;
+        private static readonly ConcurrentCache<MethodInfo, ApiActionDescriptor> descriptorCache = new ConcurrentCache<MethodInfo, ApiActionDescriptor>();
 
         /// <summary>
         /// 获取相关的配置
         /// </summary>
         public HttpApiConfig HttpApiConfig { get; private set; }
-
-
-        /// <summary>
-        /// http接口调用的拦截器
-        /// </summary>
-        static ApiInterceptor()
-        {
-            descriptorCache = new ConcurrentCache<MethodInfo, ApiActionDescriptor>();
-        }
 
         /// <summary>
         /// http接口调用的拦截器
@@ -53,7 +44,7 @@ namespace WebApiClient.Defaults
             var apiTask = descriptor.Return.DataType.ITaskFactory.Invoke() as ApiTask;
             apiTask.ContextFactory = () => this.CreateApiActionContext(httpApi, descriptor);
 
-            if (descriptor.Return.IsITaskDefinition == false)
+            if (descriptor.Return.IsTaskDefinition == true)
             {
                 return apiTask.Execute();
             }
