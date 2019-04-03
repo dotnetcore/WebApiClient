@@ -132,7 +132,7 @@ namespace WebApiClient
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
-        public static object Get(string name)
+        public static HttpApiClient Get(string name)
         {
             if (string.IsNullOrEmpty(name) == true)
             {

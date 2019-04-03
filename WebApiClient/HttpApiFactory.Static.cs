@@ -94,7 +94,7 @@ namespace WebApiClient
         [Obsolete("请使用HttpApi.Get方法替代", false)]
         public static HttpApiClient Create(string name)
         {
-            return HttpApi.Get(name) as HttpApiClient;
+            return HttpApi.Get(name);
         }
     }
 }
