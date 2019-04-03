@@ -27,7 +27,7 @@ namespace Demo
             var logging = new LoggerFactory().AddConsole();
 
             // 注册与配置IUserApi接口
-            HttpApiFactory.Add<IUserApi>().ConfigureHttpApiConfig(c =>
+            HttpApi.Register<IUserApi>().ConfigureHttpApiConfig(c =>
             {
                 c.LoggerFactory = logging;
                 c.HttpHost = new Uri("http://localhost:9999/");
@@ -41,9 +41,7 @@ namespace Demo
         /// <returns></returns>
         private static async Task RequestAsync()
         {
-            // userApi由HttpApiFactory创建，自动接管其生命周期
-            // 不应该将其做为全局变量缓存起来
-            var userApi = HttpApiFactory.Create<IUserApi>();
+            var userApi = HttpApi.Get<IUserApi>();
 
             var user = new UserInfo
             {
