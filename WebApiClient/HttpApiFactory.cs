@@ -10,7 +10,7 @@ namespace WebApiClient
     /// 提供HttpApi的配置注册和实例创建
     /// 并对实例的生命周期进行自动管理
     /// </summary>
-    public partial class HttpApiFactory : IHttpApiFactory
+    public class HttpApiFactory : IHttpApiFactory
     {
         /// <summary>
         /// 具有生命周期的httpHandler延时创建对象
