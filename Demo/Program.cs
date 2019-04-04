@@ -13,8 +13,8 @@ namespace Demo
     {
         static void Main(string[] args)
         {
-            Program.Init();
-            Program.RequestAsync().Wait();
+            Init();
+            RequestAsync().Wait();
             Console.ReadLine();
         }
 
@@ -25,7 +25,8 @@ namespace Demo
         {
             HttpServer.Start(9999);
             var logging = new LoggerFactory().AddConsole();
-            // 注册与配置IUserApi接口
+
+            //  注册IUserApi 配置其工厂
             HttpApi.Register<IUserApi>().ConfigureHttpApiConfig(c =>
             {
                 c.LoggerFactory = logging;
@@ -39,8 +40,8 @@ namespace Demo
         /// </summary>
         /// <returns></returns>
         private static async Task RequestAsync()
-        {           
-            var userApi = HttpApi.Get<IUserApi>();
+        {
+            var userApi = HttpApi.Resolve<IUserApi>();
 
             var user = new UserInfo
             {

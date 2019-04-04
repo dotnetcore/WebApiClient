@@ -4,8 +4,7 @@ using WebApiClient.Defaults;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示HttpApi
-    /// 提供创建HttpApi实例的方法
+    /// 提供HttpApi的创建、注册和解析   
     /// </summary>
     public partial class HttpApi
     {

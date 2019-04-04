@@ -55,14 +55,14 @@ namespace WebApiClient.Test
             HttpApi.Register<IMyApi>()
                .SetLifetime(TimeSpan.FromMilliseconds(100d));
 
-            var api1 = HttpApi.Get<IMyApi>();
-            var api2 = HttpApi.Get<IMyApi>();
+            var api1 = HttpApi.Resolve<IMyApi>();
+            var api2 = HttpApi.Resolve<IMyApi>();
             Assert.True(IsHttpHandlerEquals(api1, api2));
             Assert.False(api1 == api2);
 
             Thread.Sleep(TimeSpan.FromMilliseconds(150));
 
-            var api3 = HttpApi.Get<IMyApi>();
+            var api3 = HttpApi.Resolve<IMyApi>();
             Assert.False(IsHttpHandlerEquals(api1, api3));
         }
 

@@ -4,8 +4,7 @@ using System.Collections.Concurrent;
 namespace WebApiClient
 {
     /// <summary>
-    /// 提供HttpApi的注册和实例创建
-    /// 使用HttpApiFactory自动管理实例的生命周期
+    /// 提供HttpApi的创建、注册和解析   
     /// </summary>
     public partial class HttpApi
     {
@@ -98,20 +97,20 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 获取指定Api的代理实例
+        /// 解析出指定Api的代理实例
         /// 不能将该实例作全局变量引用
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
-        public static TInterface Get<TInterface>() where TInterface : class, IHttpApi
+        public static TInterface Resolve<TInterface>() where TInterface : class, IHttpApi
         {
             var name = GetFactoryName<TInterface>();
-            return Get<TInterface>(name);
+            return Resolve<TInterface>(name);
         }
 
         /// <summary>
-        /// 根据工厂名获取其Api的代理实例
+        /// 根据工厂名解析出其Api的代理实例
         /// 不能将该实例作全局变量引用
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
@@ -119,20 +118,20 @@ namespace WebApiClient
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
-        public static TInterface Get<TInterface>(string name) where TInterface : class, IHttpApi
+        public static TInterface Resolve<TInterface>(string name) where TInterface : class, IHttpApi
         {
-            return Get(name) as TInterface;
+            return Resolve(name) as TInterface;
         }
 
         /// <summary>
-        /// 根据工厂名获取其Api的代理实例
+        /// 根据工厂名解析出其Api的代理实例
         /// 不能将该实例作全局变量引用
         /// </summary>
         /// <param name="name">工厂名称</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
-        public static HttpApi Get(string name)
+        public static HttpApi Resolve(string name)
         {
             if (string.IsNullOrEmpty(name) == true)
             {

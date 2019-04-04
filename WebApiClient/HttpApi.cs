@@ -4,8 +4,7 @@ using System.Diagnostics;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示HttpApi
-    /// 提供创建HttpApi实例的方法
+    /// 提供HttpApi的创建、注册和解析   
     /// </summary>
     [DebuggerTypeProxy(typeof(DebugView))]
     public abstract partial class HttpApi : IHttpApi
@@ -16,7 +15,7 @@ namespace WebApiClient
         public IApiInterceptor ApiInterceptor { get; }
 
         /// <summary>
-        /// http的基类
+        /// http接口代理类的基类
         /// </summary>
         /// <param name="apiInterceptor">拦截器</param>
         /// <exception cref="ArgumentNullException"></exception>
