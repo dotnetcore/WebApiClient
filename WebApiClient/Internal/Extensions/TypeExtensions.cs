@@ -92,7 +92,7 @@ namespace WebApiClient
 
         /// <summary>
         /// 获取接口类型及其继承的接口的所有方法
-        /// 忽略HttpApiClient类型的所有接口的方法
+        /// 忽略HttpApi类型的所有接口的方法
         /// </summary>
         /// <param name="interfaceType">接口类型</param> 
         /// <exception cref="ArgumentException"></exception>
@@ -106,7 +106,7 @@ namespace WebApiClient
             }
 
             var apiMethods = new[] { interfaceType }.Concat(interfaceType.GetInterfaces())
-                .Except(typeof(HttpApiClient).GetInterfaces())
+                .Except(typeof(HttpApi).GetInterfaces())
                 .SelectMany(item => item.GetMethods())
 #if JIT
                 .Select(item => item.EnsureApiMethod())

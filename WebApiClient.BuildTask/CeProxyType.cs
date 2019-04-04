@@ -91,7 +91,7 @@ namespace WebApiClient.BuildTask
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
 
-            var baseConstructor = this.ImportMethod<HttpApiClient>(item => item.IsConstructor);
+            var baseConstructor = this.ImportMethod<HttpApi>(item => item.IsConstructor);
             il.Emit(OpCodes.Call, baseConstructor);
 
             // this.interceptor = 第一个参数

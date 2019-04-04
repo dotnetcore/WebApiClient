@@ -12,7 +12,7 @@ namespace WebApiClient
         /// 创建接口的代理实例
         /// </summary>
         /// <returns></returns>
-        HttpApiClient CreateHttpApi();
+        HttpApi CreateHttpApi();
 
         /// <summary>
         /// 配置HttpApiConfig

@@ -1,159 +1,51 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.Diagnostics;
 
 namespace WebApiClient
 {
     /// <summary>
-    /// 提供HttpApi的注册和实例创建
-    /// 使用HttpApiFactory自动管理实例的生命周期
+    /// 表示HttpApi
+    /// 提供创建HttpApi实例的方法
     /// </summary>
-    public static class HttpApi
+    [DebuggerTypeProxy(typeof(DebugView))]
+    public abstract partial class HttpApi : IHttpApi
     {
         /// <summary>
-        /// 同步锁
+        /// 获取拦截器
         /// </summary>
-        private static readonly object syncRoot = new object();
+        public IApiInterceptor ApiInterceptor { get; }
 
         /// <summary>
-        /// 工厂字典
+        /// http的基类
         /// </summary>
-        private static readonly ConcurrentDictionary<string, IHttpApiFactory> factories = new ConcurrentDictionary<string, IHttpApiFactory>();
-
-
-        /// <summary>
-        /// 注册指定Api以及其工厂
-        /// 返回Api工厂实例
-        /// </summary>
-        /// <typeparam name="TInterface"></typeparam>
-        /// <exception cref="InvalidOperationException"></exception>
-        /// <returns></returns>
-        public static HttpApiFactory<TInterface> Register<TInterface>() where TInterface : class, IHttpApi
-        {
-            var name = GetFactoryName<TInterface>();
-            return Register<TInterface>(name);
-        }
-
-        /// <summary>
-        /// 注册指定Api以及其工厂
-        /// 返回Api工厂实例
-        /// </summary>
-        /// <typeparam name="TInterface"></typeparam>
-        /// <param name="name">工厂名称</param>
+        /// <param name="apiInterceptor">拦截器</param>
         /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="InvalidOperationException"></exception>
-        /// <returns></returns>
-        public static HttpApiFactory<TInterface> Register<TInterface>(string name) where TInterface : class, IHttpApi
+        public HttpApi(IApiInterceptor apiInterceptor)
         {
-            var factory = new HttpApiFactory<TInterface>();
-            return Register(name, factory);
+            this.ApiInterceptor = apiInterceptor ?? throw new ArgumentNullException(nameof(apiInterceptor));
         }
 
         /// <summary>
-        /// 注册指定Api以及其工厂
-        /// 返回Api工厂实例
+        /// 释放资源
         /// </summary>
-        /// <param name="name">工厂名称</param>
-        /// <param name="interfaceType">api接口类型</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="InvalidOperationException"></exception>
-        /// <returns></returns>
-        public static HttpApiFactory Register(string name, Type interfaceType)
+        public void Dispose()
         {
-            var factory = new HttpApiFactory(interfaceType);
-            return Register(name, factory);
+            this.ApiInterceptor.Dispose();
         }
 
         /// <summary>
-        /// 注册指定Api的工厂
+        /// 调试视图
         /// </summary>
-        /// <typeparam name="TFactory"></typeparam>
-        /// <param name="name">工厂名称</param>
-        /// <param name="factory">工厂实例</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="InvalidOperationException"></exception>
-        /// <returns></returns>
-        private static TFactory Register<TFactory>(string name, TFactory factory) where TFactory : IHttpApiFactory
+        private class DebugView : HttpApi
         {
-            if (string.IsNullOrEmpty(name) == true)
+            /// <summary>
+            /// 调试视图
+            /// </summary>
+            /// <param name="target">查看的对象</param>
+            public DebugView(HttpApi target)
+                : base(target.ApiInterceptor)
             {
-                throw new ArgumentNullException(nameof(name));
             }
-
-            if (factory == null)
-            {
-                throw new ArgumentNullException(nameof(factory));
-            }
-
-            lock (syncRoot)
-            {
-                if (factories.ContainsKey(name) == true)
-                {
-                    throw new InvalidOperationException($"不允许添加重复名称的{nameof(HttpApiFactory)}：{name}");
-                }
-
-                factories.TryAdd(name, factory);
-                return factory;
-            }
-        }
-
-        /// <summary>
-        /// 获取指定Api的代理实例
-        /// 不能将该实例作全局变量引用
-        /// </summary>
-        /// <typeparam name="TInterface"></typeparam>
-        /// <exception cref="InvalidOperationException"></exception>
-        /// <returns></returns>
-        public static TInterface Get<TInterface>() where TInterface : class, IHttpApi
-        {
-            var name = GetFactoryName<TInterface>();
-            return Get<TInterface>(name);
-        }
-
-        /// <summary>
-        /// 根据工厂名获取其Api的代理实例
-        /// 不能将该实例作全局变量引用
-        /// </summary>
-        /// <typeparam name="TInterface"></typeparam>
-        /// <param name="name">工厂名称</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="InvalidOperationException"></exception>
-        /// <returns></returns>
-        public static TInterface Get<TInterface>(string name) where TInterface : class, IHttpApi
-        {
-            return Get(name) as TInterface;
-        }
-
-        /// <summary>
-        /// 根据工厂名获取其Api的代理实例
-        /// 不能将该实例作全局变量引用
-        /// </summary>
-        /// <param name="name">工厂名称</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="InvalidOperationException"></exception>
-        /// <returns></returns>
-        public static HttpApiClient Get(string name)
-        {
-            if (string.IsNullOrEmpty(name) == true)
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-
-            if (factories.TryGetValue(name, out var factory) == true)
-            {
-                return factory.CreateHttpApi();
-            }
-            throw new InvalidOperationException($"尚未注册{nameof(name)}为{name}的工厂");
-        }
-
-        /// <summary>
-        /// 返回类型的工厂名称
-        /// </summary>
-        /// <typeparam name="TInterface"></typeparam>
-        /// <returns></returns>
-        private static string GetFactoryName<TInterface>()
-        {
-            return typeof(TInterface).FullName;
         }
     }
 }

@@ -28,35 +28,17 @@ namespace WebApiClient.Test
             Assert.False(IsHttpHandlerEquals(api1, api3));
         }
 
-        [Fact]
-        public void AddCreateTest()
-        {
-            HttpApiFactory.Add<IMyApi>()
-               .SetLifetime(TimeSpan.FromMilliseconds(100d));
-
-            var api1 = HttpApiFactory.Create<IMyApi>();
-            var api2 = HttpApiFactory.Create<IMyApi>();
-            Assert.True(IsHttpHandlerEquals(api1, api2));
-            Assert.False(api1 == api2);
-
-            Thread.Sleep(TimeSpan.FromMilliseconds(150));
-
-            var api3 = HttpApiFactory.Create<IMyApi>();
-            Assert.False(IsHttpHandlerEquals(api1, api3));
-        }
-
         private bool IsHttpHandlerEquals(IHttpApi x, IHttpApi y)
         {
             return GetHttpHandler(x) == GetHttpHandler(y);
         }
 
-        private HttpMessageHandler GetHttpHandler(IHttpApi httpApi)
+        private HttpMessageHandler GetHttpHandler(IHttpApi ihttpApi)
         {
-            var httpApiClient = httpApi as HttpApiClient;
-            var interceptor = httpApiClient.ApiInterceptor as ApiInterceptor;
+            var httpApi = ihttpApi as HttpApi;
+            var interceptor = httpApi.ApiInterceptor as ApiInterceptor;
             return interceptor.HttpApiConfig.HttpHandler.SourceHanlder;
         }
-
         public interface IMyApi : IHttpApi
         {
         }

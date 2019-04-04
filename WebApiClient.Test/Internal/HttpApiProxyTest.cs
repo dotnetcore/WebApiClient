@@ -8,7 +8,7 @@ using Xunit;
 
 namespace WebApiClient.Test.Internal
 {
-    public class HttpApiClientProxyTest
+    public class HttpApiProxyTest
     {
         class MyInterceptor : IApiInterceptor,IDisposable
         {
@@ -54,7 +54,7 @@ namespace WebApiClient.Test.Internal
         {
             var config = new HttpApiConfig();
             var interceptor = new MyInterceptor(config);
-            var myApi = HttpApiClientProxy.CreateInstance(typeof(IMyApi), interceptor) as IMyApi;
+            var myApi = HttpApiProxy.CreateInstance(typeof(IMyApi), interceptor) as IMyApi;
 
             var result = await myApi.M1(0, 1);
             Assert.Equal(result.Method, typeof(IMyApi).GetMethod("M1"));

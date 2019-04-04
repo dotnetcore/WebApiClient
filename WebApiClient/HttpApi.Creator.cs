@@ -4,49 +4,27 @@ using WebApiClient.Defaults;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示HttpApi客户端
-    /// 提供创建HttpApiClient实例的方法
+    /// 表示HttpApi
+    /// 提供创建HttpApi实例的方法
     /// </summary>
-    public partial class HttpApiClient
+    public partial class HttpApi
     {
         /// <summary>
         /// 一个站点内的默认连接数限制
         /// </summary>
-        private static int connectionLimit = 128;
-
-#if NETCOREAPP2_1
-        /// <summary>
-        /// 使用SocketsHttpHandler开关项的名称
-        /// </summary>
-        private const string useSocketsHttpHandlerSwitch = "System.Net.Http.UseSocketsHttpHandler";
+        private static int maxConnections = 128;
 
         /// <summary>
-        /// 获取或设置HttpClientHandler是否包装和使用SocketsHttpHandler
-        /// </summary>
-        public static bool UseSocketsHttpHandler
-        {
-            get
-            {
-                return AppContext.TryGetSwitch(useSocketsHttpHandlerSwitch, out bool isEnabled) && isEnabled;
-            }
-            set
-            {
-                AppContext.SetSwitch(useSocketsHttpHandlerSwitch, value);
-            }
-        }
-#endif
-
-        /// <summary>
-        /// 获取或设置一个站点内的默认连接数限制
+        /// 获取或设置一个站点内的默认最大连接数
         /// 这个值在初始化HttpClientHandler时使用
         /// 默认值为128
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public static int ConnectionLimit
+        public static int MaxConnections
         {
             get
             {
-                return connectionLimit;
+                return maxConnections;
             }
             set
             {
@@ -54,14 +32,14 @@ namespace WebApiClient
                 {
                     throw new ArgumentOutOfRangeException();
                 }
-                connectionLimit = value;
+                maxConnections = value;
             }
         }
 
         /// <summary>
-        /// 创建实现了指定接口的HttpApiClient实例
+        /// 创建指定接口的代理实例
         /// </summary>
-        /// <typeparam name="TInterface">请求接口类型</typeparam>
+        /// <typeparam name="TInterface">接口类型</typeparam>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="TypeLoadException"></exception>
@@ -73,9 +51,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 创建实现了指定接口的HttpApiClient实例
+        /// 创建指定接口的代理实例
         /// </summary>
-        /// <typeparam name="TInterface">请求接口类型</typeparam>
+        /// <typeparam name="TInterface">接口类型</typeparam>
         /// <param name="httpHost">Http服务完整主机域名，如http://www.webapiclient.com</param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
@@ -93,9 +71,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 创建实现了指定接口的HttpApiClient实例
+        /// 创建指定接口的代理实例
         /// </summary>
-        /// <typeparam name="TInterface">请求接口类型</typeparam>
+        /// <typeparam name="TInterface">接口类型</typeparam>
         /// <param name="httpApiConfig">接口配置</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
@@ -108,7 +86,8 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 创建实现了指定接口的HttpApiClient实例
+        /// 创建指定接口的代理实例
+        /// 该代理实例派生于HttpApi类型
         /// </summary>
         /// <param name="interfaceType">请求接口类型</param>
         /// <param name="httpApiConfig">接口配置</param>
@@ -117,7 +96,7 @@ namespace WebApiClient
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="TypeLoadException"></exception>
         /// <returns></returns>
-        public static HttpApiClient Create(Type interfaceType, HttpApiConfig httpApiConfig)
+        public static HttpApi Create(Type interfaceType, HttpApiConfig httpApiConfig)
         {
             if (httpApiConfig == null)
             {
@@ -128,7 +107,8 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 创建实现了指定接口的HttpApiClient实例
+        /// 创建指定接口的代理实例
+        /// 该代理实例派生于HttpApi类型
         /// </summary>
         /// <param name="interfaceType">请求接口类型</param>
         /// <param name="apiInterceptor">http接口调用拦截器</param>
@@ -137,7 +117,7 @@ namespace WebApiClient
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="TypeLoadException"></exception>
         /// <returns></returns>
-        public static HttpApiClient Create(Type interfaceType, IApiInterceptor apiInterceptor)
+        public static HttpApi Create(Type interfaceType, IApiInterceptor apiInterceptor)
         {
             if (interfaceType == null)
             {
@@ -149,7 +129,7 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(apiInterceptor));
             }
 
-            return HttpApiClientProxy.CreateInstance(interfaceType, apiInterceptor);
+            return HttpApiProxy.CreateInstance(interfaceType, apiInterceptor);
         }
     }
 }

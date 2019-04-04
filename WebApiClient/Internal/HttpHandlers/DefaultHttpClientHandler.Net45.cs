@@ -47,7 +47,7 @@ namespace WebApiClient
             if (maxConnectionsPerServerAction != null)
             {
                 Exceptions.Catch<PlatformNotSupportedException>(() =>
-                    maxConnectionsPerServerAction.Invoke(this, HttpApiClient.ConnectionLimit));
+                    maxConnectionsPerServerAction.Invoke(this, HttpApi.MaxConnections));
             }
 
             Exceptions.Catch<PlatformNotSupportedException>(() =>
@@ -68,7 +68,7 @@ namespace WebApiClient
                 if (this.hashSet.Add(request.RequestUri) == true)
                 {
                     var servicePoint = this.FindServicePoint(request.RequestUri);
-                    servicePoint.ConnectionLimit = HttpApiClient.ConnectionLimit;
+                    servicePoint.ConnectionLimit = HttpApi.MaxConnections;
                 }
             }
 

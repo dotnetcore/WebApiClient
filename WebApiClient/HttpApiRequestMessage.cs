@@ -326,16 +326,6 @@ namespace WebApiClient
         public override string ToString()
         {
             return this.GetHeadersString();
-        }
-
-        /// <summary>
-        /// 返回请求数据
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete("该方法已过时，请使用GetRequestStringAsync替代", false)]
-        public async Task<string> ToStringAsync()
-        {
-            return await this.GetRequestStringAsync().ConfigureAwait(false);
-        }
+        } 
     }
 }

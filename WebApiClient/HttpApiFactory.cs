@@ -174,9 +174,9 @@ namespace WebApiClient
         /// </summary>
         /// <param name="httpApiConfig">httpApi配置</param>
         /// <returns></returns>
-        protected virtual HttpApiClient CreateHttpApi(HttpApiConfig httpApiConfig)
+        protected virtual HttpApi CreateHttpApi(HttpApiConfig httpApiConfig)
         {
-            return HttpApiClient.Create(this.InterfaceType, httpApiConfig);
+            return HttpApi.Create(this.InterfaceType, httpApiConfig);
         }
 
 
@@ -203,7 +203,7 @@ namespace WebApiClient
         /// 创建接口的代理实例
         /// </summary>
         /// <returns></returns>
-        HttpApiClient IHttpApiFactory.CreateHttpApi()
+        HttpApi IHttpApiFactory.CreateHttpApi()
         {
             var handler = this.lifeTimeHttpHandlerLazy.Value;
             var httpApiConfig = new LifetimeHttpApiConfig(handler);

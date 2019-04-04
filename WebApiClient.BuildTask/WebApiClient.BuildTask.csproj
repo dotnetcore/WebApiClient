@@ -4,8 +4,7 @@
     <OutputType>Library</OutputType>
     <TargetFrameworks>net45;netcoreapp1.1;</TargetFrameworks>
     <Configurations>AOT_Debug;AOT_Release</Configurations>
-    <Version>0.1.6</Version>
-    <AssemblyVersion>0.1.6.0</AssemblyVersion>
+    <Version>1.0.0-beta1</Version>   
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>sign.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
@@ -31,10 +30,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\WebApiClient\HttpApiClient.cs" Link="OuterTypes\HttpApiClient.cs" />
+    <Compile Include="..\WebApiClient\HttpApi.cs" Link="OuterTypes\HttpApi.cs" />
     <Compile Include="..\WebApiClient\IApiInterceptor.cs" Link="OuterTypes\IApiInterceptor.cs" />
     <Compile Include="..\WebApiClient\IHttpApi.cs" Link="OuterTypes\IHttpApi.cs" />
-    <Compile Include="..\WebApiClient\IHttpApiClient.cs" Link="OuterTypes\IHttpApiClient.cs" />
     <Compile Include="..\WebApiClient\ITask.cs" Link="OuterTypes\ITask.cs" />  
   </ItemGroup>
 

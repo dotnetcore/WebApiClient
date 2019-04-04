@@ -6,15 +6,15 @@ using System.Reflection;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示HttpApiClient代理描述
-    /// 提供HttpApiClient代理类的实例化
+    /// 表示HttpApi代理描述
+    /// 提供HttpApi代理类的实例化
     /// </summary>
-    partial class HttpApiClientProxy
+    partial class HttpApiProxy
     {
         /// <summary>
         /// 接口类型与代理描述缓存
         /// </summary>
-        private static readonly ConcurrentCache<Type, HttpApiClientProxy> interfaceProxyCache = new ConcurrentCache<Type, HttpApiClientProxy>();
+        private static readonly ConcurrentCache<Type, HttpApiProxy> interfaceProxyCache = new ConcurrentCache<Type, HttpApiProxy>();
 
         /// <summary>
         /// 搜索接口的代理类型并实例化
@@ -23,7 +23,7 @@ namespace WebApiClient
         /// <param name="interceptor">拦截器</param>
         /// <exception cref="TypeLoadException"></exception>
         /// <returns></returns>
-        public static HttpApiClient CreateInstance(Type interfaceType, IApiInterceptor interceptor)
+        public static HttpApi CreateInstance(Type interfaceType, IApiInterceptor interceptor)
         {
             var proxy = interfaceProxyCache.GetOrAdd(interfaceType, @interface =>
             {
@@ -34,12 +34,12 @@ namespace WebApiClient
                 }
 
                 var apiMethods = @interface.GetAllApiMethods();
-                return new HttpApiClientProxy(proxyType, apiMethods);
+                return new HttpApiProxy(proxyType, apiMethods);
             });
 
             if (proxy == null)
             {
-                var assemblyName = typeof(HttpApiClientProxy).GetTypeInfo().Assembly.GetName();
+                var assemblyName = typeof(HttpApiProxy).GetTypeInfo().Assembly.GetName();
                 throw new TypeLoadException($"找不到接口{interfaceType}的代理类，请为接口所在项目重新使用Nuget安装{assemblyName.Name} {assemblyName.Version}");
             }
             return proxy.CreateInstance(interceptor);

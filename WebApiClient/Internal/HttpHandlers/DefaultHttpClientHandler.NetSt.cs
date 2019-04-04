@@ -21,7 +21,7 @@ namespace WebApiClient
             this.Proxy = null;
 
             Exceptions.Catch<PlatformNotSupportedException>(() =>
-                this.MaxConnectionsPerServer = HttpApiClient.ConnectionLimit);
+                this.MaxConnectionsPerServer = HttpApi.MaxConnections);
 
             Exceptions.Catch<PlatformNotSupportedException>(() =>
                 this.ServerCertificateCustomValidationCallback = (a, b, c, d) => true);

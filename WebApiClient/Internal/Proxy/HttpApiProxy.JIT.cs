@@ -7,10 +7,10 @@ using System.Reflection.Emit;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示HttpApiClient代理描述
-    /// 提供HttpApiClient代理类的实例化
+    /// 表示HttpApi代理描述
+    /// 提供HttpApi代理类的实例化
     /// </summary>
-    partial class HttpApiClientProxy
+    partial class HttpApiProxy
     {
         /// <summary>
         /// IApiInterceptor的Intercept方法
@@ -18,9 +18,9 @@ namespace WebApiClient
         private static readonly MethodInfo interceptMethod = typeof(IApiInterceptor).GetMethod(nameof(IApiInterceptor.Intercept));
 
         /// <summary>
-        /// HttpApiClient的构造器
+        /// HttpApi的构造器
         /// </summary>
-        private static readonly ConstructorInfo baseConstructor = typeof(HttpApiClient).GetConstructor(new Type[] { typeof(IApiInterceptor) });
+        private static readonly ConstructorInfo baseConstructor = typeof(HttpApi).GetConstructor(new Type[] { typeof(IApiInterceptor) });
 
         /// <summary>
         /// 代理类型的构造器的参数类型
@@ -30,17 +30,17 @@ namespace WebApiClient
         /// <summary>
         /// 接口类型与代理描述缓存
         /// </summary>
-        private static readonly ConcurrentCache<Type, HttpApiClientProxy> interfaceProxyCache = new ConcurrentCache<Type, HttpApiClientProxy>();
+        private static readonly ConcurrentCache<Type, HttpApiProxy> interfaceProxyCache = new ConcurrentCache<Type, HttpApiProxy>();
 
         /// <summary>
-        /// 返回HttpApiClient代理类的实例
+        /// 返回HttpApi代理类的实例
         /// </summary>
         /// <param name="interfaceType">接口类型</param>
         /// <param name="interceptor">拦截器</param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        public static HttpApiClient CreateInstance(Type interfaceType, IApiInterceptor interceptor)
+        public static HttpApi CreateInstance(Type interfaceType, IApiInterceptor interceptor)
         {
             // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口            
             if (interfaceType.GetTypeInfo().IsVisible == false)
@@ -53,7 +53,7 @@ namespace WebApiClient
             {
                 var apiMethods = @interface.GetAllApiMethods();
                 var proxyType = BuildProxyType(@interface, apiMethods);
-                return new HttpApiClientProxy(proxyType, apiMethods);
+                return new HttpApiProxy(proxyType, apiMethods);
             });
 
             return proxy.CreateInstance(interceptor);
@@ -74,7 +74,7 @@ namespace WebApiClient
                 .DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run)
                 .DefineDynamicModule(moduleName);
 
-            var builder = module.DefineType(interfaceType.FullName, TypeAttributes.Class, typeof(HttpApiClient));
+            var builder = module.DefineType(interfaceType.FullName, TypeAttributes.Class, typeof(HttpApi));
             builder.AddInterfaceImplementation(interfaceType);
 
             var fieldInterceptor = BuildField(builder, "interceptor", typeof(IApiInterceptor));

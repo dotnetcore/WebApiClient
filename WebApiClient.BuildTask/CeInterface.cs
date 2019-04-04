@@ -50,7 +50,7 @@ namespace WebApiClient.BuildTask
             var @namespace = this.Type.Namespace;
             var proxyTypeName = $"{prefix}{this.Type.Name}";
             var classAttributes = this.GetProxyTypeAttributes();
-            var baseType = this.ImportType<HttpApiClient>();
+            var baseType = this.ImportType<HttpApi>();
 
             var proxyType = new TypeDefinition(@namespace, proxyTypeName, classAttributes, baseType)
             {
@@ -134,7 +134,7 @@ namespace WebApiClient.BuildTask
         /// <returns></returns>
         public MethodDefinition[] GetAllApis()
         {
-            var excepts = this.ImportType<HttpApiClient>()
+            var excepts = this.ImportType<HttpApi>()
                 .Resolve()
                 .Interfaces
                 .Select(item => item.InterfaceType.Resolve());
