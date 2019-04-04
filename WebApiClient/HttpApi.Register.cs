@@ -88,7 +88,7 @@ namespace WebApiClient
             {
                 if (factories.ContainsKey(name) == true)
                 {
-                    throw new InvalidOperationException($"不允许添加重复名称的{nameof(HttpApiFactory)}：{name}");
+                    throw new InvalidOperationException($"不允许注册重复名称的接口：{name}");
                 }
 
                 factories.TryAdd(name, factory);
@@ -142,7 +142,7 @@ namespace WebApiClient
             {
                 return factory.CreateHttpApi();
             }
-            throw new InvalidOperationException($"尚未Register{nameof(name)}为{name}的接口");
+            throw new InvalidOperationException($"尚未Register(){nameof(name)}为{name}的接口");
         }
 
         /// <summary>
