@@ -7,8 +7,24 @@ namespace WebApiClient
     /// <summary>
     /// 表示Uri编辑器
     /// </summary>
-    class UriEditor
+    public class UriEditor
     {
+        /// <summary>
+        /// uri的fragment
+        /// </summary>
+        private readonly string fragment;
+
+        /// <summary>
+        /// Path的索引
+        /// </summary>
+        private readonly int pathIndex;
+
+        /// <summary>
+        /// fragment长度
+        /// </summary>
+        private readonly int fragmentLength;
+
+
         /// <summary>
         /// 当前的Uri
         /// </summary>
@@ -18,6 +34,7 @@ namespace WebApiClient
         /// 当前的Uri是否可替换值
         /// </summary>
         private bool uriCanReplace = false;
+
 
         /// <summary>
         /// 获取当前的Uri
@@ -38,7 +55,7 @@ namespace WebApiClient
         /// <summary>
         /// 获取Uri参数的编码
         /// </summary>
-        public Encoding Encoding { get; private set; }
+        public Encoding Encoding { get; }
 
         /// <summary>
         /// Uri编辑器
@@ -66,6 +83,10 @@ namespace WebApiClient
             {
                 throw new UriFormatException($"{nameof(uri)}必须为绝对完整URI");
             }
+
+            this.fragment = uri.Fragment;
+            this.pathIndex = uri.AbsoluteUri.IndexOf(uri.PathAndQuery);
+            this.fragmentLength = string.IsNullOrEmpty(uri.Fragment) ? 0 : uri.Fragment.Length;
         }
 
         /// <summary>
@@ -112,48 +133,22 @@ namespace WebApiClient
             name = HttpUtility.UrlEncode(name, this.Encoding);
             value = HttpUtility.UrlEncode(value, this.Encoding);
 
-            var pathQuery = this.Uri.PathAndQuery.TrimEnd('&', '?');
+            var pathQuery = this.GetPathAndQuery();
             var concat = pathQuery.IndexOf('?') > -1 ? "&" : "?";
-            var relativeUri = $"{pathQuery}{concat}{name}={value}{this.Uri.Fragment}";
+            var relativeUri = $"{pathQuery}{concat}{name}={value}{this.fragment}";
 
             this.Uri = new Uri(this.Uri, relativeUri);
         }
 
         /// <summary>
-        /// 设置Path
+        /// 获取原始的PathAndQuery
         /// </summary>
-        /// <param name="path">新路径</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public void SetPath(string path)
+        /// <returns></returns>
+        public string GetPathAndQuery()
         {
-            if (string.IsNullOrEmpty(path) == true)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-            this.SetPath(p => path);
-        }
-
-        /// <summary>
-        /// 设置Path
-        /// </summary>
-        /// <param name="path">新路径</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="ArgumentException"></exception>
-        public void SetPath(Func<string, string> path)
-        {
-            if (path == null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-
-            var newPath = path.Invoke(this.Uri.AbsolutePath);
-            if (string.IsNullOrEmpty(newPath) == true)
-            {
-                throw new ArgumentException("要求path值不能为空", nameof(path));
-            }
-
-            var relativeUri = $"{newPath}{this.Uri.Query}{this.Uri.Fragment}";
-            this.Uri = new Uri(this.Uri, relativeUri);
+            var originalUri = this.Uri.OriginalString;
+            var length = originalUri.Length - this.pathIndex - this.fragmentLength;
+            return originalUri.Substring(this.pathIndex, length).TrimEnd('&', '?');
         }
 
         /// <summary>
