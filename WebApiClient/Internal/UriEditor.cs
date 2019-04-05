@@ -144,7 +144,7 @@ namespace WebApiClient
         /// 获取原始的PathAndQuery
         /// </summary>
         /// <returns></returns>
-        public string GetPathAndQuery()
+        private string GetPathAndQuery()
         {
             var originalUri = this.Uri.OriginalString;
             var length = originalUri.Length - this.pathIndex - this.fragmentLength;
