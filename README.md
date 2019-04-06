@@ -59,7 +59,7 @@ var user2 = await api.UpdateUserWithFormAsync(user);
 ``` 
 
 #### 3. Api变化
-> 相对于v0.3.6或以前版本，Api有如下变化 
+> 相对于[v0.3.6](https://github.com/dotnetcore/WebApiClient/tree/v0.3.6)或以前版本，Api有如下变化 
 
 * ~~HttpApiClient.Create()~~ -> HttpApi.Create()
 * ~~HttpApiFactory.Add()~~ -> HttpApi.Register()
