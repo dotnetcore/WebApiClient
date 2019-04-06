@@ -52,21 +52,28 @@ public class UserInfo
 > 接口的调用
 
 ```c#
-var client = HttpApiClient.Create<IMyWebApi>();
+var api = HttpApi.Create<IMyWebApi>();
 var user = new UserInfo { Account = "laojiu", Password = "123456" }; 
-var user1 = await client.GetUserByAccountAsync("laojiu");
-var user2 = await client.UpdateUserWithFormAsync(user);
+var user1 = await api.GetUserByAccountAsync("laojiu");
+var user2 = await api.UpdateUserWithFormAsync(user);
 ``` 
 
+#### 3. Api变化
+> 相对于v0.3.6或以前版本，Api有如下变化 
 
-#### 3. Wiki文档
+* HttpApiClient.Create() -> HttpApi.Create()
+* HttpApiFactory.Add() -> HttpApi.Register()
+* HttpApiFactory.Create() -> HttpApi.Resolve()
+
+
+#### 4. Wiki文档
 1. [WebApiClient基础](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E5%9F%BA%E7%A1%80)
 2. [WebApiClient进阶](https://github.com/dotnetcore/WebApiClient/wiki/WebApiClient%E8%BF%9B%E9%98%B6)
 3. [WebApiClient高级](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E9%AB%98%E7%BA%A7)
 4. [WebApiClient.Extensions](https://github.com/xljiulang/WebApiClient.Extensions)
 5. [WebApiClient.Tools.Swagger](https://github.com/xljiulang/WebApiClient.Tools)
 
-#### 4. 联系方式
+#### 5. 联系方式
 1. 加Q群825135345 注明WeApiClient
 2. 邮箱366193849@qq.com，不重要的尽量不要发
 
