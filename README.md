@@ -61,9 +61,9 @@ var user2 = await api.UpdateUserWithFormAsync(user);
 #### 3. Api变化
 > 相对于v0.3.6或以前版本，Api有如下变化 
 
-* HttpApiClient.Create() -> HttpApi.Create()
-* HttpApiFactory.Add() -> HttpApi.Register()
-* HttpApiFactory.Create() -> HttpApi.Resolve()
+* ~~HttpApiClient.Create()~~ -> HttpApi.Create()
+* ~~HttpApiFactory.Add()~~ -> HttpApi.Register()
+* ~~HttpApiFactory.Create()~~ -> HttpApi.Resolve()
 
 
 #### 4. Wiki文档
