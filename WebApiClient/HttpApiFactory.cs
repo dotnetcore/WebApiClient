@@ -170,6 +170,32 @@ namespace WebApiClient
         }
 
         /// <summary>
+        /// 创建接口的代理实例
+        /// </summary>
+        /// <returns></returns>
+        public HttpApi CreateHttpApi()
+        {
+            var handler = this.lifeTimeHttpHandlerLazy.Value;
+            var httpApiConfig = new LifetimeHttpApiConfig(handler);
+
+            if (this.configOptions != null)
+            {
+                this.configOptions.Invoke(httpApiConfig);
+            }
+
+            if (this.keepCookieContainer == true)
+            {
+                Interlocked.CompareExchange(ref this.cookieContainer, httpApiConfig.HttpHandler.CookieContainer, null);
+                if (object.ReferenceEquals(httpApiConfig.HttpHandler.CookieContainer, this.cookieContainer) == false)
+                {
+                    httpApiConfig.HttpHandler.CookieContainer = this.cookieContainer;
+                }
+            }
+
+            return this.CreateHttpApi(httpApiConfig);
+        }
+
+        /// <summary>
         /// 创建TInterface接口的代理实例
         /// </summary>
         /// <param name="httpApiConfig">httpApi配置</param>
@@ -198,32 +224,6 @@ namespace WebApiClient
         {
             this.ConfigureHttpApiConfig(options);
         }
-
-        /// <summary>
-        /// 创建接口的代理实例
-        /// </summary>
-        /// <returns></returns>
-        HttpApi IHttpApiFactory.CreateHttpApi()
-        {
-            var handler = this.lifeTimeHttpHandlerLazy.Value;
-            var httpApiConfig = new LifetimeHttpApiConfig(handler);
-
-            if (this.configOptions != null)
-            {
-                this.configOptions.Invoke(httpApiConfig);
-            }
-
-            if (this.keepCookieContainer == true)
-            {
-                Interlocked.CompareExchange(ref this.cookieContainer, httpApiConfig.HttpHandler.CookieContainer, null);
-                if (object.ReferenceEquals(httpApiConfig.HttpHandler.CookieContainer, this.cookieContainer) == false)
-                {
-                    httpApiConfig.HttpHandler.CookieContainer = this.cookieContainer;
-                }
-            }
-
-            return this.CreateHttpApi(httpApiConfig);
-        }
         #endregion
     }
 
@@ -247,13 +247,11 @@ namespace WebApiClient
         /// 创建HttpApi代理实例
         /// </summary>
         /// <returns></returns>
-        public TInterface CreateHttpApi()
+        public new TInterface CreateHttpApi()
         {
-            return ((IHttpApiFactory)this).CreateHttpApi() as TInterface;
+            return base.CreateHttpApi() as TInterface;
         }
 
-
-        #region new覆盖
         /// <summary>
         /// 设置HttpApi实例的生命周期
         /// </summary>
@@ -307,6 +305,5 @@ namespace WebApiClient
         {
             return base.ConfigureHttpApiConfig(options) as HttpApiFactory<TInterface>;
         }
-        #endregion
     }
 }
