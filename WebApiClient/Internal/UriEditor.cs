@@ -7,7 +7,7 @@ namespace WebApiClient
     /// <summary>
     /// 表示Uri编辑器
     /// </summary>
-    public class UriEditor
+    class UriEditor
     {
         /// <summary>
         /// uri的fragment
