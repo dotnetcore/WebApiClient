@@ -59,7 +59,9 @@ var state = await api.AddAsync(user);
 * ~~HttpApiClient.Create()~~ -> HttpApi.Create()
 * ~~HttpApiFactory.Add()~~ -> HttpApi.Register()
 * ~~HttpApiFactory.Create()~~ -> HttpApi.Resolve()
-
+* ~~Timeout~~
+* ~~UrlAttribute~~
+* ~~DebugAttribute~~
 
 #### 4. Wiki文档
 1. [WebApiClient基础](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E5%9F%BA%E7%A1%80)
