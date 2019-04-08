@@ -106,15 +106,42 @@ namespace WebApiClient.Attributes
             var method = context.ApiActionDescriptor.Member;
             var methodName = $"{method.DeclaringType.Name}.{method.Name}";
 
-            var log = new StringBuilder()
-                .AppendLine(methodName)
-                .AppendLine(message);
+            var builder = new StringBuilder().AppendLine(methodName);
+            Format(builder, message);
 
             if (exception != null)
             {
-                log.AppendLine(exception.ToString());
+                Format(builder, exception.ToString());
             }
-            return log.ToString();
+            return builder.ToString();
+        }
+
+
+        /// <summary>
+        /// 格式化内容到指定builder
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="content">内容</param>
+        private static void Format(StringBuilder builder, string content)
+        {
+            const string spaces = "    ";
+            if (string.IsNullOrEmpty(content))
+            {
+                return;
+            }
+
+            var lines = content.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            foreach (var line in lines)
+            {
+                if (string.IsNullOrEmpty(line) == true)
+                {
+                    builder.AppendLine();
+                }
+                else
+                {
+                    builder.AppendLine($"{spaces}{line}");
+                }
+            }
         }
     }
 }
