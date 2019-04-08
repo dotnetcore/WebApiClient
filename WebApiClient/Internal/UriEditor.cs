@@ -84,8 +84,9 @@ namespace WebApiClient
                 throw new UriFormatException($"{nameof(uri)}必须为绝对完整URI");
             }
 
+            const int delimiterLength = 3;
             this.fragment = uri.Fragment;
-            this.pathIndex = uri.AbsoluteUri.IndexOf(uri.PathAndQuery);
+            this.pathIndex = uri.AbsoluteUri.IndexOf('/', uri.Scheme.Length + delimiterLength);
             this.fragmentLength = string.IsNullOrEmpty(uri.Fragment) ? 0 : uri.Fragment.Length;
         }
 
@@ -148,6 +149,10 @@ namespace WebApiClient
         {
             var originalUri = this.Uri.OriginalString;
             var length = originalUri.Length - this.pathIndex - this.fragmentLength;
+            if (length == 0)
+            {
+                return string.Empty;
+            }
             return originalUri.Substring(this.pathIndex, length).TrimEnd('&', '?');
         }
 
