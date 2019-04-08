@@ -22,7 +22,6 @@
 > 接口的声明
 
 ```c#
-[HttpHost("http://www.webapiclient.com")] 
 public interface IMyWebApi : IHttpApi
 {
     // GET webapi/user?account=laojiu
@@ -49,10 +48,20 @@ public class UserInfo
 }
 ```
  
+> 接口的配置
+
+```c#
+HttpApi.Register<IMyWebApi>().ConfigureHttpApiConfig(c =>
+{
+    c.HttpHost = new Uri("http://www.webapiclient.com/");
+    c.FormatOptions.DateTimeFormat = DateTimeFormats.ISO8601_WithMillisecond;
+});;
+```
+
 > 接口的调用
 
 ```c#
-var api = HttpApi.Create<IMyWebApi>();
+var api = HttpApi.Resolve<IMyWebApi>();
 var user = new UserInfo { Account = "laojiu", Password = "123456" }; 
 var user1 = await api.GetUserByAccountAsync("laojiu");
 var user2 = await api.UpdateUserWithFormAsync(user);
