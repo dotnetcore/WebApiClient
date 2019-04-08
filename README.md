@@ -4,18 +4,15 @@
 > WebApiClient.JIT
 
     PM> install-package WebApiClient.JIT
-* 可以在项目中直接引用WebApiClient.JIT.dll就能使用；
 * 不适用于不支持JIT技术的平台(IOS、UWP)；
-* 接口要求为public；
+* Http接口声明要求为public；
 
 
 > WebApiClient.AOT
 
     PM> install-package WebApiClient.AOT
-* 项目必须使用nuget安装WebApiClient.AOT才能正常使用；
-* 没有JIT，支持的平台广泛；
-* 接口不要求为public，可以嵌套在类里面；
-
+* 适用于不支持JIT技术的平台(IOS、UWP)；
+* Http接口声明不要求为public，可以嵌套在类里面；
 
 
 ### 2. Http请求
