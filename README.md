@@ -22,36 +22,25 @@
 > 接口的声明
 
 ```c#
-public interface IMyWebApi : IHttpApi
+public interface IUserApi : IHttpApi
 {
-    // GET webapi/user?account=laojiu
-    // Return 原始string内容
-    [HttpGet("/webapi/user")]
-    ITask<string> GetUserByAccountAsync(string account);
+    // GET api/user?account=laojiu
+    // Return json或xml内容
+    [HttpGet("/api/user")]
+    ITask<UserInfo> GetAsync(string account);
 
-    // POST webapi/user  
+    // POST api/user  
     // Body Account=laojiu&password=123456
     // Return json或xml内容
-    [HttpPost("/webapi/user")]
-    ITask<UserInfo> UpdateUserWithFormAsync([FormContent] UserInfo user);
-}
-
-public class UserInfo
-{
-    public string Account { get; set; }
-
-    [AliasAs("password")]
-    public string Password { get; set; }
-
-    [IgnoreSerialized]
-    public string Email { get; set; }
+    [HttpPost("/api/user")]
+    ITask<boo> AddAsync([FormContent] UserInfo user);
 }
 ```
  
 > 接口的配置
 
 ```c#
-HttpApi.Register<IMyWebApi>().ConfigureHttpApiConfig(c =>
+HttpApi.Register<IUserApi>().ConfigureHttpApiConfig(c =>
 {
     c.HttpHost = new Uri("http://www.webapiclient.com/");
     c.FormatOptions.DateTimeFormat = DateTimeFormats.ISO8601_WithMillisecond;
@@ -61,10 +50,10 @@ HttpApi.Register<IMyWebApi>().ConfigureHttpApiConfig(c =>
 > 接口的调用
 
 ```c#
-var api = HttpApi.Resolve<IMyWebApi>();
+var api = HttpApi.Resolve<IUserApi>();
 var user = new UserInfo { Account = "laojiu", Password = "123456" }; 
-var user1 = await api.GetUserByAccountAsync("laojiu");
-var user2 = await api.UpdateUserWithFormAsync(user);
+var user1 = await api.GetAsync("laojiu");
+var state = await api.AddAsync(user);
 ``` 
 
 #### 3. Api变化
