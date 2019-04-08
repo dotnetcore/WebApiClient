@@ -1,6 +1,5 @@
 ﻿using Demo.HttpClients;
 using Demo.HttpServices;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,12 +23,10 @@ namespace Demo
         static void Init()
         {
             HttpServer.Start(9999);
-            var logging = new LoggerFactory().AddConsole();
 
             //  注册IUserApi 配置其工厂
             HttpApi.Register<IUserApi>().ConfigureHttpApiConfig(c =>
             {
-                c.LoggerFactory = logging;
                 c.HttpHost = new Uri("http://localhost:9999/");
                 c.FormatOptions.DateTimeFormat = DateTimeFormats.ISO8601_WithMillisecond;
             });
