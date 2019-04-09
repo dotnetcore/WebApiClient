@@ -8,7 +8,6 @@ namespace WebApiClient.Attributes
 {
     /// <summary>
     /// 表示将请求响应内容指定目标的过滤器
-    /// 默认是OutputTarget.LoggerFactory
     /// </summary>
     public class TraceFilterAttribute : TraceFilterBaseAttribute
     {
@@ -17,11 +16,19 @@ namespace WebApiClient.Attributes
         /// </summary>
         public int EventId { get; set; }
 
+#if NETSTANDARD1_3
         /// <summary>
         /// 获取或设置输出目标
+        /// 默认为LoggerFactory
         /// </summary>
         public OutputTarget OutputTarget { get; set; } = OutputTarget.LoggerFactory;
-
+#else
+        /// <summary>
+        /// 获取或设置输出目标
+        /// 默认为LoggerFactory | Debug
+        /// </summary>
+        public OutputTarget OutputTarget { get; set; } = OutputTarget.LoggerFactory | OutputTarget.Debug;
+#endif
         /// <summary>
         /// 准备请求之前
         /// </summary>
