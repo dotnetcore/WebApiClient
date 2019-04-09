@@ -68,7 +68,7 @@ namespace WebApiClient.Attributes
         public async override Task OnEndRequestAsync(ApiActionContext context)
         {
             var response = context.ResponseMessage;
-            var message = context.Tags.Get(tagKey).As<TraceMessage>();
+            var message = context.Tags.Take(tagKey).As<TraceMessage>();
 
             message.ResponseTime = DateTime.Now;
             message.Exception = context.Exception;

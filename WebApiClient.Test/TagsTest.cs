@@ -21,7 +21,7 @@ namespace WebApiClient.Test
             Assert.True(tags.Get("class").As<TagsTest>() != null);
 
             tags.Remove("class");
-            Assert.True(tags.Get("class").IsNull);
+            Assert.True(tags.Get("class").IsNullValue);
         }
     }
 }

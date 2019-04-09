@@ -6,35 +6,34 @@ namespace WebApiClient
     /// <summary>
     /// 表示Tags的一个数据项
     /// </summary>
-    [DebuggerDisplay("{Value}")]
+    [DebuggerDisplay("HasValue = {HasValue}")]
     public struct TagItem
     {
         /// <summary>
-        /// 值
+        /// 获取值
         /// </summary>
-        private readonly object value;
+        public object Value { get; }
+
+        /// <summary>
+        /// 获取是否有值
+        /// </summary>
+        public bool HasValue { get; }
 
         /// <summary>
         /// 获取值是否为NULL
         /// </summary>
-        public bool IsNull
+        public bool IsNullValue
         {
             get
             {
-                return this.value == null;
+                return this.Value == null;
             }
         }
 
         /// <summary>
-        /// 获取值
+        /// 获取没有值的TagItem
         /// </summary>
-        public object Value
-        {
-            get
-            {
-                return this.value;
-            }
-        }
+        public static TagItem NoValue { get; } = new TagItem();
 
         /// <summary>
         /// ITag的数据项
@@ -42,7 +41,8 @@ namespace WebApiClient
         /// <param name="value">数据</param>
         public TagItem(object value)
         {
-            this.value = value;
+            this.Value = value;
+            this.HasValue = true;
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace WebApiClient
         /// <returns></returns>
         public T As<T>()
         {
-            return this.As<T>(default(T));
+            return this.As(default(T));
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace WebApiClient
         /// <returns></returns>
         public T As<T>(T defaultValue)
         {
-            return this.IsNull ? defaultValue : (T)this.value;
+            return this.IsNullValue ? defaultValue : (T)this.Value;
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace WebApiClient
         /// <returns></returns>
         public int AsInt32()
         {
-            return this.As<Int32>();
+            return this.As<int>();
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace WebApiClient
         /// <returns></returns>
         public bool AsBoolean()
         {
-            return this.As<Boolean>();
+            return this.As<bool>();
         }
 
         /// <summary>

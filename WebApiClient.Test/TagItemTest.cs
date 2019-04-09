@@ -10,10 +10,10 @@ namespace WebApiClient.Test
         public void Test_Tag_Object()
         {
             var tag = new TagItem(new object());
-            Assert.True(tag.IsNull == false);
+            Assert.True(tag.IsNullValue == false);
 
             var tagNull = new TagItem(null);
-            Assert.True(tagNull.IsNull);
+            Assert.True(tagNull.IsNullValue);
         }
 
         [Fact]
@@ -33,7 +33,7 @@ namespace WebApiClient.Test
             DateTime dateTime2 = DateTime.Now;
             var tagTime = new TagItem(dateTime2);
 
-            Assert.True(tagNull.IsNull);
+            Assert.True(tagNull.IsNullValue);
             Assert.True(tagTime.AsDateTime() == dateTime2);
 
             Assert.True(tagTime.ToString() == dateTime2.ToString());

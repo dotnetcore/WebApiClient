@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -7,6 +8,7 @@ namespace WebApiClient.Attributes
     /// <summary>
     /// 表示追踪到的消息
     /// </summary>
+    [DebuggerDisplay("Elapsed = {ResponseTime.Subtract(RequestTime)}")]
     public class TraceMessage
     {
         /// <summary>
@@ -141,10 +143,10 @@ namespace WebApiClient.Attributes
                     .AppendLine($"[EXCEPTION]")
                     .AppendLine(this.Exception.ToString());
             }
-
+             
             return builder
                 .AppendLineIfHasValue()
-                .Append($"[TIMESPAN]{this.ResponseTime.Subtract(this.RequestTime)}")
+                .Append($"[ELAPSED]{this.ResponseTime.Subtract(this.RequestTime)}")
                 .ToString();
         }
 
