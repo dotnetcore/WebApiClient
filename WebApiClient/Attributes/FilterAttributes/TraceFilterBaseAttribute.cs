@@ -118,37 +118,6 @@ namespace WebApiClient.Attributes
         /// <param name="context">上下文</param>
         /// <param name="traceMessage">追踪的消息</param>
         /// <returns></returns>
-        protected virtual Task LogTraceMessageAsync(ApiActionContext context, TraceMessage traceMessage)
-        {
-            var message = traceMessage.ToIndentedString(spaceCount: 4, includeException: false);
-            if (traceMessage.Exception == null)
-            {
-                this.LogInformation(context, message);
-            }
-            else
-            {
-                this.LogError(context, traceMessage.Exception, message);
-            }
-            return ApiTask.CompletedTask;
-        }
-
-        /// <summary>
-        /// 输出追踪消息
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <param name="message">追踪消息</param>
-        protected virtual void LogInformation(ApiActionContext context, string message)
-        {
-        }
-
-        /// <summary>
-        /// 输出带有异常的追踪消息
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <param name="exception">异常</param>
-        /// <param name="message">追踪消息</param>
-        protected virtual void LogError(ApiActionContext context, Exception exception, string message)
-        {
-        }
+        protected abstract Task LogTraceMessageAsync(ApiActionContext context, TraceMessage traceMessage);
     }
 }

@@ -56,6 +56,7 @@ namespace WebApiClient.Attributes
 
         /// <summary>
         /// 转换为每行缩进的字符串
+        /// 包含异常消息
         /// </summary>
         /// <param name="spaceCount">缩进的空格数</param>
         /// <returns></returns>
@@ -98,6 +99,7 @@ namespace WebApiClient.Attributes
 
         /// <summary>
         /// 转换为字符串
+        /// 包含异常消息
         /// </summary>
         /// <returns></returns>
         public sealed override string ToString()

@@ -27,7 +27,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public async override Task OnBeginRequestAsync(ApiActionContext context)
+        public sealed async override Task OnBeginRequestAsync(ApiActionContext context)
         {
             if (this.IsNeedToTrace(context) == true)
             {
@@ -40,7 +40,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public async override Task OnEndRequestAsync(ApiActionContext context)
+        public sealed async override Task OnEndRequestAsync(ApiActionContext context)
         {
             if (this.IsNeedToTrace(context) == true)
             {
