@@ -61,10 +61,22 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         public string ToIndentedString(int spaceCount)
         {
+            return this.ToIndentedString(spaceCount, includeException: true);
+        }
+
+        /// <summary>
+        /// 转换为每行缩进的字符串
+        /// </summary>
+        /// <param name="spaceCount">缩进的空格数</param>
+        /// <param name="includeException">是否包含异常消息</param>
+        /// <returns></returns>
+        public string ToIndentedString(int spaceCount, bool includeException)
+        {
             var builder = new StringBuilder();
             var spaces = new string(' ', spaceCount);
+            var message = this.ToString(includeException);
 
-            using (var reader = new StringReader(this.ToString()))
+            using (var reader = new StringReader(message))
             {
                 var line = reader.ReadLine();
                 while (line != null)
@@ -88,7 +100,17 @@ namespace WebApiClient.Attributes
         /// 转换为字符串
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
+        public sealed override string ToString()
+        {
+            return this.ToString(includeException: true);
+        }
+
+        /// <summary>
+        /// 转换为字符串
+        /// </summary>
+        /// <param name="includeException">是否包含异常消息</param>
+        /// <returns></returns>
+        public virtual string ToString(bool includeException)
         {
             var builder = new TextBuilder();
             const string timeFormat = "yyyy-MM-dd HH:mm:ss.fff";
@@ -110,14 +132,13 @@ namespace WebApiClient.Attributes
                     .AppendLineIfNotNull(this.ResponseContent);
             }
 
-            if (this.Exception != null)
+            if (includeException == true && this.Exception != null)
             {
                 builder
                     .AppendLineIfHasValue()
                     .AppendLine($"[EXCEPTION]")
                     .AppendLine(this.Exception.ToString());
             }
-
 
             return builder
                 .AppendLineIfHasValue()
