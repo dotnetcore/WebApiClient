@@ -309,7 +309,7 @@ namespace WebApiClient
         /// <returns></returns>
         public async Task<string> GetRequestStringAsync()
         {
-            var builder = new StringBuilder().Append(this.GetHeadersString());
+            var builder = new StringBuilder(this.GetHeadersString());
             if (this.Content != null)
             {
                 var content = await this.Content.ReadAsStringAsync().ConfigureAwait(false);

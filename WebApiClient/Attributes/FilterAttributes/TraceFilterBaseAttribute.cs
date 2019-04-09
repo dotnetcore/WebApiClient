@@ -17,17 +17,12 @@ namespace WebApiClient.Attributes
         private static readonly string tagKey = "$TraceFilter";
 
         /// <summary>
-        /// 时间格式
-        /// </summary>
-        private static readonly string format = "yyyy-MM-dd HH:mm:ss.fff";
-
-        /// <summary>
-        /// 获取是否输出请求内容
+        /// 获取或设置是否输出请求内容
         /// </summary>
         public bool TraceRequest { get; set; } = true;
 
         /// <summary>
-        /// 获取是否输出响应内容
+        /// 获取或设置是否输出响应内容
         /// </summary>
         public bool TraceResponse { get; set; } = true;
 
@@ -46,15 +41,23 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         public async override Task OnBeginRequestAsync(ApiActionContext context)
         {
-            var builder = new StringBuilder();
+            var message = new TraceMessage
+            {
+                RequestTime = DateTime.Now,
+                HasRequest = this.TraceRequest
+            };
+
             if (this.TraceRequest == true)
             {
-                var requestString = await context.RequestMessage.GetRequestStringAsync().ConfigureAwait(false);
-                builder.AppendLine($"[REQUEST] {DateTime.Now.ToString(format)}").Append(requestString);
+                var request = context.RequestMessage;
+                message.RequestHeaders = request.GetHeadersString();
+                if (request.Content != null)
+                {
+                    message.RequestContent = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
+                }
             }
 
-            var request = new Request { Builder = builder, DateTime = DateTime.Now };
-            context.Tags.Set(tagKey, request);
+            context.Tags.Set(tagKey, message);
         }
 
         /// <summary>
@@ -65,38 +68,22 @@ namespace WebApiClient.Attributes
         public async override Task OnEndRequestAsync(ApiActionContext context)
         {
             var response = context.ResponseMessage;
-            var request = context.Tags.Get(tagKey).As<Request>();
-            var builder = request.Builder;
+            var message = context.Tags.Get(tagKey).As<TraceMessage>();
 
-            if (this.TraceResponse && response != null && response.Content != null)
+            message.ResponseTime = DateTime.Now;
+            message.Exception = context.Exception;
+
+            if (this.TraceResponse && response != null)
             {
-                if (builder.Length > 0)
+                message.HasResponse = true;
+                message.ResponseHeaders = this.GetResponseHeadersString(response);
+                if (response.Content != null)
                 {
-                    builder.AppendLine();
+                    message.ResponseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-
-                builder
-                    .AppendLine($"[RESPONSE] {DateTime.Now.ToString(format)}")
-                    .Append(await this.GetResponseStringAsync(response).ConfigureAwait(false));
             }
 
-            if (builder.Length > 0)
-            {
-                builder.AppendLine();
-            }
-
-            var message = builder
-                .AppendLine($"[TIMESPAN] {DateTime.Now.Subtract(request.DateTime)}")
-                .ToString();
-
-            if (context.Exception == null)
-            {
-                this.LogInformation(context, message);
-            }
-            else
-            {
-                this.LogError(context, context.Exception, message);
-            }
+            await this.LogTraceMessageAsync(context, message);
         }
 
         /// <summary>
@@ -104,7 +91,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="response">响应信息</param>
         /// <returns></returns>
-        private async Task<string> GetResponseStringAsync(HttpResponseMessage response)
+        private string GetResponseHeadersString(HttpResponseMessage response)
         {
             var builder = new StringBuilder()
                 .AppendLine($"HTTP/{response.Version} {(int)response.StatusCode} {response.ReasonPhrase}");
@@ -122,39 +109,15 @@ namespace WebApiClient.Attributes
                 }
             }
 
-            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return builder.AppendLine().Append(content).ToString();
+            return builder.AppendLine().ToString();
         }
 
         /// <summary>
-        /// 输出消息
+        /// 输出追踪到的消息
         /// </summary>
         /// <param name="context">上下文</param>
-        /// <param name="message">消息</param>
-        protected abstract void LogInformation(ApiActionContext context, string message);
-
-        /// <summary>
-        /// 输出异常
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <param name="exception">异常</param>
-        /// <param name="message">消息</param>
-        protected abstract void LogError(ApiActionContext context, Exception exception, string message);
-
-        /// <summary>
-        /// 表示请求记录
-        /// </summary>
-        private class Request
-        {
-            /// <summary>
-            /// 内容
-            /// </summary>
-            public StringBuilder Builder { get; set; }
-
-            /// <summary>
-            /// 时间
-            /// </summary>
-            public DateTime DateTime { get; set; }
-        }
+        /// <param name="traceMessage">追踪的消息</param>
+        /// <returns></returns>
+        protected abstract Task LogTraceMessageAsync(ApiActionContext context, TraceMessage traceMessage);
     }
 }

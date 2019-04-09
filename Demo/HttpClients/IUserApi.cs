@@ -11,7 +11,7 @@ namespace Demo.HttpClients
     /// <summary>
     /// 用户操作接口
     /// </summary>
-    [TraceFilter(OutputTarget = OutputTarget.Console)]
+    [TraceFilter(OutputTarget = OutputTarget.Console | OutputTarget.Debug)]
     [HttpHost("http://localhost:9999/")] // HttpHost可以在Config传入覆盖
     public interface IUserApi : IHttpApi
     {
