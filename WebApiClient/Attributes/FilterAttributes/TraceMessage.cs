@@ -12,14 +12,14 @@ namespace WebApiClient.Attributes
     public class TraceMessage
     {
         /// <summary>
-        /// 获取或设置是否有请求内容
+        /// 获取或设置是否记录请求
         /// </summary>
         public bool HasRequest { get; set; }
 
         /// <summary>
-        /// 获取或设置是否有响应内容
+        /// 获取或设置请求时间
         /// </summary>
-        public bool HasResponse { get; set; }
+        public DateTime RequestTime { get; set; }
 
         /// <summary>
         /// 获取或设置请求头
@@ -31,10 +31,17 @@ namespace WebApiClient.Attributes
         /// </summary>
         public string RequestContent { get; set; }
 
+
+
         /// <summary>
-        /// 获取或设置请求时间
+        /// 获取或设置是否记录响应
         /// </summary>
-        public DateTime RequestTime { get; set; }
+        public bool HasResponse { get; set; }
+
+        /// <summary>
+        /// 获取或设置响应时间
+        /// </summary>
+        public DateTime ResponseTime { get; set; }
 
         /// <summary>
         /// 获取或设置响应头
@@ -46,38 +53,23 @@ namespace WebApiClient.Attributes
         /// </summary>
         public string ResponseContent { get; set; }
 
-        /// <summary>
-        /// 获取或设置响应时间
-        /// </summary>
-        public DateTime ResponseTime { get; set; }
 
         /// <summary>
         /// 获取或设置异常
         /// </summary>
         public Exception Exception { get; set; }
 
-        /// <summary>
-        /// 转换为每行缩进的字符串
-        /// 包含异常消息
-        /// </summary>
-        /// <param name="spaceCount">缩进的空格数</param>
-        /// <returns></returns>
-        public string ToIndentedString(int spaceCount)
-        {
-            return this.ToIndentedString(spaceCount, includeException: true);
-        }
 
         /// <summary>
         /// 转换为每行缩进的字符串
         /// </summary>
         /// <param name="spaceCount">缩进的空格数</param>
-        /// <param name="includeException">是否包含异常消息</param>
         /// <returns></returns>
-        public string ToIndentedString(int spaceCount, bool includeException)
+        public string ToIndentedString(int spaceCount)
         {
+            var message = this.ToString();
             var builder = new StringBuilder();
             var spaces = new string(' ', spaceCount);
-            var message = this.ToString(includeException);
 
             using (var reader = new StringReader(message))
             {
@@ -101,20 +93,9 @@ namespace WebApiClient.Attributes
 
         /// <summary>
         /// 转换为字符串
-        /// 包含异常消息
         /// </summary>
         /// <returns></returns>
-        public sealed override string ToString()
-        {
-            return this.ToString(includeException: true);
-        }
-
-        /// <summary>
-        /// 转换为字符串
-        /// </summary>
-        /// <param name="includeException">是否包含异常消息</param>
-        /// <returns></returns>
-        public virtual string ToString(bool includeException)
+        public override string ToString()
         {
             var builder = new TextBuilder();
             const string timeFormat = "yyyy-MM-dd HH:mm:ss.fff";
@@ -136,14 +117,14 @@ namespace WebApiClient.Attributes
                     .AppendLineIfNotNull(this.ResponseContent);
             }
 
-            if (includeException == true && this.Exception != null)
+            if (this.Exception != null)
             {
                 builder
                     .AppendLineIfHasValue()
                     .AppendLine($"[EXCEPTION]")
                     .AppendLine(this.Exception.ToString());
             }
-             
+
             return builder
                 .AppendLineIfHasValue()
                 .Append($"[ELAPSED]{this.ResponseTime.Subtract(this.RequestTime)}")

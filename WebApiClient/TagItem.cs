@@ -36,7 +36,7 @@ namespace WebApiClient
         public static TagItem NoValue { get; } = new TagItem();
 
         /// <summary>
-        /// ITag的数据项
+        /// 创建有值的数据项
         /// </summary>
         /// <param name="value">数据</param>
         public TagItem(object value)
@@ -57,7 +57,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 强制转换为指定类型
+        /// 将值强制转换为指定类型
         /// </summary>
         /// <typeparam name="T">指定类型</typeparam>
         /// <param name="defaultValue">默认值</param>
@@ -68,7 +68,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 转换为int
+        /// 将值转换为int
         /// </summary>
         /// <returns></returns>
         public int AsInt32()
@@ -77,7 +77,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 转换为bool
+        /// 将值转换为bool
         /// </summary>
         /// <returns></returns>
         public bool AsBoolean()
@@ -86,7 +86,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 转换为时间
+        /// 将值转换为时间
         /// </summary>
         /// <returns></returns>
         public DateTime AsDateTime()
@@ -95,7 +95,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 转换为字符串
+        /// 将值转换为字符串
         /// </summary>
         /// <returns></returns>
         public override string ToString()
