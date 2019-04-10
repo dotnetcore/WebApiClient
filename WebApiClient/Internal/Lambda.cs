@@ -145,58 +145,58 @@ namespace WebApiClient
 
 
         /// <summary>
-        /// 创建类型的创建工厂
+        /// 创建类型的构造器调用委托
         /// </summary>
         /// <typeparam name="TType"></typeparam>
         /// <param name="type">类型</param>
         /// <returns></returns>
-        public static Func<TType> CreateNewFunc<TType>(Type type)
+        public static Func<TType> CreateCtorFunc<TType>(Type type)
         {
             var args = TypeExtensions.EmptyTypes;
-            return CreateNewFactory<Func<TType>>(type, args);
+            return CreateCtorFunc<Func<TType>>(type, args);
         }
 
         /// <summary>
-        /// 创建类型的创建工厂
+        /// 创建类型的构造器调用委托
         /// </summary>
-        /// <typeparam name="TType"></typeparam>
-        /// <typeparam name="T1">第一个参数类型</typeparam>
+        /// <typeparam name="TArg1">第一个参数类型</typeparam>
+        /// <typeparam name="TType">类型</typeparam>
         /// <param name="type">类型</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
-        public static Func<T1, TType> CreateNewFunc<TType, T1>(Type type)
+        public static Func<TArg1, TType> CreateCtorFunc<TArg1, TType>(Type type)
         {
-            var args = new Type[] { typeof(T1) };
-            return CreateNewFactory<Func<T1, TType>>(type, args);
+            var args = new Type[] { typeof(TArg1) };
+            return CreateCtorFunc<Func<TArg1, TType>>(type, args);
         }
 
         /// <summary>
-        /// 创建类型的创建工厂
+        /// 创建类型的构造器调用委托
         /// </summary>
-        /// <typeparam name="TType"></typeparam>
-        /// <typeparam name="T1">第一个参数类型</typeparam>
-        /// <typeparam name="T2">第二个参数类型</typeparam>
+        /// <typeparam name="TArg1">第一个参数类型</typeparam>
+        /// <typeparam name="TArg2">第二个参数类型</typeparam>
+        /// <typeparam name="TType">类型</typeparam>
         /// <param name="type">类型</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
-        public static Func<T1, T2, TType> CreateNewFunc<TType, T1, T2>(Type type)
+        public static Func<TArg1, TArg2, TType> CreateCtorFunc<TArg1, TArg2, TType>(Type type)
         {
-            var args = new Type[] { typeof(T1), typeof(T2) };
-            return CreateNewFactory<Func<T1, T2, TType>>(type, args);
+            var args = new Type[] { typeof(TArg1), typeof(TArg2) };
+            return CreateCtorFunc<Func<TArg1, TArg2, TType>>(type, args);
         }
 
         /// <summary>
-        /// 创建类型的创建工厂
+        /// 创建类型的构造器调用委托
         /// </summary>
-        /// <typeparam name="TFunc"></typeparam>
+        /// <typeparam name="TFunc">构造器调用委托</typeparam>
         /// <param name="type">类型</param>
         /// <param name="args">参数类型</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
-        private static TFunc CreateNewFactory<TFunc>(Type type, Type[] args)
+        private static TFunc CreateCtorFunc<TFunc>(Type type, Type[] args)
         {
             if (type == null)
             {
@@ -209,6 +209,12 @@ namespace WebApiClient
             }
 
             var ctor = type.GetConstructor(args);
+            if (ctor == null)
+            {
+                var argTypeNames = string.Join(", ", args.Select(a => a.Name));
+                throw new ArgumentException($"类型{type}不存在构造函数.ctor({argTypeNames})");
+            }
+
             var parameters = args.Select(t => Expression.Parameter(t)).ToArray();
             var body = Expression.New(ctor, parameters);
             return Expression.Lambda<TFunc>(body, parameters).Compile();

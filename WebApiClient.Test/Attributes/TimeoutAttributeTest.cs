@@ -64,7 +64,7 @@ namespace WebApiClient.Test.Attributes
             Assert.True(canceled);
 
 
-            parameter = context.ApiActionDescriptor.Parameters[0].Clone("");
+            parameter = context.ApiActionDescriptor.Parameters[0].Clone(Guid.NewGuid());
             await Assert.ThrowsAsync<HttpApiConfigException>(()
                 => attr.BeforeRequestAsync(context, parameter));
 

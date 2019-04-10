@@ -21,7 +21,7 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// json解析
         /// </summary>
-        private static readonly IApiReturnAttribute jsonReturn = new JsonReturnAttribute();       
+        private static readonly IApiReturnAttribute jsonReturn = new JsonReturnAttribute();
 
         /// <summary>
         /// 配置请求头的accept
@@ -31,7 +31,7 @@ namespace WebApiClient.Attributes
         protected override void ConfigureAccept(HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> accept)
         {
             accept.Add(new MediaTypeWithQualityHeaderValue(JsonContent.MediaType, 0.9d));
-            accept.Add(new MediaTypeWithQualityHeaderValue(XmlContent.MediaType, 0.8d));          
+            accept.Add(new MediaTypeWithQualityHeaderValue(XmlContent.MediaType, 0.8d));
             accept.Add(new MediaTypeWithQualityHeaderValue("*/*", 0.1d));
         }
 
@@ -67,7 +67,7 @@ namespace WebApiClient.Attributes
 
             if (dataType.IsHttpResponseWrapper == true)
             {
-                return Activator.CreateInstance(dataType.Type, response);
+                return dataType.HttpResponseWrapperFactory.Invoke(response);
             }
 
             var contentType = new ContentType(response.Content.Headers.ContentType);

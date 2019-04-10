@@ -23,10 +23,9 @@ namespace WebApiClient.Contexts
         public Func<ITask> ITaskFactory { get; protected set; }
 
         /// <summary>
-        /// 获取包装为ITask的泛型构造器
+        /// 获取HttpResponseWrapper子类的创建工厂
         /// </summary>
-        public ConstructorInfo ITaskConstructor { get; protected set; }
-
+        public Func<HttpResponseMessage, HttpResponseWrapper> HttpResponseWrapperFactory { get; protected set; }
 
         /// <summary>
         /// 获取是否为String类型
@@ -62,15 +61,19 @@ namespace WebApiClient.Contexts
         {
             this.Type = dataType ?? throw new ArgumentNullException(nameof(dataType));
 
-            var taskType = typeof(ApiTask<>).MakeGenericType(dataType);
-            this.ITaskFactory = Lambda.CreateNewFunc<ITask>(taskType);
-            this.ITaskConstructor = taskType.GetConstructor(TypeExtensions.EmptyTypes);
-
             this.IsString = dataType == typeof(string);
             this.IsStream = dataType == typeof(Stream);
             this.IsByteArray = dataType == typeof(byte[]);
             this.IsHttpResponseMessage = dataType == typeof(HttpResponseMessage);
             this.IsHttpResponseWrapper = dataType.IsInheritFrom<HttpResponseWrapper>();
+
+            var apiTaskType = typeof(ApiTask<>).MakeGenericType(dataType);
+            this.ITaskFactory = Lambda.CreateCtorFunc<ITask>(apiTaskType);
+
+            if (this.IsHttpResponseWrapper == true)
+            {
+                this.HttpResponseWrapperFactory = Lambda.CreateCtorFunc<HttpResponseMessage, HttpResponseWrapper>(dataType);
+            }
         }
     }
 }

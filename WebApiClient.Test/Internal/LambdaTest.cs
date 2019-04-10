@@ -48,9 +48,31 @@ namespace WebApiClient.Test.Internal
             Assert.True("ee" == model.name);
         }
 
+        [Fact]
+        public void CtorTest()
+        {
+            var value = "name";
+            var name = Lambda.CreateCtorFunc<string, Model>(typeof(Model))(value).name;
+            Assert.True(name == value);
+
+            var func = Lambda.CreateCtorFunc<string, object>(typeof(Model));
+            var model = func.Invoke(value) as Model;
+            Assert.True(model.name == value);
+        }
+
+
         class Model
         {
             public string name { get; set; }
+
+            public Model()
+            {
+            }
+
+            public Model(string name)
+            {
+                this.name = name;
+            }
         }
     }
 }

@@ -34,7 +34,7 @@ namespace WebApiClient
         {
             this.ProxyType = proxyType ?? throw new ArgumentNullException(nameof(proxyType));
             this.ApiMethods = apiMethods ?? throw new ArgumentNullException(nameof(apiMethods));
-            this.proxyFactory = Lambda.CreateNewFunc<HttpApi, IApiInterceptor, MethodInfo[]>(proxyType);
+            this.proxyFactory = Lambda.CreateCtorFunc<IApiInterceptor, MethodInfo[], HttpApi>(proxyType);
         }
 
         /// <summary>
