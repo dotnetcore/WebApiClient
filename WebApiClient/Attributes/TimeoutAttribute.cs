@@ -79,8 +79,9 @@ namespace WebApiClient.Attributes
             {
                 this.SetTimeout(context, timespan);
             }
-            else if (double.TryParse(parameter.Value?.ToString(), out double milliseconds))
+            else if (parameter.Value is IConvertible convertible)
             {
+                var milliseconds = convertible.ToDouble(null);
                 var timeout = System.TimeSpan.FromMilliseconds(milliseconds);
                 this.SetTimeout(context, timeout);
             }
