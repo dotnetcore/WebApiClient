@@ -28,14 +28,14 @@ namespace WebApiClient.Test.Attributes
         }
 
         [Fact]
-        public async Task BeforeRequestAsync_ParameterTest()
+        public async Task BeforeRequestAsync_Parameter_Double_Test()
         {
             var context = new TestActionContext(
                 httpApi: null,
                 httpApiConfig: new HttpApiConfig(),
                 apiActionDescriptor: new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync")));
 
-            IApiParameterAttribute attr = new TimeoutAttribute(50);
+            IApiParameterAttribute attr = new TimeoutAttribute();
 
             var parameter = context.ApiActionDescriptor.Parameters[0].Clone(10);
             await attr.BeforeRequestAsync(context, parameter);
@@ -43,14 +43,35 @@ namespace WebApiClient.Test.Attributes
             await Task.Delay(20);
             var canceled = context.CancellationTokens[0].IsCancellationRequested;
             Assert.True(canceled);
+        }
+
+        [Fact]
+        public async Task BeforeRequestAsync_Parameter_Timespan_Test()
+        {
+            var context = new TestActionContext(
+                httpApi: null,
+                httpApiConfig: new HttpApiConfig(),
+                apiActionDescriptor: new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync")));
+
+            IApiParameterAttribute attr = new TimeoutAttribute();
 
 
-            parameter = context.ApiActionDescriptor.Parameters[0].Clone(TimeSpan.FromMilliseconds(5));
+            var parameter = context.ApiActionDescriptor.Parameters[0].Clone(TimeSpan.FromMilliseconds(5));
             await attr.BeforeRequestAsync(context, parameter);
 
             await Task.Delay(10);
-            canceled = context.CancellationTokens[0].IsCancellationRequested;
+            var canceled = context.CancellationTokens[0].IsCancellationRequested;
             Assert.True(canceled);
+
+
+            parameter = context.ApiActionDescriptor.Parameters[0].Clone("");
+            await Assert.ThrowsAsync<HttpApiConfigException>(()
+                => attr.BeforeRequestAsync(context, parameter));
+
+
+            parameter = context.ApiActionDescriptor.Parameters[0].Clone(null);
+            await attr.BeforeRequestAsync(context, parameter);
+            Assert.True(context.CancellationTokens.Count == 1);
         }
     }
 }

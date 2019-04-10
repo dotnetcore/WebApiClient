@@ -4,7 +4,7 @@ using WebApiClient;
 
 namespace WebApiClient.Test.Attributes
 {
-    public interface IMyApi : IDisposable
+    public interface IMyApi : IHttpApi
     {
         ITask<HttpResponseMessage> PostAsync(string name);
     }
