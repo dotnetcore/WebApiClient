@@ -46,7 +46,7 @@ namespace WebApiClient.Analyzers
         {
             context.RegisterSyntaxNodeAction(syntaxNodeContext =>
             {
-                var webApiContext = new WebApiContext(syntaxNodeContext.Compilation);
+                var webApiContext = new WebApiClientContext(syntaxNodeContext.Compilation);
                 var httpApiMethodSymbols = syntaxNodeContext.GetHttpApiMethodSymbols(webApiContext).ToArray();
                 var diagnosticAttributes = httpApiMethodSymbols.SelectMany(item => item.GetDiagnosticAttributes(webApiContext)).ToArray();
 

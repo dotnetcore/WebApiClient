@@ -2,10 +2,8 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace WebApiClient.Analyzers
 {
@@ -18,9 +16,9 @@ namespace WebApiClient.Analyzers
         /// 获取HttpApi方法
         /// </summary>
         /// <param name="syntaxNodeContext"></param>
-        /// <param name="webApiContext">WebApi上下文</param>
+        /// <param name="webApiContext">WebApiClient上下文</param>
         /// <returns></returns>
-        public static IEnumerable<IMethodSymbol> GetHttpApiMethodSymbols(this SyntaxNodeAnalysisContext syntaxNodeContext, WebApiContext webApiContext)
+        public static IEnumerable<IMethodSymbol> GetHttpApiMethodSymbols(this SyntaxNodeAnalysisContext syntaxNodeContext, WebApiClientContext webApiContext)
         {
             var interfaceDeclaration = syntaxNodeContext.Node as InterfaceDeclarationSyntax;
             if (interfaceDeclaration == null || interfaceDeclaration.BaseList == null)
@@ -57,14 +55,13 @@ namespace WebApiClient.Analyzers
         /// 获取要诊断的特性
         /// </summary>
         /// <param name="methodSymbol">方法</param>
-        /// <param name="webApiContext">WebApi上下文</param>
+        /// <param name="webApiContext">WebApiClient上下文</param>
         /// <returns></returns>
-        public static IEnumerable<AttributeData> GetDiagnosticAttributes(this IMethodSymbol methodSymbol, WebApiContext webApiContext)
+        public static IEnumerable<AttributeData> GetDiagnosticAttributes(this IMethodSymbol methodSymbol, WebApiClientContext webApiContext)
         {
-            var attributeCtorUsageType = webApiContext.AttributeCtorUsageAtributeType;
             foreach (var methodAttribuete in methodSymbol.GetAttributes())
             {
-                if (methodAttribuete.IsDefind(AttributeCtorTargets.Method, webApiContext) == false)
+                if (methodAttribuete.CtorAttribueIsDefind(AttributeCtorTargets.Method, webApiContext) == false)
                 {
                     yield return methodAttribuete;
                 }
@@ -74,7 +71,7 @@ namespace WebApiClient.Analyzers
             {
                 foreach (var parameterAttribute in parameter.GetAttributes())
                 {
-                    if (parameterAttribute.IsDefind(AttributeCtorTargets.Parameter, webApiContext) == false)
+                    if (parameterAttribute.CtorAttribueIsDefind(AttributeCtorTargets.Parameter, webApiContext) == false)
                     {
                         yield return parameterAttribute;
                     }
@@ -87,13 +84,11 @@ namespace WebApiClient.Analyzers
         /// </summary>
         /// <param name="attributeData"></param>
         /// <param name="targets">指定目标</param>
-        /// <param name="webApiContext">WebApi上下文</param>
+        /// <param name="webApiContext">WebApiClient上下文</param>
         /// <returns></returns>
-        private static bool IsDefind(this AttributeData attributeData, AttributeCtorTargets targets, WebApiContext webApiContext)
+        private static bool CtorAttribueIsDefind(this AttributeData attributeData, AttributeCtorTargets targets, WebApiClientContext webApiContext)
         {
-            var ctorUsageAttribute = attributeData
-                .AttributeConstructor
-                .GetAttributes()
+            var ctorUsageAttribute = attributeData.AttributeConstructor.GetAttributes()
                 .FirstOrDefault(item => item.AttributeClass.Equals(webApiContext.AttributeCtorUsageAtributeType));
 
             if (ctorUsageAttribute == null)

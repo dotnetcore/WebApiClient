@@ -6,7 +6,7 @@ namespace WebApiClient.Analyzers
     /// <summary>
     /// 表示WebApiClient的上下文
     /// </summary>
-    class WebApiContext
+    class WebApiClientContext
     {
         /// <summary>
         /// IHttpApi的类型
@@ -48,7 +48,7 @@ namespace WebApiClient.Analyzers
         /// WebApiClient的上下文
         /// </summary>
         /// <param name="compilation"></param>
-        public WebApiContext(Compilation compilation)
+        public WebApiClientContext(Compilation compilation)
         {
             this.ihttpApiType = new Lazy<INamedTypeSymbol>(() => compilation.GetTypeByMetadataName(ihttpApiTypeName), true);
             this.attributeCtorUsageAtributeType = new Lazy<INamedTypeSymbol>(() => compilation.GetTypeByMetadataName(attributeCtorUsageTypName), true);
