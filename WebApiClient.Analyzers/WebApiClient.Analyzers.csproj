@@ -10,10 +10,10 @@
     <DefineConstants>$(JITAOT);$(DEBUGRELEASE)</DefineConstants>
   </PropertyGroup>
   
-  <PropertyGroup Condition="'$(DEBUGRELEASE)'!='RELEASE'">
+  <PropertyGroup Condition="'$(DEBUGRELEASE)'=='TRACE;DEBUG'">
     <Optimize>false</Optimize>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(DEBUGRELEASE)'=='RELEASE'">
+  <PropertyGroup Condition="'$(DEBUGRELEASE)'=='TRACE;RELEASE'">
     <Optimize>true</Optimize>
   </PropertyGroup>
 

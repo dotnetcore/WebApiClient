@@ -1,64 +1,62 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 
 namespace WebApiClient.Analyzers
 {
+    /// <summary>
+    /// 表示特性的构造函数分析器
+    /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class AttributeCtorAnalyzer : DiagnosticAnalyzer
     {
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
+        /// <summary>
+        /// 诊断描述器
+        /// </summary>
+        private readonly DiagnosticDescriptor diagnosticDescriptor;
+
+        /// <summary>
+        /// 特性的构造函数分析器
+        /// </summary>
+        public AttributeCtorAnalyzer()
         {
-            get
-            {
-                var id = "unexpected ctor";
-                var title = "不支持使用的特性构造函数";
-                var category = "Error";
-                var messageFormat = "无效构造器无效构造器";
-                var descriptor = new DiagnosticDescriptor(id, title, messageFormat, category, DiagnosticSeverity.Error, true);
-                return ImmutableArray.Create(descriptor);
-            }
+            const string id = "AC1001";
+            const string title = "特性构造函数不匹配";
+            const string category = "Error";
+            const string messageFormat = "不支持特性的此构造函数，请使用其它构造函数";
+            const string helpLinkUri = "https://github.com/dotnetcore/WebApiClient/wiki/WebApiClient%E5%9F%BA%E7%A1%80";
+            this.diagnosticDescriptor = new DiagnosticDescriptor(id, title, messageFormat, category, DiagnosticSeverity.Error, true, helpLinkUri: helpLinkUri);
         }
 
+        /// <summary>
+        /// 获取所支持的诊断
+        /// </summary>
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
+        {
+            get => ImmutableArray.Create(this.diagnosticDescriptor);
+        }
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="context">上下文</param>
         public override void Initialize(AnalysisContext context)
         {
-            context.RegisterSymbolAction(symbolContext =>
+            context.RegisterSyntaxNodeAction(syntaxNodeContext =>
             {
-                //System.Diagnostics.Debugger.Launch();
-                var symbol = (IMethodSymbol)symbolContext.Symbol;
+                var webApiContext = new WebApiContext(syntaxNodeContext.Compilation);
+                var httpApiMethodSymbols = syntaxNodeContext.GetHttpApiMethodSymbols(webApiContext).ToArray();
+                var diagnosticAttributes = httpApiMethodSymbols.SelectMany(item => item.GetDiagnosticAttributes(webApiContext)).ToArray();
 
-                var a = symbol.GetAttributes().FirstOrDefault();
-                if (a != null)
+                foreach (var item in diagnosticAttributes)
                 {
-                    if (a.ConstructorArguments.Length == 0)
-                    {
-                        Report(a.ApplicationSyntaxReference.GetSyntax().GetLocation());
-                    }
+                    var location = item.ApplicationSyntaxReference.GetSyntax().GetLocation();
+                    var diagnostic = Diagnostic.Create(this.diagnosticDescriptor, location);
+                    syntaxNodeContext.ReportDiagnostic(diagnostic);
                 }
-
-                foreach (var p in symbol.Parameters)
-                {
-                    var pa = p.GetAttributes().FirstOrDefault();
-                    if (pa != null && pa.ConstructorArguments.Length > 0)
-                    {
-                        Report(pa.ApplicationSyntaxReference.GetSyntax().GetLocation());
-                    }
-                }
-
-
-                void Report(Location location)
-                {
-                    var diagnostic = Diagnostic.Create(
-                        this.SupportedDiagnostics.First(),
-                        location);
-
-                    symbolContext.ReportDiagnostic(diagnostic);
-                }
-
-            }, SymbolKind.Method);
+            }, SyntaxKind.InterfaceDeclaration);
         }
     }
 }

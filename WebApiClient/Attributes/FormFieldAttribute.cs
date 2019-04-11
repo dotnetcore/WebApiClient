@@ -29,6 +29,7 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// 表示参数值作为x-www-form-urlencoded的字段
         /// </summary>
+        [AttributeCtorUsage(AttributeCtorTargets.Parameter)]
         public FormFieldAttribute()
         {
         }
@@ -39,6 +40,7 @@ namespace WebApiClient.Attributes
         /// <param name="name">字段名称</param>
         /// <param name="value">字段的值</param>
         /// <exception cref="ArgumentNullException"></exception>
+        [AttributeCtorUsage(AttributeCtorTargets.Interface | AttributeCtorTargets.Method)]
         public FormFieldAttribute(string name, object value)
         {
             if (string.IsNullOrEmpty(name))
