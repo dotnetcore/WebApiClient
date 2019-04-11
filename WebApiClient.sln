@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClient.BuildTask", "W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClient.Test", "WebApiClient.Test\WebApiClient.Test.csproj", "{AF7A43AF-3F93-4186-898F-21F44E4BE03A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClient.Analyzers", "WebApiClient.Analyzers\WebApiClient.Analyzers.csproj", "{46CEDE0A-253F-4404-94B5-6AEAA5939589}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		AOT_Debug|Any CPU = AOT_Debug|Any CPU
@@ -41,8 +43,8 @@ Global
 		{3827568B-2F43-4904-80A9-8ED5BAAB19F6}.AOT_Release|Any CPU.Build.0 = AOT_Release|Any CPU
 		{3827568B-2F43-4904-80A9-8ED5BAAB19F6}.JIT_Debug|Any CPU.ActiveCfg = AOT_Debug|Any CPU
 		{3827568B-2F43-4904-80A9-8ED5BAAB19F6}.JIT_Debug|Any CPU.Build.0 = AOT_Debug|Any CPU
-		{3827568B-2F43-4904-80A9-8ED5BAAB19F6}.JIT_Release|Any CPU.ActiveCfg = AOT_Debug|Any CPU
-		{3827568B-2F43-4904-80A9-8ED5BAAB19F6}.JIT_Release|Any CPU.Build.0 = AOT_Debug|Any CPU
+		{3827568B-2F43-4904-80A9-8ED5BAAB19F6}.JIT_Release|Any CPU.ActiveCfg = AOT_Release|Any CPU
+		{3827568B-2F43-4904-80A9-8ED5BAAB19F6}.JIT_Release|Any CPU.Build.0 = AOT_Release|Any CPU
 		{AF7A43AF-3F93-4186-898F-21F44E4BE03A}.AOT_Debug|Any CPU.ActiveCfg = AOT_Debug|Any CPU
 		{AF7A43AF-3F93-4186-898F-21F44E4BE03A}.AOT_Debug|Any CPU.Build.0 = AOT_Debug|Any CPU
 		{AF7A43AF-3F93-4186-898F-21F44E4BE03A}.AOT_Release|Any CPU.ActiveCfg = AOT_Release|Any CPU
@@ -51,6 +53,14 @@ Global
 		{AF7A43AF-3F93-4186-898F-21F44E4BE03A}.JIT_Debug|Any CPU.Build.0 = JIT_Debug|Any CPU
 		{AF7A43AF-3F93-4186-898F-21F44E4BE03A}.JIT_Release|Any CPU.ActiveCfg = JIT_Release|Any CPU
 		{AF7A43AF-3F93-4186-898F-21F44E4BE03A}.JIT_Release|Any CPU.Build.0 = JIT_Release|Any CPU
+		{46CEDE0A-253F-4404-94B5-6AEAA5939589}.AOT_Debug|Any CPU.ActiveCfg = AOT_Debug|Any CPU
+		{46CEDE0A-253F-4404-94B5-6AEAA5939589}.AOT_Debug|Any CPU.Build.0 = AOT_Debug|Any CPU
+		{46CEDE0A-253F-4404-94B5-6AEAA5939589}.AOT_Release|Any CPU.ActiveCfg = AOT_Release|Any CPU
+		{46CEDE0A-253F-4404-94B5-6AEAA5939589}.AOT_Release|Any CPU.Build.0 = AOT_Release|Any CPU
+		{46CEDE0A-253F-4404-94B5-6AEAA5939589}.JIT_Debug|Any CPU.ActiveCfg = JIT_Debug|Any CPU
+		{46CEDE0A-253F-4404-94B5-6AEAA5939589}.JIT_Debug|Any CPU.Build.0 = JIT_Debug|Any CPU
+		{46CEDE0A-253F-4404-94B5-6AEAA5939589}.JIT_Release|Any CPU.ActiveCfg = JIT_Release|Any CPU
+		{46CEDE0A-253F-4404-94B5-6AEAA5939589}.JIT_Release|Any CPU.Build.0 = JIT_Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
