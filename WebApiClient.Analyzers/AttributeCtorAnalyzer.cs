@@ -2,7 +2,6 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Immutable;
-using System.Linq;
 
 namespace WebApiClient.Analyzers
 {
@@ -46,9 +45,8 @@ namespace WebApiClient.Analyzers
         {
             context.RegisterSyntaxNodeAction(syntaxNodeContext =>
             {
-                var webApiContext = new WebApiClientContext(syntaxNodeContext.Compilation);
-                var httpApiMethodSymbols = syntaxNodeContext.GetHttpApiMethodSymbols(webApiContext).ToArray();
-                var diagnosticAttributes = httpApiMethodSymbols.SelectMany(item => item.GetDiagnosticAttributes(webApiContext)).ToArray();
+                var httpApi = new WebApiClientHtttApi(syntaxNodeContext);
+                var diagnosticAttributes = httpApi.GetDiagnosticAttributes();
 
                 foreach (var item in diagnosticAttributes)
                 {
