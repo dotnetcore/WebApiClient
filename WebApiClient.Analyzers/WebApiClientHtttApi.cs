@@ -80,6 +80,11 @@ namespace WebApiClient.Analyzers
             }
 
             var interfaceSymbol = this.syntaxNodeContext.SemanticModel.GetDeclaredSymbol(this.interfaceDeclaration);
+            if (interfaceSymbol == null)
+            {
+                return Enumerable.Empty<AttributeData>();
+            }
+
             var interfaceAttributes = this.GetInterfaceDiagnosticAttributes(interfaceSymbol);
             var methodAttributes = this.GetHttpApiMethodSymbols().SelectMany(item => this.GetMethodDiagnosticAttributes(item));
             return interfaceAttributes.Concat(methodAttributes);
