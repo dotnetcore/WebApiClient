@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using System.Linq;
 
 namespace WebApiClient.Analyzers
 {
@@ -78,6 +79,11 @@ namespace WebApiClient.Analyzers
             {
                 var type = this.SyntaxNodeContext.SemanticModel.GetTypeInfo(baseType.Type).Type;
                 if (type.Equals(this.IHttpApiType) == true)
+                {
+                    return true;
+                }
+
+                if (type.AllInterfaces.Any(item => item.Equals(this.IHttpApiType)) == true)
                 {
                     return true;
                 }
