@@ -1,7 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System;
 
 namespace WebApiClient.Analyzers
 {
@@ -10,16 +9,6 @@ namespace WebApiClient.Analyzers
     /// </summary>
     class HttpApiContext
     {
-        /// <summary>
-        /// IHttpApi的类型
-        /// </summary>
-        private readonly Lazy<INamedTypeSymbol> ihttpApiType;
-
-        /// <summary>
-        /// AttributeCtorUsageAtribute的类型
-        /// </summary>
-        private readonly Lazy<INamedTypeSymbol> attributeCtorUsageAtributeType;
-
         /// <summary>
         /// IHttpApi的类型名称
         /// </summary>
@@ -33,27 +22,6 @@ namespace WebApiClient.Analyzers
 
 
         /// <summary>
-        /// 获取IHttpApi的类型
-        /// </summary>
-        public INamedTypeSymbol IHttpApiType
-        {
-            get => this.ihttpApiType.Value;
-        }
-
-        /// <summary>
-        /// 获取AttributeCtorUsageAtribute的类型
-        /// </summary>
-        public INamedTypeSymbol AttributeCtorUsageAtributeType
-        {
-            get => this.attributeCtorUsageAtributeType.Value;
-        }
-
-        /// <summary>
-        /// 获取是否为HttpApi
-        /// </summary>
-        public bool IsHtttApi { get; }
-
-        /// <summary>
         /// 获取语法节点上下文
         /// </summary>
         public SyntaxNodeAnalysisContext SyntaxNodeContext { get; }
@@ -62,6 +30,21 @@ namespace WebApiClient.Analyzers
         /// 获取接口声明语法
         /// </summary>
         public InterfaceDeclarationSyntax HttpApiSyntax { get; }
+
+        /// <summary>
+        /// 获取是否为HttpApi
+        /// </summary>
+        public bool IsHtttApi { get; }
+
+        /// <summary>
+        /// 获取IHttpApi的类型
+        /// </summary>
+        public INamedTypeSymbol IHttpApiType { get; }
+
+        /// <summary>
+        /// 获取AttributeCtorUsageAtribute的类型
+        /// </summary>
+        public INamedTypeSymbol AttributeCtorUsageAtributeType { get; }
 
 
         /// <summary>
@@ -73,10 +56,10 @@ namespace WebApiClient.Analyzers
             this.SyntaxNodeContext = syntaxNodeContext;
             this.HttpApiSyntax = syntaxNodeContext.Node as InterfaceDeclarationSyntax;
 
-            this.ihttpApiType = new Lazy<INamedTypeSymbol>(() => this.SyntaxNodeContext.Compilation.GetTypeByMetadataName(ihttpApiTypeName), true);
-            this.attributeCtorUsageAtributeType = new Lazy<INamedTypeSymbol>(() => this.SyntaxNodeContext.Compilation.GetTypeByMetadataName(attributeCtorUsageTypName), true);
+            this.IHttpApiType = syntaxNodeContext.Compilation.GetTypeByMetadataName(ihttpApiTypeName);
+            this.AttributeCtorUsageAtributeType = syntaxNodeContext.Compilation.GetTypeByMetadataName(attributeCtorUsageTypName);
 
-            this.IsHtttApi = this.GetIsHtttApiInterface();
+            this.IsHtttApi = this.IsHtttApiInterface();
         }
 
 
@@ -84,7 +67,7 @@ namespace WebApiClient.Analyzers
         /// 返回是否为HttpApi接口
         /// </summary>
         /// <returns></returns>
-        private bool GetIsHtttApiInterface()
+        private bool IsHtttApiInterface()
         {
             if (this.HttpApiSyntax == null || this.HttpApiSyntax.BaseList == null)
             {
