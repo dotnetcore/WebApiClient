@@ -67,38 +67,51 @@ namespace WebApiClient.Analyzers
             return false;
         }
 
+        /// <summary>
+        /// 报告所有诊断
+        /// </summary>
+        public void ReportDiagnostic()
+        {
+            this.ReportDiagnosticOfAttributes();
+            this.ReportDiagnosticOfReturnTypes();
+            this.ReportDiagnosticOfRefParameters();
+        }
 
         /// <summary>
-        /// 获取诊断的特性
+        /// 报告特性诊断
         /// </summary>
-        /// <returns></returns>
-        public IEnumerable<SyntaxNode> GetDiagnosticAttributeSyntaxs()
+        public void ReportDiagnosticOfAttributes()
         {
             if (this.IsHtttApiInterface == false)
             {
-                return Enumerable.Empty<SyntaxNode>();
+                return;
             }
 
             var interfaceSymbol = this.syntaxNodeContext.SemanticModel.GetDeclaredSymbol(this.interfaceDeclaration);
             if (interfaceSymbol == null)
             {
-                return Enumerable.Empty<SyntaxNode>();
+                return;
             }
 
             var interfaceAttributes = this.GetInterfaceDiagnosticAttributes(interfaceSymbol);
             var methodAttributes = this.GetHttpApiMethodSymbols().SelectMany(item => this.GetMethodDiagnosticAttributes(item));
-            return interfaceAttributes.Concat(methodAttributes).Select(item => item.ApplicationSyntaxReference.GetSyntax());
+
+            foreach (var item in interfaceAttributes.Concat(methodAttributes))
+            {
+                var location = item.ApplicationSyntaxReference.GetSyntax().GetLocation();
+                var diagnostic = DiagnosticDescriptors.AttributeDescriptor.ToDiagnostic(location);
+                this.syntaxNodeContext.ReportDiagnostic(diagnostic);
+            }
         }
 
         /// <summary>
-        /// 获取诊断的接口返回类型
+        /// 报告返回类型诊断
         /// </summary>
-        /// <returns></returns>
-        public IEnumerable<SyntaxNode> GetDiagnosticReturnTypeSyntaxs()
+        public void ReportDiagnosticOfReturnTypes()
         {
             if (this.IsHtttApiInterface == false)
             {
-                yield break;
+                return;
             }
 
             foreach (var method in this.GetHttpApiMethodSymbols())
@@ -109,7 +122,34 @@ namespace WebApiClient.Analyzers
                     var methodSyntax = method.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as MethodDeclarationSyntax;
                     if (methodSyntax != null)
                     {
-                        yield return methodSyntax.ReturnType;
+                        var location = methodSyntax.ReturnType.GetLocation();
+                        var diagnostic = DiagnosticDescriptors.ReturnTypeDescriptor.ToDiagnostic(location);
+                        this.syntaxNodeContext.ReportDiagnostic(diagnostic);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 报告引用参数诊断
+        /// </summary>
+        public void ReportDiagnosticOfRefParameters()
+        {
+            if (this.IsHtttApiInterface == false)
+            {
+                return;
+            }
+
+            foreach (var method in this.GetHttpApiMethodSymbols())
+            {
+                foreach (var parameter in method.Parameters)
+                {
+                    if (parameter.RefKind != RefKind.None)
+                    {
+                        var parameterSyntax = parameter.DeclaringSyntaxReferences.First().GetSyntax() as ParameterSyntax;
+                        var location = parameterSyntax.Modifiers.First().GetLocation();
+                        var diagnostic = DiagnosticDescriptors.RefParameterDescriptor.ToDiagnostic(location);
+                        this.syntaxNodeContext.ReportDiagnostic(diagnostic);
                     }
                 }
             }
@@ -135,7 +175,6 @@ namespace WebApiClient.Analyzers
                 }
             }
         }
-
 
         /// <summary>
         /// 获取接口已诊断的特性
