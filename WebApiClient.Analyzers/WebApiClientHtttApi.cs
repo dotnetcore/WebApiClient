@@ -91,6 +91,31 @@ namespace WebApiClient.Analyzers
         }
 
         /// <summary>
+        /// 获取诊断的接口返回
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<TypeSyntax> GetDiagnosticReturnSyntaxs()
+        {
+            if (this.IsHtttApiInterface == false)
+            {
+                yield break;
+            }
+
+            foreach (var method in this.GetHttpApiMethodSymbols())
+            {
+                var name = method.ReturnType.MetadataName;
+                if (name != "Task`1" || name != "ITask`1")
+                {
+                    var methodSyntax = method.DeclaringSyntaxReferences.First()?.GetSyntax() as MethodDeclarationSyntax;
+                    if (methodSyntax != null)
+                    {
+                        yield return methodSyntax.ReturnType;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// 获取HttpApi方法
         /// </summary>
         /// <returns></returns>
