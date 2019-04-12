@@ -207,7 +207,7 @@ namespace WebApiClient.Analyzers
         {
             foreach (var attribuete in interfaceSymbol.GetAttributes())
             {
-                if (this.CtorAttribueIsDefind(attribuete, AttributeCtorTargets.Method) == false)
+                if (this.CtorAttribueIsDefind(attribuete, AttributeCtorTargets.Interface) == false)
                 {
                     yield return attribuete;
                 }
