@@ -53,7 +53,7 @@ namespace WebApiClient.Analyzers
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        private IEnumerable<IHttpApiDiagnostic> GetHttpApiDiagnostics(HttpApiContext context)
+        private IEnumerable<HttpApiDiagnostic> GetHttpApiDiagnostics(HttpApiContext context)
         {
             yield return new AttributeDiagnostic(context);
             yield return new ReturnTypeDiagnostic(context);

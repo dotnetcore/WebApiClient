@@ -7,7 +7,7 @@ namespace WebApiClient.Analyzers
     /// <summary>
     /// 表示HttpApi诊断器抽象类
     /// </summary>
-    abstract class HttpApiDiagnostic : IHttpApiDiagnostic
+    abstract class HttpApiDiagnostic
     {
         /// <summary>
         /// 获取上下文
@@ -38,7 +38,7 @@ namespace WebApiClient.Analyzers
         {
             return Diagnostic.Create(this.Descriptor, location, messageArgs);
         }
-     
+
         /// <summary>
         /// 返回HttpApi的所有方法
         /// </summary>
@@ -63,7 +63,7 @@ namespace WebApiClient.Analyzers
         /// <summary>
         /// 报告诊断结果
         /// </summary>
-        void IHttpApiDiagnostic.Report()
+        public void Report()
         {
             if (this.Context.IsHtttApi == false)
             {

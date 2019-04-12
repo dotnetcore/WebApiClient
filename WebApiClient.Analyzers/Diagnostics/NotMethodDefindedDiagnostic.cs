@@ -14,7 +14,7 @@ namespace WebApiClient.Analyzers.Diagnostics
         /// 获取诊断描述
         /// </summary>
         /// </summary>
-        public override DiagnosticDescriptor Descriptor { get; } = Descriptors.NotMethodDefindedDescriptor;
+        public override DiagnosticDescriptor Descriptor => Descriptors.NotMethodDefindedDescriptor;
 
         /// <summary>
         /// 非方法声明诊断器

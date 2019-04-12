@@ -16,7 +16,7 @@ namespace WebApiClient.Analyzers.Diagnostics
         /// 获取诊断描述
         /// </summary>
         /// </summary>
-        public override DiagnosticDescriptor Descriptor { get; } = Descriptors.AttributeDescriptor;
+        public override DiagnosticDescriptor Descriptor => Descriptors.AttributeDescriptor;
 
         /// <summary>
         /// 特性构造函数诊断器
@@ -65,7 +65,7 @@ namespace WebApiClient.Analyzers.Diagnostics
                 }
             }
         }
-      
+
 
         /// <summary>
         /// 获取方法已诊断的特性

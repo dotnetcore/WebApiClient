@@ -15,7 +15,7 @@ namespace WebApiClient.Analyzers.Diagnostics
         /// 获取诊断描述
         /// </summary>
         /// </summary>
-        public override DiagnosticDescriptor Descriptor { get; } = Descriptors.ReturnTypeDescriptor;
+        public override DiagnosticDescriptor Descriptor => Descriptors.ReturnTypeDescriptor;
 
         /// <summary>
         /// 返回类型诊断器
