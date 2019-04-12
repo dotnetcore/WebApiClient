@@ -106,7 +106,7 @@ namespace WebApiClient.Analyzers
                 var name = method.ReturnType.MetadataName;
                 if (name != "Task`1" || name != "ITask`1")
                 {
-                    var methodSyntax = method.DeclaringSyntaxReferences.First()?.GetSyntax() as MethodDeclarationSyntax;
+                    var methodSyntax = method.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as MethodDeclarationSyntax;
                     if (methodSyntax != null)
                     {
                         yield return methodSyntax.ReturnType;
