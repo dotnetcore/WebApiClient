@@ -104,7 +104,7 @@ namespace WebApiClient.Analyzers
             foreach (var method in this.GetHttpApiMethodSymbols())
             {
                 var name = method.ReturnType.MetadataName;
-                if (name != "Task`1" || name != "ITask`1")
+                if (name != "Task`1" && name != "ITask`1")
                 {
                     var methodSyntax = method.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as MethodDeclarationSyntax;
                     if (methodSyntax != null)
