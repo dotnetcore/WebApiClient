@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Immutable;
+using System.Linq;
 
 namespace WebApiClient.Analyzers
 {
@@ -20,8 +21,8 @@ namespace WebApiClient.Analyzers
         /// <summary>
         /// 方法返回类型诊断描述器
         /// </summary>
-        private static readonly DiagnosticDescriptor returnDescriptor =
-            Rule("RT1001", "不支持的返回类型", "返回类型必须为ITask<>或Task<T>");
+        private static readonly DiagnosticDescriptor returnTypeDescriptor =
+            Rule("RT1001", "不支持的返回类型", "返回类型必须为ITask<>或Task<>");
 
 
         /// <summary>
@@ -47,7 +48,7 @@ namespace WebApiClient.Analyzers
         /// </summary>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
-            get => ImmutableArray.Create(attributeDescriptor, returnDescriptor);
+            get => ImmutableArray.Create(attributeDescriptor, returnTypeDescriptor);
         }
 
         /// <summary>
@@ -59,20 +60,20 @@ namespace WebApiClient.Analyzers
             context.RegisterSyntaxNodeAction(syntaxNodeContext =>
             {
                 var httpApi = new WebApiClientHtttApi(syntaxNodeContext);
-                var diagnosticReturnSyntaxs = httpApi.GetDiagnosticReturnSyntaxs();
+                var diagnosticAttributeSyntaxs = httpApi.GetDiagnosticAttributeSyntaxs();
+                var diagnosticReturnTypeSyntaxs = httpApi.GetDiagnosticReturnTypeSyntaxs();
 
-                foreach (var item in diagnosticReturnSyntaxs)
+                foreach (var node in diagnosticAttributeSyntaxs)
                 {
-                    var location = item.GetLocation();
-                    var diagnostic = Diagnostic.Create(returnDescriptor, location);
+                    var location = node.GetLocation();
+                    var diagnostic = Diagnostic.Create(attributeDescriptor, location);
                     syntaxNodeContext.ReportDiagnostic(diagnostic);
                 }
 
-                var diagnosticAttributes = httpApi.GetDiagnosticAttributes();
-                foreach (var item in diagnosticAttributes)
+                foreach (var node in diagnosticReturnTypeSyntaxs)
                 {
-                    var location = item.ApplicationSyntaxReference.GetSyntax().GetLocation();
-                    var diagnostic = Diagnostic.Create(attributeDescriptor, location);
+                    var location = node.GetLocation();
+                    var diagnostic = Diagnostic.Create(returnTypeDescriptor, location);
                     syntaxNodeContext.ReportDiagnostic(diagnostic);
                 }
             }, SyntaxKind.InterfaceDeclaration);

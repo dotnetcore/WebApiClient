@@ -72,29 +72,29 @@ namespace WebApiClient.Analyzers
         /// 获取诊断的特性
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<AttributeData> GetDiagnosticAttributes()
+        public IEnumerable<SyntaxNode> GetDiagnosticAttributeSyntaxs()
         {
             if (this.IsHtttApiInterface == false)
             {
-                return Enumerable.Empty<AttributeData>();
+                return Enumerable.Empty<SyntaxNode>();
             }
 
             var interfaceSymbol = this.syntaxNodeContext.SemanticModel.GetDeclaredSymbol(this.interfaceDeclaration);
             if (interfaceSymbol == null)
             {
-                return Enumerable.Empty<AttributeData>();
+                return Enumerable.Empty<SyntaxNode>();
             }
 
             var interfaceAttributes = this.GetInterfaceDiagnosticAttributes(interfaceSymbol);
             var methodAttributes = this.GetHttpApiMethodSymbols().SelectMany(item => this.GetMethodDiagnosticAttributes(item));
-            return interfaceAttributes.Concat(methodAttributes);
+            return interfaceAttributes.Concat(methodAttributes).Select(item => item.ApplicationSyntaxReference.GetSyntax());
         }
 
         /// <summary>
-        /// 获取诊断的接口返回
+        /// 获取诊断的接口返回类型
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<TypeSyntax> GetDiagnosticReturnSyntaxs()
+        public IEnumerable<SyntaxNode> GetDiagnosticReturnTypeSyntaxs()
         {
             if (this.IsHtttApiInterface == false)
             {
