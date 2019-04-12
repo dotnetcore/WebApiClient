@@ -164,7 +164,13 @@ namespace WebApiClient.Analyzers
         /// <returns></returns>
         private bool CtorAttribueIsDefind(AttributeData attributeData, AttributeCtorTargets targets)
         {
-            var ctorUsageAttribute = attributeData.AttributeConstructor.GetAttributes()
+            var ctorAttributes = attributeData.AttributeConstructor?.GetAttributes();
+            if (ctorAttributes.HasValue == false)
+            {
+                return true;
+            }
+
+            var ctorUsageAttribute = ctorAttributes.Value
                 .FirstOrDefault(item => item.AttributeClass.Equals(this.webApiClientContext.AttributeCtorUsageAtributeType));
 
             if (ctorUsageAttribute == null)
@@ -172,7 +178,13 @@ namespace WebApiClient.Analyzers
                 return true;
             }
 
-            var ctorTargets = (AttributeCtorTargets)ctorUsageAttribute.ConstructorArguments[0].Value;
+            var arg = ctorUsageAttribute.ConstructorArguments.FirstOrDefault();
+            if (arg.IsNull == true)
+            {
+                return true;
+            }
+
+            var ctorTargets = (AttributeCtorTargets)arg.Value;
             return ctorTargets.HasFlag(targets);
         }
     }
