@@ -32,6 +32,12 @@ namespace WebApiClient.Analyzers
             = Create("WA1004", "不支持的非方法声明", "不支持的非方法声明，只允许方法的声明");
 
         /// <summary>
+        /// 泛型方法诊断描述器
+        /// </summary>
+        public static DiagnosticDescriptor GenericMethodDescriptor { get; }
+            = Create("WA1005", "不支持的泛型方法", "不支持声明泛型方法");
+
+        /// <summary>
         /// 创建诊断描述器
         /// </summary>
         /// <param name="id"></param>

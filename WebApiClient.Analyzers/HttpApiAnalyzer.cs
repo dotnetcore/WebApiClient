@@ -24,7 +24,8 @@ namespace WebApiClient.Analyzers
                     Descriptors.AttributeDescriptor,
                     Descriptors.ReturnTypeDescriptor,
                     Descriptors.RefParameterDescriptor,
-                    Descriptors.NotMethodDefindedDescriptor);
+                    Descriptors.NotMethodDefindedDescriptor,
+                    Descriptors.GenericMethodDescriptor);
             }
         }
 
@@ -37,10 +38,12 @@ namespace WebApiClient.Analyzers
             context.RegisterSyntaxNodeAction(syntaxNodeContext =>
             {
                 var httpApiContext = new HttpApiContext(syntaxNodeContext);
-                var httpApiDiagnostics = this.GetHttpApiDiagnostics(httpApiContext);
-                foreach (var item in httpApiDiagnostics)
+                if (httpApiContext.IsHtttApi == true)
                 {
-                    item.Report();
+                    foreach (var item in this.GetHttpApiDiagnostics(httpApiContext))
+                    {
+                        item.Report();
+                    }
                 }
             }, SyntaxKind.InterfaceDeclaration);
         }
@@ -56,6 +59,7 @@ namespace WebApiClient.Analyzers
             yield return new ReturnTypeDiagnostic(context);
             yield return new RefParameterDiagnostic(context);
             yield return new NotMethodDefindedDiagnostic(context);
+            yield return new GenericMethodDiagnostic(context);
         }
     }
 }
