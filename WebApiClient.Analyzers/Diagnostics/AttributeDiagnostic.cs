@@ -57,11 +57,11 @@ namespace WebApiClient.Analyzers.Diagnostics
         /// <returns></returns>
         private IEnumerable<AttributeData> GetInterfaceDiagnosticAttributes(ITypeSymbol interfaceSymbol)
         {
-            foreach (var attribuete in interfaceSymbol.GetAttributes())
+            foreach (var attribute in interfaceSymbol.GetAttributes())
             {
-                if (this.CtorAttribueIsDefind(attribuete, AttributeTargets.Interface) == false)
+                if (this.CtorAttributeIsDefind(attribute, AttributeTargets.Interface) == false)
                 {
-                    yield return attribuete;
+                    yield return attribute;
                 }
             }
         }
@@ -74,11 +74,11 @@ namespace WebApiClient.Analyzers.Diagnostics
         /// <returns></returns>
         private IEnumerable<AttributeData> GetMethodDiagnosticAttributes(IMethodSymbol methodSymbol)
         {
-            foreach (var methodAttribuete in methodSymbol.GetAttributes())
+            foreach (var methodAttribute in methodSymbol.GetAttributes())
             {
-                if (this.CtorAttribueIsDefind(methodAttribuete, AttributeTargets.Method) == false)
+                if (this.CtorAttributeIsDefind(methodAttribute, AttributeTargets.Method) == false)
                 {
-                    yield return methodAttribuete;
+                    yield return methodAttribute;
                 }
             }
 
@@ -86,7 +86,7 @@ namespace WebApiClient.Analyzers.Diagnostics
             {
                 foreach (var parameterAttribute in parameter.GetAttributes())
                 {
-                    if (this.CtorAttribueIsDefind(parameterAttribute, AttributeTargets.Parameter) == false)
+                    if (this.CtorAttributeIsDefind(parameterAttribute, AttributeTargets.Parameter) == false)
                     {
                         yield return parameterAttribute;
                     }
@@ -96,12 +96,12 @@ namespace WebApiClient.Analyzers.Diagnostics
 
 
         /// <summary>
-        /// 获取特性声明的AttributeCtorUsageAtribute是否声明了指定目标
+        /// 获取特性声明的AttributeCtorUsageAttribute是否声明了指定目标
         /// </summary>
         /// <param name="attributeData"></param>
         /// <param name="targets">指定目标</param>
         /// <returns></returns>
-        private bool CtorAttribueIsDefind(AttributeData attributeData, AttributeTargets targets)
+        private bool CtorAttributeIsDefind(AttributeData attributeData, AttributeTargets targets)
         {
             var ctorAttributes = attributeData.AttributeConstructor?.GetAttributes();
             if (ctorAttributes.HasValue == false)
@@ -110,7 +110,7 @@ namespace WebApiClient.Analyzers.Diagnostics
             }
 
             var ctorUsageAttribute = ctorAttributes.Value
-                .FirstOrDefault(item => item.AttributeClass.Equals(this.Context.AttributeCtorUsageAtributeType));
+                .FirstOrDefault(item => item.AttributeClass.Equals(this.Context.AttributeCtorUsageAttributeType));
 
             if (ctorUsageAttribute == null)
             {

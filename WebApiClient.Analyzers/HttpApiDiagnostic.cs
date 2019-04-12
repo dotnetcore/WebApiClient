@@ -52,8 +52,7 @@ namespace WebApiClient.Analyzers
                     continue;
                 }
 
-                var symbol = this.Context.SyntaxNodeContext.SemanticModel.GetDeclaredSymbol(member) as IMethodSymbol;
-                if (symbol != null)
+                if (this.Context.SyntaxNodeContext.SemanticModel.GetDeclaredSymbol(member) is IMethodSymbol symbol)
                 {
                     yield return symbol;
                 }

@@ -38,9 +38,11 @@ namespace WebApiClient.Analyzers.Diagnostics
                 {
                     if (parameter.RefKind != RefKind.None)
                     {
-                        var parameterSyntax = parameter.DeclaringSyntaxReferences.First().GetSyntax() as ParameterSyntax;
-                        var location = parameterSyntax.Modifiers.First().GetLocation();
-                        yield return this.CreateDiagnostic(location);
+                        if (parameter.DeclaringSyntaxReferences.First().GetSyntax() is ParameterSyntax parameterSyntax)
+                        {
+                            var location = parameterSyntax.Modifiers.First().GetLocation();
+                            yield return this.CreateDiagnostic(location);
+                        }
                     }
                 }
             }

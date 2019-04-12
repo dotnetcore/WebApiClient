@@ -16,7 +16,7 @@ namespace WebApiClient.Analyzers
         private const string ihttpApiTypeName = "WebApiClient.IHttpApi";
 
         /// <summary>
-        /// AttributeCtorUsageAtribute的类型名称
+        /// AttributeCtorUsageAttribute的类型名称
         /// </summary>
         private const string attributeCtorUsageTypName = "WebApiClient.Attributes.AttributeCtorUsageAttribute";
 
@@ -43,9 +43,9 @@ namespace WebApiClient.Analyzers
         public INamedTypeSymbol IHttpApiType { get; }
 
         /// <summary>
-        /// 获取AttributeCtorUsageAtribute的类型
+        /// 获取AttributeCtorUsageAttribute的类型
         /// </summary>
-        public INamedTypeSymbol AttributeCtorUsageAtributeType { get; }
+        public INamedTypeSymbol AttributeCtorUsageAttributeType { get; }
 
 
         /// <summary>
@@ -58,9 +58,9 @@ namespace WebApiClient.Analyzers
             this.HttpApiSyntax = syntaxNodeContext.Node as InterfaceDeclarationSyntax;
 
             this.IHttpApiType = syntaxNodeContext.Compilation.GetTypeByMetadataName(ihttpApiTypeName);
-            this.AttributeCtorUsageAtributeType = syntaxNodeContext.Compilation.GetTypeByMetadataName(attributeCtorUsageTypName);
+            this.AttributeCtorUsageAttributeType = syntaxNodeContext.Compilation.GetTypeByMetadataName(attributeCtorUsageTypName);
 
-            this.IsHtttApi = this.IsHtttApiInterface();
+            this.IsHtttApi = this.IsHttpApiInterface();
         }
 
 
@@ -68,9 +68,9 @@ namespace WebApiClient.Analyzers
         /// 返回是否为HttpApi接口
         /// </summary>
         /// <returns></returns>
-        private bool IsHtttApiInterface()
+        private bool IsHttpApiInterface()
         {
-            if (this.HttpApiSyntax == null || this.HttpApiSyntax.BaseList == null)
+            if (HttpApiSyntax?.BaseList == null)
             {
                 return false;
             }
