@@ -97,7 +97,7 @@ namespace WebApiClient.Attributes
                 .HttpApiConfig
                 .KeyValueFormatter
                 .Serialize(parameter, options)
-                .FormateAs(this.CollectionFormat);
+                .FormatAs(this.CollectionFormat);
 
             context.RequestMessage.RequestUri = this.UsePathQuery(uri, keyValues);
             await ApiTask.CompletedTask;

@@ -37,7 +37,7 @@ namespace WebApiClient.Test
         {
             var httpApi = ihttpApi as HttpApi;
             var interceptor = httpApi.ApiInterceptor as ApiInterceptor;
-            return interceptor.HttpApiConfig.HttpHandler.SourceHanlder;
+            return interceptor.HttpApiConfig.HttpHandler.SourceHandler;
         }
         public interface IMyApi : IHttpApi
         {

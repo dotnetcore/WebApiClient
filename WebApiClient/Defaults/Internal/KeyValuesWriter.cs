@@ -16,7 +16,7 @@ namespace WebApiClient.Defaults
         /// <summary>
         /// 当前属性名称
         /// </summary>
-        private string properyName;
+        private string propertyName;
 
         /// <summary>
         /// 保存KeyValuePair的列表
@@ -29,7 +29,7 @@ namespace WebApiClient.Defaults
         /// <param name="name">对象名称</param>
         public KeyValuesWriter(string name)
         {
-            this.properyName = name;
+            this.propertyName = name;
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace WebApiClient.Defaults
         /// <param name="value">值</param>
         private void AddStringItem(string value)
         {
-            var item = new KeyValuePair<string, string>(this.properyName, value);
+            var item = new KeyValuePair<string, string>(this.propertyName, value);
             this.keyValues.Add(item);
         }
 
@@ -67,7 +67,7 @@ namespace WebApiClient.Defaults
         /// <param name="escape"></param>
         public override void WritePropertyName(string name, bool escape)
         {
-            this.properyName = name;
+            this.propertyName = name;
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace WebApiClient.Defaults
         /// <param name="name"></param>
         public override void WritePropertyName(string name)
         {
-            this.properyName = name;
+            this.propertyName = name;
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace WebApiClient.Defaults
             }
             else
             {
-                throw new NotSupportedException($"不支持序列化{this.properyName} {value}");
+                throw new NotSupportedException($"不支持序列化{this.propertyName} {value}");
             }
         }
 

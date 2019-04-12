@@ -67,8 +67,8 @@ namespace WebApiClient
         {
             return member
                 .GetCustomAttributes(inherit)
-                .Select(item => item as TAttribute)
-                .FirstOrDefault(item => item != null);
+                .OfType<TAttribute>()
+                .FirstOrDefault();
         }
 
         /// <summary>
@@ -82,8 +82,7 @@ namespace WebApiClient
         {
             return member
                 .GetCustomAttributes(inherit)
-                .Select(item => item as TAttribute)
-                .Where(item => item != null);
+                .OfType<TAttribute>();
         }
     }
 }

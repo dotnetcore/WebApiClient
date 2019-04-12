@@ -150,12 +150,12 @@ namespace WebApiClient.Parameterables
         /// Replace操作
         /// </summary>
         /// <typeparam name="TField"></typeparam>
-        /// <param name="pathSeletor">path选择器</param>
+        /// <param name="pathSelector">path选择器</param>
         /// <param name="value">替换成的值</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public void Replace<TField>(Expression<Func<T, TField>> pathSeletor, TField value)
+        public void Replace<TField>(Expression<Func<T, TField>> pathSelector, TField value)
         {
-            var path = this.GetExpressionPath(pathSeletor);
+            var path = this.GetExpressionPath(pathSelector);
             base.Replace(path, value);
         }
 
@@ -163,22 +163,22 @@ namespace WebApiClient.Parameterables
         /// Remove操作
         /// </summary>
         /// <typeparam name="TField"></typeparam>
-        /// <param name="pathSeletor">path选择器</param>
+        /// <param name="pathSelector">path选择器</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public void Remove<TField>(Expression<Func<T, TField>> pathSeletor)
+        public void Remove<TField>(Expression<Func<T, TField>> pathSelector)
         {
-            var path = this.GetExpressionPath(pathSeletor);
+            var path = this.GetExpressionPath(pathSelector);
             base.Remove(path);
         }
 
         /// <summary>
         /// 返回表示式对应的path
         /// </summary>
-        /// <param name="pathSeletor">path选择器</param>
+        /// <param name="pathSelector">path选择器</param>
         /// <returns></returns>
-        private string GetExpressionPath(LambdaExpression pathSeletor)
+        private string GetExpressionPath(LambdaExpression pathSelector)
         {
-            var visitor = new PathVisitor(pathSeletor, this.GetMemberName, this.camelCase);
+            var visitor = new PathVisitor(pathSelector, this.GetMemberName, this.camelCase);
             return visitor.ToString();
         }
 
@@ -232,20 +232,20 @@ namespace WebApiClient.Parameterables
             /// <summary>
             /// Path访问器
             /// </summary>
-            /// <param name="pathSeletor">表达式</param>
+            /// <param name="pathSelector">表达式</param>
             /// <param name="nameFunc">成员名称委托</param>
             /// <param name="camelCase">属性名称是否使用骆驼命名</param>
             /// <exception cref="ArgumentNullException"></exception>
-            public PathVisitor(LambdaExpression pathSeletor, Func<MemberInfo, string> nameFunc, bool camelCase)
+            public PathVisitor(LambdaExpression pathSelector, Func<MemberInfo, string> nameFunc, bool camelCase)
             {
-                if (pathSeletor == null)
+                if (pathSelector == null)
                 {
-                    throw new ArgumentNullException(nameof(pathSeletor));
+                    throw new ArgumentNullException(nameof(pathSelector));
                 }
                 this.nameFunc = nameFunc;
                 this.camelCase = camelCase;
 
-                base.Visit(pathSeletor.Body);
+                base.Visit(pathSelector.Body);
             }
 
             /// <summary>

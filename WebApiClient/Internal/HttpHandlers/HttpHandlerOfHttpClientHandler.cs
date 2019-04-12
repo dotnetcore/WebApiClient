@@ -20,7 +20,7 @@ namespace WebApiClient
         /// <summary>
         /// 获取原始的Handler对象
         /// </summary>
-        public HttpMessageHandler SourceHanlder { get; private set; }
+        public HttpMessageHandler SourceHandler { get; private set; }
 
         /// <summary>
         /// 获取或设置是否使用CookieContainer来管理Cookies
@@ -229,7 +229,7 @@ namespace WebApiClient
         public HttpHandlerOfHttpClientHandler(HttpClientHandler clientHandler, HttpMessageHandler sourceHandler)
         {
             this.clientHandler = clientHandler;
-            this.SourceHanlder = sourceHandler;
+            this.SourceHandler = sourceHandler;
         }
 
         /// <summary>
@@ -237,7 +237,7 @@ namespace WebApiClient
         /// </summary>
         public void Dispose()
         {
-            this.SourceHanlder.Dispose();
+            this.SourceHandler.Dispose();
         }
     }
 }

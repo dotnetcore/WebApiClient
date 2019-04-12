@@ -43,7 +43,7 @@ namespace WebApiClient
                     break;
 
                 case TaskStatus.Faulted:
-                    this.observerTable.RaiseErrorAndCompleted(t.Exception.InnerException);
+                    this.observerTable.RaiseErrorAndCompleted(t.Exception?.InnerException);
                     break;
 
                 case TaskStatus.Canceled:
@@ -67,7 +67,7 @@ namespace WebApiClient
                     break;
 
                 case TaskStatus.Faulted:
-                    observer.OnError(t.Exception.InnerException);
+                    observer.OnError(t.Exception?.InnerException);
                     observer.OnCompleted();
                     break;
 

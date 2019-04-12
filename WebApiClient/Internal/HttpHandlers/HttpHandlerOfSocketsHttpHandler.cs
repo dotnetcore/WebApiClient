@@ -21,7 +21,7 @@ namespace WebApiClient
         /// <summary>
         /// 获取原始的Handler对象
         /// </summary>
-        public HttpMessageHandler SourceHanlder { get; private set; }
+        public HttpMessageHandler SourceHandler { get; private set; }
 
 
         /// <summary>
@@ -224,7 +224,7 @@ namespace WebApiClient
         public HttpHandlerOfSocketsHttpHandler(SocketsHttpHandler socketsHandler, HttpMessageHandler sourceHandler)
         {
             this.socketsHandler = socketsHandler;
-            this.SourceHanlder = sourceHandler;
+            this.SourceHandler = sourceHandler;
         }
 
         /// <summary>
@@ -232,7 +232,7 @@ namespace WebApiClient
         /// </summary>
         public void Dispose()
         {
-            this.SourceHanlder.Dispose();
+            this.SourceHandler.Dispose();
         }
     }
 }

@@ -28,11 +28,11 @@ namespace WebApiClient
             // (TDeclaring instance, TProperty value) => 
             //    ((declaringType)instance).Set_XXX( (propertyType)value )
 
-            var param_instance = Expression.Parameter(typeof(TDeclaring));
-            var param_value = Expression.Parameter(typeof(TProperty));
+            var paramInstance = Expression.Parameter(typeof(TDeclaring));
+            var paramValue = Expression.Parameter(typeof(TProperty));
 
-            var bodyInstance = (Expression)param_instance;
-            var body_value = (Expression)param_value;
+            var bodyInstance = (Expression)paramInstance;
+            var bodyValue = (Expression)paramValue;
 
             if (typeof(TDeclaring) != property.DeclaringType)
             {
@@ -41,11 +41,11 @@ namespace WebApiClient
 
             if (typeof(TProperty) != property.PropertyType)
             {
-                body_value = Expression.Convert(body_value, property.PropertyType);
+                bodyValue = Expression.Convert(bodyValue, property.PropertyType);
             }
 
-            var body_call = Expression.Call(bodyInstance, property.GetSetMethod(), body_value);
-            return Expression.Lambda<Action<TDeclaring, TProperty>>(body_call, param_instance, param_value).Compile();
+            var bodyCall = Expression.Call(bodyInstance, property.GetSetMethod(), bodyValue);
+            return Expression.Lambda<Action<TDeclaring, TProperty>>(bodyCall, paramInstance, paramValue).Compile();
         }
 
 
@@ -91,21 +91,21 @@ namespace WebApiClient
 
             // (TDeclaring instance) => (propertyType)((declaringType)instance).propertyName
 
-            var param_instance = Expression.Parameter(typeof(TDeclaring));
+            var paramInstance = Expression.Parameter(typeof(TDeclaring));
 
-            var body_instance = (Expression)param_instance;
+            var bodyInstance = (Expression)paramInstance;
             if (typeof(TDeclaring) != declaringType)
             {
-                body_instance = Expression.Convert(body_instance, declaringType);
+                bodyInstance = Expression.Convert(bodyInstance, declaringType);
             }
 
-            var body_property = (Expression)Expression.Property(body_instance, propertyName);
+            var bodyProperty = (Expression)Expression.Property(bodyInstance, propertyName);
             if (typeof(TProperty) != propertyType)
             {
-                body_property = Expression.Convert(body_property, typeof(TProperty));
+                bodyProperty = Expression.Convert(bodyProperty, typeof(TProperty));
             }
 
-            return Expression.Lambda<Func<TDeclaring, TProperty>>(body_property, param_instance).Compile();
+            return Expression.Lambda<Func<TDeclaring, TProperty>>(bodyProperty, paramInstance).Compile();
         }
 
 
@@ -126,21 +126,21 @@ namespace WebApiClient
 
             // (TDeclaring instance) => (fieldType)((declaringType)instance).fieldName
 
-            var param_instance = Expression.Parameter(typeof(TDeclaring));
+            var paramInstance = Expression.Parameter(typeof(TDeclaring));
 
-            var body_instance = (Expression)param_instance;
+            var bodyInstance = (Expression)paramInstance;
             if (typeof(TDeclaring) != field.DeclaringType)
             {
-                body_instance = Expression.Convert(body_instance, field.DeclaringType);
+                bodyInstance = Expression.Convert(bodyInstance, field.DeclaringType);
             }
 
-            var body_field = (Expression)Expression.Field(body_instance, field);
+            var bodyField = (Expression)Expression.Field(bodyInstance, field);
             if (typeof(TField) != field.FieldType)
             {
-                body_field = Expression.Convert(body_field, typeof(TField));
+                bodyField = Expression.Convert(bodyField, typeof(TField));
             }
 
-            return Expression.Lambda<Func<TDeclaring, TField>>(body_field, param_instance).Compile();
+            return Expression.Lambda<Func<TDeclaring, TField>>(bodyField, paramInstance).Compile();
         }
 
 

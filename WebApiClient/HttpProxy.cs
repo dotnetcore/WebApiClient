@@ -120,9 +120,9 @@ namespace WebApiClient
             var password = default(string);
             if (value != null)
             {
-                var networkCredentialsd = value.GetCredential(null, null);
-                userName = networkCredentialsd?.UserName;
-                password = networkCredentialsd?.Password;
+                var networkCredentials = value.GetCredential(null, null);
+                userName = networkCredentials?.UserName;
+                password = networkCredentials?.Password;
             }
 
             this.UserName = userName;

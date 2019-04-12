@@ -161,7 +161,7 @@ namespace WebApiClient.Contexts
             /// <summary>
             /// 特性列表
             /// </summary>
-            private readonly List<IApiParameterAttribute> attribueList = new List<IApiParameterAttribute>();
+            private readonly List<IApiParameterAttribute> attributeList = new List<IApiParameterAttribute>();
 
             /// <summary>
             /// 获取元素数量
@@ -170,7 +170,7 @@ namespace WebApiClient.Contexts
             {
                 get
                 {
-                    return this.attribueList.Count;
+                    return this.attributeList.Count;
                 }
             }
 
@@ -180,7 +180,7 @@ namespace WebApiClient.Contexts
             /// <param name="defined">声明的特性</param>
             public ParameterAttributeCollection(IEnumerable<IApiParameterAttribute> defined)
             {
-                this.attribueList.AddRange(defined);
+                this.attributeList.AddRange(defined);
             }
 
             /// <summary>
@@ -189,7 +189,7 @@ namespace WebApiClient.Contexts
             /// <param name="attribute">新特性</param>
             public void Add(IApiParameterAttribute attribute)
             {
-                this.attribueList.Add(attribute);
+                this.attributeList.Add(attribute);
             }
 
             /// <summary>
@@ -200,12 +200,12 @@ namespace WebApiClient.Contexts
             public bool AddIfNotExists(IApiParameterAttribute attribute)
             {
                 var type = attribute.GetType();
-                if (this.attribueList.Any(item => item.GetType() == type) == true)
+                if (this.attributeList.Any(item => item.GetType() == type) == true)
                 {
                     return false;
                 }
 
-                this.attribueList.Add(attribute);
+                this.attributeList.Add(attribute);
                 return true;
             }
 
@@ -215,7 +215,7 @@ namespace WebApiClient.Contexts
             /// <returns></returns>
             public IEnumerator<IApiParameterAttribute> GetEnumerator()
             {
-                return this.attribueList.GetEnumerator();
+                return this.attributeList.GetEnumerator();
             }
 
             /// <summary>

@@ -15,7 +15,7 @@ namespace WebApiClient
         /// <summary>
         /// 获取原始的Handler对象
         /// </summary>
-        HttpMessageHandler SourceHanlder { get; }
+        HttpMessageHandler SourceHandler { get; }
 
         /// <summary>
         /// 获取或设置是否使用CookieContainer来管理Cookies
