@@ -21,7 +21,8 @@ namespace WebApiClient.Analyzers
                 return ImmutableArray.Create(
                     DiagnosticDescriptors.AttributeDescriptor,
                     DiagnosticDescriptors.ReturnTypeDescriptor,
-                    DiagnosticDescriptors.RefParameterDescriptor);
+                    DiagnosticDescriptors.RefParameterDescriptor,
+                    DiagnosticDescriptors.NotMethodDefindDescriptor);
             }
         }
 

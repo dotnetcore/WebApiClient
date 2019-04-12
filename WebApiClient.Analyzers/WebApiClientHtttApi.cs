@@ -20,7 +20,7 @@ namespace WebApiClient.Analyzers
         /// <summary>
         /// 接口声明
         /// </summary>
-        private readonly InterfaceDeclarationSyntax interfaceDeclaration;
+        private readonly InterfaceDeclarationSyntax httpApiInterfaceSyntax;
 
         /// <summary>
         /// webApiClient上下文
@@ -39,7 +39,7 @@ namespace WebApiClient.Analyzers
         public WebApiClientHtttApi(SyntaxNodeAnalysisContext syntaxNodeContext)
         {
             this.syntaxNodeContext = syntaxNodeContext;
-            this.interfaceDeclaration = syntaxNodeContext.Node as InterfaceDeclarationSyntax;
+            this.httpApiInterfaceSyntax = syntaxNodeContext.Node as InterfaceDeclarationSyntax;
             this.webApiClientContext = new WebApiClientContext(syntaxNodeContext.Compilation);
             this.IsHtttApiInterface = this.GetIsHtttApiInterface();
         }
@@ -50,12 +50,12 @@ namespace WebApiClient.Analyzers
         /// <returns></returns>
         private bool GetIsHtttApiInterface()
         {
-            if (this.interfaceDeclaration == null || this.interfaceDeclaration.BaseList == null)
+            if (this.httpApiInterfaceSyntax == null || this.httpApiInterfaceSyntax.BaseList == null)
             {
                 return false;
             }
 
-            foreach (var baseType in this.interfaceDeclaration.BaseList.Types)
+            foreach (var baseType in this.httpApiInterfaceSyntax.BaseList.Types)
             {
                 var type = this.syntaxNodeContext.SemanticModel.GetTypeInfo(baseType.Type).Type;
                 if (type.Equals(this.webApiClientContext.IHttpApiType) == true)
@@ -75,6 +75,7 @@ namespace WebApiClient.Analyzers
             this.ReportDiagnosticOfAttributes();
             this.ReportDiagnosticOfReturnTypes();
             this.ReportDiagnosticOfRefParameters();
+            this.ReportDiagnosticOfNotMethodDefinds();
         }
 
         /// <summary>
@@ -87,7 +88,7 @@ namespace WebApiClient.Analyzers
                 return;
             }
 
-            var interfaceSymbol = this.syntaxNodeContext.SemanticModel.GetDeclaredSymbol(this.interfaceDeclaration);
+            var interfaceSymbol = this.syntaxNodeContext.SemanticModel.GetDeclaredSymbol(this.httpApiInterfaceSyntax);
             if (interfaceSymbol == null)
             {
                 return;
@@ -156,12 +157,33 @@ namespace WebApiClient.Analyzers
         }
 
         /// <summary>
+        /// 报告非方法声明诊断
+        /// </summary>
+        public void ReportDiagnosticOfNotMethodDefinds()
+        {
+            if (this.IsHtttApiInterface == false)
+            {
+                return;
+            }
+
+            foreach (var member in this.httpApiInterfaceSyntax.Members)
+            {
+                if (member.Kind() != SyntaxKind.MethodDeclaration)
+                {
+                    var location = member.GetLocation();
+                    var diagnostic = DiagnosticDescriptors.NotMethodDefindDescriptor.ToDiagnostic(location);
+                    this.syntaxNodeContext.ReportDiagnostic(diagnostic);
+                }
+            }
+        }
+
+        /// <summary>
         /// 获取HttpApi方法
         /// </summary>
         /// <returns></returns>
         private IEnumerable<IMethodSymbol> GetHttpApiMethodSymbols()
         {
-            foreach (var member in this.interfaceDeclaration.Members)
+            foreach (var member in this.httpApiInterfaceSyntax.Members)
             {
                 if (member.Kind() != SyntaxKind.MethodDeclaration)
                 {

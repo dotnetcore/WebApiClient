@@ -23,8 +23,13 @@ namespace WebApiClient.Analyzers
         /// 引用参数诊断描述器
         /// </summary>
         public static DiagnosticDescriptor RefParameterDescriptor { get; }
-            = Rule("PR1001", "不支持ref/out", "参数不支持ref/out等修饰");
+            = Rule("RP1001", "不支持ref/out", "参数不支持ref/out等修饰");
 
+        /// <summary>
+        /// 非方法声明诊断描述器
+        /// </summary>
+        public static DiagnosticDescriptor NotMethodDefindDescriptor { get; }
+            = Rule("NM1001", "不支持的非方法声明", "不支持的非方法声明，只允许方法的声明");
 
         /// <summary>
         /// 创建诊断描述器
