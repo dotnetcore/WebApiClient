@@ -11,13 +11,13 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// 获取使用范围
         /// </summary>
-        public AttributeCtorTargets Targets { get; }
+        public AttributeTargets Targets { get; }
 
         /// <summary>
         /// 特性的构造函数使用范围
         /// </summary>
         /// <param name="targets">使用范围</param>
-        public AttributeCtorUsageAttribute(AttributeCtorTargets targets)
+        public AttributeCtorUsageAttribute(AttributeTargets targets)
         {
             this.Targets = targets;
         }

@@ -22,7 +22,7 @@ namespace WebApiClient.Attributes
         /// 表示将参数值作为请求的超时时间
         /// 支持参数类型为数值类型和TimeSpan类型，以及他们的可空类型
         /// </summary>
-        [AttributeCtorUsage(AttributeCtorTargets.Parameter)]
+        [AttributeCtorUsage(AttributeTargets.Parameter)]
         public TimeoutAttribute()
         {
         }
@@ -31,7 +31,7 @@ namespace WebApiClient.Attributes
         /// 指定请求的超时时间
         /// </summary>
         /// <param name="milliseconds">超时时间的毫秒数</param>
-        [AttributeCtorUsage(AttributeCtorTargets.Interface | AttributeCtorTargets.Method)]
+        [AttributeCtorUsage(AttributeTargets.Interface | AttributeTargets.Method)]
         public TimeoutAttribute(int milliseconds)
             : this((double)milliseconds)
         {
@@ -41,7 +41,7 @@ namespace WebApiClient.Attributes
         /// 指定请求的超时时间
         /// </summary>
         /// <param name="milliseconds">超时时间的毫秒数</param>
-        [AttributeCtorUsage(AttributeCtorTargets.Interface | AttributeCtorTargets.Method)]
+        [AttributeCtorUsage(AttributeTargets.Interface | AttributeTargets.Method)]
         public TimeoutAttribute(double milliseconds)
         {
             this.TimeSpan = System.TimeSpan.FromMilliseconds(milliseconds);

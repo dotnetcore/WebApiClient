@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -207,7 +208,7 @@ namespace WebApiClient.Analyzers
         {
             foreach (var attribuete in interfaceSymbol.GetAttributes())
             {
-                if (this.CtorAttribueIsDefind(attribuete, AttributeCtorTargets.Interface) == false)
+                if (this.CtorAttribueIsDefind(attribuete, AttributeTargets.Interface) == false)
                 {
                     yield return attribuete;
                 }
@@ -223,7 +224,7 @@ namespace WebApiClient.Analyzers
         {
             foreach (var methodAttribuete in methodSymbol.GetAttributes())
             {
-                if (this.CtorAttribueIsDefind(methodAttribuete, AttributeCtorTargets.Method) == false)
+                if (this.CtorAttribueIsDefind(methodAttribuete, AttributeTargets.Method) == false)
                 {
                     yield return methodAttribuete;
                 }
@@ -233,7 +234,7 @@ namespace WebApiClient.Analyzers
             {
                 foreach (var parameterAttribute in parameter.GetAttributes())
                 {
-                    if (this.CtorAttribueIsDefind(parameterAttribute, AttributeCtorTargets.Parameter) == false)
+                    if (this.CtorAttribueIsDefind(parameterAttribute, AttributeTargets.Parameter) == false)
                     {
                         yield return parameterAttribute;
                     }
@@ -248,7 +249,7 @@ namespace WebApiClient.Analyzers
         /// <param name="attributeData"></param>
         /// <param name="targets">指定目标</param>
         /// <returns></returns>
-        private bool CtorAttribueIsDefind(AttributeData attributeData, AttributeCtorTargets targets)
+        private bool CtorAttribueIsDefind(AttributeData attributeData, AttributeTargets targets)
         {
             var ctorAttributes = attributeData.AttributeConstructor?.GetAttributes();
             if (ctorAttributes.HasValue == false)
@@ -270,7 +271,7 @@ namespace WebApiClient.Analyzers
                 return true;
             }
 
-            var ctorTargets = (AttributeCtorTargets)arg.Value;
+            var ctorTargets = (AttributeTargets)arg.Value;
             return ctorTargets.HasFlag(targets);
         }
     }

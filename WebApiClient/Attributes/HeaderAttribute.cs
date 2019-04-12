@@ -34,7 +34,7 @@ namespace WebApiClient.Attributes
         /// 将参数值设置到Header        
         /// </summary>
         /// <param name="name">header名称</param>
-        [AttributeCtorUsage(AttributeCtorTargets.Parameter)]
+        [AttributeCtorUsage(AttributeTargets.Parameter)]
         public HeaderAttribute(HttpRequestHeader name)
             : this(RequestHeader.GetName(name), null)
         {
@@ -45,7 +45,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="name">header名称</param>
         /// <exception cref="ArgumentNullException"></exception>
-        [AttributeCtorUsage(AttributeCtorTargets.Parameter)]
+        [AttributeCtorUsage(AttributeTargets.Parameter)]
         public HeaderAttribute(string name)
             : this(name, null)
         {
@@ -56,7 +56,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="name">header名称</param>
         /// <param name="value">header值</param>
-        [AttributeCtorUsage(AttributeCtorTargets.Interface | AttributeCtorTargets.Method)]
+        [AttributeCtorUsage(AttributeTargets.Interface | AttributeTargets.Method)]
         public HeaderAttribute(HttpRequestHeader name, string value)
             : this(RequestHeader.GetName(name), value)
         {
@@ -68,7 +68,7 @@ namespace WebApiClient.Attributes
         /// <param name="name">header名称</param>
         /// <param name="value">header值</param>
         /// <exception cref="ArgumentNullException"></exception>
-        [AttributeCtorUsage(AttributeCtorTargets.Interface | AttributeCtorTargets.Method)]
+        [AttributeCtorUsage(AttributeTargets.Interface | AttributeTargets.Method)]
         public HeaderAttribute(string name, string value)
         {
             if (string.IsNullOrEmpty(name))

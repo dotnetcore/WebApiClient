@@ -25,7 +25,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="key">Tags的key</param>
         /// <exception cref="ArgumentNullException"></exception>
-        [AttributeCtorUsage(AttributeCtorTargets.Parameter)]
+        [AttributeCtorUsage(AttributeTargets.Parameter)]
         public TagsAttribute(string key)
         : this(key, null)
         {
@@ -37,7 +37,7 @@ namespace WebApiClient.Attributes
         /// <param name="key">Tags的key</param>
         /// <param name="value">固定的值</param>
         /// <exception cref="ArgumentNullException"></exception>
-        [AttributeCtorUsage(AttributeCtorTargets.Interface | AttributeCtorTargets.Method)]
+        [AttributeCtorUsage(AttributeTargets.Interface | AttributeTargets.Method)]
         public TagsAttribute(string key, object value)
         {
             this.key = key ?? throw new ArgumentNullException(nameof(key));
