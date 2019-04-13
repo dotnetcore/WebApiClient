@@ -83,7 +83,7 @@ namespace WebApiClient.Attributes
                 }
             }
 
-            await this.LogTraceMessageAsync(context, message);
+            await this.LogTraceMessageAsync(context, message).ConfigureAwait(false);
         }
 
         /// <summary>

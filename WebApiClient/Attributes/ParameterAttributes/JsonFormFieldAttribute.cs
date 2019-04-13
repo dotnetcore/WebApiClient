@@ -29,7 +29,7 @@ namespace WebApiClient.Attributes
                 var options = context.HttpApiConfig.FormatOptions;
                 var json = context.HttpApiConfig.JsonFormatter.Serialize(parameter.Value, options);
                 var fieldName = parameter.Name;
-                await context.RequestMessage.AddFormFieldAsync(fieldName, json);
+                await context.RequestMessage.AddFormFieldAsync(fieldName, json).ConfigureAwait(false);
             }
         }
     }
