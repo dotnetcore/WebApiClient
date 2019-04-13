@@ -14,12 +14,12 @@ namespace WebApiClient
         /// <summary>
         /// 获取响应消息
         /// </summary>
-        public HttpResponseMessage ResponseMessage { get; private set; }
+        public HttpResponseMessage ResponseMessage { get; }
 
         /// <summary>
         /// 获取要转换的目标类型
         /// </summary>
-        public Type ReturnDataType { get; private set; }
+        public Type ReturnDataType { get; }
 
 
         /// <summary>

@@ -11,88 +11,62 @@ namespace WebApiClient
     public class HttpApiConfig : IDisposable
     {
         /// <summary>
-        /// 自定义数据容器
+        /// 与HttpClient关联的IHttpHandler
         /// </summary>
-        private Tags tags;
+        private readonly Lazy<IHttpHandler> httpHandler;
+
+
 
         /// <summary>
-        /// 与httpClient关联的IHttpHandler
-        /// </summary>
-        private IHttpHandler httpHandler;
-
-        /// <summary>
-        /// 日志工厂
+        /// 直接赋值的日志工厂
         /// </summary>
         private ILoggerFactory loggerFactory;
 
         /// <summary>
-        /// 同步锁
+        /// 格式选项
         /// </summary>
-        private readonly object syncRoot = new object();
+        private FormatOptions formatOptions = new FormatOptions();
 
+        /// <summary>
+        /// xml序列化工具
+        /// </summary>
+        private IXmlFormatter xmlFormatter = Defaults.XmlFormatter.Instance;
+
+        /// <summary>
+        /// json序列化工具
+        /// </summary>
+        private IJsonFormatter jsonFormatter = Defaults.JsonFormatter.Instance;
+
+        /// <summary>
+        /// key-value序列化工具
+        /// </summary>
+        private IKeyValueFormatter keyValueFormatter = Defaults.KeyValueFormatter.Instance;
+
+
+
+        /// <summary>
+        /// 获取HttpClient实例
+        /// </summary>
+        public HttpClient HttpClient { get; }
 
         /// <summary>
         /// 获取配置的自定义数据的存储和访问容器
         /// </summary>
-        public Tags Tags
-        {
-            get => this.GetTagsSafeSync();
-        }
+        public Tags Tags { get; } = new Tags();
 
         /// <summary>
         /// 获取与HttpClient关联的IHttpHandler
         /// </summary>
         /// <exception cref="PlatformNotSupportedException"></exception>
-        public IHttpHandler HttpHandler
-        {
-            get => this.GetHttpHandlerSafeSync();
-        }
+        public IHttpHandler HttpHandler => this.httpHandler.Value;
 
         /// <summary>
-        /// 获取HttpClient实例
+        /// 获取全局过滤器集合
+        /// 非线程安全类型
         /// </summary>
-        public HttpClient HttpClient { get; private set; }
+        public GlobalFilterCollection GlobalFilters { get; } = new GlobalFilterCollection();
 
-        /// <summary>
-        /// 获取或设置Http服务完整主机域名
-        /// 例如http://www.webapiclient.com
-        /// 设置了HttpHost值，HttpHostAttribute将失效  
-        /// </summary>
-        /// <exception cref="ArgumentException"></exception>
-        public Uri HttpHost
-        {
-            get => this.HttpClient.BaseAddress;
-            set => this.HttpClient.BaseAddress = value;
-        }
 
-        /// <summary>
-        /// 获取或设置服务提供者
-        /// </summary>
-        public IServiceProvider ServiceProvider { get; set; }
-
-        /// <summary>
-        /// 获取或设置统一日志工厂
-        /// 默认从ServiceProvider获取实例 
-        /// </summary>
-        public ILoggerFactory LoggerFactory
-        {
-            get
-            {
-                if (this.loggerFactory != null)
-                {
-                    return this.loggerFactory;
-                }
-                if (this.ServiceProvider == null)
-                {
-                    return null;
-                }
-                return (ILoggerFactory)this.ServiceProvider.GetService(typeof(ILoggerFactory));
-            }
-            set
-            {
-                this.loggerFactory = value;
-            }
-        }
 
         /// <summary>
         /// 获取或设置是否对参数的属性值进行输入有效性验证
@@ -107,39 +81,82 @@ namespace WebApiClient
         public bool UseReturnValuePropertyValidate { get; set; } = true;
 
         /// <summary>
-        /// 获取或设置请求时序列化使用的默认格式   
-        /// 影响JsonFormatter或KeyValueFormatter的序列化
-        /// </summary>
-        public FormatOptions FormatOptions { get; set; } = new FormatOptions();
-
-        /// <summary>
         /// 获取或设置Api的缓存提供者
         /// </summary>
         public IResponseCacheProvider ResponseCacheProvider { get; set; }
 #if !NETSTANDARD1_3
         = WebApiClient.ResponseCacheProvider.Instance;
-#endif
+#endif 
+
+        /// <summary>
+        /// 获取或设置服务提供者
+        /// </summary>
+        public IServiceProvider ServiceProvider { get; set; }
+
+        /// <summary>
+        /// 获取或设置统一日志工厂
+        /// 默认从ServiceProvider获取实例 
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        public ILoggerFactory LoggerFactory
+        {
+            get => this.loggerFactory ?? (ILoggerFactory)this.ServiceProvider?.GetService(typeof(ILoggerFactory));
+            set => this.loggerFactory = value ?? throw new ArgumentNullException();
+        }
+
+        /// <summary>
+        /// 获取或设置Http服务完整主机域名
+        /// 例如http://www.webapiclient.com
+        /// 设置了HttpHost值，HttpHostAttribute将失效  
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public Uri HttpHost
+        {
+            get => this.HttpClient.BaseAddress;
+            set => this.HttpClient.BaseAddress = value ?? throw new ArgumentNullException();
+        }
+
+        /// <summary>
+        /// 获取或设置请求时序列化使用的默认格式   
+        /// 影响JsonFormatter或KeyValueFormatter的序列化   
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        public FormatOptions FormatOptions
+        {
+            get => formatOptions;
+            set => formatOptions = value ?? throw new ArgumentNullException();
+        }
 
         /// <summary>
         /// 获取或设置Xml格式化工具
         /// </summary>
-        public IXmlFormatter XmlFormatter { get; set; } = Defaults.XmlFormatter.Instance;
+        /// <exception cref="ArgumentNullException"></exception>
+        public IXmlFormatter XmlFormatter
+        {
+            get => xmlFormatter;
+            set => xmlFormatter = value ?? throw new ArgumentNullException();
+        }
 
         /// <summary>
         /// 获取或设置Json格式化工具
         /// </summary>
-        public IJsonFormatter JsonFormatter { get; set; } = Defaults.JsonFormatter.Instance;
+        /// <exception cref="ArgumentNullException"></exception>
+        public IJsonFormatter JsonFormatter
+        {
+            get => jsonFormatter;
+            set => jsonFormatter = value ?? throw new ArgumentNullException();
+        }
 
         /// <summary>
         /// 获取或设置KeyValue格式化工具
         /// </summary>
-        public IKeyValueFormatter KeyValueFormatter { get; set; } = Defaults.KeyValueFormatter.Instance;
+        /// <exception cref="ArgumentNullException"></exception>
+        public IKeyValueFormatter KeyValueFormatter
+        {
+            get => keyValueFormatter;
+            set => keyValueFormatter = value ?? throw new ArgumentNullException();
+        }
 
-        /// <summary>
-        /// 获取全局过滤器集合
-        /// 非线程安全类型
-        /// </summary>
-        public GlobalFilterCollection GlobalFilters { get; private set; } = new GlobalFilterCollection();
 
         /// <summary>
         /// Http接口的配置项   
@@ -169,6 +186,7 @@ namespace WebApiClient
         {
             this.HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             this.SetDefaultRequestHeaders(httpClient.DefaultRequestHeaders);
+            this.httpHandler = new Lazy<IHttpHandler>(() => HttpHandlerProvider.CreateHandler(httpClient), true);
         }
 
         /// <summary>
@@ -181,44 +199,12 @@ namespace WebApiClient
             headers.UserAgent.Add(HttpHandlerProvider.DefaultUserAgent);
         }
 
-        /// <summary>
-        /// 以同步安全方式获取Tags实例
-        /// </summary>
-        /// <returns></returns>
-        private Tags GetTagsSafeSync()
-        {
-            lock (this.syncRoot)
-            {
-                if (this.tags == null)
-                {
-                    this.tags = new Tags();
-                }
-                return this.tags;
-            }
-        }
-
-        /// <summary>
-        /// 以同步安全方式获取IHttpHandler实例
-        /// </summary>
-        /// <exception cref="PlatformNotSupportedException"></exception>
-        /// <returns></returns>
-        private IHttpHandler GetHttpHandlerSafeSync()
-        {
-            lock (this.syncRoot)
-            {
-                if (this.httpHandler == null)
-                {
-                    this.httpHandler = HttpHandlerProvider.CreateHandler(this.HttpClient);
-                }
-                return this.httpHandler;
-            }
-        }
 
         #region IDisposable
         /// <summary>
         /// 获取对象是否已释放
         /// </summary>
-        public bool IsDisposed { get; private set; }
+        public bool IsDisposed { get;  private set; }
 
         /// <summary>
         /// 关闭和释放所有相关资源

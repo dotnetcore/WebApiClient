@@ -41,7 +41,7 @@ namespace WebApiClient.Defaults
         /// <summary>
         /// 获取序列化范围
         /// </summary>
-        public FormatScope FormatScope { get; private set; }
+        public FormatScope FormatScope { get; }
 
 
         /// <summary>
@@ -117,12 +117,12 @@ namespace WebApiClient.Defaults
             /// <summary>
             /// 获取是否使用CamelCase
             /// </summary>
-            public bool CamelCase { get; private set; }
+            public bool CamelCase { get; }
 
             /// <summary>
             /// 获取序列化范围;
             /// </summary>
-            public FormatScope FormatScope { get; private set; }
+            public FormatScope FormatScope { get; }
 
             /// <summary>
             /// ContractResolver缓存的键

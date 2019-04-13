@@ -52,7 +52,7 @@ namespace WebApiClient
         /// <summary>
         /// 获取接口类型
         /// </summary>
-        protected Type InterfaceType { get; private set; }
+        protected Type InterfaceType { get; }
 
         /// <summary>
         /// HttpApi创建工厂

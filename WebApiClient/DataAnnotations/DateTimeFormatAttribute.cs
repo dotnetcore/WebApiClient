@@ -14,7 +14,7 @@ namespace WebApiClient.DataAnnotations
         /// <summary>
         /// 获取格式
         /// </summary>
-        public string Format { get; private set; }
+        public string Format { get; }
 
         /// <summary>
         /// 日期时间格式

@@ -16,12 +16,12 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// 获取请求方法
         /// </summary>
-        public HttpMethod Method { get; private set; }
+        public HttpMethod Method { get; }
 
         /// <summary>
         /// 获取请求相对路径
         /// </summary>
-        public string Path { get; private set; }
+        public string Path { get; }
 
         /// <summary>
         /// 获取顺序排序索引
@@ -29,10 +29,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         public override int OrderIndex
         {
-            get
-            {
-                return int.MinValue + 1;
-            }
+            get => int.MinValue + 1;
         }
 
         /// <summary>

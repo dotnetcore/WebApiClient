@@ -10,7 +10,7 @@ namespace WebApiClient
         /// <summary>
         /// 获取结果值
         /// </summary>
-        public object Result { get; private set; }
+        public object Result { get; }
 
         /// <summary>
         /// 结果不匹配异常

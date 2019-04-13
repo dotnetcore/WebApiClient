@@ -14,7 +14,7 @@ namespace WebApiClient.DataAnnotations
         /// <summary>
         /// 获取别名
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; }
 
         /// <summary>
         /// 指定参数或属性的别名

@@ -16,7 +16,7 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// 获取超时时间
         /// </summary>
-        public TimeSpan? TimeSpan { get; private set; }
+        public TimeSpan? TimeSpan { get; }
 
         /// <summary>
         /// 表示将参数值作为请求的超时时间

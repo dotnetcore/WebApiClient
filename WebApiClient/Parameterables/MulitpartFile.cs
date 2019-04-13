@@ -44,17 +44,14 @@ namespace WebApiClient.Parameterables
         /// <summary>
         /// 获取文件好友名称
         /// </summary>
-        public string FileName { get; private set; }
+        public string FileName { get; }
 
         /// <summary>
         /// 获取编码后的文件好友名称
         /// </summary>
         public virtual string EncodedFileName
         {
-            get
-            {
-                return HttpUtility.UrlEncode(this.FileName, Encoding.UTF8);
-            }
+            get => HttpUtility.UrlEncode(this.FileName, Encoding.UTF8);
         }
 
         /// <summary>
@@ -377,7 +374,7 @@ namespace WebApiClient.Parameterables
             public long Length
             {
                 get => this.target.Length;
-            } 
+            }
         }
     }
 }

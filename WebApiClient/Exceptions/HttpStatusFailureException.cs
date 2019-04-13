@@ -14,12 +14,12 @@ namespace WebApiClient
         /// <summary>
         /// 获取Http接口的配置项
         /// </summary>
-        public HttpApiConfig HttpApiConfig { get; private set; }
+        public HttpApiConfig HttpApiConfig { get; }
 
         /// <summary>
         /// 获取响应消息
         /// </summary>
-        public HttpResponseMessage ResponseMessage { get; private set; }
+        public HttpResponseMessage ResponseMessage { get; }
 
         /// <summary>
         /// 获取响应状态码

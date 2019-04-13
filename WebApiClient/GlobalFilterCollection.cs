@@ -29,10 +29,7 @@ namespace WebApiClient
         /// </summary>
         public int Count
         {
-            get
-            {
-                return this.filters.Count;
-            }
+            get => this.filters.Count;
         }
 
         /// <summary>
@@ -100,10 +97,7 @@ namespace WebApiClient
         /// </summary>
         bool ICollection<IApiActionFilter>.IsReadOnly
         {
-            get
-            {
-                return false;
-            }
+            get => false;
         }
 
         /// <summary>

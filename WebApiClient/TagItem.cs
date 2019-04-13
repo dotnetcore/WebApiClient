@@ -24,10 +24,7 @@ namespace WebApiClient
         /// </summary>
         public bool IsNullValue
         {
-            get
-            {
-                return this.Value == null;
-            }
+            get => this.Value == null;
         }
 
         /// <summary>

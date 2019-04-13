@@ -15,7 +15,7 @@ namespace WebApiClient
         /// <summary>
         /// 获取代理
         /// </summary>
-        public IWebProxy WebProxy { get; private set; }
+        public IWebProxy WebProxy { get; }
 
         /// <summary>
         /// 代理验证器

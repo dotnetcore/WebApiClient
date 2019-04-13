@@ -168,10 +168,7 @@ namespace WebApiClient.Contexts
             /// </summary>
             public int Count
             {
-                get
-                {
-                    return this.attributeList.Count;
-                }
+                get => this.attributeList.Count;
             }
 
             /// <summary>

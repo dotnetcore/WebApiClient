@@ -12,7 +12,7 @@ namespace WebApiClient
         /// <summary>
         /// 获取响应消息
         /// </summary>
-        protected HttpResponseMessage HttpResponse { get; private set; }
+        protected HttpResponseMessage HttpResponse { get; }
 
         /// <summary>
         /// http响应包装器抽象类

@@ -18,12 +18,12 @@ namespace WebApiClient
         /// <summary>
         /// 获取代理服务器域名或ip
         /// </summary>
-        public string Host { get; private set; }
+        public string Host { get; }
 
         /// <summary>
         /// 获取代理服务器端口
         /// </summary>
-        public int Port { get; private set; }
+        public int Port { get; }
 
         /// <summary>
         /// 获取代理服务器账号
@@ -40,14 +40,8 @@ namespace WebApiClient
         /// </summary>
         ICredentials IWebProxy.Credentials
         {
-            get
-            {
-                return this.credentials;
-            }
-            set
-            {
-                this.SetCredentialsByInterface(value);
-            }
+            get => this.credentials;
+            set => this.SetCredentialsByInterface(value);
         }
 
         /// <summary>

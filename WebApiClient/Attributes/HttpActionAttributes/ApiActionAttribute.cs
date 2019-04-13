@@ -13,17 +13,14 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// 获取顺序排序索引
         /// </summary>
-        public virtual int OrderIndex { get; private set; }
+        public virtual int OrderIndex { get; }
 
         /// <summary>
         /// 获取本类型是否允许在接口与方法上重复
         /// </summary>
         public bool AllowMultiple
         {
-            get
-            {
-                return this.GetType().IsAllowMultiple();
-            }
+            get => this.GetType().IsAllowMultiple();
         }
 
         /// <summary>

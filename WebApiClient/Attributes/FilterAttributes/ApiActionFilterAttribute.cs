@@ -25,10 +25,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         public bool AllowMultiple
         {
-            get
-            {
-                return this.GetType().IsAllowMultiple();
-            }
+            get => this.GetType().IsAllowMultiple();
         }
 
         /// <summary>

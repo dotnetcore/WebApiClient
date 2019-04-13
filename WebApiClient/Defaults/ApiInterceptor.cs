@@ -17,7 +17,7 @@ namespace WebApiClient.Defaults
         /// <summary>
         /// 获取相关的配置
         /// </summary>
-        public HttpApiConfig HttpApiConfig { get; private set; }
+        public HttpApiConfig HttpApiConfig { get; }
 
         /// <summary>
         /// http接口调用的拦截器

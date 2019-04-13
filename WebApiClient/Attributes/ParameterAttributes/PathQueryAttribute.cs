@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
@@ -25,14 +24,8 @@ namespace WebApiClient.Attributes
         /// <exception cref="ArgumentException"></exception>
         public string Encoding
         {
-            get
-            {
-                return this.encoding.WebName;
-            }
-            set
-            {
-                this.encoding = System.Text.Encoding.GetEncoding(value);
-            }
+            get => this.encoding.WebName;
+            set => this.encoding = System.Text.Encoding.GetEncoding(value);
         }
 
         /// <summary>

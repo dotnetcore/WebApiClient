@@ -51,12 +51,12 @@ namespace WebApiClient.AuthTokens
         /// <summary>
         /// 获取提供Token获取的Url节点
         /// </summary>
-        public Uri TokenEndpoint { get; private set; }
+        public Uri TokenEndpoint { get; }
 
         /// <summary>
         /// 获取序列化选项
         /// </summary>
-        public FormatOptions FormatOptions { get; private set; } = new FormatOptions();
+        public FormatOptions FormatOptions { get; } = new FormatOptions();
 
 
         /// <summary>

@@ -21,7 +21,7 @@ namespace WebApiClient
         /// <summary>
         /// 获取原始的Handler对象
         /// </summary>
-        public HttpMessageHandler SourceHandler { get; private set; }
+        public HttpMessageHandler SourceHandler { get; }
 
 
         /// <summary>

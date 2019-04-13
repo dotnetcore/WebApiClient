@@ -23,6 +23,7 @@ namespace WebApiClient
         /// </summary>
         private readonly Lazy<Dictionary<string, object>> lazy = new Lazy<Dictionary<string, object>>(() => new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase), true);
 
+
         /// <summary>
         /// 获取或设置唯一标识符
         /// </summary>
@@ -35,10 +36,7 @@ namespace WebApiClient
         /// <returns></returns>
         public TagItem this[string key]
         {
-            get
-            {
-                return this.Get(key);
-            }
+            get => this.Get(key);
         }
 
         /// <summary>
@@ -134,14 +132,7 @@ namespace WebApiClient
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
             public KeyValuePair<string, object>[] Values
             {
-                get
-                {
-                    if (this.value == null)
-                    {
-                        return new KeyValuePair<string, object>[0];
-                    }
-                    return this.value.ToArray();
-                }
+                get => this.value == null ? (new KeyValuePair<string, object>[0]) : this.value.ToArray();
             }
         }
     }

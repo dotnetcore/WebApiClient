@@ -15,7 +15,7 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// 获取根路径
         /// </summary>
-        public Uri Host { get; private set; }
+        public Uri Host { get; }
 
         /// <summary>
         /// 获取顺序排序索引
@@ -23,10 +23,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         public override int OrderIndex
         {
-            get
-            {
-                return int.MinValue;
-            }
+            get => int.MaxValue;
         }
 
         /// <summary>

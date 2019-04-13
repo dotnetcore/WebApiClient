@@ -118,10 +118,7 @@ namespace WebApiClient.Parameterables
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
             public List<object> Oprations
             {
-                get
-                {
-                    return this.target.oprations;
-                }
+                get => this.target.oprations;
             }
         }
     }

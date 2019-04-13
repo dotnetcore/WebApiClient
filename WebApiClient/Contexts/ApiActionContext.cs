@@ -13,67 +13,39 @@ namespace WebApiClient.Contexts
     public class ApiActionContext : IDisposable
     {
         /// <summary>
-        /// 自定义数据的存储和访问容器
-        /// </summary>
-        private Tags tags;
-
-        /// <summary>
-        /// 请求取消令牌集合
-        /// </summary>
-        private IList<CancellationToken> cancellationTokens;
-
-        /// <summary>
-        /// 获取本次请求相关的自定义数据的存储和访问容器
-        /// </summary>
-        public Tags Tags
-        {
-            get
-            {
-                if (this.tags == null)
-                {
-                    this.tags = new Tags();
-                }
-                return this.tags;
-            }
-        }
-
-        /// <summary>
-        /// 获取请求取消令牌集合
-        /// 这些令牌将被连接起来
-        /// </summary>
-        public IList<CancellationToken> CancellationTokens
-        {
-            get
-            {
-                if (this.cancellationTokens == null)
-                {
-                    this.cancellationTokens = new List<CancellationToken>();
-                }
-                return this.cancellationTokens;
-            }
-        }
-
-        /// <summary>
         /// 获取httpApi代理类实例
         /// </summary>
-        public IHttpApi HttpApi { get; private set; }
+        public IHttpApi HttpApi { get; }
 
         /// <summary>
         /// 获取关联的HttpApiConfig
         /// </summary>
-        public HttpApiConfig HttpApiConfig { get; private set; }
+        public HttpApiConfig HttpApiConfig { get; }
 
         /// <summary>
         /// 获取关联的ApiActionDescriptor
         /// </summary>
-        public ApiActionDescriptor ApiActionDescriptor { get; private set; }
+        public ApiActionDescriptor ApiActionDescriptor { get; }
 
         /// <summary>
         /// 获取关联的HttpRequestMessage
         /// </summary>
-        public HttpApiRequestMessage RequestMessage { get; private set; }
+        public HttpApiRequestMessage RequestMessage { get; }
 
 
+
+        /// <summary>
+        /// 获取本次请求相关的自定义数据的存储和访问容器
+        /// </summary>
+        public Tags Tags { get; } = new Tags();
+        
+        /// <summary>
+        /// 获取请求取消令牌集合
+        /// 这些令牌将被连接起来
+        /// </summary>
+        public IList<CancellationToken> CancellationTokens { get; } = new List<CancellationToken>();
+
+        
 
         /// <summary>
         /// 获取关联的HttpResponseMessage
@@ -233,13 +205,13 @@ namespace WebApiClient.Contexts
         /// <returns></returns>
         private CancellationTokenSource CreateLinkedTokenSource()
         {
-            if (this.cancellationTokens == null || this.cancellationTokens.Count == 0)
+            if (this.CancellationTokens.Count == 0)
             {
                 return CancellationTokenSource.CreateLinkedTokenSource(CancellationToken.None);
             }
             else
             {
-                var tokens = this.cancellationTokens.ToArray();
+                var tokens = this.CancellationTokens.ToArray();
                 return CancellationTokenSource.CreateLinkedTokenSource(tokens);
             }
         }

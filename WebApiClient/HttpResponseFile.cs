@@ -22,17 +22,17 @@ namespace WebApiClient
         /// <summary>
         /// 获取响应的友好文件名称
         /// </summary>
-        public string FileName { get; private set; }
+        public string FileName { get; }
 
         /// <summary>
         /// 获取文件的大小
         /// </summary>
-        public long? FileSize { get; private set; }
+        public long? FileSize { get; }
 
         /// <summary>
         /// 获取文件类型
         /// </summary>
-        public string MediaType { get; private set; }
+        public string MediaType { get; }
 
         /// <summary>
         /// Http响应的文件

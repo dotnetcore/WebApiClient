@@ -21,14 +21,8 @@ namespace WebApiClient.Attributes
         /// <exception cref="ArgumentException"></exception>
         public string Encoding
         {
-            get
-            {
-                return this.encoding.WebName;
-            }
-            set
-            {
-                this.encoding = System.Text.Encoding.GetEncoding(value);
-            }
+            get => this.encoding.WebName;
+            set => this.encoding = System.Text.Encoding.GetEncoding(value);
         }
 
         /// <summary>

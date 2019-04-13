@@ -577,10 +577,7 @@ namespace WebApiClient.Defaults
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
             public List<KeyValuePair<string, string>> Values
             {
-                get
-                {
-                    return this.target.keyValues;
-                }
+                get => this.target.keyValues;
             }
         }
     }

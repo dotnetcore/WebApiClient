@@ -13,12 +13,12 @@ namespace WebApiClient.Parameterables
         /// <summary>
         /// 体系
         /// </summary>
-        public string Scheme { get; private set; }
+        public string Scheme { get; }
 
         /// <summary>
         /// 参数
         /// </summary>
-        public string Parameter { get; private set; }
+        public string Parameter { get; }
 
         /// <summary>
         /// 授权信息
