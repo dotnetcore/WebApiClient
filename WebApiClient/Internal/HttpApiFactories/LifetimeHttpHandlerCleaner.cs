@@ -124,7 +124,11 @@ namespace WebApiClient
             {
                 if (this.CanDispose == true)
                 {
-                    this.disposable.Dispose();
+                    try
+                    {
+                        this.disposable.Dispose();
+                    }
+                    catch (Exception) { }
                 }
             }
         }
