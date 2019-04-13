@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace WebApiClient.Analyzers.Diagnostics
+namespace WebApiClient.Analyzers.HttpApi
 {
     /// <summary>
     /// 表示特性构造函数诊断器

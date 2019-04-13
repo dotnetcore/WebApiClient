@@ -3,15 +3,14 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace WebApiClient.Analyzers.Diagnostics
+namespace WebApiClient.Analyzers.HttpApi
 {
     /// <summary>
     /// 表示返回类型诊断器
     /// </summary>
     class ReturnTypeDiagnostic : HttpApiDiagnostic
     {
-        /// <summary>
-        /// /// <summary>
+        /// <summary>   
         /// 获取诊断描述
         /// </summary>
         /// </summary>

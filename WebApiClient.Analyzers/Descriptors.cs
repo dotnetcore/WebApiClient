@@ -38,6 +38,17 @@ namespace WebApiClient.Analyzers
             = Create("WA1005", "不支持的泛型方法", "不支持声明泛型方法");
 
         /// <summary>
+        /// HttpApi.Create Api诊断描述器
+        /// </summary>
+        public static DiagnosticDescriptor HttpApiCreateDescriptor { get; }
+            = Create("WA2001", "慎用的Create函数",
+                "请慎用HttpApi.Create()函数，除非结合HttpClient工厂使用或者用于请求之后就释放的短链接请求",
+                level: DiagnosticSeverity.Warning,
+                helpLinkUri: "https://github.com/dotnetcore/WebApiClient/wiki/WebApiClient%E8%BF%9B%E9%98%B6");
+
+
+
+        /// <summary>
         /// 创建诊断描述器
         /// </summary>
         /// <param name="id"></param>
@@ -45,14 +56,14 @@ namespace WebApiClient.Analyzers
         /// <param name="message"></param>
         /// <param name="helpLinkUri"></param>
         /// <returns></returns>
-        private static DiagnosticDescriptor Create(string id, string title, string message, string helpLinkUri = null)
+        private static DiagnosticDescriptor Create(string id, string title, string message, DiagnosticSeverity level = DiagnosticSeverity.Error, string helpLinkUri = null)
         {
-            const string category = "Error";
+            var category = level.ToString();
             if (string.IsNullOrEmpty(helpLinkUri) == true)
             {
                 helpLinkUri = "https://github.com/dotnetcore/WebApiClient/wiki/WebApiClient%E5%9F%BA%E7%A1%80";
             }
-            return new DiagnosticDescriptor(id, title, message, category, DiagnosticSeverity.Error, true, helpLinkUri: helpLinkUri);
+            return new DiagnosticDescriptor(id, title, message, category, level, true, helpLinkUri: helpLinkUri);
         }
     }
 }
