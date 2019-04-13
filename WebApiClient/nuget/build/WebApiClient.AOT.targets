@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Runtime Condition="'$(MSBuildRuntimeType)' == 'Core'">netcoreapp1.1</Runtime>
     <Runtime Condition="'$(MSBuildRuntimeType)' != 'Core'">net45</Runtime>
-    <TaskAssembly>$(MSBuildThisFileDirectory)..\BuildTask\$(Runtime)\WebApiClient.BuildTask.dll</TaskAssembly>
+    <TaskAssembly>$(MSBuildThisFileDirectory)..\buildtask\$(Runtime)\WebApiClient.BuildTask.dll</TaskAssembly>
   </PropertyGroup>
 
   <UsingTask TaskName="WebApiClient.BuildTask.ProxyTask" AssemblyFile="$(TaskAssembly)" />

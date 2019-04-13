@@ -1,2 +1,0 @@
-﻿此目录替代WebApiClient.AOT的nuget包里的build功能
-当配置为AOT_Debug或AOT_Release时，将使用到本目录的编译任务程序集
