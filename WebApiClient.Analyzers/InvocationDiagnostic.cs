@@ -35,6 +35,10 @@ namespace WebApiClient.Analyzers
         /// <returns></returns>
         protected Diagnostic CreateDiagnostic(Location location, params object[] messageArgs)
         {
+            if (location == null)
+            {
+                return null;
+            }
             return Diagnostic.Create(this.Descriptor, location, messageArgs);
         }
 
