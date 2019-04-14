@@ -24,7 +24,7 @@ namespace WebApiClient
             if (options != null)
             {
                 settings.DateFormatString = options.DateTimeFormat;
-                settings.NullValueHandling = options.IgnoreNullValue ? NullValueHandling.Ignore : NullValueHandling.Include;
+                settings.NullValueHandling = options.IgnoreNullValueProperty ? NullValueHandling.Ignore : NullValueHandling.Include;
             }
             return settings;
         }

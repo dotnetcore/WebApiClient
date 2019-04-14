@@ -14,16 +14,16 @@ namespace WebApiClient
         private string dateTimeFormat;
 
         /// <summary>
-        /// 获取或设置是否忽略Null值的键的序列化
-        /// 默认为false
-        /// </summary>
-        public bool IgnoreNullValue { get; set; }
-
-        /// <summary>
         /// 获取或设置序列化时是否使用骆驼命名    
         /// 默认为false
         /// </summary>
         public bool UseCamelCase { get; set; }
+
+        /// <summary>
+        /// 获取或设置是否忽略null值属性的序列化
+        /// 默认为false
+        /// </summary>
+        public bool IgnoreNullValueProperty { get; set; }
 
         /// <summary>
         /// 获取或设置序列化DateTime类型使用的格式
@@ -71,7 +71,7 @@ namespace WebApiClient
             return new FormatOptions
             {
                 DateTimeFormat = datetimeFormat,
-                IgnoreNullValue = this.IgnoreNullValue,
+                IgnoreNullValueProperty = this.IgnoreNullValueProperty,
                 UseCamelCase = this.UseCamelCase
             };
         }
