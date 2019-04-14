@@ -48,7 +48,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         async Task IApiParameterable.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            if (this.IsIgnoreWith(this.stringValue) == false)
+            if (this.IgnoreWhenNull(this.stringValue) == false)
             {
                 context.RequestMessage.AddMulitpartText(parameter.Name, this.stringValue);
                 await ApiTask.CompletedTask;

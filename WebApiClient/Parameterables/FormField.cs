@@ -49,7 +49,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         async Task IApiParameterable.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            if (this.IsIgnoreWith(this.stringValue) == false)
+            if (this.IgnoreWhenNull(this.stringValue) == false)
             {
                 await context.RequestMessage.AddFormFieldAsync(parameter.Name, this.stringValue).ConfigureAwait(false);
             }

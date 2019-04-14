@@ -64,7 +64,7 @@ namespace WebApiClient.Attributes
                 throw new HttpApiConfigException($"请传入name和value参数：{nameof(FormFieldAttribute)}");
             }
 
-            if (this.IsIgnoreWith(this.value) == false)
+            if (this.IgnoreWhenNull(this.value) == false)
             {
                 await context.RequestMessage.AddFormFieldAsync(this.name, this.value).ConfigureAwait(false);
             }
@@ -78,7 +78,7 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         async Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            if (this.IsIgnoreWith(parameter) == false)
+            if (this.IgnoreWhenNull(parameter) == false)
             {
                 await context.RequestMessage.AddFormFieldAsync(parameter.Name, parameter.ToString()).ConfigureAwait(false);
             }

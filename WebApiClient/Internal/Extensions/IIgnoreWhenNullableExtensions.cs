@@ -13,9 +13,9 @@ namespace WebApiClient
         /// <param name="able"></param>
         /// <param name="parameter"></param>
         /// <returns></returns>
-        public static bool IsIgnoreWith(this IIgnoreWhenNullable able, ApiParameterDescriptor parameter)
+        public static bool IgnoreWhenNull(this IIgnoreWhenNullable able, ApiParameterDescriptor parameter)
         {
-            return able.IsIgnoreWith(parameter.Value);
+            return able.IgnoreWhenNull(parameter.Value);
         }
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace WebApiClient
         /// <param name="able"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static bool IsIgnoreWith(this IIgnoreWhenNullable able, object value)
+        public static bool IgnoreWhenNull(this IIgnoreWhenNullable able, object value)
         {
             return able.IgnoreWhenNull == true && value == null;
         }

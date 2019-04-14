@@ -42,7 +42,7 @@ namespace WebApiClient.Attributes
         /// <param name="parameter">特性关联的参数</param>
         protected override void SetHttpContent(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            if (this.IsIgnoreWith(parameter) == true)
+            if (this.IgnoreWhenNull(parameter) == true)
             {
                 return;
             }

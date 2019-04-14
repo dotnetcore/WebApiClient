@@ -76,7 +76,7 @@ namespace WebApiClient.Attributes
                 throw new HttpApiConfigException($"未配置HttpHost，无法使用参数{parameter.Name}");
             }
 
-            if (this.IsIgnoreWith(parameter) == true)
+            if (this.IgnoreWhenNull(parameter) == true)
             {
                 return;
             }

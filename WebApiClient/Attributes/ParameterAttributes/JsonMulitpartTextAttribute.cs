@@ -24,7 +24,7 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         public Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            if (this.IsIgnoreWith(parameter) == false)
+            if (this.IgnoreWhenNull(parameter) == false)
             {
                 var options = context.HttpApiConfig.FormatOptions;
                 var json = context.HttpApiConfig.JsonFormatter.Serialize(parameter.Value, options);

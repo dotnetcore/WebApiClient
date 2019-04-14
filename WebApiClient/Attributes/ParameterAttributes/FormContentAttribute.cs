@@ -44,7 +44,7 @@ namespace WebApiClient.Attributes
         /// <param name="parameter">特性关联的参数</param>
         protected sealed override async Task SetHttpContentAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            if (this.IsIgnoreWith(parameter) == true)
+            if (this.IgnoreWhenNull(parameter) == true)
             {
                 return;
             }

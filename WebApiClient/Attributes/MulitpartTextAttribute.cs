@@ -64,7 +64,7 @@ namespace WebApiClient.Attributes
                 throw new HttpApiConfigException($"请传入name和value参数：{nameof(MulitpartTextAttribute)}");
             }
 
-            if (this.IsIgnoreWith(this.value) == false)
+            if (this.IgnoreWhenNull(this.value) == false)
             {
                 context.RequestMessage.AddMulitpartText(this.name, this.value);
                 await ApiTask.CompletedTask;
@@ -79,7 +79,7 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         async Task IApiParameterAttribute.BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            if (this.IsIgnoreWith(parameter) == false)
+            if (this.IgnoreWhenNull(parameter) == false)
             {
                 context.RequestMessage.AddMulitpartText(parameter.Name, parameter.ToString());
                 await ApiTask.CompletedTask;

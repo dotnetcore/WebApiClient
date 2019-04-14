@@ -15,31 +15,31 @@ namespace WebApiClient.Test.Internal.IAbles
         {
             object value = null;
             var ableFalse = new IgnoreWhenNullable(false);
-            Assert.False(ableFalse.IsIgnoreWith(value));
+            Assert.False(ableFalse.IgnoreWhenNull(value));
 
             value = 1;
-            Assert.False(ableFalse.IsIgnoreWith(value));
+            Assert.False(ableFalse.IgnoreWhenNull(value));
 
             var parameter = TestParameter.Create(null);
-            Assert.False(ableFalse.IsIgnoreWith(parameter));
+            Assert.False(ableFalse.IgnoreWhenNull(parameter));
 
             parameter = TestParameter.Create("laojiu");
-            Assert.False(ableFalse.IsIgnoreWith(parameter));
+            Assert.False(ableFalse.IgnoreWhenNull(parameter));
 
 
 
             value = null;
             var ableTrue = new IgnoreWhenNullable(true);
-            Assert.True(ableTrue.IsIgnoreWith(value));
+            Assert.True(ableTrue.IgnoreWhenNull(value));
 
             value = 1;
-            Assert.False(ableTrue.IsIgnoreWith(value));
+            Assert.False(ableTrue.IgnoreWhenNull(value));
 
             parameter = TestParameter.Create(null);
-            Assert.True(ableTrue.IsIgnoreWith(parameter));
+            Assert.True(ableTrue.IgnoreWhenNull(parameter));
 
             parameter = TestParameter.Create("laojiu");
-            Assert.False(ableTrue.IsIgnoreWith(parameter));
+            Assert.False(ableTrue.IgnoreWhenNull(parameter));
         }
 
         private class IgnoreWhenNullable : IIgnoreWhenNullable
