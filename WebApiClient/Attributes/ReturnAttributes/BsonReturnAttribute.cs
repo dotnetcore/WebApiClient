@@ -4,7 +4,6 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
 using WebApiClient.DataAnnotations;
-using WebApiClient.Defaults;
 
 namespace WebApiClient.Attributes
 {
@@ -48,13 +47,7 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         protected virtual JsonSerializerSettings CreateSerializerSettings(FormatOptions options)
         {
-            var useCamelCase = options?.UseCamelCase == true;
-            return new JsonSerializerSettings
-            {
-                DateFormatString = options?.DateTimeFormat,
-                NullValueHandling = options.IgnoreNullValue ? NullValueHandling.Ignore : NullValueHandling.Include,
-                ContractResolver = AnnotationsContractResolver.GetResolver(FormatScope.BsonFormat, useCamelCase)
-            };
+            return options.ToSerializerSettings(FormatScope.BsonFormat);
         }
     }
 }

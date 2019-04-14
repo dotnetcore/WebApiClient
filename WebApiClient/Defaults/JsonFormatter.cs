@@ -32,11 +32,6 @@ namespace WebApiClient.Defaults
                 return null;
             }
 
-            if (options == null)
-            {
-                options = new FormatOptions();
-            }
-
             var setting = this.CreateSerializerSettings(options);
             this.Settings?.Invoke(setting);
             return JsonConvert.SerializeObject(obj, setting);
@@ -67,13 +62,7 @@ namespace WebApiClient.Defaults
         /// <returns></returns>
         protected virtual JsonSerializerSettings CreateSerializerSettings(FormatOptions options)
         {
-            var useCamelCase = options?.UseCamelCase == true;
-            return new JsonSerializerSettings
-            {
-                DateFormatString = options?.DateTimeFormat,
-                NullValueHandling = options.IgnoreNullValue ? NullValueHandling.Ignore : NullValueHandling.Include,
-                ContractResolver = AnnotationsContractResolver.GetResolver(FormatScope.JsonFormat, useCamelCase)
-            };
+            return options.ToSerializerSettings(FormatScope.JsonFormat);
         }
     }
 }

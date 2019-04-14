@@ -36,11 +36,6 @@ namespace WebApiClient.Defaults
                 return Enumerable.Empty<KeyValuePair<string, string>>();
             }
 
-            if (options == null)
-            {
-                options = new FormatOptions();
-            }
-
             var setting = this.CreateSerializerSettings(options);
             this.Settings?.Invoke(setting);
             var serializer = JsonSerializer.Create(setting);
@@ -68,14 +63,8 @@ namespace WebApiClient.Defaults
         /// <returns></returns>
         protected virtual JsonSerializerSettings CreateSerializerSettings(FormatOptions options)
         {
-            var useCamelCase = options.UseCamelCase;
-            var setting = new JsonSerializerSettings
-            {
-                DateFormatString = options.DateTimeFormat,
-                NullValueHandling = options.IgnoreNullValue ? NullValueHandling.Ignore : NullValueHandling.Include,
-                ContractResolver = AnnotationsContractResolver.GetResolver(FormatScope.KeyValueFormat, useCamelCase)
-            };
-
+            var useCamelCase = options?.UseCamelCase == true;
+            var setting = options.ToSerializerSettings(FormatScope.KeyValueFormat);
             setting.Converters.Add(new KeyValuePairConverter(useCamelCase));
             return setting;
         }
