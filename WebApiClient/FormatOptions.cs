@@ -71,6 +71,7 @@ namespace WebApiClient
             return new FormatOptions
             {
                 DateTimeFormat = datetimeFormat,
+                IgnoreNullValue = this.IgnoreNullValue,
                 UseCamelCase = this.UseCamelCase
             };
         }
