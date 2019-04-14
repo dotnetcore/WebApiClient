@@ -36,7 +36,7 @@ namespace WebApiClient.AuthTokens
         /// <returns></returns>
         async Task IApiActionFilter.OnBeginRequestAsync(ApiActionContext context)
         {
-            using (await this.asyncRoot.LockAsync())
+            using (await this.asyncRoot.LockAsync().ConfigureAwait(false))
             {
                 await this.InitOrRefreshTokenAsync().ConfigureAwait(false);
             }

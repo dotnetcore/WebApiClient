@@ -99,7 +99,7 @@ namespace WebApiClient.AuthTokens
         /// <param name="scope">资源范围</param>
         /// <param name="extra">额外字段，支持字典或模型</param>
         /// <returns></returns>     
-        public async Task<TokenResult> RequestClientCredentialsAsync(
+        public Task<TokenResult> RequestClientCredentialsAsync(
             string client_id,
             string client_secret,
             string scope = null,
@@ -113,7 +113,7 @@ namespace WebApiClient.AuthTokens
                 scope = scope,
                 extra = extra
             };
-            return await this.RequestTokenResultAsync(credentials).ConfigureAwait(false);
+            return this.RequestTokenResultAsync(credentials);
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace WebApiClient.AuthTokens
         /// <param name="scope">资源范围</param>
         /// <param name="extra">额外字段，支持字典或模型</param>
         /// <returns></returns>      
-        public async Task<TokenResult> RequestPasswordCredentialsAsync(
+        public Task<TokenResult> RequestPasswordCredentialsAsync(
             string client_id,
             string client_secret,
             string username,
@@ -144,7 +144,7 @@ namespace WebApiClient.AuthTokens
                 scope = scope,
                 extra = extra
             };
-            return await this.RequestTokenResultAsync(credentials).ConfigureAwait(false);
+            return this.RequestTokenResultAsync(credentials);
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace WebApiClient.AuthTokens
         /// <param name="refresh_token">获取token得到的refresh_token</param>
         /// <param name="extra">额外字段，支持字典或模型</param>
         /// <returns></returns>
-        public async Task<TokenResult> RequestRefreshTokenAsync(
+        public Task<TokenResult> RequestRefreshTokenAsync(
             string client_id,
             string client_secret,
             string refresh_token,
@@ -169,7 +169,7 @@ namespace WebApiClient.AuthTokens
                 refresh_token = refresh_token,
                 extra = extra
             };
-            return await this.RequestTokenResultAsync(credentials).ConfigureAwait(false);
+            return this.RequestTokenResultAsync(credentials);
         }
 
         /// <summary>

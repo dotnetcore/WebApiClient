@@ -47,13 +47,24 @@ namespace WebApiClient
         /// </summary>
         private async void StartCleanup()
         {
-            do
+            try
             {
-                await Task
-                    .Delay(this.CleanupInterval)
-                    .ConfigureAwait(false);
+                while (true)
+                {
+                    await Task
+                        .Delay(this.CleanupInterval)
+                        .ConfigureAwait(false);
+
+                    if (this.Cleanup() == true)
+                    {
+                        break;
+                    }
+                }
             }
-            while (this.Cleanup() == false);
+            catch (Exception)
+            {
+                // 这是应该不可能发生的
+            }
         }
 
         /// <summary>

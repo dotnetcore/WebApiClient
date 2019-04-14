@@ -27,9 +27,9 @@ namespace WebApiClient
         /// 创建请求任务
         /// </summary>
         /// <returns></returns>
-        public override async Task<TResult> InvokeAsync()
+        public override Task<TResult> InvokeAsync()
         {
-            return await this.invoker.Invoke().ConfigureAwait(false);
+            return this.invoker.Invoke();
         }
 
         /// <summary>
