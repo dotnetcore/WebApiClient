@@ -14,7 +14,7 @@ namespace WebApiClient
         private string dateTimeFormat;
 
         /// <summary>
-        /// 获取或设置是否忽略Null值的序列化
+        /// 获取或设置是否忽略Null值的键的序列化
         /// 默认为false
         /// </summary>
         public bool IgnoreNullValue { get; set; }
