@@ -52,6 +52,7 @@ namespace WebApiClient.Attributes
             return new JsonSerializerSettings
             {
                 DateFormatString = options?.DateTimeFormat,
+                NullValueHandling = options.IgnoreNullValue ? NullValueHandling.Ignore : NullValueHandling.Include,
                 ContractResolver = AnnotationsContractResolver.GetResolver(FormatScope.BsonFormat, useCamelCase)
             };
         }
