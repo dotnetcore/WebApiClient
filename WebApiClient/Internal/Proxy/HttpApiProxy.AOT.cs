@@ -25,24 +25,20 @@ namespace WebApiClient
         /// <returns></returns>
         public static HttpApi CreateInstance(Type interfaceType, IApiInterceptor interceptor)
         {
-            var proxy = interfaceProxyCache.GetOrAdd(interfaceType, @interface =>
+            var httpApiProxy = interfaceProxyCache.GetOrAdd(interfaceType, @interface =>
             {
                 var proxyType = FindProxyType(@interface);
                 if (proxyType == null)
                 {
-                    return null;
+                    var assemblyName = typeof(HttpApiProxy).GetTypeInfo().Assembly.GetName();
+                    throw new TypeLoadException($"找不到接口{interfaceType}的代理类，请为接口所在项目重新使用Nuget安装{assemblyName.Name} {assemblyName.Version}");
                 }
 
                 var apiMethods = @interface.GetAllApiMethods();
                 return new HttpApiProxy(proxyType, apiMethods);
             });
 
-            if (proxy == null)
-            {
-                var assemblyName = typeof(HttpApiProxy).GetTypeInfo().Assembly.GetName();
-                throw new TypeLoadException($"找不到接口{interfaceType}的代理类，请为接口所在项目重新使用Nuget安装{assemblyName.Name} {assemblyName.Version}");
-            }
-            return proxy.CreateInstance(interceptor);
+            return httpApiProxy.CreateInstance(interceptor);
         }
 
 

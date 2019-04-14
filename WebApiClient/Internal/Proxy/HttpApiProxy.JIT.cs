@@ -42,21 +42,21 @@ namespace WebApiClient
         /// <returns></returns>
         public static HttpApi CreateInstance(Type interfaceType, IApiInterceptor interceptor)
         {
-            // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口            
-            if (interfaceType.GetTypeInfo().IsVisible == false)
+            var httpApiProxy = interfaceProxyCache.GetOrAdd(interfaceType, @interface =>
             {
-                var message = $"WebApiClient.JIT不支持非public接口定义：{interfaceType}";
-                throw new NotSupportedException(message);
-            }
+                // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口            
+                if (interfaceType.GetTypeInfo().IsVisible == false)
+                {
+                    var message = $"WebApiClient.JIT不支持非public接口定义：{interfaceType}";
+                    throw new NotSupportedException(message);
+                }
 
-            var proxy = interfaceProxyCache.GetOrAdd(interfaceType, @interface =>
-            {
                 var apiMethods = @interface.GetAllApiMethods();
                 var proxyType = BuildProxyType(@interface, apiMethods);
                 return new HttpApiProxy(proxyType, apiMethods);
             });
 
-            return proxy.CreateInstance(interceptor);
+            return httpApiProxy.CreateInstance(interceptor);
         }
 
         /// <summary>
