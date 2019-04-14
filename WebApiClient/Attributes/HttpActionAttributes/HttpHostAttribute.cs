@@ -23,7 +23,7 @@ namespace WebApiClient.Attributes
         /// </summary>
         public override int OrderIndex
         {
-            get => int.MaxValue;
+            get => int.MinValue;
         }
 
         /// <summary>
