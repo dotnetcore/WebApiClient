@@ -36,6 +36,10 @@ namespace WebApiClient.Analyzers
         /// <returns></returns>
         protected Diagnostic CreateDiagnostic(Location location, params object[] messageArgs)
         {
+            if (location == null)
+            {
+                return null;
+            }
             return Diagnostic.Create(this.Descriptor, location, messageArgs);
         }
 
@@ -71,7 +75,10 @@ namespace WebApiClient.Analyzers
 
             foreach (var item in this.GetDiagnostics())
             {
-                this.Context.SyntaxNodeContext.ReportDiagnostic(item);
+                if (item != null)
+                {
+                    this.Context.SyntaxNodeContext.ReportDiagnostic(item);
+                }
             }
         }
 

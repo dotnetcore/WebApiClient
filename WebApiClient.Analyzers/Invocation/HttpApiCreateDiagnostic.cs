@@ -56,12 +56,8 @@ namespace WebApiClient.Analyzers.Invocation
             }
 
             var expressionSyntax = this.Context.InvocationSyntax.Expression as MemberAccessExpressionSyntax;
-            if (expressionSyntax != null)
-            {
-                var localtion = expressionSyntax.Name.GetLocation();
-                return this.CreateDiagnostic(localtion);
-            }
-            return null;
+            var localtion = expressionSyntax?.Name?.GetLocation();
+            return this.CreateDiagnostic(localtion);
         }
     }
 }

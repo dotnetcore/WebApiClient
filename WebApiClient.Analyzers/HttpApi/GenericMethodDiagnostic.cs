@@ -1,8 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace WebApiClient.Analyzers.HttpApi
 {
@@ -35,7 +33,7 @@ namespace WebApiClient.Analyzers.HttpApi
             {
                 if (method.IsGenericMethod == true)
                 {
-                    var location = method.DeclaringSyntaxReferences.First().GetSyntax().GetLocation();
+                    var location = method.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax()?.GetLocation();
                     yield return this.CreateDiagnostic(location);
                 }
             }

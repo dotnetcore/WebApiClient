@@ -44,7 +44,7 @@ namespace WebApiClient.Analyzers.HttpApi
 
             foreach (var item in interfaceAttributes.Concat(methodAttributes))
             {
-                var location = item.ApplicationSyntaxReference.GetSyntax().GetLocation();
+                var location = item.ApplicationSyntaxReference?.GetSyntax()?.GetLocation();
                 yield return this.CreateDiagnostic(location);
             }
         }

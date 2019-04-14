@@ -46,7 +46,7 @@ namespace WebApiClient.Analyzers.HttpApi
                     continue;
                 }
 
-                var location = methodSyntax.ReturnType.GetLocation();
+                var location = methodSyntax.ReturnType?.GetLocation();
                 yield return this.CreateDiagnostic(location);
             }
         }

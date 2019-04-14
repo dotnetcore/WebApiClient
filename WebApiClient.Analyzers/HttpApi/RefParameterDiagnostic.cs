@@ -40,7 +40,7 @@ namespace WebApiClient.Analyzers.HttpApi
                     {
                         if (parameter.DeclaringSyntaxReferences.First().GetSyntax() is ParameterSyntax parameterSyntax)
                         {
-                            var location = parameterSyntax.Modifiers.First().GetLocation();
+                            var location = parameterSyntax.Modifiers.FirstOrDefault().GetLocation();
                             yield return this.CreateDiagnostic(location);
                         }
                     }
