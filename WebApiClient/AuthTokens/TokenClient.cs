@@ -42,7 +42,7 @@ namespace WebApiClient.AuthTokens
             {
                 if (value < TimeSpan.Zero)
                 {
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(TimeOut));
                 }
                 this.timeout = value;
             }

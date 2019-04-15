@@ -101,7 +101,7 @@ namespace WebApiClient
         public ILoggerFactory LoggerFactory
         {
             get => this.loggerFactory ?? (ILoggerFactory)this.ServiceProvider?.GetService(typeof(ILoggerFactory));
-            set => this.loggerFactory = value ?? throw new ArgumentNullException();
+            set => this.loggerFactory = value ?? throw new ArgumentNullException(nameof(LoggerFactory));
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace WebApiClient
         public Uri HttpHost
         {
             get => this.HttpClient.BaseAddress;
-            set => this.HttpClient.BaseAddress = value ?? throw new ArgumentNullException();
+            set => this.HttpClient.BaseAddress = value ?? throw new ArgumentNullException(nameof(HttpHost));
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace WebApiClient
         public FormatOptions FormatOptions
         {
             get => formatOptions;
-            set => formatOptions = value ?? throw new ArgumentNullException();
+            set => formatOptions = value ?? throw new ArgumentNullException(nameof(FormatOptions));
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace WebApiClient
         public IXmlFormatter XmlFormatter
         {
             get => xmlFormatter;
-            set => xmlFormatter = value ?? throw new ArgumentNullException();
+            set => xmlFormatter = value ?? throw new ArgumentNullException(nameof(XmlFormatter));
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace WebApiClient
         public IJsonFormatter JsonFormatter
         {
             get => jsonFormatter;
-            set => jsonFormatter = value ?? throw new ArgumentNullException();
+            set => jsonFormatter = value ?? throw new ArgumentNullException(nameof(JsonFormatter));
         }
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace WebApiClient
         public IKeyValueFormatter KeyValueFormatter
         {
             get => keyValueFormatter;
-            set => keyValueFormatter = value ?? throw new ArgumentNullException();
+            set => keyValueFormatter = value ?? throw new ArgumentNullException(nameof(KeyValueFormatter));
         }
 
 

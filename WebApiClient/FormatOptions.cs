@@ -11,7 +11,7 @@ namespace WebApiClient
         /// <summary>
         /// 日期时间格式
         /// </summary>
-        private string dateTimeFormat;
+        private string datetimeFormat;
 
         /// <summary>
         /// 获取或设置序列化时是否使用骆驼命名    
@@ -34,19 +34,19 @@ namespace WebApiClient
         {
             get
             {
-                if (this.dateTimeFormat == null)
+                if (this.datetimeFormat == null)
                 {
-                    this.dateTimeFormat = DateTimeFormats.LocalDateTimeFormat;
+                    this.datetimeFormat = DateTimeFormats.LocalDateTimeFormat;
                 }
-                return this.dateTimeFormat;
+                return this.datetimeFormat;
             }
             set
             {
                 if (string.IsNullOrEmpty(value))
                 {
-                    throw new ArgumentNullException(nameof(value));
+                    throw new ArgumentNullException(nameof(DateTimeFormat));
                 }
-                this.dateTimeFormat = value;
+                this.datetimeFormat = value;
             }
         }
 
@@ -58,7 +58,12 @@ namespace WebApiClient
         /// <returns></returns>
         public FormatOptions CloneChange(string datetimeFormat)
         {
-            if (string.Equals(this.DateTimeFormat, datetimeFormat) == true)
+            if (string.IsNullOrEmpty(datetimeFormat) == true)
+            {
+                return this;
+            }
+
+            if (datetimeFormat.Equals(this.DateTimeFormat) == true)
             {
                 return this;
             }

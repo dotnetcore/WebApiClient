@@ -45,8 +45,8 @@ namespace WebApiClient
         /// </summary>
         public long MaxRequestContentBufferSize
         {
-            get => throw new NotSupportedException();
-            set => throw new NotSupportedException();
+            get => throw new NotSupportedException(nameof(MaxRequestContentBufferSize));
+            set => throw new NotSupportedException(nameof(MaxRequestContentBufferSize));
         }
 
         /// <summary>
@@ -54,8 +54,8 @@ namespace WebApiClient
         /// </summary>
         public ClientCertificateOption ClientCertificateOptions
         {
-            get => throw new NotSupportedException();
-            set => throw new NotSupportedException();
+            get => throw new NotSupportedException(nameof(ClientCertificateOptions));
+            set => throw new NotSupportedException(nameof(ClientCertificateOptions));
         }
 
         /// <summary>
@@ -63,8 +63,8 @@ namespace WebApiClient
         /// </summary>
         public bool UseDefaultCredentials
         {
-            get => throw new NotSupportedException();
-            set => throw new NotSupportedException();
+            get => throw new NotSupportedException(nameof(UseDefaultCredentials));
+            set => throw new NotSupportedException(nameof(UseDefaultCredentials));
         }
 
         /// <summary>

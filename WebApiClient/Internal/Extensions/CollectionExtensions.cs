@@ -37,7 +37,7 @@ namespace WebApiClient
                     return collection.FormatAs(@"|");
 
                 default:
-                    throw new NotImplementedException();
+                    throw new NotImplementedException(format.ToString());
             }
         }
 

@@ -29,7 +29,7 @@ namespace WebApiClient
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(MaxConnections));
                 }
                 maxConnections = value;
             }
