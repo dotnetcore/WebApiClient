@@ -9,11 +9,6 @@ namespace WebApiClient
     public partial class HttpApi
     {
         /// <summary>
-        /// 同步锁
-        /// </summary>
-        private static readonly object syncRoot = new object();
-
-        /// <summary>
         /// 工厂字典
         /// </summary>
         private static readonly ConcurrentDictionary<string, IHttpApiFactory> factories = new ConcurrentDictionary<string, IHttpApiFactory>();
@@ -84,16 +79,11 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(factory));
             }
 
-            lock (syncRoot)
+            if (factories.TryAdd(name, factory) == true)
             {
-                if (factories.ContainsKey(name) == true)
-                {
-                    throw new InvalidOperationException($"不允许注册重复名称的接口：{name}");
-                }
-
-                factories.TryAdd(name, factory);
                 return factory;
             }
+            throw new InvalidOperationException($"不允许注册重复名称的接口：{name}");
         }
 
         /// <summary>
