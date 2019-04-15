@@ -23,7 +23,7 @@ namespace WebApiClient
         /// 获取或设置是否忽略null值属性的序列化
         /// 默认为false
         /// </summary>
-        public bool IgnoreNullValueProperty { get; set; }
+        public bool IgnoreNullProperty { get; set; }
 
         /// <summary>
         /// 获取或设置序列化DateTime类型使用的格式
@@ -34,6 +34,10 @@ namespace WebApiClient
         {
             get
             {
+                if (this.dateTimeFormat == null)
+                {
+                    this.dateTimeFormat = DateTimeFormats.LocalDateTimeFormat;
+                }
                 return this.dateTimeFormat;
             }
             set
@@ -47,15 +51,6 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 格式化选项
-        /// </summary>
-        public FormatOptions()
-        {
-            this.UseCamelCase = false;
-            this.DateTimeFormat = DateTimeFormats.LocalDateTimeFormat;
-        }
-
-        /// <summary>
         /// 当datetimeFormat不为null且有变化时
         /// 则克隆并使用新的datetimeFormat
         /// </summary>
@@ -63,7 +58,7 @@ namespace WebApiClient
         /// <returns></returns>
         public FormatOptions CloneChange(string datetimeFormat)
         {
-            if (string.IsNullOrEmpty(datetimeFormat) || string.Equals(this.DateTimeFormat, datetimeFormat))
+            if (string.Equals(this.DateTimeFormat, datetimeFormat) == true)
             {
                 return this;
             }
@@ -71,7 +66,7 @@ namespace WebApiClient
             return new FormatOptions
             {
                 DateTimeFormat = datetimeFormat,
-                IgnoreNullValueProperty = this.IgnoreNullValueProperty,
+                IgnoreNullProperty = this.IgnoreNullProperty,
                 UseCamelCase = this.UseCamelCase
             };
         }
