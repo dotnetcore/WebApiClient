@@ -7,7 +7,7 @@
   "targets": {
     ".NETStandard,Version=v1.1": {},
     ".NETStandard,Version=v1.1/": {
-      "WebApiClient.Analyzers/1.0.4-beta1": {
+      "WebApiClient.Analyzers/1.0.4": {
         "dependencies": {
           "Microsoft.CodeAnalysis.Analyzers": "1.2.0-beta2",
           "Microsoft.CodeAnalysis.CSharp.Workspaces": "1.2.2",
@@ -383,7 +383,7 @@
     }
   },
   "libraries": {
-    "WebApiClient.Analyzers/1.0.4-beta1": {
+    "WebApiClient.Analyzers/1.0.4": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -391,42 +391,42 @@
     "Microsoft.CodeAnalysis.Analyzers/1.2.0-beta2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-BLDRYUM4O2Gv91sLka4Ro1AVKEN3UKzg+KgvsJiMYdcoBUVwNi112gFfqcvzZStFK1KgXfcV3shP/bVBOI21Cg==",
+      "sha512": "sha512-CIrL5rFuYb5sUEykf3KOH6Ch5mZ4Q0JFJctPb3Fif9LPWk8TnVMhIxD1dpRza/xsvM5tItv1GGXrx87Ww2lYwQ==",
       "path": "microsoft.codeanalysis.analyzers/1.2.0-beta2",
       "hashPath": "microsoft.codeanalysis.analyzers.1.2.0-beta2.nupkg.sha512"
     },
     "Microsoft.CodeAnalysis.Common/1.2.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-1ucg8LxhedSum46yjoCuiuDRVl9gCrl6ftZo5mbICHteUsBmA4uRJ36rkZ3LGNWCMk1MNmPvROD6MVYzHOv/fA==",
+      "sha512": "sha512-28bHBzF42U79sjvo1Z5z4JI+P7bUnsu3DqB8YQ4zCYoQ2WBmfZ4BKTeNv9AL4XhoIJPtVmrTKnsA3adbuF/8cA==",
       "path": "microsoft.codeanalysis.common/1.2.2",
       "hashPath": "microsoft.codeanalysis.common.1.2.2.nupkg.sha512"
     },
     "Microsoft.CodeAnalysis.CSharp/1.2.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-juRldPp+yA1dbA5eh0uK8Qk/N4/F3vth1llwSgKZbVFkvSvAiL20IHFqR4vUMf1b9S3Ed8yemcADsvd3OXuauA==",
+      "sha512": "sha512-OxE/OYM/x/VR1ENaqg78Oe9dORdLIvvwZhz6G34wG7/w9IYHTA9E4y29nlEqaDzM2lL4CPOWQw7cVPejBkUETQ==",
       "path": "microsoft.codeanalysis.csharp/1.2.2",
       "hashPath": "microsoft.codeanalysis.csharp.1.2.2.nupkg.sha512"
     },
     "Microsoft.CodeAnalysis.CSharp.Workspaces/1.2.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-2bIP/X1AK6TiSnV/JTg405PJuB7ypztm+n5K3aKxkzPCupHS2SltAUfrAM9qwS5G2aIoDOC/5/TGDZkPfdfQeA==",
+      "sha512": "sha512-gCgYeiHVU3+bupv5+brte+YloEEpq9gY0rkTMBRaDCEIeoOGQAD/ymNa0gDEirv+gNKBD+pAp29vV1vRePxVbA==",
       "path": "microsoft.codeanalysis.csharp.workspaces/1.2.2",
       "hashPath": "microsoft.codeanalysis.csharp.workspaces.1.2.2.nupkg.sha512"
     },
     "Microsoft.CodeAnalysis.Workspaces.Common/1.2.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-c9bwrwbxY9sTBdjsdsw7GonCWoG2fEMmeaDJNlOz862LrcxAL5TC2DSr2eTBnyUWir8CUIvEGNtFt/nrLFqUbw==",
+      "sha512": "sha512-5ZxCxZbUOgpqLLZTg+oAKHkhCzhJAXfJfQ2sIyejNpX/HaJ3AB6MO6fSkGebddZ82SaY1VHwrkLQ3EbamM7Hcw==",
       "path": "microsoft.codeanalysis.workspaces.common/1.2.2",
       "hashPath": "microsoft.codeanalysis.workspaces.common.1.2.2.nupkg.sha512"
     },
     "Microsoft.Composition/1.0.27": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-PZ4gMBZnajsBqqXAb2qZnXPxOoTApd2O1fOEQtJFgPAjRrfFjJZ6wg6bdTx1IdMBoKXD1CBJUM+pB5vrKUd80w==",
+      "sha512": "sha512-pwu80Ohe7SBzZ6i69LVdzowp6V+LaVRzd5F7A6QlD42vQkX0oT7KXKWWPlM/S00w1gnMQMRnEdbtOV12z6rXdQ==",
       "path": "microsoft.composition/1.0.27",
       "hashPath": "microsoft.composition.1.0.27.nupkg.sha512"
     },
@@ -475,7 +475,7 @@
     "System.Collections.Immutable/1.1.37": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-aK+7V4KG3GgbHqy6jUKZ7rIJnyXGPmhSMoYcbdoWHN7RGaMjfYLBB5yeqglJQL5gsH53bY/wAt22kOli+vWPpg==",
+      "sha512": "sha512-fTpqwZYBzoklTT+XjTRK8KxvmrGkYHzBiylCcKyQcxiOM8k+QvhNBxRvFHDWzy4OEP5f8/9n+xQ9mEgEXY+muA==",
       "path": "system.collections.immutable/1.1.37",
       "hashPath": "system.collections.immutable.1.1.37.nupkg.sha512"
     },
@@ -573,7 +573,7 @@
     "System.Reflection.Metadata/1.2.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-44hoOvTqX7KY8SFaEY+CjjLGz3yejpBDKZfQk0kw3xNZPs3o99fDC046Pw7sDwFjgN0dxwoRRSsDrroCQnncRg==",
+      "sha512": "sha512-ubQKFCNYPwhqPXPLjRKCvTDR2UvL5L5+Tm181D/5kl/df7264AuXDi2j2Bf5DxplBxevq8eUH9LRomcFCXTQKw==",
       "path": "system.reflection.metadata/1.2.0",
       "hashPath": "system.reflection.metadata.1.2.0.nupkg.sha512"
     },
