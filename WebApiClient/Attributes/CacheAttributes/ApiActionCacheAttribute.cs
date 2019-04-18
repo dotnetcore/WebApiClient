@@ -29,25 +29,23 @@ namespace WebApiClient.Attributes
 
 
         /// <summary>
-        /// 指示是否需要读取缓存
-        /// 返回false则直接进入接口请求
+        /// 返回读取缓存的策略
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public virtual bool NeedReadCache(ApiActionContext context)
+        public virtual CachePolicy GetReadPolicy(ApiActionContext context)
         {
-            return true;
+            return CachePolicy.Include;
         }
 
         /// <summary>
-        /// 指示是否需要写入缓存
-        /// 返回false则不会将请求的响应写入缓存中
+        /// 返回写入缓存的策略
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">上下文</param>
         /// <returns></returns>
-        public virtual bool NeedWriteCache(ApiActionContext context)
+        public virtual CachePolicy GetWritePolicy(ApiActionContext context)
         {
-            return true;
+            return CachePolicy.Include;
         }
 
         /// <summary>

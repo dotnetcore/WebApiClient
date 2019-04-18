@@ -189,9 +189,9 @@ namespace WebApiClient.Parameterables
         /// </summary>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns></returns>
-        public sealed override async Task FlushAsync(CancellationToken cancellationToken)
+        public sealed override Task FlushAsync(CancellationToken cancellationToken)
         {
-            await this.innerStream.FlushAsync(cancellationToken).ConfigureAwait(false);
+            return this.innerStream.FlushAsync(cancellationToken);
         }
 
         /// <summary>

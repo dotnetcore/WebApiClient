@@ -156,7 +156,7 @@ namespace WebApiClient.Contexts
         private async Task ExecRequestAsync()
         {
             var apiCache = new ApiCache(this);
-            var cacheResult = await apiCache.GetAsync();
+            var cacheResult = await apiCache.GetAsync().ConfigureAwait(false);
 
             if (cacheResult.ResponseMessage != null)
             {
@@ -166,7 +166,7 @@ namespace WebApiClient.Contexts
             else
             {
                 await this.ExecHttpRequestAsync().ConfigureAwait(false);
-                await apiCache.SetAsync(cacheResult.CacheKey);
+                await apiCache.SetAsync(cacheResult.CacheKey).ConfigureAwait(false);
             }
         }
 

@@ -9,10 +9,10 @@ namespace WebApiClient
     /// </summary>
     class ApiCache
     {
-        private readonly bool useCache;
+        private readonly bool enable;
         private readonly ApiActionContext context;
-        private readonly IResponseCacheProvider cacheProvider;
-        private readonly IApiActionCacheAttribute cacheAttribute;
+        private readonly IResponseCacheProvider provider;
+        private readonly IApiActionCacheAttribute attribute;
 
         /// <summary>
         /// Api缓存
@@ -21,9 +21,9 @@ namespace WebApiClient
         public ApiCache(ApiActionContext context)
         {
             this.context = context;
-            this.cacheAttribute = context.ApiActionDescriptor.Cache;
-            this.cacheProvider = context.HttpApiConfig.ResponseCacheProvider;
-            this.useCache = this.cacheAttribute != null && this.cacheProvider != null;
+            this.attribute = context.ApiActionDescriptor.Cache;
+            this.provider = context.HttpApiConfig.ResponseCacheProvider;
+            this.enable = this.attribute != null && this.provider != null;
         }
 
         /// <summary>
@@ -32,35 +32,32 @@ namespace WebApiClient
         /// <returns></returns>
         public async Task<CacheResult> GetAsync()
         {
-            if (this.useCache == false)
+            if (this.enable == false)
             {
                 return CacheResult.Empty;
             }
 
-            var willRead = true;
-            if (this.cacheAttribute is IApiActionCachePolicyAttribute cachePolicy)
+            if (this.attribute is IApiActionCachePolicyAttribute policy)
             {
-                willRead = cachePolicy.NeedReadCache(this.context);
+                if (policy.GetReadPolicy(this.context) == CachePolicy.Ignore)
+                {
+                    return CacheResult.Empty;
+                }
             }
 
-            if (willRead == false)
-            {
-                return CacheResult.Empty;
-            }
-
-            var cacheKey = await this.cacheAttribute.GetCacheKeyAsync(this.context).ConfigureAwait(false);
+            var cacheKey = await this.attribute.GetCacheKeyAsync(this.context).ConfigureAwait(false);
             if (string.IsNullOrEmpty(cacheKey) == true)
             {
                 return CacheResult.Empty;
             }
 
-            var cacheResult = await this.cacheProvider.GetAsync(cacheKey).ConfigureAwait(false);
+            var cacheResult = await this.provider.GetAsync(cacheKey).ConfigureAwait(false);
             if (cacheResult.HasValue == false || cacheResult.Value == null)
             {
                 return new CacheResult(cacheKey, null);
             }
 
-            var response = cacheResult.Value.ToResponseMessage(this.context.RequestMessage, cacheProvider.Name);
+            var response = cacheResult.Value.ToResponseMessage(this.context.RequestMessage, this.provider.Name);
             return new CacheResult(cacheKey, response);
         }
 
@@ -71,25 +68,22 @@ namespace WebApiClient
         /// <returns></returns>
         public async Task SetAsync(string cacheKey)
         {
-            if (this.useCache == false)
+            if (this.enable == false)
             {
                 return;
             }
 
-            var willWrite = true;
-            if (this.cacheAttribute is IApiActionCachePolicyAttribute cachePolicy)
+            if (this.attribute is IApiActionCachePolicyAttribute policy)
             {
-                willWrite = cachePolicy.NeedWriteCache(this.context);
-            }
-
-            if (willWrite == false)
-            {
-                return;
+                if (policy.GetWritePolicy(this.context) == CachePolicy.Ignore)
+                {
+                    return;
+                }
             }
 
             if (string.IsNullOrEmpty(cacheKey) == true)
             {
-                cacheKey = await this.cacheAttribute.GetCacheKeyAsync(this.context).ConfigureAwait(false);
+                cacheKey = await this.attribute.GetCacheKeyAsync(this.context).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(cacheKey) == true)
                 {
                     return;
@@ -98,7 +92,7 @@ namespace WebApiClient
 
             var httpResponse = this.context.ResponseMessage;
             var cacheEntry = await ResponseCacheEntry.FromResponseMessageAsync(httpResponse).ConfigureAwait(false);
-            await cacheProvider.SetAsync(cacheKey, cacheEntry, cacheAttribute.Expiration).ConfigureAwait(false);
+            await this.provider.SetAsync(cacheKey, cacheEntry, attribute.Expiration).ConfigureAwait(false);
         }
 
         /// <summary>

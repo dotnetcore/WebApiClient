@@ -8,19 +8,33 @@ namespace WebApiClient
     public interface IApiActionCachePolicyAttribute : IApiActionCacheAttribute
     {
         /// <summary>
-        /// 指示是否需要读取缓存
-        /// 返回false则直接进入接口请求
+        /// 返回读取缓存的策略       
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        bool NeedReadCache(ApiActionContext context);
+        CachePolicy GetReadPolicy(ApiActionContext context);
 
         /// <summary>
-        /// 指示是否需要写入缓存
-        /// 返回false则不会将请求的响应写入缓存中
+        /// 返回写入缓存的策略
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        bool NeedWriteCache(ApiActionContext context);
+        CachePolicy GetWritePolicy(ApiActionContext context);
+    }
+
+    /// <summary>
+    /// 缓存策略
+    /// </summary>
+    public enum CachePolicy
+    {
+        /// <summary>
+        /// 尝试使用缓存
+        /// </summary>
+        Include,
+
+        /// <summary>
+        /// 忽略并跳过缓存
+        /// </summary>
+        Ignore
     }
 }
