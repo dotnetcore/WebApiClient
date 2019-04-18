@@ -10,7 +10,7 @@ namespace WebApiClient.Attributes
     /// 缓存功能依赖于HttpApiConfig.ResponseCacheProvider
     /// </summary>
     [DebuggerDisplay("Expiration = {Expiration}")]
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public abstract class ApiActionCacheAttribute : Attribute, IApiActionCachePolicyAttribute
     {
         /// <summary>

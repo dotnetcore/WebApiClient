@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace WebApiClient.Attributes
     /// 使用请求Uri作请求结果的缓存键
     /// 缓存功能依赖于HttpApiConfig.ResponseCacheProvider
     /// </summary>
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class CacheAttribute : ApiActionCacheAttribute
     {
         /// <summary>
