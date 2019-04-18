@@ -16,6 +16,7 @@ namespace WebApiClient
 
         /// <summary>
         /// 返回请求对应的缓存的键
+        /// 该键用于读取或写入缓存到缓存提供者
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>

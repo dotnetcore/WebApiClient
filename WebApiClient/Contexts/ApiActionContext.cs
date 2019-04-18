@@ -155,32 +155,18 @@ namespace WebApiClient.Contexts
         /// <returns></returns>
         private async Task ExecRequestAsync()
         {
-            var cacheAttribute = this.ApiActionDescriptor.Cache;
-            var cacheProvider = this.HttpApiConfig.ResponseCacheProvider;
+            var apiCache = new ApiCache(this);
+            var cacheResult = await apiCache.GetAsync();
 
-            var cacheKey = default(string);
-            var cacheResult = ResponseCacheResult.NoValue;
-            var cacheEnable = cacheAttribute != null && cacheProvider != null;
-
-            if (cacheEnable == true)
+            if (cacheResult.ResponseMessage != null)
             {
-                cacheKey = await cacheAttribute.GetCacheKeyAsync(this).ConfigureAwait(false);
-                cacheResult = await cacheProvider.GetAsync(cacheKey).ConfigureAwait(false);
-            }
-
-            if (cacheResult.HasValue == true && cacheResult.Value != null)
-            {
-                this.ResponseMessage = cacheResult.Value.ToResponseMessage(this.RequestMessage, cacheProvider.Name);
+                this.ResponseMessage = cacheResult.ResponseMessage;
                 this.Result = await this.ApiActionDescriptor.Return.Attribute.GetTaskResult(this).ConfigureAwait(false);
             }
             else
             {
                 await this.ExecHttpRequestAsync().ConfigureAwait(false);
-                if (cacheEnable == true)
-                {
-                    var cacheEntry = await ResponseCacheEntry.FromResponseMessageAsync(this.ResponseMessage).ConfigureAwait(false);
-                    await cacheProvider.SetAsync(cacheKey, cacheEntry, cacheAttribute.Expiration).ConfigureAwait(false);
-                }
+                await apiCache.SetAsync(cacheResult.CacheKey);
             }
         }
 

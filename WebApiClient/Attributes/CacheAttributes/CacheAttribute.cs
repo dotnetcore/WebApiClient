@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,9 +11,7 @@ namespace WebApiClient.Attributes
     /// 使用请求Uri作请求结果的缓存键
     /// 缓存功能依赖于HttpApiConfig.ResponseCacheProvider
     /// </summary>
-    [DebuggerDisplay("Expiration = {Expiration}")]
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class CacheAttribute : Attribute, IApiActionCacheAttribute
+    public class CacheAttribute : ApiActionCacheAttribute
     {
         /// <summary>
         /// 缓存键的请求头名称
@@ -26,11 +22,6 @@ namespace WebApiClient.Attributes
         /// 获取缓存键的请求头名称
         /// </summary>
         protected string[] IncludeHeaderNames { get; private set; } = new string[0];
-
-        /// <summary>
-        /// 获取缓存的时间戳
-        /// </summary>
-        public TimeSpan Expiration { get; }
 
         /// <summary>
         /// 获取或设置连同作为缓存键的请求头名称
@@ -47,8 +38,8 @@ namespace WebApiClient.Attributes
         /// </summary>
         /// <param name="expiration">缓存毫秒数</param>
         public CacheAttribute(double expiration)
+            : base(expiration)
         {
-            this.Expiration = TimeSpan.FromMilliseconds(expiration);
         }
 
         /// <summary>
@@ -70,10 +61,11 @@ namespace WebApiClient.Attributes
 
         /// <summary>
         /// 返回缓存的键
+        /// 该键用于读取或写入缓存到缓存提供者
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public virtual Task<string> GetCacheKeyAsync(ApiActionContext context)
+        public override Task<string> GetCacheKeyAsync(ApiActionContext context)
         {
             var request = context.RequestMessage;
             var uri = request.RequestUri.ToString();
