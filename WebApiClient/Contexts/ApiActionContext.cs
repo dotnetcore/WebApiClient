@@ -38,14 +38,14 @@ namespace WebApiClient.Contexts
         /// 获取本次请求相关的自定义数据的存储和访问容器
         /// </summary>
         public Tags Tags { get; } = new Tags();
-        
+
         /// <summary>
         /// 获取请求取消令牌集合
         /// 这些令牌将被连接起来
         /// </summary>
         public IList<CancellationToken> CancellationTokens { get; } = new List<CancellationToken>();
 
-        
+
 
         /// <summary>
         /// 获取关联的HttpResponseMessage
@@ -98,12 +98,12 @@ namespace WebApiClient.Contexts
         /// <returns></returns>
         public virtual async Task<TResult> ExecuteActionAsync<TResult>()
         {
-            await this.PrepareRequestAsync().ConfigureAwait(false);
+            await this.ExecApiAttributesAsync().ConfigureAwait(false);
             await this.ExecFiltersAsync(filter => filter.OnBeginRequestAsync).ConfigureAwait(false);
 
             try
             {
-                this.Result = await this.ExecRequestAsync().ConfigureAwait(false);
+                await this.ExecRequestAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -119,10 +119,10 @@ namespace WebApiClient.Contexts
         }
 
         /// <summary>
-        /// 准备请求数据
+        /// 执行Api的所有特性的请求前行为
         /// </summary>
         /// <returns></returns>
-        private async Task PrepareRequestAsync()
+        private async Task ExecApiAttributesAsync()
         {
             var apiAction = this.ApiActionDescriptor;
             var validateProperty = this.HttpApiConfig.UseParameterPropertyValidate;
@@ -150,52 +150,58 @@ namespace WebApiClient.Contexts
 
         /// <summary>
         /// 执行请求
+        /// 使用或不使用缓存
         /// </summary>
         /// <returns></returns>
-        private async Task<object> ExecRequestAsync()
+        private async Task ExecRequestAsync()
+        {
+            var cacheAttribute = this.ApiActionDescriptor.Cache;
+            var cacheProvider = this.HttpApiConfig.ResponseCacheProvider;
+
+            var cacheKey = default(string);
+            var cacheResult = ResponseCacheResult.NoValue;
+            var cacheEnable = cacheAttribute != null && cacheProvider != null;
+
+            if (cacheEnable == true)
+            {
+                cacheKey = await cacheAttribute.GetCacheKeyAsync(this).ConfigureAwait(false);
+                cacheResult = await cacheProvider.GetAsync(cacheKey).ConfigureAwait(false);
+            }
+
+            if (cacheResult.HasValue == true)
+            {
+                this.ResponseMessage = cacheResult.Value.ToResponseMessage(this.RequestMessage, cacheProvider.Name);
+                this.Result = await this.ApiActionDescriptor.Return.Attribute.GetTaskResult(this).ConfigureAwait(false);
+            }
+            else
+            {
+                await this.ExecHttpRequestAsync().ConfigureAwait(false);
+                if (cacheEnable == true)
+                {
+                    var cacheEntry = await ResponseCacheEntry.FromResponseMessageAsync(this.ResponseMessage).ConfigureAwait(false);
+                    await cacheProvider.SetAsync(cacheKey, cacheEntry, cacheAttribute.Expiration).ConfigureAwait(false);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 执行http请求
+        /// </summary>
+        /// <returns></returns>
+        private async Task ExecHttpRequestAsync()
         {
             using (var cancellation = this.CreateLinkedTokenSource())
             {
-                var cacheAttribute = this.ApiActionDescriptor.Cache;
-                var cacheProvider = this.HttpApiConfig.ResponseCacheProvider;
+                var completionOption = this.ApiActionDescriptor.Return.DataType.IsHttpResponseWrapper ?
+                    HttpCompletionOption.ResponseHeadersRead :
+                    HttpCompletionOption.ResponseContentRead;
 
-                var cacheKey = default(string);
-                var cacheResult = ResponseCacheResult.NoValue;
-                var cacheEnable = cacheAttribute != null && cacheProvider != null;
-
-                if (cacheEnable == true)
-                {
-                    cacheKey = await cacheAttribute.GetCacheKeyAsync(this).ConfigureAwait(false);
-                    cacheResult = await cacheProvider.GetAsync(cacheKey).ConfigureAwait(false);
-                }
-
-                if (cacheResult.HasValue == true)
-                {
-                    this.ResponseMessage = cacheResult.Value.ToResponseMessage(this.RequestMessage, cacheProvider.Name);
-                }
-                else
-                {
-                    var completionOption = this.ApiActionDescriptor.Return.DataType.IsHttpResponseWrapper ?
-                        HttpCompletionOption.ResponseHeadersRead :
-                        HttpCompletionOption.ResponseContentRead;
-
-                    this.ResponseMessage = await this.HttpApiConfig.HttpClient
-                        .SendAsync(this.RequestMessage, completionOption, cancellation.Token)
-                        .ConfigureAwait(false);
-
-                    if (cacheEnable == true)
-                    {
-                        var cacheEntry = await ResponseCacheEntry.FromResponseMessageAsync(this.ResponseMessage).ConfigureAwait(false);
-                        await cacheProvider.SetAsync(cacheKey, cacheEntry, cacheAttribute.Expiration).ConfigureAwait(false);
-                    }
-                }
-
-                var result = await this.ApiActionDescriptor.Return.Attribute
-                    .GetTaskResult(this)
+                this.ResponseMessage = await this.HttpApiConfig.HttpClient
+                    .SendAsync(this.RequestMessage, completionOption, cancellation.Token)
                     .ConfigureAwait(false);
 
-                ApiValidator.ValidateReturnValue(result, this.HttpApiConfig.UseReturnValuePropertyValidate);
-                return result;
+                this.Result = await this.ApiActionDescriptor.Return.Attribute.GetTaskResult(this).ConfigureAwait(false);
+                ApiValidator.ValidateReturnValue(this.Result, this.HttpApiConfig.UseReturnValuePropertyValidate);
             }
         }
 
