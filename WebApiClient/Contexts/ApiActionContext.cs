@@ -168,7 +168,7 @@ namespace WebApiClient.Contexts
                 cacheResult = await cacheProvider.GetAsync(cacheKey).ConfigureAwait(false);
             }
 
-            if (cacheResult.HasValue == true)
+            if (cacheResult.HasValue == true && cacheResult.Value != null)
             {
                 this.ResponseMessage = cacheResult.Value.ToResponseMessage(this.RequestMessage, cacheProvider.Name);
                 this.Result = await this.ApiActionDescriptor.Return.Attribute.GetTaskResult(this).ConfigureAwait(false);
