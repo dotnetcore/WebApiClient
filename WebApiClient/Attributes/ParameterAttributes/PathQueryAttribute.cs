@@ -102,7 +102,7 @@ namespace WebApiClient.Attributes
         /// <param name="uri">url</param>
         /// <param name="keyValues">键值对</param>
         /// <returns></returns>
-        protected Uri UsePathQuery(Uri uri, IEnumerable<KeyValuePair<string, string>> keyValues)
+        protected virtual Uri UsePathQuery(Uri uri, IEnumerable<KeyValuePair<string, string>> keyValues)
         {
             var editor = new UriEditor(uri, this.encoding);
             foreach (var keyValue in keyValues)
