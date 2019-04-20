@@ -16,6 +16,11 @@ namespace WebApiClient.Analyzers
         private const string ihttpApiTypeName = "WebApiClient.IHttpApi";
 
         /// <summary>
+        /// UriAttribue的类型名称
+        /// </summary>
+        private const string uriAttributeTypeName = "WebApiClient.Attributes.UriAttribute";
+
+        /// <summary>
         /// AttributeCtorUsageAttribute的类型名称
         /// </summary>
         private const string attributeCtorUsageTypName = "WebApiClient.Attributes.AttributeCtorUsageAttribute";
@@ -43,6 +48,11 @@ namespace WebApiClient.Analyzers
         public INamedTypeSymbol IHttpApiType { get; }
 
         /// <summary>
+        /// 获取UriAttribute的类型
+        /// </summary>
+        public INamedTypeSymbol UriAttributeType { get; }
+
+        /// <summary>
         /// 获取AttributeCtorUsageAttribute的类型
         /// </summary>
         public INamedTypeSymbol AttributeCtorUsageAttributeType { get; }
@@ -58,6 +68,7 @@ namespace WebApiClient.Analyzers
             this.HttpApiSyntax = syntaxNodeContext.Node as InterfaceDeclarationSyntax;
 
             this.IHttpApiType = syntaxNodeContext.Compilation.GetTypeByMetadataName(ihttpApiTypeName);
+            this.UriAttributeType = syntaxNodeContext.Compilation.GetTypeByMetadataName(uriAttributeTypeName);
             this.AttributeCtorUsageAttributeType = syntaxNodeContext.Compilation.GetTypeByMetadataName(attributeCtorUsageTypName);
 
             this.IsHtttApi = this.IsHttpApiInterface();

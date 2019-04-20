@@ -38,6 +38,13 @@ namespace WebApiClient.Analyzers
             = Create("WA1005", "不支持的泛型方法", "不支持声明泛型方法");
 
         /// <summary>
+        /// UriAttribute诊断描述器
+        /// </summary>
+        public static DiagnosticDescriptor UriAttributeDescriptor { get; }
+            = Create("WA1006", "不支持的修饰的参数索引", "UriAttribute只能修饰于第一个参数");
+
+
+        /// <summary>
         /// HttpApi.Create Api诊断描述器
         /// </summary>
         public static DiagnosticDescriptor HttpApiCreateDescriptor { get; }
