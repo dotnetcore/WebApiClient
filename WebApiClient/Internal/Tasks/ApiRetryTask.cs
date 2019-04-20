@@ -17,7 +17,7 @@ namespace WebApiClient
         /// <summary>
         /// 获取最大重试次数
         /// </summary>
-        private readonly int retryMaxCount;
+        private readonly int maxRetryCount;
 
         /// <summary>
         /// 获取各次重试的延时时间
@@ -28,17 +28,17 @@ namespace WebApiClient
         /// 支持重试的Api请求任务
         /// </summary>
         /// <param name="invoker">请求任务创建的委托</param>
-        /// <param name="retryMaxCount">最大尝试次数</param>
+        /// <param name="maxRetryCount">最大尝试次数</param>
         /// <param name="retryDelay">各次重试的延时时间</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public ApiRetryTask(Func<Task<TResult>> invoker, int retryMaxCount, Func<int, TimeSpan> retryDelay)
+        public ApiRetryTask(Func<Task<TResult>> invoker, int maxRetryCount, Func<int, TimeSpan> retryDelay)
         {
-            if (retryMaxCount < 1)
+            if (maxRetryCount < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(retryMaxCount));
+                throw new ArgumentOutOfRangeException(nameof(maxRetryCount));
             }
             this.invoker = invoker;
-            this.retryMaxCount = retryMaxCount;
+            this.maxRetryCount = maxRetryCount;
             this.retryDelay = retryDelay;
         }
 
@@ -49,7 +49,7 @@ namespace WebApiClient
         public override async Task<TResult> InvokeAsync()
         {
             var inner = default(Exception);
-            for (var i = 0; i <= this.retryMaxCount; i++)
+            for (var i = 0; i <= this.maxRetryCount; i++)
             {
                 try
                 {
@@ -61,9 +61,8 @@ namespace WebApiClient
                     inner = ex.InnerException;
                 }
             }
-
-            var message = $"已经重试了{this.retryMaxCount}次，但结果仍未正确";
-            throw new RetryException(message, inner);
+             
+            throw new RetryException(this.maxRetryCount,  inner);
         }
 
         /// <summary>
@@ -168,7 +167,7 @@ namespace WebApiClient
                     throw ex;
                 }
             }
-            return new ApiRetryTask<TResult>(newInvoker, this.retryMaxCount, this.retryDelay);
+            return new ApiRetryTask<TResult>(newInvoker, this.maxRetryCount, this.retryDelay);
         }
 
         /// <summary>
@@ -213,7 +212,7 @@ namespace WebApiClient
                 return result;
             }
 
-            return new ApiRetryTask<TResult>(newInvoker, this.retryMaxCount, this.retryDelay);
+            return new ApiRetryTask<TResult>(newInvoker, this.maxRetryCount, this.retryDelay);
         }
 
         /// <summary>

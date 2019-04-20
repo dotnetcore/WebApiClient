@@ -9,7 +9,7 @@ namespace WebApiClient
     /// <summary>
     /// 表示Http失败状态码异常
     /// </summary>
-    public class HttpStatusFailureException : HttpRequestException
+    public class HttpStatusFailureException : HttpApiException
     {
         /// <summary>
         /// 获取Http接口的配置项

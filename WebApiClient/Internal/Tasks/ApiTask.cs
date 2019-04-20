@@ -89,7 +89,20 @@ namespace WebApiClient
         {
             using (var context = this.ContextFactory.Invoke())
             {
-                return await context.ExecuteActionAsync<TResult>().ConfigureAwait(false);
+                try
+                {
+                    return await context.ExecuteActionAsync<TResult>().ConfigureAwait(false);
+                }
+                catch (HttpApiException ex)
+                {
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    var api = context.ApiActionDescriptor.Name;
+                    var message = $"执行{api}出现{ex.GetType().Name}异常";
+                    throw new HttpApiException(message, ex);
+                }
             }
         }
     }

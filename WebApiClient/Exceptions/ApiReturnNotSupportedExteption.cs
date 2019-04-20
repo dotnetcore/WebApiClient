@@ -9,7 +9,7 @@ namespace WebApiClient
     /// <summary>
     /// 表示不支持处理的响应消息异常
     /// </summary>
-    public class ApiReturnNotSupportedExteption : HttpRequestException
+    public class ApiReturnNotSupportedExteption : HttpApiException
     {
         /// <summary>
         /// 获取响应消息

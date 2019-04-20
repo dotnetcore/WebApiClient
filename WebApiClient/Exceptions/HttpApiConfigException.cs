@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace WebApiClient
+﻿namespace WebApiClient
 {
     /// <summary>
     /// 表示Http接口的特性配置异常
     /// </summary>
-    public class HttpApiConfigException : Exception
+    public class HttpApiConfigException : HttpApiException
     {
         /// <summary>
         /// Http接口特性配置异常
