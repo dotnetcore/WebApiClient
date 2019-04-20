@@ -30,7 +30,7 @@ namespace WebApiClient.Test.Internal.Tasks
         public async Task WhenCatchTest()
         {
             var apiTask = new NotImplementedApiTask<string>();
-            await Assert.ThrowsAsync<RetryException>(async () =>
+            await Assert.ThrowsAsync<ApiRetryException>(async () =>
                 await apiTask.Retry(3).WhenCatch<NotImplementedException>());
         }
 
@@ -38,7 +38,7 @@ namespace WebApiClient.Test.Internal.Tasks
         public async Task WhenCatchAsyncTest()
         {
             var apiTask = new NotImplementedApiTask<string>();
-            await Assert.ThrowsAsync<RetryException>(async () =>
+            await Assert.ThrowsAsync<ApiRetryException>(async () =>
                 await apiTask.Retry(3).WhenCatchAsync<NotImplementedException>(async ex => await Task.CompletedTask));
         }
 
@@ -49,7 +49,7 @@ namespace WebApiClient.Test.Internal.Tasks
             var apiTask = new ResultApiTask<string> { Result = "abc" };
             await apiTask.Retry(3).WhenResult(r => r == null);
 
-            await Assert.ThrowsAsync<RetryException>(async () =>
+            await Assert.ThrowsAsync<ApiRetryException>(async () =>
                 await apiTask.Retry(3).WhenResult(r => r == apiTask.Result));
         }
 
@@ -57,7 +57,7 @@ namespace WebApiClient.Test.Internal.Tasks
         public async Task WhenResultAsyncTest()
         {
             var apiTask = new ResultApiTask<string> { Result = "abc" };
-            await Assert.ThrowsAsync<RetryException>(async () =>
+            await Assert.ThrowsAsync<ApiRetryException>(async () =>
                 await apiTask.Retry(3).WhenResultAsync(r => Task.FromResult(r == apiTask.Result)));
         }
     }
