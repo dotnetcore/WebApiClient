@@ -55,7 +55,7 @@ namespace WebApiClient
         /// <returns></returns>
         public Task SetAsync(string key, ResponseCacheEntry entry, TimeSpan expiration)
         {
-            this.cache.Set(key, entry, new DateTimeOffset(DateTime.Now.Add(expiration)));
+            this.cache.Set(key, entry, DateTimeOffset.Now.Add(expiration));
             return ApiTask.CompletedTask;
         }
     }
