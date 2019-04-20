@@ -93,9 +93,9 @@ namespace WebApiClient
                 {
                     return await context.ExecuteActionAsync<TResult>().ConfigureAwait(false);
                 }
-                catch (HttpApiException ex)
+                catch (HttpApiException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {

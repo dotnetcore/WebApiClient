@@ -61,8 +61,8 @@ namespace WebApiClient
                     inner = ex.InnerException;
                 }
             }
-             
-            throw new RetryException(this.maxRetryCount,  inner);
+
+            throw new RetryException(this.maxRetryCount, inner);
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace WebApiClient
                     {
                         throw new RetryMarkException(ex);
                     }
-                    throw ex;
+                    throw;
                 }
             }
             return new ApiRetryTask<TResult>(newInvoker, this.maxRetryCount, this.retryDelay);

@@ -108,7 +108,7 @@ namespace WebApiClient.Contexts
             catch (Exception ex)
             {
                 this.Exception = ex;
-                throw this.Exception;
+                throw;
             }
             finally
             {
