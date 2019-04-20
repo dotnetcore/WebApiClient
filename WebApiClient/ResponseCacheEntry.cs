@@ -60,13 +60,19 @@ namespace WebApiClient
                 Version = System.Version.Parse(this.Version)
             };
 
-            foreach (var item in this.Headers)
+            if (this.Headers != null)
             {
-                response.Headers.TryAddWithoutValidation(item.Key, item.Value);
+                foreach (var item in this.Headers)
+                {
+                    response.Headers.TryAddWithoutValidation(item.Key, item.Value);
+                }
             }
-            foreach (var item in this.ContentHeaders)
+            if (this.ContentHeaders != null)
             {
-                response.Content.Headers.TryAddWithoutValidation(item.Key, item.Value);
+                foreach (var item in this.ContentHeaders)
+                {
+                    response.Content.Headers.TryAddWithoutValidation(item.Key, item.Value);
+                }
             }
             if (string.IsNullOrEmpty(cacheProviderName) == false)
             {
