@@ -62,7 +62,7 @@ namespace WebApiClient
                 }
             }
 
-            throw new RetryException(this.maxRetryCount, inner);
+            throw new ApiRetryException(this.maxRetryCount, inner);
         }
 
         /// <summary>
