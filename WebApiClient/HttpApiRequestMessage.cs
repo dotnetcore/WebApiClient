@@ -140,13 +140,7 @@ namespace WebApiClient
                 return;
             }
 
-            var formContent = this.Content as UrlEncodedContent;
-            if (formContent == null)
-            {
-                formContent = new UrlEncodedContent();
-                await formContent.AddHttpContentAsync(this.Content).ConfigureAwait(false);
-            }
-
+            var formContent = await UrlEncodedContent.FromHttpContentAsync(this.Content).ConfigureAwait(false);
             await formContent.AddFormFieldAsync(keyValues).ConfigureAwait(false);
             this.Content = formContent;
         }
@@ -326,6 +320,6 @@ namespace WebApiClient
         public override string ToString()
         {
             return this.GetHeadersString();
-        } 
+        }
     }
 }

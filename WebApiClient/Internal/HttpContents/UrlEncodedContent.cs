@@ -39,27 +39,33 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 添加http内容
+        /// 从HttpContent转换得到
         /// </summary>
-        /// <param name="content">http内容</param>
-        /// <param name="disposeContent">是否要释放原始内容</param>
+        /// <param name="httpContent">httpContent实例</param>
+        /// <param name="disposeHttpContent">是否释放httpContent</param>
         /// <returns></returns>
-        public async Task AddHttpContentAsync(HttpContent content, bool disposeContent = true)
+        public static async Task<UrlEncodedContent> FromHttpContentAsync(HttpContent httpContent, bool disposeHttpContent = true)
         {
-            if (content == null)
+            if (httpContent == null)
             {
-                return;
+                return new UrlEncodedContent();
             }
 
-            var buffer = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
-            await this.AddByteArrayAsync(buffer).ConfigureAwait(false);
-
-            if (disposeContent == true)
+            if (httpContent is UrlEncodedContent urlEncodedContent)
             {
-                content.Dispose();
+                return urlEncodedContent;
             }
+
+            urlEncodedContent = new UrlEncodedContent();
+            var byteArray = await httpContent.ReadAsByteArrayAsync().ConfigureAwait(false);
+            await urlEncodedContent.AddByteArrayAsync(byteArray).ConfigureAwait(false);
+
+            if (disposeHttpContent == true)
+            {
+                httpContent.Dispose();
+            }
+            return urlEncodedContent;
         }
-
 
         /// <summary>
         /// 添加键值对

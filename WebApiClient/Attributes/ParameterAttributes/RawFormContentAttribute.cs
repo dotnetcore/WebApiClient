@@ -17,14 +17,8 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         protected override async Task SetHttpContentAsync(ApiActionContext context, ApiParameterDescriptor parameter)
         {
-            var httpContent = context.RequestMessage.Content as UrlEncodedContent;
-            if (httpContent == null)
-            {
-                httpContent = new UrlEncodedContent();
-                await httpContent.AddHttpContentAsync(context.RequestMessage.Content).ConfigureAwait(false);
-            }
-
             var form = parameter.ToString();
+            var httpContent = await UrlEncodedContent.FromHttpContentAsync(context.RequestMessage.Content).ConfigureAwait(false);
             await httpContent.AddRawFormAsync(form).ConfigureAwait(false);
             context.RequestMessage.Content = httpContent;
         }
