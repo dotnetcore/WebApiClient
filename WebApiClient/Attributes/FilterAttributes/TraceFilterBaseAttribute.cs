@@ -51,7 +51,12 @@ namespace WebApiClient.Attributes
             {
                 var request = context.RequestMessage;
                 message.RequestHeaders = request.GetHeadersString();
-                if (request.Content != null)
+
+                if (request.Content is IReadAsStringAsyncable httpContent)
+                {
+                    message.RequestContent = await httpContent.ReadAsStringAsync().ConfigureAwait(false);
+                }
+                else if (request.Content != null)
                 {
                     message.RequestContent = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }

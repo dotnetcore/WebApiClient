@@ -35,5 +35,36 @@ namespace WebApiClient
             }
             this.Headers.ContentType = new MediaTypeHeaderValue(contentType);
         }
+
+        /// <summary>
+        /// 转换为省略内容的HttpContent
+        /// </summary>
+        /// <returns></returns>
+        public HttpContent ToEllipsisFileContent()
+        {
+            return new EllipsisFileContent(this);
+        }
+
+        /// <summary>
+        /// 表示省略内容的文件请求内容
+        /// </summary>
+        private class EllipsisFileContent : ByteArrayContent
+        {
+            /// <summary>
+            /// 省略号内容
+            /// </summary>
+            private static readonly byte[] ellipsisContent = new[] { (byte)'.', (byte)'.', (byte)'.' };
+
+            /// <summary>
+            /// 省略内容的文件请求内容
+            /// </summary>
+            /// <param name="fileContent">文件内容</param>
+            public EllipsisFileContent(MulitpartFileContent fileContent)
+                : base(ellipsisContent)
+            {
+                this.Headers.ContentDisposition = fileContent.Headers.ContentDisposition;
+                this.Headers.ContentType = fileContent.Headers.ContentType;
+            }
+        }
     }
 }
