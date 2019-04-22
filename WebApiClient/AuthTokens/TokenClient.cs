@@ -180,7 +180,7 @@ namespace WebApiClient.AuthTokens
         private async Task<TokenResult> RequestTokenResultAsync(Credentials credentials)
         {
             var httpContent = new UrlEncodedContent();
-            var keyValues = keyValueFormatter.Serialize(null, credentials, this.FormatOptions);
+            var keyValues = keyValueFormatter.Serialize(nameof(credentials), credentials, this.FormatOptions);
             await httpContent.AddFormFieldAsync(keyValues).ConfigureAwait(false);
 
             using (var httpClient = new HttpClient { Timeout = this.timeout })
