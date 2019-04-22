@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
@@ -130,99 +129,37 @@ namespace WebApiClient.Contexts
         /// <returns></returns>
         protected virtual IEnumerable<IApiParameterAttribute> GetAttributes(Type parameterType, IEnumerable<IApiParameterAttribute> defined)
         {
-            var attributes = new ParameterAttributeCollection(defined);
-            var isHttpContent = parameterType.IsInheritFrom<HttpContent>();
-            var isApiParameterable = parameterType.IsInheritFrom<IApiParameterable>() || parameterType.IsInheritFrom<IEnumerable<IApiParameterable>>();
+            if (parameterType.IsInheritFrom<HttpContent>() == true)
+            {
+                return RepeatOne<HttpContentAttribute>();
+            }
 
-            if (isApiParameterable == true)
+            if (parameterType.IsInheritFrom<IApiParameterable>() || parameterType.IsInheritFrom<IEnumerable<IApiParameterable>>())
             {
-                attributes.Add(new ParameterableAttribute());
+                return RepeatOne<ParameterableAttribute>();
             }
-            else if (isHttpContent == true)
+
+            if (parameterType == typeof(CancellationToken))
             {
-                attributes.AddIfNotExists(new HttpContentAttribute());
+                return RepeatOne<CancellationTokenAttribute>();
             }
-            else if (parameterType == typeof(CancellationToken))
+
+            if (defined.Any() == false)
             {
-                attributes.Add(new CancellationTokenAttribute());
+                return RepeatOne<PathQueryAttribute>();
             }
-            else if (attributes.Count == 0)
-            {
-                attributes.Add(new PathQueryAttribute());
-            }
-            return attributes;
+
+            return defined;
         }
 
         /// <summary>
-        /// 表示参数特性集合
+        /// 返回单次的迭代器
         /// </summary>
-        private class ParameterAttributeCollection : IEnumerable<IApiParameterAttribute>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        private static IEnumerable<T> RepeatOne<T>() where T : new()
         {
-            /// <summary>
-            /// 特性列表
-            /// </summary>
-            private readonly List<IApiParameterAttribute> attributeList = new List<IApiParameterAttribute>();
-
-            /// <summary>
-            /// 获取元素数量
-            /// </summary>
-            public int Count
-            {
-                get => this.attributeList.Count;
-            }
-
-            /// <summary>
-            /// 参数特性集合
-            /// </summary>
-            /// <param name="defined">声明的特性</param>
-            public ParameterAttributeCollection(IEnumerable<IApiParameterAttribute> defined)
-            {
-                this.attributeList.AddRange(defined);
-            }
-
-            /// <summary>
-            /// 添加新特性
-            /// </summary>
-            /// <param name="attribute">新特性</param>
-            public void Add(IApiParameterAttribute attribute)
-            {
-                this.attributeList.Add(attribute);
-            }
-
-            /// <summary>
-            /// 添加新特性
-            /// </summary>
-            /// <param name="attribute">新特性</param>
-            /// <returns></returns>
-            public bool AddIfNotExists(IApiParameterAttribute attribute)
-            {
-                var type = attribute.GetType();
-                if (this.attributeList.Any(item => item.GetType() == type) == true)
-                {
-                    return false;
-                }
-
-                this.attributeList.Add(attribute);
-                return true;
-            }
-
-            /// <summary>
-            /// 返回迭代器
-            /// </summary>
-            /// <returns></returns>
-            public IEnumerator<IApiParameterAttribute> GetEnumerator()
-            {
-                return this.attributeList.GetEnumerator();
-            }
-
-            /// <summary>
-            /// 返回迭代器
-            /// </summary>
-            /// <returns></returns>
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return this.GetEnumerator();
-            }
+            return Enumerable.Repeat(new T(), 1);
         }
     }
 }
