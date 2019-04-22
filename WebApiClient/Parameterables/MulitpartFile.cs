@@ -16,11 +16,6 @@ namespace WebApiClient.Parameterables
     public class MulitpartFile : Stream, IApiParameterable
     {
         /// <summary>
-        /// 数据流
-        /// </summary>
-        private readonly Stream innerStream;
-
-        /// <summary>
         /// 指示是否可以dispose传入的stream
         /// </summary>
         private readonly bool disposeInnerStream;
@@ -35,6 +30,10 @@ namespace WebApiClient.Parameterables
         /// </summary>
         private long currentBytes = 0L;
 
+        /// <summary>
+        /// 获取或设置包装的内部数据流
+        /// </summary>
+        protected Stream InnerStream { get; }
 
         /// <summary>
         /// 上传进度变化事件
@@ -64,7 +63,7 @@ namespace WebApiClient.Parameterables
         /// </summary>
         public override bool CanRead
         {
-            get => this.innerStream.CanRead;
+            get => this.InnerStream.CanRead;
         }
 
         /// <summary>
@@ -72,7 +71,7 @@ namespace WebApiClient.Parameterables
         /// </summary>
         public override bool CanSeek
         {
-            get => this.innerStream.CanSeek;
+            get => this.InnerStream.CanSeek;
         }
 
         /// <summary>
@@ -80,7 +79,7 @@ namespace WebApiClient.Parameterables
         /// </summary>
         public override bool CanWrite
         {
-            get => this.innerStream.CanWrite;
+            get => this.InnerStream.CanWrite;
         }
 
         /// <summary>
@@ -88,16 +87,42 @@ namespace WebApiClient.Parameterables
         /// </summary>
         public override long Length
         {
-            get => this.innerStream.Length;
+            get => this.InnerStream.Length;
         }
 
         /// <summary>
-        /// 返回数据流当前的指针位置
+        /// 获取或设置数据流当前的指针位置
         /// </summary>
         public override long Position
         {
-            get => this.innerStream.Position;
-            set => this.innerStream.Position = value;
+            get => this.InnerStream.Position;
+            set => this.InnerStream.Position = value;
+        }
+
+        /// <summary>
+        /// 获取或设置读取的超时时间
+        /// </summary>
+        public override int ReadTimeout
+        {
+            get => this.InnerStream.ReadTimeout;
+            set => this.InnerStream.ReadTimeout = value;
+        }
+
+        /// <summary>
+        /// 获取或设置写入的超时时间
+        /// </summary>
+        public override int WriteTimeout
+        {
+            get => this.InnerStream.WriteTimeout;
+            set => this.InnerStream.WriteTimeout = value;
+        }
+
+        /// <summary>
+        /// 获取一个值，该值确定当前流是否可以超时
+        /// </summary>
+        public override bool CanTimeout
+        {
+            get => this.InnerStream.CanTimeout;
         }
 
         /// <summary>
@@ -143,7 +168,7 @@ namespace WebApiClient.Parameterables
         /// <exception cref="ArgumentNullException"></exception>
         public MulitpartFile(Stream stream, string fileName, bool disposeStream)
         {
-            this.innerStream = stream ?? throw new ArgumentNullException(nameof(stream));
+            this.InnerStream = stream ?? throw new ArgumentNullException(nameof(stream));
             this.disposeInnerStream = disposeStream;
             this.FileName = fileName;
 
@@ -181,7 +206,7 @@ namespace WebApiClient.Parameterables
         /// </summary>
         public sealed override void Flush()
         {
-            this.innerStream.Flush();
+            this.InnerStream.Flush();
         }
 
         /// <summary>
@@ -191,7 +216,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         public sealed override Task FlushAsync(CancellationToken cancellationToken)
         {
-            return this.innerStream.FlushAsync(cancellationToken);
+            return this.InnerStream.FlushAsync(cancellationToken);
         }
 
         /// <summary>
@@ -202,7 +227,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         public sealed override long Seek(long offset, SeekOrigin origin)
         {
-            return this.innerStream.Seek(offset, origin);
+            return this.InnerStream.Seek(offset, origin);
         }
 
         /// <summary>
@@ -211,7 +236,7 @@ namespace WebApiClient.Parameterables
         /// <param name="value">长度值</param>
         public sealed override void SetLength(long value)
         {
-            this.innerStream.SetLength(value);
+            this.InnerStream.SetLength(value);
         }
 
 #if !NETSTANDARD1_3
@@ -226,7 +251,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         public sealed override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
         {
-            return this.innerStream.BeginRead(buffer, offset, count, callback, state);
+            return this.InnerStream.BeginRead(buffer, offset, count, callback, state);
         }
 
         /// <summary>
@@ -236,7 +261,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         public sealed override int EndRead(IAsyncResult asyncResult)
         {
-            var length = this.innerStream.EndRead(asyncResult);
+            var length = this.InnerStream.EndRead(asyncResult);
             this.OnRead(length);
             return length;
         }
@@ -246,7 +271,7 @@ namespace WebApiClient.Parameterables
         /// </summary>
         public sealed override void Close()
         {
-            this.innerStream.Close();
+            this.InnerStream.Close();
         }
 #endif
 
@@ -259,7 +284,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         public sealed override int Read(byte[] buffer, int offset, int count)
         {
-            var length = this.innerStream.Read(buffer, offset, count);
+            var length = this.InnerStream.Read(buffer, offset, count);
             this.OnRead(length);
             return length;
         }
@@ -274,7 +299,7 @@ namespace WebApiClient.Parameterables
         /// <returns></returns>
         public sealed override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-            var length = await this.innerStream.ReadAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
+            var length = await this.InnerStream.ReadAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
             this.OnRead(length);
             return length;
         }
@@ -309,7 +334,7 @@ namespace WebApiClient.Parameterables
         /// <param name="count">写入的长度</param>
         public override void Write(byte[] buffer, int offset, int count)
         {
-            this.innerStream.Write(buffer, offset, count);
+            this.InnerStream.Write(buffer, offset, count);
         }
 
         /// <summary>
@@ -320,7 +345,7 @@ namespace WebApiClient.Parameterables
         {
             if (disposing && this.disposeInnerStream)
             {
-                this.innerStream.Dispose();
+                this.InnerStream.Dispose();
             }
             base.Dispose(disposing);
         }
