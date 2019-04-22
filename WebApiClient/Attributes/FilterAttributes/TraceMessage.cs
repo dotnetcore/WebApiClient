@@ -61,6 +61,25 @@ namespace WebApiClient.Attributes
 
 
         /// <summary>
+        /// 返回不包含异常的调试消息
+        /// </summary>
+        /// <returns></returns>
+        public TraceMessage ToExcludeException()
+        {
+            return new TraceMessage
+            {
+                HasRequest = this.HasRequest,
+                HasResponse = this.HasResponse,
+                RequestContent = this.RequestContent,
+                RequestHeaders = this.RequestHeaders,
+                RequestTime = this.RequestTime,
+                ResponseContent = this.ResponseContent,
+                ResponseHeaders = this.ResponseHeaders,
+                ResponseTime = this.ResponseTime
+            };
+        }
+
+        /// <summary>
         /// 转换为每行缩进的字符串
         /// </summary>
         /// <param name="spaceCount">缩进的空格数</param>

@@ -148,7 +148,7 @@ namespace WebApiClient.Attributes
         {
             if (outputTarget == OutputTarget.LoggerFactory)
             {
-                return traceMessage.ToString();
+                return traceMessage.ToExcludeException().ToString();
             }
             else
             {
