@@ -144,12 +144,12 @@ namespace WebApiClient.Contexts
                 return RepeatOne<CancellationTokenAttribute>();
             }
 
-            if (defined.Any() == false)
+            if (defined.Any() == true)
             {
-                return RepeatOne<PathQueryAttribute>();
+                return defined;
             }
 
-            return defined;
+            return RepeatOne<PathQueryAttribute>();
         }
 
         /// <summary>
