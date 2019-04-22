@@ -40,15 +40,15 @@ namespace WebApiClient
         /// 转换为省略内容的HttpContent
         /// </summary>
         /// <returns></returns>
-        public HttpContent ToEllipsisFileContent()
+        public HttpContent ToEllipsisContent()
         {
-            return new EllipsisFileContent(this);
+            return new EllipsisContent(this);
         }
 
         /// <summary>
         /// 表示省略内容的文件请求内容
         /// </summary>
-        private class EllipsisFileContent : ByteArrayContent
+        private class EllipsisContent : ByteArrayContent
         {
             /// <summary>
             /// 省略号内容
@@ -59,7 +59,7 @@ namespace WebApiClient
             /// 省略内容的文件请求内容
             /// </summary>
             /// <param name="fileContent">文件内容</param>
-            public EllipsisFileContent(MulitpartFileContent fileContent)
+            public EllipsisContent(MulitpartFileContent fileContent)
                 : base(ellipsisContent)
             {
                 this.Headers.ContentDisposition = fileContent.Headers.ContentDisposition;

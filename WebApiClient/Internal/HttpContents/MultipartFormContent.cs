@@ -8,7 +8,7 @@ namespace WebApiClient
     /// <summary>
     /// 表示form-data表单
     /// </summary>
-    class MultipartFormContent : MultipartContent, IReadAsStringAsyncable
+    class MultipartFormContent : MultipartContent, ICustomTracable
     {
         /// <summary>
         /// 分隔符
@@ -16,11 +16,9 @@ namespace WebApiClient
         private readonly string boundary;
 
         /// <summary>
-        /// 省略文件内容的MultipartContent
-        /// 此对象为MultipartFormContent子项的包装
-        /// 需要缓存起来避免请求中GC将其回收影响到子项
+        /// 省略文件内容的MultipartContent    
         /// </summary>
-        private Lazy<MultipartContent> ellipsisFileMultipartContent;
+        private readonly Lazy<MultipartContent> ellipsisFileMultipartContent;
 
         /// <summary>
         /// 获取对应的ContentType
@@ -54,7 +52,7 @@ namespace WebApiClient
         /// 读取为文本信息
         /// </summary>
         /// <returns></returns>
-        Task<string> IReadAsStringAsyncable.ReadAsStringAsync()
+        Task<string> ICustomTracable.ReadAsStringAsync()
         {
             return this.ellipsisFileMultipartContent.Value.ReadAsStringAsync();
         }
@@ -70,7 +68,7 @@ namespace WebApiClient
             {
                 if (httpContent is MulitpartFileContent fileContent)
                 {
-                    multipartContent.Add(fileContent.ToEllipsisFileContent());
+                    multipartContent.Add(fileContent.ToEllipsisContent());
                 }
                 else
                 {

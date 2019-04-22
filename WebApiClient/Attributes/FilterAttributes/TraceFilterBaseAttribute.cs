@@ -52,7 +52,7 @@ namespace WebApiClient.Attributes
                 var request = context.RequestMessage;
                 message.RequestHeaders = request.GetHeadersString();
 
-                if (request.Content is IReadAsStringAsyncable httpContent)
+                if (request.Content is ICustomTracable httpContent)
                 {
                     message.RequestContent = await httpContent.ReadAsStringAsync().ConfigureAwait(false);
                 }

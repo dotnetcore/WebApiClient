@@ -3,9 +3,9 @@
 namespace WebApiClient
 {
     /// <summary>
-    /// 定义可读取为文本的接口
+    /// 定义自定义输出内容的接口
     /// </summary>
-    interface IReadAsStringAsyncable
+    interface ICustomTracable
     {
         /// <summary>
         /// 读取为文本信息
