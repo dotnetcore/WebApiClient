@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Net;
 using WebApiClient.Defaults;
 
 namespace WebApiClient
@@ -34,6 +36,29 @@ namespace WebApiClient
                 maxConnections = value;
             }
         }
+
+#if NET45
+        /// <summary>
+        /// 获取或设置安全协议版本
+        /// </summary>
+        public static SecurityProtocolType SecurityProtocol
+        {
+            get => ServicePointManager.SecurityProtocol;
+            set => ServicePointManager.SecurityProtocol = value;
+        }
+
+        /// <summary>
+        /// 静态构造函数
+        /// </summary>
+        static HttpApi()
+        {
+            ServicePointManager.SecurityProtocol = Enum
+                .GetValues(typeof(SecurityProtocolType))
+                .Cast<SecurityProtocolType>()
+                .Aggregate((cur, next) => cur | next);
+        }
+#endif
+
 
         /// <summary>
         /// 创建指定接口的代理实例
