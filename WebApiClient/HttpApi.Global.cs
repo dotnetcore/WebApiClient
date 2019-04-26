@@ -36,7 +36,7 @@ namespace WebApiClient
             }
         }
 
-#if NET45 || NET461
+#if NET45 || NET46
         /// <summary>
         /// 获取或设置安全协议版本
         /// </summary>
