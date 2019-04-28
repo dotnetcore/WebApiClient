@@ -19,6 +19,14 @@ namespace WebApiClient
         }
 
         /// <summary>
+        /// 在垃圾回收时释放HttpClient
+        /// </summary>
+        ~LifetimeHttpApiConfig()
+        {
+            base.Dispose(false);
+        }
+
+        /// <summary>
         /// 这里不释放资源
         /// </summary>
         /// <param name="disposing"></param>
