@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
 
@@ -13,16 +12,6 @@ namespace WebApiClient.Attributes
     /// </summary> 
     public class AutoReturnAttribute : ApiReturnAttribute
     {
-        /// <summary>
-        /// xml解析
-        /// </summary>
-        private static readonly IApiReturnAttribute xmlReturn = new XmlReturnAttribute();
-
-        /// <summary>
-        /// json解析
-        /// </summary>
-        private static readonly IApiReturnAttribute jsonReturn = new JsonReturnAttribute();
-
         /// <summary>
         /// 配置请求头的accept
         /// </summary>
@@ -73,11 +62,14 @@ namespace WebApiClient.Attributes
             var contentType = new ContentType(response.Content.Headers.ContentType);
             if (contentType.IsApplicationJson() == true)
             {
-                return await jsonReturn.GetTaskResult(context).ConfigureAwait(false);
+                var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return context.HttpApiConfig.JsonFormatter.Deserialize(json, dataType.Type);
             }
-            else if (contentType.IsApplicationXml() == true)
+
+            if (contentType.IsApplicationXml() == true)
             {
-                return await xmlReturn.GetTaskResult(context).ConfigureAwait(false);
+                var xml = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return context.HttpApiConfig.XmlFormatter.Deserialize(xml, dataType.Type);
             }
 
             throw new ApiReturnNotSupportedExteption(response, dataType.Type);
