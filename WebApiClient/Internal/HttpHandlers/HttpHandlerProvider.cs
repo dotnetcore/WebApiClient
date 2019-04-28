@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Reflection;
 
 namespace WebApiClient
@@ -17,19 +16,10 @@ namespace WebApiClient
         private static readonly Func<HttpMessageInvoker, HttpMessageHandler> handlerGetFunc;
 
         /// <summary>
-        /// 程序集版本信息
-        /// </summary>
-        private static readonly AssemblyName assemblyName = typeof(HttpHandlerProvider).GetTypeInfo().Assembly.GetName();
-
-        /// <summary>
         /// 获取是否支持
         /// </summary>
         public static bool IsSupported => handlerGetFunc != null;
 
-        /// <summary>
-        /// 获取默认的UserAgent
-        /// </summary>
-        public static readonly ProductInfoHeaderValue DefaultUserAgent = new ProductInfoHeaderValue(assemblyName.Name, assemblyName.Version.ToString());
 
         /// <summary>
         /// HttpHandler提供者
@@ -58,7 +48,7 @@ namespace WebApiClient
         {
             if (handlerGetFunc == null)
             {
-                throw new PlatformNotSupportedException("无法从HttpClient反射出必须的HttpMessageHandler字段");
+                throw new PlatformNotSupportedException($"无法从{nameof(HttpClient)}反射出必须的{nameof(HttpMessageHandler)}字段");
             }
 
             if (httpClient == null)

@@ -75,9 +75,7 @@ namespace WebApiClient.Contexts
             this.HttpApi = httpApi;
             this.HttpApiConfig = httpApiConfig ?? throw new ArgumentNullException(nameof(httpApiConfig));
             this.ApiActionDescriptor = apiActionDescriptor ?? throw new ArgumentNullException(nameof(apiActionDescriptor));
-            this.RequestMessage = new HttpApiRequestMessage { RequestUri = httpApiConfig.HttpHost };
-            this.RequestMessage.Headers.ExpectContinue = false;
-            this.RequestMessage.Headers.UserAgent.Add(HttpHandlerProvider.DefaultUserAgent);
+            this.RequestMessage = new HttpApiRequestMessage { RequestUri = httpApiConfig.HttpHost };           
         }
 
         /// <summary>
@@ -233,7 +231,7 @@ namespace WebApiClient.Contexts
         /// </summary>
         public virtual void Dispose()
         {
-            this.RequestMessage.Content?.Dispose();
+            this.RequestMessage.Dispose();
         }
     }
 }

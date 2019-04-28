@@ -2,16 +2,37 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示http api的请求消息
+    /// 表示httpApi的请求消息
     /// </summary>
     public class HttpApiRequestMessage : HttpRequestMessage
     {
+        /// <summary>
+        /// 程序集版本信息
+        /// </summary>
+        private static readonly AssemblyName assemblyName = typeof(HttpHandlerProvider).GetTypeInfo().Assembly.GetName();
+
+        /// <summary>
+        /// 默认的UserAgent
+        /// </summary>
+        private static readonly ProductInfoHeaderValue defaultUserAgent = new ProductInfoHeaderValue(assemblyName.Name, assemblyName.Version.ToString());
+
+        /// <summary>
+        /// httpApi的请求消息
+        /// </summary>
+        public HttpApiRequestMessage()
+        {
+            this.Headers.ExpectContinue = false;
+            this.Headers.UserAgent.Add(defaultUserAgent);
+        }
+
         /// <summary>
         /// 追加Query参数到请求路径
         /// </summary>
@@ -278,22 +299,15 @@ namespace WebApiClient
         {
             var builder = new StringBuilder()
                .AppendLine($"{this.Method} {this.RequestUri.PathAndQuery} HTTP/{this.Version}")
-               .AppendLine($"Host: {this.RequestUri.Authority}");
-
-            foreach (var item in this.Headers)
-            {
-                builder.AppendLine($"{item.Key}: {string.Join(",", item.Value)}");
-            }
+               .AppendLine($"Host: {this.RequestUri.Authority}")
+               .Append(this.Headers.ToString());
 
             if (this.Content != null)
             {
-                foreach (var item in this.Content.Headers)
-                {
-                    builder.AppendLine($"{item.Key}: {string.Join(",", item.Value)}");
-                }
+                builder.Append(this.Content.Headers.ToString());
             }
 
-            return builder.AppendLine().ToString();
+            return builder.ToString();
         }
 
 

@@ -124,6 +124,7 @@ namespace WebApiClient.Attributes
                 builder
                     .AppendLine($"[REQUEST]{this.RequestTime.ToString(timeFormat)}")
                     .AppendIfNotNull(this.RequestHeaders)
+                    .AppendLineIf(this.RequestContent != null)
                     .AppendLineIfNotNull(this.RequestContent);
             }
 
@@ -133,6 +134,7 @@ namespace WebApiClient.Attributes
                     .AppendLineIfHasValue()
                     .AppendLine($"[RESPONSE]{this.ResponseTime.ToString(timeFormat)}")
                     .AppendIfNotNull(this.ResponseHeaders)
+                    .AppendLineIf(this.ResponseContent != null)
                     .AppendLineIfNotNull(this.ResponseContent);
             }
 
@@ -179,6 +181,20 @@ namespace WebApiClient.Attributes
             public TextBuilder AppendLine(string value)
             {
                 this.builder.AppendLine(value);
+                return this;
+            }
+
+            /// <summary>
+            /// 如果条件满足则添加换行
+            /// </summary>
+            /// <param name="predicate"></param>
+            /// <returns></returns>
+            public TextBuilder AppendLineIf(bool predicate)
+            {
+                if (predicate == true)
+                {
+                    this.builder.AppendLine();
+                }
                 return this;
             }
 
