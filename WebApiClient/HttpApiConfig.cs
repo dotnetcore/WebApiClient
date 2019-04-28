@@ -7,13 +7,12 @@ namespace WebApiClient
     /// <summary>
     /// 表示Http接口的配置项
     /// </summary>
-    public class HttpApiConfig : IDisposable
+    public class HttpApiConfig : Disposable
     {
         /// <summary>
         /// 与HttpClient关联的IHttpHandler
         /// </summary>
         private readonly Lazy<IHttpHandler> httpHandler;
-
 
 
         /// <summary>
@@ -187,42 +186,13 @@ namespace WebApiClient
             this.httpHandler = new Lazy<IHttpHandler>(() => HttpHandlerProvider.CreateHandler(httpClient), true);
         }
 
-
-        #region IDisposable
-        /// <summary>
-        /// 获取对象是否已释放
-        /// </summary>
-        public bool IsDisposed { get; private set; }
-
-        /// <summary>
-        /// 关闭和释放所有相关资源
-        /// </summary>
-        public void Dispose()
-        {
-            if (this.IsDisposed == false)
-            {
-                this.Dispose(true);
-                GC.SuppressFinalize(this);
-            }
-            this.IsDisposed = true;
-        }
-
-        /// <summary>
-        /// 析构函数
-        /// </summary>
-        ~HttpApiConfig()
-        {
-            this.Dispose(false);
-        }
-
         /// <summary>
         /// 释放资源
         /// </summary>
         /// <param name="disposing">是否也释放托管资源</param>
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             this.HttpClient.Dispose();
         }
-        #endregion
     }
 }

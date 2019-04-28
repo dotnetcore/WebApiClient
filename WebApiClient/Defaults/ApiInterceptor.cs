@@ -7,7 +7,7 @@ namespace WebApiClient.Defaults
     /// <summary>
     /// 表示http接口调用的拦截器
     /// </summary>
-    public class ApiInterceptor : IApiInterceptor
+    public class ApiInterceptor : Disposable, IApiInterceptor
     {
         /// <summary>
         /// ApiActionDescriptor缓存
@@ -90,7 +90,8 @@ namespace WebApiClient.Defaults
         /// <summary>
         /// 释放资源
         /// </summary>
-        public virtual void Dispose()
+        /// <param name="disposing">是否也释放托管资源</param>
+        protected override void Dispose(bool disposing)
         {
             this.HttpApiConfig.Dispose();
         }
