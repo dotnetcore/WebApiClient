@@ -87,27 +87,23 @@ namespace WebApiClient
         /// <returns></returns>
         public virtual async Task<TResult> InvokeAsync()
         {
-            var context = this.ContextFactory.Invoke();
-            try
+            using (var context = this.ContextFactory.Invoke())
             {
-                return await context.ExecuteActionAsync<TResult>().ConfigureAwait(false);
+                try
+                {
+                    return await context.ExecuteActionAsync<TResult>().ConfigureAwait(false);
+                }
+                catch (HttpApiException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    var api = context.ApiActionDescriptor.Name;
+                    var message = $"执行{api}出现{ex.GetType().Name}异常";
+                    throw new HttpApiException(message, ex);
+                }
             }
-            catch (HttpApiException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                var api = context.ApiActionDescriptor.Name;
-                var message = $"执行{api}出现{ex.GetType().Name}异常";
-                throw new HttpApiException(message, ex);
-            }
-#if !NET45 && !NET46
-            finally
-            {
-                context.Dispose();
-            }
-#endif
         }
     }
 }
