@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 
 namespace WebApiClient
 {
@@ -185,18 +184,7 @@ namespace WebApiClient
         public HttpApiConfig(HttpClient httpClient)
         {
             this.HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            this.SetDefaultRequestHeaders(httpClient.DefaultRequestHeaders);
             this.httpHandler = new Lazy<IHttpHandler>(() => HttpHandlerProvider.CreateHandler(httpClient), true);
-        }
-
-        /// <summary>
-        /// 设置默认的请求头
-        /// </summary>
-        /// <param name="headers">请求头</param>
-        private void SetDefaultRequestHeaders(HttpRequestHeaders headers)
-        {
-            headers.ExpectContinue = false;
-            headers.UserAgent.Add(HttpHandlerProvider.DefaultUserAgent);
         }
 
 
@@ -204,7 +192,7 @@ namespace WebApiClient
         /// <summary>
         /// 获取对象是否已释放
         /// </summary>
-        public bool IsDisposed { get;  private set; }
+        public bool IsDisposed { get; private set; }
 
         /// <summary>
         /// 关闭和释放所有相关资源

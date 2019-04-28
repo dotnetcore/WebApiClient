@@ -76,6 +76,8 @@ namespace WebApiClient.Contexts
             this.HttpApiConfig = httpApiConfig ?? throw new ArgumentNullException(nameof(httpApiConfig));
             this.ApiActionDescriptor = apiActionDescriptor ?? throw new ArgumentNullException(nameof(apiActionDescriptor));
             this.RequestMessage = new HttpApiRequestMessage { RequestUri = httpApiConfig.HttpHost };
+            this.RequestMessage.Headers.ExpectContinue = false;
+            this.RequestMessage.Headers.UserAgent.Add(HttpHandlerProvider.DefaultUserAgent);
         }
 
         /// <summary>
