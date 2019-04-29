@@ -183,7 +183,8 @@ namespace WebApiClient.AuthTokens
             var keyValues = keyValueFormatter.Serialize(nameof(credentials), credentials, this.FormatOptions);
             await httpContent.AddFormFieldAsync(keyValues).ConfigureAwait(false);
 
-            using (var httpClient = new HttpClient { Timeout = this.timeout })
+            var handler = new DefaultHttpClientHandler();
+            using (var httpClient = new HttpClient(handler, true) { Timeout = this.timeout })
             {
                 var response = await httpClient.PostAsync(this.TokenEndpoint, httpContent).ConfigureAwait(false);
                 var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
