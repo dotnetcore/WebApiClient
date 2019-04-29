@@ -56,6 +56,25 @@ namespace WebApiClient
                 .Cast<SecurityProtocolType>()
                 .Aggregate((cur, next) => cur | next);
         }
-#endif         
+#endif
+
+
+
+        /// <summary>
+        /// 调试视图
+        /// </summary>
+        private partial class DebugView
+        {             
+            /// <summary>
+            /// 获取或设置一个站点内的默认最大连接数       
+            public static int MaxConnections => HttpApi.MaxConnections;
+
+#if NET45 || NET46
+            /// <summary>
+            /// 获取或设置安全协议版本
+            /// </summary>
+            public static SecurityProtocolType SecurityProtocol => HttpApi.SecurityProtocol;
+#endif             
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace WebApiClient
         /// <summary>
         /// 调试视图
         /// </summary>
-        private class DebugView
+        private partial class DebugView
         {
             /// <summary>
             /// 获取对象是否已释放
