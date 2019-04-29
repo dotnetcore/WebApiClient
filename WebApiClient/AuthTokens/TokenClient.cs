@@ -67,7 +67,7 @@ namespace WebApiClient.AuthTokens
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="UriFormatException"></exception>
         public TokenClient(string tokenEndpoint)
-            : this(new Uri(tokenEndpoint))
+            : this(new Uri(tokenEndpoint ?? throw new ArgumentNullException(nameof(tokenEndpoint))))
         {
         }
 

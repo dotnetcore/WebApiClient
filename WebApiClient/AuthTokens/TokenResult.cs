@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net.Http;
 using WebApiClient.DataAnnotations;
 
 namespace WebApiClient.AuthTokens
@@ -54,14 +53,14 @@ namespace WebApiClient.AuthTokens
         /// <summary>
         /// 确保token成功
         /// </summary>
-        /// <exception cref="HttpRequestException"></exception>
+        /// <exception cref="HttpApiTokenException"></exception>
         public TokenResult EnsureSuccess()
         {
             if (this.IsSuccess() == true)
             {
                 return this;
             }
-            throw new HttpRequestException(this.Error);
+            throw new HttpApiTokenException(this.Error);
         }
 
         /// <summary>

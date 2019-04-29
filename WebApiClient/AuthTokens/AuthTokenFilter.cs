@@ -47,6 +47,7 @@ namespace WebApiClient.AuthTokens
         /// <summary>
         /// 初始化或刷新token
         /// </summary>
+        /// <exception cref="HttpApiTokenException"></exception>
         /// <returns></returns>
         private async Task InitOrRefreshTokenAsync()
         {
