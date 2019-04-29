@@ -97,7 +97,7 @@ namespace WebApiClient
         /// <summary>
         /// 表示监视生命周期的记录
         /// </summary>
-        private class TrackingEntry : IDisposable
+        private class TrackingEntry : Disposable
         {
             /// <summary>
             /// 用于释放资源的对象
@@ -131,16 +131,14 @@ namespace WebApiClient
             /// <summary>
             /// 释放资源
             /// </summary>
-            public void Dispose()
+            /// <param name="disposing"></param>
+            protected override void Dispose(bool disposing)
             {
-                if (this.CanDispose == true)
+                try
                 {
-                    try
-                    {
-                        this.disposable.Dispose();
-                    }
-                    catch (Exception) { }
+                    this.disposable.Dispose();
                 }
+                catch (Exception) { }
             }
         }
     }
