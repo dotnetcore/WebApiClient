@@ -64,9 +64,10 @@ namespace WebApiClient
         /// 调试视图
         /// </summary>
         private partial class DebugView
-        {             
+        {
             /// <summary>
-            /// 获取或设置一个站点内的默认最大连接数       
+            /// 获取或设置一个站点内的默认最大连接数      
+            /// </summary>
             public static int MaxConnections => HttpApi.MaxConnections;
 
 #if NET45 || NET46

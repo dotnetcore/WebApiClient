@@ -61,11 +61,7 @@ namespace WebApiClient
         /// <returns></returns>
         public bool Contains(IApiActionFilter item)
         {
-            if (item == null)
-            {
-                return false;
-            }
-            return this.filters.Contains(item);
+            return item == null ? false : this.filters.Contains(item);
         }
 
         /// <summary>
@@ -75,11 +71,7 @@ namespace WebApiClient
         /// <returns></returns>
         public bool Remove(IApiActionFilter item)
         {
-            if (item == null)
-            {
-                return false;
-            }
-            return this.filters.Remove(item);
+            return item == null ? false : this.filters.Remove(item);
         }
 
         /// <summary>

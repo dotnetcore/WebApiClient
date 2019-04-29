@@ -76,7 +76,8 @@ namespace WebApiClient.AuthTokens
         /// <param name="tokenResult">token结果</param>
         protected virtual void AccessTokenResult(ApiActionContext context, TokenResult tokenResult)
         {
-            context.RequestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tokenResult.AccessToken);
+            var tokenType = tokenResult.TokenType ?? "Bearer";
+            context.RequestMessage.Headers.Authorization = new AuthenticationHeaderValue(tokenType, tokenResult.AccessToken);
         }
 
         /// <summary>
