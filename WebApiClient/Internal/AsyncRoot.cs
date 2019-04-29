@@ -7,7 +7,7 @@ namespace WebApiClient
     /// <summary>
     /// 提供异步锁
     /// </summary>
-    class AsyncRoot : IDisposable
+    class AsyncRoot : Disposable
     {
         /// <summary>
         /// 信号量
@@ -52,11 +52,11 @@ namespace WebApiClient
             await this.semaphoreSlim.WaitAsync().ConfigureAwait(false);
             return new UnLocker(this.semaphoreSlim);
         }
-
         /// <summary>
         /// 释放资源
         /// </summary>
-        public void Dispose()
+        /// <param name="disposing">是否也释放托管资源</param>
+        protected override void Dispose(bool disposing)
         {
             this.semaphoreSlim.Dispose();
         }
