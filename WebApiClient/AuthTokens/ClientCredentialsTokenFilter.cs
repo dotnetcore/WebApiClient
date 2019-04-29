@@ -56,7 +56,7 @@ namespace WebApiClient.AuthTokens
         protected override async Task<TokenResult> RequestRefreshTokenAsync(string refresh_token)
         {
             var tokenClient = new TokenClient(this.TokenEndpoint);
-            return await tokenClient.RequestRefreshTokenAsync(this.ClientId, this.ClientSecret, refresh_token);
+            return await tokenClient.RequestRefreshTokenAsync(this.ClientId, this.ClientSecret, refresh_token, this.Extra);
         }
     }
 }
