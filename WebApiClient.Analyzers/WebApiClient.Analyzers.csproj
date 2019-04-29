@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.0.6</Version>
+    <Version>1.0.8</Version>
     <TargetFramework>netstandard1.1</TargetFramework>
     <PackageTargetFallback>portable-net45+win8</PackageTargetFallback>
     <Configurations>JIT_Debug;JIT_Release;AOT_Debug;AOT_Release</Configurations>
