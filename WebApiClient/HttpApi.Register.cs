@@ -59,29 +59,29 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 注册指定Api的工厂
+        /// 注册指定Api工厂
         /// </summary>
-        /// <typeparam name="TFactory"></typeparam>
+        /// <typeparam name="THttpApiFactory"></typeparam>
         /// <param name="name">工厂名称</param>
-        /// <param name="factory">工厂实例</param>
+        /// <param name="httpApiFactory">工厂实例</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
-        private static TFactory Register<TFactory>(string name, TFactory factory) where TFactory : IHttpApiFactory
+        public static THttpApiFactory Register<THttpApiFactory>(string name, THttpApiFactory httpApiFactory) where THttpApiFactory : IHttpApiFactory
         {
             if (string.IsNullOrEmpty(name) == true)
             {
                 throw new ArgumentNullException(nameof(name));
             }
 
-            if (factory == null)
+            if (httpApiFactory == null)
             {
-                throw new ArgumentNullException(nameof(factory));
+                throw new ArgumentNullException(nameof(httpApiFactory));
             }
 
-            if (factories.TryAdd(name, factory) == true)
+            if (factories.TryAdd(name, httpApiFactory) == true)
             {
-                return factory;
+                return httpApiFactory;
             }
             throw new InvalidOperationException($"不允许注册重复名称的接口：{name}");
         }
