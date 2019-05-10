@@ -227,15 +227,12 @@ namespace WebApiClient.Contexts
         }
 
         /// <summary>
-        /// 在nfx下请求完成时会自动Dispose了RequestMessage相关的HttpConent，所以RequestMessage在本方法不会得到Dispose
-        /// 但在corefx下，RequestMessage在本方法会得到Dispose
+        /// 释放资源
         /// </summary>
         /// <param name="disposing">是否也释放托管资源</param>
         protected override void Dispose(bool disposing)
         {
-#if !NET45 && !NET46
             this.RequestMessage.Dispose();
-#endif
         }
     }
 }
