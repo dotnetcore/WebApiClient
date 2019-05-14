@@ -52,27 +52,27 @@ namespace WebApiClient.Attributes
             switch (this.Kind)
             {
                 case Kind.Path:
-                    await pathQuery.BeforeRequestAsync(context, parameter);
+                    await pathQuery.BeforeRequestAsync(context, parameter).ConfigureAwait(false);
                     break;
 
                 case Kind.Header:
-                    await headers.BeforeRequestAsync(context, parameter);
+                    await headers.BeforeRequestAsync(context, parameter).ConfigureAwait(false);
                     break;
 
                 case Kind.Form:
-                    await formContent.BeforeRequestAsync(context, parameter);
+                    await formContent.BeforeRequestAsync(context, parameter).ConfigureAwait(false);
                     break;
 
                 case Kind.FormData:
-                    await formdataContent.BeforeRequestAsync(context, parameter);
+                    await formdataContent.BeforeRequestAsync(context, parameter).ConfigureAwait(false);
                     break;
 
                 case Kind.JsonBody:
-                    await jsonContent.BeforeRequestAsync(context, parameter);
+                    await jsonContent.BeforeRequestAsync(context, parameter).ConfigureAwait(false);
                     break;
 
                 case Kind.XmlBody:
-                    await xmlContent.BeforeRequestAsync(context, parameter);
+                    await xmlContent.BeforeRequestAsync(context, parameter).ConfigureAwait(false);
                     break;
             }
         }
