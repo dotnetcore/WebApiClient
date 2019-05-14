@@ -23,8 +23,8 @@ namespace WebApiClient
         /// <returns></returns>
         public static HttpApiFactory<TInterface> Register<TInterface>() where TInterface : class, IHttpApi
         {
-            var name = GetFactoryName<TInterface>();
-            return Register<TInterface>(name);
+            var factory = new HttpApiFactory<TInterface>();
+            return RegisterFactory(factory);
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace WebApiClient
         public static HttpApiFactory<TInterface> Register<TInterface>(string name) where TInterface : class, IHttpApi
         {
             var factory = new HttpApiFactory<TInterface>();
-            return Register(name, factory);
+            return RegisterFactory(factory, name);
         }
 
         /// <summary>
@@ -55,35 +55,48 @@ namespace WebApiClient
         public static HttpApiFactory Register(string name, Type interfaceType)
         {
             var factory = new HttpApiFactory(interfaceType);
-            return Register(name, factory);
+            return RegisterFactory(factory, name);
+        }
+
+        /// <summary>
+        /// 注册指定Api工厂
+        /// </summary>
+        /// <typeparam name="THttpApiFactory"></typeparam>    
+        /// <param name="httpApiFactory">工厂实例</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <returns></returns>
+        public static THttpApiFactory RegisterFactory<THttpApiFactory>(THttpApiFactory httpApiFactory) where THttpApiFactory : IHttpApiFactory
+        {
+            var name = GetFactoryName(httpApiFactory.InterfaceType);
+            return RegisterFactory(httpApiFactory, name);
         }
 
         /// <summary>
         /// 注册指定Api工厂
         /// </summary>
         /// <typeparam name="THttpApiFactory"></typeparam>
-        /// <param name="name">工厂名称</param>
         /// <param name="httpApiFactory">工厂实例</param>
+        /// <param name="name">工厂名称</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
-        public static THttpApiFactory Register<THttpApiFactory>(string name, THttpApiFactory httpApiFactory) where THttpApiFactory : IHttpApiFactory
+        public static THttpApiFactory RegisterFactory<THttpApiFactory>(THttpApiFactory httpApiFactory, string name) where THttpApiFactory : IHttpApiFactory
         {
-            if (string.IsNullOrEmpty(name) == true)
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-
             if (httpApiFactory == null)
             {
                 throw new ArgumentNullException(nameof(httpApiFactory));
+            }
+            if (string.IsNullOrEmpty(name) == true)
+            {
+                throw new ArgumentNullException(nameof(name));
             }
 
             if (factories.TryAdd(name, httpApiFactory) == true)
             {
                 return httpApiFactory;
             }
-            throw new InvalidOperationException($"不允许注册重复名称的接口：{name}");
+            throw new InvalidOperationException($"不允许注册重复名称的工厂名称：{name}");
         }
 
         /// <summary>
@@ -95,7 +108,7 @@ namespace WebApiClient
         /// <returns></returns>
         public static TInterface Resolve<TInterface>() where TInterface : class, IHttpApi
         {
-            var name = GetFactoryName<TInterface>();
+            var name = GetFactoryName(typeof(TInterface));
             return Resolve<TInterface>(name);
         }
 
@@ -138,11 +151,11 @@ namespace WebApiClient
         /// <summary>
         /// 返回类型的工厂名称
         /// </summary>
-        /// <typeparam name="TInterface"></typeparam>
+        /// <param name="interfaceType">接口类型</param>
         /// <returns></returns>
-        private static string GetFactoryName<TInterface>()
+        private static string GetFactoryName(Type interfaceType)
         {
-            return typeof(TInterface).FullName;
+            return interfaceType.FullName;
         }
     }
 }

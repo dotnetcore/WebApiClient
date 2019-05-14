@@ -9,6 +9,11 @@ namespace WebApiClient
     public interface IHttpApiFactory
     {
         /// <summary>
+        /// 获取接口类型
+        /// </summary>
+        Type InterfaceType { get; }
+
+        /// <summary>
         /// 创建接口的代理实例
         /// </summary>
         /// <returns></returns>
