@@ -26,7 +26,7 @@ namespace WebApiClient.AuthTokens
         /// <returns></returns>
         Task IApiActionFilter.OnEndRequestAsync(ApiActionContext context)
         {
-            return ApiTask.CompletedTask;
+            return this.OnEndRequestAsync(context);
         }
 
         /// <summary>
@@ -42,6 +42,7 @@ namespace WebApiClient.AuthTokens
             }
 
             this.AccessTokenResult(context, this.token);
+            await this.OnBeginRequestAsync(context).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -79,6 +80,38 @@ namespace WebApiClient.AuthTokens
         {
             var tokenType = tokenResult.TokenType ?? "Bearer";
             context.RequestMessage.Headers.Authorization = new AuthenticationHeaderValue(tokenType, tokenResult.AccessToken);
+        }
+
+
+        /// <summary>
+        /// 接口请求完成之后
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <returns></returns>
+        protected virtual Task OnEndRequestAsync(ApiActionContext context)
+        {
+
+            return ApiTask.CompletedTask;
+        }
+
+        /// <summary>
+        /// 获取token之后
+        /// 接口准备请求之前
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <returns></returns>
+        protected virtual Task OnBeginRequestAsync(ApiActionContext context)
+        {
+            return ApiTask.CompletedTask;
+        }
+
+        /// <summary>
+        /// 清除Token
+        /// 迫使下次请求将重新获取token
+        /// </summary>
+        protected void ClearToken()
+        {
+            this.token = null;
         }
 
         /// <summary>
