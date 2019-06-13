@@ -70,6 +70,8 @@ namespace WebApiClient.Defaults
         {
             var useCamelCase = options?.UseCamelCase == true;
             var setting = options.ToSerializerSettings(FormatScope.KeyValueFormat);
+
+            setting.Converters.Add(JsonStringConverter.Instance);
             setting.Converters.Add(new KeyValuePairConverter(useCamelCase));
             return setting;
         }

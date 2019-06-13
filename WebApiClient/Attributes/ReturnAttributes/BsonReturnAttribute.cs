@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClient.Contexts;
 using WebApiClient.DataAnnotations;
+using WebApiClient.Defaults;
 
 namespace WebApiClient.Attributes
 {
@@ -47,7 +48,9 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         protected virtual JsonSerializerSettings CreateSerializerSettings(FormatOptions options)
         {
-            return options.ToSerializerSettings(FormatScope.BsonFormat);
+            var setting = options.ToSerializerSettings(FormatScope.BsonFormat);
+            setting.Converters.Add(JsonStringConverter.Instance);
+            return setting;
         }
     }
 }

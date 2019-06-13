@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -142,6 +143,11 @@ namespace WebApiClient.Contexts
             if (parameterType == typeof(CancellationToken))
             {
                 return RepeatOne<CancellationTokenAttribute>();
+            }
+
+            if (parameterType == typeof(FileInfo))
+            {
+                return RepeatOne<FileInfoAttribute>();
             }
 
             if (defined.Any() == true)
