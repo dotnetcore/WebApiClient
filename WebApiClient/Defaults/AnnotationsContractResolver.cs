@@ -105,7 +105,10 @@ namespace WebApiClient.Defaults
                 property.NullValueHandling = NullValueHandling.Ignore;
             }
 
-            property.Ignored = annotations.IgnoreSerialized;
+            if (property.Ignored == false)
+            {
+                property.Ignored = annotations.IgnoreSerialized;
+            }
             return property;
         }
 
