@@ -54,7 +54,7 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         protected virtual JsonSerializerSettings CreateSerializerSettings(FormatOptions options)
         {
-            var setting= options.ToSerializerSettings(FormatScope.BsonFormat);
+            var setting = options.ToSerializerSettings(FormatScope.BsonFormat);
             setting.Converters.Add(JsonStringConverter.Instance);
             return setting;
         }
