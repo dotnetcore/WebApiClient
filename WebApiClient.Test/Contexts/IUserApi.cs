@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using WebApiClient.Attributes;
-using WebApiClient.Parameterables;
+using WebApiClient.Attributes.ReturnAttributes;
+using WebApiClient.Contexts;
 
 namespace WebApiClient.Test.Contexts
 {
@@ -26,14 +28,25 @@ namespace WebApiClient.Test.Contexts
         [HttpGet]
         ITask<Stream> Get3([Required]string account, CancellationToken token);
 
-        [HttpGet] 
+        [HttpGet]
         ITask<HttpResponseFile> Get4([Uri, Required] string uri);
 
 
-        [HttpGet] 
+        [HttpGet]
         ITask<object> Get5(string nickName);
 
         [HttpGet]
         ITask<byte[]> Get6(string nickName);
+
+        [HttpGet, ReturnValueMapper(typeof(byte[]), typeof(TestReturnValueMapper))]
+        ITask<string> Get7(string nickName);
+    }
+
+    public class TestReturnValueMapper : IReturnValueMapper
+    {
+        public object Map(object returnValue, ApiActionContext context)
+        {
+            return "";
+        }
     }
 }

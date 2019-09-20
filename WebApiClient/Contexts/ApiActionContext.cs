@@ -45,8 +45,6 @@ namespace WebApiClient.Contexts
         /// </summary>
         public IList<CancellationToken> CancellationTokens { get; } = new List<CancellationToken>();
 
-
-
         /// <summary>
         /// 获取关联的HttpResponseMessage
         /// </summary>
@@ -161,7 +159,7 @@ namespace WebApiClient.Contexts
             if (cacheResult.ResponseMessage != null)
             {
                 this.ResponseMessage = cacheResult.ResponseMessage;
-                this.Result = await this.ApiActionDescriptor.Return.Attribute.GetTaskResult(this).ConfigureAwait(false);
+                this.Result = await GetTaskResult().ConfigureAwait(false);
             }
             else
             {
@@ -186,9 +184,20 @@ namespace WebApiClient.Contexts
                     .SendAsync(this.RequestMessage, completionOption, cancellation.Token)
                     .ConfigureAwait(false);
 
-                this.Result = await this.ApiActionDescriptor.Return.Attribute.GetTaskResult(this).ConfigureAwait(false);
+                this.Result = await GetTaskResult().ConfigureAwait(false);
                 ApiValidator.ValidateReturnValue(this.Result, this.HttpApiConfig.UseReturnValuePropertyValidate);
             }
+        }
+
+        private async Task<object> GetTaskResult()
+        {
+            var returnDescriptor = this.ApiActionDescriptor.Return;
+
+            var value = await returnDescriptor.Attribute.GetTaskResult(this).ConfigureAwait(false);
+
+            return returnDescriptor.ReturnValueMapper == null
+                ? value
+                : returnDescriptor.ReturnValueMapper.Map(value, this);
         }
 
         /// <summary>

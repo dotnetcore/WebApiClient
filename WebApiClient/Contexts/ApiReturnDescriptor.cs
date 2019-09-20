@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using WebApiClient.Attributes;
+using WebApiClient.Attributes.ReturnAttributes;
 
 namespace WebApiClient.Contexts
 {
@@ -36,8 +37,17 @@ namespace WebApiClient.Contexts
         /// <summary>
         /// 获取ITask(Of T)或Task(Of T)的T类型描述
         /// </summary>
+        public Type ReturnDataType { get; protected set; }
+
+        /// <summary>
+        /// 获取ITask(Of T)或Task(Of T)的T类型描述
+        /// </summary>
         public DataTypeDescriptor DataType { get; protected set; }
 
+        /// <summary>
+        /// 获取返回值Mapper
+        /// </summary>
+        public IReturnValueMapper ReturnValueMapper { get; protected set; }
 
         /// <summary>
         /// 请求Api的返回描述
@@ -57,15 +67,25 @@ namespace WebApiClient.Contexts
                 returnAttribute = new AutoReturnAttribute();
             }
 
-            var dataType = method.ReturnType.GetGenericArguments().FirstOrDefault();
             var dataTypeDefinition = method.ReturnType.GetGenericTypeDefinition();
-
 
             this.Attribute = returnAttribute;
             this.ReturnType = method.ReturnType;
-            this.DataType = new DataTypeDescriptor(dataType);
+            this.ReturnDataType = method.ReturnType.GetGenericArguments().FirstOrDefault();
             this.IsTaskDefinition = dataTypeDefinition == typeof(Task<>);
             this.IsITaskDefinition = dataTypeDefinition == typeof(ITask<>);
+
+            var returnValueMapperAttribute = method.FindDeclaringAttribute<ReturnValueMapperAttribute>(true);
+            if (returnValueMapperAttribute != null)
+            {
+                ReturnValueMapper = (IReturnValueMapper)Activator.CreateInstance(returnValueMapperAttribute.ReturnValueMapperType);
+
+                this.DataType = new DataTypeDescriptor(returnValueMapperAttribute.ResponseType);
+            }
+            else
+            {
+                this.DataType = new DataTypeDescriptor(ReturnDataType);
+            }
         }
     }
 }
