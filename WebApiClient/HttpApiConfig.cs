@@ -81,10 +81,8 @@ namespace WebApiClient
         /// <summary>
         /// 获取或设置Api的缓存提供者
         /// </summary>
-        public IResponseCacheProvider ResponseCacheProvider { get; set; }
-#if !NETSTANDARD1_3
-        = WebApiClient.ResponseCacheProvider.Instance;
-#endif 
+        public IResponseCacheProvider ResponseCacheProvider { get; set; } = Defaults.ResponseCacheProvider.Instance;
+
 
         /// <summary>
         /// 获取或设置服务提供者

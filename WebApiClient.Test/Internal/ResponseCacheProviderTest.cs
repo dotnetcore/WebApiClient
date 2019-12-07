@@ -1,6 +1,7 @@
 ﻿#if !NETSTANDARD1_3
 using System;
 using System.Threading.Tasks;
+using WebApiClient.Defaults;
 using Xunit;
 
 namespace WebApiClient.Test.Internal

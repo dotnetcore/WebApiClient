@@ -1,14 +1,15 @@
-﻿#if !NETSTANDARD1_3
+﻿#if NET45 || NET46
+
 using System;
 using System.Runtime.Caching;
 using System.Threading.Tasks;
 
-namespace WebApiClient
+namespace WebApiClient.Defaults
 {
     /// <summary>
     /// 表示Api响应结果缓存提供者的接口
     /// </summary>
-    class ResponseCacheProvider : Disposable, IResponseCacheProvider
+    public class ResponseCacheProvider : Disposable, IResponseCacheProvider
     {
         /// <summary>
         /// 默认实例
