@@ -1,5 +1,5 @@
 ## WebApiClientCore 　　　　　　　　　　　　　　　　　　　
-本项目一个实验室项目，计划只支持.netcore平台，并紧密与.netcore新特性紧密结合。
+本项目为一个实验室项目，计划只支持.netcore平台，并紧密与.netcore新特性紧密结合。
  
 ### 为什么有此项目
  
@@ -15,4 +15,4 @@
 5. 更规范的特性命名
 
 ### 个人想法
-WebApiClient紧密集合Json.net，其与json.net的命运一样，在.netcore里不再非常重要。
+WebApiClient紧密集合Json.net，其与json.net的命运一样，在.netcore里不再非常重要。多年前，我造出了WebApiClient，现在，我想它应该有新的变化与使命了。
