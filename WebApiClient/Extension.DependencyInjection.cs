@@ -60,7 +60,8 @@ namespace WebApiClient
                     MergeOptions(httpApiConfig, httpApiOptions);
 
                     return HttpApi.Create<THttpApi>(httpApiConfig);
-                });
+                })
+                .ConfigurePrimaryHttpMessageHandler(() => new DefaultHttpClientHandler());
         }
 
         /// <summary>
