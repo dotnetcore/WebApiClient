@@ -6,7 +6,7 @@ namespace WebApiClient
     /// <summary>
     /// 提供项目相关扩展
     /// </summary>
-    public static class Extension
+    public static partial class Extension
     {
         /// <summary>
         /// 返回提供请求重试的请求任务对象
