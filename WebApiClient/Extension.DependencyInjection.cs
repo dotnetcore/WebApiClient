@@ -111,11 +111,11 @@ namespace WebApiClient
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
         /// <param name="services"></param>
-        /// <param name="config"></param>
+        /// <param name="configureOptions"></param>
         /// <returns></returns>
-        public static IServiceCollection ConfigureHttpApi<THttpApi>(this IServiceCollection services, Action<HttpApiOptions<THttpApi>> config) where THttpApi : class, IHttpApi
+        public static IServiceCollection ConfigureHttpApi<THttpApi>(this IServiceCollection services, Action<HttpApiOptions<THttpApi>> configureOptions) where THttpApi : class, IHttpApi
         {
-            return services.Configure(config);
+            return services.Configure(configureOptions);
         }
 
         /// <summary>
@@ -123,11 +123,11 @@ namespace WebApiClient
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
         /// <param name="services"></param>
-        /// <param name="configuration"></param>
+        /// <param name="configureOptions"></param>
         /// <returns></returns>
-        public static IServiceCollection ConfigureHttpApi<THttpApi>(this IServiceCollection services, IConfiguration configuration) where THttpApi : class, IHttpApi
+        public static IServiceCollection ConfigureHttpApi<THttpApi>(this IServiceCollection services, IConfiguration configureOptions) where THttpApi : class, IHttpApi
         {
-            return services.Configure<HttpApiOptions<THttpApi>>(configuration);
+            return services.Configure<HttpApiOptions<THttpApi>>(configureOptions);
         }
     }
 }
