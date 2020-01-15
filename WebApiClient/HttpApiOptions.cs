@@ -6,7 +6,7 @@ namespace WebApiClient
     /// <summary>
     /// 表示HttpApi选项
     /// </summary>
-    public class HttpApiOptions<THttpApi> where THttpApi : class, IHttpApi
+    public class HttpApiOptions
     {
         /// <summary>
         /// 获取或设置是否对参数的属性值进行输入有效性验证
@@ -55,6 +55,14 @@ namespace WebApiClient
         /// 获取或设置Api的缓存提供者
         /// </summary>
         public IResponseCacheProvider ResponseCacheProvider { get; set; }
+    }
+
+    /// <summary>
+    /// 表示HttpApi选项
+    /// </summary>
+    /// <typeparam name="THttpApi"></typeparam>
+    public class HttpApiOptions<THttpApi> : HttpApiOptions where THttpApi : class, IHttpApi
+    {
     }
 }
 #endif
