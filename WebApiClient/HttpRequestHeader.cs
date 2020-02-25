@@ -206,49 +206,49 @@ namespace WebApiClient
         IfRange = 32,
 
         /// <summary>
-        /// If-Unmodified-Since 标头，指定仅当自指示的日期和时间之后修改了请求的资源时，才执行请求的操作
+        /// If-Unmodified-Since header specifying that the requested operation is performed only if the requested resource has been modified since the indicated date and time
         /// </summary>
         [Display(Name = "If-Unmodified-Since")]
         IfUnmodifiedSince = 33,
 
         /// <summary>
-        /// Max-Forwards 标头，指定一个整数，表示此请求还可转发的次数
+        /// Max-Forwards header, specifying an integer indicating the number of times this request can be forwarded
         /// </summary>
         [Display(Name = "Max-Forwards")]
         MaxForwards = 34,
 
         /// <summary>
-        /// Proxy-Authorization 标头，指定客户端为向代理验证自身身份而出示的凭据
+        /// Proxy-Authorization header, specifying the credentials the client presents to authenticate itself with the proxy
         /// </summary>
         [Display(Name = "Proxy-Authorization")]
         ProxyAuthorization = 35,
 
         /// <summary>
-        /// Referer 标头，指定从中获得请求 URI 的资源的 URI
+        /// Referer header specifying the URI of the resource from which the request URI was obtained
         /// </summary>
         [Display(Name = "Referer")]
         Referer = 36,
 
         /// <summary>
-        /// Range 标头，指定代替整个响应返回的客户端请求的响应的子范围
+        /// Range header, specifying a subrange of the client request's response returned in place of the entire response
         /// </summary>
         [Display(Name = "Range")]
         Range = 37,
 
         /// <summary>
-        /// TE 标头，指定响应可接受的传输编码方式
+        /// TE header specifying the acceptable transport encoding for the response
         /// </summary>
         [Display(Name = "TE")]
         Te = 38,
 
         /// <summary>
-        /// Translate 标头，与 WebDAV 功能一起使用的 HTTP 规范的 Microsoft 扩展
+        /// Translate header, a Microsoft extension to the HTTP specification for use with WebDAV functionality
         /// </summary>
         [Display(Name = "Translate")]
         Translate = 39,
 
         /// <summary>
-        /// User-Agent 标头，指定有关客户端代理的信息
+        /// User-Agent header, specifying information about the client agent
         /// </summary>
         [Display(Name = "User-Agent")]
         UserAgent = 40
