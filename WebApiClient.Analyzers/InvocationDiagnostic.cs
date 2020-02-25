@@ -3,32 +3,32 @@
 namespace WebApiClient.Analyzers
 {
     /// <summary>
-    /// 表示调用诊断器
+    /// Means call diagnostic
     /// </summary>
     abstract class InvocationDiagnostic
     {
         /// <summary>
-        /// 获取上下文
+        /// Get context
         /// </summary>
         protected InvocationContext Context { get; }
 
         /// <summary>
-        /// 获取诊断描述
+        /// Get diagnostic description
         /// </summary>
         public abstract DiagnosticDescriptor Descriptor { get; }
 
 
         /// <summary>
-        /// 调用诊断器
+        /// Call diagnostic
         /// </summary>
-        /// <param name="context">调用上下文</param>
+        /// <param name="context">Calling context</param>
         public InvocationDiagnostic(InvocationContext context)
         {
             this.Context = context;
         }
 
         /// <summary>
-        /// 创建诊断结果
+        /// Create diagnostic results
         /// </summary>
         /// <param name="location"></param>
         /// <param name="messageArgs"></param>
@@ -44,7 +44,7 @@ namespace WebApiClient.Analyzers
 
 
         /// <summary>
-        /// 报告诊断结果
+        /// Report diagnosis
         /// </summary>
         public void Report()
         {
@@ -56,7 +56,7 @@ namespace WebApiClient.Analyzers
         }
 
         /// <summary>
-        /// 返回的报告诊断
+        /// Returned report diagnosis
         /// </summary>
         /// <returns></returns>
         protected abstract Diagnostic GetDiagnostic();

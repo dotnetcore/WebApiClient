@@ -8,123 +8,123 @@ using System.Security.Cryptography.X509Certificates;
 namespace WebApiClient
 {
     /// <summary>
-    /// 定义HttpClient的处理程序的接口
+    /// Defines the interface of the HttpClient handler
     /// </summary>
     public interface IHttpHandler : IDisposable
     {
         /// <summary>
-        /// 获取原始的Handler对象
+        /// Get the original Handler object
         /// </summary>
         HttpMessageHandler SourceHandler { get; }
 
         /// <summary>
-        /// 获取或设置是否使用CookieContainer来管理Cookies
+        /// Gets or sets whether to use CookieContainer to manage cookies
         /// </summary>
         bool UseCookies { get; set; }
 
         /// <summary>
-        /// 获取是否支持重定向设置
+        /// Gets whether the redirect setting is supported
         /// </summary>
         bool SupportsRedirectConfiguration { get; }
 
         /// <summary>
-        /// 获取是否支持代理
+        /// Get whether proxy is supported
         /// </summary>
         bool SupportsProxy { get; }
 
         /// <summary>
-        /// 获取是否支持压缩传输
+        /// Gets whether compressed transmission is supported
         /// </summary>
         bool SupportsAutomaticDecompression { get; }
 
         /// <summary>
-        /// 获取或设置代理
+        /// Get or set proxy
         /// </summary>
         IWebProxy Proxy { get; set; }
 
         /// <summary>
-        /// 获取或设置是否对请求进行预身份验证
+        /// Gets or sets whether the request is pre-authenticated
         /// </summary>
         bool PreAuthenticate { get; set; }
 
         /// <summary>
-        /// 获取或设置每个响应的最大重定向次数
+        /// Gets or sets the maximum number of redirects per response
         /// </summary>
         int MaxAutomaticRedirections { get; set; }
 
         /// <summary>
-        /// 获取或设置最大请求内容字节长度
+        /// Gets or sets the maximum requested content byte length
         /// </summary>
         long MaxRequestContentBufferSize { get; set; }
 
         /// <summary>
-        /// 获取或设置凭证信息
+        /// Get or set credential information
         /// </summary>
         ICredentials Credentials { get; set; }
 
         /// <summary>
-        /// 获取或设置Cookie管理容器
+        /// Gets or sets the cookie management container
         /// </summary>
         CookieContainer CookieContainer { get; set; }
 
         /// <summary>
-        /// 获取或设置客户端证书选项
+        /// Gets or sets the cookie management container
         /// </summary>
         ClientCertificateOption ClientCertificateOptions { get; set; }
 
         /// <summary>
-        /// 获取或设置压缩方式
+        /// Gets or sets the compression method
         /// </summary>
         DecompressionMethods AutomaticDecompression { get; set; }
 
         /// <summary>
-        /// 获取或设置是否支持自动重定向
+        /// Gets or sets whether to support automatic redirection
         /// </summary>
         bool AllowAutoRedirect { get; set; }
 
         /// <summary>
-        /// 获取或设置是否使用默认的凭证信息
+        /// Gets or sets whether to use the default credential information
         /// </summary>
         bool UseDefaultCredentials { get; set; }
 
         /// <summary>
-        /// 获取或设置是否使用代理
+        /// Gets or sets whether to use a proxy
         /// </summary>
         bool UseProxy { get; set; }
 
 #if !NET45     
         /// <summary>
-        /// 获取或设置SSL版本
+        /// Get or set SSL version
         /// </summary>
         SslProtocols SslProtocols { get; set; }
 
         /// <summary>
-        /// 获取或设置默认代理凭证
+        /// Get or set default proxy credentials
         /// </summary>
         ICredentials DefaultProxyCredentials { get; set; }
 
         /// <summary>
-        /// 获取或设置是否验证撤销的证书
+        /// Gets or sets whether to verify revoked certificates
         /// </summary>
         bool CheckCertificateRevocationList { get; set; }
 
         /// <summary>
-        /// 获取或设置证书列表
+        /// Get or set the certificate list
         /// </summary>
         X509CertificateCollection ClientCertificates { get; }
 
         /// <summary>
-        /// 获取或设置每个服务器的最大连接数
+        /// Gets or sets the maximum number of connections per server
         /// </summary>
         int MaxConnectionsPerServer { get; set; }
 
         /// <summary>
-        /// 获取或设置最大响应头的字节长度
+        /// Gets or sets the byte length of the maximum response header
         /// </summary>
         int MaxResponseHeadersLength { get; set; }
 
         /// <summary>
-        /// 设置服务器证书验证委托
+        /// Setting up server certificate validation delegation
         /// </summary>
         Func<X509Certificate, X509Chain, SslPolicyErrors, bool> ServerCertificateCustomValidationCallback { set; }
 #endif

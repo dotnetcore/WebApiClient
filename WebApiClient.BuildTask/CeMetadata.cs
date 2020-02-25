@@ -7,29 +7,29 @@ using System.Text;
 namespace WebApiClient.BuildTask
 {
     /// <summary>
-    /// 表示cecil元数据抽象
+    /// Represents cecil metadata abstraction
     /// </summary>
     abstract class CeMetadata
     {
         /// <summary>
-        /// 所在程序集
+        /// The assembly
         /// </summary>
         private readonly ModuleDefinition module;
 
         /// <summary>
-        /// 所有已知类型
+        /// All known types
         /// </summary>
         private readonly TypeDefinition[] knowTypes;
 
         /// <summary>
-        /// 获取系统类型
+        /// Get system type
         /// </summary>
         public TypeSystem TypeSystem { get; private set; }
 
         /// <summary>
-        /// cecil元数据抽象
+        /// cecil metadata abstraction
         /// </summary>
-        /// <param name="module">所在程序集</param>
+        /// <param name="module">The assembly</param>
         public CeMetadata(CeAssembly assembly)
         {
             this.module = assembly.MainMdule;
@@ -38,9 +38,9 @@ namespace WebApiClient.BuildTask
         }
 
         /// <summary>
-        /// 返回导入外部类型后的类型
+        /// Returns the type after importing the external type
         /// </summary>
-        /// <typeparam name="T">目标类型</typeparam>
+        /// <typeparam name="T">Target type</typeparam>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="TypeLoadException"></exception>
         /// <returns></returns>
@@ -49,16 +49,16 @@ namespace WebApiClient.BuildTask
             var type = typeof(T);
             if (type.IsArray == true)
             {
-                throw new NotSupportedException("不支持数组类型");
+                throw new NotSupportedException("Array type is not supported");
             }
 
             var knowType = this.knowTypes.FirstOrDefault(item => item.FullName == type.FullName);
             if (knowType == null)
             {
-                // 本程序集的类型不作直接导入
+                // This assembly type is not directly imported
                 if (this.IsThisAssemblyType(type) == true)
                 {
-                    throw new TypeLoadException($"找不到类型：{type.FullName}");
+                    throw new TypeLoadException($"No type found：{type.FullName}");
                 }
                 return this.module.ImportReference(type);
             }
@@ -70,9 +70,9 @@ namespace WebApiClient.BuildTask
 
 
         /// <summary>
-        /// 返回指定类型是在本程序集范围内
+        /// Returns that the specified type is within the scope of this assembly
         /// </summary>
-        /// <param name="type">类型</param>
+        /// <param name="type">Types of</param>
         /// <returns></returns>
         private bool IsThisAssemblyType(Type type)
         {
@@ -85,9 +85,9 @@ namespace WebApiClient.BuildTask
 
 
         /// <summary>
-        /// 返回导入外部类型的指定方法后的方法
+        /// Returns the method after importing the specified method of the external type
         /// </summary>
-        /// <param name="methodName">方法名</param>
+        /// <param name="methodName">Method name</param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="TypeLoadException"></exception>
@@ -98,9 +98,9 @@ namespace WebApiClient.BuildTask
         }
 
         /// <summary>
-        /// 返回导入外部类型的指定方法后的方法
+        /// Returns the method after importing the specified method of the external type
         /// </summary>
-        /// <param name="filter">方法过滤器</param>
+        /// <param name="filter">Method filter</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ArgumentException"></exception>
@@ -116,16 +116,16 @@ namespace WebApiClient.BuildTask
             var method = this.ImportType<T>().Resolve().Methods.FirstOrDefault(filter);
             if (method == null)
             {
-                throw new ArgumentException("无法找到指定的方法");
+                throw new ArgumentException("Cannot find the specified method");
             }
             return this.module.ImportReference(method);
         }
 
         /// <summary>
-        /// 比较两类型类型是一样
+        /// Comparing two types is the same
         /// </summary>
-        /// <param name="source">类型</param>
-        /// <param name="target">目标类型</param>
+        /// <param name="source">Types of</param>
+        /// <param name="target">Target type</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         protected bool IsTypeEquals(TypeReference source, Type target)
@@ -143,9 +143,9 @@ namespace WebApiClient.BuildTask
         }
 
         /// <summary>
-        /// 返回方法的完整名称
+        /// Returns the full name of the method
         /// </summary>
-        /// <param name="method">方法</param>
+        /// <param name="method">method</param>
         /// <returns></returns>
         protected string GetMethodFullName(MethodReference method)
         {
@@ -163,9 +163,9 @@ namespace WebApiClient.BuildTask
         }
 
         /// <summary>
-        /// 返回类型不含namespace的名称
+        /// Return type without namespace
         /// </summary>
-        /// <param name="type">类型</param>
+        /// <param name="type">Types of</param>
         /// <returns></returns>
         private static string GetTypeName(TypeReference type)
         {

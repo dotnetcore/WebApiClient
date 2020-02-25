@@ -5,19 +5,19 @@ using System.Net;
 namespace WebApiClient
 {
     /// <summary>
-    /// 提供HttpApi的创建、注册和解析   
+    /// Provides creation, registration, and parsing of HttpApi  
     /// </summary>
     public partial class HttpApi
     {
         /// <summary>
-        /// 一个站点内的默认连接数限制
+        /// Limit of default connections within a site
         /// </summary>
         private static int maxConnections = 128;
 
         /// <summary>
-        /// 获取或设置一个站点内的默认最大连接数
-        /// 这个值在初始化HttpClientHandler时使用
-        /// 默认值为128
+        /// Gets or sets the default maximum number of connections within a site
+        /// This value is used when initializing the HttpClientHandler
+        /// The default value is 128
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static int MaxConnections
@@ -38,7 +38,7 @@ namespace WebApiClient
 
 #if NET45 || NET46
         /// <summary>
-        /// 获取或设置安全协议版本
+        /// Gets or sets the security protocol version
         /// </summary>
         public static SecurityProtocolType SecurityProtocol
         {
@@ -47,7 +47,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 静态构造函数
+        /// Static constructor
         /// </summary>
         static HttpApi()
         {
@@ -61,18 +61,18 @@ namespace WebApiClient
 
 
         /// <summary>
-        /// 调试视图
+        /// Debug view
         /// </summary>
         private partial class DebugView
         {
             /// <summary>
-            /// 获取或设置一个站点内的默认最大连接数      
+            /// Gets or sets the default maximum number of connections within a site      
             /// </summary>
             public static int MaxConnections => HttpApi.MaxConnections;
 
 #if NET45 || NET46
             /// <summary>
-            /// 获取或设置安全协议版本
+            /// Gets or sets the security protocol version
             /// </summary>
             public static SecurityProtocolType SecurityProtocol => HttpApi.SecurityProtocol;
 #endif             

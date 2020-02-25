@@ -6,60 +6,60 @@ using System.Threading;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示HttpApi创建工厂
-    /// 提供HttpApi的配置注册和实例创建
-    /// 并对实例的生命周期进行自动管理
+    /// Indicates that HttpApi creates a factory
+    /// Provide HttpApi configuration registration and instance creation
+    /// And automatically manage the life cycle of the instance
     /// </summary>
     public class HttpApiFactory : IHttpApiFactory
     {
         /// <summary>
-        /// 具有生命周期的httpHandler延时创建对象
+        /// HttpHandler Delayed Creation Object with Life Cycle
         /// </summary>
         private Lazy<LifetimeHttpHandler> lifeTimeHttpHandlerLazy;
 
         /// <summary>
-        /// HttpHandler清理器
+        /// HttpHandler cleaner
         /// </summary>
         private readonly LifetimeHttpHandlerCleaner httpHandlerCleaner = new LifetimeHttpHandlerCleaner();
 
 
 
         /// <summary>
-        /// cookie容器
+        /// cookie container
         /// </summary>
         private CookieContainer cookieContainer;
 
         /// <summary>
-        /// 是否保持cookie容器
+        /// Whether to keep the cookie container
         /// </summary>
         private bool keepCookieContainer = HttpHandlerProvider.IsSupported;
 
         /// <summary>
-        /// 生命周期
+        /// Life cycle
         /// </summary>
         private TimeSpan lifeTime = TimeSpan.FromMinutes(2d);
 
         /// <summary>
-        /// HttpApiConfig的配置委托
+        /// HttpApiConfig configuration delegate
         /// </summary>
         private Action<HttpApiConfig> configOptions;
 
         /// <summary>
-        /// HttpMessageHandler的创建委托
+        /// HttpMessageHandler creation delegate
         /// </summary>
         private Func<HttpMessageHandler> handlerFactory;
 
         /// <summary>
-        /// 获取接口类型
+        /// Get interface type
         /// </summary>
         public Type InterfaceType { get; }
 
         /// <summary>
-        /// HttpApi创建工厂
+        /// HttpApi create factory
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        /// <param name="interfaceType">接口类型</param>
+        /// <param name="interfaceType">Interface Type</param>
         public HttpApiFactory(Type interfaceType)
         {
             if (interfaceType == null)
@@ -68,7 +68,7 @@ namespace WebApiClient
             }
             if (interfaceType.IsInheritFrom<IHttpApi>() == false)
             {
-                throw new ArgumentException($"接口类型必须继承{nameof(IHttpApi)}", nameof(interfaceType));
+                throw new ArgumentException($"Interface types must inherit {nameof(IHttpApi)}", nameof(interfaceType));
             }
 
             this.InterfaceType = interfaceType;
@@ -76,7 +76,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 创建LifetimeHttpHandler
+        /// Create LifetimeHttpHandler
         /// </summary>
         /// <returns></returns>
         private LifetimeHttpHandler CreateHttpHandler()
@@ -86,20 +86,20 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 当有httpHandler失效时
+        /// When httpHandler fails
         /// </summary>
         /// <param name="handler">httpHandler</param>
         private void OnHttpHandlerDeactivate(LifetimeHttpHandler handler)
         {
-            // 切换激活状态的记录的实例
+            // Example of a record that toggles the active state
             this.lifeTimeHttpHandlerLazy = new Lazy<LifetimeHttpHandler>(this.CreateHttpHandler, true);
             this.httpHandlerCleaner.Add(handler);
         }
 
         /// <summary>
-        /// 设置HttpApi实例的生命周期
+        /// Setting the life cycle of an HttpApi instance
         /// </summary>
-        /// <param name="lifeTime">生命周期</param>
+        /// <param name="lifeTime">Life cycle</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <returns></returns>
         public HttpApiFactory SetLifetime(TimeSpan lifeTime)
@@ -113,9 +113,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 设置清理过期的HttpApi实例的时间间隔
+        /// Set the interval to clean up expired HttpApi instances
         /// </summary>
-        /// <param name="interval">时间间隔</param>
+        /// <param name="interval">time interval</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <returns></returns>
         public HttpApiFactory SetCleanupInterval(TimeSpan interval)
@@ -129,17 +129,17 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 设置是否维护使用一个CookieContainer实例
-        /// 该实例为首次创建时的CookieContainer
+        /// Set whether to maintain the use of a CookieContainer instance
+        /// This instance is the CookieContainer when first created
         /// </summary>
-        /// <param name="keep">true维护使用一个CookieContainer实例</param>
+        /// <param name="keep">true maintenance uses a CookieContainer instance</param>
         /// <exception cref="PlatformNotSupportedException"></exception>
         /// <returns></returns>
         public HttpApiFactory SetKeepCookieContainer(bool keep)
         {
             if (keep == true && HttpHandlerProvider.IsSupported == false)
             {
-                var message = $"无法设置KeepCookieContainer，请在{nameof(ConfigureHttpMessageHandler)}为Handler设置固定的{nameof(CookieContainer)}";
+                var message = $"Unable to set KeepCookieContainer，please at {nameof(ConfigureHttpMessageHandler)} setting fixed for handler {nameof(CookieContainer)}";
                 throw new PlatformNotSupportedException(message);
             }
 
@@ -148,9 +148,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 配置HttpMessageHandler的创建
+        /// Configure the creation of HttpMessageHandler
         /// </summary>
-        /// <param name="factory">创建委托</param>
+        /// <param name="factory">Create delegate</param>
         /// <returns></returns>
         public HttpApiFactory ConfigureHttpMessageHandler(Func<HttpMessageHandler> factory)
         {
@@ -159,9 +159,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 配置HttpApiConfig
+        /// Configure HttpApiConfig
         /// </summary>
-        /// <param name="options">配置委托</param>
+        /// <param name="options">Configuration delegation</param>
         /// <returns></returns>
         public HttpApiFactory ConfigureHttpApiConfig(Action<HttpApiConfig> options)
         {
@@ -170,7 +170,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 创建接口的代理实例
+        /// Create a proxy instance of the interface
         /// </summary>
         /// <returns></returns>
         public HttpApi CreateHttpApi()
@@ -196,9 +196,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 创建TInterface接口的代理实例
+        /// Create a proxy instance of the TInterface interface
         /// </summary>
-        /// <param name="httpApiConfig">httpApi配置</param>
+        /// <param name="httpApiConfig">httpApi configuration</param>
         /// <returns></returns>
         protected virtual HttpApi CreateHttpApi(HttpApiConfig httpApiConfig)
         {
@@ -206,20 +206,20 @@ namespace WebApiClient
         }
 
 
-        #region 接口显式实现
+        #region Explicit interface implementation
         /// <summary>
-        /// 配置HttpMessageHandler的创建
+        /// Configure the creation of HttpMessageHandler
         /// </summary>
-        /// <param name="factory">创建委托</param>
+        /// <param name="factory">Create delegate</param>
         void IHttpApiFactory.ConfigureHttpMessageHandler(Func<HttpMessageHandler> factory)
         {
             this.ConfigureHttpMessageHandler(factory);
         }
 
         /// <summary>
-        /// 配置HttpApiConfig
+        /// Configure HttpApiConfig
         /// </summary>
-        /// <param name="options">配置委托</param>
+        /// <param name="options">Configuration delegation</param>
         void IHttpApiFactory.ConfigureHttpApiConfig(Action<HttpApiConfig> options)
         {
             this.ConfigureHttpApiConfig(options);
@@ -228,15 +228,15 @@ namespace WebApiClient
     }
 
     /// <summary>
-    /// 表示HttpApi创建工厂
-    /// 提供HttpApi的配置注册和实例创建
-    /// 并对实例的生命周期进行自动管理
+    /// Indicates that HttpApi creates a factory
+    /// Provide HttpApi configuration registration and instance creation
+    /// and automatically manage the life cycle of the instance
     /// </summary>
     public class HttpApiFactory<TInterface> : HttpApiFactory, IHttpApiFactory<TInterface>
         where TInterface : class, IHttpApi
     {
         /// <summary>
-        /// HttpApi创建工厂
+        /// HttpApi create factory
         /// </summary>
         public HttpApiFactory()
             : base(typeof(TInterface))
@@ -244,7 +244,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 创建HttpApi代理实例
+        /// Create HttpApi proxy instance
         /// </summary>
         /// <returns></returns>
         public new TInterface CreateHttpApi()
@@ -253,9 +253,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 设置HttpApi实例的生命周期
+        /// Setting the life cycle of an HttpApi instance
         /// </summary>
-        /// <param name="lifeTime">生命周期</param>
+        /// <param name="lifeTime">Life cycle</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <returns></returns>
         public new HttpApiFactory<TInterface> SetLifetime(TimeSpan lifeTime)
@@ -264,9 +264,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 设置清理过期的HttpApi实例的时间间隔
+        /// Set the interval to clean up expired HttpApi instances
         /// </summary>
-        /// <param name="interval">时间间隔</param>
+        /// <param name="interval">time interval</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <returns></returns>
         public new HttpApiFactory<TInterface> SetCleanupInterval(TimeSpan interval)
@@ -275,10 +275,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 设置是否维护使用一个CookieContainer实例
-        /// 该实例为首次创建时的CookieContainer
+        /// Set whether to maintain the use of a CookieContainer instance
+        /// This instance is the CookieContainer when first created
         /// </summary>
-        /// <param name="keep">true维护使用一个CookieContainer实例</param>
+        /// <param name="keep">true maintenance uses a CookieContainer instance</param>
         /// <exception cref="PlatformNotSupportedException"></exception>
         /// <returns></returns>
         public new HttpApiFactory<TInterface> SetKeepCookieContainer(bool keep)
@@ -287,9 +287,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 配置HttpMessageHandler的创建
+        /// Configure the creation of HttpMessageHandler
         /// </summary>
-        /// <param name="factory">创建委托</param>
+        /// <param name="factory">Create delegate</param>
         /// <returns></returns>
         public new HttpApiFactory<TInterface> ConfigureHttpMessageHandler(Func<HttpMessageHandler> factory)
         {
@@ -297,9 +297,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 配置HttpApiConfig
+        /// Configure HttpApiConfig
         /// </summary>
-        /// <param name="options">配置委托</param>
+        /// <param name="options">Configuration delegation</param>
         /// <returns></returns>
         public new HttpApiFactory<TInterface> ConfigureHttpApiConfig(Action<HttpApiConfig> options)
         {

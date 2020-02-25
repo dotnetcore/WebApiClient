@@ -4,40 +4,40 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 定义返回结果的行为
+    /// Define the behavior of returning results
     /// </summary>
     public interface ITask
     {
         /// <summary>
-        /// 创建请求任务
+        /// Create Request Task
         /// </summary>
         /// <returns></returns>
         Task InvokeAsync();
     }
 
     /// <summary>
-    /// 定义返回结果的行为
+    /// Define the behavior of returning results
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
     public interface ITask<TResult> : ITask
     {
         /// <summary>
-        /// 创建请求任务
+        /// Create Request Task
         /// </summary>
         /// <returns></returns>
         new Task<TResult> InvokeAsync();
 
         /// <summary>
-        /// 调用InvokeAsync
-        /// 并返回其TaskAwaiter对象
+        /// Call InvokeAsync
+        /// And return its TaskAwaiter object
         /// </summary>
         /// <returns></returns>
         TaskAwaiter<TResult> GetAwaiter();
 
         /// <summary>
-        /// 配置用于等待的等待者
+        /// Configure waiters for waiting
         /// </summary>
-        /// <param name="continueOnCapturedContext">试图继续回夺取的原始上下文，则为 true；否则为 false</param>
+        /// <param name="continueOnCapturedContext">Attempt to resume the original context captured，则为 true；否则为 false</param>
         /// <returns></returns>
         ConfiguredTaskAwaitable<TResult> ConfigureAwait(bool continueOnCapturedContext);
     }

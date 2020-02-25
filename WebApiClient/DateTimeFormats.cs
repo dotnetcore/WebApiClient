@@ -3,22 +3,22 @@
 namespace WebApiClient
 {
     /// <summary>
-    /// 提供一些日期时间格式模板
+    /// Provide some datetime format templates
     /// </summary>
     public static class DateTimeFormats
     {
         /// <summary>
-        /// ISO8601精确到毫秒的日期时间格式
+        /// ISO8601 datetime format accurate to the millisecond
         /// </summary>
         public const string ISO8601_WithMillisecond = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.FFFFFFFK";
 
         /// <summary>
-        /// ISO8601精确到秒的日期时间格式
+        /// ISO8601 Date-time format to the second
         /// </summary>
         public const string ISO8601_WithoutMillisecond = "yyyy'-'MM'-'dd'T'HH':'mm':'ssK";
 
         /// <summary>
-        /// 获取本地的日期时间格式
+        /// Get local datetime format
         /// ShortDate LongTime
         /// </summary>
         public static string LocalDateTimeFormat

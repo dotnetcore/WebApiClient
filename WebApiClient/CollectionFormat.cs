@@ -1,36 +1,36 @@
 ﻿namespace WebApiClient
 {
     /// <summary>
-    /// 集合格式化方式
+    /// Collection formatting
     /// </summary>
     public enum CollectionFormat
     {
         /// <summary>
-        /// 逗号分隔
+        /// Comma separated
         /// value1,value2
         /// </summary>
         Csv,
 
         /// <summary>
-        /// 空格分隔
+        /// Space-separated
         /// value1 value2
         /// </summary>
         Ssv,
 
         /// <summary>
-        /// 反斜杠分隔
+        /// Backslash-separated
         /// value1\value2
         /// </summary>
         Tsv,
 
         /// <summary>
-        /// 竖线分隔
+        /// Pipe-separated
         /// value1|value2
         /// </summary>
         Pipes,
 
         /// <summary>
-        /// 单属性可以取多个值
+        /// Single attribute can take multiple values
         /// </summary>
         Multi
     }

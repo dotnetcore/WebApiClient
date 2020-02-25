@@ -3,27 +3,27 @@
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示上传或下载进度
+    /// Indicates the upload or download progress
     /// </summary>
     public class ProgressEventArgs : EventArgs
     {
         /// <summary>
-        /// 获取当前完成的字节数
+        /// Get the number of bytes currently completed
         /// </summary>
         public long CurrentBytes { get; }
 
         /// <summary>
-        /// 获取总字节数
+        /// Get the total number of bytes
         /// </summary>
         public long? TotalBytes { get; }
 
         /// <summary>
-        /// 获取是否已完成
+        /// Whether the acquisition is completed
         /// </summary>
         public bool IsCompleted { get; }
 
         /// <summary>
-        /// 获取当前进度
+        /// Get current progress
         /// </summary>
         public double Progress
         {
@@ -38,11 +38,11 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 上传或下载进度
+        /// Upload or download progress
         /// </summary>
-        /// <param name="current">当前完成的字节数</param>
-        /// <param name="total">总字节数</param>
-        /// <param name="isCompleted">是否已完成</param>
+        /// <param name="current">Number of bytes currently completed</param>
+        /// <param name="total">Total number of bytes</param>
+        /// <param name="isCompleted">Whether completed</param>
         public ProgressEventArgs(long current, long? total, bool isCompleted)
         {
             this.CurrentBytes = current;
@@ -51,7 +51,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 转换为字符串
+        /// Convert to string
         /// </summary>
         /// <returns></returns>
         public override string ToString()

@@ -5,32 +5,32 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace WebApiClient.Analyzers
 {
     /// <summary>
-    /// 表示调用上下文
+    /// Represents the calling context
     /// </summary>
     class InvocationContext
     {
         /// <summary>
-        /// 获取语法节点上下文
+        /// Get syntax node context
         /// </summary>
         public SyntaxNodeAnalysisContext SyntaxNodeContext { get; }
 
         /// <summary>
-        /// 获取调用语法树
+        /// Get call syntax tree
         /// </summary>
         public InvocationExpressionSyntax InvocationSyntax { get; }
 
         /// <summary>
-        /// 获取是否为方法调用
+        /// Get whether method call
         /// </summary>
         public bool IsMethodInvocation { get; }
 
         /// <summary>
-        /// 获取调用的方法
+        /// Get called method
         /// </summary>
         public IMethodSymbol MethodSymbol { get; }
 
         /// <summary>
-        /// 调用上下文
+        /// Calling context
         /// </summary>
         /// <param name="syntaxNodeContext"></param>
         public InvocationContext(SyntaxNodeAnalysisContext syntaxNodeContext)

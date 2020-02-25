@@ -3,19 +3,19 @@
 namespace WebApiClient
 {
     /// <summary>
-    /// 提供HttpApi的创建、注册和解析   
+    /// Provides creation, registration, and parsing of HttpApi   
     /// </summary> 
     public abstract partial class HttpApi
     {
         /// <summary>
-        /// 获取拦截器
+        /// Get the interceptor
         /// </summary>
         public IApiInterceptor ApiInterceptor { get; }
 
         /// <summary>
-        /// http接口代理类的基类
+        /// Base class of http interface proxy class
         /// </summary>
-        /// <param name="apiInterceptor">拦截器</param>
+        /// <param name="apiInterceptor">Interceptor</param>
         /// <exception cref="ArgumentNullException"></exception>
         public HttpApi(IApiInterceptor apiInterceptor)
         {

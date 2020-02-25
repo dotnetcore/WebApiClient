@@ -4,16 +4,16 @@ using System.Reflection;
 namespace WebApiClient
 {
     /// <summary>
-    /// 定义http接口拦截器的行为
+    /// Define the behavior of the http interface interceptor
     /// </summary>
     public interface IApiInterceptor : IDisposable
     {
         /// <summary>
-        /// 拦截方法的调用
+        /// Intercepting method calls
         /// </summary>
-        /// <param name="target">接口的实例</param>
-        /// <param name="method">接口的方法</param>
-        /// <param name="parameters">接口的参数集合</param>
+        /// <param name="target">Examples of interfaces</param>
+        /// <param name="method">Interface methods</param>
+        /// <param name="parameters">Parameter collection of the interface</param>
         /// <returns></returns>
         object Intercept(object target, MethodInfo method, object[] parameters);
     }

@@ -3,37 +3,37 @@
 namespace WebApiClient
 {
     /// <summary>
-    /// 定义ApiAction缓存的策略
+    /// Define ApiAction caching strategy
     /// </summary>
     public interface IApiActionCachePolicyAttribute : IApiActionCacheAttribute
     {
         /// <summary>
-        /// 返回读取缓存的策略       
+        /// Return read cache strategy       
         /// </summary>
-        /// <param name="context">上下文</param>
+        /// <param name="context">Context</param>
         /// <returns></returns>
         CachePolicy GetReadPolicy(ApiActionContext context);
 
         /// <summary>
-        /// 返回写入缓存的策略
+        /// Return write cache strategy
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">Context</param>
         /// <returns></returns>
         CachePolicy GetWritePolicy(ApiActionContext context);
     }
 
     /// <summary>
-    /// 缓存策略
+    /// Caching strategy
     /// </summary>
     public enum CachePolicy
     {
         /// <summary>
-        /// 尝试使用缓存
+        /// Try to use cache
         /// </summary>
         Include,
 
         /// <summary>
-        /// 忽略并跳过缓存
+        /// Ignore and skip cache
         /// </summary>
         Ignore
     }

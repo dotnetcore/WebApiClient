@@ -4,16 +4,16 @@ using WebApiClient.Contexts;
 namespace WebApiClient
 {
     /// <summary>
-    /// 定义自身可以做为参数并进行相应处理的对象的行为
-    /// 此对象作为参数时，不需要特性修饰
+    /// Defines the behavior of objects that can themselves be used as parameters and processed accordingly
+    /// When this object is used as a parameter, no attribute modification is required
     /// </summary>
     public interface IApiParameterable
     {
         /// <summary>
-        /// http请求之前
+        /// before http request
         /// </summary>
-        /// <param name="context">上下文</param>
-        /// <param name="parameter">特性关联的参数</param>
+        /// <param name="context">Context</param>
+        /// <param name="parameter">Parameters associated with characteristics</param>
         /// <returns></returns>
         Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter);
     }

@@ -3,42 +3,42 @@
 namespace WebApiClient
 {
     /// <summary>
-    /// 可以在客户端请求中指定的 HTTP 标头
+    /// HTTP headers that can be specified in client requests
     /// </summary>
     public enum HttpRequestHeader
     {
         /// <summary>
-        /// Cache-Control 标头，指定请求/响应链上所有缓存控制机制必须服从的指令
+        /// Cache-Control header, specifying the instructions that all cache control mechanisms on the request / response chain must obey
         /// </summary>
         [Display(Name = "Cache-Control")]
         CacheControl = 0,
 
         /// <summary>
-        /// Connection 标头，指定特定连接需要的选项
+        /// Connection header, specifying options required for a particular connection
         /// </summary>
         [Display(Name = "Connection")]
         Connection = 1,
 
         /// <summary>
-        /// Date 标头，指定开始创建请求的日期和时间
+        /// Date header, specifying the date and time when the creation of the request started
         /// </summary>
         [Display(Name = "Date")]
         Date = 2,
 
         /// <summary>
-        /// Keep-Alive 标头，指定用以维护持久性连接的参数
+        /// Keep-Alive header, specifying parameters to maintain persistent connections
         /// </summary>
         [Display(Name = "Keep-Alive")]
         KeepAlive = 3,
 
         /// <summary>
-        ///  Pragma 标头，指定可应用于请求/响应链上的任何代理的特定于实现的指令
+        /// Pragma header specifying implementation-specific instructions that can be applied to any proxy on the request / response chain
         /// </summary>
         [Display(Name = "Pragma")]
         Pragma = 4,
 
         /// <summary>
-        /// Trailer 标头，指定标头字段显示在以 chunked 传输编码方式编码的消息的尾部
+        /// Trailer header, which specifies that the header field is displayed at the end of the message encoded in chunked transfer encoding
         /// </summary>
         [Display(Name = "Trailer")]
         Trailer = 5,

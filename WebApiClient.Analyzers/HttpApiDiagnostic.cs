@@ -5,31 +5,31 @@ using System.Collections.Generic;
 namespace WebApiClient.Analyzers
 {
     /// <summary>
-    /// 表示HttpApi诊断器抽象类
+    /// Represents the HttpApi diagnostic abstract class
     /// </summary>
     abstract class HttpApiDiagnostic
     {
         /// <summary>
-        /// 获取上下文
+        /// Get context
         /// </summary>
         protected HttpApiContext Context { get; }
 
         /// <summary>
-        /// 获取诊断描述
+        /// Get diagnostic description
         /// </summary>
         public abstract DiagnosticDescriptor Descriptor { get; }
 
         /// <summary>
-        /// HttpApi诊断器
+        /// HttpApi Diagnostic
         /// </summary>
-        /// <param name="context">上下文</param>
+        /// <param name="context">Context</param>
         public HttpApiDiagnostic(HttpApiContext context)
         {
             this.Context = context;
         }
 
         /// <summary>
-        /// 创建诊断结果
+        /// Create diagnostic results
         /// </summary>
         /// <param name="location"></param>
         /// <param name="messageArgs"></param>
@@ -44,7 +44,7 @@ namespace WebApiClient.Analyzers
         }
 
         /// <summary>
-        /// 返回HttpApi的所有方法
+        /// All methods that return HttpApi
         /// </summary>
         /// <returns></returns>
         protected IEnumerable<IMethodSymbol> GetApiMethodSymbols()
@@ -64,7 +64,7 @@ namespace WebApiClient.Analyzers
         }
 
         /// <summary>
-        /// 报告诊断结果
+        /// Report diagnosis
         /// </summary>
         public void Report()
         {
@@ -83,7 +83,7 @@ namespace WebApiClient.Analyzers
         }
 
         /// <summary>
-        /// 返回所有的报告诊断
+        /// Back to all report diagnostics
         /// </summary>
         /// <returns></returns>
         protected abstract IEnumerable<Diagnostic> GetDiagnostics();

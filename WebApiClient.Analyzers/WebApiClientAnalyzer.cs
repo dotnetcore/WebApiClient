@@ -9,13 +9,13 @@ using WebApiClient.Analyzers.Invocation;
 namespace WebApiClient.Analyzers
 {
     /// <summary>
-    /// 表示WebApiClient诊断分析器
+    /// Represents WebApiClient diagnostic analyzer
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class WebApiClientAnalyzer : DiagnosticAnalyzer
     {
         /// <summary>
-        /// 获取所支持的诊断
+        /// Get Supported Diagnostics
         /// </summary>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
@@ -33,9 +33,9 @@ namespace WebApiClient.Analyzers
         }
 
         /// <summary>
-        /// 初始化
+        /// initialization
         /// </summary>
-        /// <param name="context">上下文</param>
+        /// <param name="context">Context</param>
         public override void Initialize(AnalysisContext context)
         {
             context.RegisterSyntaxNodeAction(syntaxNodeContext =>
@@ -61,7 +61,7 @@ namespace WebApiClient.Analyzers
         }
 
         /// <summary>
-        /// 返回所有HttpApi诊断器
+        /// Returns all HttpApi diagnostics
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
@@ -76,7 +76,7 @@ namespace WebApiClient.Analyzers
         }
 
         /// <summary>
-        /// 返回所有的调用诊断器
+        /// Return all call diagnostics
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>

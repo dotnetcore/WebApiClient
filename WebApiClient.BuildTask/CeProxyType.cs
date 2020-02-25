@@ -7,20 +7,20 @@ using System.Reflection;
 namespace WebApiClient.BuildTask
 {
     /// <summary>
-    /// 表示接口的代理类型
+    /// Indicates the proxy type of the interface
     /// </summary>
     class CeProxyType : CeMetadata
     {
         /// <summary>
-        /// 接口
+        /// interface
         /// </summary>
         private readonly CeInterface @interface;
 
         /// <summary>
-        /// 代理类型生成器
+        /// Proxy type generator
         /// </summary>
-        /// <param name="assembly">程序集</param>
-        /// <param name="interface">接口</param>
+        /// <param name="assembly">Assembly</param>
+        /// <param name="interface">interface</param>
         public CeProxyType(CeAssembly assembly, CeInterface @interface)
            : base(assembly)
         {
@@ -28,7 +28,7 @@ namespace WebApiClient.BuildTask
         }
 
         /// <summary>
-        /// 转换为TypeDefinition
+        /// Conversion to TypeDefinition
         /// </summary>
         /// <returns></returns>
         public TypeDefinition Build()
@@ -49,11 +49,11 @@ namespace WebApiClient.BuildTask
 
 
         /// <summary>
-        /// 生成代理类型的字段
+        /// Generate fields for proxy type
         /// </summary>
-        /// <param name="proxyType">代理类型</param>
-        /// <param name="fieldName">字段名称</param>
-        /// <param name="type">字段类型</param>
+        /// <param name="proxyType">Proxy type</param>
+        /// <param name="fieldName">Field Name</param>
+        /// <param name="type">Field Type</param>
         /// <returns></returns>
         private FieldDefinition BuildField(TypeDefinition proxyType, string fieldName, TypeReference type)
         {
@@ -64,11 +64,11 @@ namespace WebApiClient.BuildTask
         }
 
         /// <summary>
-        /// 生成代理类型的构造器
+        /// Constructor for proxy type
         /// </summary>
-        /// <param name="proxyType">代理类型</param>
-        /// <param name="fieldInterceptor">拦截器字段</param>
-        /// <param name="fieldApiMethods">接口方法集合字段</param>
+        /// <param name="proxyType">Proxy type</param>
+        /// <param name="fieldInterceptor">Interceptor field</param>
+        /// <param name="fieldApiMethods">Interface method collection fields</param>
         /// <returns></returns>
         private void BuildCtor(TypeDefinition proxyType, FieldDefinition fieldInterceptor, FieldDefinition fieldApiMethods)
         {
@@ -94,12 +94,12 @@ namespace WebApiClient.BuildTask
             var baseConstructor = this.ImportMethod<HttpApi>(item => item.IsConstructor);
             il.Emit(OpCodes.Call, baseConstructor);
 
-            // this.interceptor = 第一个参数
+            // this.interceptor = First parameter
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
             il.Emit(OpCodes.Stfld, fieldInterceptor);
 
-            // this.apiMethods = 第二个参数
+            // this.apiMethods = Second parameter
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_2);
             il.Emit(OpCodes.Stfld, fieldApiMethods);
@@ -110,12 +110,12 @@ namespace WebApiClient.BuildTask
         }
 
         /// <summary>
-        /// 生成代理类型的接口实现方法
+        /// Method for generating interface of proxy type
         /// </summary>
-        /// <param name="proxyType">代理类型</param>
-        /// <param name="apiMethods">接口方法集合</param>
-        /// <param name="fieldInterceptor">拦截器字段</param>
-        /// <param name="fieldApiMethods">接口方法集合字段</param>
+        /// <param name="proxyType">Proxy type</param>
+        /// <param name="apiMethods">Interface method collection</param>
+        /// <param name="fieldInterceptor">Interceptor field</param>
+        /// <param name="fieldApiMethods">Interface method collection fields</param>
         private void BuildMethods(TypeDefinition proxyType, MethodDefinition[] apiMethods, FieldDefinition fieldInterceptor, FieldDefinition fieldApiMethods)
         {
             const Mono.Cecil.MethodAttributes implementAttribute = Mono.Cecil.MethodAttributes.Public
@@ -144,10 +144,10 @@ namespace WebApiClient.BuildTask
                 iL.Emit(OpCodes.Ldarg_0);
                 iL.Emit(OpCodes.Ldfld, fieldInterceptor);
 
-                // 加载target参数
+                // Load target parameter
                 iL.Emit(OpCodes.Ldarg_0);
 
-                // 加载method参数 this.apiMethods[i]
+                // Load method parameters this.apiMethods[i]
                 iL.Emit(OpCodes.Ldarg_0);
                 iL.Emit(OpCodes.Ldfld, fieldApiMethods);
                 iL.Emit(OpCodes.Ldc_I4, i);
@@ -175,7 +175,7 @@ namespace WebApiClient.BuildTask
                     iL.Emit(OpCodes.Stelem_Ref);
                 }
 
-                // 加载parameters参数
+                // Load parameters
                 iL.Emit(OpCodes.Ldloc, parameters);
 
                 // Intercep(this, method, parameters)

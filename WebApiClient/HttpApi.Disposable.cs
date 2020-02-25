@@ -3,39 +3,39 @@
 namespace WebApiClient
 {
     /// <summary>
-    /// 提供HttpApi的创建、注册和解析   
+    /// Provides creation, registration, and parsing of HttpApi
     /// </summary>
     [DebuggerTypeProxy(typeof(DebugView))]
     public partial class HttpApi : Disposable, IHttpApi
     {
         /// <summary>
-        /// 释放资源
+        /// Release resources
         /// </summary>
-        /// <param name="disposing">是否也释放托管资源</param>
+        /// <param name="disposing">Whether to release managed resources</param>
         protected override void Dispose(bool disposing)
         {
             this.ApiInterceptor.Dispose();
         }
 
         /// <summary>
-        /// 调试视图
+        /// Debug view
         /// </summary>
         private partial class DebugView
         {
             /// <summary>
-            /// 获取对象是否已释放
+            /// Gets whether the object is released
             /// </summary>
             public bool IsDisposed { get; }
 
             /// <summary>
-            /// 获取拦截器
+            /// Get the interceptor
             /// </summary>
             public IApiInterceptor ApiInterceptor { get; }
 
             /// <summary>
-            /// 调试视图
+            /// Debug view
             /// </summary>
-            /// <param name="httpApi">查看的对象</param>
+            /// <param name="httpApi">Viewed</param>
             public DebugView(HttpApi httpApi)
             {
                 this.IsDisposed = httpApi.IsDisposed;

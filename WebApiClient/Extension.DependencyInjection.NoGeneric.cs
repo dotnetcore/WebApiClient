@@ -1,4 +1,4 @@
-﻿# if NETCOREAPP2_1
+﻿#if NETCOREAPP2_1
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,12 +8,12 @@ using System;
 namespace WebApiClient
 {
     /// <summary>
-    /// 提供项目相关扩展
+    /// Provide project related extensions
     /// </summary>
     public static partial class Extension
     {
         /// <summary>
-        /// 添加HttpApi代理类到服务
+        /// Add the HttpApi proxy class to the service
         /// </summary>
         /// <param name="services"></param>
         /// <param name="httpApiType"></param>
@@ -24,7 +24,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 添加HttpApi代理类到服务
+        /// Add the HttpApi proxy class to the service
         /// </summary>
         /// <param name="services"></param>
         /// <param name="httpApiType"></param>
@@ -36,7 +36,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 添加HttpApi代理类到服务
+        /// Add the HttpApi proxy class to the service
         /// </summary>
         /// <param name="services"></param>
         /// <param name="httpApiType"></param>
@@ -51,7 +51,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 配置HttpApi
+        /// Configure HttpApi
         /// </summary>
         /// <param name="services"></param>
         /// <param name="httpApiType"></param>
@@ -65,7 +65,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 配置HttpApi
+        /// Configure HttpApi
         /// </summary>
         /// <param name="services"></param>
         /// <param name="httpApiType"></param>
@@ -79,26 +79,26 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 定义httpApi的Builder的行为
+        /// Defining the behavior of httpApi's Builder
         /// </summary>
         private interface IHttpApiBuilder
         {
             /// <summary>
-            /// 添加HttpApi代理类到服务
+            /// Add the HttpApi proxy class to the service
             /// </summary>
             /// <param name="configureOptions"></param>
             /// <returns></returns>
             IHttpClientBuilder AddHttpApi(Action<HttpApiOptions, IServiceProvider> configureOptions);
 
             /// <summary>
-            /// 配置HttpApi
+            /// Configure HttpApi
             /// </summary>
             /// <param name="configureOptions"></param>
             /// <returns></returns>
             IServiceCollection ConfigureHttpApi(Action<HttpApiOptions> configureOptions);
 
             /// <summary>
-            /// 配置HttpApi
+            /// Configure HttpApi
             /// </summary>
             /// <param name="configureOptions"></param>
             /// <returns></returns>
@@ -107,7 +107,7 @@ namespace WebApiClient
 
 
         /// <summary>
-        /// httpApi的Builder
+        /// httpApi Builder
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
         private class HttpApiBuilder<THttpApi> : IHttpApiBuilder where THttpApi : class, IHttpApi
@@ -115,7 +115,7 @@ namespace WebApiClient
             private readonly IServiceCollection services;
 
             /// <summary>
-            /// httpApi的Builder
+            /// httpApi Builder
             /// </summary>
             /// <param name="services"></param>
             public HttpApiBuilder(IServiceCollection services)
@@ -124,7 +124,7 @@ namespace WebApiClient
             }
 
             /// <summary>
-            /// 添加HttpApi代理类到服务
+            /// Add the HttpApi proxy class to the service
             /// </summary>
             /// <param name="configureOptions"></param>
             /// <returns></returns>

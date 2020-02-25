@@ -4,16 +4,16 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 提供项目相关扩展
+    /// Provide project related extensions
     /// </summary>
     public static partial class Extension
     {
         /// <summary>
-        /// 返回提供请求重试的请求任务对象
+        /// Returns the request task object providing the request retry
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="task"></param>
-        /// <param name="maxCount">最大重试次数</param>
+        /// <param name="maxCount">Maximum number of retries</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
@@ -23,12 +23,12 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 返回提供请求重试的请求任务对象
+        /// Returns the request task object providing the request retry
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="task"></param>
-        /// <param name="maxCount">最大重试次数</param>
-        /// <param name="delay">各次重试的延时时间</param>
+        /// <param name="maxCount">Maximum number of retries</param>
+        /// <param name="delay">Delay time for each retry</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
@@ -38,12 +38,12 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 返回提供请求重试的请求任务对象
+        /// Returns the request task object providing the request retry
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="task"></param>
-        /// <param name="maxCount">最大重试次数</param>
-        /// <param name="delay">各次重试的延时时间</param>
+        /// <param name="maxCount">Maximum number of retries</param>
+        /// <param name="delay">Delay time for each retry</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
@@ -62,7 +62,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 返回提供异常处理请求任务对象
+        /// Returns a task object that provides exception handling requests
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="task"></param>
@@ -78,7 +78,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 当遇到异常时返回默认值
+        /// Returns the default value when an exception is encountered
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="task"></param>
@@ -90,11 +90,11 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 当遇到异常时返回默认值
+        /// Returns the default value when an exception is encountered
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="task"></param>
-        /// <param name="handler">异常处理委托</param>
+        /// <param name="handler">Exception Handling Delegate</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         public static ITask<TResult> HandleAsDefaultWhenException<TResult>(this ITask<TResult> task, Action<Exception> handler)
@@ -108,7 +108,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 转换为ITaskObservable对象
+        /// Converted to ITaskObservable object
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="task"></param>
@@ -124,7 +124,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 转换为ITaskObservable对象
+        /// Converted to ITaskObservable object
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="task"></param>

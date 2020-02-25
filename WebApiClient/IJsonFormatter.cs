@@ -3,23 +3,23 @@
 namespace WebApiClient
 {
     /// <summary>
-    /// 定义json序列化/反序列化的行为
+    /// Define json serialization / deserialization behavior
     /// </summary>
     public interface IJsonFormatter
     {
         /// <summary>
-        /// 将对象序列化为json文本
+        /// Serialize objects to json text
         /// </summary>
-        /// <param name="obj">对象</param>
-        /// <param name="options">选项</param>
+        /// <param name="obj">Object</param>
+        /// <param name="options">Options</param>
         /// <returns></returns>
         string Serialize(object obj, FormatOptions options);
 
         /// <summary>
-        /// 将json文本反序列化对象
+        /// Deserialize json text object
         /// </summary>
-        /// <param name="json">json文本内容</param>
-        /// <param name="objType">对象类型</param>
+        /// <param name="json">json text content</param>
+        /// <param name="objType">Object type</param>
         /// <returns></returns>
         object Deserialize(string json, Type objType);
     }

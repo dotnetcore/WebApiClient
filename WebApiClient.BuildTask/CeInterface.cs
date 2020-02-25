@@ -7,20 +7,20 @@ using System.Threading.Tasks;
 namespace WebApiClient.BuildTask
 {
     /// <summary>
-    /// 表示接口
+    /// Represents the interface
     /// </summary>
     class CeInterface : CeMetadata
     {
         /// <summary>
-        /// 获取接口类型
+        /// Get interface type
         /// </summary>
         public TypeDefinition Type { get; private set; }
 
         /// <summary>
-        /// 表示接口
+        /// Represents the interface
         /// </summary>
-        /// <param name="assembly">程序集</param>
-        /// <param name="interface">接口类型</param>
+        /// <param name="assembly">Assembly</param>
+        /// <param name="interface">Interface Type</param>
         public CeInterface(CeAssembly assembly, TypeDefinition @interface)
             : base(assembly)
         {
@@ -28,7 +28,7 @@ namespace WebApiClient.BuildTask
         }
 
         /// <summary>
-        /// 返回是否为继承IHttpApi的接口
+        /// Returns whether the interface inherits IHttpApi
         /// </summary>
         /// <returns></returns>
         public bool IsHttpApiInterface()
@@ -41,9 +41,9 @@ namespace WebApiClient.BuildTask
         }
 
         /// <summary>
-        /// 生成对应的代理类型
+        /// Generate the corresponding proxy type
         /// </summary>
-        /// <param name="prefix">类型名称前缀</param>
+        /// <param name="prefix">Type name prefix</param>
         /// <returns></returns>
         public TypeDefinition MakeProxyType(string prefix = "$")
         {
@@ -57,7 +57,7 @@ namespace WebApiClient.BuildTask
                 DeclaringType = this.Type.DeclaringType
             };
 
-            // 继承的接口，泛型接口就声明泛型类
+            // Inherited interfaces, generic interfaces declare generic classes
             if (this.Type.HasGenericParameters == true)
             {
                 var genericParameters = this.Type
@@ -81,9 +81,9 @@ namespace WebApiClient.BuildTask
         }
 
         /// <summary>
-        /// 生成代理类的泛型参数
+        /// Generating generic parameters for proxy classes
         /// </summary>
-        /// <param name="proxyType">代理类型</param>
+        /// <param name="proxyType">Proxy type</param>
         /// <returns></returns>
         private GenericParameter MakeGenericParameter(GenericParameter source, TypeDefinition proxyType)
         {
@@ -102,7 +102,7 @@ namespace WebApiClient.BuildTask
         }
 
         /// <summary>
-        /// 返回代理类型的可见性
+        /// Return visibility of proxy type
         /// </summary>
         /// <returns></returns>
         private TypeAttributes GetProxyTypeAttributes()
@@ -127,8 +127,8 @@ namespace WebApiClient.BuildTask
         }
 
         /// <summary>
-        /// 获取接口类型及其继承的接口的所有方法
-        /// 忽略IHttpApi接口的方法
+        /// Get all methods of an interface type and its inherited interfaces
+        /// Methods that ignore the IHttpApi interface
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
@@ -156,19 +156,19 @@ namespace WebApiClient.BuildTask
         }
 
         /// <summary>
-        /// 确保方法是支持的Api接口
+        /// Make sure the method is a supported API interface
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
         private void EnsureApiMethod(MethodDefinition method)
         {
             if (method.HasGenericParameters == true)
             {
-                throw new NotSupportedException($"不支持泛型方法：{method}");
+                throw new NotSupportedException($"Does not support generic methods：{method}");
             }
 
             if (method.IsSpecialName == true)
             {
-                throw new NotSupportedException($"不支持属性访问器：{method}");
+                throw new NotSupportedException($"Does not support property accessors：{method}");
             }
 
             var genericType = method.ReturnType;
@@ -180,7 +180,7 @@ namespace WebApiClient.BuildTask
             var isTaskType = this.IsTypeEquals(genericType, typeof(Task<>)) || this.IsTypeEquals(genericType, typeof(ITask<>));
             if (isTaskType == false)
             {
-                var message = $"返回类型必须为Task<>或ITask<>：{method}";
+                var message = $"The return type must be Task <> or ITask <>：{method}";
                 throw new NotSupportedException(message);
             }
 
@@ -188,24 +188,24 @@ namespace WebApiClient.BuildTask
             {
                 if (parameter.ParameterType.IsByReference == true)
                 {
-                    var message = $"接口参数不支持ref/out修饰：{parameter}";
+                    var message = $"Interface parameters do not support ref / out decoration：{parameter}";
                     throw new NotSupportedException(message);
                 }
             }
         }
 
         /// <summary>
-        /// TypeDefinition比较器
+        /// TypeDefinition comparator
         /// </summary>
         private class TypeDefinitionComparer : IEqualityComparer<TypeDefinition>
         {
             /// <summary>
-            /// 获取唯一实例
+            /// Get unique instance
             /// </summary>
             public static readonly TypeDefinitionComparer Instance = new TypeDefinitionComparer();
 
             /// <summary>
-            /// 是否相等
+            /// Are they equal
             /// </summary>
             /// <param name="x"></param>
             /// <param name="y"></param>
@@ -216,7 +216,7 @@ namespace WebApiClient.BuildTask
             }
 
             /// <summary>
-            /// 返回哈希值
+            /// Returns the hash value
             /// </summary>
             /// <param name="obj"></param>
             /// <returns></returns>

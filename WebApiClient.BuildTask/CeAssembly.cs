@@ -6,48 +6,48 @@ using System.Linq;
 namespace WebApiClient.BuildTask
 {
     /// <summary>
-    /// 表示程序集
+    /// Representation assembly
     /// </summary>
     class CeAssembly : IDisposable
     {
         /// <summary>
-        /// 日志
+        /// Log
         /// </summary>
         private readonly Logger logger;
 
         /// <summary>
-        /// 程序集
+        /// Assembly
         /// </summary>
         private readonly AssemblyDefinition assembly;
 
         /// <summary>
-        /// 获取所有已知类型
+        /// Get all known types
         /// </summary>
         public TypeDefinition[] KnowTypes { get; private set; }
 
         /// <summary>
-        /// 获取主模块
+        /// Get the main module
         /// </summary>
         public ModuleDefinition MainMdule { get; private set; }
 
         /// <summary>
-        /// 程序集
+        /// Assembly
         /// </summary>
-        /// <param name="fileName">文件路径</param>
-        /// <param name="searchDirectories">依赖项搜索目录</param>
-        /// <param name="logger">日志</param>
+        /// <param name="fileName">file path</param>
+        /// <param name="searchDirectories">Dependency search directory</param>
+        /// <param name="logger">Log</param>
         /// <exception cref="FileNotFoundException"></exception>
         public CeAssembly(string fileName, string[] searchDirectories, Logger logger)
         {
             if (File.Exists(fileName) == false)
             {
-                throw new FileNotFoundException("找不到文件编译输出的程序集");
+                throw new FileNotFoundException("Cannot find assembly for file compilation output");
             }
 
             var resolver = new DefaultAssemblyResolver();
             foreach (var dir in searchDirectories)
             {
-                logger.Message("添加搜索目录", dir);
+                logger.Message("Add search directory", dir);
                 resolver.AddSearchDirectory(dir);
             }
 
@@ -71,10 +71,10 @@ namespace WebApiClient.BuildTask
         }
 
         /// <summary>
-        /// 解析依赖项
+        /// Resolve dependencies
         /// </summary>
-        /// <param name="resolver">解析器</param>
-        /// <param name="assembly">依赖的程序集</param>
+        /// <param name="resolver">Parser</param>
+        /// <param name="assembly">Dependent assembly</param>
         /// <returns></returns>
         private ModuleDefinition ResolveAssemblyNameReference(DefaultAssemblyResolver resolver, AssemblyNameReference assembly)
         {
@@ -90,7 +90,7 @@ namespace WebApiClient.BuildTask
         }
 
         /// <summary>
-        /// 写入代理类型
+        /// Write proxy type
         /// </summary>
         /// <returns></returns>
         public bool WirteProxyTypes()
@@ -111,7 +111,7 @@ namespace WebApiClient.BuildTask
                     continue;
                 }
 
-                this.logger.Message("正在写入IL", proxyType.FullName);
+                this.logger.Message("Writing to IL", proxyType.FullName);
                 if (proxyType.DeclaringType != null)
                 {
                     proxyType.DeclaringType.NestedTypes.Add(proxyType);
@@ -125,7 +125,7 @@ namespace WebApiClient.BuildTask
 
             if (willSave == true)
             {
-                this.logger.Message("正在保存修改", this.assembly.FullName);
+                this.logger.Message("Saving changes", this.assembly.FullName);
                 var parameters = new WriterParameters
                 {
                     WriteSymbols = true
@@ -136,9 +136,9 @@ namespace WebApiClient.BuildTask
         }
 
         /// <summary>
-        /// 返回类型是否在模块中已声明
+        /// Whether the return type is declared in the module
         /// </summary>
-        /// <param name="typeDefinition">类型</param>
+        /// <param name="typeDefinition">Types of</param>
         /// <returns></returns>
         public bool IsDefinded(TypeDefinition typeDefinition)
         {
@@ -149,7 +149,7 @@ namespace WebApiClient.BuildTask
         }
 
         /// <summary>
-        /// 释放资源
+        /// Release resources
         /// </summary>
         public void Dispose()
         {

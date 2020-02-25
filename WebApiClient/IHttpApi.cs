@@ -3,8 +3,8 @@
 namespace WebApiClient
 {
     /// <summary>
-    /// 定义HttpApi接口的基础接口
-    /// 要求所有HttpApi接口都继承此接口
+    /// Define the basic interface of the HttpApi interface
+    /// Requires all HttpApi interfaces to inherit this interface
     /// </summary>
     public interface IHttpApi : IDisposable
     {

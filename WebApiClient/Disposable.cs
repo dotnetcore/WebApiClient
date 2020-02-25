@@ -3,17 +3,17 @@
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示支持Dispose的抽象基础类
+    /// Abstract base class representing Dispose
     /// </summary>
     public abstract class Disposable : IDisposable
     {
         /// <summary>
-        /// 获取对象是否已释放
+        /// Gets whether the object is released
         /// </summary>
         public bool IsDisposed { get; private set; }
 
         /// <summary>
-        /// 关闭和释放所有相关资源
+        /// Close and release all related resources
         /// </summary>
         public void Dispose()
         {
@@ -26,7 +26,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 析构函数
+        /// Destructor
         /// </summary>
         ~Disposable()
         {
@@ -34,9 +34,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 释放资源
+        /// Release resources
         /// </summary>
-        /// <param name="disposing">是否也释放托管资源</param>
+        /// <param name="disposing">Whether to release managed resources</param>
         protected abstract void Dispose(bool disposing);
     }
 }

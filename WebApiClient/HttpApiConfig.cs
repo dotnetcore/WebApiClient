@@ -5,93 +5,93 @@ using System.Net.Http;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示Http接口的配置项
+    /// Configuration items representing Http interface
     /// </summary>
     public class HttpApiConfig : Disposable
     {
         /// <summary>
-        /// 与HttpClient关联的IHttpHandler
+        /// IHttpHandler associated with HttpClient
         /// </summary>
         private readonly Lazy<IHttpHandler> httpHandler;
 
 
         /// <summary>
-        /// 直接赋值的日志工厂
+        /// Directly assigned log factory
         /// </summary>
         private ILoggerFactory loggerFactory;
 
         /// <summary>
-        /// 格式选项
+        /// Format options
         /// </summary>
         private FormatOptions formatOptions = new FormatOptions();
 
         /// <summary>
-        /// xml序列化工具
+        /// xml serialization tool
         /// </summary>
         private IXmlFormatter xmlFormatter = Defaults.XmlFormatter.Instance;
 
         /// <summary>
-        /// json序列化工具
+        /// json serialization tool
         /// </summary>
         private IJsonFormatter jsonFormatter = Defaults.JsonFormatter.Instance;
 
         /// <summary>
-        /// key-value序列化工具
+        /// key-value serialization tool
         /// </summary>
         private IKeyValueFormatter keyValueFormatter = Defaults.KeyValueFormatter.Instance;
 
 
 
         /// <summary>
-        /// 获取HttpClient实例
+        /// Get HttpClient instance
         /// </summary>
         public HttpClient HttpClient { get; }
 
         /// <summary>
-        /// 获取配置的自定义数据的存储和访问容器
+        /// Get configured custom data storage and access containers
         /// </summary>
         public Tags Tags { get; } = new Tags();
 
         /// <summary>
-        /// 获取与HttpClient关联的IHttpHandler
+        /// Get the IHttpHandler associated with HttpClient
         /// </summary>
         /// <exception cref="PlatformNotSupportedException"></exception>
         public IHttpHandler HttpHandler => this.httpHandler.Value;
 
         /// <summary>
-        /// 获取全局过滤器集合
-        /// 非线程安全类型
+        /// Get global filter collection
+        /// Non-thread-safe type
         /// </summary>
         public GlobalFilterCollection GlobalFilters { get; } = new GlobalFilterCollection();
 
 
 
         /// <summary>
-        /// 获取或设置是否对参数的属性值进行输入有效性验证
-        /// 默认为true
+        /// Gets or sets whether to perform input validity verification on the attribute value of the parameter
+        /// Default is true
         /// </summary>
         public bool UseParameterPropertyValidate { get; set; } = true;
 
         /// <summary>
-        /// 获取或设置是否对返回值的属性值进行输入有效性验证
-        /// 默认为true
+        /// Gets or sets whether input validity validation is performed on the attribute value of the returned value
+        /// Default is true
         /// </summary>
         public bool UseReturnValuePropertyValidate { get; set; } = true;
 
         /// <summary>
-        /// 获取或设置Api的缓存提供者
+        /// Gets or sets the cache provider of the API
         /// </summary>
         public IResponseCacheProvider ResponseCacheProvider { get; set; } = Defaults.ResponseCacheProvider.Instance;
 
 
         /// <summary>
-        /// 获取或设置服务提供者
+        /// Get or set a service provider
         /// </summary>
         public IServiceProvider ServiceProvider { get; set; }
 
         /// <summary>
-        /// 获取或设置统一日志工厂
-        /// 默认从ServiceProvider获取实例 
+        /// Get or set unified log factory
+        /// Get instance from ServiceProvider by default 
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         public ILoggerFactory LoggerFactory
@@ -101,9 +101,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 获取或设置Http服务完整主机域名
-        /// 例如http://www.webapiclient.com
-        /// 设置了HttpHost值，HttpHostAttribute将失效  
+        /// Get or set the full host domain name of the HTTP service
+        /// E.g. http://www.webapiclient.com
+        /// HttpHost value is set, HttpHostAttribute will be invalid  
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         public Uri HttpHost
@@ -113,8 +113,8 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 获取或设置请求时序列化使用的默认格式   
-        /// 影响JsonFormatter或KeyValueFormatter的序列化   
+        /// Gets or sets the default format used by serialization when requesting   
+        /// Affects serialization of JsonFormatter or KeyValueFormatter   
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         public FormatOptions FormatOptions
@@ -124,7 +124,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 获取或设置Xml格式化工具
+        /// Get or set Xml formatting tool
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         public IXmlFormatter XmlFormatter
@@ -134,7 +134,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 获取或设置Json格式化工具
+        /// Get or set Json formatting tool
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         public IJsonFormatter JsonFormatter
@@ -144,7 +144,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 获取或设置KeyValue格式化工具
+        /// Gets or sets the KeyValue formatting tool
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         public IKeyValueFormatter KeyValueFormatter
@@ -155,7 +155,7 @@ namespace WebApiClient
 
 
         /// <summary>
-        /// Http接口的配置项   
+        /// Configuration items of the Http interface   
         /// </summary>
         public HttpApiConfig() :
             this(new DefaultHttpClientHandler(), true)
@@ -163,10 +163,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// Http接口的配置项   
+        /// Configuration items of the Http interface   
         /// </summary>
-        /// <param name="handler">HTTP消息处理程序</param>
-        /// <param name="disposeHandler">用Dispose方法时，是否也Dispose handler</param>
+        /// <param name="handler">HTTP message handler</param>
+        /// <param name="disposeHandler">When using the Dispose method, is it also a Dispose handler</param>
         /// <exception cref="ArgumentNullException"></exception>
         public HttpApiConfig(HttpMessageHandler handler, bool disposeHandler = false)
             : this(new HttpClient(handler, disposeHandler))
@@ -174,9 +174,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// Http接口的配置项
+        /// Configuration items of the Http interface
         /// </summary>
-        /// <param name="httpClient">外部HttpClient实例</param>
+        /// <param name="httpClient">External HttpClient instance</param>
         /// <exception cref="ArgumentNullException"></exception>
         public HttpApiConfig(HttpClient httpClient)
         {
@@ -185,9 +185,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 释放资源
+        /// Release resources
         /// </summary>
-        /// <param name="disposing">是否也释放托管资源</param>
+        /// <param name="disposing">Whether to release managed resources</param>
         protected override void Dispose(bool disposing)
         {
             this.HttpClient.Dispose();

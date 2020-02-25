@@ -4,14 +4,14 @@ using WebApiClient.Contexts;
 namespace WebApiClient
 {
     /// <summary>
-    /// 定义ApiAction修饰特性的行为
+    /// Define the behavior of the ApiAction modifier
     /// </summary>
     public interface IApiActionAttribute : IAttributeMultiplable
     {
         /// <summary>
-        /// 执行前
+        /// Before execution
         /// </summary>
-        /// <param name="context">上下文</param>
+        /// <param name="context">Context</param>
         /// <returns></returns>
         Task BeforeRequestAsync(ApiActionContext context);
     }

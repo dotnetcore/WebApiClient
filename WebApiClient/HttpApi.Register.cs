@@ -4,19 +4,19 @@ using System.Collections.Concurrent;
 namespace WebApiClient
 {
     /// <summary>
-    /// 提供HttpApi的创建、注册和解析   
+    /// Provides creation, registration, and parsing of HttpApi
     /// </summary>
     public partial class HttpApi
     {
         /// <summary>
-        /// 工厂字典
+        /// Factory dictionary
         /// </summary>
         private static readonly ConcurrentDictionary<string, IHttpApiFactory> factories = new ConcurrentDictionary<string, IHttpApiFactory>();
 
 
         /// <summary>
-        /// 注册指定Api以及其工厂
-        /// 返回Api工厂实例
+        /// Registration of designated Api and its factory
+        /// Return to Api factory instance
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <exception cref="InvalidOperationException"></exception>
@@ -28,11 +28,11 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 注册指定Api以及其工厂
-        /// 返回Api工厂实例
+        /// Registration of designated Api and its factory
+        /// Return to Api factory instance
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
-        /// <param name="name">工厂名称</param>
+        /// <param name="name">Factory Name</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
@@ -43,11 +43,11 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 注册指定Api以及其工厂
-        /// 返回Api工厂实例
+        /// Registration of designated Api and its factory
+        /// Return to Api factory instance
         /// </summary>
-        /// <param name="name">工厂名称</param>
-        /// <param name="interfaceType">api接口类型</param>
+        /// <param name="name">Factory Name</param>
+        /// <param name="interfaceType">api interface type</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
@@ -59,10 +59,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 注册指定Api工厂
+        /// Registered designated Api factory
         /// </summary>
         /// <typeparam name="THttpApiFactory"></typeparam>    
-        /// <param name="httpApiFactory">工厂实例</param>
+        /// <param name="httpApiFactory">Factory example</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
@@ -73,11 +73,11 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 注册指定Api工厂
+        /// Registered designated Api factory
         /// </summary>
         /// <typeparam name="THttpApiFactory"></typeparam>
-        /// <param name="httpApiFactory">工厂实例</param>
-        /// <param name="name">工厂名称</param>
+        /// <param name="httpApiFactory">Factory example</param>
+        /// <param name="name">Factory Name</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
@@ -96,12 +96,12 @@ namespace WebApiClient
             {
                 return httpApiFactory;
             }
-            throw new InvalidOperationException($"不允许注册重复名称的工厂名称：{name}");
+            throw new InvalidOperationException($"Factory name registration is not allowed：{name}");
         }
 
         /// <summary>
-        /// 解析出指定Api的代理实例
-        /// 不能将该实例作全局变量引用
+        /// Parse out the proxy instance of the specified Api
+        /// Cannot reference this instance as a global variable
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <exception cref="InvalidOperationException"></exception>
@@ -113,11 +113,11 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 根据工厂名解析出其Api的代理实例
-        /// 不能将该实例作全局变量引用
+        /// Parse out the proxy instance of its Api based on the factory name
+        /// Cannot reference this instance as a global variable
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
-        /// <param name="name">工厂名称</param>
+        /// <param name="name">Factory Name</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
@@ -127,10 +127,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 根据工厂名解析出其Api的代理实例
-        /// 不能将该实例作全局变量引用
+        /// Parse out the proxy instance of its Api based on the factory name
+        /// Cannot reference this instance as a global variable
         /// </summary>
-        /// <param name="name">工厂名称</param>
+        /// <param name="name">Factory Name</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
@@ -145,13 +145,13 @@ namespace WebApiClient
             {
                 return factory.CreateHttpApi();
             }
-            throw new InvalidOperationException($"尚未Register(){nameof(name)}为{name}的接口");
+            throw new InvalidOperationException($"Not yet registered() {nameof(name)} for {name}interface");
         }
 
         /// <summary>
-        /// 返回类型的工厂名称
+        /// Factory name of return type
         /// </summary>
-        /// <param name="interfaceType">接口类型</param>
+        /// <param name="interfaceType">Interface Type</param>
         /// <returns></returns>
         private static string GetFactoryName(Type interfaceType)
         {

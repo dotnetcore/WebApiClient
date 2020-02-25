@@ -8,46 +8,46 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示要缓存的响应实体
+    /// Represents the response entity to be cached
     /// </summary>
     public class ResponseCacheEntry
     {
         /// <summary>
-        /// 获取或设置版本号
+        /// Gets or sets the version number
         /// </summary>
         public string Version { get; set; }
 
         /// <summary>
-        /// 获取或设置状态码
+        /// Gets or sets the status code
         /// </summary>
         public HttpStatusCode StatusCode { get; set; }
 
         /// <summary>
-        /// 获取或设置状态说明
+        /// Gets or sets the status description
         /// </summary>
         public string ReasonPhrase { get; set; }
 
         /// <summary>
-        /// 获取或设置请求头
+        /// Gets or sets the request header
         /// </summary>
         public Dictionary<string, string[]> Headers { get; set; }
 
         /// <summary>
-        /// 获取或设置内容的请求头
+        /// Get or set the content request header
         /// </summary>
         public Dictionary<string, string[]> ContentHeaders { get; set; }
 
         /// <summary>
-        /// 获取或设置响应内容
+        /// Get or set response content
         /// </summary>
         public byte[] Content { get; set; }
 
 
         /// <summary>
-        /// 转换为HttpResponseMessage
+        /// Converted to HttpResponseMessage
         /// </summary>
-        /// <param name="requestMessage">请求信息</param>
-        /// <param name="cacheProviderName">缓存提供者名</param>
+        /// <param name="requestMessage">Request information</param>
+        /// <param name="cacheProviderName">Cache provider name</param>
         /// <returns></returns>
         public HttpResponseMessage ToResponseMessage(HttpRequestMessage requestMessage, string cacheProviderName)
         {
@@ -82,9 +82,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 从HttpResponseMessage转换得到
+        /// Transformed from HttpResponseMessage
         /// </summary>
-        /// <param name="responseMessage">响应消息</param>
+        /// <param name="responseMessage">Response message</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         public static async Task<ResponseCacheEntry> FromResponseMessageAsync(HttpResponseMessage responseMessage)

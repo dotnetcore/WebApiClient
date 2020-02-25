@@ -5,21 +5,21 @@ using WebApiClient.Contexts;
 namespace WebApiClient
 {
     /// <summary>
-    /// 定义ApiAction过滤器的行为
+    /// Define the behavior of the ApiAction filter
     /// </summary>
     public interface IApiActionFilter
     {
         /// <summary>
-        /// 准备请求之前
+        /// Before preparing the request
         /// </summary>
-        /// <param name="context">上下文</param>
+        /// <param name="context">Context</param>
         /// <returns></returns>
         Task OnBeginRequestAsync(ApiActionContext context);
 
         /// <summary>
-        /// 请求完成之后
+        /// After the request is completed
         /// </summary>
-        /// <param name="context">上下文</param>
+        /// <param name="context">Context</param>
         /// <returns></returns>
         Task OnEndRequestAsync(ApiActionContext context);
     }

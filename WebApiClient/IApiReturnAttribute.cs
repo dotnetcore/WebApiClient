@@ -4,21 +4,21 @@ using WebApiClient.Contexts;
 namespace WebApiClient
 {
     /// <summary>
-    /// 定义回复内容处理特性的行为
+    /// Defining the behavior of response content processing features
     /// </summary>
     public interface IApiReturnAttribute
     {
         /// <summary>
-        /// 执行前
+        /// Before execution
         /// </summary>
-        /// <param name="context">上下文</param>
+        /// <param name="context">Context</param>
         /// <returns></returns>
         Task BeforeRequestAsync(ApiActionContext context);
 
         /// <summary>
         /// 执行后获取异步结果
         /// </summary>
-        /// <param name="context">上下文</param>
+        /// <param name="context">Get asynchronous results after execution</param>
         /// <returns></returns>
         Task<object> GetTaskResult(ApiActionContext context);
     }

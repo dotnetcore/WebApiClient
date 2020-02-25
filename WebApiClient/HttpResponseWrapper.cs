@@ -4,20 +4,20 @@ using System.Net.Http;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示http响应包装器抽象类
-    /// 其子类可以声明为接口的返回类型
+    /// Represents the HTTP response wrapper abstract class
+    /// Its subclasses can be declared as the return type of the interface
     /// </summary>
     public abstract class HttpResponseWrapper
     {
         /// <summary>
-        /// 获取响应消息
+        /// Get response message
         /// </summary>
         protected HttpResponseMessage HttpResponse { get; }
 
         /// <summary>
-        /// http响应包装器抽象类
+        /// http response wrapper abstract class
         /// </summary>
-        /// <param name="httpResponse">响应消息</param>
+        /// <param name="httpResponse">Response message</param>
         /// <exception cref="ArgumentNullException"></exception>
         public HttpResponseWrapper(HttpResponseMessage httpResponse)
         {

@@ -3,31 +3,31 @@
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示响应缓存结果
+    /// Respond to cached results
     /// </summary>
     [DebuggerDisplay("HasValue = {HasValue}")]
     public struct ResponseCacheResult
     {
         /// <summary>
-        /// 表示无Value的缓存结果 
+        /// Represents cached results without Value 
         /// </summary>
         public static readonly ResponseCacheResult NoValue = new ResponseCacheResult(null, false);
 
         /// <summary>
-        /// 获取缓存的值
+        /// Get the cached value
         /// </summary>
         public ResponseCacheEntry Value { get; }
 
         /// <summary>
-        /// 获取是否有缓存的值
+        /// Get whether there is a cached value
         /// </summary>
         public bool HasValue { get; }
 
         /// <summary>
-        /// 响应缓存结果
+        /// Response caching results
         /// </summary>
-        /// <param name="value">缓存的值</param>
-        /// <param name="hasValue">是否有缓存的值</param>
+        /// <param name="value">Cached value</param>
+        /// <param name="hasValue">Is there a cached value</param>
         public ResponseCacheResult(ResponseCacheEntry value, bool hasValue)
         {
             this.Value = value;

@@ -3,19 +3,19 @@
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示Json字符串
-    /// 该字符串为Value对象的json文本
+    /// Represents a Json string
+    /// The string is the json text of the Value object
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public sealed class JsonString<T> : IJsonString
     {
         /// <summary>
-        /// 获取类型值
+        /// Get type value
         /// </summary>
         public T Value { get; }
 
         /// <summary>
-        /// 获取类型值
+        /// Get type value
         /// </summary>
         object IJsonString.Value
         {
@@ -23,16 +23,16 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// Json字符串
+        /// Json string
         /// </summary>
-        /// <param name="value">字符串对应的类型值</param>
+        /// <param name="value">Type value corresponding to the string</param>
         public JsonString(T value)
         {
             this.Value = value;
         }
 
         /// <summary>
-        /// T类型隐式转换
+        /// T type implicit conversion
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -42,7 +42,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 类型隐式转换为T
+        /// Implicit conversion to type T
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>

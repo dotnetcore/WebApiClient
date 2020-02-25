@@ -4,23 +4,23 @@ using System.Diagnostics;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示Tags的一个数据项
+    /// A data item representing Tags
     /// </summary>
     [DebuggerDisplay("HasValue = {HasValue}")]
     public struct TagItem
     {
         /// <summary>
-        /// 获取值
+        /// Get value
         /// </summary>
         public object Value { get; }
 
         /// <summary>
-        /// 获取是否有值
+        /// Has Value?
         /// </summary>
         public bool HasValue { get; }
 
         /// <summary>
-        /// 获取值是否为NULL
+        /// Whether the value is NULL
         /// </summary>
         public bool IsNullValue
         {
@@ -28,14 +28,14 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 获取没有值的TagItem
+        /// Get TagItem without value
         /// </summary>
         public static TagItem NoValue { get; } = new TagItem();
 
         /// <summary>
-        /// 创建有值的数据项
+        /// Create valued data items
         /// </summary>
-        /// <param name="value">数据</param>
+        /// <param name="value">data</param>
         public TagItem(object value)
         {
             this.Value = value;
@@ -43,10 +43,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 强制转换为指定类型
-        /// 为null则返回目标类型的默认值
+        /// Cast to specified type
+        /// Null returns the default value of the target type
         /// </summary>
-        /// <typeparam name="T">指定类型</typeparam>
+        /// <typeparam name="T">Specified type</typeparam>
         /// <returns></returns>
         public T As<T>()
         {
@@ -54,10 +54,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 将值强制转换为指定类型
+        /// Cast value to specified type
         /// </summary>
-        /// <typeparam name="T">指定类型</typeparam>
-        /// <param name="defaultValue">默认值</param>
+        /// <typeparam name="T">Specified type</typeparam>
+        /// <param name="defaultValue">Defaults</param>
         /// <returns></returns>
         public T As<T>(T defaultValue)
         {
@@ -65,7 +65,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 将值转换为int
+        /// Convert value to int
         /// </summary>
         /// <returns></returns>
         public int AsInt32()
@@ -74,7 +74,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 将值转换为bool
+        /// Convert value to bool
         /// </summary>
         /// <returns></returns>
         public bool AsBoolean()
@@ -83,7 +83,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 将值转换为时间
+        /// Convert value to DateTime
         /// </summary>
         /// <returns></returns>
         public DateTime AsDateTime()
@@ -92,7 +92,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 将值转换为字符串
+        /// Convert value to string
         /// </summary>
         /// <returns></returns>
         public override string ToString()

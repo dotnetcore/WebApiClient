@@ -6,37 +6,37 @@ using System.Text;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示http代理信息
+    /// Represents http proxy information
     /// </summary>
     public class HttpProxy : IWebProxy
     {
         /// <summary>
-        /// 授权字段
+        /// Authorization field
         /// </summary>
         private ICredentials credentials;
 
         /// <summary>
-        /// 获取代理服务器域名或ip
+        /// Get proxy server domain name or ip
         /// </summary>
         public string Host { get; }
 
         /// <summary>
-        /// 获取代理服务器端口
+        /// Get the proxy server port
         /// </summary>
         public int Port { get; }
 
         /// <summary>
-        /// 获取代理服务器账号
+        /// Get proxy server account
         /// </summary>
         public string UserName { get; private set; }
 
         /// <summary>
-        /// 获取代理服务器密码
+        /// Get proxy server password
         /// </summary>
         public string Password { get; private set; }
 
         /// <summary>
-        /// 获取或设置授权信息
+        /// Get or set authorization information
         /// </summary>
         ICredentials IWebProxy.Credentials
         {
@@ -45,9 +45,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// http代理信息
+        /// http proxy information
         /// </summary>
-        /// <param name="proxyAddress">代理服务器地址</param>
+        /// <param name="proxyAddress">Proxy server address</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
@@ -58,9 +58,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// http代理信息
+        /// http proxy information
         /// </summary>
-        /// <param name="proxyAddress">代理服务器地址</param>
+        /// <param name="proxyAddress">Proxy server address</param>
         /// <exception cref="ArgumentNullException"></exception>
         public HttpProxy(Uri proxyAddress)
         {
@@ -73,10 +73,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// http代理信息
+        /// http proxy information
         /// </summary>
-        /// <param name="host">代理服务器域名或ip</param>
-        /// <param name="port">代理服务器端口</param>
+        /// <param name="host">Proxy server domain name or ip</param>
+        /// <param name="port">Proxy server port</param>
         /// <exception cref="ArgumentNullException"></exception>
         public HttpProxy(string host, int port)
         {
@@ -85,12 +85,12 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// http代理信息
+        /// http proxy information
         /// </summary>
-        /// <param name="host">代理服务器域名或ip</param>
-        /// <param name="port">代理服务器端口</param>
-        /// <param name="userName">代理服务器账号</param>
-        /// <param name="password">代理服务器密码</param>
+        /// <param name="host">Proxy server domain name or ip</param>
+        /// <param name="port">Proxy server port</param>
+        /// <param name="userName">Proxy server account</param>
+        /// <param name="password">Proxy server password</param>
         /// <exception cref="ArgumentNullException"></exception>
         public HttpProxy(string host, int port, string userName, string password)
             : this(host, port)
@@ -105,7 +105,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 通过接口设置授权信息
+        /// Setting authorization information through the interface
         /// </summary>
         /// <param name="value"></param>
         private void SetCredentialsByInterface(ICredentials value)
@@ -125,9 +125,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 转换Http Tunnel请求字符串
+        /// Convert Http Tunnel request string
         /// </summary>      
-        /// <param name="targetAddress">目标url地址</param>
+        /// <param name="targetAddress">Destination url</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         public string ToTunnelRequestString(Uri targetAddress)
@@ -156,9 +156,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 获取代理服务器地址
+        /// Get proxy server address
         /// </summary>
-        /// <param name="destination">目标地址</param>
+        /// <param name="destination">target address</param>
         /// <returns></returns>
         public Uri GetProxy(Uri destination)
         {
@@ -166,9 +166,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 是否忽略代理
+        /// Whether to ignore proxies
         /// </summary>
-        /// <param name="host">目标地址</param>
+        /// <param name="host">target address</param>
         /// <returns></returns>
         public bool IsBypassed(Uri host)
         {
@@ -176,7 +176,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 转换为字符串
+        /// Convert to string
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -185,7 +185,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 获取哈希值
+        /// Get the hash value
         /// </summary>
         /// <returns></returns>
         public override int GetHashCode()
@@ -194,7 +194,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 返回和obj是否相等
+        /// Returns whether it is equal to obj
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
@@ -208,7 +208,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 转换为代理验证器
+        /// Return and obj converted to proxy validator
         /// </summary>
         /// <returns></returns>
         public ProxyValidator ToValidator()
@@ -217,10 +217,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 从IWebProxy实例转换获得
+        /// Obtained from IWebProxy instance conversion
         /// </summary>
         /// <param name="webProxy">IWebProxy</param>
-        /// <param name="targetAddress">目标url地址</param>
+        /// <param name="targetAddress">Destination url</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         public static HttpProxy FromWebProxy(IWebProxy webProxy, Uri targetAddress)
@@ -244,11 +244,11 @@ namespace WebApiClient
 
 
         /// <summary>
-        /// 指定ip范围构建http代理服务
+        /// Specify the IP range to build the http proxy service
         /// </summary>
-        /// <param name="start">代理服务器起始ip</param>
-        /// <param name="port">代理服务器端口</param>
-        /// <param name="count">ip数量</param>
+        /// <param name="start">Proxy server start ip</param>
+        /// <param name="port">Proxy server port</param>
+        /// <param name="count">ip count</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         public static IEnumerable<HttpProxy> Range(IPAddress start, int port, int count)
@@ -265,10 +265,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 返回ip范围
+        /// Return ip range
         /// </summary>
-        /// <param name="start">起始ip</param>
-        /// <param name="count">ip数量</param>
+        /// <param name="start">Starting ip</param>
+        /// <param name="count">ip count</param>
         /// <returns></returns>
         private static IEnumerable<IPAddress> GetIPAddressRange(IPAddress start, int count)
         {
@@ -284,7 +284,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// ip转换为int
+        /// ip to int
         /// </summary>
         /// <param name="ip"></param>
         /// <returns></returns>
@@ -299,9 +299,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// int转换为ip
+        /// int to ip
         /// </summary>
-        /// <param name="value">值</param>
+        /// <param name="value">value</param>
         /// <returns></returns>
         private static IPAddress Int32ToIPAddress(int value)
         {
@@ -313,7 +313,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 比较两个代理是否等效
+        /// Compare if two agents are equivalent
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>

@@ -1,4 +1,4 @@
-﻿# if NETCOREAPP2_1
+﻿#if NETCOREAPP2_1
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,12 +8,12 @@ using System;
 namespace WebApiClient
 {
     /// <summary>
-    /// 提供项目相关扩展
+    /// Provide project related extensions
     /// </summary>
     public static partial class Extension
     {
         /// <summary>
-        /// 添加HttpApi代理类到服务
+        /// Add the HttpApi proxy class to the service
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
         /// <param name="services"></param>
@@ -24,7 +24,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 添加HttpApi代理类到服务
+        /// Add the HttpApi proxy class to the service
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
         /// <param name="services"></param>
@@ -36,7 +36,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 添加HttpApi代理类到服务
+        /// Add the HttpApi proxy class to the service
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
         /// <param name="services"></param>
@@ -65,7 +65,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 合并选项到配置
+        /// Merge options into configuration
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
         /// <param name="httpApiConfig"></param>
@@ -107,7 +107,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 配置HttpApi
+        /// Configure HttpApi
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
         /// <param name="services"></param>
@@ -119,7 +119,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 配置HttpApi
+        /// Configure HttpApi
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
         /// <param name="services"></param>

@@ -10,22 +10,22 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示httpApi的请求消息
+    /// Request message representing httpApi
     /// </summary>
     public class HttpApiRequestMessage : HttpRequestMessage
     {
         /// <summary>
-        /// 程序集版本信息
+        /// Assembly version information
         /// </summary>
         private static readonly AssemblyName assemblyName = typeof(HttpHandlerProvider).GetTypeInfo().Assembly.GetName();
 
         /// <summary>
-        /// 默认的UserAgent
+        /// Default UserAgent
         /// </summary>
         private static readonly ProductInfoHeaderValue defaultUserAgent = new ProductInfoHeaderValue(assemblyName.Name, assemblyName.Version.ToString());
 
         /// <summary>
-        /// httpApi的请求消息
+        /// httpApi request message
         /// </summary>
         public HttpApiRequestMessage()
         {
@@ -34,9 +34,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 追加Query参数到请求路径
+        /// Append Query parameters to the request path
         /// </summary>
-        /// <param name="keyValue">参数</param>
+        /// <param name="keyValue">parameter</param>
         /// <exception cref="HttpApiConfigException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(IEnumerable<KeyValuePair<string, string>> keyValue)
@@ -45,10 +45,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 追加Query参数到请求路径
+        /// Append Query parameters to the request path
         /// </summary>
-        /// <param name="keyValue">参数</param>
-        /// <param name="encoding">编码</param>
+        /// <param name="keyValue">parameter</param>
+        /// <param name="encoding">coding</param>
         /// <exception cref="HttpApiConfigException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(IEnumerable<KeyValuePair<string, string>> keyValue, Encoding encoding)
@@ -60,9 +60,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 追加Query参数到请求路径
+        /// Append Query parameters to the request path
         /// </summary>
-        /// <param name="keyValue">参数</param>
+        /// <param name="keyValue">parameter</param>
         /// <exception cref="HttpApiConfigException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(KeyValuePair<string, string> keyValue)
@@ -71,10 +71,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 追加Query参数到请求路径
+        /// Append Query parameters to the request path
         /// </summary>
-        /// <param name="keyValue">参数</param>
-        /// <param name="encoding">编码</param>
+        /// <param name="keyValue">parameter</param>
+        /// <param name="encoding">coding</param>
         /// <exception cref="HttpApiConfigException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(KeyValuePair<string, string> keyValue, Encoding encoding)
@@ -84,10 +84,10 @@ namespace WebApiClient
 
 
         /// <summary>
-        /// 追加Query参数到请求路径
+        /// Append Query parameters to the request path
         /// </summary>
-        /// <param name="key">参数名</param>
-        /// <param name="value">参数值</param>
+        /// <param name="key">parameter name</param>
+        /// <param name="value">parameter value</param>
         /// <exception cref="HttpApiConfigException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(string key, string value)
@@ -96,11 +96,11 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 追加Query参数到请求路径
+        /// Append Query parameters to the request path
         /// </summary>
-        /// <param name="key">参数名</param>
-        /// <param name="value">参数值</param>
-        /// <param name="encoding">编码</param>
+        /// <param name="key">parameter name</param>
+        /// <param name="value">parameter value</param>
+        /// <param name="encoding">coding</param>
         /// <exception cref="HttpApiConfigException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(string key, string value, Encoding encoding)
@@ -126,11 +126,11 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 添加字段到已有的Content
-        /// 要求content-type为application/x-www-form-urlencoded
+        /// Add field to existing Content
+        /// Requires content-type to be application / x-www-form-urlencoded
         /// </summary>
-        /// <param name="name">名称</param>
-        /// <param name="value">值</param>
+        /// <param name="name">name</param>
+        /// <param name="value">text</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
@@ -145,10 +145,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 添加字段到已有的Content
-        /// 要求content-type为application/x-www-form-urlencoded
+        /// Add field to existing Content
+        /// Requires content-type to be application / x-www-form-urlencoded
         /// </summary>
-        /// <param name="keyValues">键值对</param>
+        /// <param name="keyValues">Key-value pair</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
         public async Task AddFormFieldAsync(IEnumerable<KeyValuePair<string, string>> keyValues)
@@ -167,13 +167,13 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 添加文件内容到已有的Content
-        /// 要求content-type为multipart/form-data
+        /// Add file content to existing Content
+        /// Requires content-type to be multipart / form-data
         /// </summary>
-        /// <param name="stream">文件流</param>
-        /// <param name="name">名称</param>
-        /// <param name="fileName">文件名</param>
-        /// <param name="contentType">文件Mime</param>
+        /// <param name="stream">File stream</param>
+        /// <param name="name">name</param>
+        /// <param name="fileName">file name</param>
+        /// <param name="contentType">File Mime</param>
         /// <exception cref="NotSupportedException"></exception>
         public void AddMulitpartFile(Stream stream, string name, string fileName, string contentType)
         {
@@ -186,10 +186,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 添加文本内容到已有的Content
-        /// 要求content-type为multipart/form-data
+        /// Add text content to existing Content
+        /// Requires content-type to be multipart / form-data
         /// </summary>     
-        /// <param name="keyValues">键值对</param>
+        /// <param name="keyValues">Key-value pair</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         public void AddMulitpartText(IEnumerable<KeyValuePair<string, string>> keyValues)
@@ -203,11 +203,11 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 添加文本内容到已有的Content
-        /// 要求content-type为multipart/form-data
+        /// Add text content to existing Content
+        /// Requires content-type to be multipart / form-data
         /// </summary>     
-        /// <param name="name">名称</param>
-        /// <param name="value">文本</param>
+        /// <param name="name">name</param>
+        /// <param name="value">text</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         public void AddMulitpartText(string name, string value)
@@ -217,11 +217,11 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 添加文本内容到已有的Content
-        /// 要求content-type为multipart/form-data
+        /// Add text content to existing Content
+        /// Requires content-type to be multipart / form-data
         /// </summary>     
-        /// <param name="name">名称</param>
-        /// <param name="value">文本</param>
+        /// <param name="name">name</param>
+        /// <param name="value">text</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         private void AddMulitpartTextInternal(string name, string value)
@@ -239,8 +239,8 @@ namespace WebApiClient
 
 
         /// <summary>
-        /// 转换为MultipartContent
-        /// 为null则返回MultipartContent的实例
+        /// Convert to MultipartContent
+        /// If null returns an instance of MultipartContent
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
@@ -257,9 +257,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 确保前后的mediaType一致
+        /// Make sure the mediaType before and after is consistent
         /// </summary>
-        /// <param name="newMediaType">新的MediaType</param>
+        /// <param name="newMediaType">New MediaType</param>
         /// <exception cref="NotSupportedException"></exception>
         private void EnsureMediaTypeEqual(string newMediaType)
         {
@@ -271,15 +271,15 @@ namespace WebApiClient
 
             if (string.Equals(existsMediaType, newMediaType, StringComparison.OrdinalIgnoreCase) == false)
             {
-                var message = $"Content-Type必须保持为{existsMediaType}";
+                var message = $"Content-Type must remain as {existsMediaType}";
                 throw new NotSupportedException(message);
             }
         }
 
 
         /// <summary>
-        /// 确保不是Get或Head请求
-        /// 返回关联的HttpContent对象
+        /// Make sure it's not a Get or Head request
+        /// Returns the associated HttpContent object
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
         private void EnsureNotGetOrHead()
@@ -292,7 +292,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 返回请求头数据
+        /// Return request header data
         /// </summary>
         /// <returns></returns>
         public string GetHeadersString()
@@ -312,7 +312,7 @@ namespace WebApiClient
 
 
         /// <summary>
-        /// 返回请求数据
+        /// Request data returned
         /// </summary>
         /// <returns></returns>
         public async Task<string> GetRequestStringAsync()
@@ -328,7 +328,7 @@ namespace WebApiClient
 
 
         /// <summary>
-        /// 返回请求头数据
+        /// Return request header data
         /// </summary>
         /// <returns></returns>
         public override string ToString()

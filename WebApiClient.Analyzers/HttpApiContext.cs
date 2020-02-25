@@ -6,60 +6,60 @@ using System.Linq;
 namespace WebApiClient.Analyzers
 {
     /// <summary>
-    /// 表示HttpApi上下文
+    /// Represents the HttpApi context
     /// </summary>
     class HttpApiContext
     {
         /// <summary>
-        /// IHttpApi的类型名称
+        /// IHttpApi's type name
         /// </summary>
         private const string ihttpApiTypeName = "WebApiClient.IHttpApi";
 
         /// <summary>
-        /// UriAttribue的类型名称
+        /// UriAttribue's type name
         /// </summary>
         private const string uriAttributeTypeName = "WebApiClient.Attributes.UriAttribute";
 
         /// <summary>
-        /// AttributeCtorUsageAttribute的类型名称
+        /// Type name of AttributeCtorUsageAttribute
         /// </summary>
         private const string attributeCtorUsageTypName = "WebApiClient.Attributes.AttributeCtorUsageAttribute";
 
 
 
         /// <summary>
-        /// 获取语法节点上下文
+        /// Get syntax node context
         /// </summary>
         public SyntaxNodeAnalysisContext SyntaxNodeContext { get; }
 
         /// <summary>
-        /// 获取接口声明语法
+        /// Get interface declaration syntax
         /// </summary>
         public InterfaceDeclarationSyntax HttpApiSyntax { get; }
 
         /// <summary>
-        /// 获取是否为HttpApi
+        /// Gets whether it is HttpApi
         /// </summary>
         public bool IsHtttApi { get; }
 
         /// <summary>
-        /// 获取IHttpApi的类型
+        /// Get the type of IHttpApi
         /// </summary>
         public INamedTypeSymbol IHttpApiType { get; }
 
         /// <summary>
-        /// 获取UriAttribute的类型
+        /// Get the type of UriAttribute
         /// </summary>
         public INamedTypeSymbol UriAttributeType { get; }
 
         /// <summary>
-        /// 获取AttributeCtorUsageAttribute的类型
+        /// Get the type of AttributeCtorUsageAttribute
         /// </summary>
         public INamedTypeSymbol AttributeCtorUsageAttributeType { get; }
 
 
         /// <summary>
-        /// HttpApi上下文
+        /// HttpApi context
         /// </summary>
         /// <param name="syntaxNodeContext"></param>
         public HttpApiContext(SyntaxNodeAnalysisContext syntaxNodeContext)
@@ -76,7 +76,7 @@ namespace WebApiClient.Analyzers
 
 
         /// <summary>
-        /// 返回是否为HttpApi接口
+        /// Returns whether it is an HttpApi interface
         /// </summary>
         /// <returns></returns>
         private bool IsHttpApiInterface()

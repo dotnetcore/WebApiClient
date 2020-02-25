@@ -1,64 +1,64 @@
-﻿# if NETCOREAPP2_1
+﻿#if NETCOREAPP2_1
 using System;
 
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示HttpApi选项
+    /// Represents the HttpApi option
     /// </summary>
     public class HttpApiOptions
     {
         /// <summary>
-        /// 获取或设置是否对参数的属性值进行输入有效性验证
+        /// Gets or sets whether to perform input validity verification on the attribute value of the parameter
         /// </summary>
         public bool? UseParameterPropertyValidate { get; set; }
 
         /// <summary>
-        /// 获取或设置是否对返回值的属性值进行输入有效性验证
+        /// Gets or sets whether input validity validation is performed on the attribute value of the returned value
         /// </summary>
         public bool? UseReturnValuePropertyValidate { get; set; }
 
 
         /// <summary>
-        /// 获取或设置Http服务完整主机域名
-        /// 例如http://www.webapiclient.com
-        /// 设置了HttpHost值，HttpHostAttribute将失效  
+        /// Get or set the full host domain name of the HTTP service
+        /// E.g. http://www.webapiclient.com
+        /// HttpHost value is set, HttpHostAttribute will be invalid  
         /// </summary>
         public Uri HttpHost { get; set; }
 
         /// <summary>
-        /// 获取或设置请求时序列化使用的默认格式   
-        /// 影响JsonFormatter或KeyValueFormatter的序列化   
+        /// Gets or sets the default format used by serialization when requesting   
+        /// Affects serialization of JsonFormatter or KeyValueFormatter   
         /// </summary>
         public FormatOptions FormatOptions { get; set; }
 
 
         /// <summary>
-        /// 获取或设置Xml格式化工具
+        /// Get or set Xml formatting tool
         /// </summary>
         public IXmlFormatter XmlFormatter { get; set; }
 
 
         /// <summary>
-        /// 获取或设置Json格式化工具
+        /// Get or set Json formatting tool
         /// </summary>
         public IJsonFormatter JsonFormatter { get; set; }
 
 
         /// <summary>
-        /// 获取或设置KeyValue格式化工具
+        /// Gets or sets the KeyValue formatting tool
         /// </summary>
         public IKeyValueFormatter KeyValueFormatter { get; set; }
 
 
         /// <summary>
-        /// 获取或设置Api的缓存提供者
+        /// Gets or sets the cache provider of the API
         /// </summary>
         public IResponseCacheProvider ResponseCacheProvider { get; set; }
     }
 
     /// <summary>
-    /// 表示HttpApi选项
+    /// Represents the HttpApi option
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
     public class HttpApiOptions<THttpApi> : HttpApiOptions where THttpApi : class, IHttpApi

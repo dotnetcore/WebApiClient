@@ -5,19 +5,19 @@ using System.Collections.Generic;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示全局过滤器的集合
-    /// 全局过滤器执行优先级最高，执行顺序为添加的顺序
-    /// 非线程安全类型
+    /// Represents a collection of global filters
+    /// Global filters have the highest execution priority, and the execution order is the order of addition
+    /// Non-thread-safe type
     /// </summary>
     public class GlobalFilterCollection : ICollection<IApiActionFilter>
     {
         /// <summary>
-        /// 保存数据的列表
+        /// List of saved data
         /// </summary>
         private readonly List<IApiActionFilter> filters;
 
         /// <summary>
-        /// 全局过滤器的集合
+        /// Collection of global filters
         /// </summary>
         public GlobalFilterCollection()
         {
@@ -25,7 +25,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 获取过滤器的数量
+        /// Get the number of filters
         /// </summary>
         public int Count
         {
@@ -33,9 +33,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 添加全局过滤器
+        /// Adding global filters
         /// </summary>
-        /// <param name="item">全局过滤器</param>
+        /// <param name="item">Global filter</param>
         /// <exception cref="ArgumentNullException"></exception>
         public void Add(IApiActionFilter item)
         {
@@ -47,7 +47,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 清除所有全局过滤器
+        /// Clear all global filters
         /// </summary>
         public void Clear()
         {
@@ -55,9 +55,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 返回是否包含指定的全局过滤器
+        /// Returns whether the specified global filter is included
         /// </summary>
-        /// <param name="item">全局过滤器</param>
+        /// <param name="item">Global filter</param>
         /// <returns></returns>
         public bool Contains(IApiActionFilter item)
         {
@@ -65,9 +65,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 删除指定的全局过滤器
+        /// Delete the specified global filter
         /// </summary>
-        /// <param name="item">定的全局过滤器</param>
+        /// <param name="item">Defined global filters</param>
         /// <returns></returns>
         public bool Remove(IApiActionFilter item)
         {
@@ -75,7 +75,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 返回过滤器的迭代器
+        /// Iterator that returns the filter
         /// </summary>
         /// <returns></returns>
         public IEnumerator<IApiActionFilter> GetEnumerator()
@@ -83,9 +83,9 @@ namespace WebApiClient
             return this.filters.GetEnumerator();
         }
 
-        #region 显式实现
+        #region Explicit implementation
         /// <summary>
-        /// 获取是否是只读的
+        /// Get whether it is read-only
         /// </summary>
         bool ICollection<IApiActionFilter>.IsReadOnly
         {
@@ -93,7 +93,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 复制到目前数组
+        /// Copy to current array
         /// </summary>
         /// <param name="array"></param>
         /// <param name="arrayIndex"></param>
@@ -103,7 +103,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 获取迭代器
+        /// Get iterator
         /// </summary>
         /// <returns></returns>
         IEnumerator IEnumerable.GetEnumerator()

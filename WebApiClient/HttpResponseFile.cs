@@ -8,36 +8,36 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示Http响应的文件
-    /// 可以声明为接口的返回类型
+    /// File representing Http response
+    /// Can be declared as the return type of the interface
     /// </summary>
     [DebuggerDisplay("FileName = {FileName}")]
     public class HttpResponseFile : HttpResponseWrapper
     {
         /// <summary>
-        /// 下载进度变化事件
+        /// Download progress change event
         /// </summary>
         public event EventHandler<ProgressEventArgs> DownloadProgressChanged;
 
         /// <summary>
-        /// 获取响应的友好文件名称
+        /// Get the friendly file name of the response
         /// </summary>
         public string FileName { get; }
 
         /// <summary>
-        /// 获取文件的大小
+        /// Get file size
         /// </summary>
         public long? FileSize { get; }
 
         /// <summary>
-        /// 获取文件类型
+        /// Get file type
         /// </summary>
         public string MediaType { get; }
 
         /// <summary>
-        /// Http响应的文件
+        /// Http response file
         /// </summary>
-        /// <param name="response">响应消息</param>
+        /// <param name="response">Response message</param>
         /// <exception cref="ArgumentNullException"></exception>
         public HttpResponseFile(HttpResponseMessage response)
             : base(response)
@@ -48,9 +48,9 @@ namespace WebApiClient
             this.MediaType = headers.ContentType?.MediaType;
         }
         /// <summary>
-        /// 保存到指定路径
+        /// Save to specified path
         /// </summary>
-        /// <param name="filePath">文件路径和文件名</param>
+        /// <param name="filePath">File path and file name</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         public async Task SaveAsAsync(string filePath)
@@ -59,10 +59,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 保存到指定路径
+        /// Save to specified path
         /// </summary>
-        /// <param name="filePath">文件路径和文件名</param>
-        /// <param name="cancellationToken">取消令牌</param>
+        /// <param name="filePath">File path and file name</param>
+        /// <param name="cancellationToken">Cancel token</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="OperationCanceledException"></exception>
         /// <returns></returns>
@@ -86,9 +86,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 保存到目标流
+        /// Save to target stream
         /// </summary>
-        /// <param name="stream">流</param>
+        /// <param name="stream">stream</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
@@ -98,10 +98,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 保存到目标流
+        /// Save to target stream
         /// </summary>
-        /// <param name="stream">流</param>
-        /// <param name="cancellationToken">取消令牌</param>
+        /// <param name="stream">stream</param>
+        /// <param name="cancellationToken">Cancel token</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="OperationCanceledException"></exception>

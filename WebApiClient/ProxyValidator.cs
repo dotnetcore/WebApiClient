@@ -7,21 +7,21 @@ using System.Threading.Tasks;
 namespace WebApiClient
 {
     /// <summary>
-    /// 代理验证器
-    /// 提供代理的验证
+    /// Proxy validator
+    /// Provide proxy authentication
     /// </summary>
     public class ProxyValidator
     {
         /// <summary>
-        /// 获取代理
+        /// Get Agent
         /// </summary>
         public IWebProxy WebProxy { get; }
 
         /// <summary>
-        /// 代理验证器
+        /// Proxy validator
         /// </summary>
-        /// <param name="proxyHost">代理服务器域名或ip</param>
-        /// <param name="proxyPort">代理服务器端口</param>
+        /// <param name="proxyHost">Proxy server domain name or ip</param>
+        /// <param name="proxyPort">Proxy server port</param>
         /// <exception cref="ArgumentNullException"></exception>
         public ProxyValidator(string proxyHost, int proxyPort)
             : this(new HttpProxy(proxyHost, proxyPort))
@@ -29,9 +29,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 代理验证器
+        /// Proxy validator
         /// </summary>
-        /// <param name="webProxy">代理</param>
+        /// <param name="webProxy">proxy</param>
         /// <exception cref="ArgumentNullException"></exception>
         public ProxyValidator(IWebProxy webProxy)
         {
@@ -39,10 +39,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 使用http tunnel检测代理状态
+        /// Detect proxy status using http tunnel
         /// </summary>
-        /// <param name="targetAddress">目标地址，可以是http或https</param>
-        /// <param name="timeout">发送或等待数据的超时时间</param>
+        /// <param name="targetAddress">Destination address, which can be http or https</param>
+        /// <param name="timeout">Timeout for sending or waiting for data</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         public HttpStatusCode Validate(Uri targetAddress, TimeSpan? timeout = null)
@@ -55,10 +55,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 使用http tunnel检测代理状态
+        /// Detect proxy status using http tunnel
         /// </summary>
-        /// <param name="targetAddress">目标地址，可以是http或https</param>
-        /// <param name="timeout">连接或等待数据的超时时间</param>
+        /// <param name="targetAddress">Destination address, which can be http or https</param>
+        /// <param name="timeout">Timeout for connecting or waiting for data</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         public Task<HttpStatusCode> ValidateAsync(Uri targetAddress, TimeSpan? timeout = null)
@@ -71,7 +71,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 转换为字符串
+        /// Convert to string
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -80,11 +80,11 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 使用http tunnel检测代理状态
+        /// Detect proxy status using http tunnel
         /// </summary>
-        /// <param name="webProxy">web代理</param>      
-        /// <param name="targetAddress">目标地址，可以是http或https</param>
-        /// <param name="timeout">发送或等待数据的超时时间</param>
+        /// <param name="webProxy">web proxy</param>      
+        /// <param name="targetAddress">Destination address, which can be http or https</param>
+        /// <param name="timeout">Timeout for sending or waiting for data</param>
         /// <exception cref="ArgumentNullException"></exception>    
         /// <returns></returns>
         public static HttpStatusCode Validate(IWebProxy webProxy, Uri targetAddress, TimeSpan? timeout = null)
@@ -122,11 +122,11 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 使用http tunnel检测代理状态
+        /// Detect proxy status using http tunnel
         /// </summary>
-        /// <param name="webProxy">web代理</param>      
-        /// <param name="targetAddress">目标地址，可以是http或https</param>
-        /// <param name="timeout">连接或等待数据的超时时间</param>
+        /// <param name="webProxy">web proxy</param>      
+        /// <param name="targetAddress">Destination address, which can be http or https</param>
+        /// <param name="timeout">Timeout for connecting or waiting for data</param>
         /// <exception cref="ArgumentNullException"></exception>    
         /// <returns></returns>
         public static async Task<HttpStatusCode> ValidateAsync(IWebProxy webProxy, Uri targetAddress, TimeSpan? timeout = null)
@@ -158,7 +158,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// IWebProxy转换为HttpProxy
+        /// IWebProxy to HttpProxy
         /// </summary>
         /// <param name="webProxy"></param>
         /// <param name="targetAddress"></param>
@@ -183,7 +183,7 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 解析响应的状态码
+        /// Parse the status code of the response
         /// </summary>
         /// <param name="buffer"></param>
         /// <param name="length"></param>

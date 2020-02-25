@@ -5,20 +5,20 @@ using WebApiClient.Contexts;
 namespace WebApiClient
 {
     /// <summary>
-    /// 定义ApiAction缓存修饰特性的行为
+    /// Defines the behavior of the ApiAction cache modifier
     /// </summary>
     public interface IApiActionCacheAttribute
     {
         /// <summary>
-        /// 获取缓存的时间戳
+        /// Get cached timestamp
         /// </summary>
         TimeSpan Expiration { get; }
 
         /// <summary>
-        /// 返回请求对应的缓存的键
-        /// 该键用于读取或写入缓存到缓存提供者
+        /// Returns the cache key corresponding to the request
+        /// This key is used to read or write the cache to the cache provider
         /// </summary>
-        /// <param name="context">上下文</param>
+        /// <param name="context">Context</param>
         /// <returns></returns>
         Task<string> GetCacheKeyAsync(ApiActionContext context);
     }

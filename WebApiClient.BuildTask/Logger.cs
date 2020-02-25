@@ -4,22 +4,22 @@ using Microsoft.Build.Utilities;
 namespace WebApiClient.BuildTask
 {
     /// <summary>
-    /// 表示日志
+    /// Means log
     /// </summary>
     class Logger
     {
         /// <summary>
-        /// 日志标签
+        /// Log label
         /// </summary>
         private const string tagName = "WebApiClient";
 
         /// <summary>
-        /// 包装的日志类
+        /// Wrapped log class
         /// </summary>
         private readonly TaskLoggingHelper logger;
 
         /// <summary>
-        /// 表示日志
+        /// Means log
         /// </summary>
         /// <param name="logger"></param>
         public Logger(TaskLoggingHelper logger)
@@ -28,10 +28,10 @@ namespace WebApiClient.BuildTask
         }
 
         /// <summary>
-        /// 输出消息
+        /// Output message
         /// </summary>
-        /// <param name="action">行为</param>
-        /// <param name="value">值</param>
+        /// <param name="action">behavior</param>
+        /// <param name="value">value</param>
         public void Message(string action, string value)
         {
             var message = $"{action}: {value}";
@@ -39,9 +39,9 @@ namespace WebApiClient.BuildTask
         }
 
         /// <summary>
-        /// 输出消息
+        /// Output message
         /// </summary>
-        /// <param name="message">消息</param>
+        /// <param name="message">message</param>
         public void Message(string message)
         {
             var log = $"{tagName} -> {message}";
@@ -49,9 +49,9 @@ namespace WebApiClient.BuildTask
         }
 
         /// <summary>
-        /// 输出异常
+        /// Error message
         /// </summary>
-        /// <param name="message">异常</param>
+        /// <param name="message">message</param>
         public void Error(string message)
         {
             var log = $"{tagName} -> {message}";

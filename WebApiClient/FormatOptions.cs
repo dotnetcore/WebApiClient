@@ -4,30 +4,30 @@ using System.Globalization;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示格式化选项
+    /// Represents formatting options
     /// </summary>
     public class FormatOptions
     {
         /// <summary>
-        /// 日期时间格式
+        /// Date time format
         /// </summary>
         private string datetimeFormat;
 
         /// <summary>
-        /// 获取或设置序列化时是否使用骆驼命名    
-        /// 默认为false
+        /// Gets or sets whether to use camel naming when serializing    
+        /// Default is false
         /// </summary>
         public bool UseCamelCase { get; set; }
 
         /// <summary>
-        /// 获取或设置是否忽略null值属性的序列化
-        /// 默认为false
+        /// Gets or sets whether to ignore serialization of null value attributes
+        /// Default is false
         /// </summary>
         public bool IgnoreNullProperty { get; set; }
 
         /// <summary>
-        /// 获取或设置序列化DateTime类型使用的格式
-        /// 默认为本地日期时间格式
+        /// Gets or sets the format used by the serialized DateTime type
+        /// Default is local datetime format
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         public string DateTimeFormat
@@ -51,10 +51,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 当datetimeFormat不为null且有变化时
-        /// 则克隆并使用新的datetimeFormat
+        /// When datetimeFormat is not null and changes
+        /// Then clone and use the new datetimeFormat
         /// </summary>
-        /// <param name="datetimeFormat">日期时间格式</param>
+        /// <param name="datetimeFormat">Date time format</param>
         /// <returns></returns>
         public FormatOptions CloneChange(string datetimeFormat)
         {
@@ -77,9 +77,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 格式化时间为文本
+        /// Format time as text
         /// </summary>
-        /// <param name="datetime">时间</param>
+        /// <param name="datetime">time</param>
         /// <returns></returns>
         public string FormatDateTime(DateTime? datetime)
         {
@@ -91,9 +91,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 骆驼命名
+        /// Camel naming
         /// </summary>
-        /// <param name="name">名称</param>
+        /// <param name="name">name</param>
         /// <returns></returns>
         public static string CamelCase(string name)
         {

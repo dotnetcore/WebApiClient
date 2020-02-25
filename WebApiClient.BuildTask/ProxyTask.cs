@@ -8,25 +8,25 @@ using System.Linq;
 namespace WebApiClient.BuildTask
 {
     /// <summary>
-    /// 表示插入代理IL任务
+    /// Represents inserting a proxy IL task
     /// </summary>
     public class ProxyTask : Task
     {
         /// <summary>
-        /// 插入代理的程序集
+        /// Inserting the assembly of the agent
         /// </summary>
         [Required]
         public string TargetAssembly { get; set; }
 
         /// <summary>
-        /// 引用的程序集
-        /// 逗号分隔
+        /// Referenced assembly
+        /// Comma separated
         /// </summary>
         [Required]
         public ITaskItem[] References { get; set; }
 
         /// <summary>
-        /// 执行任务
+        /// Perform tasks
         /// </summary>
         /// <returns></returns>
         public override bool Execute()
@@ -34,7 +34,7 @@ namespace WebApiClient.BuildTask
             var logger = new Logger(this.Log);
             if (File.Exists(this.TargetAssembly) == false)
             {
-                logger.Message($"找不到文件编译输出的程序集{this.TargetAssembly}");
+                logger.Message($"Cannot find assembly for file compilation output {this.TargetAssembly}");
                 return true;
             }
 
@@ -56,7 +56,7 @@ namespace WebApiClient.BuildTask
         }
 
         /// <summary>
-        /// 返回依赖搜索目录
+        /// Back to dependent search directory
         /// </summary>
         /// <returns></returns>
         private IEnumerable<string> GetSearchDirectories()

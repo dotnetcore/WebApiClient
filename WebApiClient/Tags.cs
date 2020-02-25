@@ -6,33 +6,33 @@ using System.Linq;
 namespace WebApiClient
 {
     /// <summary>
-    /// 表示自定义数据的存储和访问容器
-    /// 线程安全类型
+    /// Represents a storage and access container for custom data
+    /// Thread-safe type
     /// </summary>
     [DebuggerDisplay("Count = {lazy.Value.Count}")]
     [DebuggerTypeProxy(typeof(DebugView))]
     public sealed class Tags
     {
         /// <summary>
-        /// 同步锁
+        /// Sync lock
         /// </summary>
         private readonly object syncRoot = new object();
 
         /// <summary>
-        /// 数据字典
+        /// Data Dictionary
         /// </summary>
         private readonly Lazy<Dictionary<string, object>> lazy = new Lazy<Dictionary<string, object>>(() => new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase), true);
 
 
         /// <summary>
-        /// 获取或设置唯一标识符
+        /// Gets or sets a unique identifier
         /// </summary>
         public string Id { get; set; }
 
         /// <summary>
-        /// 根据键获取值
+        /// Get value by key
         /// </summary>
-        /// <param name="key">键</param>
+        /// <param name="key">key</param>
         /// <returns></returns>
         public TagItem this[string key]
         {
@@ -40,9 +40,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 根据键获取值
+        /// Get value by key
         /// </summary>
-        /// <param name="key">键</param>
+        /// <param name="key">key</param>
         /// <returns></returns>
         public TagItem Get(string key)
         {
@@ -57,9 +57,9 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 删除指定的键
+        /// Delete the specified key
         /// </summary>
-        /// <param name="key">键</param>
+        /// <param name="key">key</param>
         /// <returns></returns>
         public bool Remove(string key)
         {
@@ -75,11 +75,11 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 根据键取出埴
-        /// 取出之后删除相应的键
-        /// 等同于Get之后再Remove
+        /// Remove by key
+        /// Delete the corresponding key after removing
+        /// Same as Get and then Remove
         /// </summary>
-        /// <param name="key">键</param>
+        /// <param name="key">key</param>
         /// <returns></returns>
         public TagItem Take(string key)
         {
@@ -95,10 +95,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 根据键设置值
+        /// Set value by key
         /// </summary>
-        /// <param name="key">键</param>
-        /// <param name="value">值</param>
+        /// <param name="key">key</param>
+        /// <param name="value">value</param>
         public void Set(string key, object value)
         {
             lock (this.syncRoot)
@@ -108,26 +108,26 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 调试视图
+        /// Debug view
         /// </summary>
         private class DebugView
         {
             /// <summary>
-            /// 查看的对象
+            /// Values
             /// </summary>
             private readonly IEnumerable<KeyValuePair<string, object>> value;
 
             /// <summary>
-            /// 调试视图
+            /// Debug view
             /// </summary>
-            /// <param name="target">查看的对象</param>
+            /// <param name="target">Viewed</param>
             public DebugView(Tags target)
             {
                 this.value = target.lazy.IsValueCreated ? target.lazy.Value : null;
             }
 
             /// <summary>
-            /// 查看的内容
+            /// What to view
             /// </summary>
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
             public KeyValuePair<string, object>[] Values

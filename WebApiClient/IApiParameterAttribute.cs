@@ -4,15 +4,15 @@ using WebApiClient.Contexts;
 namespace WebApiClient
 {
     /// <summary>
-    /// 定义Api参数修饰特性的行为
+    /// Defining the behavior of Api parameter modification properties
     /// </summary>
     public interface IApiParameterAttribute
     {
         /// <summary>
-        /// http请求之前
+        /// before http request
         /// </summary>
-        /// <param name="context">上下文</param>
-        /// <param name="parameter">特性关联的参数</param>
+        /// <param name="context">Context</param>
+        /// <param name="parameter">Parameters associated with characteristics</param>
         /// <returns></returns>
         Task BeforeRequestAsync(ApiActionContext context, ApiParameterDescriptor parameter);
     }

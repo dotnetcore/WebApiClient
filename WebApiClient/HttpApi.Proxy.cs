@@ -4,14 +4,14 @@ using WebApiClient.Defaults;
 namespace WebApiClient
 {
     /// <summary>
-    /// 提供HttpApi的创建、注册和解析   
+    /// Provides creation, registration, and parsing of HttpApi 
     /// </summary>
     public partial class HttpApi
-    { 
+    {
         /// <summary>
-        /// 创建指定接口的代理实例
+        /// Create a proxy instance for the specified interface
         /// </summary>
-        /// <typeparam name="TInterface">接口类型</typeparam>
+        /// <typeparam name="TInterface">Interface Type</typeparam>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="TypeLoadException"></exception>
@@ -23,10 +23,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 创建指定接口的代理实例
+        /// Create a proxy instance for the specified interface
         /// </summary>
-        /// <typeparam name="TInterface">接口类型</typeparam>
-        /// <param name="httpHost">Http服务完整主机域名，如http://www.webapiclient.com</param>
+        /// <typeparam name="TInterface">Interface Type</typeparam>
+        /// <param name="httpHost">Http service full host domain name, such as http://www.webapiclient.com</param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="UriFormatException"></exception>
@@ -43,10 +43,10 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 创建指定接口的代理实例
+        /// Create a proxy instance for the specified interface
         /// </summary>
-        /// <typeparam name="TInterface">接口类型</typeparam>
-        /// <param name="httpApiConfig">接口配置</param>
+        /// <typeparam name="TInterface">Interface Type</typeparam>
+        /// <param name="httpApiConfig">Interface configuration</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
@@ -58,11 +58,11 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 创建指定接口的代理实例
-        /// 该代理实例派生于HttpApi类型
+        /// Create a proxy instance for the specified interface
+        /// The proxy instance is derived from the HttpApi type
         /// </summary>
-        /// <param name="interfaceType">请求接口类型</param>
-        /// <param name="httpApiConfig">接口配置</param>
+        /// <param name="interfaceType">Request interface type</param>
+        /// <param name="httpApiConfig">Interface configuration</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
@@ -79,11 +79,11 @@ namespace WebApiClient
         }
 
         /// <summary>
-        /// 创建指定接口的代理实例
-        /// 该代理实例派生于HttpApi类型
+        /// Create a proxy instance for the specified interface
+        /// The proxy instance is derived from the HttpApi type
         /// </summary>
-        /// <param name="interfaceType">请求接口类型</param>
-        /// <param name="apiInterceptor">http接口调用拦截器</param>
+        /// <param name="interfaceType">Request interface type</param>
+        /// <param name="apiInterceptor">http interface call interceptor</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
