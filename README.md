@@ -64,9 +64,9 @@ var state = await api.AddAsync(user);
 * ~~DebugAttribute~~
 
 #### 4. Wiki文档
-1. [WebApiClient基础](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E5%9F%BA%E7%A1%80)
+1. [WebApiClient基础](https://github.com/dotnetcore/WebApiClient/wiki/WebApiClient%E5%9F%BA%E7%A1%80)
 2. [WebApiClient进阶](https://github.com/dotnetcore/WebApiClient/wiki/WebApiClient%E8%BF%9B%E9%98%B6)
-3. [WebApiClient高级](https://github.com/xljiulang/WebApiClient/wiki/WebApiClient%E9%AB%98%E7%BA%A7)
+3. [WebApiClient高级](https://github.com/dotnetcore/WebApiClient/wiki/WebApiClient%E9%AB%98%E7%BA%A7)
 4. [WebApiClient.Extensions](https://github.com/xljiulang/WebApiClient.Extensions)
 5. [WebApiClient.Tools.Swagger](https://github.com/xljiulang/WebApiClient.Tools)
 
