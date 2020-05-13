@@ -23,7 +23,7 @@ namespace WebApiClientCore.Analyzers
         /// <summary>
         /// AttributeCtorUsageAttribute的类型名称
         /// </summary>
-        private const string attributeCtorUsageTypName = "WebApiClientCore.Attributes.AttributeCtorUsageAttribute";
+        private const string attributeCtorUsageTypName = "WebApiClientCore.AttributeCtorUsageAttribute";
 
 
 

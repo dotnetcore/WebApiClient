@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebApiClientCore.Attributes
+namespace WebApiClientCore
 {
     /// <summary>
     /// 表示特性的构造函数使用范围

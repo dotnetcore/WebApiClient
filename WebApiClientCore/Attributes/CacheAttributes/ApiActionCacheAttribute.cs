@@ -6,7 +6,7 @@ namespace WebApiClientCore.Attributes
 {
     /// <summary>
     /// 表示使用缓存的特性
-    /// 缓存功能依赖于HttpApiConfig.ResponseCacheProvider
+    /// 缓存功能依赖于IResponseCacheProvider
     /// </summary>
     [DebuggerDisplay("Expiration = {Expiration}")]
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
