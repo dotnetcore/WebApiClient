@@ -67,7 +67,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.TryAddSingleton<IXmlFormatter, XmlFormatter>();
             services.TryAddSingleton<IJsonFormatter, JsonFormatter>();
-            services.TryAddSingleton<IKeyValueFormatter, ValueFormatter>();
+            services.TryAddSingleton<IKeyValueFormatter, KeyValueFormatter>();
             services.TryAddSingleton<IResponseCacheProvider, ResponseCacheProvider>();
             services.TryAddSingleton<IApiActionDescriptorProvider, ApiActionDescriptorProvider>();
             return services;

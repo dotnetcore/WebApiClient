@@ -8,7 +8,7 @@ namespace WebApiClientCore.Defaults
     /// <summary>
     /// 默认的keyValue序列化工具
     /// </summary>
-    public class ValueFormatter : IKeyValueFormatter
+    public class KeyValueFormatter : IKeyValueFormatter
     {
         /// <summary>
         /// 序列化对象为键值对

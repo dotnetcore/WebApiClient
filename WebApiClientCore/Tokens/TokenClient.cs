@@ -19,7 +19,7 @@ namespace WebApiClientCore.Tokens
         /// <summary>
         /// keyValue序列化工具
         /// </summary>
-        private static readonly IKeyValueFormatter keyValueFormatter = new ValueFormatter();
+        private static readonly IKeyValueFormatter keyValueFormatter = new KeyValueFormatter();
 
 
         /// <summary>
