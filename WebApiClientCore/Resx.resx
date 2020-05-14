@@ -126,6 +126,9 @@
   <data name="required_HttpHost" xml:space="preserve">
     <value>未配置HttpHost，接口需要先配置HttpHost</value>
   </data>
+  <data name="required_InterfaceType" xml:space="preserve">
+    <value>类型{0}必须为接口类型</value>
+  </data>
   <data name="required_NameAndValue" xml:space="preserve">
     <value>请传入name和value参数</value>
   </data>
@@ -135,7 +138,22 @@
   <data name="required_RequestUri" xml:space="preserve">
     <value>未配置RequestUri，RequestUri不能为null</value>
   </data>
+  <data name="timeout_OutOfRange" xml:space="preserve">
+    <value>Timeout值{0}不能超时HttpClient.Timeout</value>
+  </data>
+  <data name="unsupported_ByRef" xml:space="preserve">
+    <value>接口参数不支持ref/out修饰: {0}</value>
+  </data>
+  <data name="unsupported_GenericMethod" xml:space="preserve">
+    <value>不支持泛型方法: {0}</value>
+  </data>
   <data name="unsupported_ManaulCookie" xml:space="preserve">
     <value>不支持手动设置Cookie</value>
+  </data>
+  <data name="unsupported_Property" xml:space="preserve">
+    <value>不支持属性访问器: {0}</value>
+  </data>
+  <data name="unsupported_ReturnType" xml:space="preserve">
+    <value>返回类型必须为Task或Task&lt;&gt;: {0}</value>
   </data>
 </root>

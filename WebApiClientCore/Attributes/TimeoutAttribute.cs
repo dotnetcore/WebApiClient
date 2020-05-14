@@ -106,7 +106,7 @@ namespace WebApiClientCore.Attributes
             var maxTimeout = context.HttpClient.Timeout;
             if (maxTimeout >= System.TimeSpan.Zero && timeout > maxTimeout)
             {
-                throw new HttpApiInvalidOperationException($"Timeout值{timeout}不能超时HttpClient.Timeout");
+                throw new HttpApiInvalidOperationException(Resx.timeout_OutOfRange.Format(timeout));
             }
 
             var cancellation = new CancellationTokenSource(timeout);

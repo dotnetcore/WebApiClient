@@ -82,7 +82,7 @@ namespace WebApiClientCore
             this.Encoding = encoding ?? throw new ArgumentNullException(nameof(encoding));
             if (uri.IsAbsoluteUri == false)
             {
-                throw new UriFormatException($"{nameof(uri)}必须为绝对完整URI");
+                throw new UriFormatException(Resx.required_AbsoluteUri.Format(nameof(uri)));
             }
 
             const int delimiterLength = 3;

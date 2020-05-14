@@ -88,6 +88,15 @@ namespace WebApiClientCore {
         }
         
         /// <summary>
+        ///   查找类似 类型{0}必须为接口类型 的本地化字符串。
+        /// </summary>
+        internal static string required_InterfaceType {
+            get {
+                return ResourceManager.GetString("required_InterfaceType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 请传入name和value参数 的本地化字符串。
         /// </summary>
         internal static string required_NameAndValue {
@@ -115,11 +124,56 @@ namespace WebApiClientCore {
         }
         
         /// <summary>
+        ///   查找类似 Timeout值{0}不能超时HttpClient.Timeout 的本地化字符串。
+        /// </summary>
+        internal static string timeout_OutOfRange {
+            get {
+                return ResourceManager.GetString("timeout_OutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 接口参数不支持ref/out修饰: {0} 的本地化字符串。
+        /// </summary>
+        internal static string unsupported_ByRef {
+            get {
+                return ResourceManager.GetString("unsupported_ByRef", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 不支持泛型方法: {0} 的本地化字符串。
+        /// </summary>
+        internal static string unsupported_GenericMethod {
+            get {
+                return ResourceManager.GetString("unsupported_GenericMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 不支持手动设置Cookie 的本地化字符串。
         /// </summary>
         internal static string unsupported_ManaulCookie {
             get {
                 return ResourceManager.GetString("unsupported_ManaulCookie", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 不支持属性访问器: {0} 的本地化字符串。
+        /// </summary>
+        internal static string unsupported_Property {
+            get {
+                return ResourceManager.GetString("unsupported_Property", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 返回类型必须为Task或Task&lt;&gt;: {0} 的本地化字符串。
+        /// </summary>
+        internal static string unsupported_ReturnType {
+            get {
+                return ResourceManager.GetString("unsupported_ReturnType", resourceCulture);
             }
         }
     }

@@ -79,7 +79,7 @@ namespace WebApiClientCore
         {
             if (interfaceType.IsInterface == false)
             {
-                throw new ArgumentException("类型必须为接口类型");
+                throw new ArgumentException(Resx.required_InterfaceType.Format(interfaceType.Name));
             }
 
             var apiMethods = new[] { interfaceType }.Concat(interfaceType.GetInterfaces())
@@ -100,17 +100,17 @@ namespace WebApiClientCore
         {
             if (method.IsGenericMethod == true)
             {
-                throw new NotSupportedException($"不支持泛型方法：{method}");
+                throw new NotSupportedException(Resx.unsupported_GenericMethod.Format(method));
             }
 
             if (method.IsSpecialName == true)
             {
-                throw new NotSupportedException($"不支持属性访问器：{method}");
+                throw new NotSupportedException(Resx.unsupported_Property.Format(method));
             }
 
             if (method.ReturnType.IsInheritFrom<Task>() == false)
             {
-                var message = $"返回类型必须为Task或Task<>：{method}";
+                var message = Resx.unsupported_ReturnType.Format(method);
                 throw new NotSupportedException(message);
             }
 
@@ -118,7 +118,7 @@ namespace WebApiClientCore
             {
                 if (parameter.ParameterType.IsByRef == true)
                 {
-                    var message = $"接口参数不支持ref/out修饰：{parameter}";
+                    var message = Resx.unsupported_ByRef.Format(parameter);
                     throw new NotSupportedException(message);
                 }
             }
