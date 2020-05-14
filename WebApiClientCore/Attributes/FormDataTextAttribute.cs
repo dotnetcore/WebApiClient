@@ -55,7 +55,7 @@ namespace WebApiClientCore.Attributes
         {
             if (string.IsNullOrEmpty(this.name))
             {
-                throw new HttpApiInvalidOperationException($"请传入name和value参数：{nameof(FormDataTextAttribute)}");
+                throw new HttpApiInvalidOperationException(Resx.required_NameAndValue);
             }
 
             context.RequestMessage.AddFormDataText(this.name, this.value);

@@ -61,6 +61,15 @@ namespace WebApiClientCore {
         }
         
         /// <summary>
+        ///   查找类似 UriAttribute必须修饰于第一个参数 的本地化字符串。
+        /// </summary>
+        internal static string invalid_UriAttribute {
+            get {
+                return ResourceManager.GetString("invalid_UriAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 {0}要求为绝对Uri 的本地化字符串。
         /// </summary>
         internal static string required_AbsoluteUri {
@@ -79,6 +88,15 @@ namespace WebApiClientCore {
         }
         
         /// <summary>
+        ///   查找类似 请传入name和value参数 的本地化字符串。
+        /// </summary>
+        internal static string required_NameAndValue {
+            get {
+                return ResourceManager.GetString("required_NameAndValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 JsonPatchContent的请求方法要求为PATCH 的本地化字符串。
         /// </summary>
         internal static string required_PatchMethod {
@@ -93,6 +111,15 @@ namespace WebApiClientCore {
         internal static string required_RequestUri {
             get {
                 return ResourceManager.GetString("required_RequestUri", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 不支持手动设置Cookie 的本地化字符串。
+        /// </summary>
+        internal static string unsupported_ManaulCookie {
+            get {
+                return ResourceManager.GetString("unsupported_ManaulCookie", resourceCulture);
             }
         }
     }

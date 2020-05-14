@@ -117,16 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="invalid_UriAttribute" xml:space="preserve">
+    <value>UriAttribute必须修饰于第一个参数</value>
+  </data>
   <data name="required_AbsoluteUri" xml:space="preserve">
     <value>{0}要求为绝对Uri</value>
   </data>
   <data name="required_HttpHost" xml:space="preserve">
     <value>未配置HttpHost，接口需要先配置HttpHost</value>
   </data>
+  <data name="required_NameAndValue" xml:space="preserve">
+    <value>请传入name和value参数</value>
+  </data>
   <data name="required_PatchMethod" xml:space="preserve">
     <value>JsonPatchContent的请求方法要求为PATCH</value>
   </data>
   <data name="required_RequestUri" xml:space="preserve">
     <value>未配置RequestUri，RequestUri不能为null</value>
+  </data>
+  <data name="unsupported_ManaulCookie" xml:space="preserve">
+    <value>不支持手动设置Cookie</value>
   </data>
 </root>

@@ -111,7 +111,7 @@ namespace WebApiClientCore.Attributes
         {
             if (string.Equals(this.name, "Cookie", StringComparison.OrdinalIgnoreCase))
             {
-                throw new HttpApiInvalidOperationException($"不支持手动设置Cookie");
+                throw new HttpApiInvalidOperationException(Resx.unsupported_ManaulCookie);
             }
 
             var headers = context.RequestMessage.Headers;

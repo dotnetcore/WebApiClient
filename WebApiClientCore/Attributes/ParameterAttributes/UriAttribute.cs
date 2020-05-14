@@ -27,7 +27,7 @@ namespace WebApiClientCore.Attributes
 
             if (context.Parameter.Index > 0)
             {
-                throw new HttpApiInvalidOperationException(this.GetType().Name + "必须修饰于第一个参数");
+                throw new HttpApiInvalidOperationException(Resx.invalid_UriAttribute);
             }
 
             var relative = new Uri(context.ParameterValue.ToString(), UriKind.RelativeOrAbsolute);
@@ -40,7 +40,7 @@ namespace WebApiClientCore.Attributes
                 var baseUri = context.RequestMessage.RequestUri;
                 if (baseUri == null)
                 {
-                    throw new HttpApiInvalidOperationException($"请配置{nameof(HttpHostAttribute)}或者Url使用绝对路径");
+                    throw new HttpApiInvalidOperationException(Resx.required_HttpHost);
                 }
                 context.RequestMessage.RequestUri = new Uri(baseUri, relative);
             }
