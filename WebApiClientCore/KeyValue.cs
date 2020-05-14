@@ -27,8 +27,12 @@ namespace WebApiClientCore
         /// <exception cref="ArgumentNullException"></exception>
         public KeyValue(string key, string value)
         {
-            this.Key = key ?? throw new ArgumentNullException(nameof(key));
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+            this.Key = key;
             this.Value = value;
-        } 
+        }
     }
 }
