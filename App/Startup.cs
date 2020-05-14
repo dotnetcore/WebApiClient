@@ -51,10 +51,7 @@ namespace App
             });
 
             // userApi客户端后台服务
-            services.AddHostedService<UserHostedService>();
-
-            // 路由小写
-            services.AddRouting(c => c.LowercaseUrls = true);
+            services.AddHostedService<UserHostedService>(); 
         }
 
         /// <summary>
@@ -70,10 +67,7 @@ namespace App
             else
             {
                 app.UseHsts();
-            }
-
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
+            } 
 
             app.UseRouting();
 

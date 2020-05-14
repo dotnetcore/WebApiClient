@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Threading;
@@ -11,16 +12,31 @@ namespace App.Clients
     public class UserHostedService : BackgroundService
     {
         private readonly IServiceProvider service;
+        private readonly ILogger<UserHostedService> logger;
 
-        public UserHostedService(IServiceProvider service)
+        public UserHostedService(IServiceProvider service, ILogger<UserHostedService> logger)
         {
             this.service = service;
+            this.logger = logger;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            using var scope = this.service.CreateScope();
-            var userApi = scope.ServiceProvider.GetService<IUserApi>();
+            try
+            {
+                using var scope = this.service.CreateScope();
+                await this.RunAsync(scope.ServiceProvider);
+                await this.RunAsync(scope.ServiceProvider);
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, ex.Message);
+            }
+        }
+
+        private async Task RunAsync(IServiceProvider services)
+        {
+            var userApi = services.GetService<IUserApi>();
 
             var user = new User
             {
