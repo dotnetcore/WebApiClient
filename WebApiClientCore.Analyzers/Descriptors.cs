@@ -11,37 +11,37 @@ namespace WebApiClientCore.Analyzers
         /// 特性诊断描述器
         /// </summary>
         public static DiagnosticDescriptor AttributeDescriptor { get; }
-           = Create("WA1001", "不匹配的特性构造函数", "不支持特性的此构造函数，请使用其它构造函数");
+           = Create("WA1001", Resx.WA1001_title, Resx.WA1001_message);
 
         /// <summary>
         /// 方法返回类型诊断描述器
         /// </summary>
         public static DiagnosticDescriptor ReturnTypeDescriptor { get; }
-            = Create("WA1002", "不支持的返回类型", "返回类型必须为Task<>或Task");
+            = Create("WA1002", Resx.WA1002_title, Resx.WA1002_message);
 
         /// <summary>
         /// 引用参数诊断描述器
         /// </summary>
         public static DiagnosticDescriptor RefParameterDescriptor { get; }
-            = Create("WA1003", "不支持的ref/out修饰", "参数不支持ref/out等修饰");
+            = Create("WA1003", Resx.WA1003_title, Resx.WA1003_message);
 
         /// <summary>
         /// 非方法声明诊断描述器
         /// </summary>
         public static DiagnosticDescriptor NotMethodDefindedDescriptor { get; }
-            = Create("WA1004", "不支持的非方法声明", "不支持的非方法声明，只允许方法的声明");
+            = Create("WA1004", Resx.WA1004_title, Resx.WA1004_message);
 
         /// <summary>
         /// 泛型方法诊断描述器
         /// </summary>
         public static DiagnosticDescriptor GenericMethodDescriptor { get; }
-            = Create("WA1005", "不支持的泛型方法", "不支持声明泛型方法");
+            = Create("WA1005", Resx.WA1005_title, Resx.WA1005_message);
 
         /// <summary>
         /// UriAttribute诊断描述器
         /// </summary>
         public static DiagnosticDescriptor UriAttributeDescriptor { get; }
-            = Create("WA1006", "不支持的修饰的参数索引", "UriAttribute只能修饰于第一个参数");
+            = Create("WA1006", Resx.WA1006_title, Resx.WA1006_message);
 
         /// <summary>
         /// 创建诊断描述器
