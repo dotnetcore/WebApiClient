@@ -9,7 +9,7 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示使用缓存的特性
     /// 使用请求Uri作请求结果的缓存键
-    /// 缓存功能依赖于IResponseCacheProvider
+    /// 缓存功能依赖于HttpApiConfig.ResponseCacheProvider
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class CacheAttribute : ApiActionCacheAttribute

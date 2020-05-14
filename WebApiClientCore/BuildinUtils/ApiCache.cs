@@ -37,12 +37,9 @@ namespace WebApiClientCore
                 return CacheResult.Empty;
             }
 
-            if (this.attribute is IApiActionCachePolicyAttribute policy)
+            if (this.attribute.GetReadPolicy(this.context) == CachePolicy.Ignore)
             {
-                if (policy.GetReadPolicy(this.context) == CachePolicy.Ignore)
-                {
-                    return CacheResult.Empty;
-                }
+                return CacheResult.Empty;
             }
 
             var cacheKey = await this.attribute.GetCacheKeyAsync(this.context).ConfigureAwait(false);
@@ -73,21 +70,24 @@ namespace WebApiClientCore
                 return;
             }
 
-            if (this.attribute is IApiActionCachePolicyAttribute policy)
+            if (this.context.ResponseMessage == null)
             {
-                if (policy.GetWritePolicy(this.context) == CachePolicy.Ignore)
-                {
-                    return;
-                }
+                return;
+            }
+
+            if (this.attribute.GetWritePolicy(this.context) == CachePolicy.Ignore)
+            {
+                return;
             }
 
             if (string.IsNullOrEmpty(cacheKey) == true)
             {
                 cacheKey = await this.attribute.GetCacheKeyAsync(this.context).ConfigureAwait(false);
-                if (string.IsNullOrEmpty(cacheKey) == true)
-                {
-                    return;
-                }
+            }
+
+            if (string.IsNullOrEmpty(cacheKey) == true)
+            {
+                return;
             }
 
             var httpResponse = this.context.ResponseMessage;
