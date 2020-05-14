@@ -108,7 +108,7 @@ namespace WebApiClientCore
         {
             if (this.RequestUri == null)
             {
-                throw new HttpApiInvalidOperationException("未配置RequestUri，RequestUri不能为null");
+                throw new HttpApiInvalidOperationException(Resx.required_RequestUri);
             }
 
             if (string.IsNullOrEmpty(key))

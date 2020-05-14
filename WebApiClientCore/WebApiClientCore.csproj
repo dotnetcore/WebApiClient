@@ -15,7 +15,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance> 
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/dotnetcore/WebApiClient</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/xljiulang/WebApiClientCore</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/dotnetcore/WebApiClient/master/icon.png</PackageIconUrl>
 
     <SignAssembly>true</SignAssembly>
@@ -34,6 +34,19 @@
   <ItemGroup>
     <None Include="NugetPackage\tools\*.*" PackagePath="tools" Pack="true" />
     <None Include="NugetPackage\analyzers\dotnet\cs\*.*" PackagePath="analyzers\dotnet\cs" Pack="true" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Resx.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resx.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Resx.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resx.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

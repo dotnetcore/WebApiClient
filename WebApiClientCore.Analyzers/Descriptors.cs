@@ -56,7 +56,7 @@ namespace WebApiClientCore.Analyzers
             var category = level.ToString();
             if (string.IsNullOrEmpty(helpLinkUri) == true)
             {
-                helpLinkUri = "https://github.com/dotnetcore/WebApiClient/wiki/WebApiClient%E5%9F%BA%E7%A1%80";
+                helpLinkUri = Resx.helpLinkUri;
             }
             return new DiagnosticDescriptor(id, title, message, category, level, true, helpLinkUri: helpLinkUri);
         }

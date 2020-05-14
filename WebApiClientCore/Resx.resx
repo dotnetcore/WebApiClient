@@ -117,43 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="helpLinkUri" xml:space="preserve">
-    <value>https://github.com/xljiulang/WebApiClientCore</value>
+  <data name="required_AbsoluteUri" xml:space="preserve">
+    <value>{0}要求为绝对Uri</value>
   </data>
-  <data name="WA1001_message" xml:space="preserve">
-    <value>不匹配的特性构造函数</value>
+  <data name="required_HttpHost" xml:space="preserve">
+    <value>未配置HttpHost，接口需要先配置HttpHost</value>
   </data>
-  <data name="WA1001_title" xml:space="preserve">
-    <value>不匹配的特性构造函数</value>
+  <data name="required_PatchMethod" xml:space="preserve">
+    <value>JsonPatchContent的请求方法要求为PATCH</value>
   </data>
-  <data name="WA1002_message" xml:space="preserve">
-    <value>返回类型必须为Task&lt;&gt;或Task</value>
-  </data>
-  <data name="WA1002_title" xml:space="preserve">
-    <value>不支持的返回类型</value>
-  </data>
-  <data name="WA1003_message" xml:space="preserve">
-    <value>参数不支持ref/out等修饰</value>
-  </data>
-  <data name="WA1003_title" xml:space="preserve">
-    <value>不支持的ref/out修饰</value>
-  </data>
-  <data name="WA1004_message" xml:space="preserve">
-    <value>不支持的非方法声明，只允许方法的声明</value>
-  </data>
-  <data name="WA1004_title" xml:space="preserve">
-    <value>不支持的非方法声明</value>
-  </data>
-  <data name="WA1005_message" xml:space="preserve">
-    <value>不支持声明泛型方法</value>
-  </data>
-  <data name="WA1005_title" xml:space="preserve">
-    <value>不支持的泛型方法</value>
-  </data>
-  <data name="WA1006_message" xml:space="preserve">
-    <value>UriAttribute只能修饰于第一个参数</value>
-  </data>
-  <data name="WA1006_title" xml:space="preserve">
-    <value>不支持的修饰的参数索引</value>
+  <data name="required_RequestUri" xml:space="preserve">
+    <value>未配置RequestUri，RequestUri不能为null</value>
   </data>
 </root>

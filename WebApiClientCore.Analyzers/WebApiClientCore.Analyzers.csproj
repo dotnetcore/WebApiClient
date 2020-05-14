@@ -17,4 +17,19 @@
     <Analyzer Include="$(NuGetPackageRoot)microsoft.codeanalysis.analyzers\1.2.0-beta2\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="$(NuGetPackageRoot)microsoft.codeanalysis.analyzers\1.2.0-beta2\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resx.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resx.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resx.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resx.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

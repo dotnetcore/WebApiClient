@@ -45,7 +45,7 @@ namespace WebApiClientCore.Attributes
             var uri = context.RequestMessage.RequestUri;
             if (uri == null)
             {
-                throw new HttpApiInvalidOperationException($"未配置HttpHost，无法使用参数{context.Parameter.Name}");
+                throw new HttpApiInvalidOperationException(Resx.required_HttpHost);
             }
 
             var keyValues = context.SerializeToKeyValues().FormatAs(this.CollectionFormat);

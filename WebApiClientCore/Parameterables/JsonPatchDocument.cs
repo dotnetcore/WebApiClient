@@ -82,7 +82,7 @@ namespace WebApiClientCore.Parameterables
         {
             if (context.RequestMessage.Method != patchMethod)
             {
-                throw new HttpApiInvalidOperationException($"{nameof(JsonPatchContent)}的请求方法要求为PATCH");
+                throw new HttpApiInvalidOperationException(Resx.required_PatchMethod);
             }
 
             var formatter = context.RequestServices.GetRequiredService<IJsonFormatter>();

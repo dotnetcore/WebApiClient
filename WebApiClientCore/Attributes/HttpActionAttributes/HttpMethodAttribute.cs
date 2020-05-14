@@ -21,7 +21,7 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 获取请求相对路径
         /// </summary>
-        public string Path { get; } 
+        public string Path { get; }
 
         /// <summary>
         /// http请求方法描述特性
@@ -29,7 +29,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="method">请求方法</param>
         public HttpMethodAttribute(string method)
             : this(new HttpMethod(method))
-        {            
+        {
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace WebApiClientCore.Attributes
                 {
                     return relative;
                 }
-                throw new HttpApiInvalidOperationException($"未配置HttpHost，无法应用路径{relative}");
+                throw new HttpApiInvalidOperationException(Resx.required_HttpHost);
             }
             else
             {

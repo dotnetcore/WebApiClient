@@ -62,6 +62,15 @@ namespace WebApiClientCore.Analyzers {
         }
         
         /// <summary>
+        ///   查找类似 https://github.com/xljiulang/WebApiClientCore 的本地化字符串。
+        /// </summary>
+        internal static string helpLinkUri {
+            get {
+                return ResourceManager.GetString("helpLinkUri", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 不匹配的特性构造函数 的本地化字符串。
         /// </summary>
         internal static string WA1001_message {

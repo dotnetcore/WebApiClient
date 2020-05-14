@@ -80,7 +80,7 @@ namespace WebApiClientCore.Tokens
 
             if (tokenEndpoint.IsAbsoluteUri == false)
             {
-                throw new ArgumentException($"{nameof(tokenEndpoint)}要求为绝对Uri");
+                throw new ArgumentException(Resx.required_AbsoluteUri.Format(nameof(tokenEndpoint)));
             }
             this.TokenEndpoint = tokenEndpoint;
         }
