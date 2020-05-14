@@ -9,7 +9,7 @@
 
 ### 此项目有何变化
 1. 将System.Text.Json替换Json.net
-2. 移除HttpApi、HttpApiFactoryHttApiConfig功能，使用DI、HttpClientFactory和Options
+2. 移除HttpApi、HttpApiFactory和HttApiConfig功能，使用DI、HttpClientFactory和Options
 3. 移除AOT功能
 4. 更多的HttpContent不再于string拼接，尽量使用Utf8Stream
 5. 更规范的特性命名
