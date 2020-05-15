@@ -27,7 +27,7 @@ namespace WebApiClientCore.Test.Attributes
         public async Task OnRequestAsync_Parameter_Double_Test()
         {
             var apiAction = new ApiActionDescriptor(typeof(ITestApi).GetMethod("PostAsync"));
-            var context = new TestRequestContext(apiAction, 10);
+            var context = new TestRequestContext(apiAction, 1);
 
             var attr = new TimeoutAttribute();
             var parameterContext = new ApiParameterContext(context, 0);

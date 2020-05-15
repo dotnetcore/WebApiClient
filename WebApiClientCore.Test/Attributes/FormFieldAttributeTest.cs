@@ -1,23 +1,13 @@
-﻿using System;
-using System.Net.Http;
-using System.Text;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
 using WebApiClientCore.Attributes;
 using Xunit;
 
 
 namespace WebApiClientCore.Test.Attributes
 {
-    public class FormDataTextAttributeTest
+    public class FormFieldAttributeTest
     {
-        private string get(string name, string value)
-        {
-            return $@"Content-Disposition: form-data; name=""{name}""
-
-{HttpUtility.UrlEncode(value, Encoding.UTF8)}";
-        }
-
         [Fact]
         public async Task OnRequestAsync_Parameter()
         {
@@ -26,10 +16,10 @@ namespace WebApiClientCore.Test.Attributes
             context.HttpContext.RequestMessage.Method = HttpMethod.Post;
             var parameterContext = new ApiParameterContext(context, 0);
 
-            var attr = new FormDataTextAttribute();
+            var attr = new FormFieldAttribute();
             await attr.OnRequestAsync(parameterContext, () => Task.CompletedTask);
             var body = await context.HttpContext.RequestMessage.Content.ReadAsStringAsync();
-            Assert.Contains(get("value", "laojiu"), body);
+            Assert.Equal("value=laojiu", body);
         }
 
         [Fact]
@@ -39,10 +29,10 @@ namespace WebApiClientCore.Test.Attributes
             var context = new TestRequestContext(apiAction, string.Empty);
             context.HttpContext.RequestMessage.Method = HttpMethod.Post;
 
-            var attr = new FormDataTextAttribute("value", "laojiu");
+            var attr = new FormFieldAttribute("value", "laojiu");
             await attr.OnRequestAsync(context);
             var body = await context.HttpContext.RequestMessage.Content.ReadAsStringAsync();
-            Assert.Contains(get("value", "laojiu"), body);
+            Assert.Equal("value=laojiu", body);
         }
     }
 }
