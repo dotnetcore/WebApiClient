@@ -6,6 +6,6 @@ namespace WebApiClientCore.Test.Parameterables
 {
     public interface ITestApi : IDisposable
     {
-        Task<HttpResponseMessage> PostAsync(string name);
+        Task<HttpResponseMessage> PostAsync(object value);
     }
 }

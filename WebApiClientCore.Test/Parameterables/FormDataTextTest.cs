@@ -21,7 +21,7 @@ namespace WebApiClientCore.Test.Parameterables
             }
 
             var apiAction = new ApiActionDescriptor(typeof(ITestApi).GetMethod("PostAsync"));
-            var context = new TestRequestContext(apiAction, "name");
+            var context = new TestRequestContext(apiAction, string.Empty);
 
             context.HttpContext.RequestMessage.RequestUri = new Uri("http://www.webapi.com/");
             context.HttpContext.RequestMessage.Method = HttpMethod.Post;
@@ -31,7 +31,7 @@ namespace WebApiClientCore.Test.Parameterables
             await mulitpartText.OnRequestAsync(new ApiParameterContext(context, 0));
 
             var body = await context.HttpContext.RequestMessage.Content.ReadAsStringAsync();
-            Assert.Contains(get("name", "laojiu"), body);
+            Assert.Contains(get(name: "value", value: "laojiu"), body);
         }
     }
 }

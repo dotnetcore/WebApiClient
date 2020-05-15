@@ -31,7 +31,7 @@ namespace WebApiClientCore.Test
             services.TryAddSingleton<IApiActionDescriptorProvider, ApiActionDescriptorProvider>();
 
             var requestServices = services.BuildServiceProvider();
-            return new HttpContext(new HttpClient(), requestServices, new HttpApiOptions());
+            return new HttpContext(new HttpClient(), requestServices, new HttpApiOptions { HttpHost = new Uri("http://www.webapi.com/") });
         }
     }
 }

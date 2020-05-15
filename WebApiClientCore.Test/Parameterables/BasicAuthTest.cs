@@ -12,7 +12,7 @@ namespace WebApiClientCore.Test.Parameterables
         public async Task OnRequestAsync()
         {
             var apiAction = new ApiActionDescriptor(typeof(ITestApi).GetMethod("PostAsync"));
-            var context = new TestRequestContext(apiAction, "name");
+            var context = new TestRequestContext(apiAction, "value");
 
             var basicAuth = new BasicAuth("laojiu", "123456");
             await basicAuth.OnRequestAsync(new ApiParameterContext(context, 0));

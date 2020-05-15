@@ -14,7 +14,7 @@ namespace WebApiClientCore.Test.Parameterables
             doc.Replace(item => item.Age, 10);
 
             var apiAction = new ApiActionDescriptor(typeof(ITestApi).GetMethod("PostAsync"));
-            var context = new TestRequestContext(apiAction, "name");
+            var context = new TestRequestContext(apiAction, string.Empty);
 
             context.HttpContext.RequestMessage.Method = new System.Net.Http.HttpMethod("Patch");  
             await ((IApiParameterable)doc).OnRequestAsync(new ApiParameterContext(context, 0));
