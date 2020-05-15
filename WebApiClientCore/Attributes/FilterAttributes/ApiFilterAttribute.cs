@@ -7,7 +7,7 @@ namespace WebApiClientCore.Attributes
     /// ApiAction的过滤器抽象特性
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public abstract class ApiActionFilterAttribute : Attribute, IApiFilterAttribute
+    public abstract class ApiFilterAttribute : Attribute, IApiFilterAttribute
     {
         /// <summary>
         /// 获取或设置是否启用
@@ -25,29 +25,33 @@ namespace WebApiClientCore.Attributes
         public bool AllowMultiple => this.GetType().IsAllowMultiple();
 
         /// <summary>
-        /// 准备请求之前
+        /// 请求前
         /// </summary>
         /// <param name="context">上下文</param>
+        /// <param name="next">下一个执行委托</param>
         /// <returns></returns>
-        async Task IApiFilterAttribute.BeforeRequestAsync(ApiActionContext context)
+        public async Task BeforeRequestAsync(ApiActionContext context, Func<Task> next)
         {
             if (this.Enable == true)
             {
                 await this.BeforeRequestAsync(context).ConfigureAwait(false);
             }
+            await next();
         }
 
         /// <summary>
-        /// 请求完成之后
+        /// 请求后
         /// </summary>
         /// <param name="context">上下文</param>
+        /// <param name="next">下一个执行委托</param>
         /// <returns></returns>
-        async Task IApiFilterAttribute.AfterRequestAsync(ApiActionContext context)
+        public async Task AfterRequestAsync(ApiActionContext context, Func<Task> next)
         {
             if (this.Enable == true)
             {
                 await this.AfterRequestAsync(context).ConfigureAwait(false);
             }
+            await next();
         }
 
         /// <summary>

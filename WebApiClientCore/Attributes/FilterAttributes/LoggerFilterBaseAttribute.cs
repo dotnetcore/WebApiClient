@@ -8,7 +8,7 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示追踪请求响应内容的抽象过滤器
     /// </summary>
-    public abstract class LoggerFilterBaseAttribute : ApiActionFilterAttribute
+    public abstract class LoggerFilterBaseAttribute : ApiFilterAttribute
     {
         /// <summary>
         /// tag的key

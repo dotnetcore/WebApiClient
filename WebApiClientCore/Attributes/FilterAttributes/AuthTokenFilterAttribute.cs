@@ -10,7 +10,7 @@ namespace WebApiClientCore.Attributes
     /// 表示OAuth授权的token过滤器抽象类
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface, AllowMultiple = false)]
-    public abstract class AuthTokenFilterAttribute : ApiActionFilterAttribute
+    public abstract class AuthTokenFilterAttribute : ApiFilterAttribute
     {
         /// <summary>
         /// 最近请求到的token

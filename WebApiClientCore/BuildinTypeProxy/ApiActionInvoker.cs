@@ -100,35 +100,41 @@ namespace WebApiClientCore
                 //    }
                 //}
                 await apiAction.Return.Attribute.BeforeRequestAsync(context).ConfigureAwait(false);
-            })
-             // 请求前过滤器执行
-             .Then(async context =>
-             {
-                 foreach (var filter in context.ApiAction.Filters)
-                 {
-                     await filter.BeforeRequestAsync(context).ConfigureAwait(false);
-                 }
-             })
-             // 发起http请求
-             .Then(async context =>
-             {
-                 try
-                 {
-                     await HttpRequestAsync(context);
-                 }
-                 catch (Exception ex)
-                 {
-                     context.Exception = ex;
-                 }
-             })
-             // 请求结束后过滤器执行
-             .Then(async context =>
-             {
-                 foreach (var filter in context.ApiAction.Filters)
-                 {
-                     await filter.AfterRequestAsync(context).ConfigureAwait(false);
-                 }
-             });
+            });
+
+
+            // 请求前过滤器执行
+            //.Then(async context =>
+            //{
+            //    foreach (var filter in context.ApiAction.Filters)
+            //    {
+            //        await filter.BeforeRequestAsync(context).ConfigureAwait(false);
+            //    }
+            //})
+
+            foreach (var attr in descriptor.Filters)
+            {
+                builder.Use(attr.BeforeRequestAsync);
+            }
+
+            // 发起http请求
+            builder.Then(async context =>
+            {
+                try
+                {
+                    await HttpRequestAsync(context);
+                }
+                catch (Exception ex)
+                {
+                    context.Exception = ex;
+                }
+            });
+
+            // 请求结束后过滤器执行
+            foreach (var attr in descriptor.Filters)
+            {
+                builder.Use(attr.AfterRequestAsync);
+            }
 
             return builder.Build();
         }
