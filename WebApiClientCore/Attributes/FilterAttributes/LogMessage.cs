@@ -6,10 +6,10 @@ using System.Text;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 表示追踪到的消息
+    /// 表示日志消息
     /// </summary>
     [DebuggerDisplay("Elapsed = {ResponseTime.Subtract(RequestTime)}")]
-    public class LoggerMessage
+    public class LogMessage
     {
         /// <summary>
         /// 获取或设置是否记录请求
@@ -61,12 +61,12 @@ namespace WebApiClientCore.Attributes
 
 
         /// <summary>
-        /// 返回不包含异常的调试消息
+        /// 返回不包含异常的日志消息
         /// </summary>
         /// <returns></returns>
-        public LoggerMessage ToExcludeException()
+        public LogMessage ToExcludeException()
         {
-            return new LoggerMessage
+            return new LogMessage
             {
                 HasRequest = this.HasRequest,
                 HasResponse = this.HasResponse,
