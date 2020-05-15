@@ -20,10 +20,10 @@ namespace WebApiClientCore
         /// <summary>
         /// 上下文执行器
         /// </summary>
-        /// <param name="descriptor"></param>
-        public ApiActionInvoker(ApiActionDescriptor descriptor)
+        /// <param name="apiAction"></param>
+        public ApiActionInvoker(ApiActionDescriptor apiAction)
         {
-            this.handler = CreateExecutionHandler(descriptor);
+            this.handler = CreateExecutionHandler(apiAction);
         }
 
         /// <summary>
@@ -61,15 +61,15 @@ namespace WebApiClientCore
         /// 创建执行委托
         /// </summary>
         /// <returns></returns>
-        private static Func<ApiRequestContext, Task<ApiResponseContext>> CreateExecutionHandler(ApiActionDescriptor descriptor)
+        private static Func<ApiRequestContext, Task<ApiResponseContext>> CreateExecutionHandler(ApiActionDescriptor apiAction)
         {
-            var requestHandler = BuildRequestHandler(descriptor);
-            var responseHandler = BuildResponseHandler(descriptor);
+            var requestHandler = BuildRequestHandler(apiAction);
+            var responseHandler = BuildResponseHandler(apiAction);
 
             return async context =>
             {
                 await requestHandler(context);
-                var response = await ExecuteApiAsync(context);
+                var response = await SendRequestAsync(context);
                 await responseHandler(response);
                 return response;
             };
@@ -79,9 +79,9 @@ namespace WebApiClientCore
         /// <summary>
         /// 创建请求委托
         /// </summary>
-        /// <param name="descriptor"></param>
+        /// <param name="apiAction"></param>
         /// <returns></returns>
-        private static InvokeDelegate<ApiRequestContext> BuildRequestHandler(ApiActionDescriptor descriptor)
+        private static InvokeDelegate<ApiRequestContext> BuildRequestHandler(ApiActionDescriptor apiAction)
         {
             var builder = new PipelineBuilder<ApiRequestContext>();
 
@@ -98,13 +98,13 @@ namespace WebApiClientCore
             });
 
             // action特性请求前执行
-            foreach (var attr in descriptor.Attributes)
+            foreach (var attr in apiAction.Attributes)
             {
                 builder.Use(attr.OnRequestAsync);
             }
 
             // 参数特性请求前执行
-            foreach (var parameter in descriptor.Parameters)
+            foreach (var parameter in apiAction.Parameters)
             {
                 foreach (var attr in parameter.Attributes)
                 {
@@ -117,15 +117,15 @@ namespace WebApiClientCore
             }
 
             // 结果特性请求前执行
-            foreach (var attr in descriptor.ResultAttributes)
+            foreach (var result in apiAction.ResultAttributes)
             {
-                builder.Use(attr.OnRequestAsync);
+                builder.Use(result.OnRequestAsync);
             }
 
             // 过滤器请求前执行            
-            foreach (var attr in descriptor.FilterAttributes)
+            foreach (var filter in apiAction.FilterAttributes)
             {
-                builder.Use(attr.OnRequestAsync);
+                builder.Use(filter.OnRequestAsync);
             }
 
             return builder.Build();
@@ -134,34 +134,16 @@ namespace WebApiClientCore
         /// <summary>
         /// 创建响应委托
         /// </summary>
-        /// <param name="descriptor"></param>
+        /// <param name="apiAction"></param>
         /// <returns></returns>
-        private static InvokeDelegate<ApiResponseContext> BuildResponseHandler(ApiActionDescriptor descriptor)
+        private static InvokeDelegate<ApiResponseContext> BuildResponseHandler(ApiActionDescriptor apiAction)
         {
             var builder = new PipelineBuilder<ApiResponseContext>();
 
             // 结果特性请求后执行
-            foreach (var attr in descriptor.ResultAttributes)
+            foreach (var result in apiAction.ResultAttributes)
             {
-                builder.Use(async (context, next) =>
-                {
-                    // 有结果值 本中间件就不再处理
-                    if (context.ResultStatus != ResultStatus.NoResult)
-                    {
-                        await next();
-                        return;
-                    }
-
-                    try
-                    {
-                        await attr.OnResponseAsync(context, next);
-                    }
-                    catch (Exception ex)
-                    {
-                        context.Exception = ex;
-                        await next();
-                    }
-                });
+                builder.Use(result.OnResponseAsync);
             }
 
             // 验证Result是否ok
@@ -179,9 +161,9 @@ namespace WebApiClientCore
             });
 
             // 过滤器请求后执行
-            foreach (var attr in descriptor.FilterAttributes)
+            foreach (var filter in apiAction.FilterAttributes)
             {
-                builder.Use(attr.OnResponseAsync);
+                builder.Use(filter.OnResponseAsync);
             }
 
             return builder.Build();
@@ -193,40 +175,30 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        private static async Task<ApiResponseContext> ExecuteApiAsync(ApiRequestContext context)
+        private static async Task<ApiResponseContext> SendRequestAsync(ApiRequestContext context)
         {
             var response = new ApiResponseContext(context);
             try
             {
-                await SendRequestAsync(context);
+                var apiCache = new ApiCache(context);
+                var cacheResult = await apiCache.GetAsync().ConfigureAwait(false);
+
+                if (cacheResult.ResponseMessage != null)
+                {
+                    context.HttpContext.ResponseMessage = cacheResult.ResponseMessage;
+                }
+                else
+                {
+                    using var cancellation = CreateLinkedTokenSource(context);
+                    context.HttpContext.ResponseMessage = await context.HttpContext.Client.SendAsync(context.HttpContext.RequestMessage, cancellation.Token).ConfigureAwait(false);
+                    await apiCache.SetAsync(cacheResult.CacheKey).ConfigureAwait(false);
+                }
             }
             catch (Exception ex)
             {
                 response.Exception = ex;
             }
             return response;
-        }
-
-        /// <summary>
-        /// 发送http请求
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        private static async Task SendRequestAsync(ApiRequestContext context)
-        {
-            var apiCache = new ApiCache(context);
-            var cacheResult = await apiCache.GetAsync().ConfigureAwait(false);
-
-            if (cacheResult.ResponseMessage != null)
-            {
-                context.HttpContext.ResponseMessage = cacheResult.ResponseMessage;
-            }
-            else
-            {
-                using var cancellation = CreateLinkedTokenSource(context);
-                context.HttpContext.ResponseMessage = await context.HttpContext.Client.SendAsync(context.HttpContext.RequestMessage, cancellation.Token).ConfigureAwait(false);
-                await apiCache.SetAsync(cacheResult.CacheKey).ConfigureAwait(false);
-            }
         }
 
         /// <summary>

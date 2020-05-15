@@ -6,9 +6,9 @@
     public enum ResultStatus
     {
         /// <summary>
-        /// 无结果
+        /// 无状态
         /// </summary>
-        NoResult,
+        None,
 
         /// <summary>
         /// 有结果

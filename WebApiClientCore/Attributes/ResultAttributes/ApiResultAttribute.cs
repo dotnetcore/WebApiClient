@@ -49,19 +49,42 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public async Task OnResponseAsync(ApiResponseContext context, Func<Task> next)
         {
+            if (context.ResultStatus == ResultStatus.None)
+            {
+                if (this.UseSuccessStatusCode(context) == true)
+                {
+                    try
+                    {
+                        await this.SetResultAsync(context);
+                    }
+                    catch (Exception ex)
+                    {
+                        context.Exception = ex;
+                    }
+                }
+            }
+
+            await next();
+        }
+
+        /// <summary>
+        /// 应用成功状态码
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private bool UseSuccessStatusCode(ApiResponseContext context)
+        {
             if (this.EnsureSuccessStatusCode == true)
             {
                 var statusCode = context.HttpContext.ResponseMessage.StatusCode;
                 if (this.IsSuccessStatusCode(statusCode) == false)
                 {
-                    throw new HttpStatusFailureException(context);
+                    context.Exception = new HttpStatusFailureException(context);
+                    return false;
                 }
             }
-
-            await this.SetResultAsync(context);
-            await next();
+            return true;
         }
-
 
         /// <summary>
         /// 指示状态码是否为成功的状态码

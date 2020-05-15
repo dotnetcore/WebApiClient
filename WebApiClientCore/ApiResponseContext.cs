@@ -30,7 +30,7 @@ namespace WebApiClientCore
         public Exception Exception
         {
             get => this.exception;
-            internal set
+            set
             {
                 this.exception = value ?? throw new ArgumentNullException(nameof(Exception));
                 this.ResultStatus = ResultStatus.HasException;
