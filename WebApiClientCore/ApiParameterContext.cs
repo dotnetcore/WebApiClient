@@ -26,11 +26,9 @@
         /// <param name="context"></param>
         /// <param name="parameterIndex"></param>
         public ApiParameterContext(ApiRequestContext context, int parameterIndex)
-            : base(context.HttpContext, context.ApiAction, context.Arguments)
+            : base(context.HttpContext, context.ApiAction, context.Arguments, context.Tags, context.CancellationTokens)
         {
             this.index = parameterIndex;
-            this.Tags = context.Tags;
-            this.CancellationTokens = context.CancellationTokens;
         }
     }
 }
