@@ -15,31 +15,31 @@ namespace App.Clients
     [LoggingFilter]
     [HttpHost("http://localhost:6000/")]
     public interface IUserApi : IHttpApi
-    { 
+    {
         [HttpGet("api/users/{account}")]
         [BasicAuth("userName", "password")]
         [Timeout(10 * 1000)] // 10s超时        
-        Task<HttpResponseMessage> GetAsync([Required]string account);
+        ITask<HttpResponseMessage> GetAsync([Required]string account);
 
         [HttpGet("api/users/{account}")]
         [BasicAuth("userName", "password")]
         [Timeout(10 * 1000)] // 10s超时
-        Task<string> GetAsStringAsync([Required]string account, CancellationToken token = default);
+        ITask<string> GetAsStringAsync([Required]string account, CancellationToken token = default);
 
         [HttpGet("api/users/{account}")]
         [BasicAuth("userName", "password")]
         [Timeout(10 * 1000)] // 10s超时
-        Task<byte[]> GetAsByteArrayAsync([Required]string account, CancellationToken token = default);
+        ITask<byte[]> GetAsByteArrayAsync([Required]string account, CancellationToken token = default);
 
         [HttpGet("api/users/{account}")]
         [BasicAuth("userName", "password")]
         [Timeout(10 * 1000)] // 10s超时
-        Task<Stream> GetAsStreamAsync([Required]string account, CancellationToken token = default);
+        ITask<Stream> GetAsStreamAsync([Required]string account, CancellationToken token = default);
 
         [HttpGet("api/users/{account}")]
         [BasicAuth("userName", "password")]
         [Timeout(10 * 1000)] // 10s超时
-        Task<User> GetAsModelAsync([Required]string account, CancellationToken token = default);
+        ITask<User> GetAsModelAsync([Required]string account, CancellationToken token = default);
 
 
 

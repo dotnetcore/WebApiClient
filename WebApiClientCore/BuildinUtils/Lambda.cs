@@ -190,6 +190,21 @@ namespace WebApiClientCore
         /// <summary>
         /// 创建类型的构造器调用委托
         /// </summary>
+        /// <typeparam name="TArg1"></typeparam>
+        /// <typeparam name="TArg2"></typeparam>
+        /// <typeparam name="TArg3"></typeparam>
+        /// <typeparam name="TType"></typeparam>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static Func<TArg1, TArg2, TArg3, TType> CreateCtorFunc<TArg1, TArg2, TArg3, TType>(Type type)
+        {
+            var args = new Type[] { typeof(TArg1), typeof(TArg2), typeof(TArg3) };
+            return CreateCtorFunc<Func<TArg1, TArg2, TArg3, TType>>(type, args);
+        }
+
+        /// <summary>
+        /// 创建类型的构造器调用委托
+        /// </summary>
         /// <typeparam name="TFunc">构造器调用委托</typeparam>
         /// <param name="type">类型</param>
         /// <param name="args">参数类型</param>

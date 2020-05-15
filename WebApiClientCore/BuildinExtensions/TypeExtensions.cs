@@ -108,7 +108,7 @@ namespace WebApiClientCore
                 throw new NotSupportedException(Resx.unsupported_Property.Format(method));
             }
 
-            if (method.ReturnType.IsInheritFrom<Task>() == false)
+            if (method.IsTaskReturn() == false)
             {
                 var message = Resx.unsupported_ReturnType.Format(method);
                 throw new NotSupportedException(message);
@@ -124,6 +124,27 @@ namespace WebApiClientCore
             }
 
             return method;
+        }
+
+        /// <summary>
+        /// 检测方法是否为Task或ITask返回值
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        private static bool IsTaskReturn(this MethodInfo method)
+        {
+            if (method.ReturnType.IsInheritFrom<Task>())
+            {
+                return true;
+            }
+
+            if (method.ReturnType.IsGenericType == false)
+            {
+                return false;
+            }
+
+            var taskType = method.ReturnType.GetGenericTypeDefinition();
+            return taskType == typeof(ITask<>);
         }
 
         /// <summary>

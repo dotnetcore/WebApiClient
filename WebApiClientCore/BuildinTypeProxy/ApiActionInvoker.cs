@@ -7,15 +7,21 @@ using WebApiClientCore.Exceptions;
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 上下文执行器
+    /// 表示ApiAction执行器
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
     class ApiActionInvoker<TResult> : IApiActionInvoker
     {
         /// <summary>
-        /// 执行委托
+        /// api描述
+        /// </summary>
+        private readonly ApiActionDescriptor apiAction;
+
+        /// <summary>
+        /// ApiAction执行器
         /// </summary>
         private readonly Func<ApiRequestContext, Task<ApiResponseContext>> handler;
+
 
         /// <summary>
         /// 上下文执行器
@@ -23,16 +29,32 @@ namespace WebApiClientCore
         /// <param name="apiAction"></param>
         public ApiActionInvoker(ApiActionDescriptor apiAction)
         {
+            this.apiAction = apiAction;
             this.handler = CreateExecutionHandler(apiAction);
         }
 
         /// <summary>
-        /// 执行Api方法
+        /// 执行任务
         /// </summary>
+        /// <param name="context">上下文</param>
+        /// <param name="arguments">参数值</param>
         /// <returns></returns>
-        Task IApiActionInvoker.InvokeAsync(ApiRequestContext context)
+        object IApiActionInvoker.Invoke(ServiceContext context, object[] arguments)
         {
-            return this.InvokeAsync(context);
+            return this.InvokeAsync(context, arguments);
+        }
+
+        /// <summary>
+        /// 执行任务
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <param name="arguments">参数值</param>
+        /// <returns></returns>
+        public Task<TResult> InvokeAsync(ServiceContext context, object[] arguments)
+        {
+            using var httpContext = new HttpContext(context.Client, context.Services, context.Options);
+            var requestContext = new ApiRequestContext(httpContext, this.apiAction, arguments);
+            return this.InvokeAsync(requestContext);
         }
 
         /// <summary>

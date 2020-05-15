@@ -35,7 +35,7 @@ namespace WebApiClientCore.Analyzers.HttpApi
             foreach (var method in this.GetApiMethodSymbols())
             {
                 var name = method.ReturnType.MetadataName;
-                if (name == "Task`1" || name == "Task")
+                if (name == "ITask`1" || name == "Task`1" || name == "Task")
                 {
                     continue;
                 }

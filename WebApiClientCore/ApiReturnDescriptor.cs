@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace WebApiClientCore
 {
@@ -22,6 +23,10 @@ namespace WebApiClientCore
         /// </summary>
         public ApiDataTypeDescriptor DataType { get; protected set; }
 
+        /// <summary>
+        /// 获取返回类型是否为Task定义
+        /// </summary>
+        public bool IsTaskDefinition { get; protected set; }
 
         /// <summary>
         /// 请求Api的返回描述
@@ -34,13 +39,14 @@ namespace WebApiClientCore
             {
                 throw new ArgumentNullException(nameof(method));
             }
-             
+
             var dataType = method.ReturnType.IsGenericType ?
                 method.ReturnType.GetGenericArguments().FirstOrDefault() :
                 typeof(HttpResponseMessage);
-             
+
             this.ReturnType = method.ReturnType;
             this.DataType = new ApiDataTypeDescriptor(dataType);
+            this.IsTaskDefinition = method.ReturnType.IsInheritFrom<Task>();
         }
     }
 }
