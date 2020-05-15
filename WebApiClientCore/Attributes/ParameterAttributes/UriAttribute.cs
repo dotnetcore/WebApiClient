@@ -9,8 +9,7 @@ namespace WebApiClientCore.Attributes
     /// 要求必须修饰于第一个参数
     /// 支持绝对或相对路径
     /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-    public class UriAttribute : Attribute, IApiParameterAttribute
+    public class UriAttribute : ApiParameterAttribute
     {
         /// <summary>
         /// http请求之前
@@ -18,7 +17,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <exception cref="HttpApiInvalidOperationException"></exception>
         /// <returns></returns>
-        public Task BeforeRequestAsync(ApiParameterContext context)
+        public sealed override Task BeforeRequestAsync(ApiParameterContext context)
         {
             if (context.ParameterValue == null)
             {

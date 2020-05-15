@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
 
@@ -9,8 +8,7 @@ namespace WebApiClientCore.Attributes
     /// 表示参数值理解为HttpContent类型的特性
     /// 例如StringContent、ByteArrayContent、FormUrlEncodedContent等类型
     /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-    public class HttpContentAttribute : Attribute, IApiParameterAttribute
+    public class HttpContentAttribute : ApiParameterAttribute
     {
         /// <summary>
         /// http请求之前
@@ -18,7 +16,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param> 
         /// <exception cref="HttpApiInvalidOperationException"></exception>
         /// <returns></returns>
-        async Task IApiParameterAttribute.BeforeRequestAsync(ApiParameterContext context)
+        public sealed override async Task BeforeRequestAsync(ApiParameterContext context)
         {
             var method = context.HttpContext.RequestMessage.Method;
             if (method == HttpMethod.Get || method == HttpMethod.Head)
@@ -40,7 +38,6 @@ namespace WebApiClientCore.Attributes
             this.SetHttpContent(context);
             return Task.CompletedTask;
         }
-
 
         /// <summary>
         /// 设置参数到http请求内容

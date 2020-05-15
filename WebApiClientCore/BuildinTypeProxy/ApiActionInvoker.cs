@@ -65,9 +65,21 @@ namespace WebApiClientCore
                    return Task.CompletedTask;
                });
 
-            foreach (var item in descriptor.Attributes)
+            foreach (var attr in descriptor.Attributes)
             {
-                builder.Use(item.BeforeRequestAsync);
+                builder.Use(attr.BeforeRequestAsync);
+            }
+
+            foreach (var item in descriptor.Parameters)
+            {
+                foreach (var attr in item.Attributes)
+                {
+                    builder.Use(async (context, next) =>
+                    {
+                        var ctx = new ApiParameterContext(context, item.Index);
+                        await attr.BeforeRequestAsync(ctx, next);
+                    });
+                }
             }
 
             // 请求前特性的执行
@@ -79,14 +91,14 @@ namespace WebApiClientCore
                 //    await actionAttribute.BeforeRequestAsync(context).ConfigureAwait(false);
                 //}
 
-                foreach (var parameter in apiAction.Parameters)
-                {
-                    var parameterContext = new ApiParameterContext(context, parameter.Index);
-                    foreach (var parameterAttribute in parameter.Attributes)
-                    {
-                        await parameterAttribute.BeforeRequestAsync(parameterContext).ConfigureAwait(false);
-                    }
-                }
+                //foreach (var parameter in apiAction.Parameters)
+                //{
+                //    var parameterContext = new ApiParameterContext(context, parameter.Index);
+                //    foreach (var parameterAttribute in parameter.Attributes)
+                //    {
+                //        await parameterAttribute.BeforeRequestAsync(parameterContext).ConfigureAwait(false);
+                //    }
+                //}
                 await apiAction.Return.Attribute.BeforeRequestAsync(context).ConfigureAwait(false);
             })
              // 请求前过滤器执行

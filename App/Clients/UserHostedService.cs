@@ -25,8 +25,7 @@ namespace App.Clients
             try
             {
                 using var scope = this.service.CreateScope();
-                await this.RunAsync(scope.ServiceProvider);
-                await this.RunAsync(scope.ServiceProvider);
+                await this.RunAsync(scope.ServiceProvider); 
             }
             catch (Exception ex)
             {

@@ -7,15 +7,15 @@ namespace WebApiClientCore
     /// <summary>
     /// 表示参数内容为IApiParameterable对象或其数组
     /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
     class ParameterableAttribute : Attribute, IApiParameterAttribute
     {
         /// <summary>
         /// http请求之前
         /// </summary>
         /// <param name="context">上下文</param>
+        /// <param name="next"></param>
         /// <returns></returns>
-        public async Task BeforeRequestAsync(ApiParameterContext context)
+        public async Task BeforeRequestAsync(ApiParameterContext context, Func<Task> next)
         {
             if (context.ParameterValue is IApiParameterable able)
             {
@@ -28,6 +28,7 @@ namespace WebApiClientCore
                     await item.BeforeRequestAsync(context).ConfigureAwait(false);
                 }
             }
+            await next();
         }
     }
 }

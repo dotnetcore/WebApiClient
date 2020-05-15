@@ -10,8 +10,7 @@ namespace WebApiClientCore.Attributes
     /// 使用KeyValueFormatter序列化参数值得到的键值对作为url路径参数或query参数的特性
     /// 没有任何特性修饰的参数，将默认被PathQueryAttribute修饰
     /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-    public class PathQueryAttribute : Attribute, IApiParameterAttribute, IEncodingable
+    public class PathQueryAttribute : ApiParameterAttribute, IEncodingable
     {
         /// <summary>
         /// 编码
@@ -40,7 +39,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <exception cref="HttpApiInvalidOperationException"></exception>
         /// <returns></returns>
-        public async Task BeforeRequestAsync(ApiParameterContext context)
+        public sealed override async Task BeforeRequestAsync(ApiParameterContext context)
         {
             var uri = context.HttpContext.RequestMessage.RequestUri;
             if (uri == null)

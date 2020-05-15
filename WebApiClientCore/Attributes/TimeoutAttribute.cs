@@ -68,15 +68,11 @@ namespace WebApiClientCore.Attributes
         /// http请求之前
         /// </summary>
         /// <param name="context">上下文</param>
+        /// <param name="next"></param>
         /// <exception cref="HttpApiInvalidOperationException"></exception>
         /// <returns></returns>
-        public async Task BeforeRequestAsync(ApiParameterContext context)
+        public Task BeforeRequestAsync(ApiParameterContext context, Func<Task> next)
         {
-            if (context.ParameterValue == null)
-            {
-                return;
-            }
-
             if (context.ParameterValue is TimeSpan timespan)
             {
                 this.SetTimeout(context.ActionContext, timespan);
@@ -91,7 +87,8 @@ namespace WebApiClientCore.Attributes
             {
                 throw new HttpApiInvalidOperationException($"无法将参数{context.Parameter.Member}转换为Timeout");
             }
-            await Task.CompletedTask;
+
+            return next();
         }
 
 

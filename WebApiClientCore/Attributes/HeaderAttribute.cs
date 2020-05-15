@@ -93,12 +93,13 @@ namespace WebApiClientCore.Attributes
         /// http请求之前
         /// 值从参数过来
         /// </summary>
-        /// <param name="context">上下文</param> 
+        /// <param name="context">上下文</param>
+        /// <param name="next"></param> 
         /// <returns></returns>
-        public Task BeforeRequestAsync(ApiParameterContext context)
+        public Task BeforeRequestAsync(ApiParameterContext context, Func<Task> next)
         {
             this.SetHeaderValue(context.ActionContext, context.ParameterValue?.ToString());
-            return Task.CompletedTask;
+            return next();
         }
 
         /// <summary>

@@ -44,33 +44,34 @@ namespace WebApiClientCore.Attributes
         /// 执行前
         /// </summary>
         /// <param name="context">上下文</param>
+        /// <param name="next"></param>
         /// <returns></returns>
-        public async Task BeforeRequestAsync(ApiParameterContext context)
+        public async Task BeforeRequestAsync(ApiParameterContext context,Func<Task> next)
         {
             switch (this.Kind)
             {
                 case Kind.Path:
-                    await pathQuery.BeforeRequestAsync(context).ConfigureAwait(false);
+                    await pathQuery.BeforeRequestAsync(context,next).ConfigureAwait(false);
                     break;
 
                 case Kind.Header:
-                    await headers.BeforeRequestAsync(context).ConfigureAwait(false);
+                    await headers.BeforeRequestAsync(context, next).ConfigureAwait(false);
                     break;
 
                 case Kind.Form:
-                    await formContent.BeforeRequestAsync(context).ConfigureAwait(false);
+                    await formContent.BeforeRequestAsync(context, next).ConfigureAwait(false);
                     break;
 
                 case Kind.FormData:
-                    await formDataContent.BeforeRequestAsync(context).ConfigureAwait(false);
+                    await formDataContent.BeforeRequestAsync(context, next).ConfigureAwait(false);
                     break;
 
                 case Kind.JsonBody:
-                    await jsonContent.BeforeRequestAsync(context).ConfigureAwait(false);
+                    await jsonContent.BeforeRequestAsync(context, next).ConfigureAwait(false);
                     break;
 
                 case Kind.XmlBody:
-                    await xmlContent.BeforeRequestAsync(context).ConfigureAwait(false);
+                    await xmlContent.BeforeRequestAsync(context, next).ConfigureAwait(false);
                     break;
             }
         }

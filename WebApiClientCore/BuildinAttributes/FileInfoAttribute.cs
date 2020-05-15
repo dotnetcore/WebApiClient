@@ -9,15 +9,15 @@ namespace WebApiClientCore
     /// <summary>
     /// 表示参数内容为FileInfo处理特性
     /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
     class FileInfoAttribute : Attribute, IApiParameterAttribute
     {
         /// <summary>
         /// http请求之前
         /// </summary>
         /// <param name="context">上下文</param>
+        /// <param name="next"></param>
         /// <returns></returns>
-        public Task BeforeRequestAsync(ApiParameterContext context )
+        public Task BeforeRequestAsync(ApiParameterContext context, Func<Task> next)
         {
             var fileInfo = context.ParameterValue as FileInfo;
             if (fileInfo != null)
@@ -27,7 +27,7 @@ namespace WebApiClientCore
                 var encodedFileName = HttpUtility.UrlEncode(fileName, Encoding.UTF8);
                 context.HttpContext.RequestMessage.AddFormDataFile(stream, context.Parameter.Name, encodedFileName, null);
             }
-            return Task.CompletedTask;
+            return next();
         }
     }
 }
