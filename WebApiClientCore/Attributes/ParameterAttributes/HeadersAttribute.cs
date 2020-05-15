@@ -22,7 +22,7 @@ namespace WebApiClientCore.Attributes
             foreach (var kv in keyValues)
             {
                 var name = kv.Key.Replace("_", "-");
-                this.SetHeaderValue(context, name, kv.Value);
+                this.SetHeaderValue(context.HttpContext, name, kv.Value);
             }
             return Task.CompletedTask;
         }
@@ -34,14 +34,14 @@ namespace WebApiClientCore.Attributes
         /// <param name="name"></param>
         /// <param name="value"></param>
         /// <exception cref="HttpApiInvalidOperationException"></exception>
-        private void SetHeaderValue(ApiParameterContext context, string name, string value)
+        private void SetHeaderValue(HttpContext context, string name, string value)
         {
             if (string.Equals(name, "Cookie", StringComparison.OrdinalIgnoreCase))
             {
                 throw new HttpApiInvalidOperationException(Resx.unsupported_ManaulCookie);
             }
 
-            var headers = context.HttpContext.RequestMessage.Headers;
+            var headers = context.RequestMessage.Headers;
             headers.Remove(name);
             if (value != null)
             {

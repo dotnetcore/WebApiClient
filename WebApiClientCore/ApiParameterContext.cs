@@ -3,27 +3,22 @@
     /// <summary>
     /// 表示Api参数上下文
     /// </summary>
-    public class ApiParameterContext
+    public class ApiParameterContext : ApiRequestContext
     {
         /// <summary>
-        /// 获取请求上下文
+        /// 参数索引
         /// </summary>
-        public ApiRequestContext RequestContext { get; }
-
-        /// <summary>
-        /// 获取http上下文
-        /// </summary>
-        public HttpContext HttpContext => this.RequestContext.HttpContext;
+        private readonly int index;
 
         /// <summary>
         /// 获取参数描述
         /// </summary>
-        public ApiParameterDescriptor Parameter { get; }
+        public ApiParameterDescriptor Parameter => this.ApiAction.Parameters[index];
 
         /// <summary>
         /// 获取参数值
         /// </summary>
-        public object ParameterValue { get; }
+        public object ParameterValue => this.Arguments[index];
 
         /// <summary>
         /// Api参数上下文
@@ -31,24 +26,11 @@
         /// <param name="context"></param>
         /// <param name="parameterIndex"></param>
         public ApiParameterContext(ApiRequestContext context, int parameterIndex)
+            : base(context.HttpContext, context.ApiAction, context.Arguments)
         {
-            this.RequestContext = context;
-            this.Parameter = this.RequestContext.ApiAction.Parameters[parameterIndex];
-            this.ParameterValue = this.RequestContext.Arguments[parameterIndex];
-        }
-
-        /// <summary>
-        /// Api参数上下文
-        /// for test
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="parameter"></param>
-        /// <param name="parameterValue"></param>
-        internal ApiParameterContext(ApiRequestContext context, ApiParameterDescriptor parameter, object parameterValue)
-        {
-            this.RequestContext = context;
-            this.Parameter = parameter;
-            this.ParameterValue = parameterValue;
+            this.index = parameterIndex;
+            this.Tags = context.Tags;
+            this.CancellationTokens = context.CancellationTokens;
         }
     }
 }

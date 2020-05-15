@@ -17,7 +17,7 @@ namespace WebApiClientCore.Test.Parameterables
                apiActionDescriptor: new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync")));
 
             context.HttpContext.RequestMessage.Method = new System.Net.Http.HttpMethod("Patch");  
-            await ((IApiParameterable)doc).OnRequestAsync(new ApiParameterContext(context, context.ApiAction.Parameters[0], null));
+            await ((IApiParameterable)doc).OnRequestAsync(new ApiParameterContext(context, 0));
 
             var body = await context.HttpContext.RequestMessage.Content.ReadAsStringAsync();
             var ops = System.Text.Json.JsonSerializer.Deserialize<Op[]>(body);

@@ -85,7 +85,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public override Task OnRequestAsync(ApiRequestContext context)
         {
-            this.SetHeaderValue(context, this.value);
+            this.SetHeaderValue(context.HttpContext, this.value);
             return Task.CompletedTask;
         }
 
@@ -98,7 +98,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public Task OnRequestAsync(ApiParameterContext context, Func<Task> next)
         {
-            this.SetHeaderValue(context.RequestContext, context.ParameterValue?.ToString());
+            this.SetHeaderValue(context.HttpContext, context.ParameterValue?.ToString());
             return next();
         }
 
@@ -108,14 +108,14 @@ namespace WebApiClientCore.Attributes
         /// <param name="context"></param>
         /// <param name="headerValue"></param>
         /// <exception cref="HttpApiInvalidOperationException"></exception>
-        private void SetHeaderValue(ApiRequestContext context, string headerValue)
+        private void SetHeaderValue(HttpContext context, string headerValue)
         {
             if (string.Equals(this.name, "Cookie", StringComparison.OrdinalIgnoreCase))
             {
                 throw new HttpApiInvalidOperationException(Resx.unsupported_ManaulCookie);
             }
 
-            var headers = context.HttpContext.RequestMessage.Headers;
+            var headers = context.RequestMessage.Headers;
             headers.Remove(this.name);
             if (headerValue != null)
             {

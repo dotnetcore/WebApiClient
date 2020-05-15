@@ -20,15 +20,15 @@ namespace WebApiClientCore.Test.Parameterables
 {HttpUtility.UrlEncode(value, Encoding.UTF8)}";
             }
 
-            var context = new TestActionContext(                
-                apiActionDescriptor: new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync")));
+            var context = new TestActionContext(
+                new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync")), "name");
 
             context.HttpContext.RequestMessage.RequestUri = new Uri("http://www.webapi.com/");
             context.HttpContext.RequestMessage.Method = HttpMethod.Post;
-           
-             
+
+
             IApiParameterable mulitpartText = new FormDataText("laojiu");
-            await mulitpartText.OnRequestAsync(new ApiParameterContext(context, context.ApiAction.Parameters[0], null));
+            await mulitpartText.OnRequestAsync(new ApiParameterContext(context, 0));
 
             var body = await context.HttpContext.RequestMessage.Content.ReadAsStringAsync();
             Assert.Contains(get("name", "laojiu"), body);

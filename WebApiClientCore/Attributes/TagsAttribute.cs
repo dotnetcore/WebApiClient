@@ -51,7 +51,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public Task OnRequestAsync(ApiParameterContext context, Func<Task> next)
         {
-            context.RequestContext.Tags.Set(this.key, context.ParameterValue);
+            context.Tags.Set(this.key, context.ParameterValue);
             return next();
         }
 
