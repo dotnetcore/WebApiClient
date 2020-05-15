@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace WebApiClientCore.Attributes
@@ -6,13 +7,13 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示json内容的强类型模型结果特性
     /// </summary>
-    public class JsonResultAttribute : StrongTypeResultAttribute
+    public class JsonModelResultAttribute : ModelTypeResultAttribute
     {
         /// <summary>
         /// json内容的强类型模型结果特性
         /// </summary>
-        public JsonResultAttribute()
-            : base(JsonContent.MediaType)
+        public JsonModelResultAttribute()
+            : base(MediaTypeWithQualityHeaderValue.Parse(JsonContent.MediaType))
         {
         }
 
@@ -21,7 +22,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override async Task SetStrongTypeResultAsync(ApiActionContext context)
+        public override async Task SetModelTypeResultAsync(ApiActionContext context)
         {
             var response = context.HttpContext.ResponseMessage;
             var dataType = context.ApiAction.Return.DataType.Type;

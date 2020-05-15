@@ -39,7 +39,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取是否为强类型模型结果
         /// </summary>
-        public bool IsStrongType { get; protected set; }
+        public bool IsModelType { get; protected set; }
 
         /// <summary>
         /// 返回的Task(Of T)的T类型描述
@@ -54,7 +54,7 @@ namespace WebApiClientCore
             this.IsStream = dataType == typeof(Stream);
             this.IsByteArray = dataType == typeof(byte[]);
             this.IsHttpResponseMessage = dataType == typeof(HttpResponseMessage);
-            this.IsStrongType = !(IsString || IsStream || IsByteArray || IsHttpResponseMessage);
+            this.IsModelType = !(IsString || IsStream || IsByteArray || IsHttpResponseMessage);
         }
     }
 }

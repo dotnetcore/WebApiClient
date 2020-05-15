@@ -7,7 +7,7 @@ namespace WebApiClientCore.Attributes
     /// 表示原始值结果的特性
     /// 支持结果类型为string、byte[]、Stream和HttpResponseMessage
     /// </summary>
-    public class RawResultAttribute : ApiResultAttribute
+    public class RawTypeResultAttribute : ApiResultAttribute
     {
         /// <summary>
         /// 配置请求头的accept

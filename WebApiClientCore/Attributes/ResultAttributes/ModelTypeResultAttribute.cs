@@ -7,15 +7,15 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示强类型模型结果抽象特性
     /// </summary>
-    public abstract class StrongTypeResultAttribute : ApiResultAttribute
+    public abstract class ModelTypeResultAttribute : ApiResultAttribute
     {
         /// <summary>
-        /// 媒体类型
+        /// 获取接受的媒体类型
         /// </summary>
-        private readonly MediaTypeWithQualityHeaderValue mediaType;
+        protected MediaTypeWithQualityHeaderValue AcceptContentType { get; }
 
         /// <summary>
-        /// 获取或设置是否必须匹配ContentType
+        /// 获取或设置是否必须匹配响应的ContentType
         /// </summary>
         public bool EnsureMatchContentType { get; set; } = true;
 
@@ -24,9 +24,9 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="accpetContentType">收受的内容类型</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public StrongTypeResultAttribute(string accpetContentType)
+        public ModelTypeResultAttribute(MediaTypeWithQualityHeaderValue accpetContentType)
         {
-            this.mediaType = MediaTypeWithQualityHeaderValue.Parse(accpetContentType);
+            this.AcceptContentType = accpetContentType ?? throw new ArgumentNullException(nameof(accpetContentType));
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="accept">请求头的accept</param>
         public sealed override void ConfigureAccept(HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> accept)
         {
-            accept.Add(this.mediaType);
+            accept.Add(this.AcceptContentType);
         }
 
         /// <summary>
@@ -45,21 +45,32 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public sealed override async Task SetResultAsync(ApiActionContext context)
         {
-            if (context.ApiAction.Return.DataType.IsStrongType == false)
+            if (context.ApiAction.Return.DataType.IsModelType == false)
             {
                 return;
             }
 
             if (this.EnsureMatchContentType == true)
             {
-                var contenType = new ContentType(context.HttpContext.ResponseMessage.Content.Headers.ContentType);
-                if (contenType.IsJson() == false)
+                var contenType = context.HttpContext.ResponseMessage.Content.Headers.ContentType;
+                if (this.IsMatchContentType(contenType) == false)
                 {
                     return;
                 }
             }
 
-            await this.SetStrongTypeResultAsync(context);
+            await this.SetModelTypeResultAsync(context);
+        }
+
+        /// <summary>
+        /// 验证ContentType是否匹配
+        /// </summary>
+        /// <param name="responseContentType"></param>
+        /// <returns></returns>
+        protected virtual bool IsMatchContentType(MediaTypeHeaderValue responseContentType)
+        {
+            var mediaType = responseContentType?.MediaType;
+            return this.AcceptContentType.MediaType.StartsWith(mediaType, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -67,6 +78,6 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public abstract Task SetStrongTypeResultAsync(ApiActionContext context);
+        public abstract Task SetModelTypeResultAsync(ApiActionContext context);
     }
 }

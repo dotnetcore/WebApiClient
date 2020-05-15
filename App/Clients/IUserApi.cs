@@ -15,7 +15,7 @@ namespace App.Clients
     [LoggerFilter]
     [HttpHost("http://localhost:6000/")]
     public interface IUserApi : IHttpApi
-    {
+    { 
         [HttpGet("api/users/{account}")]
         [BasicAuth("userName", "password")]
         [Timeout(10 * 1000)] // 10s超时        
