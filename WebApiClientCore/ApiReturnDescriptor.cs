@@ -26,7 +26,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取ITask(Of T)或Task(Of T)的T类型描述
         /// </summary>
-        public DataTypeDescriptor DataType { get; protected set; }
+        public ApiDataTypeDescriptor DataType { get; protected set; }
 
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace WebApiClientCore
 
             this.Attribute = returnAttribute;
             this.ReturnType = method.ReturnType;
-            this.DataType = new DataTypeDescriptor(dataType);
+            this.DataType = new ApiDataTypeDescriptor(dataType);
         }
     }
 }

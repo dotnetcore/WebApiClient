@@ -7,5 +7,5 @@ namespace WebApiClientCore
     /// </summary>
     /// <param name="context">上下文</param>
     /// <returns></returns>
-    public delegate Task ActionExecutionDelegate(ApiActionContext context);
+    public delegate Task ApiActionExecutionDelegate(ApiActionContext context);
 }

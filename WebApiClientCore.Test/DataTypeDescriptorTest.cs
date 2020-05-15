@@ -4,7 +4,7 @@ namespace WebApiClientCore.Test
 {
     public class DataTypeDescriptorTest
     {
-        private DataTypeDescriptor Create(string methodName)
+        private ApiDataTypeDescriptor Create(string methodName)
         {
             var method = typeof(IDescriptorApi).GetMethod(methodName);
             return new ApiReturnDescriptor(method).DataType;
