@@ -117,12 +117,11 @@ namespace WebApiClientCore.Attributes
         public override string ToString()
         {
             var builder = new TextBuilder();
-            const string timeFormat = "O";
 
             if (this.HasRequest == true)
             {
                 builder
-                    .AppendLine($"[REQUEST]{this.RequestTime.ToString(timeFormat)}")
+                    .AppendLine("[REQUEST]")
                     .AppendIfNotNull(this.RequestHeaders)
                     .AppendLineIf(this.RequestContent != null)
                     .AppendLineIfNotNull(this.RequestContent);
@@ -132,7 +131,7 @@ namespace WebApiClientCore.Attributes
             {
                 builder
                     .AppendLineIfHasValue()
-                    .AppendLine($"[RESPONSE]{this.ResponseTime.ToString(timeFormat)}")
+                    .AppendLine("[RESPONSE]")
                     .AppendIfNotNull(this.ResponseHeaders)
                     .AppendLineIf(this.ResponseContent != null)
                     .AppendLineIfNotNull(this.ResponseContent);
@@ -148,7 +147,7 @@ namespace WebApiClientCore.Attributes
 
             return builder
                 .AppendLineIfHasValue()
-                .Append($"[ELAPSED]{this.ResponseTime.Subtract(this.RequestTime)}")
+                .Append($"[ELAPSED] {this.ResponseTime.Subtract(this.RequestTime)}")
                 .ToString();
         }
 
