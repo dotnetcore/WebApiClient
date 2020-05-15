@@ -7,13 +7,13 @@ namespace WebApiClientCore.Test.Parameterables
     public class JsonPatchDocumentTest
     {
         [Fact]
-        public async Task BeforeRequestAsync()
+        public async Task OnRequestAsync()
         {
             var doc = new JsonPatchDocument<Model>();
             doc.Replace(item => item.Name, "33");
             doc.Replace(item => item.Age, 10);
 
-            var apiAction = new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"));
+            var apiAction = new ApiActionDescriptor(typeof(ITestApi).GetMethod("PostAsync"));
             var context = new TestRequestContext(apiAction, "name");
 
             context.HttpContext.RequestMessage.Method = new System.Net.Http.HttpMethod("Patch");  

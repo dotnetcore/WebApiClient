@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace WebApiClientCore.Test.Parameterables
 {
-    public interface IMyApi : IDisposable
+    public interface ITestApi : IDisposable
     {
         Task<HttpResponseMessage> PostAsync(string name);
     }

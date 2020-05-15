@@ -9,9 +9,9 @@ namespace WebApiClientCore.Test.Parameterables
     public class FormFieldTest
     {
         [Fact]
-        public async Task BeforeRequestAsync()
+        public async Task OnRequestAsync()
         {
-            var apiAction = new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"));
+            var apiAction = new ApiActionDescriptor(typeof(ITestApi).GetMethod("PostAsync"));
             var context = new TestRequestContext(apiAction, "name");
 
             context.HttpContext.RequestMessage.RequestUri = new Uri("http://www.webapi.com/");

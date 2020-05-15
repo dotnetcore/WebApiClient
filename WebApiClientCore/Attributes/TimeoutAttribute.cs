@@ -73,6 +73,11 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public Task OnRequestAsync(ApiParameterContext context, Func<Task> next)
         {
+            if (context.ParameterValue == null)
+            {
+                return next();
+            }
+
             if (context.ParameterValue is TimeSpan timespan)
             {
                 this.SetTimeout(context, timespan);

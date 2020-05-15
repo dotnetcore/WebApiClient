@@ -11,7 +11,7 @@ namespace WebApiClientCore.Test.Parameterables
     public class FormDataTextTest
     {
         [Fact]
-        public async Task BeforeRequestAsync()
+        public async Task OnRequestAsync()
         {
             string get(string name, string value)
             {
@@ -20,7 +20,7 @@ namespace WebApiClientCore.Test.Parameterables
 {HttpUtility.UrlEncode(value, Encoding.UTF8)}";
             }
 
-            var apiAction = new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"));
+            var apiAction = new ApiActionDescriptor(typeof(ITestApi).GetMethod("PostAsync"));
             var context = new TestRequestContext(apiAction, "name");
 
             context.HttpContext.RequestMessage.RequestUri = new Uri("http://www.webapi.com/");
