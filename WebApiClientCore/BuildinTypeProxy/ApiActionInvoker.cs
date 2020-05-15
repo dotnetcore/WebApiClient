@@ -58,7 +58,7 @@ namespace WebApiClientCore
                // 参数验证特性验证和参数模型属性特性验证
                .Then(context =>
                {
-                   var validateProperty = context.ApiOptions.UseParameterPropertyValidate;
+                   var validateProperty = context.HttpContext.Options.UseParameterPropertyValidate;
                    foreach (var parameter in context.ApiAction.Parameters)
                    {
                        var parameterValue = context.Arguments[parameter.Index];
@@ -134,10 +134,10 @@ namespace WebApiClientCore
             else
             {
                 using var cancellation = CreateLinkedTokenSource(context);
-                context.HttpContext.ResponseMessage = await context.HttpContext.HttpClient.SendAsync(context.HttpContext.RequestMessage, cancellation.Token).ConfigureAwait(false);
+                context.HttpContext.ResponseMessage = await context.HttpContext.Client.SendAsync(context.HttpContext.RequestMessage, cancellation.Token).ConfigureAwait(false);
                 context.Result = await context.ApiAction.Return.Attribute.GetResultAsync(context).ConfigureAwait(false);
 
-                ApiValidator.ValidateReturnValue(context.Result, context.ApiOptions.UseReturnValuePropertyValidate);
+                ApiValidator.ValidateReturnValue(context.Result, context.HttpContext.Options.UseReturnValuePropertyValidate);
                 await apiCache.SetAsync(cacheResult.CacheKey).ConfigureAwait(false);
             }
         }

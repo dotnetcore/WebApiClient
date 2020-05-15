@@ -7,17 +7,12 @@ namespace WebApiClientCore
     /// <summary>
     /// 表示请求Api的上下文
     /// </summary>
-    public class ApiActionContext 
+    public class ApiActionContext
     {
         /// <summary>
         /// 获取http上下文
         /// </summary>
         public HttpContext HttpContext { get; }
-
-        /// <summary>
-        /// 获取Api配置选项
-        /// </summary>
-        public HttpApiOptions ApiOptions { get; }
 
         /// <summary>
         /// 获取关联的ApiAction描述
@@ -28,7 +23,6 @@ namespace WebApiClientCore
         /// 获取请求参数值
         /// </summary>
         public IList<object> Arguments { get; }
-
 
 
         /// <summary>
@@ -55,17 +49,15 @@ namespace WebApiClientCore
         /// <summary>
         /// 请求Api的上下文
         /// </summary> 
-        /// <param name="httpContext"></param>
-        /// <param name="apiOptions"></param>
+        /// <param name="httpContext"></param> 
         /// <param name="apiAction"></param>
         /// <param name="arguments"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ApiActionContext(HttpContext httpContext, HttpApiOptions apiOptions, ApiActionDescriptor apiAction, params object[] arguments)
+        public ApiActionContext(HttpContext httpContext, ApiActionDescriptor apiAction, params object[] arguments)
         {
-            this.HttpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
-            this.ApiOptions = apiOptions ?? throw new ArgumentNullException(nameof(apiOptions));
+            this.HttpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext)); 
             this.ApiAction = apiAction ?? throw new ArgumentNullException(nameof(apiAction));
             this.Arguments = new List<object>(arguments);
-        } 
+        }
     }
 }

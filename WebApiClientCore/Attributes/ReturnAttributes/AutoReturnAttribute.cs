@@ -59,13 +59,13 @@ namespace WebApiClientCore.Attributes
             if (contentType.IsApplicationJson() == true)
             {
                 var json = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                return context.HttpContext.RequestServices.GetRequiredService<IJsonFormatter>().Deserialize(json, dataType.Type, context.ApiOptions.JsonDeserializeOptions);
+                return context.HttpContext.Services.GetRequiredService<IJsonFormatter>().Deserialize(json, dataType.Type, context.HttpContext.Options.JsonDeserializeOptions);
             }
 
             if (contentType.IsApplicationXml() == true)
             {
                 var xml = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                return context.HttpContext.RequestServices.GetRequiredService<IXmlFormatter>().Deserialize(xml, dataType.Type);
+                return context.HttpContext.Services.GetRequiredService<IXmlFormatter>().Deserialize(xml, dataType.Type);
             }
 
             throw new ApiReturnNotSupportedExteption(response, dataType.Type);

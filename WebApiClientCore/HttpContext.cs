@@ -11,12 +11,17 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取关联的HttpClient实例
         /// </summary>
-        public HttpClient HttpClient { get; }
+        public HttpClient Client { get; }
+
+        /// <summary>
+        /// 获取Api配置选项
+        /// </summary>
+        public HttpApiOptions Options { get; }
 
         /// <summary>
         /// 获取服务提供者
         /// </summary>
-        public IServiceProvider RequestServices { get; }
+        public IServiceProvider Services { get; }
 
         /// <summary>
         /// 获取关联的HttpRequestMessage
@@ -33,12 +38,13 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="httpClient"></param>
         /// <param name="services"></param>
-        /// <param name="httpHost"></param>
-        public HttpContext(HttpClient httpClient, IServiceProvider services, Uri httpHost)
+        /// <param name="options"></param>
+        public HttpContext(HttpClient httpClient, IServiceProvider services, HttpApiOptions options)
         {
-            this.HttpClient = httpClient;
-            this.RequestServices = services;
-            this.RequestMessage = new HttpApiRequestMessage { RequestUri = httpHost };
+            this.Client = httpClient;
+            this.Services = services;
+            this.Options = options;
+            this.RequestMessage = new HttpApiRequestMessage { RequestUri = options.HttpHost };
         }
 
         /// <summary>

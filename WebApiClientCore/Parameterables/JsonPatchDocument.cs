@@ -85,8 +85,8 @@ namespace WebApiClientCore.Parameterables
                 throw new HttpApiInvalidOperationException(Resx.required_PatchMethod);
             }
 
-            var formatter = context.HttpContext.RequestServices.GetRequiredService<IJsonFormatter>();
-            var json = formatter.Serialize(this.oprations, context.ActionContext.ApiOptions.JsonSerializeOptions);
+            var formatter = context.HttpContext.Services.GetRequiredService<IJsonFormatter>();
+            var json = formatter.Serialize(this.oprations, context.ActionContext.HttpContext.Options.JsonSerializeOptions);
             context.HttpContext.RequestMessage.Content = new JsonPatchContent(json);
 
             return Task.CompletedTask;

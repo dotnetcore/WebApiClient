@@ -93,12 +93,12 @@ namespace WebApiClientCore.Exceptions
             if (contentType.IsApplicationJson() == true)
             {
                 var json = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                return (TResult)this.context.HttpContext.RequestServices.GetRequiredService<IJsonFormatter>().Deserialize(json, dataType, this.context.ApiOptions.JsonDeserializeOptions);
+                return (TResult)this.context.HttpContext.Services.GetRequiredService<IJsonFormatter>().Deserialize(json, dataType, this.context.HttpContext.Options.JsonDeserializeOptions);
             }
             else if (contentType.IsApplicationXml() == true)
             {
                 var xml = await content.ReadAsStringAsync().ConfigureAwait(false);
-                return (TResult)this.context.HttpContext.RequestServices.GetRequiredService<IXmlFormatter>().Deserialize(xml, dataType);
+                return (TResult)this.context.HttpContext.Services.GetRequiredService<IXmlFormatter>().Deserialize(xml, dataType);
             }
             throw new ApiReturnNotSupportedExteption(this.ResponseMessage, dataType);
         }

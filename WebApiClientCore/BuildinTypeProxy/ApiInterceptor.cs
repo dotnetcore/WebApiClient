@@ -41,10 +41,10 @@ namespace WebApiClientCore
         /// <param name="parameters">接口的参数集合</param>
         /// <returns></returns>
         public object Intercept(object target, MethodInfo method, object[] parameters)
-        { 
+        {
             var apiCache = cache.GetOrAdd(method, this.CreateApiCacheValue);
-            using var httpContext = new HttpContext(this.httpClient, this.requestServices, this.apiOptions.HttpHost);
-            var context = new ApiActionContext(httpContext, this.apiOptions, apiCache.ActionDescriptor, parameters);
+            using var httpContext = new HttpContext(this.httpClient, this.requestServices, this.apiOptions);
+            var context = new ApiActionContext(httpContext, apiCache.ActionDescriptor, parameters);
             return apiCache.ActionInvoker.InvokeAsync(context);
         }
 

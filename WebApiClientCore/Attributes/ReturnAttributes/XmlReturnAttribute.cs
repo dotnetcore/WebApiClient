@@ -30,7 +30,7 @@ namespace WebApiClientCore.Attributes
             var xml = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             var dataType = context.ApiAction.Return.DataType.Type;
-            var result = context.HttpContext.RequestServices.GetRequiredService<IXmlFormatter>().Deserialize(xml, dataType);
+            var result = context.HttpContext.Services.GetRequiredService<IXmlFormatter>().Deserialize(xml, dataType);
             return result;
         }
     }

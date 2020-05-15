@@ -30,7 +30,7 @@ namespace WebApiClientCore.Attributes
             var json = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
 
             var dataType = context.ApiAction.Return.DataType.Type;
-            var result = context.HttpContext.RequestServices.GetRequiredService<IJsonFormatter>().Deserialize(json, dataType, context.ApiOptions.JsonDeserializeOptions);
+            var result = context.HttpContext.Services.GetRequiredService<IJsonFormatter>().Deserialize(json, dataType, context.HttpContext.Options.JsonDeserializeOptions);
             return result;
         }
     }

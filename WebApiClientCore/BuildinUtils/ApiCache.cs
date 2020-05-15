@@ -22,7 +22,7 @@ namespace WebApiClientCore
         {
             this.context = context;
             this.attribute = context.ApiAction.Cache;
-            this.provider = context.HttpContext.RequestServices.GetService<IResponseCacheProvider>();
+            this.provider = context.HttpContext.Services.GetService<IResponseCacheProvider>();
             this.enable = this.attribute != null && this.provider != null;
         }
 

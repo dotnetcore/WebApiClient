@@ -103,7 +103,7 @@ namespace WebApiClientCore.Attributes
         /// <exception cref="HttpApiInvalidOperationException"></exception>
         private void SetTimeout(ApiActionContext context, TimeSpan timeout)
         {
-            var maxTimeout = context.HttpContext.HttpClient.Timeout;
+            var maxTimeout = context.HttpContext.Client.Timeout;
             if (maxTimeout >= System.TimeSpan.Zero && timeout > maxTimeout)
             {
                 throw new HttpApiInvalidOperationException(Resx.timeout_OutOfRange.Format(timeout));
