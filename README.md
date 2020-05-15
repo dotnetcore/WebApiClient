@@ -13,6 +13,7 @@
 3. 移除AOT功能
 4. 更多的HttpContent不再于string拼接，尽量使用Utf8Stream
 5. 更规范的特性命名
+6. 所有特性都基于中间件思想开发
 
 ### 个人想法
 WebApiClient紧密集合Json.net，其与json.net的命运一样，在.netcore里不再非常重要。多年前，我造出了WebApiClient，现在，我想它应该有新的变化与使命了。
