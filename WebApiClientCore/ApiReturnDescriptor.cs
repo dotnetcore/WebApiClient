@@ -16,7 +16,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取关联的ApiReturnAttribute
         /// </summary>
-        public IApiReturnAttribute Attribute { get; protected set; }
+        public IApiResultAttribute Attribute { get; protected set; }
 
         /// <summary>
         /// 获取返回类型
@@ -41,7 +41,7 @@ namespace WebApiClientCore
                 throw new ArgumentNullException(nameof(method));
             }
 
-            var returnAttribute = method.FindDeclaringAttribute<IApiReturnAttribute>(true) ?? new AutoReturnAttribute();
+            var returnAttribute = method.FindDeclaringAttribute<IApiResultAttribute>(true) ?? new AutoResultAttribute();
             var dataType = method.ReturnType.IsGenericType ? method.ReturnType.GetGenericArguments().FirstOrDefault() : typeof(HttpResponseMessage);
 
             this.Attribute = returnAttribute;

@@ -7,7 +7,7 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示使用XmlFormatter反序列化回复内容作为返回值
     /// </summary>
-    public class XmlReturnAttribute : ApiReturnAttribute
+    public class XmlResultAttribute : ApiResultAttribute
     {
         /// <summary>
         /// 配置请求头的accept

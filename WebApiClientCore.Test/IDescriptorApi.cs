@@ -19,7 +19,7 @@ namespace WebApiClientCore.Test
         Task<string> Get1([Uri] string url, string something);
 
         [HttpGet]
-        [JsonReturn]
+        [JsonResult]
         Task<HttpResponseMessage> Get2([Required]string id, CancellationToken token);
 
         [HttpGet]

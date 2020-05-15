@@ -25,7 +25,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取Api关联的缓存特性
         /// </summary>
-        public IApiActionCacheAttribute Cache { get; protected set; }
+        public IApiCacheAttribute Cache { get; protected set; }
 
         /// <summary>
         /// 获取Api关联的特性
@@ -35,7 +35,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取Api关联的过滤器特性
         /// </summary>
-        public IReadOnlyList<IApiActionFilterAttribute> Filters { get; protected set; }
+        public IReadOnlyList<IApiFilterAttribute> Filters { get; protected set; }
 
         /// <summary>
         /// 获取Api的参数描述
@@ -66,15 +66,15 @@ namespace WebApiClientCore
                 .ToReadOnlyList();
 
             var filterAttributes = method
-                .FindDeclaringAttributes<IApiActionFilterAttribute>(true)
-                .Distinct(new MultiplableComparer<IApiActionFilterAttribute>())
+                .FindDeclaringAttributes<IApiFilterAttribute>(true)
+                .Distinct(new MultiplableComparer<IApiFilterAttribute>())
                 .OrderBy(item => item.OrderIndex)
                 .ToReadOnlyList();
 
 
             this.Member = method;
             this.Name = method.Name;
-            this.Cache = method.GetAttribute<IApiActionCacheAttribute>(true);
+            this.Cache = method.GetAttribute<IApiCacheAttribute>(true);
             this.Filters = filterAttributes;
             this.Attributes = actionAttributes;
             this.Return = new ApiReturnDescriptor(method);

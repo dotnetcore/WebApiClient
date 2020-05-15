@@ -10,7 +10,7 @@ namespace WebApiClientCore.Attributes
     /// 回复内容处理特性抽象
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public abstract class ApiReturnAttribute : Attribute, IApiReturnAttribute
+    public abstract class ApiResultAttribute : Attribute, IApiResultAttribute
     {
         /// <summary>
         /// 获取或设置是否确保响应的http状态码通过IsSuccessStatusCode验证
@@ -24,7 +24,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        Task IApiReturnAttribute.BeforeRequestAsync(ApiActionContext context)
+        Task IApiResultAttribute.BeforeRequestAsync(ApiActionContext context)
         {
             this.ConfigureAccept(context.HttpContext.RequestMessage.Headers.Accept);
             return this.BeforeRequestAsync(context);
@@ -53,7 +53,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <exception cref="HttpStatusFailureException"></exception>
         /// <returns></returns>
-        Task<object> IApiReturnAttribute.GetResultAsync(ApiActionContext context)
+        Task<object> IApiResultAttribute.GetResultAsync(ApiActionContext context)
         {
             if (this.EnsureSuccessStatusCode == true)
             {

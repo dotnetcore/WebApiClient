@@ -7,7 +7,7 @@ namespace WebApiClientCore.Attributes
     /// ApiAction的过滤器抽象特性
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public abstract class ApiActionFilterAttribute : Attribute, IApiActionFilterAttribute
+    public abstract class ApiActionFilterAttribute : Attribute, IApiFilterAttribute
     {
         /// <summary>
         /// 获取或设置是否启用
@@ -29,7 +29,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        async Task IApiActionFilterAttribute.BeforeRequestAsync(ApiActionContext context)
+        async Task IApiFilterAttribute.BeforeRequestAsync(ApiActionContext context)
         {
             if (this.Enable == true)
             {
@@ -42,7 +42,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        async Task IApiActionFilterAttribute.AfterRequestAsync(ApiActionContext context)
+        async Task IApiFilterAttribute.AfterRequestAsync(ApiActionContext context)
         {
             if (this.Enable == true)
             {

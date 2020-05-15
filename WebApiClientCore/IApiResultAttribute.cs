@@ -5,7 +5,7 @@ namespace WebApiClientCore
     /// <summary>
     /// 定义回复内容处理特性的行为
     /// </summary>
-    public interface IApiReturnAttribute
+    public interface IApiResultAttribute
     {
         /// <summary>
         /// 执行前

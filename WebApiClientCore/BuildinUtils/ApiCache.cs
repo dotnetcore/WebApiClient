@@ -12,7 +12,7 @@ namespace WebApiClientCore
         private readonly bool enable;
         private readonly ApiActionContext context;
         private readonly IResponseCacheProvider provider;
-        private readonly IApiActionCacheAttribute attribute;
+        private readonly IApiCacheAttribute attribute;
 
         /// <summary>
         /// Api缓存

@@ -7,7 +7,7 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示使用JsonFormatter反序列化回复内容作为返回值
     /// </summary>
-    public class JsonReturnAttribute : ApiReturnAttribute
+    public class JsonResultAttribute : ApiResultAttribute
     {
         /// <summary>
         /// 配置请求头的accept

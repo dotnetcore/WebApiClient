@@ -10,7 +10,7 @@ namespace WebApiClientCore.Attributes
     /// </summary>
     [DebuggerDisplay("Expiration = {Expiration}")]
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public abstract class ApiActionCacheAttribute : Attribute, IApiActionCacheAttribute
+    public abstract class ApiActionCacheAttribute : Attribute, IApiCacheAttribute
     {
         /// <summary>
         /// 获取缓存的时间戳

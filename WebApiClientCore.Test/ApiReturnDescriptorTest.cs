@@ -11,9 +11,9 @@ namespace WebApiClientCore.Test
             var m1 = new ApiReturnDescriptor(typeof(IDescriptorApi).GetMethod("Get1"));
             var m2 = new ApiReturnDescriptor(typeof(IDescriptorApi).GetMethod("Get2"));
              
-            Assert.True(m1.Attribute.GetType() == typeof(AutoReturnAttribute));
+            Assert.True(m1.Attribute.GetType() == typeof(AutoResultAttribute));
                
-            Assert.True(m2.Attribute.GetType() == typeof(JsonReturnAttribute));
+            Assert.True(m2.Attribute.GetType() == typeof(JsonResultAttribute));
         }
     }
 }

@@ -39,8 +39,8 @@ namespace WebApiClientCore.Exceptions
             {
                 return new StringBuilder()
                     .AppendLine($"不支持将ContentType为{this.ContentType}的内容反序列化为{this.ReturnDataType}")
-                    .AppendLine($"如果实际返回的内容为Xml，请为方法声明{nameof(XmlReturnAttribute)}")
-                    .Append($"如果实际返回的内容为Json，请为方法声明{nameof(JsonReturnAttribute)}")
+                    .AppendLine($"如果实际返回的内容为Xml，请为方法声明{nameof(XmlResultAttribute)}")
+                    .Append($"如果实际返回的内容为Json，请为方法声明{nameof(JsonResultAttribute)}")
                     .ToString();
             }
         }
