@@ -15,7 +15,7 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// tag的key
         /// </summary>
-        private static readonly string tagKey = "$LoggerFilter";
+        private static readonly string tagKey = "$LoggingFilter";
 
         /// <summary>
         /// 获取或设置是否输出请求内容
@@ -111,7 +111,7 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 写日志
+        /// 写日志到LoggerFactory
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="logMessage">日志消息</param>
