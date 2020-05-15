@@ -129,12 +129,20 @@ namespace WebApiClientCore
             {
                 builder.Use(async (context, next) =>
                 {
-                    if (context.ResultStatus == ResultStatus.NoResult)
+                    // 有结果值 本中间件就不再处理
+                    if (context.ResultStatus != ResultStatus.NoResult)
+                    {
+                        await next();
+                        return;
+                    }
+
+                    try
                     {
                         await attr.AfterRequestAsync(context, next);
                     }
-                    else
+                    catch (Exception ex)
                     {
+                        context.Exception = ex;
                         await next();
                     }
                 });

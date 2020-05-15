@@ -42,7 +42,7 @@ namespace WebApiClientCore.Attributes
             logger.LogInformation(message);
             if (mesage.Exception != null)
             {
-                logger.LogError(mesage.Exception, mesage.Exception.GetType().Name);
+                logger.LogError(mesage.Exception, mesage.Exception.Message);
             }
         }
 
