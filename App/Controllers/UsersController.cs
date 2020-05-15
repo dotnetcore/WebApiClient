@@ -9,7 +9,7 @@ namespace App.Controllers
     {
         [HttpGet("{account}")]
         public User Get(string account)
-        {
+        { 
             return new User { Account = account, Password = "password" };
         }
 

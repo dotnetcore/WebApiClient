@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace WebApiClientCore
 {
@@ -8,10 +9,11 @@ namespace WebApiClientCore
     public interface IApiActionAttribute : IAttributeMultiplable
     {
         /// <summary>
-        /// 执行前
+        /// 请求前
         /// </summary>
         /// <param name="context">上下文</param>
+        /// <param name="next">下一个执行委托</param>
         /// <returns></returns>
-        Task BeforeRequestAsync(ApiActionContext context);
+        Task BeforeRequestAsync(ApiActionContext context, Func<Task> next);
     }
 }

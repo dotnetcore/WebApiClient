@@ -20,6 +20,18 @@ namespace WebApiClientCore.Attributes
         public bool AllowMultiple => this.GetType().IsAllowMultiple();
 
         /// <summary>
+        /// 请求前
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <param name="next">下一个中间件</param>
+        /// <returns></returns>
+        public async Task BeforeRequestAsync(ApiActionContext context, Func<Task> next)
+        {
+            await this.BeforeRequestAsync(context);
+            await next();
+        }
+
+        /// <summary>
         /// 执行前
         /// </summary>
         /// <param name="context">上下文</param>
