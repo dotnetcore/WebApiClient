@@ -31,7 +31,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="mesage">追踪的消息</param>
         private void WriteLoggerFactory(ApiActionContext context, string categoryName, LoggerMessage mesage)
         {
-            var logging = context.RequestServices.GetService<ILoggerFactory>();
+            var logging = context.HttpContext.RequestServices.GetService<ILoggerFactory>();
             if (logging == null)
             {
                 return;

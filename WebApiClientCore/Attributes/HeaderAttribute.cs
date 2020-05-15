@@ -114,7 +114,7 @@ namespace WebApiClientCore.Attributes
                 throw new HttpApiInvalidOperationException(Resx.unsupported_ManaulCookie);
             }
 
-            var headers = context.RequestMessage.Headers;
+            var headers = context.HttpContext.RequestMessage.Headers;
             headers.Remove(this.name);
             if (headerValue != null)
             {

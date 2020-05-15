@@ -65,7 +65,7 @@ namespace WebApiClientCore.Attributes
         protected virtual void AccessTokenResult(ApiActionContext context, TokenResult tokenResult)
         {
             var tokenType = tokenResult.TokenType ?? "Bearer";
-            context.RequestMessage.Headers.Authorization = new AuthenticationHeaderValue(tokenType, tokenResult.AccessToken);
+            context.HttpContext.RequestMessage.Headers.Authorization = new AuthenticationHeaderValue(tokenType, tokenResult.AccessToken);
         }
 
         /// <summary>

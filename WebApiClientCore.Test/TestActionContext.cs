@@ -14,16 +14,17 @@ namespace WebApiClientCore.Test
         /// <param name="apiActionDescriptor">关联的ApiActionDescriptor</param>
         /// <exception cref="ArgumentNullException"></exception>
         public TestActionContext(ApiActionDescriptor apiActionDescriptor, params object[] args)
-            : base(new TestApi(), new HttpClient(), GetServiceProvider(), new HttpApiOptions(), apiActionDescriptor, args)
+            : base(GetHttpContext(), new HttpApiOptions(), apiActionDescriptor, args)
         {
-            this.ResponseMessage = new HttpResponseMessage(System.Net.HttpStatusCode.OK);
+            this.HttpContext.ResponseMessage = new HttpResponseMessage(System.Net.HttpStatusCode.OK);
         }
 
-        private static IServiceProvider GetServiceProvider()
+        private static HttpContext GetHttpContext()
         {
             var services = new ServiceCollection();
             services.AddHttpApi<ITestApi>();
-            return services.BuildServiceProvider();
+            var requestServices = services.BuildServiceProvider();
+            return new HttpContext(new HttpClient(), requestServices, null);
         }
 
         public interface ITestApi : IHttpApi

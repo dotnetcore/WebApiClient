@@ -22,7 +22,7 @@ namespace WebApiClientCore
         {
             this.context = context;
             this.attribute = context.ApiAction.Cache;
-            this.provider = context.RequestServices.GetService<IResponseCacheProvider>();
+            this.provider = context.HttpContext.RequestServices.GetService<IResponseCacheProvider>();
             this.enable = this.attribute != null && this.provider != null;
         }
 
@@ -54,7 +54,7 @@ namespace WebApiClientCore
                 return new CacheResult(cacheKey, null);
             }
 
-            var response = cacheResult.Value.ToResponseMessage(this.context.RequestMessage, this.provider.Name);
+            var response = cacheResult.Value.ToResponseMessage(this.context.HttpContext.RequestMessage, this.provider.Name);
             return new CacheResult(cacheKey, response);
         }
 
@@ -70,7 +70,7 @@ namespace WebApiClientCore
                 return;
             }
 
-            if (this.context.ResponseMessage == null)
+            if (this.context.HttpContext.ResponseMessage == null)
             {
                 return;
             }
@@ -90,7 +90,7 @@ namespace WebApiClientCore
                 return;
             }
 
-            var httpResponse = this.context.ResponseMessage;
+            var httpResponse = this.context.HttpContext.ResponseMessage;
             var cacheEntry = await ResponseCacheEntry.FromResponseMessageAsync(httpResponse).ConfigureAwait(false);
             await this.provider.SetAsync(cacheKey, cacheEntry, attribute.Expiration).ConfigureAwait(false);
         }

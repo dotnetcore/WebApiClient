@@ -16,8 +16,8 @@ namespace WebApiClientCore
         private static readonly ConcurrentCache<MethodInfo, ApiCacheValue> cache = new ConcurrentCache<MethodInfo, ApiCacheValue>();
 
         private readonly HttpClient httpClient;
-        private readonly HttpApiOptions options;
-        private readonly IServiceProvider requestServices;  
+        private readonly HttpApiOptions apiOptions;
+        private readonly IServiceProvider requestServices;
 
 
         /// <summary>
@@ -26,11 +26,11 @@ namespace WebApiClientCore
         /// <param name="httpClient"></param>
         /// <param name="options"></param>
         /// <param name="requestServices"></param>
-        public ApiInterceptor(HttpClient httpClient,  HttpApiOptions options, IServiceProvider requestServices)
+        public ApiInterceptor(HttpClient httpClient, HttpApiOptions options, IServiceProvider requestServices)
         {
             this.httpClient = httpClient;
-            this.options = options;
-            this.requestServices = requestServices;           
+            this.apiOptions = options;
+            this.requestServices = requestServices;
         }
 
         /// <summary>
@@ -41,12 +41,11 @@ namespace WebApiClientCore
         /// <param name="parameters">接口的参数集合</param>
         /// <returns></returns>
         public object Intercept(object target, MethodInfo method, object[] parameters)
-        {
-            var httpApi = target as IHttpApi;
+        { 
             var apiCache = cache.GetOrAdd(method, this.CreateApiCacheValue);
-
-            using var context = new ApiActionContext(httpApi, this.httpClient, this.requestServices, this.options, apiCache.Descriptor, parameters);
-            return apiCache.Invoker.InvokeAsync(context);
+            using var httpContext = new HttpContext(this.httpClient, this.requestServices, this.apiOptions.HttpHost);
+            var context = new ApiActionContext(httpContext, this.apiOptions, apiCache.ActionDescriptor, parameters);
+            return apiCache.ActionInvoker.InvokeAsync(context);
         }
 
         /// <summary>
@@ -71,12 +70,12 @@ namespace WebApiClientCore
             /// <summary>
             /// Api描述
             /// </summary>
-            public ApiActionDescriptor Descriptor { get; }
+            public ApiActionDescriptor ActionDescriptor { get; }
 
             /// <summary>
             /// Api执行器
             /// </summary>
-            public IApiActionInvoker Invoker { get; }
+            public IApiActionInvoker ActionInvoker { get; }
 
             /// <summary>
             /// Api缓存值
@@ -84,8 +83,8 @@ namespace WebApiClientCore
             /// <param name="descriptor">Api描述</param>
             public ApiCacheValue(ApiActionDescriptor descriptor)
             {
-                this.Descriptor = descriptor;
-                this.Invoker = Lambda.CreateCtorFunc<IApiActionInvoker>(typeof(ApiActionInvoker<>).MakeGenericType(descriptor.Return.DataType.Type))();
+                this.ActionDescriptor = descriptor;
+                this.ActionInvoker = Lambda.CreateCtorFunc<IApiActionInvoker>(typeof(ApiActionInvoker<>).MakeGenericType(descriptor.Return.DataType.Type))();
             }
         }
     }

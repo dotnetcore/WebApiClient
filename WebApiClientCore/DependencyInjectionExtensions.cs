@@ -53,8 +53,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddHttpClient(typeof(THttpApi).FullName)
                 .AddTypedClient((httpClient, requestServices) =>
                 {
-                    var options = requestServices.GetService<IOptions<HttpApiOptions<THttpApi>>>().Value;
-                    var interceptor = new ApiInterceptor(httpClient, options, requestServices);
+                    var apiOptions = requestServices.GetService<IOptions<HttpApiOptions<THttpApi>>>().Value;
+                    var interceptor = new ApiInterceptor(httpClient, apiOptions, requestServices);
                     return HttpApiProxy.CreateInstance<THttpApi>(interceptor);
                 });
         }

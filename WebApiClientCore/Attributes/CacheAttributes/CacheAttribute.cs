@@ -68,7 +68,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public override Task<string> GetCacheKeyAsync(ApiActionContext context)
         {
-            var request = context.RequestMessage;
+            var request = context.HttpContext.RequestMessage;
             var uri = request.RequestUri.ToString();
 
             if (this.IncludeHeaderNames.Length == 0)

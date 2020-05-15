@@ -86,7 +86,7 @@ namespace WebApiClientCore.Parameterables
             }
 
             var formatter = context.RequestServices.GetRequiredService<IJsonFormatter>();
-            var json = formatter.Serialize(this.oprations, context.ApiActionContext.Options.JsonSerializeOptions);
+            var json = formatter.Serialize(this.oprations, context.ApiActionContext.ApiOptions.JsonSerializeOptions);
             context.RequestMessage.Content = new JsonPatchContent(json);
 
             return Task.CompletedTask;

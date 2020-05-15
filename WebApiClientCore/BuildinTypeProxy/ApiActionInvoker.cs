@@ -58,7 +58,7 @@ namespace WebApiClientCore
                // 参数验证特性验证和参数模型属性特性验证
                .Then(context =>
                {
-                   var validateProperty = context.Options.UseParameterPropertyValidate;
+                   var validateProperty = context.ApiOptions.UseParameterPropertyValidate;
                    foreach (var parameter in context.ApiAction.Parameters)
                    {
                        var parameterValue = context.Arguments[parameter.Index];
@@ -128,16 +128,16 @@ namespace WebApiClientCore
 
             if (cacheResult.ResponseMessage != null)
             {
-                context.ResponseMessage = cacheResult.ResponseMessage;
+                context.HttpContext.ResponseMessage = cacheResult.ResponseMessage;
                 context.Result = await context.ApiAction.Return.Attribute.GetResultAsync(context).ConfigureAwait(false);
             }
             else
             {
                 using var cancellation = CreateLinkedTokenSource(context);
-                context.ResponseMessage = await context.HttpClient.SendAsync(context.RequestMessage, cancellation.Token).ConfigureAwait(false);
+                context.HttpContext.ResponseMessage = await context.HttpContext.HttpClient.SendAsync(context.HttpContext.RequestMessage, cancellation.Token).ConfigureAwait(false);
                 context.Result = await context.ApiAction.Return.Attribute.GetResultAsync(context).ConfigureAwait(false);
 
-                ApiValidator.ValidateReturnValue(context.Result, context.Options.UseReturnValuePropertyValidate);
+                ApiValidator.ValidateReturnValue(context.Result, context.ApiOptions.UseReturnValuePropertyValidate);
                 await apiCache.SetAsync(cacheResult.CacheKey).ConfigureAwait(false);
             }
         }

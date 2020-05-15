@@ -58,7 +58,7 @@ namespace WebApiClientCore.Attributes
                 throw new HttpApiInvalidOperationException(Resx.required_NameAndValue);
             }
 
-            await context.RequestMessage.AddFormFieldAsync(this.name, this.value).ConfigureAwait(false);
+            await context.HttpContext.RequestMessage.AddFormFieldAsync(this.name, this.value).ConfigureAwait(false);
         }
 
         /// <summary>

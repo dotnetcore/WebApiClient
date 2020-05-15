@@ -16,11 +16,11 @@ namespace WebApiClientCore.Test.Parameterables
             var context = new TestActionContext(
                apiActionDescriptor: new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync")));
 
-            context.RequestMessage.Method = new System.Net.Http.HttpMethod("Patch");
+            context.HttpContext.RequestMessage.Method = new System.Net.Http.HttpMethod("Patch");
             var parameter = context.ApiAction.Parameters[0];
             await ((IApiParameterable)doc).BeforeRequestAsync(new ApiParameterContext(context, parameter));
 
-            var body = await context.RequestMessage.Content.ReadAsStringAsync();
+            var body = await context.HttpContext.RequestMessage.Content.ReadAsStringAsync();
             var ops = System.Text.Json.JsonSerializer.Deserialize<Op[]>(body);
             Assert.Equal(2, ops.Length);
 

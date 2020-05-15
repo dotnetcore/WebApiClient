@@ -26,11 +26,11 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected override async Task<object> GetResultAsync(ApiActionContext context)
         {
-            var response = context.ResponseMessage;
+            var response = context.HttpContext.ResponseMessage;
             var xml = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             var dataType = context.ApiAction.Return.DataType.Type;
-            var result = context.RequestServices.GetRequiredService<IXmlFormatter>().Deserialize(xml, dataType);
+            var result = context.HttpContext.RequestServices.GetRequiredService<IXmlFormatter>().Deserialize(xml, dataType);
             return result;
         }
     }

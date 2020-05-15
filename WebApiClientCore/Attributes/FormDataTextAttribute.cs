@@ -58,7 +58,7 @@ namespace WebApiClientCore.Attributes
                 throw new HttpApiInvalidOperationException(Resx.required_NameAndValue);
             }
 
-            context.RequestMessage.AddFormDataText(this.name, this.value);
+            context.HttpContext.RequestMessage.AddFormDataText(this.name, this.value);
             await Task.CompletedTask;
         }
 

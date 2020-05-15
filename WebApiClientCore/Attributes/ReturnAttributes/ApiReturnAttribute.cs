@@ -26,7 +26,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         Task IApiReturnAttribute.BeforeRequestAsync(ApiActionContext context)
         {
-            this.ConfigureAccept(context.RequestMessage.Headers.Accept);
+            this.ConfigureAccept(context.HttpContext.RequestMessage.Headers.Accept);
             return this.BeforeRequestAsync(context);
         }
 
@@ -57,7 +57,7 @@ namespace WebApiClientCore.Attributes
         {
             if (this.EnsureSuccessStatusCode == true)
             {
-                var statusCode = context.ResponseMessage.StatusCode;
+                var statusCode = context.HttpContext.ResponseMessage.StatusCode;
                 if (this.IsSuccessStatusCode(statusCode) == false)
                 {
                     throw new HttpStatusFailureException(context);

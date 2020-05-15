@@ -19,7 +19,7 @@ namespace WebApiClientCore.Test.Parameterables
             await basicAuth.BeforeRequestAsync(new ApiParameterContext(context, parameter));
 
             var auth = Convert.ToBase64String(Encoding.ASCII.GetBytes("laojiu:123456"));
-            Assert.True(context.RequestMessage.Headers.Authorization.Parameter == auth);
+            Assert.True(context.HttpContext.RequestMessage.Headers.Authorization.Parameter == auth);
         }
     }
 }

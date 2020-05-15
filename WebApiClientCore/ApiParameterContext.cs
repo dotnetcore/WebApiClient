@@ -25,12 +25,12 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取关联的HttpRequestMessage
         /// </summary>
-        public HttpApiRequestMessage RequestMessage => this.ApiActionContext.RequestMessage;
+        public HttpApiRequestMessage RequestMessage => this.ApiActionContext.HttpContext.RequestMessage;
 
         /// <summary>
         /// 获取服务提供者
         /// </summary>
-        public IServiceProvider RequestServices => this.ApiActionContext.RequestServices;
+        public IServiceProvider RequestServices => this.ApiActionContext.HttpContext.RequestServices;
 
         /// <summary>
         /// Api参数上下文

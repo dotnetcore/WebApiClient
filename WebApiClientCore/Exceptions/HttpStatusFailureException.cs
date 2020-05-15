@@ -20,12 +20,12 @@ namespace WebApiClientCore.Exceptions
         /// <summary>
         /// 获取响应消息
         /// </summary>
-        public HttpResponseMessage ResponseMessage => this.context.ResponseMessage;
+        public HttpResponseMessage ResponseMessage => this.context.HttpContext.ResponseMessage;
 
         /// <summary>
         /// 获取响应状态码
         /// </summary>
-        public HttpStatusCode StatusCode => this.context.ResponseMessage.StatusCode;
+        public HttpStatusCode StatusCode => this.context.HttpContext.ResponseMessage.StatusCode;
 
 
         /// <summary>
@@ -93,12 +93,12 @@ namespace WebApiClientCore.Exceptions
             if (contentType.IsApplicationJson() == true)
             {
                 var json = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                return (TResult)this.context.RequestServices.GetRequiredService<IJsonFormatter>().Deserialize(json, dataType, this.context.Options.JsonDeserializeOptions);
+                return (TResult)this.context.HttpContext.RequestServices.GetRequiredService<IJsonFormatter>().Deserialize(json, dataType, this.context.ApiOptions.JsonDeserializeOptions);
             }
             else if (contentType.IsApplicationXml() == true)
             {
                 var xml = await content.ReadAsStringAsync().ConfigureAwait(false);
-                return (TResult)this.context.RequestServices.GetRequiredService<IXmlFormatter>().Deserialize(xml, dataType);
+                return (TResult)this.context.HttpContext.RequestServices.GetRequiredService<IXmlFormatter>().Deserialize(xml, dataType);
             }
             throw new ApiReturnNotSupportedExteption(this.ResponseMessage, dataType);
         }

@@ -48,7 +48,7 @@ namespace WebApiClientCore.Attributes
 
             if (this.LogRequest == true)
             {
-                var request = context.RequestMessage;
+                var request = context.HttpContext.RequestMessage;
                 message.RequestHeaders = request.GetHeadersString();
 
                 if (request.Content is ICustomTracable httpContent)
@@ -71,7 +71,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public async override Task AfterRequestAsync(ApiActionContext context)
         {
-            var response = context.ResponseMessage;
+            var response = context.HttpContext.ResponseMessage;
             var message = context.Tags.Take(tagKey).As<LoggerMessage>();
 
             message.ResponseTime = DateTime.Now;
