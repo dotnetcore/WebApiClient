@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using WebApiClientCore.Attributes;
 
 namespace WebApiClientCore
 {
     /// <summary>
     /// 表示参数内容为IApiParameterable对象或其数组
     /// </summary>
-    class ParameterableAttribute : Attribute, IApiParameterAttribute
+    class ParameterableAttribute : ApiParameterAttribute
     {
         /// <summary>
         /// http请求之前
         /// </summary>
-        /// <param name="context">上下文</param>
-        /// <param name="next"></param>
+        /// <param name="context">上下文</param> 
         /// <returns></returns>
-        public async Task BeforeRequestAsync(ApiParameterContext context, Func<Task> next)
+        public override async Task BeforeRequestAsync(ApiParameterContext context)
         {
             if (context.ParameterValue is IApiParameterable able)
             {
@@ -28,7 +27,6 @@ namespace WebApiClientCore
                     await item.BeforeRequestAsync(context).ConfigureAwait(false);
                 }
             }
-            await next();
         }
     }
 }

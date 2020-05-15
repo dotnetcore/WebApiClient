@@ -1,74 +1,69 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using WebApiClientCore.Exceptions;
 
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 自动适应返回类型的处理
-    /// 支持返回TaskOf(HttpResponseMessage)或TaskOf(byte[])或TaskOf(string)或TaskOf(Stream)
-    /// 支持返回xml或json转换对应类型
-    /// 没有任何IApiReturnAttribute特性修饰的接口方法，将默认为AutoReturn修饰
-    /// </summary> 
+    /// 表示自动处理多种结果的特性
+    /// 支持json模型、xml模型、string、byte[]、Stream和HttpResponseMessage
+    /// </summary>
     public class AutoResultAttribute : ApiResultAttribute
     {
         /// <summary>
         /// 配置请求头的accept
         /// </summary>
         /// <param name="accept">请求头的accept</param>
-        /// <returns></returns>
         protected override void ConfigureAccept(HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> accept)
         {
-            accept.Add(new MediaTypeWithQualityHeaderValue(JsonContent.MediaType, 0.9d));
-            accept.Add(new MediaTypeWithQualityHeaderValue(XmlContent.MediaType, 0.8d));
             accept.Add(new MediaTypeWithQualityHeaderValue("*/*", 0.1d));
+            accept.Add(new MediaTypeWithQualityHeaderValue(JsonContent.MediaType, 0.6d));
+            accept.Add(new MediaTypeWithQualityHeaderValue(XmlContent.MediaType, 0.3d));
         }
 
         /// <summary>
-        /// 获取异步结果
+        /// 设置结果值
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        protected override async Task<object> GetResultAsync(ApiActionContext context)
+        protected override async Task SetResultAsync(ApiActionContext context)
         {
             var response = context.HttpContext.ResponseMessage;
             var dataType = context.ApiAction.Return.DataType;
 
             if (dataType.IsHttpResponseMessage == true)
             {
-                return response;
+                context.Result = response;
             }
-
-            if (dataType.IsString == true)
+            else if (dataType.IsString == true)
             {
-                return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                context.Result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
-
-            if (dataType.IsByteArray == true)
+            else if (dataType.IsByteArray == true)
             {
-                return await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                context.Result = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
             }
-
-            if (dataType.IsStream == true)
+            else if (dataType.IsStream == true)
             {
-                return await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                context.Result = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
             }
-
-            var contentType = new ContentType(response.Content.Headers.ContentType);
-            if (contentType.IsApplicationJson() == true)
+            else
             {
-                var json = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                return context.HttpContext.Services.GetRequiredService<IJsonFormatter>().Deserialize(json, dataType.Type, context.HttpContext.Options.JsonDeserializeOptions);
+                var contentType = new ContentType(response.Content.Headers.ContentType);
+                if (contentType.IsApplicationJson() == true)
+                {
+                    var formatter = context.HttpContext.Services.GetRequiredService<IJsonFormatter>();
+                    var json = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                    var options = context.HttpContext.Options.JsonDeserializeOptions;
+                    context.Result = formatter.Deserialize(json, dataType.Type, options);
+                }
+                if (contentType.IsApplicationXml() == true)
+                {
+                    var formatter = context.HttpContext.Services.GetRequiredService<IXmlFormatter>();
+                    var xml = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    context.Result = formatter.Deserialize(xml, dataType.Type);
+                }
             }
-
-            if (contentType.IsApplicationXml() == true)
-            {
-                var xml = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                return context.HttpContext.Services.GetRequiredService<IXmlFormatter>().Deserialize(xml, dataType.Type);
-            }
-
-            throw new ApiReturnNotSupportedExteption(response, dataType.Type);
         }
     }
 }

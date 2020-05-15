@@ -9,6 +9,9 @@ namespace WebApiClientCore
     /// </summary>
     public class ApiActionContext
     {
+        private object result;
+        private Exception exception;
+
         /// <summary>
         /// 获取http上下文
         /// </summary>
@@ -36,15 +39,36 @@ namespace WebApiClientCore
         public IList<CancellationToken> CancellationTokens { get; } = new List<CancellationToken>();
 
         /// <summary>
-        /// 获取调用Api得到的结果
+        /// 获取或设置结果值
         /// </summary>
-        public object Result { get; internal set; }
+        public object Result
+        {
+            get => this.result;
+            set
+            {
+                this.result = value;
+                this.ResultStatus = ResultStatus.HasResult;
+            }
+        }
 
         /// <summary>
-        /// 获取调用Api产生的异常
+        /// 获取或设置异常值
         /// </summary>
-        public Exception Exception { get; internal set; }
+        /// <exception cref="ArgumentNullException"></exception>
+        public Exception Exception
+        {
+            get => this.exception;
+            internal set
+            {
+                this.exception = value ?? throw new ArgumentNullException(nameof(Exception));
+                this.ResultStatus = ResultStatus.HasException;
+            }
+        }
 
+        /// <summary>
+        /// 获取结果状态
+        /// </summary>
+        public ResultStatus ResultStatus { get; private set; }
 
         /// <summary>
         /// 请求Api的上下文
@@ -55,7 +79,7 @@ namespace WebApiClientCore
         /// <exception cref="ArgumentNullException"></exception>
         public ApiActionContext(HttpContext httpContext, ApiActionDescriptor apiAction, params object[] arguments)
         {
-            this.HttpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext)); 
+            this.HttpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
             this.ApiAction = apiAction ?? throw new ArgumentNullException(nameof(apiAction));
             this.Arguments = new List<object>(arguments);
         }

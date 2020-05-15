@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using WebApiClientCore.Attributes;
 
 namespace WebApiClientCore
 {
@@ -25,7 +26,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取Api关联的缓存特性
         /// </summary>
-        public IApiCacheAttribute Cache { get; protected set; }
+        public IApiCacheAttribute CacheAttribute { get; protected set; }
 
         /// <summary>
         /// 获取Api关联的特性
@@ -35,7 +36,13 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取Api关联的过滤器特性
         /// </summary>
-        public IReadOnlyList<IApiFilterAttribute> Filters { get; protected set; }
+        public IReadOnlyList<IApiFilterAttribute> FilterAttributes { get; protected set; }
+
+        /// <summary>
+        /// 获取关联的ApiReturnAttribute
+        /// </summary>
+        public IReadOnlyList<IApiResultAttribute> ResultAttributes { get; protected set; }
+
 
         /// <summary>
         /// 获取Api的参数描述
@@ -71,12 +78,19 @@ namespace WebApiClientCore
                 .OrderBy(item => item.OrderIndex)
                 .ToReadOnlyList();
 
+            var resultAttributes = method
+                .FindDeclaringAttributes<IApiResultAttribute>(true)
+                .Append(new AutoResultAttribute())
+                .Distinct(new MultiplableComparer<IApiResultAttribute>())
+                .ToReadOnlyList();
 
             this.Member = method;
             this.Name = method.Name;
-            this.Cache = method.GetAttribute<IApiCacheAttribute>(true);
-            this.Filters = filterAttributes;
             this.Attributes = actionAttributes;
+            this.CacheAttribute = method.GetAttribute<IApiCacheAttribute>(true);
+            this.FilterAttributes = filterAttributes;
+            this.ResultAttributes = resultAttributes;
+
             this.Return = new ApiReturnDescriptor(method);
             this.Parameters = method.GetParameters().Select(p => new ApiParameterDescriptor(p)).ToReadOnlyList();
         }

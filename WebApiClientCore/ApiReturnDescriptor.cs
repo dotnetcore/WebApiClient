@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -13,11 +14,6 @@ namespace WebApiClientCore
     [DebuggerDisplay("ReturnType = {ReturnType}")]
     public class ApiReturnDescriptor
     {
-        /// <summary>
-        /// 获取关联的ApiReturnAttribute
-        /// </summary>
-        public IApiResultAttribute Attribute { get; protected set; }
-
         /// <summary>
         /// 获取返回类型
         /// </summary>
@@ -40,11 +36,11 @@ namespace WebApiClientCore
             {
                 throw new ArgumentNullException(nameof(method));
             }
-
-            var returnAttribute = method.FindDeclaringAttribute<IApiResultAttribute>(true) ?? new AutoResultAttribute();
-            var dataType = method.ReturnType.IsGenericType ? method.ReturnType.GetGenericArguments().FirstOrDefault() : typeof(HttpResponseMessage);
-
-            this.Attribute = returnAttribute;
+             
+            var dataType = method.ReturnType.IsGenericType ?
+                method.ReturnType.GetGenericArguments().FirstOrDefault() :
+                typeof(HttpResponseMessage);
+             
             this.ReturnType = method.ReturnType;
             this.DataType = new ApiDataTypeDescriptor(dataType);
         }

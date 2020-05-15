@@ -37,6 +37,11 @@ namespace WebApiClientCore
         public bool IsHttpResponseMessage { get; protected set; }
 
         /// <summary>
+        /// 获取是否为自定义类型
+        /// </summary>
+        public bool IsCustomType { get; protected set; }
+
+        /// <summary>
         /// 返回的Task(Of T)的T类型描述
         /// </summary>
         /// <param name="dataType">数据类型</param>
@@ -48,7 +53,8 @@ namespace WebApiClientCore
             this.IsString = dataType == typeof(string);
             this.IsStream = dataType == typeof(Stream);
             this.IsByteArray = dataType == typeof(byte[]);
-            this.IsHttpResponseMessage = dataType == typeof(HttpResponseMessage);         
+            this.IsHttpResponseMessage = dataType == typeof(HttpResponseMessage);
+            this.IsCustomType = !(IsString || IsStream || IsByteArray || IsHttpResponseMessage);
         }
     }
 }

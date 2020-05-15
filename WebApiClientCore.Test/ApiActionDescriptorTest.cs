@@ -11,7 +11,7 @@ namespace WebApiClientCore.Test
             var d = new ApiActionDescriptor(m);
 
             Assert.True(d.Attributes.Count == 3);
-            Assert.True(d.Filters.Count == 1);
+            Assert.True(d.FilterAttributes.Count == 1);
             Assert.True(d.Parameters.Count == 2);
             Assert.True(d.Name == m.Name);
             Assert.True(d.Member == m);

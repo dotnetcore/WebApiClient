@@ -21,7 +21,7 @@ namespace WebApiClientCore
         public ApiCache(ApiActionContext context)
         {
             this.context = context;
-            this.attribute = context.ApiAction.Cache;
+            this.attribute = context.ApiAction.CacheAttribute;
             this.provider = context.HttpContext.Services.GetService<IResponseCacheProvider>();
             this.enable = this.attribute != null && this.provider != null;
         }

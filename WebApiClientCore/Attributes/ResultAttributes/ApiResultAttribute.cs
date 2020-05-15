@@ -13,6 +13,16 @@ namespace WebApiClientCore.Attributes
     public abstract class ApiResultAttribute : Attribute, IApiResultAttribute
     {
         /// <summary>
+        /// 获取顺序排序的索引
+        /// </summary>
+        int IAttributeMultiplable.OrderIndex => 0;
+
+        /// <summary>
+        /// 获取本类型是否允许在接口与方法上重复
+        /// </summary>
+        public bool AllowMultiple => this.GetType().IsAllowMultiple();
+
+        /// <summary>
         /// 获取或设置是否确保响应的http状态码通过IsSuccessStatusCode验证
         /// 当值为true时，请求可能会引发HttpStatusFailureException
         /// 默认为true
@@ -23,37 +33,21 @@ namespace WebApiClientCore.Attributes
         /// 执行前
         /// </summary>
         /// <param name="context">上下文</param>
+        /// <param name="next"></param>
         /// <returns></returns>
-        Task IApiResultAttribute.BeforeRequestAsync(ApiActionContext context)
+        public Task BeforeRequestAsync(ApiActionContext context, Func<Task> next)
         {
             this.ConfigureAccept(context.HttpContext.RequestMessage.Headers.Accept);
-            return this.BeforeRequestAsync(context);
+            return next();
         }
 
         /// <summary>
-        /// 执行前
+        /// 请求后
         /// </summary>
         /// <param name="context">上下文</param>
+        /// <param name="next">下一个执行委托</param>
         /// <returns></returns>
-        protected virtual Task BeforeRequestAsync(ApiActionContext context)
-        {
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// 配置请求头的accept
-        /// </summary>
-        /// <param name="accept">请求头的accept</param>
-        /// <returns></returns>
-        protected abstract void ConfigureAccept(HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> accept);
-
-        /// <summary>
-        /// 获取异步结果
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <exception cref="HttpStatusFailureException"></exception>
-        /// <returns></returns>
-        Task<object> IApiResultAttribute.GetResultAsync(ApiActionContext context)
+        public async Task AfterRequestAsync(ApiActionContext context, Func<Task> next)
         {
             if (this.EnsureSuccessStatusCode == true)
             {
@@ -63,8 +57,16 @@ namespace WebApiClientCore.Attributes
                     throw new HttpStatusFailureException(context);
                 }
             }
-            return this.GetResultAsync(context);
+
+            await this.SetResultAsync(context);
+            await next();
         }
+
+        /// <summary>
+        /// 配置请求头的accept
+        /// </summary>
+        /// <param name="accept">请求头的accept</param>
+        protected abstract void ConfigureAccept(HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> accept);
 
 
         /// <summary>
@@ -79,10 +81,10 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 获取异步结果
+        /// 设置结果值
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        protected abstract Task<object> GetResultAsync(ApiActionContext context);
+        protected abstract Task SetResultAsync(ApiActionContext context);
     }
 }

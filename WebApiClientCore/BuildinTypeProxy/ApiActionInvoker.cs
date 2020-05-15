@@ -82,25 +82,30 @@ namespace WebApiClientCore
                 }
             }
 
-            // 请求前特性的执行
-            builder.Then(async context =>
+            foreach (var attr in descriptor.ResultAttributes)
             {
-                var apiAction = context.ApiAction;
-                //foreach (var actionAttribute in apiAction.Attributes)
-                //{
-                //    await actionAttribute.BeforeRequestAsync(context).ConfigureAwait(false);
-                //}
+                builder.Use(attr.BeforeRequestAsync);
+            }
 
-                //foreach (var parameter in apiAction.Parameters)
-                //{
-                //    var parameterContext = new ApiParameterContext(context, parameter.Index);
-                //    foreach (var parameterAttribute in parameter.Attributes)
-                //    {
-                //        await parameterAttribute.BeforeRequestAsync(parameterContext).ConfigureAwait(false);
-                //    }
-                //}
-                await apiAction.Return.Attribute.BeforeRequestAsync(context).ConfigureAwait(false);
-            });
+            // 请求前特性的执行
+            //builder.Then(async context =>
+            //{
+            //    var apiAction = context.ApiAction;
+            //    //foreach (var actionAttribute in apiAction.Attributes)
+            //    //{
+            //    //    await actionAttribute.BeforeRequestAsync(context).ConfigureAwait(false);
+            //    //}
+
+            //    //foreach (var parameter in apiAction.Parameters)
+            //    //{
+            //    //    var parameterContext = new ApiParameterContext(context, parameter.Index);
+            //    //    foreach (var parameterAttribute in parameter.Attributes)
+            //    //    {
+            //    //        await parameterAttribute.BeforeRequestAsync(parameterContext).ConfigureAwait(false);
+            //    //    }
+            //    //}
+            //    await apiAction.Return.Attributes.BeforeRequestAsync(context).ConfigureAwait(false);
+            //});
 
 
             // 请求前过滤器执行
@@ -112,7 +117,7 @@ namespace WebApiClientCore
             //    }
             //})
 
-            foreach (var attr in descriptor.Filters)
+            foreach (var attr in descriptor.FilterAttributes)
             {
                 builder.Use(attr.BeforeRequestAsync);
             }
@@ -120,18 +125,26 @@ namespace WebApiClientCore
             // 发起http请求
             builder.Then(async context =>
             {
-                try
-                {
-                    await HttpRequestAsync(context);
-                }
-                catch (Exception ex)
-                {
-                    context.Exception = ex;
-                }
+                await HttpRequestAsync(context);
             });
 
+            foreach (var attr in descriptor.ResultAttributes)
+            {
+                builder.Use(async (context, next) =>
+                {
+                    if (context.ResultStatus ==  ResultStatus.NoResult)
+                    {
+                        await attr.AfterRequestAsync(context, next);
+                    }
+                    else
+                    {
+                        await next();
+                    }
+                });
+            }
+
             // 请求结束后过滤器执行
-            foreach (var attr in descriptor.Filters)
+            foreach (var attr in descriptor.FilterAttributes)
             {
                 builder.Use(attr.AfterRequestAsync);
             }
@@ -152,16 +165,21 @@ namespace WebApiClientCore
             if (cacheResult.ResponseMessage != null)
             {
                 context.HttpContext.ResponseMessage = cacheResult.ResponseMessage;
-                context.Result = await context.ApiAction.Return.Attribute.GetResultAsync(context).ConfigureAwait(false);
             }
             else
             {
-                using var cancellation = CreateLinkedTokenSource(context);
-                context.HttpContext.ResponseMessage = await context.HttpContext.Client.SendAsync(context.HttpContext.RequestMessage, cancellation.Token).ConfigureAwait(false);
-                context.Result = await context.ApiAction.Return.Attribute.GetResultAsync(context).ConfigureAwait(false);
+                try
+                {
+                    using var cancellation = CreateLinkedTokenSource(context);
+                    context.HttpContext.ResponseMessage = await context.HttpContext.Client.SendAsync(context.HttpContext.RequestMessage, cancellation.Token).ConfigureAwait(false);
 
-                ApiValidator.ValidateReturnValue(context.Result, context.HttpContext.Options.UseReturnValuePropertyValidate);
-                await apiCache.SetAsync(cacheResult.CacheKey).ConfigureAwait(false);
+                    ApiValidator.ValidateReturnValue(context.Result, context.HttpContext.Options.UseReturnValuePropertyValidate);
+                    await apiCache.SetAsync(cacheResult.CacheKey).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    context.Exception = ex;
+                }
             }
         }
 

@@ -1,23 +1,22 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using WebApiClientCore.Attributes;
 
 namespace WebApiClientCore
 {
     /// <summary>
     /// 表示参数内容为FileInfo处理特性
     /// </summary>
-    class FileInfoAttribute : Attribute, IApiParameterAttribute
+    class FileInfoAttribute : ApiParameterAttribute
     {
         /// <summary>
         /// http请求之前
         /// </summary>
         /// <param name="context">上下文</param>
-        /// <param name="next"></param>
         /// <returns></returns>
-        public Task BeforeRequestAsync(ApiParameterContext context, Func<Task> next)
+        public override Task BeforeRequestAsync(ApiParameterContext context)
         {
             var fileInfo = context.ParameterValue as FileInfo;
             if (fileInfo != null)
@@ -27,7 +26,7 @@ namespace WebApiClientCore
                 var encodedFileName = HttpUtility.UrlEncode(fileName, Encoding.UTF8);
                 context.HttpContext.RequestMessage.AddFormDataFile(stream, context.Parameter.Name, encodedFileName, null);
             }
-            return next();
+            return Task.CompletedTask;
         }
     }
 }
