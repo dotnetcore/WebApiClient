@@ -173,9 +173,9 @@ namespace WebApiClientCore.Tokens
         /// <returns></returns>
         private async Task<TokenResult> RequestTokenResultAsync(Credentials credentials)
         {
-            var options = HttpApiOptions.CreateDefaultJsonOptions();
-            options.IgnoreNullValues = true;
-            var keyValues = keyValueFormatter.Serialize(nameof(credentials), credentials, options);
+            var keyValueOptions = HttpApiOptions.CreateDefaultJsonOptions();
+            keyValueOptions.IgnoreNullValues = true;
+            var keyValues = keyValueFormatter.Serialize(nameof(credentials), credentials, keyValueOptions);
 
             var formContent = new FormContent();
             await formContent.AddFormFieldAsync(keyValues).ConfigureAwait(false);
