@@ -19,7 +19,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 请求头枚举和名称的缓存
         /// </summary>
-        private static readonly Dictionary<HttpRequestHeader, string> cache = new Dictionary<HttpRequestHeader, string>();
+        private static readonly Dictionary<HttpRequestHeader, string> staticCache = new Dictionary<HttpRequestHeader, string>();
 
         /// <summary>
         /// 请求头枚举到名称的转换
@@ -29,7 +29,7 @@ namespace WebApiClientCore
             var enums = Enum.GetValues(httpRequestHeaderType).Cast<HttpRequestHeader>();
             foreach (var item in enums)
             {
-                cache.Add(item, item.GetDisplayName());
+                staticCache.Add(item, item.GetDisplayName());
             }
         }
 
@@ -53,7 +53,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static string GetName(HttpRequestHeader header)
         {
-            cache.TryGetValue(header, out string name);
+            staticCache.TryGetValue(header, out string name);
             return name;
         }
     }

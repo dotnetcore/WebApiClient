@@ -13,7 +13,7 @@ namespace WebApiClientCore
         /// <summary>
         /// ApiAction缓存
         /// </summary>
-        private static readonly ConcurrentCache<MethodInfo, ActionCacheValue> cache = new ConcurrentCache<MethodInfo, ActionCacheValue>();
+        private static readonly ConcurrentCache<MethodInfo, ActionCacheValue> staticCache = new ConcurrentCache<MethodInfo, ActionCacheValue>();
 
         private readonly HttpClient client;
         private readonly HttpApiOptions options;
@@ -42,7 +42,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         public object Intercept(object target, MethodInfo method, object[] arguments)
         {
-            var actionValue = cache.GetOrAdd(method, this.CreateActionCacheValue);
+            var actionValue = staticCache.GetOrAdd(method, this.CreateActionCacheValue);
             using var httpContext = new HttpContext(this.client, this.services, this.options);
 
             var context = new ApiRequestContext(httpContext, actionValue.ActionDescriptor, arguments);

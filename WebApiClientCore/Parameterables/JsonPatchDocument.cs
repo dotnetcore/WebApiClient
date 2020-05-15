@@ -20,11 +20,6 @@ namespace WebApiClientCore.Parameterables
     public class JsonPatchDocument : IApiParameterable
     {
         /// <summary>
-        /// 表示patch请求方式
-        /// </summary>
-        private static readonly HttpMethod patchMethod = new HttpMethod("PATCH");
-
-        /// <summary>
         /// 操作列表
         /// </summary>
         private readonly List<object> oprations = new List<object>();
@@ -80,7 +75,7 @@ namespace WebApiClientCore.Parameterables
         /// <returns></returns>
         Task IApiParameterable.OnRequestAsync(ApiParameterContext context)
         {
-            if (context.HttpContext.RequestMessage.Method != patchMethod)
+            if (context.HttpContext.RequestMessage.Method != HttpMethod.Patch)
             {
                 throw new HttpApiInvalidOperationException(Resx.required_PatchMethod);
             }
@@ -220,7 +215,7 @@ namespace WebApiClientCore.Parameterables
             /// <summary>
             /// 属性名称缓存
             /// </summary>
-            private static readonly ConcurrentCache<MemberInfo, string> nameCache = new ConcurrentCache<MemberInfo, string>();
+            private static readonly ConcurrentCache<MemberInfo, string> staticNameCache = new ConcurrentCache<MemberInfo, string>();
 
             /// <summary>
             /// Path访问器
@@ -245,7 +240,7 @@ namespace WebApiClientCore.Parameterables
             /// <returns></returns>
             protected override Expression VisitMember(MemberExpression node)
             {
-                var name = nameCache.GetOrAdd(node.Member, m => this.nameFunc(m));
+                var name = staticNameCache.GetOrAdd(node.Member, m => this.nameFunc(m));
                 this.path.Insert(0, $"/{name}");
                 return base.VisitMember(node);
             }

@@ -10,7 +10,7 @@ namespace WebApiClientCore.Attributes
     /// </summary>
     [DebuggerDisplay("Expiration = {Expiration}")]
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public abstract class ApiActionCacheAttribute : Attribute, IApiCacheAttribute
+    public abstract class ApiCacheAttribute : Attribute, IApiCacheAttribute
     {
         /// <summary>
         /// 获取缓存的时间戳
@@ -21,7 +21,7 @@ namespace WebApiClientCore.Attributes
         /// 使用缓存的特性
         /// </summary>
         /// <param name="expiration">缓存毫秒数</param>
-        public ApiActionCacheAttribute(double expiration)
+        public ApiCacheAttribute(double expiration)
         {
             this.Expiration = TimeSpan.FromMilliseconds(expiration);
         }
