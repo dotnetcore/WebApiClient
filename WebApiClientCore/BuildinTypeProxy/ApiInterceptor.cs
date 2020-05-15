@@ -84,7 +84,8 @@ namespace WebApiClientCore
             public ApiCacheValue(ApiActionDescriptor descriptor)
             {
                 this.ActionDescriptor = descriptor;
-                this.ActionInvoker = Lambda.CreateCtorFunc<ApiActionDescriptor, IApiActionInvoker>(typeof(ApiActionInvoker<>).MakeGenericType(descriptor.Return.DataType.Type))(descriptor);
+                var invokerType = typeof(ApiActionInvoker<>).MakeGenericType(descriptor.Return.DataType.Type);
+                this.ActionInvoker = Lambda.CreateCtorFunc<ApiActionDescriptor, IApiActionInvoker>(invokerType)(descriptor);
             }
         }
     }

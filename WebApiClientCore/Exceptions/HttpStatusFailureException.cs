@@ -82,7 +82,7 @@ namespace WebApiClientCore.Exceptions
         /// 根据ContentType自动选择json或xml将响应结果反序列化为TResult类型
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
-        /// <exception cref="ApiReturnNotSupportedExteption"></exception>
+        /// <exception cref="ApiResultNotSupportedExteption"></exception>
         /// <returns></returns>
         public async Task<TResult> ReadAsAsync<TResult>()
         {
@@ -100,7 +100,7 @@ namespace WebApiClientCore.Exceptions
                 var xml = await content.ReadAsStringAsync().ConfigureAwait(false);
                 return (TResult)this.context.HttpContext.Services.GetRequiredService<IXmlFormatter>().Deserialize(xml, dataType);
             }
-            throw new ApiReturnNotSupportedExteption(this.ResponseMessage, dataType);
+            throw new ApiResultNotSupportedExteption(this.ResponseMessage, dataType);
         }
     }
 }

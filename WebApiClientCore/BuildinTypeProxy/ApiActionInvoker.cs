@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using WebApiClientCore.Exceptions;
 
 namespace WebApiClientCore
 {
@@ -15,11 +15,15 @@ namespace WebApiClientCore
         /// <summary>
         /// 请求委托
         /// </summary>
-        private readonly ApiActionExecutionDelegate requestDelegate;
+        private readonly ExecutionDelegate handler;
 
+        /// <summary>
+        /// 上下文执行器
+        /// </summary>
+        /// <param name="descriptor"></param>
         public ApiActionInvoker(ApiActionDescriptor descriptor)
         {
-            this.requestDelegate = CreateRequestDelegate(descriptor);
+            this.handler = CreateHandler(descriptor);
         }
 
         /// <summary>
@@ -38,101 +42,94 @@ namespace WebApiClientCore
         /// <returns></returns>
         private async Task<TResult> InvokeAsync(ApiActionContext context)
         {
-            await requestDelegate(context);
-            if (context.Exception != null)
+            await handler(context);
+
+            if (context.ResultStatus == ResultStatus.HasResult)
+            {
+                return (TResult)context.Result;
+            }
+            else if (context.ResultStatus == ResultStatus.HasException)
             {
                 throw context.Exception;
             }
-            return (TResult)context.Result;
+
+            throw new ApiResultNotSupportedExteption(context.HttpContext.ResponseMessage, context.ApiAction.Return.DataType.Type);
         }
 
         /// <summary>
         /// 创建请求委托
         /// </summary>
         /// <returns></returns>
-        private static ApiActionExecutionDelegate CreateRequestDelegate(ApiActionDescriptor descriptor)
+        private static ExecutionDelegate CreateHandler(ApiActionDescriptor descriptor)
         {
-            var builder = new RequestDelegateBuilder()
-               // 参数验证特性验证和参数模型属性特性验证
-               .Then(context =>
-               {
-                   var validateProperty = context.HttpContext.Options.UseParameterPropertyValidate;
-                   foreach (var parameter in context.ApiAction.Parameters)
-                   {
-                       var parameterValue = context.Arguments[parameter.Index];
-                       ApiValidator.ValidateParameter(parameter, parameterValue, validateProperty);
-                   }
-                   return Task.CompletedTask;
-               });
+            var builder = new PipelineBuilder();
 
+            // 参数验证特性验证和参数模型属性特性验证
+            builder.Use(next => context =>
+            {
+                var validateProperty = context.HttpContext.Options.UseParameterPropertyValidate;
+                foreach (var parameter in context.ApiAction.Parameters)
+                {
+                    var parameterValue = context.Arguments[parameter.Index];
+                    ApiValidator.ValidateParameter(parameter, parameterValue, validateProperty);
+                }
+                return next(context);
+            });
+
+            // action特性请求前执行
             foreach (var attr in descriptor.Attributes)
             {
                 builder.Use(attr.BeforeRequestAsync);
             }
 
-            foreach (var item in descriptor.Parameters)
+            // 参数特性请求前执行
+            foreach (var parameter in descriptor.Parameters)
             {
-                foreach (var attr in item.Attributes)
+                foreach (var attr in parameter.Attributes)
                 {
                     builder.Use(async (context, next) =>
                     {
-                        var ctx = new ApiParameterContext(context, item.Index);
+                        var ctx = new ApiParameterContext(context, parameter.Index);
                         await attr.BeforeRequestAsync(ctx, next);
                     });
                 }
             }
 
+            // 结果特性请求前执行
             foreach (var attr in descriptor.ResultAttributes)
             {
                 builder.Use(attr.BeforeRequestAsync);
             }
 
-            // 请求前特性的执行
-            //builder.Then(async context =>
-            //{
-            //    var apiAction = context.ApiAction;
-            //    //foreach (var actionAttribute in apiAction.Attributes)
-            //    //{
-            //    //    await actionAttribute.BeforeRequestAsync(context).ConfigureAwait(false);
-            //    //}
-
-            //    //foreach (var parameter in apiAction.Parameters)
-            //    //{
-            //    //    var parameterContext = new ApiParameterContext(context, parameter.Index);
-            //    //    foreach (var parameterAttribute in parameter.Attributes)
-            //    //    {
-            //    //        await parameterAttribute.BeforeRequestAsync(parameterContext).ConfigureAwait(false);
-            //    //    }
-            //    //}
-            //    await apiAction.Return.Attributes.BeforeRequestAsync(context).ConfigureAwait(false);
-            //});
-
-
-            // 请求前过滤器执行
-            //.Then(async context =>
-            //{
-            //    foreach (var filter in context.ApiAction.Filters)
-            //    {
-            //        await filter.BeforeRequestAsync(context).ConfigureAwait(false);
-            //    }
-            //})
-
+            // 过滤器请求前执行            
             foreach (var attr in descriptor.FilterAttributes)
             {
                 builder.Use(attr.BeforeRequestAsync);
             }
 
             // 发起http请求
-            builder.Then(async context =>
+            builder.Use(next => async context =>
             {
-                await HttpRequestAsync(context);
+                try
+                {
+                    await HttpRequestAsync(context);
+                }
+                catch (Exception ex)
+                {
+                    context.Exception = ex;
+                }
+                finally
+                {
+                    await next(context);
+                }
             });
 
+            // 结果特性请求后执行
             foreach (var attr in descriptor.ResultAttributes)
             {
                 builder.Use(async (context, next) =>
                 {
-                    if (context.ResultStatus ==  ResultStatus.NoResult)
+                    if (context.ResultStatus == ResultStatus.NoResult)
                     {
                         await attr.AfterRequestAsync(context, next);
                     }
@@ -143,7 +140,7 @@ namespace WebApiClientCore
                 });
             }
 
-            // 请求结束后过滤器执行
+            // 过滤器请求后执行
             foreach (var attr in descriptor.FilterAttributes)
             {
                 builder.Use(attr.AfterRequestAsync);
@@ -168,18 +165,11 @@ namespace WebApiClientCore
             }
             else
             {
-                try
-                {
-                    using var cancellation = CreateLinkedTokenSource(context);
-                    context.HttpContext.ResponseMessage = await context.HttpContext.Client.SendAsync(context.HttpContext.RequestMessage, cancellation.Token).ConfigureAwait(false);
+                using var cancellation = CreateLinkedTokenSource(context);
+                context.HttpContext.ResponseMessage = await context.HttpContext.Client.SendAsync(context.HttpContext.RequestMessage, cancellation.Token).ConfigureAwait(false);
 
-                    ApiValidator.ValidateReturnValue(context.Result, context.HttpContext.Options.UseReturnValuePropertyValidate);
-                    await apiCache.SetAsync(cacheResult.CacheKey).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    context.Exception = ex;
-                }
+                ApiValidator.ValidateReturnValue(context.Result, context.HttpContext.Options.UseReturnValuePropertyValidate);
+                await apiCache.SetAsync(cacheResult.CacheKey).ConfigureAwait(false);
             }
         }
 
@@ -198,82 +188,6 @@ namespace WebApiClientCore
             {
                 var tokens = context.CancellationTokens.ToArray();
                 return CancellationTokenSource.CreateLinkedTokenSource(tokens);
-            }
-        }
-
-        /// <summary>
-        /// 表示中间件创建者
-        /// </summary>
-        private class RequestDelegateBuilder
-        {
-            private readonly ApiActionExecutionDelegate completedHandler;
-            private readonly List<Func<ApiActionExecutionDelegate, ApiActionExecutionDelegate>> middlewares = new List<Func<ApiActionExecutionDelegate, ApiActionExecutionDelegate>>();
-
-            /// <summary>
-            /// 中间件创建者
-            /// </summary> 
-            public RequestDelegateBuilder()
-                : this(context => Task.CompletedTask)
-            {
-            }
-
-            /// <summary>
-            /// 中间件创建者
-            /// </summary> 
-            /// <param name="completedHandler">完成执行内容处理者</param>
-            public RequestDelegateBuilder(ApiActionExecutionDelegate completedHandler)
-            {
-                this.completedHandler = completedHandler;
-            }
-
-            /// <summary>
-            /// 使用中间件
-            /// </summary>
-            /// <param name="middleware"></param>
-            /// <returns></returns>
-            public RequestDelegateBuilder Use(Func<ApiActionExecutionDelegate, ApiActionExecutionDelegate> middleware)
-            {
-                this.middlewares.Add(middleware);
-                return this;
-            }
-
-            /// <summary>
-            /// 使用中间件
-            /// </summary>  
-            /// <param name="middleware"></param>
-            /// <returns></returns>
-            public RequestDelegateBuilder Use(Func<ApiActionContext, Func<Task>, Task> middleware)
-            {
-                return this.Use(next => context => middleware(context, () => next(context)));
-            }
-
-            /// <summary>
-            /// 使用中间件
-            /// </summary>
-            /// <param name="handler"></param>
-            /// <returns></returns>
-            public RequestDelegateBuilder Then(Func<ApiActionContext, Task> handler)
-            {
-                return this.Use(next => async context =>
-                {
-                    await handler(context);
-                    await next(context);
-                });
-            }
-
-
-            /// <summary>
-            /// 创建所有中间件执行处理者
-            /// </summary>
-            /// <returns></returns>
-            public ApiActionExecutionDelegate Build()
-            {
-                var handler = this.completedHandler;
-                for (var i = this.middlewares.Count - 1; i >= 0; i--)
-                {
-                    handler = this.middlewares[i](handler);
-                }
-                return handler;
             }
         }
     }
