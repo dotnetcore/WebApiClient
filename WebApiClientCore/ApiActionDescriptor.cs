@@ -80,6 +80,7 @@ namespace WebApiClientCore
 
             var resultAttributes = method
                 .FindDeclaringAttributes<IApiResultAttribute>(true)
+                .OrderBy(item => item.OrderIndex)
                 .Append(new RawResultAttribute())
                 .Append(new JsonResultAttribute())
                 .Append(new XmlResultAttribute())

@@ -13,9 +13,9 @@ namespace WebApiClientCore.Attributes
     public abstract class ApiResultAttribute : Attribute, IApiResultAttribute
     {
         /// <summary>
-        /// 获取顺序排序的索引
+        /// 获取或设置顺序排序的索引
         /// </summary>
-        int IAttributeMultiplable.OrderIndex => 0;
+        public int OrderIndex { get; set; }
 
         /// <summary>
         /// 获取本类型是否允许在接口与方法上重复

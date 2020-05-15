@@ -42,7 +42,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         private async Task<TResult> InvokeAsync(ApiActionContext context)
         {
-            await handler(context);
+            await this.handler(context);
 
             if (context.ResultStatus == ResultStatus.HasResult)
             {
