@@ -50,7 +50,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public Task BeforeRequestAsync(ApiParameterContext context)
         {
-            context.ApiActionContext.Tags.Set(this.key, context.ParameterValue);
+            context.ActionContext.Tags.Set(this.key, context.ParameterValue);
             return Task.CompletedTask;
         }
 

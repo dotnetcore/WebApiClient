@@ -18,7 +18,7 @@ namespace WebApiClientCore
         public Task BeforeRequestAsync(ApiParameterContext context)
         {
             var token = (CancellationToken)context.ParameterValue;
-            context.ApiActionContext.CancellationTokens.Add(token);
+            context.ActionContext.CancellationTokens.Add(token);
             return Task.CompletedTask;
         }
     }

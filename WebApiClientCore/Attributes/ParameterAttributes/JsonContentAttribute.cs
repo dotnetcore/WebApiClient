@@ -13,7 +13,7 @@
         protected override void SetHttpContent(ApiParameterContext context)
         {
             var utf8Json = context.SerializeToJson();
-            context.RequestMessage.Content = new JsonContent(utf8Json);
+            context.HttpContext.RequestMessage.Content = new JsonContent(utf8Json);
         }
     }
 }

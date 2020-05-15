@@ -79,13 +79,13 @@ namespace WebApiClientCore.Attributes
 
             if (context.ParameterValue is TimeSpan timespan)
             {
-                this.SetTimeout(context.ApiActionContext, timespan);
+                this.SetTimeout(context.ActionContext, timespan);
             }
             else if (context.ParameterValue is IConvertible convertible)
             {
                 var milliseconds = convertible.ToDouble(null);
                 var timeout = System.TimeSpan.FromMilliseconds(milliseconds);
-                this.SetTimeout(context.ApiActionContext, timeout);
+                this.SetTimeout(context.ActionContext, timeout);
             }
             else
             {

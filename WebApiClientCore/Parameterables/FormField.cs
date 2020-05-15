@@ -41,7 +41,7 @@ namespace WebApiClientCore.Parameterables
         /// <returns></returns>
         async Task IApiParameterable.BeforeRequestAsync(ApiParameterContext context)
         {
-            await context.RequestMessage.AddFormFieldAsync(context.Parameter.Name, this.stringValue).ConfigureAwait(false);
+            await context.HttpContext.RequestMessage.AddFormFieldAsync(context.Parameter.Name, this.stringValue).ConfigureAwait(false);
         }
 
         /// <summary>

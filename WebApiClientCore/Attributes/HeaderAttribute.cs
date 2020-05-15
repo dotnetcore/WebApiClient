@@ -97,7 +97,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public Task BeforeRequestAsync(ApiParameterContext context)
         {
-            this.SetHeaderValue(context.ApiActionContext, context.ParameterValue?.ToString());
+            this.SetHeaderValue(context.ActionContext, context.ParameterValue?.ToString());
             return Task.CompletedTask;
         }
 

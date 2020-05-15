@@ -74,7 +74,7 @@ namespace WebApiClientCore.Parameterables
         /// <param name="context">上下文</param>
         protected virtual async Task BeforeRequestAsync(ApiParameterContext context)
         {
-            context.RequestMessage.AddFormDataFile(this.stream, context.Parameter.Name, this.EncodedFileName, this.ContentType);
+            context.HttpContext.RequestMessage.AddFormDataFile(this.stream, context.Parameter.Name, this.EncodedFileName, this.ContentType);
             await Task.CompletedTask;
         }
     }

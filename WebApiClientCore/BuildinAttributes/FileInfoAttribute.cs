@@ -25,7 +25,7 @@ namespace WebApiClientCore
                 var stream = fileInfo.Open(FileMode.Open, FileAccess.Read);
                 var fileName = Path.GetFileName(fileInfo.FullName);
                 var encodedFileName = HttpUtility.UrlEncode(fileName, Encoding.UTF8);
-                context.RequestMessage.AddFormDataFile(stream, context.Parameter.Name, encodedFileName, null);
+                context.HttpContext.RequestMessage.AddFormDataFile(stream, context.Parameter.Name, encodedFileName, null);
             }
             return Task.CompletedTask;
         }

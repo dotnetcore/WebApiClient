@@ -12,7 +12,7 @@
         protected override void SetHttpContent(ApiParameterContext context)
         {
             var keyValues = context.SerializeToKeyValues();
-            context.RequestMessage.AddFormDataText(keyValues);
+            context.HttpContext.RequestMessage.AddFormDataText(keyValues);
         }
     }
 }

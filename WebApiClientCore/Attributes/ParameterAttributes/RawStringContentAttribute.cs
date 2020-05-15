@@ -50,7 +50,7 @@ namespace WebApiClientCore.Attributes
         protected override void SetHttpContent(ApiParameterContext context)
         {
             var content = context.ParameterValue?.ToString();
-            context.RequestMessage.Content = new StringContent(content ?? string.Empty, this.encoding, this.mediaType);
+            context.HttpContext.RequestMessage.Content = new StringContent(content ?? string.Empty, this.encoding, this.mediaType);
         }
     }
 }

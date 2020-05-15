@@ -15,9 +15,9 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static KeyValue[] SerializeToKeyValues(this ApiParameterContext context)
         {
-            return context.RequestServices
+            return context.HttpContext.RequestServices
                 .GetRequiredService<IKeyValueFormatter>()
-                .Serialize(context.Parameter.Name, context.ParameterValue, context.ApiActionContext.ApiOptions.KeyValueSerializeOptions);
+                .Serialize(context.Parameter.Name, context.ParameterValue, context.ActionContext.ApiOptions.KeyValueSerializeOptions);
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static string SerializeToXml(this ApiParameterContext context, Encoding encoding)
         {
-            return context.RequestServices
+            return context.HttpContext.RequestServices
                 .GetRequiredService<IXmlFormatter>()
                 .Serialize(context.ParameterValue, encoding);
         }
@@ -40,9 +40,9 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static byte[] SerializeToJson(this ApiParameterContext context)
         {
-            return context.RequestServices
+            return context.HttpContext.RequestServices
                 .GetRequiredService<IJsonFormatter>()
-                .Serialize(context.ParameterValue, context.ApiActionContext.ApiOptions.KeyValueSerializeOptions);
+                .Serialize(context.ParameterValue, context.ActionContext.ApiOptions.KeyValueSerializeOptions);
         }
     }
 }

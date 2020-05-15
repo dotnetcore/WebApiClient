@@ -34,7 +34,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public override Task BeforeRequestAsync(ApiActionContext context)
         {
-            return this.baiscAuth.BeforeRequestAsync(new ApiParameterContext(context, null));
+            return this.baiscAuth.BeforeRequestAsync(new ApiParameterContext(context, 0));
         }
     }
 }

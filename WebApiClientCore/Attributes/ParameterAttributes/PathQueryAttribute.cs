@@ -42,14 +42,14 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public async Task BeforeRequestAsync(ApiParameterContext context)
         {
-            var uri = context.RequestMessage.RequestUri;
+            var uri = context.HttpContext.RequestMessage.RequestUri;
             if (uri == null)
             {
                 throw new HttpApiInvalidOperationException(Resx.required_HttpHost);
             }
 
             var keyValues = context.SerializeToKeyValues().FormatAs(this.CollectionFormat);
-            context.RequestMessage.RequestUri = this.UsePathQuery(uri, keyValues);
+            context.HttpContext.RequestMessage.RequestUri = this.UsePathQuery(uri, keyValues);
             await Task.CompletedTask;
         }
 

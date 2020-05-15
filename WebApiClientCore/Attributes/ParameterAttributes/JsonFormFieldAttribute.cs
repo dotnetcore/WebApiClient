@@ -20,7 +20,7 @@ namespace WebApiClientCore.Attributes
             var json = context.SerializeToJson();
             var fieldName = context.Parameter.Name;
             var fildValue = Encoding.UTF8.GetString(json);
-            await context.RequestMessage.AddFormFieldAsync(fieldName, fildValue).ConfigureAwait(false);
+            await context.HttpContext.RequestMessage.AddFormFieldAsync(fieldName, fildValue).ConfigureAwait(false);
         }
     }
 }

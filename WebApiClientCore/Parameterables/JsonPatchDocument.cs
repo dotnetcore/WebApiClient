@@ -80,14 +80,14 @@ namespace WebApiClientCore.Parameterables
         /// <returns></returns>
         Task IApiParameterable.BeforeRequestAsync(ApiParameterContext context)
         {
-            if (context.RequestMessage.Method != patchMethod)
+            if (context.HttpContext.RequestMessage.Method != patchMethod)
             {
                 throw new HttpApiInvalidOperationException(Resx.required_PatchMethod);
             }
 
-            var formatter = context.RequestServices.GetRequiredService<IJsonFormatter>();
-            var json = formatter.Serialize(this.oprations, context.ApiActionContext.ApiOptions.JsonSerializeOptions);
-            context.RequestMessage.Content = new JsonPatchContent(json);
+            var formatter = context.HttpContext.RequestServices.GetRequiredService<IJsonFormatter>();
+            var json = formatter.Serialize(this.oprations, context.ActionContext.ApiOptions.JsonSerializeOptions);
+            context.HttpContext.RequestMessage.Content = new JsonPatchContent(json);
 
             return Task.CompletedTask;
         }

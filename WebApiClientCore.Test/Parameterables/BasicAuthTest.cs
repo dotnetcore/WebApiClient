@@ -13,10 +13,9 @@ namespace WebApiClientCore.Test.Parameterables
         {
             var context = new TestActionContext(
                 apiActionDescriptor: new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync")));
-
-            var parameter = context.ApiAction.Parameters[0];
+             
             var basicAuth = new BasicAuth("laojiu", "123456");
-            await basicAuth.BeforeRequestAsync(new ApiParameterContext(context, parameter));
+            await basicAuth.BeforeRequestAsync(new ApiParameterContext(context, context.ApiAction.Parameters[0],null));
 
             var auth = Convert.ToBase64String(Encoding.ASCII.GetBytes("laojiu:123456"));
             Assert.True(context.HttpContext.RequestMessage.Headers.Authorization.Parameter == auth);

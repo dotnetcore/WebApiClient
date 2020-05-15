@@ -33,16 +33,16 @@ namespace WebApiClientCore.Attributes
             var relative = new Uri(context.ParameterValue.ToString(), UriKind.RelativeOrAbsolute);
             if (relative.IsAbsoluteUri == true)
             {
-                context.RequestMessage.RequestUri = relative;
+                context.HttpContext.RequestMessage.RequestUri = relative;
             }
             else
             {
-                var baseUri = context.RequestMessage.RequestUri;
+                var baseUri = context.HttpContext.RequestMessage.RequestUri;
                 if (baseUri == null)
                 {
                     throw new HttpApiInvalidOperationException(Resx.required_HttpHost);
                 }
-                context.RequestMessage.RequestUri = new Uri(baseUri, relative);
+                context.HttpContext.RequestMessage.RequestUri = new Uri(baseUri, relative);
             }
             return Task.CompletedTask;
         }

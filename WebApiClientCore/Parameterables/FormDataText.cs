@@ -40,7 +40,7 @@ namespace WebApiClientCore.Parameterables
         /// <returns></returns>
         async Task IApiParameterable.BeforeRequestAsync(ApiParameterContext context)
         {
-            context.RequestMessage.AddFormDataText(context.Parameter.Name, this.stringValue);
+            context.HttpContext.RequestMessage.AddFormDataText(context.Parameter.Name, this.stringValue);
             await Task.CompletedTask;
         }
 

@@ -48,7 +48,7 @@ namespace WebApiClientCore.Parameterables
         public Task BeforeRequestAsync(ApiParameterContext context )
         {
             const string headerName = "Authorization";
-            var header = context.RequestMessage.Headers;
+            var header = context.HttpContext.RequestMessage.Headers;
             header.Remove(headerName);
             header.TryAddWithoutValidation(headerName, this.GetAuthorizationValue());
             return Task.CompletedTask;

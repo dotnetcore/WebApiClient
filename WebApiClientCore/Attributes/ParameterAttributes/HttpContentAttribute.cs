@@ -20,7 +20,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         async Task IApiParameterAttribute.BeforeRequestAsync(ApiParameterContext context)
         {
-            var method = context.RequestMessage.Method;
+            var method = context.HttpContext.RequestMessage.Method;
             if (method == HttpMethod.Get || method == HttpMethod.Head)
             {
                 var message = $"由于使用{method}的请求方法，{context.Parameter.Member}不支持设置为Content";
@@ -49,7 +49,7 @@ namespace WebApiClientCore.Attributes
         /// <exception cref="HttpApiInvalidOperationException"></exception>
         protected virtual void SetHttpContent(ApiParameterContext context)
         {
-            if (context.RequestMessage.Content != null)
+            if (context.HttpContext.RequestMessage.Content != null)
             {
                 var message = $"参数{context.Parameter.Member}必须置前";
                 throw new HttpApiInvalidOperationException(message);
@@ -59,7 +59,7 @@ namespace WebApiClientCore.Attributes
             {
                 if (context.ParameterValue is HttpContent httpContent)
                 {
-                    context.RequestMessage.Content = httpContent;
+                    context.HttpContext.RequestMessage.Content = httpContent;
                 }
                 else
                 {

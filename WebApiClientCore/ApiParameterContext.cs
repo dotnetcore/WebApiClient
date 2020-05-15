@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace WebApiClientCore
+﻿namespace WebApiClientCore
 {
     /// <summary>
     /// 表示Api参数上下文
@@ -10,7 +8,12 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取关联的Api上下文
         /// </summary>
-        public ApiActionContext ApiActionContext { get; }
+        public ApiActionContext ActionContext { get; }
+
+        /// <summary>
+        /// 获取http上下文
+        /// </summary>
+        public HttpContext HttpContext => this.ActionContext.HttpContext;
 
         /// <summary>
         /// 获取参数描述
@@ -20,27 +23,31 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取参数值
         /// </summary>
-        public object ParameterValue => this.ApiActionContext.Arguments[this.Parameter.Index];
+        public object ParameterValue { get; }
 
         /// <summary>
-        /// 获取关联的HttpRequestMessage
+        /// Api参数上下文
         /// </summary>
-        public HttpApiRequestMessage RequestMessage => this.ApiActionContext.HttpContext.RequestMessage;
-
-        /// <summary>
-        /// 获取服务提供者
-        /// </summary>
-        public IServiceProvider RequestServices => this.ApiActionContext.HttpContext.RequestServices;
+        /// <param name="context"></param>
+        /// <param name="parameterIndex"></param>
+        public ApiParameterContext(ApiActionContext context, int parameterIndex)
+        {
+            this.ActionContext = context;
+            this.Parameter = this.ActionContext.ApiAction.Parameters[parameterIndex];
+            this.ParameterValue = this.ActionContext.Arguments[parameterIndex];
+        }
 
         /// <summary>
         /// Api参数上下文
         /// </summary>
         /// <param name="context"></param>
         /// <param name="parameter"></param>
-        public ApiParameterContext(ApiActionContext context, ApiParameterDescriptor parameter)
+        /// <param name="parameterValue"></param>
+        public ApiParameterContext(ApiActionContext context, ApiParameterDescriptor parameter, object parameterValue)
         {
-            this.ApiActionContext = context;
+            this.ActionContext = context;
             this.Parameter = parameter;
+            this.ParameterValue = parameterValue;
         }
     }
 }

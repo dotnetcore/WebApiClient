@@ -69,7 +69,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public async Task BeforeRequestAsync(ApiParameterContext context)
         {
-            context.RequestMessage.AddFormDataText(context.Parameter.Name, context.ParameterValue?.ToString());
+            context.HttpContext.RequestMessage.AddFormDataText(context.Parameter.Name, context.ParameterValue?.ToString());
             await Task.CompletedTask;
         }
     }

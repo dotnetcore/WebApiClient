@@ -16,7 +16,7 @@ namespace WebApiClientCore.Attributes
         {
             var keyValues = context.SerializeToKeyValues();
             var form = this.HandleForm(keyValues);
-            await context.RequestMessage.AddFormFieldAsync(form).ConfigureAwait(false);
+            await context.HttpContext.RequestMessage.AddFormFieldAsync(form).ConfigureAwait(false);
         }
 
         /// <summary>
