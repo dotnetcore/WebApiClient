@@ -2,7 +2,7 @@
 
 namespace WebApiClientCore.Test
 {
-    public class DataTypeDescriptorTest
+    public class ApiDataTypeDescriptorTest
     {
         private ApiDataTypeDescriptor Create(string methodName)
         {
@@ -25,7 +25,7 @@ namespace WebApiClientCore.Test
             Assert.True(m3.IsStream);
             Assert.True(m4.IsHttpResponseMessage);
             Assert.True(m6.IsByteArray);
-            Assert.False(m5.IsString || m5.IsStream || m5.IsByteArray || m5.IsHttpResponseMessage);
+            Assert.True(m5.IsModelType);
         }
     }
 }

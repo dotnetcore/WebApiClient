@@ -43,5 +43,18 @@ namespace WebApiClientCore.Test.BuildinUtils
             value = new User { Account = "123456" };
             Assert.Throws<ValidationException>(() => ApiValidator.ValidateReturnValue(value, true));
         }
+
+        class TestParameter
+        {
+            public void Test([RequiredAttribute]object p)
+            {
+            }
+
+            public static ApiParameterDescriptor Create()
+            {
+                var p = typeof(TestParameter).GetMethod("Test").GetParameters()[0];
+                return new ApiParameterDescriptor(p);
+            }
+        }
     }
 }

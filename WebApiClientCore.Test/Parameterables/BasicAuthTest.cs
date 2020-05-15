@@ -11,8 +11,8 @@ namespace WebApiClientCore.Test.Parameterables
         [Fact]
         public async Task BeforeRequestAsync()
         {
-            var context = new TestActionContext(
-                 new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync")), "name");
+            var apiAction = new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"));
+            var context = new TestRequestContext(apiAction, "name");
 
             var basicAuth = new BasicAuth("laojiu", "123456");
             await basicAuth.OnRequestAsync(new ApiParameterContext(context, 0));

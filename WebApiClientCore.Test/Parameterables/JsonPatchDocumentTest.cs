@@ -13,8 +13,8 @@ namespace WebApiClientCore.Test.Parameterables
             doc.Replace(item => item.Name, "33");
             doc.Replace(item => item.Age, 10);
 
-            var context = new TestActionContext(
-               apiActionDescriptor: new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync")));
+            var apiAction = new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"));
+            var context = new TestRequestContext(apiAction, "name");
 
             context.HttpContext.RequestMessage.Method = new System.Net.Http.HttpMethod("Patch");  
             await ((IApiParameterable)doc).OnRequestAsync(new ApiParameterContext(context, 0));
@@ -22,7 +22,6 @@ namespace WebApiClientCore.Test.Parameterables
             var body = await context.HttpContext.RequestMessage.Content.ReadAsStringAsync();
             var ops = System.Text.Json.JsonSerializer.Deserialize<Op[]>(body);
             Assert.Equal(2, ops.Length);
-
 
             Assert.Equal("replace", ops[0].op);
             Assert.Equal("/name", ops[0].path);

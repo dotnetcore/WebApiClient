@@ -11,8 +11,8 @@ namespace WebApiClientCore.Test.Parameterables
         [Fact]
         public async Task BeforeRequestAsync()
         {
-            var context = new TestActionContext(
-                apiActionDescriptor: new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync")));
+            var apiAction = new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"));
+            var context = new TestRequestContext(apiAction, "name");
 
             context.HttpContext.RequestMessage.RequestUri = new Uri("http://www.webapi.com/");
             context.HttpContext.RequestMessage.Method = HttpMethod.Post;

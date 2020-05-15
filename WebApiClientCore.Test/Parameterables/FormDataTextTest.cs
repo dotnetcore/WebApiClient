@@ -20,8 +20,8 @@ namespace WebApiClientCore.Test.Parameterables
 {HttpUtility.UrlEncode(value, Encoding.UTF8)}";
             }
 
-            var context = new TestActionContext(
-                new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync")), "name");
+            var apiAction = new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"));
+            var context = new TestRequestContext(apiAction, "name");
 
             context.HttpContext.RequestMessage.RequestUri = new Uri("http://www.webapi.com/");
             context.HttpContext.RequestMessage.Method = HttpMethod.Post;
