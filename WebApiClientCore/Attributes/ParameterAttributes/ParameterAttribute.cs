@@ -6,20 +6,19 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示请求参数特性
     /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-    public sealed class ParameterAttribute : Attribute, IApiParameterAttribute
+    public class ParameterAttribute : ApiParameterAttribute
     {
-        private static readonly IApiParameterAttribute pathQuery = new PathQueryAttribute();
+        private static readonly ApiParameterAttribute pathQuery = new PathQueryAttribute();
 
-        private static readonly IApiParameterAttribute headers = new HeadersAttribute();
+        private static readonly ApiParameterAttribute headers = new HeadersAttribute();
 
-        private static readonly IApiParameterAttribute formContent = new FormContentAttribute();
+        private static readonly ApiParameterAttribute formContent = new FormContentAttribute();
 
-        private static readonly IApiParameterAttribute formDataContent = new FormDataContentAttribute();
+        private static readonly ApiParameterAttribute formDataContent = new FormDataContentAttribute();
 
-        private static readonly IApiParameterAttribute jsonContent = new JsonContentAttribute();
+        private static readonly ApiParameterAttribute jsonContent = new JsonContentAttribute();
 
-        private static readonly IApiParameterAttribute xmlContent = new XmlContentAttribute();
+        private static readonly ApiParameterAttribute xmlContent = new XmlContentAttribute();
 
         /// <summary>
         /// 获取参数类型
@@ -43,35 +42,34 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 执行前
         /// </summary>
-        /// <param name="context">上下文</param>
-        /// <param name="next"></param>
+        /// <param name="context">上下文</param> 
         /// <returns></returns>
-        public async Task BeforeRequestAsync(ApiParameterContext context,Func<Task> next)
+        public override async Task BeforeRequestAsync(ApiParameterContext context)
         {
             switch (this.Kind)
             {
                 case Kind.Path:
-                    await pathQuery.BeforeRequestAsync(context,next).ConfigureAwait(false);
+                    await pathQuery.BeforeRequestAsync(context).ConfigureAwait(false);
                     break;
 
                 case Kind.Header:
-                    await headers.BeforeRequestAsync(context, next).ConfigureAwait(false);
+                    await headers.BeforeRequestAsync(context).ConfigureAwait(false);
                     break;
 
                 case Kind.Form:
-                    await formContent.BeforeRequestAsync(context, next).ConfigureAwait(false);
+                    await formContent.BeforeRequestAsync(context).ConfigureAwait(false);
                     break;
 
                 case Kind.FormData:
-                    await formDataContent.BeforeRequestAsync(context, next).ConfigureAwait(false);
+                    await formDataContent.BeforeRequestAsync(context).ConfigureAwait(false);
                     break;
 
                 case Kind.JsonBody:
-                    await jsonContent.BeforeRequestAsync(context, next).ConfigureAwait(false);
+                    await jsonContent.BeforeRequestAsync(context).ConfigureAwait(false);
                     break;
 
                 case Kind.XmlBody:
-                    await xmlContent.BeforeRequestAsync(context, next).ConfigureAwait(false);
+                    await xmlContent.BeforeRequestAsync(context).ConfigureAwait(false);
                     break;
             }
         }
