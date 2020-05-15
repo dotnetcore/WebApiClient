@@ -80,7 +80,9 @@ namespace WebApiClientCore
 
             var resultAttributes = method
                 .FindDeclaringAttributes<IApiResultAttribute>(true)
-                .Append(new AutoResultAttribute())
+                .Append(new RawResultAttribute())
+                .Append(new JsonResultAttribute())
+                .Append(new XmlResultAttribute())
                 .Distinct(new MultiplableComparer<IApiResultAttribute>())
                 .ToReadOnlyList();
 

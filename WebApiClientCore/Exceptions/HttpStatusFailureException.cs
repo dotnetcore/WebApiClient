@@ -90,12 +90,12 @@ namespace WebApiClientCore.Exceptions
             var content = this.ResponseMessage.Content;
             var contentType = new ContentType(content.Headers.ContentType);
 
-            if (contentType.IsApplicationJson() == true)
+            if (contentType.IsJson() == true)
             {
                 var json = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
                 return (TResult)this.context.HttpContext.Services.GetRequiredService<IJsonFormatter>().Deserialize(json, dataType, this.context.HttpContext.Options.JsonDeserializeOptions);
             }
-            else if (contentType.IsApplicationXml() == true)
+            else if (contentType.IsXml() == true)
             {
                 var xml = await content.ReadAsStringAsync().ConfigureAwait(false);
                 return (TResult)this.context.HttpContext.Services.GetRequiredService<IXmlFormatter>().Deserialize(xml, dataType);

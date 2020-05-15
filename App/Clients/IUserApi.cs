@@ -18,7 +18,7 @@ namespace App.Clients
     {
         [HttpGet("api/users/{account}")]
         [BasicAuth("userName", "password")]
-        [Timeout(10 * 1000)] // 10s超时
+        [Timeout(10 * 1000)] // 10s超时        
         Task<HttpResponseMessage> GetAsync([Required]string account);
 
         [HttpGet("api/users/{account}")]

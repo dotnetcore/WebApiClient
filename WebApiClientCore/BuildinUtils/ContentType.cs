@@ -36,7 +36,7 @@ namespace WebApiClientCore
         /// 是否为json
         /// </summary>
         /// <returns></returns>
-        public bool IsApplicationJson()
+        public bool IsJson()
         {
             return this.IsMediaType(JsonContent.MediaType) || this.IsMediaType("text/json");
         }
@@ -45,7 +45,7 @@ namespace WebApiClientCore
         /// 是否为xml
         /// </summary>
         /// <returns></returns>
-        public bool IsApplicationXml()
+        public bool IsXml()
         {
             return this.IsMediaType(XmlContent.MediaType) || this.IsMediaType("text/xml");
         }

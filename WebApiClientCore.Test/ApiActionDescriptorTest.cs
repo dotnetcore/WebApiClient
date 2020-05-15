@@ -15,7 +15,8 @@ namespace WebApiClientCore.Test
             Assert.True(d.Parameters.Count == 2);
             Assert.True(d.Name == m.Name);
             Assert.True(d.Member == m);
+            Assert.True(d.ResultAttributes.Count == 1);
             Assert.True(d.Return.ReturnType == m.ReturnType);
-        } 
+        }
     }
 }

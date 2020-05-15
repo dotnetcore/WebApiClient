@@ -15,11 +15,10 @@ namespace WebApiClientCore.Test
     public interface IDescriptorApi : IHttpApi
     {
         [HttpGet]
-        [Timeout(10 * 1000)]
+        [Timeout(10 * 1000)] 
         Task<string> Get1([Uri] string url, string something);
 
-        [HttpGet]
-        [JsonResult]
+        [HttpGet] 
         Task<HttpResponseMessage> Get2([Required]string id, CancellationToken token);
 
         [HttpGet]

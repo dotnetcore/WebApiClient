@@ -67,7 +67,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <param name="next"></param>
         /// <returns></returns>
-        async Task IApiParameterAttribute.BeforeRequestAsync(ApiParameterContext context,Func<Task> next)
+        public async Task BeforeRequestAsync(ApiParameterContext context, Func<Task> next)
         {
             await context.HttpContext.RequestMessage.AddFormFieldAsync(context.Parameter.Name, context.ParameterValue?.ToString()).ConfigureAwait(false);
             await next();

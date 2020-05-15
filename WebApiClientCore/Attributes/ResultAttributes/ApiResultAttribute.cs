@@ -62,12 +62,6 @@ namespace WebApiClientCore.Attributes
             await next();
         }
 
-        /// <summary>
-        /// 配置请求头的accept
-        /// </summary>
-        /// <param name="accept">请求头的accept</param>
-        protected abstract void ConfigureAccept(HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> accept);
-
 
         /// <summary>
         /// 指示状态码是否为成功的状态码
@@ -81,10 +75,16 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
+        /// 配置请求头的accept
+        /// </summary>
+        /// <param name="accept">请求头的accept</param>
+        public abstract void ConfigureAccept(HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> accept);
+
+        /// <summary>
         /// 设置结果值
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        protected abstract Task SetResultAsync(ApiActionContext context);
+        public abstract Task SetResultAsync(ApiActionContext context);
     }
 }
