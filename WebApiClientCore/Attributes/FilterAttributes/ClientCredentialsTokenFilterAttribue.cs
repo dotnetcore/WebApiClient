@@ -6,7 +6,7 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示提供client_credentials方式的token过滤器抽象
     /// </summary>
-    public abstract class ClientCredentialsTokenFilter : TokenFilterAttribute
+    public abstract class ClientCredentialsTokenFilterAttribue : TokenFilterAttribute
     {
         /// <summary>
         /// 使用TokenClient请求获取token
