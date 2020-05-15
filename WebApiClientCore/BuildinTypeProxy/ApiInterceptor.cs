@@ -44,7 +44,7 @@ namespace WebApiClientCore
         {
             var apiCache = cache.GetOrAdd(method, this.CreateApiCacheValue);
             using var httpContext = new HttpContext(this.httpClient, this.requestServices, this.apiOptions);
-            var context = new ApiActionContext(httpContext, apiCache.ActionDescriptor, parameters);
+            var context = new ApiRequestContext(httpContext, apiCache.ActionDescriptor, parameters);
             return apiCache.ActionInvoker.InvokeAsync(context);
         }
 

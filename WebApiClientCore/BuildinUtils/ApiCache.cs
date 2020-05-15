@@ -10,7 +10,7 @@ namespace WebApiClientCore
     class ApiCache
     {
         private readonly bool enable;
-        private readonly ApiActionContext context;
+        private readonly ApiRequestContext context;
         private readonly IResponseCacheProvider provider;
         private readonly IApiCacheAttribute attribute;
 
@@ -18,7 +18,7 @@ namespace WebApiClientCore
         /// Api缓存
         /// </summary>
         /// <param name="context">上下文</param>
-        public ApiCache(ApiActionContext context)
+        public ApiCache(ApiRequestContext context)
         {
             this.context = context;
             this.attribute = context.ApiAction.CacheAttribute;

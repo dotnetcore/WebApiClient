@@ -51,7 +51,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override async Task BeforeRequestAsync(ApiActionContext context)
+        public override async Task BeforeRequestAsync(ApiRequestContext context)
         {
             if (string.IsNullOrEmpty(this.name))
             {

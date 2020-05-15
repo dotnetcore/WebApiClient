@@ -34,7 +34,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override Task BeforeRequestAsync(ApiActionContext context)
+        public override Task BeforeRequestAsync(ApiRequestContext context)
         {
             if (context.HttpContext.RequestMessage.RequestUri == null)
             {

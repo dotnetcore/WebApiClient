@@ -18,14 +18,14 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        CachePolicy GetReadPolicy(ApiActionContext context);
+        CachePolicy GetReadPolicy(ApiRequestContext context);
 
         /// <summary>
         /// 返回写入缓存的策略
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        CachePolicy GetWritePolicy(ApiActionContext context);
+        CachePolicy GetWritePolicy(ApiRequestContext context);
 
         /// <summary>
         /// 返回请求对应的缓存的键
@@ -33,6 +33,6 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        Task<string> GetCacheKeyAsync(ApiActionContext context);
+        Task<string> GetCacheKeyAsync(ApiRequestContext context);
     }
 }

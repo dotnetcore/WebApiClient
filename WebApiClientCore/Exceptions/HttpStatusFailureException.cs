@@ -15,7 +15,7 @@ namespace WebApiClientCore.Exceptions
         /// <summary>
         /// 上下文
         /// </summary>
-        private readonly ApiActionContext context;
+        private readonly ApiRequestContext context;
 
         /// <summary>
         /// 获取响应消息
@@ -46,7 +46,7 @@ namespace WebApiClientCore.Exceptions
         /// </summary> 
         /// <param name="context"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public HttpStatusFailureException(ApiActionContext context)
+        public HttpStatusFailureException(ApiRequestContext context)
         {
             this.context = context;
         }

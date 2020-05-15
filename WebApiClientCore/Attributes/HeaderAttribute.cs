@@ -83,7 +83,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override Task BeforeRequestAsync(ApiActionContext context)
+        public override Task BeforeRequestAsync(ApiRequestContext context)
         {
             this.SetHeaderValue(context, this.value);
             return Task.CompletedTask;
@@ -108,7 +108,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context"></param>
         /// <param name="headerValue"></param>
         /// <exception cref="HttpApiInvalidOperationException"></exception>
-        private void SetHeaderValue(ApiActionContext context, string headerValue)
+        private void SetHeaderValue(ApiRequestContext context, string headerValue)
         {
             if (string.Equals(this.name, "Cookie", StringComparison.OrdinalIgnoreCase))
             {

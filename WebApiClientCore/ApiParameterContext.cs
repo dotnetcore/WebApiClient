@@ -8,7 +8,7 @@
         /// <summary>
         /// 获取关联的Api上下文
         /// </summary>
-        public ApiActionContext ActionContext { get; }
+        public ApiRequestContext ActionContext { get; }
 
         /// <summary>
         /// 获取http上下文
@@ -30,7 +30,7 @@
         /// </summary>
         /// <param name="context"></param>
         /// <param name="parameterIndex"></param>
-        public ApiParameterContext(ApiActionContext context, int parameterIndex)
+        public ApiParameterContext(ApiRequestContext context, int parameterIndex)
         {
             this.ActionContext = context;
             this.Parameter = this.ActionContext.ApiAction.Parameters[parameterIndex];
@@ -43,7 +43,7 @@
         /// <param name="context"></param>
         /// <param name="parameter"></param>
         /// <param name="parameterValue"></param>
-        public ApiParameterContext(ApiActionContext context, ApiParameterDescriptor parameter, object parameterValue)
+        public ApiParameterContext(ApiRequestContext context, ApiParameterDescriptor parameter, object parameterValue)
         {
             this.ActionContext = context;
             this.Parameter = parameter;

@@ -14,7 +14,7 @@ namespace WebApiClientCore
         /// <param name="context">上下文</param>
         /// <param name="next">下一个执行委托</param>
         /// <returns></returns>
-        Task BeforeRequestAsync(ApiActionContext context, Func<Task> next);
+        Task BeforeRequestAsync(ApiRequestContext context, Func<Task> next);
 
         /// <summary>
         /// 请求后
@@ -22,6 +22,6 @@ namespace WebApiClientCore
         /// <param name="context">上下文</param>
         /// <param name="next">下一个执行委托</param>
         /// <returns></returns>
-        Task AfterRequestAsync(ApiActionContext context, Func<Task> next);
+        Task AfterRequestAsync(ApiResponseContext context, Func<Task> next);
     }
 }

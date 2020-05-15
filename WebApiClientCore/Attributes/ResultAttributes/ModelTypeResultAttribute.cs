@@ -43,7 +43,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public sealed override async Task SetResultAsync(ApiActionContext context)
+        public sealed override async Task SetResultAsync(ApiResponseContext context)
         {
             if (context.ApiAction.Return.DataType.IsModelType == false)
             {
@@ -78,6 +78,6 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public abstract Task SetModelTypeResultAsync(ApiActionContext context);
+        public abstract Task SetModelTypeResultAsync(ApiResponseContext context);
     }
 }

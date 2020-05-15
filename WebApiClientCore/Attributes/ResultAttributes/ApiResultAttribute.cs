@@ -35,7 +35,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <param name="next"></param>
         /// <returns></returns>
-        public Task BeforeRequestAsync(ApiActionContext context, Func<Task> next)
+        public Task BeforeRequestAsync(ApiRequestContext context, Func<Task> next)
         {
             this.ConfigureAccept(context.HttpContext.RequestMessage.Headers.Accept);
             return next();
@@ -47,7 +47,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <param name="next">下一个执行委托</param>
         /// <returns></returns>
-        public async Task AfterRequestAsync(ApiActionContext context, Func<Task> next)
+        public async Task AfterRequestAsync(ApiResponseContext context, Func<Task> next)
         {
             if (this.EnsureSuccessStatusCode == true)
             {
@@ -85,6 +85,6 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public abstract Task SetResultAsync(ApiActionContext context);
+        public abstract Task SetResultAsync(ApiResponseContext context);
     }
 }

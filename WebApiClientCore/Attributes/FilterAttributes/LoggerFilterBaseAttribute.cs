@@ -38,7 +38,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public async override Task BeforeRequestAsync(ApiActionContext context)
+        public async override Task BeforeRequestAsync(ApiRequestContext context)
         {
             var message = new LoggerMessage
             {
@@ -69,7 +69,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public async override Task AfterRequestAsync(ApiActionContext context)
+        public async override Task AfterRequestAsync(ApiResponseContext context)
         {
             var response = context.HttpContext.ResponseMessage;
             var message = context.Tags.Take(tagKey).As<LoggerMessage>();
@@ -114,6 +114,6 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <param name="message">追踪的消息</param>
         /// <returns></returns>
-        protected abstract Task WriterLogAsync(ApiActionContext context, LoggerMessage message);
+        protected abstract Task WriterLogAsync(ApiRequestContext context, LoggerMessage message);
     }
 }

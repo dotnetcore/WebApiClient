@@ -22,7 +22,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override async Task SetModelTypeResultAsync(ApiActionContext context)
+        public override async Task SetModelTypeResultAsync(ApiResponseContext context)
         {
             var response = context.HttpContext.ResponseMessage;
             var dataType = context.ApiAction.Return.DataType.Type;

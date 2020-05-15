@@ -27,7 +27,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override async Task BeforeRequestAsync(ApiActionContext context)
+        public override async Task BeforeRequestAsync(ApiRequestContext context)
         {
             using (await this.asyncRoot.LockAsync().ConfigureAwait(false))
             {
@@ -62,7 +62,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">请求上下文</param>
         /// <param name="tokenResult">token结果</param>
-        protected virtual void AccessTokenResult(ApiActionContext context, TokenResult tokenResult)
+        protected virtual void AccessTokenResult(ApiRequestContext context, TokenResult tokenResult)
         {
             var tokenType = tokenResult.TokenType ?? "Bearer";
             context.HttpContext.RequestMessage.Headers.Authorization = new AuthenticationHeaderValue(tokenType, tokenResult.AccessToken);

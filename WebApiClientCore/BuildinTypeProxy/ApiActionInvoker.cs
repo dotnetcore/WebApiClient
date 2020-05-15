@@ -13,9 +13,9 @@ namespace WebApiClientCore
     class ApiActionInvoker<TResult> : IApiActionInvoker
     {
         /// <summary>
-        /// 请求委托
+        /// 执行委托
         /// </summary>
-        private readonly ExecutionDelegate handler;
+        private readonly Func<ApiRequestContext, Task<ApiResponseContext>> handler;
 
         /// <summary>
         /// 上下文执行器
@@ -23,14 +23,14 @@ namespace WebApiClientCore
         /// <param name="descriptor"></param>
         public ApiActionInvoker(ApiActionDescriptor descriptor)
         {
-            this.handler = CreateHandler(descriptor);
+            this.handler = CreateExecutionHandler(descriptor);
         }
 
         /// <summary>
         /// 执行Api方法
         /// </summary>
         /// <returns></returns>
-        Task IApiActionInvoker.InvokeAsync(ApiActionContext context)
+        Task IApiActionInvoker.InvokeAsync(ApiRequestContext context)
         {
             return this.InvokeAsync(context);
         }
@@ -40,29 +40,50 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        private async Task<TResult> InvokeAsync(ApiActionContext context)
+        private async Task<TResult> InvokeAsync(ApiRequestContext context)
         {
-            await this.handler(context);
+            var response = await this.handler(context);
 
-            if (context.ResultStatus == ResultStatus.HasResult)
+            if (response.ResultStatus == ResultStatus.HasResult)
             {
-                return (TResult)context.Result;
+                return (TResult)response.Result;
             }
-            else if (context.ResultStatus == ResultStatus.HasException)
+            else if (response.ResultStatus == ResultStatus.HasException)
             {
-                throw context.Exception;
+                throw response.Exception;
             }
 
             throw new ApiResultNotSupportedExteption(context.HttpContext.ResponseMessage, context.ApiAction.Return.DataType.Type);
         }
 
+
+        /// <summary>
+        /// 创建执行委托
+        /// </summary>
+        /// <returns></returns>
+        private static Func<ApiRequestContext, Task<ApiResponseContext>> CreateExecutionHandler(ApiActionDescriptor descriptor)
+        {
+            var requestHandler = BuildRequestHandler(descriptor);
+            var responseHandler = BuildResponseHandler(descriptor);
+
+            return async context =>
+            {
+                await requestHandler(context);
+                var response = await ExecuteApiAsync(context);
+                await responseHandler(response);
+                return response;
+            };
+        }
+
+
         /// <summary>
         /// 创建请求委托
         /// </summary>
+        /// <param name="descriptor"></param>
         /// <returns></returns>
-        private static ExecutionDelegate CreateHandler(ApiActionDescriptor descriptor)
+        private static InvokeDelegate<ApiRequestContext> BuildRequestHandler(ApiActionDescriptor descriptor)
         {
-            var builder = new PipelineBuilder();
+            var builder = new PipelineBuilder<ApiRequestContext>();
 
             // 参数验证特性验证和参数模型属性特性验证
             builder.Use(next => context =>
@@ -107,22 +128,17 @@ namespace WebApiClientCore
                 builder.Use(attr.BeforeRequestAsync);
             }
 
-            // 发起http请求
-            builder.Use(next => async context =>
-            {
-                try
-                {
-                    await HttpRequestAsync(context);
-                }
-                catch (Exception ex)
-                {
-                    context.Exception = ex;
-                }
-                finally
-                {
-                    await next(context);
-                }
-            });
+            return builder.Build();
+        }
+
+        /// <summary>
+        /// 创建响应委托
+        /// </summary>
+        /// <param name="descriptor"></param>
+        /// <returns></returns>
+        private static InvokeDelegate<ApiResponseContext> BuildResponseHandler(ApiActionDescriptor descriptor)
+        {
+            var builder = new PipelineBuilder<ApiResponseContext>();
 
             // 结果特性请求后执行
             foreach (var attr in descriptor.ResultAttributes)
@@ -148,6 +164,20 @@ namespace WebApiClientCore
                 });
             }
 
+            // 验证Result是否ok
+            builder.Use(next => context =>
+            {
+                try
+                {
+                    ApiValidator.ValidateReturnValue(context.Result, context.HttpContext.Options.UseReturnValuePropertyValidate);
+                }
+                catch (Exception ex)
+                {
+                    context.Exception = ex;
+                }
+                return next(context);
+            });
+
             // 过滤器请求后执行
             foreach (var attr in descriptor.FilterAttributes)
             {
@@ -157,12 +187,32 @@ namespace WebApiClientCore
             return builder.Build();
         }
 
+
         /// <summary>
         /// 执行http请求
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        private static async Task HttpRequestAsync(ApiActionContext context)
+        private static async Task<ApiResponseContext> ExecuteApiAsync(ApiRequestContext context)
+        {
+            var response = new ApiResponseContext(context);
+            try
+            {
+                await SendRequestAsync(context);
+            }
+            catch (Exception ex)
+            {
+                response.Exception = ex;
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// 发送http请求
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private static async Task SendRequestAsync(ApiRequestContext context)
         {
             var apiCache = new ApiCache(context);
             var cacheResult = await apiCache.GetAsync().ConfigureAwait(false);
@@ -175,8 +225,6 @@ namespace WebApiClientCore
             {
                 using var cancellation = CreateLinkedTokenSource(context);
                 context.HttpContext.ResponseMessage = await context.HttpContext.Client.SendAsync(context.HttpContext.RequestMessage, cancellation.Token).ConfigureAwait(false);
-
-                ApiValidator.ValidateReturnValue(context.Result, context.HttpContext.Options.UseReturnValuePropertyValidate);
                 await apiCache.SetAsync(cacheResult.CacheKey).ConfigureAwait(false);
             }
         }
@@ -186,7 +234,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        private static CancellationTokenSource CreateLinkedTokenSource(ApiActionContext context)
+        private static CancellationTokenSource CreateLinkedTokenSource(ApiRequestContext context)
         {
             if (context.CancellationTokens.Count == 0)
             {

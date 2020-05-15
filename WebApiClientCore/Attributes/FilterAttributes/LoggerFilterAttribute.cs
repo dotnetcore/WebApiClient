@@ -15,7 +15,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <param name="message">追踪的消息</param>
         /// <returns></returns>
-        protected override Task WriterLogAsync(ApiActionContext context, LoggerMessage message)
+        protected override Task WriterLogAsync(ApiRequestContext context, LoggerMessage message)
         {
             var method = context.ApiAction.Member;
             var actionName = $"{method.DeclaringType.Namespace}.{method.DeclaringType.Name}.{method.Name}";
@@ -29,7 +29,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <param name="categoryName">日志容器名称</param>
         /// <param name="mesage">追踪的消息</param>
-        private void WriteLoggerFactory(ApiActionContext context, string categoryName, LoggerMessage mesage)
+        private void WriteLoggerFactory(ApiRequestContext context, string categoryName, LoggerMessage mesage)
         {
             var logging = context.HttpContext.Services.GetService<ILoggerFactory>();
             if (logging == null)

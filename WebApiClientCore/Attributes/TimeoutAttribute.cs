@@ -53,7 +53,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <exception cref="HttpApiInvalidOperationException"></exception>
         /// <returns></returns>
-        public override Task BeforeRequestAsync(ApiActionContext context)
+        public override Task BeforeRequestAsync(ApiRequestContext context)
         {
             if (this.TimeSpan.HasValue == false)
             {
@@ -98,7 +98,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <param name="timeout">超时时间</param>
         /// <exception cref="HttpApiInvalidOperationException"></exception>
-        private void SetTimeout(ApiActionContext context, TimeSpan timeout)
+        private void SetTimeout(ApiRequestContext context, TimeSpan timeout)
         {
             var maxTimeout = context.HttpContext.Client.Timeout;
             if (maxTimeout >= System.TimeSpan.Zero && timeout > maxTimeout)

@@ -4,7 +4,7 @@ using System.Net.Http;
 
 namespace WebApiClientCore.Test
 {
-    public class TestActionContext : ApiActionContext
+    public class TestActionContext : ApiRequestContext
     {
         /// <summary>
         /// 请求Api的上下文

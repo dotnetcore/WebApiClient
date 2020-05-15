@@ -32,7 +32,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public virtual CachePolicy GetReadPolicy(ApiActionContext context)
+        public virtual CachePolicy GetReadPolicy(ApiRequestContext context)
         {
             return CachePolicy.Include;
         }
@@ -42,7 +42,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public virtual CachePolicy GetWritePolicy(ApiActionContext context)
+        public virtual CachePolicy GetWritePolicy(ApiRequestContext context)
         {
             return CachePolicy.Include;
         }
@@ -53,6 +53,6 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public abstract Task<string> GetCacheKeyAsync(ApiActionContext context);
+        public abstract Task<string> GetCacheKeyAsync(ApiRequestContext context);
     }
 }

@@ -5,23 +5,24 @@ using System.Threading.Tasks;
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 定义Action执行的委托
+    /// 表示所有中间件执行委托
     /// </summary>
-    /// <param name="context">上下文</param>
+    /// <typeparam name="TContext">中间件上下文类型</typeparam>
+    /// <param name="context">中间件上下文</param>
     /// <returns></returns>
-    delegate Task ExecutionDelegate(ApiActionContext context);
+    delegate Task InvokeDelegate<TContext>(TContext context);
 
     /// <summary>
     /// 表示中间件创建者
     /// </summary>
-    class PipelineBuilder
+    class PipelineBuilder<TContext>
     {
-        private readonly ExecutionDelegate completedHandler;
-        private readonly List<Func<ExecutionDelegate, ExecutionDelegate>> middlewares = new List<Func<ExecutionDelegate, ExecutionDelegate>>();
+        private readonly InvokeDelegate<TContext> completedHandler;
+        private readonly List<Func<InvokeDelegate<TContext>, InvokeDelegate<TContext>>> middlewares = new List<Func<InvokeDelegate<TContext>, InvokeDelegate<TContext>>>();
 
         /// <summary>
         /// 中间件创建者
-        /// </summary> 
+        /// </summary>
         public PipelineBuilder()
             : this(context => Task.CompletedTask)
         {
@@ -29,9 +30,9 @@ namespace WebApiClientCore
 
         /// <summary>
         /// 中间件创建者
-        /// </summary> 
+        /// </summary>
         /// <param name="completedHandler">完成执行内容处理者</param>
-        public PipelineBuilder(ExecutionDelegate completedHandler)
+        public PipelineBuilder(InvokeDelegate<TContext> completedHandler)
         {
             this.completedHandler = completedHandler;
         }
@@ -41,27 +42,28 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="middleware"></param>
         /// <returns></returns>
-        public PipelineBuilder Use(Func<ExecutionDelegate, ExecutionDelegate> middleware)
-        {
-            this.middlewares.Add(middleware);
-            return this;
-        }
-
-        /// <summary>
-        /// 使用中间件
-        /// </summary>  
-        /// <param name="middleware"></param>
-        /// <returns></returns>
-        public PipelineBuilder Use(Func<ApiActionContext, Func<Task>, Task> middleware)
+        public PipelineBuilder<TContext> Use(Func<TContext, Func<Task>, Task> middleware)
         {
             return this.Use(next => context => middleware(context, () => next(context)));
         }
 
         /// <summary>
+        /// 使用中间件
+        /// </summary>
+        /// <param name="middleware"></param>
+        /// <returns></returns>
+        public PipelineBuilder<TContext> Use(Func<InvokeDelegate<TContext>, InvokeDelegate<TContext>> middleware)
+        {
+            this.middlewares.Add(middleware);
+            return this;
+        }
+
+
+        /// <summary>
         /// 创建所有中间件执行处理者
         /// </summary>
         /// <returns></returns>
-        public ExecutionDelegate Build()
+        public InvokeDelegate<TContext> Build()
         {
             var handler = this.completedHandler;
             for (var i = this.middlewares.Count - 1; i >= 0; i--)

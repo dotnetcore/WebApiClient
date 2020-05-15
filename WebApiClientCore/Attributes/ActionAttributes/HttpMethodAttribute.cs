@@ -69,7 +69,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <exception cref="HttpApiInvalidOperationException"></exception>
         /// <returns></returns>
-        public override Task BeforeRequestAsync(ApiActionContext context)
+        public override Task BeforeRequestAsync(ApiRequestContext context)
         {
             var baseUri = context.HttpContext.RequestMessage.RequestUri;
             var relative = string.IsNullOrEmpty(this.Path) ? null : new Uri(this.Path, UriKind.RelativeOrAbsolute);

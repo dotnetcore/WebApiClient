@@ -12,6 +12,6 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task InvokeAsync(ApiActionContext context);
+        Task InvokeAsync(ApiRequestContext context);
     }
 }
