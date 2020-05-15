@@ -25,9 +25,11 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <param name="next">下一个中间件</param>
         /// <returns></returns>
-        public async Task BeforeRequestAsync(ApiRequestContext context, Func<Task> next)
+        public async Task OnRequestAsync(ApiRequestContext context, Func<Task> next)
         {
-            await this.BeforeRequestAsync(context);
+            await this.OnRequestAsync(context);
+
+            // 目前场景无中断需求，无条件执行下个中间件
             await next();
         }
 
@@ -36,6 +38,6 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public abstract Task BeforeRequestAsync(ApiRequestContext context);
+        public abstract Task OnRequestAsync(ApiRequestContext context);
     }
 }

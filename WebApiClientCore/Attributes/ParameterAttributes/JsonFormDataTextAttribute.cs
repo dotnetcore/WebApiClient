@@ -13,7 +13,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public sealed override Task BeforeRequestAsync(ApiParameterContext context)
+        public sealed override Task OnRequestAsync(ApiParameterContext context)
         {
             var json = context.SerializeToJson();
             var fieldName = context.Parameter.Name;

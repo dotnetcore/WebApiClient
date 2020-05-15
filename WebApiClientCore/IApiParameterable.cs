@@ -13,6 +13,6 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="context">上下文</param> 
         /// <returns></returns>
-        Task BeforeRequestAsync(ApiParameterContext context);
+        Task OnRequestAsync(ApiParameterContext context);
     }
 }

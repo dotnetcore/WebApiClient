@@ -28,7 +28,7 @@ namespace WebApiClientCore.Test.Parameterables
            
              
             IApiParameterable mulitpartText = new FormDataText("laojiu");
-            await mulitpartText.BeforeRequestAsync(new ApiParameterContext(context, context.ApiAction.Parameters[0], null));
+            await mulitpartText.OnRequestAsync(new ApiParameterContext(context, context.ApiAction.Parameters[0], null));
 
             var body = await context.HttpContext.RequestMessage.Content.ReadAsStringAsync();
             Assert.Contains(get("name", "laojiu"), body);

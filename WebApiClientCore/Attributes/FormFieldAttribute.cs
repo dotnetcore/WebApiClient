@@ -51,7 +51,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override async Task BeforeRequestAsync(ApiRequestContext context)
+        public override async Task OnRequestAsync(ApiRequestContext context)
         {
             if (string.IsNullOrEmpty(this.name))
             {
@@ -67,7 +67,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <param name="next"></param>
         /// <returns></returns>
-        public async Task BeforeRequestAsync(ApiParameterContext context, Func<Task> next)
+        public async Task OnRequestAsync(ApiParameterContext context, Func<Task> next)
         {
             await context.HttpContext.RequestMessage.AddFormFieldAsync(context.Parameter.Name, context.ParameterValue?.ToString()).ConfigureAwait(false);
             await next();

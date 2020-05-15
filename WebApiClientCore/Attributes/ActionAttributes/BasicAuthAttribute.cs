@@ -32,9 +32,9 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override Task BeforeRequestAsync(ApiRequestContext context)
+        public override Task OnRequestAsync(ApiRequestContext context)
         {
-            return this.baiscAuth.BeforeRequestAsync(new ApiParameterContext(context, 0));
+            return this.baiscAuth.OnRequestAsync(new ApiParameterContext(context, 0));
         }
     }
 }

@@ -16,7 +16,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override Task BeforeRequestAsync(ApiParameterContext context)
+        public override Task OnRequestAsync(ApiParameterContext context)
         {
             var fileInfo = context.ParameterValue as FileInfo;
             if (fileInfo != null)

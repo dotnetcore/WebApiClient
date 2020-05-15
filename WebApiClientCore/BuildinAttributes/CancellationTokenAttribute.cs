@@ -14,10 +14,10 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override Task BeforeRequestAsync(ApiParameterContext context)
+        public override Task OnRequestAsync(ApiParameterContext context)
         {
             var token = (CancellationToken)context.ParameterValue;
-            context.ActionContext.CancellationTokens.Add(token);
+            context.RequestContext.CancellationTokens.Add(token);
             return Task.CompletedTask;
         }
     }

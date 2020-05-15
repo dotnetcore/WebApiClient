@@ -16,7 +16,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param> 
         /// <exception cref="HttpApiInvalidOperationException"></exception>
         /// <returns></returns>
-        public sealed override async Task BeforeRequestAsync(ApiParameterContext context)
+        public sealed override async Task OnRequestAsync(ApiParameterContext context)
         {
             var method = context.HttpContext.RequestMessage.Method;
             if (method == HttpMethod.Get || method == HttpMethod.Head)

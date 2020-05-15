@@ -27,7 +27,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override async Task BeforeRequestAsync(ApiRequestContext context)
+        public override async Task OnRequestAsync(ApiRequestContext context)
         {
             using (await this.asyncRoot.LockAsync().ConfigureAwait(false))
             {

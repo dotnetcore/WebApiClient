@@ -44,32 +44,32 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param> 
         /// <returns></returns>
-        public override async Task BeforeRequestAsync(ApiParameterContext context)
+        public override async Task OnRequestAsync(ApiParameterContext context)
         {
             switch (this.Kind)
             {
                 case Kind.Path:
-                    await pathQuery.BeforeRequestAsync(context).ConfigureAwait(false);
+                    await pathQuery.OnRequestAsync(context).ConfigureAwait(false);
                     break;
 
                 case Kind.Header:
-                    await headers.BeforeRequestAsync(context).ConfigureAwait(false);
+                    await headers.OnRequestAsync(context).ConfigureAwait(false);
                     break;
 
                 case Kind.Form:
-                    await formContent.BeforeRequestAsync(context).ConfigureAwait(false);
+                    await formContent.OnRequestAsync(context).ConfigureAwait(false);
                     break;
 
                 case Kind.FormData:
-                    await formDataContent.BeforeRequestAsync(context).ConfigureAwait(false);
+                    await formDataContent.OnRequestAsync(context).ConfigureAwait(false);
                     break;
 
                 case Kind.JsonBody:
-                    await jsonContent.BeforeRequestAsync(context).ConfigureAwait(false);
+                    await jsonContent.OnRequestAsync(context).ConfigureAwait(false);
                     break;
 
                 case Kind.XmlBody:
-                    await xmlContent.BeforeRequestAsync(context).ConfigureAwait(false);
+                    await xmlContent.OnRequestAsync(context).ConfigureAwait(false);
                     break;
             }
         }

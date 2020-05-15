@@ -100,7 +100,7 @@ namespace WebApiClientCore
             // action特性请求前执行
             foreach (var attr in descriptor.Attributes)
             {
-                builder.Use(attr.BeforeRequestAsync);
+                builder.Use(attr.OnRequestAsync);
             }
 
             // 参数特性请求前执行
@@ -111,7 +111,7 @@ namespace WebApiClientCore
                     builder.Use(async (context, next) =>
                     {
                         var ctx = new ApiParameterContext(context, parameter.Index);
-                        await attr.BeforeRequestAsync(ctx, next);
+                        await attr.OnRequestAsync(ctx, next);
                     });
                 }
             }
@@ -119,13 +119,13 @@ namespace WebApiClientCore
             // 结果特性请求前执行
             foreach (var attr in descriptor.ResultAttributes)
             {
-                builder.Use(attr.BeforeRequestAsync);
+                builder.Use(attr.OnRequestAsync);
             }
 
             // 过滤器请求前执行            
             foreach (var attr in descriptor.FilterAttributes)
             {
-                builder.Use(attr.BeforeRequestAsync);
+                builder.Use(attr.OnRequestAsync);
             }
 
             return builder.Build();
@@ -154,7 +154,7 @@ namespace WebApiClientCore
 
                     try
                     {
-                        await attr.AfterRequestAsync(context, next);
+                        await attr.OnResponseAsync(context, next);
                     }
                     catch (Exception ex)
                     {
@@ -181,7 +181,7 @@ namespace WebApiClientCore
             // 过滤器请求后执行
             foreach (var attr in descriptor.FilterAttributes)
             {
-                builder.Use(attr.AfterRequestAsync);
+                builder.Use(attr.OnResponseAsync);
             }
 
             return builder.Build();

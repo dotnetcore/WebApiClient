@@ -78,7 +78,7 @@ namespace WebApiClientCore.Parameterables
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task IApiParameterable.BeforeRequestAsync(ApiParameterContext context)
+        Task IApiParameterable.OnRequestAsync(ApiParameterContext context)
         {
             if (context.HttpContext.RequestMessage.Method != patchMethod)
             {
@@ -86,7 +86,7 @@ namespace WebApiClientCore.Parameterables
             }
 
             var formatter = context.HttpContext.Services.GetRequiredService<IJsonFormatter>();
-            var json = formatter.Serialize(this.oprations, context.ActionContext.HttpContext.Options.JsonSerializeOptions);
+            var json = formatter.Serialize(this.oprations, context.RequestContext.HttpContext.Options.JsonSerializeOptions);
             context.HttpContext.RequestMessage.Content = new JsonPatchContent(json);
 
             return Task.CompletedTask;

@@ -14,17 +14,17 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="context">上下文</param> 
         /// <returns></returns>
-        public override async Task BeforeRequestAsync(ApiParameterContext context)
+        public override async Task OnRequestAsync(ApiParameterContext context)
         {
             if (context.ParameterValue is IApiParameterable able)
             {
-                await able.BeforeRequestAsync(context).ConfigureAwait(false);
+                await able.OnRequestAsync(context).ConfigureAwait(false);
             }
             else if (context.ParameterValue is IEnumerable<IApiParameterable> array)
             {
                 foreach (var item in array)
                 {
-                    await item.BeforeRequestAsync(context).ConfigureAwait(false);
+                    await item.OnRequestAsync(context).ConfigureAwait(false);
                 }
             }
         }

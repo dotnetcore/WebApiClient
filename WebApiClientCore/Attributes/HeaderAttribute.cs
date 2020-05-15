@@ -83,7 +83,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override Task BeforeRequestAsync(ApiRequestContext context)
+        public override Task OnRequestAsync(ApiRequestContext context)
         {
             this.SetHeaderValue(context, this.value);
             return Task.CompletedTask;
@@ -96,9 +96,9 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <param name="next"></param> 
         /// <returns></returns>
-        public Task BeforeRequestAsync(ApiParameterContext context, Func<Task> next)
+        public Task OnRequestAsync(ApiParameterContext context, Func<Task> next)
         {
-            this.SetHeaderValue(context.ActionContext, context.ParameterValue?.ToString());
+            this.SetHeaderValue(context.RequestContext, context.ParameterValue?.ToString());
             return next();
         }
 

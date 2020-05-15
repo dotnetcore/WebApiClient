@@ -6,14 +6,14 @@
     public class ApiParameterContext
     {
         /// <summary>
-        /// 获取关联的Api上下文
+        /// 获取请求上下文
         /// </summary>
-        public ApiRequestContext ActionContext { get; }
+        public ApiRequestContext RequestContext { get; }
 
         /// <summary>
         /// 获取http上下文
         /// </summary>
-        public HttpContext HttpContext => this.ActionContext.HttpContext;
+        public HttpContext HttpContext => this.RequestContext.HttpContext;
 
         /// <summary>
         /// 获取参数描述
@@ -32,20 +32,21 @@
         /// <param name="parameterIndex"></param>
         public ApiParameterContext(ApiRequestContext context, int parameterIndex)
         {
-            this.ActionContext = context;
-            this.Parameter = this.ActionContext.ApiAction.Parameters[parameterIndex];
-            this.ParameterValue = this.ActionContext.Arguments[parameterIndex];
+            this.RequestContext = context;
+            this.Parameter = this.RequestContext.ApiAction.Parameters[parameterIndex];
+            this.ParameterValue = this.RequestContext.Arguments[parameterIndex];
         }
 
         /// <summary>
         /// Api参数上下文
+        /// for test
         /// </summary>
         /// <param name="context"></param>
         /// <param name="parameter"></param>
         /// <param name="parameterValue"></param>
-        public ApiParameterContext(ApiRequestContext context, ApiParameterDescriptor parameter, object parameterValue)
+        internal ApiParameterContext(ApiRequestContext context, ApiParameterDescriptor parameter, object parameterValue)
         {
-            this.ActionContext = context;
+            this.RequestContext = context;
             this.Parameter = parameter;
             this.ParameterValue = parameterValue;
         }

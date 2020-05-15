@@ -6,7 +6,7 @@ namespace WebApiClientCore
     /// <summary>
     /// 定义ApiAction过滤器修饰特性的行为
     /// </summary>
-    public interface IApiFilterAttribute :  IAttributeMultiplable
+    public interface IApiFilterAttribute : IAttributeMultiplable
     {
         /// <summary>
         /// 请求前
@@ -14,14 +14,14 @@ namespace WebApiClientCore
         /// <param name="context">上下文</param>
         /// <param name="next">下一个执行委托</param>
         /// <returns></returns>
-        Task BeforeRequestAsync(ApiRequestContext context, Func<Task> next);
+        Task OnRequestAsync(ApiRequestContext context, Func<Task> next);
 
         /// <summary>
-        /// 请求后
+        /// 响应后
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="next">下一个执行委托</param>
         /// <returns></returns>
-        Task AfterRequestAsync(ApiResponseContext context, Func<Task> next);         
+        Task OnResponseAsync(ApiResponseContext context, Func<Task> next);
     }
 }

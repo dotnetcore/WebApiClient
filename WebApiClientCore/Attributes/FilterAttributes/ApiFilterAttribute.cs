@@ -30,26 +30,26 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <param name="next">下一个执行委托</param>
         /// <returns></returns>
-        public async Task BeforeRequestAsync(ApiRequestContext context, Func<Task> next)
+        public async Task OnRequestAsync(ApiRequestContext context, Func<Task> next)
         {
             if (this.Enable == true)
             {
-                await this.BeforeRequestAsync(context).ConfigureAwait(false);
+                await this.OnRequestAsync(context).ConfigureAwait(false);
             }
             await next();
         }
 
         /// <summary>
-        /// 请求后
+        /// 响应后
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="next">下一个执行委托</param>
         /// <returns></returns>
-        public async Task AfterRequestAsync(ApiResponseContext context, Func<Task> next)
+        public async Task OnResponseAsync(ApiResponseContext context, Func<Task> next)
         {
             if (this.Enable == true)
             {
-                await this.AfterRequestAsync(context).ConfigureAwait(false);
+                await this.OnResponseAsync(context).ConfigureAwait(false);
             }
             await next();
         }
@@ -59,17 +59,17 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public virtual Task BeforeRequestAsync(ApiRequestContext context)
+        public virtual Task OnRequestAsync(ApiRequestContext context)
         {
             return Task.CompletedTask;
         }
 
         /// <summary>
-        /// 请求完成之后
+        /// 响应后
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public virtual Task AfterRequestAsync(ApiResponseContext context)
+        public virtual Task OnResponseAsync(ApiResponseContext context)
         {
             return Task.CompletedTask;
         }

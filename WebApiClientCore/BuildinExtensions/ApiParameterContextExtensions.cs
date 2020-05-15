@@ -17,7 +17,7 @@ namespace WebApiClientCore
         {
             return context.HttpContext.Services
                 .GetRequiredService<IKeyValueFormatter>()
-                .Serialize(context.Parameter.Name, context.ParameterValue, context.ActionContext.HttpContext.Options.KeyValueSerializeOptions);
+                .Serialize(context.Parameter.Name, context.ParameterValue, context.RequestContext.HttpContext.Options.KeyValueSerializeOptions);
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace WebApiClientCore
         {
             return context.HttpContext.Services
                 .GetRequiredService<IJsonFormatter>()
-                .Serialize(context.ParameterValue, context.ActionContext.HttpContext.Options.KeyValueSerializeOptions);
+                .Serialize(context.ParameterValue, context.RequestContext.HttpContext.Options.KeyValueSerializeOptions);
         }
     }
 }

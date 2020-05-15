@@ -15,9 +15,9 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <param name="next">下一个执行委托</param>
         /// <returns></returns>
-        public async Task BeforeRequestAsync(ApiParameterContext context, Func<Task> next)
+        public async Task OnRequestAsync(ApiParameterContext context, Func<Task> next)
         {
-            await this.BeforeRequestAsync(context);
+            await this.OnRequestAsync(context);
             await next();
         }
 
@@ -26,6 +26,6 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param> 
         /// <returns></returns>
-        public abstract Task BeforeRequestAsync(ApiParameterContext context);
+        public abstract Task OnRequestAsync(ApiParameterContext context);
     }
 }

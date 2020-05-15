@@ -16,7 +16,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <exception cref="HttpApiInvalidOperationException"></exception>
         /// <returns></returns>
-        public sealed override Task BeforeRequestAsync(ApiParameterContext context)
+        public sealed override Task OnRequestAsync(ApiParameterContext context)
         {
             var keyValues = context.SerializeToKeyValues();
             foreach (var kv in keyValues)

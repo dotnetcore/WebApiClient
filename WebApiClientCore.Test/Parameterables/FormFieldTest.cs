@@ -18,7 +18,7 @@ namespace WebApiClientCore.Test.Parameterables
             context.HttpContext.RequestMessage.Method = HttpMethod.Post;
             
             IApiParameterable formField = new FormField("laojiu");
-            await formField.BeforeRequestAsync(new ApiParameterContext(context, context.ApiAction.Parameters[0], null));
+            await formField.OnRequestAsync(new ApiParameterContext(context, context.ApiAction.Parameters[0], null));
 
             var body = await context.HttpContext.RequestMessage.Content.ReadAsStringAsync();
             Assert.Equal("name=laojiu", body);

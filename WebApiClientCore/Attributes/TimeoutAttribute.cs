@@ -53,7 +53,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <exception cref="HttpApiInvalidOperationException"></exception>
         /// <returns></returns>
-        public override Task BeforeRequestAsync(ApiRequestContext context)
+        public override Task OnRequestAsync(ApiRequestContext context)
         {
             if (this.TimeSpan.HasValue == false)
             {
@@ -71,17 +71,17 @@ namespace WebApiClientCore.Attributes
         /// <param name="next"></param>
         /// <exception cref="HttpApiInvalidOperationException"></exception>
         /// <returns></returns>
-        public Task BeforeRequestAsync(ApiParameterContext context, Func<Task> next)
+        public Task OnRequestAsync(ApiParameterContext context, Func<Task> next)
         {
             if (context.ParameterValue is TimeSpan timespan)
             {
-                this.SetTimeout(context.ActionContext, timespan);
+                this.SetTimeout(context.RequestContext, timespan);
             }
             else if (context.ParameterValue is IConvertible convertible)
             {
                 var milliseconds = convertible.ToDouble(null);
                 var timeout = System.TimeSpan.FromMilliseconds(milliseconds);
-                this.SetTimeout(context.ActionContext, timeout);
+                this.SetTimeout(context.RequestContext, timeout);
             }
             else
             {

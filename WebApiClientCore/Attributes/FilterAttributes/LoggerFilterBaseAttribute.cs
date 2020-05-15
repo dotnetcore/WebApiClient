@@ -38,7 +38,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public async override Task BeforeRequestAsync(ApiRequestContext context)
+        public async override Task OnRequestAsync(ApiRequestContext context)
         {
             var message = new LoggerMessage
             {
@@ -65,11 +65,11 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 请求完成之后
+        /// 响应后
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public async override Task AfterRequestAsync(ApiResponseContext context)
+        public async override Task OnResponseAsync(ApiResponseContext context)
         {
             var response = context.HttpContext.ResponseMessage;
             var message = context.Tags.Take(tagKey).As<LoggerMessage>();

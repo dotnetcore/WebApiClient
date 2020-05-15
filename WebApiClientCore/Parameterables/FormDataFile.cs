@@ -63,7 +63,7 @@ namespace WebApiClientCore.Parameterables
         /// 执行请求前
         /// </summary>
         /// <param name="context">上下文</param>
-        async Task IApiParameterable.BeforeRequestAsync(ApiParameterContext context)
+        async Task IApiParameterable.OnRequestAsync(ApiParameterContext context)
         {
             await this.BeforeRequestAsync(context).ConfigureAwait(false);
         }

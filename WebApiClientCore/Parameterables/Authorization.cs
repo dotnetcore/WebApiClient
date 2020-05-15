@@ -45,7 +45,7 @@ namespace WebApiClientCore.Parameterables
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task BeforeRequestAsync(ApiParameterContext context )
+        public Task OnRequestAsync(ApiParameterContext context )
         {
             const string headerName = "Authorization";
             var header = context.HttpContext.RequestMessage.Headers;

@@ -14,6 +14,6 @@ namespace WebApiClientCore
         /// <param name="context">上下文</param>
         /// <param name="next">下一个执行委托</param>
         /// <returns></returns>
-        Task BeforeRequestAsync(ApiParameterContext context, Func<Task> next); 
+        Task OnRequestAsync(ApiParameterContext context, Func<Task> next); 
     }
 }
