@@ -36,12 +36,12 @@ namespace WebApiClientCore
         /// <summary>
         /// http上下文
         /// </summary>
-        /// <param name="httpClient"></param>
+        /// <param name="client"></param>
         /// <param name="services"></param>
         /// <param name="options"></param>
-        public HttpContext(HttpClient httpClient, IServiceProvider services, HttpApiOptions options)
+        public HttpContext(HttpClient client, IServiceProvider services, HttpApiOptions options)
         {
-            this.Client = httpClient;
+            this.Client = client;
             this.Services = services;
             this.Options = options;
             this.RequestMessage = new HttpApiRequestMessage { RequestUri = options.HttpHost };

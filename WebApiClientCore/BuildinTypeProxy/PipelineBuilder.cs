@@ -41,23 +41,19 @@ namespace WebApiClientCore
         /// 使用中间件
         /// </summary>
         /// <param name="middleware"></param>
-        /// <returns></returns>
-        public PipelineBuilder<TContext> Use(Func<TContext, Func<Task>, Task> middleware)
+        public void Use(Func<TContext, Func<Task>, Task> middleware)
         {
-            return this.Use(next => context => middleware(context, () => next(context)));
+            this.Use(next => context => middleware(context, () => next(context)));
         }
 
         /// <summary>
         /// 使用中间件
         /// </summary>
         /// <param name="middleware"></param>
-        /// <returns></returns>
-        public PipelineBuilder<TContext> Use(Func<InvokeDelegate<TContext>, InvokeDelegate<TContext>> middleware)
+        public void Use(Func<InvokeDelegate<TContext>, InvokeDelegate<TContext>> middleware)
         {
             this.middlewares.Add(middleware);
-            return this;
         }
-
 
         /// <summary>
         /// 创建所有中间件执行处理者

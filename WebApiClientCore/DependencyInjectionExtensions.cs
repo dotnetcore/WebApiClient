@@ -51,10 +51,10 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return services
                 .AddHttpClient(typeof(THttpApi).FullName)
-                .AddTypedClient((httpClient, requestServices) =>
+                .AddTypedClient((client, serviceProvider) =>
                 {
-                    var apiOptions = requestServices.GetService<IOptions<HttpApiOptions<THttpApi>>>().Value;
-                    var interceptor = new ApiInterceptor(httpClient, apiOptions, requestServices);
+                    var options = serviceProvider.GetService<IOptions<HttpApiOptions<THttpApi>>>().Value;
+                    var interceptor = new ApiInterceptor(client, options, serviceProvider);
                     return HttpApiProxy.CreateInstance<THttpApi>(interceptor);
                 });
         }

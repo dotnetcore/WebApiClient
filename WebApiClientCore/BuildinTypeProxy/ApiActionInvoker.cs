@@ -66,10 +66,10 @@ namespace WebApiClientCore
             var requestHandler = BuildRequestHandler(apiAction);
             var responseHandler = BuildResponseHandler(apiAction);
 
-            return async context =>
+            return async request =>
             {
-                await requestHandler(context);
-                var response = await SendRequestAsync(context);
+                await requestHandler(request);
+                var response = await SendRequestAsync(request);
                 await responseHandler(response);
                 return response;
             };

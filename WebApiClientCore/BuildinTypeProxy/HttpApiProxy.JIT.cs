@@ -167,15 +167,15 @@ namespace WebApiClientCore
                 iL.Emit(OpCodes.Ldc_I4, i);
                 iL.Emit(OpCodes.Ldelem_Ref);
 
-                // var parameters = new object[parameters.Length]
-                var parameters = iL.DeclareLocal(typeof(object[]));
+                // var arguments = new object[parameters.Length]
+                var arguments = iL.DeclareLocal(typeof(object[]));
                 iL.Emit(OpCodes.Ldc_I4, apiParameters.Length);
                 iL.Emit(OpCodes.Newarr, typeof(object));
-                iL.Emit(OpCodes.Stloc, parameters);
+                iL.Emit(OpCodes.Stloc, arguments);
 
                 for (var j = 0; j < apiParameters.Length; j++)
                 {
-                    iL.Emit(OpCodes.Ldloc, parameters);
+                    iL.Emit(OpCodes.Ldloc, arguments);
                     iL.Emit(OpCodes.Ldc_I4, j);
                     iL.Emit(OpCodes.Ldarg, j + 1);
 
@@ -188,7 +188,7 @@ namespace WebApiClientCore
                 }
 
                 // 加载parameters参数
-                iL.Emit(OpCodes.Ldloc, parameters);
+                iL.Emit(OpCodes.Ldloc, arguments);
 
                 // Intercep(this, method, parameters)
                 iL.Emit(OpCodes.Callvirt, interceptMethod);

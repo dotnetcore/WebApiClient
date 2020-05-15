@@ -14,8 +14,8 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="target">接口的实例</param>
         /// <param name="method">接口的方法</param>
-        /// <param name="parameters">接口的参数集合</param>
+        /// <param name="arguments">接口的参数集合</param>
         /// <returns></returns>
-        object Intercept(object target, MethodInfo method, object[] parameters);
+        object Intercept(object target, MethodInfo method, object[] arguments);
     }
 }
