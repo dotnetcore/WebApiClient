@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 任务扩展
+    /// ITask扩展
     /// </summary>
     public static class TaskExtenstions
     {
@@ -58,7 +58,7 @@ namespace WebApiClientCore
             {
                 throw new ArgumentOutOfRangeException(nameof(maxCount));
             }
-            return new ApiActionRetryTask<TResult>(task.InvokeAsync, maxCount, delay);
+            return new ActionRetryTask<TResult>(task.InvokeAsync, maxCount, delay);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace WebApiClientCore
         /// <typeparam name="T"></typeparam>
         /// <param name="task"></param>
         /// <returns></returns>
-        public static async Task<T> ExceptionThenDefault<T>(this Task<T> task)
+        public static async Task<T> ExceptionThenDefault<T>(this ITask<T> task)
         {
             try
             {

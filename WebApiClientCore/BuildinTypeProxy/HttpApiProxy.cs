@@ -12,7 +12,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 代理类型的创建工厂
         /// </summary>
-        private readonly Func<IApiInterceptor, MethodInfo[], IHttpApi> proxyFactory;
+        private readonly Func<IActionInterceptor, MethodInfo[], IHttpApi> proxyFactory;
 
         /// <summary>
         /// 获取代理类型
@@ -34,7 +34,7 @@ namespace WebApiClientCore
         {
             this.ProxyType = proxyType ?? throw new ArgumentNullException(nameof(proxyType));
             this.ApiMethods = apiMethods ?? throw new ArgumentNullException(nameof(apiMethods));
-            this.proxyFactory = Lambda.CreateCtorFunc<IApiInterceptor, MethodInfo[], IHttpApi>(proxyType);
+            this.proxyFactory = Lambda.CreateCtorFunc<IActionInterceptor, MethodInfo[], IHttpApi>(proxyType);
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="interceptor">拦截器</param>
         /// <returns></returns>
-        private IHttpApi CreateInstance(IApiInterceptor interceptor)
+        private IHttpApi CreateInstance(IActionInterceptor interceptor)
         {
             return this.proxyFactory.Invoke(interceptor, this.ApiMethods);
         }

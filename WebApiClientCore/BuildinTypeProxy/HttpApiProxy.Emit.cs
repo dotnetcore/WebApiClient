@@ -12,14 +12,14 @@ namespace WebApiClientCore
     partial class HttpApiProxy
     {
         /// <summary>
-        /// IApiInterceptor的Intercept方法
+        /// IActionInterceptor的Intercept方法
         /// </summary>
-        private static readonly MethodInfo interceptMethod = typeof(IApiInterceptor).GetMethod(nameof(IApiInterceptor.Intercept)); 
+        private static readonly MethodInfo interceptMethod = typeof(IActionInterceptor).GetMethod(nameof(IActionInterceptor.Intercept)); 
 
         /// <summary>
         /// 代理类型的构造器的参数类型
         /// </summary>
-        private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IApiInterceptor), typeof(MethodInfo[]) };
+        private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IActionInterceptor), typeof(MethodInfo[]) };
 
         /// <summary>
         /// 接口类型与代理描述缓存
@@ -34,7 +34,7 @@ namespace WebApiClientCore
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        public static THttpApi CreateInstance<THttpApi>(IApiInterceptor interceptor) where THttpApi : IHttpApi
+        public static THttpApi CreateInstance<THttpApi>(IActionInterceptor interceptor) where THttpApi : IHttpApi
         {
             return (THttpApi)CreateInstance(typeof(THttpApi), interceptor);
         }
@@ -47,7 +47,7 @@ namespace WebApiClientCore
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        public static IHttpApi CreateInstance(Type interfaceType, IApiInterceptor interceptor)
+        public static IHttpApi CreateInstance(Type interfaceType, IActionInterceptor interceptor)
         {
             var httpApiProxy = interfaceProxyCache.GetOrAdd(interfaceType, @interface =>
             {
@@ -84,7 +84,7 @@ namespace WebApiClientCore
             var builder = module.DefineType(interfaceType.FullName, TypeAttributes.Class );
             builder.AddInterfaceImplementation(interfaceType);
 
-            var fieldInterceptor = BuildField(builder, "interceptor", typeof(IApiInterceptor));
+            var fieldInterceptor = BuildField(builder, "interceptor", typeof(IActionInterceptor));
             var fieldApiMethods = BuildField(builder, "apiMethods", typeof(MethodInfo[]));
 
             BuildCtor(builder, fieldInterceptor, fieldApiMethods);

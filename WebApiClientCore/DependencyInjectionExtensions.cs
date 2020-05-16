@@ -55,7 +55,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     var options = serviceProvider.GetService<IOptions<HttpApiOptions<THttpApi>>>().Value;
                     var context = new ServiceContext(client, serviceProvider, options);
-                    var interceptor = new ApiInterceptor(context);
+                    var interceptor = new ActionInterceptor(context);
                     return HttpApiProxy.CreateInstance<THttpApi>(interceptor);
                 });
         }

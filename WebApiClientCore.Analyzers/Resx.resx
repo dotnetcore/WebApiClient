@@ -127,7 +127,7 @@
     <value>不匹配的特性构造函数</value>
   </data>
   <data name="WA1002_message" xml:space="preserve">
-    <value>返回类型必须为Task&lt;&gt;或Task</value>
+    <value>返回类型必须为ITask&lt;&gt;、Task&lt;&gt;或Task</value>
   </data>
   <data name="WA1002_title" xml:space="preserve">
     <value>不支持的返回类型</value>

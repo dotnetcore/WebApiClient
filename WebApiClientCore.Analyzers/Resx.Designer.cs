@@ -89,7 +89,7 @@ namespace WebApiClientCore.Analyzers {
         }
         
         /// <summary>
-        ///   查找类似 返回类型必须为Task&lt;&gt;或Task 的本地化字符串。
+        ///   查找类似 返回类型必须为ITask&lt;&gt;、Task&lt;&gt;或Task 的本地化字符串。
         /// </summary>
         internal static string WA1002_message {
             get {

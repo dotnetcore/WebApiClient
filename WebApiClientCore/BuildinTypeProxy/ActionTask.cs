@@ -7,16 +7,16 @@ namespace WebApiClientCore
     /// 表示Api请求的任务
     /// </summary>
     /// <typeparam name="TResult">结果类型</typeparam>
-    class ApiActionTask<TResult> : ITask<TResult>
+    class ActionTask<TResult> : ITask<TResult>
     {
         private readonly ServiceContext context;
         private readonly object[] arguments;
-        private readonly ApiActionInvoker<TResult> apiActionInvoker;
+        private readonly ActionInvoker<TResult> invoker;
 
         /// <summary>
         /// Api请求的任务
         /// </summary>
-        protected ApiActionTask()
+        protected ActionTask()
         {
         }
 
@@ -26,11 +26,11 @@ namespace WebApiClientCore
         /// <param name="apiAction"></param>
         /// <param name="context"></param>
         /// <param name="arguments"></param>
-        public ApiActionTask(ApiActionDescriptor apiAction, ServiceContext context, object[] arguments)
+        public ActionTask(ApiActionDescriptor apiAction, ServiceContext context, object[] arguments)
         {
             this.context = context;
             this.arguments = arguments;
-            this.apiActionInvoker = new ApiActionInvoker<TResult>(apiAction);
+            this.invoker = new ActionInvoker<TResult>(apiAction);
         }
 
         /// <summary>
@@ -51,16 +51,7 @@ namespace WebApiClientCore
         public ConfiguredTaskAwaitable<TResult> ConfigureAwait(bool continueOnCapturedContext)
         {
             return this.InvokeAsync().ConfigureAwait(continueOnCapturedContext);
-        }
-
-        /// <summary>
-        /// 执行任务
-        /// </summary>
-        /// <returns></returns>
-        Task<TResult> ITask<TResult>.InvokeAsync()
-        {
-            return this.InvokeAsync();
-        }
+        } 
 
         /// <summary>
         /// 执行任务
@@ -68,7 +59,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         public virtual Task<TResult> InvokeAsync()
         {
-            return this.apiActionInvoker.InvokeAsync(this.context, this.arguments);
+            return this.invoker.InvokeAsync(this.context, this.arguments);
         }
     }
 }

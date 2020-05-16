@@ -10,7 +10,7 @@ namespace WebApiClientCore
     /// 表示ApiAction执行器
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
-    class ApiActionInvoker<TResult> : IApiActionInvoker
+    class ActionInvoker<TResult> : IActionInvoker
     {
         /// <summary>
         /// api描述
@@ -27,7 +27,7 @@ namespace WebApiClientCore
         /// 上下文执行器
         /// </summary>
         /// <param name="apiAction"></param>
-        public ApiActionInvoker(ApiActionDescriptor apiAction)
+        public ActionInvoker(ApiActionDescriptor apiAction)
         {
             this.apiAction = apiAction;
             this.handler = CreateExecutionHandler(apiAction);
@@ -39,7 +39,7 @@ namespace WebApiClientCore
         /// <param name="context">上下文</param>
         /// <param name="arguments">参数值</param>
         /// <returns></returns>
-        object IApiActionInvoker.Invoke(ServiceContext context, object[] arguments)
+        object IActionInvoker.Invoke(ServiceContext context, object[] arguments)
         {
             return this.InvokeAsync(context, arguments);
         }

@@ -4,10 +4,10 @@ using System.Reflection;
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 定义http接口拦截器的行为
+    /// 定义方法接口拦截器的行为
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public interface IApiInterceptor
+    public interface IActionInterceptor
     {
         /// <summary>
         /// 拦截方法的调用

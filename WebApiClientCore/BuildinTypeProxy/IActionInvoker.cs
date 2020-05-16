@@ -1,11 +1,9 @@
-﻿using System.Threading.Tasks;
-
-namespace WebApiClientCore
+﻿namespace WebApiClientCore
 {
     /// <summary>
     /// 定义ApiAction执行器的接口
     /// </summary>
-    interface IApiActionInvoker
+    interface IActionInvoker
     {
         /// <summary>
         /// 执行任务
