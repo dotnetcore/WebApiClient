@@ -6,7 +6,7 @@ namespace WebApiClientCore.Attributes
 {
     /// <summary>
     /// 表示请求服务http绝对完整主机域名
-    /// 例如http://www.webapiclient.com
+    /// 例如http://www.webapiclientcore.com
     /// </summary>
     [DebuggerDisplay("Host = {Host}")]
     public class HttpHostAttribute : ApiActionAttribute
@@ -18,7 +18,7 @@ namespace WebApiClientCore.Attributes
 
         /// <summary>
         /// 请求服务的根路径
-        /// 例如http://www.webapiclient.com
+        /// 例如http://www.webapiclientcore.com
         /// </summary>
         /// <param name="host">请求完整绝对根路径</param>
         /// <exception cref="ArgumentNullException"></exception>

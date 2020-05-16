@@ -17,32 +17,21 @@ namespace App.Clients
     public interface IUserApi : IHttpApi
     {
         [HttpGet("api/users/{account}")]
-        [BasicAuth("userName", "password")]
-        [Timeout(10 * 1000)] // 10s超时        
         ITask<HttpResponseMessage> GetAsync([Required]string account);
 
         [HttpGet("api/users/{account}")]
-        [BasicAuth("userName", "password")]
-        [Timeout(10 * 1000)] // 10s超时
         ITask<string> GetAsStringAsync([Required]string account, CancellationToken token = default);
 
         [HttpGet("api/users/{account}")]
-        [BasicAuth("userName", "password")]
-        [Timeout(10 * 1000)] // 10s超时
         ITask<byte[]> GetAsByteArrayAsync([Required]string account, CancellationToken token = default);
 
         [HttpGet("api/users/{account}")]
-        [BasicAuth("userName", "password")]
-        [Timeout(10 * 1000)] // 10s超时
         ITask<Stream> GetAsStreamAsync([Required]string account, CancellationToken token = default);
 
         [HttpGet("api/users/{account}")]
-        [BasicAuth("userName", "password")]
-        [Timeout(10 * 1000)] // 10s超时
         ITask<User> GetAsModelAsync([Required]string account, CancellationToken token = default);
 
-
-
+               
 
         [HttpPost("api/users/body")]
         Task<User> PostByJsonAsync([Required, JsonContent]User user, CancellationToken token = default);
@@ -51,11 +40,13 @@ namespace App.Clients
         Task<User> PostByXmlAsync([Required, XmlContent]User user, CancellationToken token = default);
 
 
+
         [HttpPost("api/users/form")]
         Task<User> PostByFormAsync([Required, FormContent]User user, CancellationToken token = default);
 
         [HttpPost("api/users/formdata")]
         Task<User> PostByFormDataAsync([Required, FormDataContent]User user, FormDataFile file, CancellationToken token = default);
+
 
 
         [HttpDelete("api/users/{account}")]
