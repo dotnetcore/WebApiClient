@@ -17,8 +17,8 @@
           "WebApiClientCore.Analyzers.dll": {}
         },
         "resources": {
-          "zh-CN/WebApiClientCore.Analyzers.resources.dll": {
-            "locale": "zh-CN"
+          "en-us/WebApiClientCore.Analyzers.resources.dll": {
+            "locale": "en-us"
           }
         }
       },
