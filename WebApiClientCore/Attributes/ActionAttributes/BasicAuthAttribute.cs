@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClientCore.Parameterables;
 
@@ -11,10 +12,8 @@ namespace WebApiClientCore.Attributes
     [DebuggerDisplay("{baiscAuth}")]
     public class BasicAuthAttribute : ApiActionAttribute
     {
-        /// <summary>
-        /// BasicAuth
-        /// </summary>
-        private readonly BasicAuth baiscAuth;
+        private readonly string userName;
+        private readonly string password;
 
         /// <summary>
         /// 基本授权
@@ -24,7 +23,8 @@ namespace WebApiClientCore.Attributes
         /// <exception cref="ArgumentNullException"></exception>
         public BasicAuthAttribute(string userName, string password)
         {
-            this.baiscAuth = new BasicAuth(userName, password);
+            this.userName = userName ?? throw new ArgumentNullException(userName);
+            this.password = password;
         }
 
         /// <summary>
@@ -34,7 +34,9 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public override Task OnRequestAsync(ApiRequestContext context)
         {
-            return this.baiscAuth.OnRequestAsync(new ApiParameterContext(context, 0));
+            var parameter = BasicAuth.GetParameter(this.userName, this.password);
+            context.HttpContext.RequestMessage.Headers.Authorization = new AuthenticationHeaderValue("Basic", parameter);
+            return Task.CompletedTask;
         }
     }
 }

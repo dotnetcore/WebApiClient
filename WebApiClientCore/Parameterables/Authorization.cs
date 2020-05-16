@@ -10,14 +10,19 @@ namespace WebApiClientCore.Parameterables
     public class Authorization : IApiParameterable
     {
         /// <summary>
+        /// 授权信息
+        /// </summary>
+        private readonly AuthenticationHeaderValue authentication;
+
+        /// <summary>
         /// 体系
         /// </summary>
-        public string Scheme { get; }
+        public string Scheme => this.authentication.Scheme;
 
         /// <summary>
         /// 参数
         /// </summary>
-        public string Parameter { get; }
+        public string Parameter => this.authentication.Parameter;
 
         /// <summary>
         /// 授权信息
@@ -27,17 +32,7 @@ namespace WebApiClientCore.Parameterables
         /// <exception cref="ArgumentNullException"></exception>
         public Authorization(string scheme, string parameter)
         {
-            if (string.IsNullOrEmpty(scheme))
-            {
-                throw new ArgumentNullException(nameof(scheme));
-            }
-            if (string.IsNullOrEmpty(parameter))
-            {
-                throw new ArgumentNullException(nameof(parameter));
-            }
-
-            this.Scheme = scheme;
-            this.Parameter = parameter;
+            this.authentication = new AuthenticationHeaderValue(scheme, parameter);
         }
 
         /// <summary>
@@ -45,22 +40,10 @@ namespace WebApiClientCore.Parameterables
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task OnRequestAsync(ApiParameterContext context )
+        public Task OnRequestAsync(ApiParameterContext context)
         {
-            const string headerName = "Authorization";
-            var header = context.HttpContext.RequestMessage.Headers;
-            header.Remove(headerName);
-            header.TryAddWithoutValidation(headerName, this.GetAuthorizationValue());
+            context.HttpContext.RequestMessage.Headers.Authorization = this.authentication;
             return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// 返回授权信息
-        /// </summary>
-        /// <returns></returns>
-        private string GetAuthorizationValue()
-        {
-            return $"{this.Scheme} {this.Parameter}";
         }
 
         /// <summary>
@@ -69,16 +52,7 @@ namespace WebApiClientCore.Parameterables
         /// <returns></returns>
         public override string ToString()
         {
-            return this.GetAuthorizationValue();
-        }
-
-        /// <summary>
-        /// 转换为AuthenticationHeaderValue类型
-        /// </summary>
-        /// <returns></returns>
-        public AuthenticationHeaderValue ToAuthenticationHeaderValue()
-        {
-            return new AuthenticationHeaderValue(this.Scheme, this.Parameter);
+            return this.authentication.ToString();
         }
     }
 }

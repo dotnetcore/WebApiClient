@@ -1,8 +1,7 @@
 ﻿using System.IO;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using WebApiClientCore.Attributes;
+using WebApiClientCore.Parameterables;
 
 namespace WebApiClientCore
 {
@@ -16,17 +15,13 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override Task OnRequestAsync(ApiParameterContext context)
+        public override async Task OnRequestAsync(ApiParameterContext context)
         {
-            var fileInfo = context.ParameterValue as FileInfo;
-            if (fileInfo != null)
+            if (context.ParameterValue is FileInfo fileInfo)
             {
-                var stream = fileInfo.Open(FileMode.Open, FileAccess.Read);
-                var fileName = Path.GetFileName(fileInfo.FullName);
-                var encodedFileName = HttpUtility.UrlEncode(fileName, Encoding.UTF8);
-                context.HttpContext.RequestMessage.AddFormDataFile(stream, context.Parameter.Name, encodedFileName, null);
+                var formDataFile = new FormDataFile(fileInfo);
+                await formDataFile.OnRequestAsync(context);
             }
-            return Task.CompletedTask;
         }
     }
 }

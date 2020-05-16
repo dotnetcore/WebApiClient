@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 使用KeyValueFormatter序列化参数值得到的键值对作为x-www-form-urlencoded请求
+    /// 使用KeyValueFormatter序列化参数值得到的键值对作为x-www-form-urlencoded表单
     /// </summary>
     public class FormContentAttribute : HttpContentAttribute
     {

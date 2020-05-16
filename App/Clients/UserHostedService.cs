@@ -20,7 +20,7 @@ namespace App.Clients
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             using var scope = this.service.CreateScope();
-            await this.RunAsync(scope.ServiceProvider); 
+            await this.RunAsync(scope.ServiceProvider);
         }
 
         private async Task RunAsync(IServiceProvider services)
@@ -36,9 +36,7 @@ namespace App.Clients
                 Gender = Gender.Male
             };
 
-            using var fileStream = new FileStream("TextFile.txt", FileMode.Open);
-            var file = new FormDataFile(fileStream, "TextFile.txt");
-
+            var file = new FormDataFile("TextFile.txt");
 
             var response = await userApi.GetAsync(account: "get1");
             var @string = await userApi.GetAsStringAsync(account: "get2");

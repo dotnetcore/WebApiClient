@@ -2,21 +2,22 @@
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
 namespace WebApiClientCore.Parameterables
 {
     /// <summary>
-    /// 表示将自身作为multipart/form-data的一个文件项
+    /// 表示form-data的一个文件项
     /// </summary>
     [DebuggerDisplay("FileName = {FileName}")]
     public class FormDataFile : IApiParameterable
     {
         /// <summary>
-        /// 获取或设置包装的内部数据流
+        /// 数据流创建委托
         /// </summary>
-        private readonly Stream stream;
+        private readonly Func<Stream> streamFactory;
 
         /// <summary>
         /// 获取文件好友名称
@@ -26,10 +27,7 @@ namespace WebApiClientCore.Parameterables
         /// <summary>
         /// 获取编码后的文件好友名称
         /// </summary>
-        public virtual string EncodedFileName
-        {
-            get => HttpUtility.UrlEncode(this.FileName, Encoding.UTF8);
-        }
+        public virtual string EncodedFileName => HttpUtility.UrlEncode(this.FileName, Encoding.UTF8);
 
         /// <summary>
         /// 获取或设置文件的Mime
@@ -37,25 +35,56 @@ namespace WebApiClientCore.Parameterables
         public string ContentType { get; set; } = "application/octet-stream";
 
         /// <summary>
-        /// 将自身作为multipart/form-data的一个文件项
+        /// form-data的一个文件项
+        /// </summary>
+        /// <param name="filePath">文件路径</param>
+        public FormDataFile(string filePath)
+            : this(new FileInfo(filePath))
+        {
+        }
+
+        /// <summary>
+        /// form-data的一个文件项
+        /// </summary>
+        /// <param name="fileInfo">文件信息</param>
+        public FormDataFile(FileInfo fileInfo)
+            : this(() => fileInfo.OpenRead(), fileInfo.Name)
+        {
+        }
+
+        /// <summary>
+        /// form-data的一个文件项
         /// </summary>
         /// <param name="buffer">数据</param>
         /// <param name="fileName">文件友好名称</param>
         /// <exception cref="ArgumentNullException"></exception>
         public FormDataFile(byte[] buffer, string fileName) :
-            this(new MemoryStream(buffer ?? throw new ArgumentNullException(nameof(buffer))), fileName)
+            this(() => new MemoryStream(buffer), fileName)
         {
         }
 
         /// <summary>
-        /// 将自身作为multipart/form-data的一个文件项
+        /// form-data的一个文件项        
+        /// 不支持并发请求
+        /// 多次请求时要求数据流必须支持倒带读取
         /// </summary>
         /// <param name="stream">数据流</param>
         /// <param name="fileName">文件友好名称</param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns></returns>
         public FormDataFile(Stream stream, string fileName)
+            : this(() => new AutoRewindStream(stream), fileName)
         {
-            this.stream = stream ?? throw new ArgumentNullException(nameof(stream));
+        }
+
+        /// <summary>
+        /// form-data的一个文件项
+        /// </summary>
+        /// <param name="streamFactory">数据流的创建委托</param>
+        /// <param name="fileName">文件友好名称</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public FormDataFile(Func<Stream> streamFactory, string fileName)
+        {
+            this.streamFactory = streamFactory ?? throw new ArgumentNullException(nameof(streamFactory));
             this.FileName = fileName;
         }
 
@@ -63,19 +92,139 @@ namespace WebApiClientCore.Parameterables
         /// 执行请求前
         /// </summary>
         /// <param name="context">上下文</param>
-        async Task IApiParameterable.OnRequestAsync(ApiParameterContext context)
+        public async Task OnRequestAsync(ApiParameterContext context)
         {
-            await this.BeforeRequestAsync(context).ConfigureAwait(false);
+            var stream = this.streamFactory();
+            context.HttpContext.RequestMessage.AddFormDataFile(stream, context.Parameter.Name, this.EncodedFileName, this.ContentType);
+            await Task.CompletedTask;
         }
 
         /// <summary>
-        /// 执行请求前
+        /// 表示发送后自动倒带的流
         /// </summary>
-        /// <param name="context">上下文</param>
-        protected virtual async Task BeforeRequestAsync(ApiParameterContext context)
+        private class AutoRewindStream : Stream
         {
-            context.HttpContext.RequestMessage.AddFormDataFile(this.stream, context.Parameter.Name, this.EncodedFileName, this.ContentType);
-            await Task.CompletedTask;
+            private readonly Stream stream;
+            private readonly long? defaultPosition;
+
+            /// <summary>
+            /// 获取是否可读
+            /// </summary>
+            public override bool CanRead => this.stream.CanRead;
+
+            /// <summary>
+            /// 获取是否可定位
+            /// </summary>
+            public override bool CanSeek => this.stream.CanSeek;
+
+            /// <summary>
+            /// 获取是否可写
+            /// </summary>
+            public override bool CanWrite => this.stream.CanWrite;
+
+            /// <summary>
+            /// 获取长度
+            /// </summary>
+            public override long Length => this.stream.Length;
+
+            /// <summary>
+            /// 获取位置
+            /// </summary>
+            public override long Position
+            {
+                get => this.stream.Position;
+                set => this.stream.Position = value;
+            }
+
+            /// <summary>
+            /// 发送后自动倒带的流
+            /// </summary>
+            /// <param name="stream">包装的流</param>
+            /// <exception cref="ArgumentNullException"></exception>
+            public AutoRewindStream(Stream stream)
+            {
+                this.stream = stream ?? throw new ArgumentNullException(nameof(stream));
+                if (stream.CanSeek == true)
+                {
+                    this.defaultPosition = stream.Position;
+                }
+            }
+
+            /// <summary>
+            /// 刷新
+            /// </summary>
+            public override void Flush()
+            {
+                this.stream.Flush();
+            }
+
+            /// <summary>
+            /// 读取
+            /// </summary>
+            /// <param name="buffer"></param>
+            /// <param name="offset"></param>
+            /// <param name="count"></param>
+            /// <returns></returns>
+            public override int Read(byte[] buffer, int offset, int count)
+            {
+                return this.stream.Read(buffer, offset, count);
+            }
+
+            /// <summary>
+            /// 定位
+            /// </summary>
+            /// <param name="offset"></param>
+            /// <param name="origin"></param>
+            /// <returns></returns>
+            public override long Seek(long offset, SeekOrigin origin)
+            {
+                return this.stream.Seek(offset, origin);
+            }
+
+            /// <summary>
+            /// 设置长度
+            /// </summary>
+            /// <param name="value"></param>
+            public override void SetLength(long value)
+            {
+                this.stream.SetLength(value);
+            }
+
+            /// <summary>
+            /// 写入
+            /// </summary>
+            /// <param name="buffer"></param>
+            /// <param name="offset"></param>
+            /// <param name="count"></param>
+            public override void Write(byte[] buffer, int offset, int count)
+            {
+                this.stream.Write(buffer, offset, count);
+            }
+
+            /// <summary>
+            /// 异步复制
+            /// </summary>
+            /// <param name="destination"></param>
+            /// <param name="bufferSize"></param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            public override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
+            {
+                return this.stream.CopyToAsync(destination, bufferSize, cancellationToken);
+            }
+
+            /// <summary>
+            /// 不释放资源
+            /// 而是倒带操作，以支持重用
+            /// </summary>
+            /// <param name="disposing"></param>
+            protected override void Dispose(bool disposing)
+            {
+                if (this.defaultPosition.HasValue == true)
+                {
+                    this.Position = this.defaultPosition.Value;
+                }
+            }
         }
     }
 }

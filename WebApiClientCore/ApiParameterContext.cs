@@ -23,8 +23,8 @@
         /// <summary>
         /// Api参数上下文
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="parameterIndex"></param>
+        /// <param name="context">上下文</param>
+        /// <param name="parameterIndex">参数索引</param>
         public ApiParameterContext(ApiRequestContext context, int parameterIndex)
             : base(context.HttpContext, context.ApiAction, context.Arguments, context.Tags, context.CancellationTokens)
         {

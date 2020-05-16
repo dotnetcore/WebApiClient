@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace WebApiClientCore.Parameterables
 {
     /// <summary>
-    /// 表示将自身作为multipart/form-data的一个文本项
+    /// 表示form-data表单的一个文本项
     /// </summary>
     [DebuggerDisplay("{stringValue}")]
     public class FormDataText : IApiParameterable
@@ -16,7 +16,7 @@ namespace WebApiClientCore.Parameterables
         private readonly string stringValue;
 
         /// <summary>
-        /// 将自身作为multipart/form-data的一个文本项
+        /// form-data表单的一个文本项
         /// </summary>     
         /// <param name="value">文本内容</param>
         public FormDataText(object value)
@@ -25,7 +25,7 @@ namespace WebApiClientCore.Parameterables
         }
 
         /// <summary>
-        /// multipart/form-data的一个文本项
+        /// form-data表单的一个文本项
         /// </summary>     
         /// <param name="value">文本内容</param>
         public FormDataText(string value)

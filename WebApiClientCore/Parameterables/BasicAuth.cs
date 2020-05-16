@@ -26,7 +26,7 @@ namespace WebApiClientCore.Parameterables
         /// <param name="password">密码</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        private static string GetParameter(string userName, string password)
+        public static string GetParameter(string userName, string password)
         {
             if (string.IsNullOrEmpty(userName))
             {

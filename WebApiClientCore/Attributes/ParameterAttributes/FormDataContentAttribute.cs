@@ -1,7 +1,7 @@
 ﻿namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 使用KeyValueFormatter序列化参数值得到的键值对分别作为multipart/form-data表单的一个文本项 
+    /// 使用KeyValueFormatter序列化参数值得到的键值作为multipart/form-data表单
     /// </summary>
     public class FormDataContentAttribute : HttpContentAttribute
     {

@@ -36,14 +36,15 @@ namespace WebApiClientCore
         /// <summary>
         /// http上下文
         /// </summary>
-        /// <param name="client"></param>
-        /// <param name="services"></param>
-        /// <param name="options"></param>
+        /// <param name="client">httpClient</param>
+        /// <param name="services">服务提供者</param>
+        /// <param name="options">接口选项</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public HttpContext(HttpClient client, IServiceProvider services, HttpApiOptions options)
         {
-            this.Client = client;
-            this.Services = services;
-            this.Options = options;
+            this.Client = client ?? throw new ArgumentNullException(nameof(client));
+            this.Services = services ?? throw new ArgumentNullException(nameof(services)); ;
+            this.Options = options ?? throw new ArgumentNullException(nameof(options)); ;
             this.RequestMessage = new HttpApiRequestMessage { RequestUri = options.HttpHost };
         }
 
