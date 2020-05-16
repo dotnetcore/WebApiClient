@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace WebApiClientCore
 {
@@ -36,7 +35,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         public object Intercept(object target, MethodInfo method, object[] arguments)
         {
-            var invoker = staticCache.GetOrAdd(method, this.CreateActionInvoker);
+            var invoker = staticCache.GetOrAdd(method, CreateActionInvoker);
             return invoker.Invoke(this.context, arguments);
         }
 
@@ -45,12 +44,9 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="method">接口的方法</param>
         /// <returns></returns>
-        private IActionInvoker CreateActionInvoker(MethodInfo method)
+        private static IActionInvoker CreateActionInvoker(MethodInfo method)
         {
-            var apiAction = this.context.Services
-                .GetRequiredService<IApiActionDescriptorProvider>()
-                .CreateApiActionDescriptor(method);
-
+            var apiAction = new ApiActionDescriptor(method);
             return new MultiplexedActionInvoker(apiAction);
         }
     }

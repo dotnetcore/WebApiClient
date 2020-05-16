@@ -28,7 +28,6 @@ namespace WebApiClientCore.Test
             services.TryAddSingleton<IJsonFormatter, JsonFormatter>();
             services.TryAddSingleton<IKeyValueFormatter, KeyValueFormatter>();
             services.TryAddSingleton<IResponseCacheProvider, ResponseCacheProvider>();
-            services.TryAddSingleton<IApiActionDescriptorProvider, ApiActionDescriptorProvider>();
 
             var requestServices = services.BuildServiceProvider();
             return new HttpContext(new HttpClient(), requestServices, new HttpApiOptions { HttpHost = new Uri("http://www.webapi.com/") });

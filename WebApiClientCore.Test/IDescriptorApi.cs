@@ -10,7 +10,7 @@ namespace WebApiClientCore.Test
     /// <summary>
     /// 用户操作接口
     /// </summary>
-    [LoggerFilter]
+    [LoggingFilter]
     [HttpHost("http://localhost")]
     public interface IDescriptorApi : IHttpApi
     {
