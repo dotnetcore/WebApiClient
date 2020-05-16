@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using WebApiClientCore.Parameters;
 using Xunit;
 
-namespace WebApiClientCore.Test.Parameterables
+namespace WebApiClientCore.Test.Parameters
 {
     public class FormFieldTest
     {

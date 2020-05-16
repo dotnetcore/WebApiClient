@@ -6,7 +6,7 @@ using System.Web;
 using WebApiClientCore.Parameters;
 using Xunit;
 
-namespace WebApiClientCore.Test.Parameterables
+namespace WebApiClientCore.Test.Parameters
 {
     public class FormDataTextTest
     {

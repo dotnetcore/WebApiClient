@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace WebApiClientCore.Test.Parameterables
+namespace WebApiClientCore.Test.Parameters
 {
     public interface ITestApi 
     {
