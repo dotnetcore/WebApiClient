@@ -10,7 +10,7 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <summary>
     /// 提供项目相关扩展
     /// </summary>
-    public static partial class DependencyInjectionExtensions
+    public static partial class ServiceCollectionExtensions
     {
         /// <summary>
         /// 添加HttpApi代理类到服务
