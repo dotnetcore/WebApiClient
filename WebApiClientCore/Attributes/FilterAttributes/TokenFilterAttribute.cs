@@ -55,7 +55,11 @@ namespace WebApiClientCore.Attributes
                     : await this.RequestTokenAsync(context).ConfigureAwait(false);
             }
 
-            this.token?.EnsureSuccess();
+            if (this.token == null)
+            {
+                throw new HttpApiTokenException("获取不到token");
+            }
+            this.token.EnsureSuccess();
         }
 
         /// <summary>

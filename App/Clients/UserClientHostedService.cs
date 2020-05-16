@@ -8,11 +8,11 @@ using WebApiClientCore.Parameterables;
 
 namespace App.Clients
 {
-    public class UserHostedService : BackgroundService
+    public class UserClientHostedService : BackgroundService
     {
         private readonly IServiceProvider service;
 
-        public UserHostedService(IServiceProvider service)
+        public UserClientHostedService(IServiceProvider service)
         {
             this.service = service;
         }
@@ -36,6 +36,7 @@ namespace App.Clients
                 Gender = Gender.Male
             };
 
+            // 上传的文件
             var file = new FormDataFile("TextFile.txt");
 
             var response = await userApi.GetAsync(account: "get1");
