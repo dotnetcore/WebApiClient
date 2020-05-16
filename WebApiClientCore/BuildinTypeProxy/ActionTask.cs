@@ -9,9 +9,9 @@ namespace WebApiClientCore
     /// <typeparam name="TResult">结果类型</typeparam>
     class ActionTask<TResult> : ITask<TResult>
     {
+        private readonly ActionInvoker<TResult> invoker;
         private readonly ServiceContext context;
         private readonly object[] arguments;
-        private readonly ActionInvoker<TResult> invoker;
 
         /// <summary>
         /// Api请求的任务
@@ -23,14 +23,14 @@ namespace WebApiClientCore
         /// <summary>
         /// Api请求的任务
         /// </summary>       
-        /// <param name="apiAction"></param>
+        /// <param name="invoker"></param>
         /// <param name="context"></param>
         /// <param name="arguments"></param>
-        public ActionTask(ApiActionDescriptor apiAction, ServiceContext context, object[] arguments)
+        public ActionTask(IActionInvoker invoker, ServiceContext context, object[] arguments)
         {
+            this.invoker = (ActionInvoker<TResult>)invoker;
             this.context = context;
             this.arguments = arguments;
-            this.invoker = new ActionInvoker<TResult>(apiAction);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace WebApiClientCore
         public ConfiguredTaskAwaitable<TResult> ConfigureAwait(bool continueOnCapturedContext)
         {
             return this.InvokeAsync().ConfigureAwait(continueOnCapturedContext);
-        } 
+        }
 
         /// <summary>
         /// 执行任务

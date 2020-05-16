@@ -11,7 +11,7 @@ namespace WebApiClientCore
         /// <summary>
         /// action描述缓存
         /// </summary>
-        private static readonly ConcurrentCache<MethodInfo, InvokerDescriptor> staticCache = new ConcurrentCache<MethodInfo, InvokerDescriptor>();
+        private static readonly ConcurrentCache<MethodInfo, IActionInvoker> staticCache = new ConcurrentCache<MethodInfo, IActionInvoker>();
 
         /// <summary>
         /// 服务上下文
@@ -36,29 +36,22 @@ namespace WebApiClientCore
         /// <returns></returns>
         public object Intercept(object target, MethodInfo method, object[] arguments)
         {
-            var descriptor = staticCache.GetOrAdd(method, this.CreateInvokerDescriptor);
-            if (descriptor.Action.Return.IsTaskDefinition == true)
-            {
-                return descriptor.ActionInvoker.Invoke(this.context, arguments);
-            }
-            else
-            {
-                return descriptor.ActionTaskCtor.Invoke(descriptor.Action, this.context, arguments);
-            }
+            var invoker = staticCache.GetOrAdd(method, this.CreateActionInvoker);
+            return invoker.Invoke(this.context, arguments);
         }
 
         /// <summary>
-        /// 创建执行者描述器
+        /// 创建action执行器
         /// </summary>
         /// <param name="method">接口的方法</param>
         /// <returns></returns>
-        private InvokerDescriptor CreateInvokerDescriptor(MethodInfo method)
+        private IActionInvoker CreateActionInvoker(MethodInfo method)
         {
             var apiAction = this.context.Services
                 .GetRequiredService<IApiActionDescriptorProvider>()
                 .CreateApiActionDescriptor(method);
 
-            return new InvokerDescriptor(apiAction);
+            return new MultiplexedActionInvoker(apiAction);
         }
     }
 }
