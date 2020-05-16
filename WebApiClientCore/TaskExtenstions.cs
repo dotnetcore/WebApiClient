@@ -1,11 +1,12 @@
-﻿using WebApiClientCore;
+﻿using System;
+using System.Threading.Tasks;
 
-namespace System.Threading.Tasks
+namespace WebApiClientCore
 {
     /// <summary>
     /// ITask扩展
     /// </summary>
-    public static class RetryTaskExtenstions
+    public static class TaskExtenstions
     {
         /// <summary>
         /// 返回提供请求重试的请求任务对象
@@ -57,7 +58,7 @@ namespace System.Threading.Tasks
             {
                 throw new ArgumentOutOfRangeException(nameof(maxCount));
             }
-            return new ActionRetryTask<TResult>(task.InvokeAsync, maxCount, delay);
+            return new AcitonRetryTask<TResult>(task.InvokeAsync, maxCount, delay);
         }
 
         /// <summary>

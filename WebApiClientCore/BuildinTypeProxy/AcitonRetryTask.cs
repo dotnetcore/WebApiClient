@@ -1,14 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using WebApiClientCore;
 using WebApiClientCore.Exceptions;
 
-namespace WebApiClientCore
+namespace System.Threading.Tasks
 {
     /// <summary>
     /// 表示支持重试的Api请求任务
     /// </summary>
     /// <typeparam name="TResult">结果类型</typeparam>
-    class ActionRetryTask<TResult> : ActionTask<TResult>, IRetryTask<TResult>
+    class AcitonRetryTask<TResult> : TaskBase<TResult>, IRetryTask<TResult>
     {
         /// <summary>
         /// 请求任务创建的委托
@@ -32,7 +31,7 @@ namespace WebApiClientCore
         /// <param name="maxRetryCount">最大尝试次数</param>
         /// <param name="retryDelay">各次重试的延时时间</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public ActionRetryTask(Func<Task<TResult>> invoker, int maxRetryCount, Func<int, TimeSpan> retryDelay)
+        public AcitonRetryTask(Func<Task<TResult>> invoker, int maxRetryCount, Func<int, TimeSpan> retryDelay)
         {
             if (maxRetryCount < 1)
             {
@@ -168,7 +167,7 @@ namespace WebApiClientCore
                     throw;
                 }
             }
-            return new ActionRetryTask<TResult>(newInvoker, this.maxRetryCount, this.retryDelay);
+            return new AcitonRetryTask<TResult>(newInvoker, this.maxRetryCount, this.retryDelay);
         }
 
         /// <summary>
@@ -213,7 +212,7 @@ namespace WebApiClientCore
                 return result;
             }
 
-            return new ActionRetryTask<TResult>(newInvoker, this.maxRetryCount, this.retryDelay);
+            return new AcitonRetryTask<TResult>(newInvoker, this.maxRetryCount, this.retryDelay);
         }
 
         /// <summary>

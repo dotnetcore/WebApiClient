@@ -19,8 +19,7 @@ namespace WebApiClientCore
 
         /// <summary>
         /// ActionTask的创建委托
-        /// 由于ActionTask缓存了ServiceContext，所以不能直接缓存ActionTask的实例
-        /// 只能缓存ActionTask实例的创建委托
+        /// 由于ActionTask缓存了ServiceContext，所以不能直接在字段缓存ActionTask的实例，只能缓存ActionTask类型的创建委托
         /// </summary>
         private readonly Func<IActionInvoker, ServiceContext, object[], object> actionTaskCtor;
 
@@ -37,8 +36,8 @@ namespace WebApiClientCore
             this.actionInvoker = Lambda.CreateCtorFunc<ApiActionDescriptor, IActionInvoker>(invokerType)(apiAction);
 
             // (IActionInvoker invoker, ServiceContext context, object[] arguments)
-            var actionTaskType = typeof(ActionTask<>).MakeGenericType(apiAction.Return.DataType.Type);
-            this.actionTaskCtor = Lambda.CreateCtorFunc<IActionInvoker, ServiceContext, object[], object>(actionTaskType);
+            var apiTaskType = typeof(ActionTask<>).MakeGenericType(apiAction.Return.DataType.Type);
+            this.actionTaskCtor = Lambda.CreateCtorFunc<IActionInvoker, ServiceContext, object[], object>(apiTaskType);
         }
 
         /// <summary>
