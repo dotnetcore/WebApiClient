@@ -6,7 +6,7 @@ namespace WebApiClientCore
     /// <summary>
     /// 表示http上下文
     /// </summary>
-    public class HttpContext : Disposable
+    public class HttpContext : IDisposable
     {
         /// <summary>
         /// 获取关联的HttpClient实例
@@ -50,9 +50,8 @@ namespace WebApiClientCore
 
         /// <summary>
         /// 释放资源
-        /// </summary>
-        /// <param name="disposing"></param>
-        protected override void Dispose(bool disposing)
+        /// </summary> 
+        void IDisposable.Dispose()
         {
             this.RequestMessage?.Dispose();
         }

@@ -8,7 +8,7 @@ namespace WebApiClientCore.Defaults
     /// <summary>
     /// 表示Api响应结果缓存提供者的接口
     /// </summary>
-    public class ResponseCacheProvider : Disposable, IResponseCacheProvider
+    public class ResponseCacheProvider : IResponseCacheProvider, IDisposable
     {
         /// <summary>
         /// 内存缓存
@@ -56,8 +56,7 @@ namespace WebApiClientCore.Defaults
         /// <summary>
         /// 释放资源
         /// </summary>
-        /// <param name="disposing">是否也释放托管资源</param>
-        protected override void Dispose(bool disposing)
+        public void Dispose()
         {
             this.cache.Dispose();
         }

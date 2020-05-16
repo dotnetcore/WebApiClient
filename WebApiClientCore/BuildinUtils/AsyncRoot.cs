@@ -7,7 +7,7 @@ namespace WebApiClientCore
     /// <summary>
     /// 提供异步锁
     /// </summary>
-    class AsyncRoot : Disposable
+    class AsyncRoot : IDisposable
     {
         /// <summary>
         /// 信号量
@@ -39,7 +39,7 @@ namespace WebApiClientCore
         public IDisposable Lock()
         {
             this.semaphoreSlim.Wait();
-            return new UnLocker(this.semaphoreSlim);
+            return new UnLocker(this);
         }
 
         /// <summary>
@@ -50,13 +50,13 @@ namespace WebApiClientCore
         public async Task<IDisposable> LockAsync()
         {
             await this.semaphoreSlim.WaitAsync().ConfigureAwait(false);
-            return new UnLocker(this.semaphoreSlim);
+            return new UnLocker(this);
         }
+
         /// <summary>
         /// 释放资源
         /// </summary>
-        /// <param name="disposing">是否也释放托管资源</param>
-        protected override void Dispose(bool disposing)
+        public void Dispose()
         {
             this.semaphoreSlim.Dispose();
         }
@@ -64,20 +64,20 @@ namespace WebApiClientCore
         /// <summary>
         /// 提供解锁
         /// </summary>
-        class UnLocker : IDisposable
+        private class UnLocker : IDisposable
         {
             /// <summary>
             /// 信号量
             /// </summary>
-            private readonly SemaphoreSlim semaphoreSlim;
+            private readonly AsyncRoot root;
 
             /// <summary>
             /// 解锁
             /// </summary>
-            /// <param name="semaphoreSlim">信号量</param>
-            public UnLocker(SemaphoreSlim semaphoreSlim)
+            /// <param name="root"></param>
+            public UnLocker(AsyncRoot root)
             {
-                this.semaphoreSlim = semaphoreSlim;
+                this.root = root;
             }
 
             /// <summary>
@@ -85,7 +85,7 @@ namespace WebApiClientCore
             /// </summary>
             public void Dispose()
             {
-                this.semaphoreSlim.Release();
+                this.root.semaphoreSlim.Release();
             }
         }
     }

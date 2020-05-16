@@ -51,7 +51,7 @@ namespace App
             });
 
             // userApi客户端后台服务
-            services.AddHostedService<UserHostedService>(); 
+            services.AddHostedService<UserClientHostedService>(); 
         }
 
         /// <summary>
