@@ -106,7 +106,7 @@ namespace WebApiClientCore.Attributes
 
         /// <summary>
         /// multipart/form-data
-        /// 等效MulitpartContentAttribute
+        /// 等效FormDataContentAttribute
         /// </summary>
         FormData = 3,
 

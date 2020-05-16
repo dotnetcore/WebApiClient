@@ -12,7 +12,7 @@ namespace WebApiClientCore.Parameters
     /// 表示form-data的一个文件项
     /// </summary>
     [DebuggerDisplay("FileName = {FileName}")]
-    public class FormDataFile : IApiParameterable
+    public class FormDataFile : IApiParameter
     {
         /// <summary>
         /// 数据流创建委托

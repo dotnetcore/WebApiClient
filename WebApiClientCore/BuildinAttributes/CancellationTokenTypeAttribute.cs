@@ -5,9 +5,9 @@ using WebApiClientCore.Attributes;
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 表示参数内容为CancellationToken处理特性
+    /// 表示参数类型为CancellationToken处理特性
     /// </summary>
-    class CancellationTokenAttribute : ApiParameterAttribute
+    class CancellationTokenTypeAttribute : ApiParameterAttribute
     {
         /// <summary>
         /// http请求之前

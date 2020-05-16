@@ -17,28 +17,18 @@ namespace App.Clients
     public interface IUserApi_ParameterStyle : IHttpApi
     {
         [HttpGet("api/users/{account}")]
-        [BasicAuth("userName", "password")]
-        [Timeout(10 * 1000)] // 10s超时
         Task<HttpResponseMessage> GetAsync([Required, Parameter(Kind.Path)]string account);
 
         [HttpGet("api/users/{account}")]
-        [BasicAuth("userName", "password")]
-        [Timeout(10 * 1000)] // 10s超时
         Task<string> GetAsStringAsync([Required, Parameter(Kind.Path)]string account, CancellationToken token = default);
 
         [HttpGet("api/users/{account}")]
-        [BasicAuth("userName", "password")]
-        [Timeout(10 * 1000)] // 10s超时
         Task<byte[]> GetAsByteArrayAsync([Required, Parameter(Kind.Path)]string account, CancellationToken token = default);
 
         [HttpGet("api/users/{account}")]
-        [BasicAuth("userName", "password")]
-        [Timeout(10 * 1000)] // 10s超时
         Task<Stream> GetAsStreamAsync([Required, Parameter(Kind.Path)]string account, CancellationToken token = default);
 
         [HttpGet("api/users/{account}")]
-        [BasicAuth("userName", "password")]
-        [Timeout(10 * 1000)] // 10s超时
         Task<User> GetAsModelAsync([Required, Parameter(Kind.Path)]string account, CancellationToken token = default);
 
 

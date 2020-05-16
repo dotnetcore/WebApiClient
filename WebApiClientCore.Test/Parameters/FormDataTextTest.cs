@@ -27,7 +27,7 @@ namespace WebApiClientCore.Test.Parameters
             context.HttpContext.RequestMessage.Method = HttpMethod.Post;
 
 
-            IApiParameterable mulitpartText = new FormDataText("laojiu");
+            IApiParameter mulitpartText = new FormDataText("laojiu");
             await mulitpartText.OnRequestAsync(new ApiParameterContext(context, 0));
 
             var body = await context.HttpContext.RequestMessage.Content.ReadAsStringAsync();

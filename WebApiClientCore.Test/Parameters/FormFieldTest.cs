@@ -17,7 +17,7 @@ namespace WebApiClientCore.Test.Parameters
             context.HttpContext.RequestMessage.RequestUri = new Uri("http://www.webapi.com/");
             context.HttpContext.RequestMessage.Method = HttpMethod.Post;
             
-            IApiParameterable formField = new FormField("laojiu");
+            IApiParameter formField = new FormField("laojiu");
             await formField.OnRequestAsync(new ApiParameterContext(context,0));
 
             var body = await context.HttpContext.RequestMessage.Content.ReadAsStringAsync();

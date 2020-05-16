@@ -8,7 +8,7 @@ namespace WebApiClientCore.Parameters
     /// 表示form-data表单的一个文本项
     /// </summary>
     [DebuggerDisplay("{stringValue}")]
-    public class FormDataText : IApiParameterable
+    public class FormDataText : IApiParameter
     {
         /// <summary>
         /// 文本内容
@@ -38,7 +38,7 @@ namespace WebApiClientCore.Parameters
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        Task IApiParameterable.OnRequestAsync(ApiParameterContext context)
+        public Task OnRequestAsync(ApiParameterContext context)
         {
             context.HttpContext.RequestMessage.AddFormDataText(context.Parameter.Name, this.stringValue);
             return Task.CompletedTask;

@@ -17,7 +17,7 @@ namespace WebApiClientCore.Parameters
     /// 表示将自身作为JsonPatch请求内容
     /// </summary>
     [DebuggerTypeProxy(typeof(DebugView))]
-    public class JsonPatchDocument : IApiParameterable
+    public class JsonPatchDocument : IApiParameter
     {
         /// <summary>
         /// 操作列表
@@ -73,7 +73,7 @@ namespace WebApiClientCore.Parameters
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task IApiParameterable.OnRequestAsync(ApiParameterContext context)
+        public Task OnRequestAsync(ApiParameterContext context)
         {
             if (context.HttpContext.RequestMessage.Method != HttpMethod.Patch)
             {

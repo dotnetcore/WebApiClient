@@ -93,19 +93,19 @@ namespace WebApiClientCore
                 return RepeatOne<HttpContentAttribute>();
             }
 
-            if (parameterType.IsInheritFrom<IApiParameterable>() || parameterType.IsInheritFrom<IEnumerable<IApiParameterable>>())
+            if (parameterType.IsInheritFrom<IApiParameter>() || parameterType.IsInheritFrom<IEnumerable<IApiParameter>>())
             {
-                return RepeatOne<ParameterableAttribute>();
+                return RepeatOne<ApiParameterTypeAttribute>();
             }
 
             if (parameterType == typeof(CancellationToken))
             {
-                return RepeatOne<CancellationTokenAttribute>();
+                return RepeatOne<CancellationTokenTypeAttribute>();
             }
 
-            if (parameterType == typeof(FileInfo))
+            if (parameterType == typeof(FileInfo) || parameterType.IsInheritFrom<IEnumerable<FileInfo>>())
             {
-                return RepeatOne<FileInfoAttribute>();
+                return RepeatOne<FileInfoTypeAttribute>();
             }
 
             if (defined.Any() == true)

@@ -5,9 +5,9 @@ using WebApiClientCore.Attributes;
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 表示参数内容为IApiParameterable对象或其数组
+    /// 表示参数类型为IApiParameter的处理特性
     /// </summary>
-    class ParameterableAttribute : ApiParameterAttribute
+    class ApiParameterTypeAttribute : ApiParameterAttribute
     {
         /// <summary>
         /// http请求之前
@@ -16,13 +16,13 @@ namespace WebApiClientCore
         /// <returns></returns>
         public override async Task OnRequestAsync(ApiParameterContext context)
         {
-            if (context.ParameterValue is IApiParameterable able)
+            if (context.ParameterValue is IApiParameter parameter)
             {
-                await able.OnRequestAsync(context).ConfigureAwait(false);
+                await parameter.OnRequestAsync(context).ConfigureAwait(false);
             }
-            else if (context.ParameterValue is IEnumerable<IApiParameterable> array)
+            else if (context.ParameterValue is IEnumerable<IApiParameter> parameters)
             {
-                foreach (var item in array)
+                foreach (var item in parameters)
                 {
                     await item.OnRequestAsync(context).ConfigureAwait(false);
                 }

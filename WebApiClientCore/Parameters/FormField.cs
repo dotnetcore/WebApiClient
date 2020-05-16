@@ -8,7 +8,7 @@ namespace WebApiClientCore.Parameters
     /// 表示将自身作为x-www-form-urlencoded的字段
     /// </summary>
     [DebuggerDisplay("{stringValue}")]
-    public class FormField : IApiParameterable
+    public class FormField : IApiParameter
     {
         /// <summary>
         /// 文本内容
@@ -39,7 +39,7 @@ namespace WebApiClientCore.Parameters
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        Task IApiParameterable.OnRequestAsync(ApiParameterContext context)
+        public Task OnRequestAsync(ApiParameterContext context)
         {
             return context.HttpContext.RequestMessage.AddFormFieldAsync(context.Parameter.Name, this.stringValue);
         }

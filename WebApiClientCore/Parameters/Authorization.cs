@@ -7,7 +7,7 @@ namespace WebApiClientCore.Parameters
     /// <summary>
     /// 表示将自身作为请求的授权
     /// </summary>
-    public class Authorization : IApiParameterable
+    public class Authorization : IApiParameter
     {
         /// <summary>
         /// 授权信息
