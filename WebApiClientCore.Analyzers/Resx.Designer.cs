@@ -71,7 +71,7 @@ namespace WebApiClientCore.Analyzers {
         }
         
         /// <summary>
-        ///   查找类似 This constructor does not support attributes，Please use This constructor does not support attributes，Please use another constructor 的本地化字符串。
+        ///   查找类似 不支持特性的此构造函数，请使用其它构造函数 的本地化字符串。
         /// </summary>
         internal static string WA1001_message {
             get {
@@ -80,7 +80,7 @@ namespace WebApiClientCore.Analyzers {
         }
         
         /// <summary>
-        ///   查找类似 Mismatched property constructor 的本地化字符串。
+        ///   查找类似 不匹配的特性构造函数 的本地化字符串。
         /// </summary>
         internal static string WA1001_title {
             get {
@@ -89,7 +89,7 @@ namespace WebApiClientCore.Analyzers {
         }
         
         /// <summary>
-        ///   查找类似 The return type must be ITask&lt;&gt; or Task&lt;&gt; or Task 的本地化字符串。
+        ///   查找类似 返回类型必须为ITask&lt;&gt;、Task&lt;&gt;或Task 的本地化字符串。
         /// </summary>
         internal static string WA1002_message {
             get {
@@ -98,7 +98,7 @@ namespace WebApiClientCore.Analyzers {
         }
         
         /// <summary>
-        ///   查找类似 Unsupported return type 的本地化字符串。
+        ///   查找类似 不支持的返回类型 的本地化字符串。
         /// </summary>
         internal static string WA1002_title {
             get {
@@ -107,7 +107,7 @@ namespace WebApiClientCore.Analyzers {
         }
         
         /// <summary>
-        ///   查找类似 Parameters do not support such modifications as ref/out 的本地化字符串。
+        ///   查找类似 参数不支持ref/out等修饰 的本地化字符串。
         /// </summary>
         internal static string WA1003_message {
             get {
@@ -116,7 +116,7 @@ namespace WebApiClientCore.Analyzers {
         }
         
         /// <summary>
-        ///   查找类似 Unsupported ref / out decoration 的本地化字符串。
+        ///   查找类似 不支持的ref/out修饰 的本地化字符串。
         /// </summary>
         internal static string WA1003_title {
             get {
@@ -125,7 +125,7 @@ namespace WebApiClientCore.Analyzers {
         }
         
         /// <summary>
-        ///   查找类似 Unsupported non-method declarations, only method declarations are allowed 的本地化字符串。
+        ///   查找类似 不支持的非方法声明，只允许方法的声明 的本地化字符串。
         /// </summary>
         internal static string WA1004_message {
             get {
@@ -134,7 +134,7 @@ namespace WebApiClientCore.Analyzers {
         }
         
         /// <summary>
-        ///   查找类似 Unsupported non-method declaration 的本地化字符串。
+        ///   查找类似 不支持的非方法声明 的本地化字符串。
         /// </summary>
         internal static string WA1004_title {
             get {
@@ -143,7 +143,7 @@ namespace WebApiClientCore.Analyzers {
         }
         
         /// <summary>
-        ///   查找类似 Declaring generic methods is not supported 的本地化字符串。
+        ///   查找类似 不支持声明泛型方法 的本地化字符串。
         /// </summary>
         internal static string WA1005_message {
             get {
@@ -152,7 +152,7 @@ namespace WebApiClientCore.Analyzers {
         }
         
         /// <summary>
-        ///   查找类似 Unsupported generic methods 的本地化字符串。
+        ///   查找类似 不支持的泛型方法 的本地化字符串。
         /// </summary>
         internal static string WA1005_title {
             get {
@@ -161,7 +161,7 @@ namespace WebApiClientCore.Analyzers {
         }
         
         /// <summary>
-        ///   查找类似 UriAttribute can only be modified on the first parameter 的本地化字符串。
+        ///   查找类似 UriAttribute只能修饰于第一个参数 的本地化字符串。
         /// </summary>
         internal static string WA1006_message {
             get {
@@ -170,7 +170,7 @@ namespace WebApiClientCore.Analyzers {
         }
         
         /// <summary>
-        ///   查找类似 Unsupported decorated parameter index 的本地化字符串。
+        ///   查找类似 不支持的修饰的参数索引 的本地化字符串。
         /// </summary>
         internal static string WA1006_title {
             get {
