@@ -8,9 +8,9 @@ namespace WebApiClientCore
     class MultiplexedActionInvoker : IActionInvoker
     {
         /// <summary>
-        /// Api描述
+        /// 是否为task声明
         /// </summary>
-        private readonly ApiActionDescriptor action;
+        private readonly bool isTaskDefinition;
 
         /// <summary>
         /// Api执行器
@@ -29,15 +29,16 @@ namespace WebApiClientCore
         /// <param name="apiAction">Api描述</param>
         public MultiplexedActionInvoker(ApiActionDescriptor apiAction)
         {
-            this.action = apiAction;
+            var resultType = apiAction.Return.DataType.Type;
+            this.isTaskDefinition = apiAction.Return.IsTaskDefinition;
 
             // (ApiActionDescriptor apiAction)
-            var invokerType = typeof(ActionInvoker<>).MakeGenericType(apiAction.Return.DataType.Type);
+            var invokerType = typeof(ActionInvoker<>).MakeGenericType(resultType);
             this.actionInvoker = Lambda.CreateCtorFunc<ApiActionDescriptor, IActionInvoker>(invokerType)(apiAction);
 
             // (IActionInvoker invoker, ServiceContext context, object[] arguments)
-            var apiTaskType = typeof(ActionTask<>).MakeGenericType(apiAction.Return.DataType.Type);
-            this.actionTaskCtor = Lambda.CreateCtorFunc<IActionInvoker, ServiceContext, object[], object>(apiTaskType);
+            var actionTaskType = typeof(ActionTask<>).MakeGenericType(resultType);
+            this.actionTaskCtor = Lambda.CreateCtorFunc<IActionInvoker, ServiceContext, object[], object>(actionTaskType);
         }
 
         /// <summary>
@@ -48,14 +49,9 @@ namespace WebApiClientCore
         /// <returns></returns>
         public object Invoke(ServiceContext context, object[] arguments)
         {
-            if (this.action.Return.IsTaskDefinition == true)
-            {
-                return this.actionInvoker.Invoke(context, arguments);
-            }
-            else
-            {
-                return this.actionTaskCtor.Invoke(this.actionInvoker, context, arguments);
-            }
+            return this.isTaskDefinition == true
+                ? this.actionInvoker.Invoke(context, arguments)
+                : this.actionTaskCtor.Invoke(this.actionInvoker, context, arguments);
         }
     }
 }

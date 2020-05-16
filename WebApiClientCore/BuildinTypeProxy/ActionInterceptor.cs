@@ -8,9 +8,9 @@ namespace WebApiClientCore
     class ActionInterceptor : IActionInterceptor
     {
         /// <summary>
-        /// action描述缓存
+        /// action执行器的缓存
         /// </summary>
-        private static readonly ConcurrentCache<MethodInfo, IActionInvoker> staticCache = new ConcurrentCache<MethodInfo, IActionInvoker>();
+        private static readonly ConcurrentCache<MethodInfo, IActionInvoker> invokerCache = new ConcurrentCache<MethodInfo, IActionInvoker>();
 
         /// <summary>
         /// 服务上下文
@@ -35,7 +35,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         public object Intercept(object target, MethodInfo method, object[] arguments)
         {
-            var invoker = staticCache.GetOrAdd(method, CreateActionInvoker);
+            var invoker = invokerCache.GetOrAdd(method, CreateActionInvoker);
             return invoker.Invoke(this.context, arguments);
         }
 
