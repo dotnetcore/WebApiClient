@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace WebApiClientCore.Parameterables
+namespace WebApiClientCore.Parameters
 {
     /// <summary>
     /// 表示form-data表单的一个文本项

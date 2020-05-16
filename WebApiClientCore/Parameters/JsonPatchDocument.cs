@@ -11,7 +11,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
 
-namespace WebApiClientCore.Parameterables
+namespace WebApiClientCore.Parameters
 {
     /// <summary>
     /// 表示将自身作为JsonPatch请求内容

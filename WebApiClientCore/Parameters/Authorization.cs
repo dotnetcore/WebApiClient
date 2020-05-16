@@ -2,7 +2,7 @@
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace WebApiClientCore.Parameterables
+namespace WebApiClientCore.Parameters
 {
     /// <summary>
     /// 表示将自身作为请求的授权

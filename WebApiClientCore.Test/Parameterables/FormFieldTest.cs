@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using WebApiClientCore.Parameterables;
+using WebApiClientCore.Parameters;
 using Xunit;
 
 namespace WebApiClientCore.Test.Parameterables

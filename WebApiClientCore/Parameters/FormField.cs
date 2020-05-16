@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace WebApiClientCore.Parameterables
+namespace WebApiClientCore.Parameters
 {
     /// <summary>
     /// 表示将自身作为x-www-form-urlencoded的字段

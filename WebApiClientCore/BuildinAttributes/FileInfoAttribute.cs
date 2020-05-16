@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using WebApiClientCore.Attributes;
-using WebApiClientCore.Parameterables;
+using WebApiClientCore.Parameters;
 
 namespace WebApiClientCore
 {

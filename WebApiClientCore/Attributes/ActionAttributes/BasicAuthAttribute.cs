@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using WebApiClientCore.Parameterables;
+using WebApiClientCore.Parameters;
 
 namespace WebApiClientCore.Attributes
 {

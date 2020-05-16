@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WebApiClientCore;
 using WebApiClientCore.Attributes;
-using WebApiClientCore.Parameterables;
+using WebApiClientCore.Parameters;
 
 namespace App.Clients
 {

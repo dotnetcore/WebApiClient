@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace WebApiClientCore.Parameterables
+namespace WebApiClientCore.Parameters
 {
     /// <summary>
     /// 表示form-data的一个文件项

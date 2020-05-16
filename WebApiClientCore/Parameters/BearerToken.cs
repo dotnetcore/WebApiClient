@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebApiClientCore.Parameterables
+namespace WebApiClientCore.Parameters
 {
     /// <summary>
     /// 表示将自身作为请求的Bearer体系授权

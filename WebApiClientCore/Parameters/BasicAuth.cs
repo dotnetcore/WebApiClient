@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace WebApiClientCore.Parameterables
+namespace WebApiClientCore.Parameters
 {
     /// <summary>
     /// 表示将自身作为请求的基本授权
