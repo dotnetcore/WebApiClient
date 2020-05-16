@@ -137,7 +137,7 @@ namespace WebApiClientCore
 
             var pathQuery = this.GetPathAndQuery();
             var concat = pathQuery.IndexOf('?') > -1 ? "&" : "?";
-            var relativeUri = $"{pathQuery}{concat}{name}={value}{this.fragment}";
+            var relativeUri = $"{pathQuery.ToString()}{concat}{name}={value}{this.fragment}";
 
             this.Uri = new Uri(this.Uri, relativeUri);
         }
@@ -146,15 +146,14 @@ namespace WebApiClientCore
         /// 获取原始的PathAndQuery
         /// </summary>
         /// <returns></returns>
-        private string GetPathAndQuery()
+        private ReadOnlySpan<char> GetPathAndQuery()
         {
-            var originalUri = this.Uri.OriginalString;
+            var originalUri = this.Uri.OriginalString.AsSpan();
             var length = originalUri.Length - this.pathIndex - this.fragmentLength;
-            if (length == 0)
-            {
-                return string.Empty;
-            }
-            return originalUri.Substring(this.pathIndex, length).TrimEnd('&', '?');
+
+            return length == 0 ?
+                Span<char>.Empty :
+                originalUri.Slice(this.pathIndex, length).TrimEnd('&').TrimEnd('?');
         }
 
         /// <summary>
