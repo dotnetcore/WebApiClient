@@ -49,7 +49,7 @@ namespace WebApiClientCore
             private set
             {
                 this.uriValue = value;
-                this.uriCanReplace = value.OriginalString.IndexOf('{') > -1;
+                this.uriCanReplace = value.OriginalString.Contains('{');
             }
         }
 
@@ -136,7 +136,7 @@ namespace WebApiClientCore
             value = HttpUtility.UrlEncode(value, this.Encoding);
 
             var pathQuery = this.GetPathAndQuery();
-            var concat = pathQuery.IndexOf('?') > -1 ? "&" : "?";
+            var concat = pathQuery.Contains('?') ? "&" : "?";
             var relativeUri = $"{pathQuery.ToString()}{concat}{name}={value}{this.fragment}";
 
             this.Uri = new Uri(this.Uri, relativeUri);
