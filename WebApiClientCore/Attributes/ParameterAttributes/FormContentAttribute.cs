@@ -15,18 +15,17 @@ namespace WebApiClientCore.Attributes
         protected sealed override async Task SetHttpContentAsync(ApiParameterContext context)
         {
             var keyValues = context.SerializeToKeyValues();
-            var form = this.HandleForm(keyValues);
+            var form = this.TransformForm(keyValues);
             await context.HttpContext.RequestMessage.AddFormFieldAsync(form).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// 处理表单内容
-        /// 可以重写比方法
-        /// 实现字段排序、插入签名字段等
+        /// 变换表单内容      
+        /// 比如可以实现字段排序、插入签名字段、相同key的字段合并等
         /// </summary>
         /// <param name="form">表单</param>
         /// <returns></returns>
-        protected virtual IEnumerable<KeyValue> HandleForm(IEnumerable<KeyValue> form)
+        protected virtual IEnumerable<KeyValue> TransformForm(IEnumerable<KeyValue> form)
         {
             return form;
         }
