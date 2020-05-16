@@ -1,10 +1,8 @@
-﻿using System;
-using System.IO;
-using System.Net.Http;
+﻿using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WebApiClientCore
+namespace System.Net.Http
 {
     /// <summary>
     /// HttpResponseMessage扩展
