@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.JsonConverters
 {
     /// <summary>
     /// JsonString的类型转换器
@@ -13,7 +13,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取唯一实例
         /// </summary>
-        public static JsonStringConverter Instance { get; } = new JsonStringConverter();
+        public static JsonStringConverter Default { get; } = new JsonStringConverter();
 
         /// <summary>
         /// 返回是否可以转换

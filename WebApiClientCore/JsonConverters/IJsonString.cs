@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.JsonConverters
 {
     /// <summary>
     /// 定义JsonString的接口
