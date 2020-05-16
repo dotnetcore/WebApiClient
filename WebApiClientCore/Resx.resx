@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="cannot_GetToken" xml:space="preserve">
+    <value>获取不到token</value>
+  </data>
   <data name="contenType_RemainAs" xml:space="preserve">
     <value>Content-Type必须保持为{0}</value>
   </data>
@@ -167,6 +170,9 @@
   </data>
   <data name="timeout_OutOfRange" xml:space="preserve">
     <value>Timeout值{0}不能超时HttpClient.Timeout</value>
+  </data>
+  <data name="unexpected_Result" xml:space="preserve">
+    <value>结果不符合预期值</value>
   </data>
   <data name="unspported_ContentType" xml:space="preserve">
     <value>不支持将ContentType为 {0} 的内容转换为{1}</value>

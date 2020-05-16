@@ -57,7 +57,7 @@ namespace WebApiClientCore.Attributes
 
             if (this.token == null)
             {
-                throw new HttpApiTokenException("获取不到token");
+                throw new HttpApiTokenException(Resx.cannot_GetToken);
             }
             this.token.EnsureSuccess();
         }
