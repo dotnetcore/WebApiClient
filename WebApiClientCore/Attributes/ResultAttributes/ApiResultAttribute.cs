@@ -55,7 +55,7 @@ namespace WebApiClientCore.Attributes
                 {
                     try
                     {
-                        await this.SetResultAsync(context);
+                        await this.SetResultAsync(context).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {

@@ -38,10 +38,10 @@ namespace WebApiClientCore.Parameters
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        async Task IApiParameterable.OnRequestAsync(ApiParameterContext context)
+        Task IApiParameterable.OnRequestAsync(ApiParameterContext context)
         {
             context.HttpContext.RequestMessage.AddFormDataText(context.Parameter.Name, this.stringValue);
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
         /// <summary>

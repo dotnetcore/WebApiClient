@@ -39,7 +39,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <exception cref="HttpApiInvalidOperationException"></exception>
         /// <returns></returns>
-        public sealed override async Task OnRequestAsync(ApiParameterContext context)
+        public sealed override Task OnRequestAsync(ApiParameterContext context)
         {
             var uri = context.HttpContext.RequestMessage.RequestUri;
             if (uri == null)
@@ -49,7 +49,7 @@ namespace WebApiClientCore.Attributes
 
             var keyValues = context.SerializeToKeyValues().FormatAs(this.CollectionFormat);
             context.HttpContext.RequestMessage.RequestUri = this.UsePathQuery(uri, keyValues);
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
         /// <summary>

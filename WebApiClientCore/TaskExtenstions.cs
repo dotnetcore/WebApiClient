@@ -71,7 +71,7 @@ namespace WebApiClientCore
         {
             try
             {
-                return await task;
+                return await task.ConfigureAwait(false);
             }
             catch (Exception)
             {

@@ -59,7 +59,7 @@ namespace WebApiClientCore.Attributes
                 }
             }
 
-            await this.SetModelTypeResultAsync(context);
+            await this.SetModelTypeResultAsync(context).ConfigureAwait(false);
         }
 
         /// <summary>

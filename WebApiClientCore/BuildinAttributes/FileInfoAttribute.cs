@@ -20,7 +20,7 @@ namespace WebApiClientCore
             if (context.ParameterValue is FileInfo fileInfo)
             {
                 var formDataFile = new FormDataFile(fileInfo);
-                await formDataFile.OnRequestAsync(context);
+                await formDataFile.OnRequestAsync(context).ConfigureAwait(false);
             }
         }
     }

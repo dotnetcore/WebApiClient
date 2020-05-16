@@ -51,7 +51,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override async Task OnRequestAsync(ApiRequestContext context)
+        public override Task OnRequestAsync(ApiRequestContext context)
         {
             if (string.IsNullOrEmpty(this.name))
             {
@@ -59,7 +59,7 @@ namespace WebApiClientCore.Attributes
             }
 
             context.HttpContext.RequestMessage.AddFormDataText(this.name, this.value);
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
         /// <summary>

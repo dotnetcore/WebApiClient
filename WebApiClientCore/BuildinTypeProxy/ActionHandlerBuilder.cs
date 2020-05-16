@@ -21,9 +21,9 @@ namespace WebApiClientCore
 
             return async request =>
             {
-                await requestHandler(request);
-                var response = await SendRequestAsync(request);
-                await responseHandler(response);
+                await requestHandler(request).ConfigureAwait(false);
+                var response = await SendRequestAsync(request).ConfigureAwait(false);
+                await responseHandler(response).ConfigureAwait(false);
                 return response;
             };
         }
@@ -64,7 +64,7 @@ namespace WebApiClientCore
                     builder.Use(async (context, next) =>
                     {
                         var ctx = new ApiParameterContext(context, parameter.Index);
-                        await attr.OnRequestAsync(ctx, next);
+                        await attr.OnRequestAsync(ctx, next).ConfigureAwait(false);
                     });
                 }
             }

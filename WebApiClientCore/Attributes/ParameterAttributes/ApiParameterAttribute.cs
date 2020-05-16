@@ -17,7 +17,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public async Task OnRequestAsync(ApiParameterContext context, Func<Task> next)
         {
-            await this.OnRequestAsync(context);
+            await this.OnRequestAsync(context).ConfigureAwait(false);
             await next();
         }
 

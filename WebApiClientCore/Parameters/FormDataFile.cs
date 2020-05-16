@@ -92,11 +92,11 @@ namespace WebApiClientCore.Parameters
         /// 执行请求前
         /// </summary>
         /// <param name="context">上下文</param>
-        public async Task OnRequestAsync(ApiParameterContext context)
+        public Task OnRequestAsync(ApiParameterContext context)
         {
             var stream = this.streamFactory();
             context.HttpContext.RequestMessage.AddFormDataFile(stream, context.Parameter.Name, this.EncodedFileName, this.ContentType);
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
         /// <summary>

@@ -39,9 +39,9 @@ namespace WebApiClientCore.Parameters
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        async Task IApiParameterable.OnRequestAsync(ApiParameterContext context)
+        Task IApiParameterable.OnRequestAsync(ApiParameterContext context)
         {
-            await context.HttpContext.RequestMessage.AddFormFieldAsync(context.Parameter.Name, this.stringValue).ConfigureAwait(false);
+            return context.HttpContext.RequestMessage.AddFormFieldAsync(context.Parameter.Name, this.stringValue);
         }
 
         /// <summary>
