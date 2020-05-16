@@ -65,14 +65,14 @@ namespace WebApiClientCore.Parameterables
 
         /// <summary>
         /// form-data的一个文件项        
-        /// 不支持并发请求
-        /// 多次请求时要求数据流必须支持倒带读取
+        /// 不支持多线程并发请求
+        /// 如果多次请求则要求数据流必须支持倒带读取
         /// </summary>
-        /// <param name="stream">数据流</param>
+        /// <param name="seekableStream">数据流</param>
         /// <param name="fileName">文件友好名称</param>
         /// <returns></returns>
-        public FormDataFile(Stream stream, string fileName)
-            : this(() => new AutoRewindStream(stream), fileName)
+        public FormDataFile(Stream seekableStream, string fileName)
+            : this(() => new AutoRewindStream(seekableStream), fileName)
         {
         }
 
@@ -139,14 +139,14 @@ namespace WebApiClientCore.Parameterables
             /// <summary>
             /// 发送后自动倒带的流
             /// </summary>
-            /// <param name="stream">包装的流</param>
+            /// <param name="seekableStream">包装的流</param>
             /// <exception cref="ArgumentNullException"></exception>
-            public AutoRewindStream(Stream stream)
+            public AutoRewindStream(Stream seekableStream)
             {
-                this.stream = stream ?? throw new ArgumentNullException(nameof(stream));
-                if (stream.CanSeek == true)
+                this.stream = seekableStream ?? throw new ArgumentNullException(nameof(seekableStream));
+                if (seekableStream.CanSeek == true)
                 {
-                    this.defaultPosition = stream.Position;
+                    this.defaultPosition = seekableStream.Position;
                 }
             }
 
@@ -215,14 +215,14 @@ namespace WebApiClientCore.Parameterables
 
             /// <summary>
             /// 不释放资源
-            /// 而是倒带操作，以支持重用
+            /// 而是尝试倒带内置的stream以支持重新读取
             /// </summary>
             /// <param name="disposing"></param>
             protected override void Dispose(bool disposing)
             {
                 if (this.defaultPosition.HasValue == true)
                 {
-                    this.Position = this.defaultPosition.Value;
+                    this.stream.Position = this.defaultPosition.Value;
                 }
             }
         }

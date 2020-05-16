@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using WebApiClientCore;
 using WebApiClientCore.Parameterables;
 
 namespace App.Clients
@@ -49,6 +49,9 @@ namespace App.Clients
             var post3 = await userApi.PostByFormAsync(user);
             var post4 = await userApi.PostByFormDataAsync(user, file);
 
+            var retry = await userApi.GetAsync(account: "retry")
+                .Retry(maxCount: 3)
+                .WhenCatch<Exception>();
 
             await userApi.DeleteAsync(account: "account");
         }
