@@ -14,7 +14,7 @@ namespace WebApiClientCore
         /// <summary>
         /// IActionInterceptor的Intercept方法
         /// </summary>
-        private static readonly MethodInfo interceptMethod = typeof(IActionInterceptor).GetMethod(nameof(IActionInterceptor.Intercept)); 
+        private static readonly MethodInfo interceptMethod = typeof(IActionInterceptor).GetMethod(nameof(IActionInterceptor.Intercept));
 
         /// <summary>
         /// 代理类型的构造器的参数类型
@@ -54,12 +54,12 @@ namespace WebApiClientCore
                 // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口            
                 if (interfaceType.IsVisible == false)
                 {
-                    var message = $"不支持非public接口定义：{interfaceType}";
+                    var message = Resx.required_PublicInterface.Format(interfaceType);
                     throw new NotSupportedException(message);
                 }
 
                 var apiMethods = @interface.GetAllApiMethods();
-                var proxyType = BuildProxyType(@interface, apiMethods); 
+                var proxyType = BuildProxyType(@interface, apiMethods);
                 return new HttpApiProxy(proxyType, apiMethods);
             });
 
@@ -81,7 +81,7 @@ namespace WebApiClientCore
                 .DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run)
                 .DefineDynamicModule(moduleName);
 
-            var builder = module.DefineType(interfaceType.FullName, TypeAttributes.Class );
+            var builder = module.DefineType(interfaceType.FullName, TypeAttributes.Class);
             builder.AddInterfaceImplementation(interfaceType);
 
             var fieldInterceptor = BuildField(builder, "interceptor", typeof(IActionInterceptor));
@@ -118,7 +118,7 @@ namespace WebApiClientCore
             // .ctor(IApiInterceptor interceptor, MethodInfo[] methods)       
             var ctor = builder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, proxyTypeCtorArgTypes);
 
-            var il = ctor.GetILGenerator(); 
+            var il = ctor.GetILGenerator();
 
             // this.interceptor = 第一个参数
             il.Emit(OpCodes.Ldarg_0);

@@ -121,39 +121,39 @@
     <value>https://github.com/xljiulang/WebApiClientCore</value>
   </data>
   <data name="WA1001_message" xml:space="preserve">
-    <value>不匹配的特性构造函数</value>
+    <value>This constructor does not support attributes，Please use This constructor does not support attributes，Please use another constructor</value>
   </data>
   <data name="WA1001_title" xml:space="preserve">
-    <value>不匹配的特性构造函数</value>
+    <value>Mismatched property constructor</value>
   </data>
   <data name="WA1002_message" xml:space="preserve">
-    <value>返回类型必须为ITask&lt;&gt;、Task&lt;&gt;或Task</value>
+    <value>The return type must be ITask&lt;&gt; or Task&lt;&gt; or Task</value>
   </data>
   <data name="WA1002_title" xml:space="preserve">
-    <value>不支持的返回类型</value>
+    <value>Unsupported return type</value>
   </data>
   <data name="WA1003_message" xml:space="preserve">
-    <value>参数不支持ref/out等修饰</value>
+    <value>Parameters do not support such modifications as ref/out</value>
   </data>
   <data name="WA1003_title" xml:space="preserve">
-    <value>不支持的ref/out修饰</value>
+    <value>Unsupported ref / out decoration</value>
   </data>
   <data name="WA1004_message" xml:space="preserve">
-    <value>不支持的非方法声明，只允许方法的声明</value>
+    <value>Unsupported non-method declarations, only method declarations are allowed</value>
   </data>
   <data name="WA1004_title" xml:space="preserve">
-    <value>不支持的非方法声明</value>
+    <value>Unsupported non-method declaration</value>
   </data>
   <data name="WA1005_message" xml:space="preserve">
-    <value>不支持声明泛型方法</value>
+    <value>Declaring generic methods is not supported</value>
   </data>
   <data name="WA1005_title" xml:space="preserve">
-    <value>不支持的泛型方法</value>
+    <value>Unsupported generic methods</value>
   </data>
   <data name="WA1006_message" xml:space="preserve">
-    <value>UriAttribute只能修饰于第一个参数</value>
+    <value>UriAttribute can only be modified on the first parameter</value>
   </data>
   <data name="WA1006_title" xml:space="preserve">
-    <value>不支持的修饰的参数索引</value>
+    <value>Unsupported decorated parameter index</value>
   </data>
 </root>

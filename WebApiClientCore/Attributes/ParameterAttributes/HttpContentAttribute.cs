@@ -21,7 +21,7 @@ namespace WebApiClientCore.Attributes
             var method = context.HttpContext.RequestMessage.Method;
             if (method == HttpMethod.Get || method == HttpMethod.Head)
             {
-                var message = $"由于使用{method}的请求方法，{context.Parameter.Member}不支持设置为Content";
+                var message = Resx.unsupported_SetContent.Format(method);
                 throw new HttpApiInvalidOperationException(message);
             }
             await this.SetHttpContentAsync(context).ConfigureAwait(false);
@@ -48,7 +48,7 @@ namespace WebApiClientCore.Attributes
         {
             if (context.HttpContext.RequestMessage.Content != null)
             {
-                var message = $"参数{context.Parameter.Member}必须置前";
+                var message = Resx.parameter_MustPutForward.Format(context.Parameter.Member);
                 throw new HttpApiInvalidOperationException(message);
             }
 
@@ -60,7 +60,7 @@ namespace WebApiClientCore.Attributes
                 }
                 else
                 {
-                    var message = $"参数{context.Parameter.Member}必须为HttpContent类型";
+                    var message = Resx.parameter_MustbeHttpContenType.Format(context.Parameter.Member);
                     throw new HttpApiInvalidOperationException(message);
                 }
             }

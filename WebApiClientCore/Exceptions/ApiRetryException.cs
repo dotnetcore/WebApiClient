@@ -18,7 +18,7 @@ namespace WebApiClientCore.Exceptions
         /// <param name="maxRetryCount">重试的最大次数</param>   
         /// <param name="inner">内部异常</param>
         public ApiRetryException(int maxRetryCount, Exception inner)
-            : this(maxRetryCount, inner, $"重试已经达到了最大次数限制：{maxRetryCount}")
+            : this(maxRetryCount, inner, Resx.outof_MaxLimited.Format(maxRetryCount))
         {
         }
 

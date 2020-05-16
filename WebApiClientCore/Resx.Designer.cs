@@ -61,11 +61,83 @@ namespace WebApiClientCore {
         }
         
         /// <summary>
+        ///   查找类似 Content-Type必须保持为{0} 的本地化字符串。
+        /// </summary>
+        internal static string contenType_RemainAs {
+            get {
+                return ResourceManager.GetString("contenType_RemainAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 服务器响应了错误的http状态码：{0} {1} 的本地化字符串。
+        /// </summary>
+        internal static string failure_StatusCode {
+            get {
+                return ResourceManager.GetString("failure_StatusCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 UriAttribute必须修饰于第一个参数 的本地化字符串。
         /// </summary>
         internal static string invalid_UriAttribute {
             get {
                 return ResourceManager.GetString("invalid_UriAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 类型{0}不存在构造函数.ctor({1}) 的本地化字符串。
+        /// </summary>
+        internal static string missing_Ctor {
+            get {
+                return ResourceManager.GetString("missing_Ctor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 重试已经达到了最大次数限制：{0} 的本地化字符串。
+        /// </summary>
+        internal static string outof_MaxLimited {
+            get {
+                return ResourceManager.GetString("outof_MaxLimited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 无法将参数{0}转换为Timeout 的本地化字符串。
+        /// </summary>
+        internal static string parameter_CannotCvtTimeout {
+            get {
+                return ResourceManager.GetString("parameter_CannotCvtTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 请传入{0}参数 的本地化字符串。
+        /// </summary>
+        internal static string parameter_CannotMissing {
+            get {
+                return ResourceManager.GetString("parameter_CannotMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 参数{0}必须为HttpContent类型 的本地化字符串。
+        /// </summary>
+        internal static string parameter_MustbeHttpContenType {
+            get {
+                return ResourceManager.GetString("parameter_MustbeHttpContenType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 参数{0}必须置前 的本地化字符串。
+        /// </summary>
+        internal static string parameter_MustPutForward {
+            get {
+                return ResourceManager.GetString("parameter_MustPutForward", resourceCulture);
             }
         }
         
@@ -115,6 +187,15 @@ namespace WebApiClientCore {
         }
         
         /// <summary>
+        ///   查找类似 接口必须为public修饰：{0} 的本地化字符串。
+        /// </summary>
+        internal static string required_PublicInterface {
+            get {
+                return ResourceManager.GetString("required_PublicInterface", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 未配置RequestUri，RequestUri不能为null 的本地化字符串。
         /// </summary>
         internal static string required_RequestUri {
@@ -129,6 +210,24 @@ namespace WebApiClientCore {
         internal static string timeout_OutOfRange {
             get {
                 return ResourceManager.GetString("timeout_OutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 不支持将ContentType为 {0} 的内容转换为{1} 的本地化字符串。
+        /// </summary>
+        internal static string unspported_ContentType {
+            get {
+                return ResourceManager.GetString("unspported_ContentType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {0}方法不支持使用{1} 的本地化字符串。
+        /// </summary>
+        internal static string unspported_HttpContent {
+            get {
+                return ResourceManager.GetString("unspported_HttpContent", resourceCulture);
             }
         }
         
@@ -169,11 +268,20 @@ namespace WebApiClientCore {
         }
         
         /// <summary>
-        ///   查找类似 返回类型必须为Task或Task&lt;&gt;: {0} 的本地化字符串。
+        ///   查找类似 返回类型必须为Task、Task&lt;&gt;或ITask&lt;&gt;: {0} 的本地化字符串。
         /// </summary>
         internal static string unsupported_ReturnType {
             get {
                 return ResourceManager.GetString("unsupported_ReturnType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 由于使用了{0}的请求方法，不支持设置RequestMessage.Content 的本地化字符串。
+        /// </summary>
+        internal static string unsupported_SetContent {
+            get {
+                return ResourceManager.GetString("unsupported_SetContent", resourceCulture);
             }
         }
     }

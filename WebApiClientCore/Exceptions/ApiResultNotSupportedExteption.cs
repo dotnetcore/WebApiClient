@@ -31,7 +31,7 @@ namespace WebApiClientCore.Exceptions
         /// <summary>
         /// 获取异常提示信息
         /// </summary>
-        public override string Message => $"不支持将ContentType为{this.ContentType}的内容反序列化为{this.ReturnDataType}";
+        public override string Message => Resx.unspported_ContentType.Format(this.ContentType, this.ReturnDataType);
 
         /// <summary>
         /// 不支持处理的响应消息异常

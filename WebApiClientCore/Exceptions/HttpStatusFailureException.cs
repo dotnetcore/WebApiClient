@@ -37,7 +37,7 @@ namespace WebApiClientCore.Exceptions
             {
                 var code = (int)this.ResponseMessage.StatusCode;
                 var reason = this.ResponseMessage.ReasonPhrase;
-                return $"服务器响应了错误的http状态码：{code} {reason}";
+                return Resx.failure_StatusCode.Format(code, reason);
             }
         }
 

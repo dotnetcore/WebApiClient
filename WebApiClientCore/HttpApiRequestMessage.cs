@@ -272,7 +272,7 @@ namespace WebApiClientCore
 
             if (string.Equals(existsMediaType, newMediaType, StringComparison.OrdinalIgnoreCase) == false)
             {
-                var message = $"Content-Type必须保持为{existsMediaType}";
+                var message = Resx.contenType_RemainAs.Format(existsMediaType);
                 throw new NotSupportedException(message);
             }
         }
@@ -287,7 +287,7 @@ namespace WebApiClientCore
         {
             if (this.Method == HttpMethod.Get || this.Method == HttpMethod.Head)
             {
-                var message = $"{this.Method}方法不支持使用{this.GetType().Name}";
+                var message = Resx.unspported_HttpContent.Format(this.Method, this.GetType().Name);
                 throw new NotSupportedException(message);
             }
         }

@@ -227,7 +227,7 @@ namespace WebApiClientCore
             if (ctor == null)
             {
                 var argTypeNames = string.Join(", ", args.Select(a => a.Name));
-                throw new ArgumentException($"类型{type}不存在构造函数.ctor({argTypeNames})");
+                throw new ArgumentException(Resx.missing_Ctor.Format(type, argTypeNames));
             }
 
             var parameters = args.Select(t => Expression.Parameter(t)).ToArray();

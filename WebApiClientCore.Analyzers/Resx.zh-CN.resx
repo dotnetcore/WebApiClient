@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="WA1001_message" xml:space="preserve">
-    <value>不匹配的特性构造函数</value>
+    <value>不支持特性的此构造函数，请使用其它构造函数</value>
   </data>
   <data name="WA1001_title" xml:space="preserve">
     <value>不匹配的特性构造函数</value>

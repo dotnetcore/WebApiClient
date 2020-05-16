@@ -117,8 +117,32 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="contenType_RemainAs" xml:space="preserve">
+    <value>Content-Type必须保持为{0}</value>
+  </data>
+  <data name="failure_StatusCode" xml:space="preserve">
+    <value>服务器响应了错误的http状态码：{0} {1}</value>
+  </data>
   <data name="invalid_UriAttribute" xml:space="preserve">
     <value>UriAttribute必须修饰于第一个参数</value>
+  </data>
+  <data name="missing_Ctor" xml:space="preserve">
+    <value>类型{0}不存在构造函数.ctor({1})</value>
+  </data>
+  <data name="outof_MaxLimited" xml:space="preserve">
+    <value>重试已经达到了最大次数限制：{0}</value>
+  </data>
+  <data name="parameter_CannotCvtTimeout" xml:space="preserve">
+    <value>无法将参数{0}转换为Timeout</value>
+  </data>
+  <data name="parameter_CannotMissing" xml:space="preserve">
+    <value>请传入{0}参数</value>
+  </data>
+  <data name="parameter_MustbeHttpContenType" xml:space="preserve">
+    <value>参数{0}必须为HttpContent类型</value>
+  </data>
+  <data name="parameter_MustPutForward" xml:space="preserve">
+    <value>参数{0}必须置前</value>
   </data>
   <data name="required_AbsoluteUri" xml:space="preserve">
     <value>{0}要求为绝对Uri</value>
@@ -135,11 +159,20 @@
   <data name="required_PatchMethod" xml:space="preserve">
     <value>JsonPatchContent的请求方法要求为PATCH</value>
   </data>
+  <data name="required_PublicInterface" xml:space="preserve">
+    <value>接口必须为public修饰：{0}</value>
+  </data>
   <data name="required_RequestUri" xml:space="preserve">
     <value>未配置RequestUri，RequestUri不能为null</value>
   </data>
   <data name="timeout_OutOfRange" xml:space="preserve">
     <value>Timeout值{0}不能超时HttpClient.Timeout</value>
+  </data>
+  <data name="unspported_ContentType" xml:space="preserve">
+    <value>不支持将ContentType为 {0} 的内容转换为{1}</value>
+  </data>
+  <data name="unspported_HttpContent" xml:space="preserve">
+    <value>{0}方法不支持使用{1}</value>
   </data>
   <data name="unsupported_ByRef" xml:space="preserve">
     <value>接口参数不支持ref/out修饰: {0}</value>
@@ -154,6 +187,9 @@
     <value>不支持属性访问器: {0}</value>
   </data>
   <data name="unsupported_ReturnType" xml:space="preserve">
-    <value>返回类型必须为Task或Task&lt;&gt;: {0}</value>
+    <value>返回类型必须为Task、Task&lt;&gt;或ITask&lt;&gt;: {0}</value>
+  </data>
+  <data name="unsupported_SetContent" xml:space="preserve">
+    <value>由于使用了{0}的请求方法，不支持设置RequestMessage.Content</value>
   </data>
 </root>

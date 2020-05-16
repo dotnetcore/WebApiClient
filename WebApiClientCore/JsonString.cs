@@ -1,8 +1,23 @@
 ﻿using System;
-using WebApiClientCore.JsonConverters;
 
 namespace WebApiClientCore
 {
+    /// <summary>
+    /// 定义JsonString的接口
+    /// </summary>
+    interface IJsonString
+    {
+        /// <summary>
+        /// 获取值
+        /// </summary>
+        object Value { get; }
+
+        /// <summary>
+        /// 获取值类型
+        /// </summary>
+        Type ValueType { get; }
+    }
+
     /// <summary>
     /// 表示Json字符串
     /// 该字符串为Value对象的json文本

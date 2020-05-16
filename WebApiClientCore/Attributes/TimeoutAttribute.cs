@@ -57,7 +57,7 @@ namespace WebApiClientCore.Attributes
         {
             if (this.TimeSpan.HasValue == false)
             {
-                throw new HttpApiInvalidOperationException($"请传入milliseconds参数：{nameof(TimeoutAttribute)}");
+                throw new HttpApiInvalidOperationException(Resx.parameter_CannotMissing.Format("milliseconds"));
             }
 
             this.SetTimeout(context, this.TimeSpan.Value);
@@ -90,7 +90,7 @@ namespace WebApiClientCore.Attributes
             }
             else
             {
-                throw new HttpApiInvalidOperationException($"无法将参数{context.Parameter.Member}转换为Timeout");
+                throw new HttpApiInvalidOperationException(Resx.parameter_CannotCvtTimeout.Format(context.Parameter.Member));
             }
 
             return next();
