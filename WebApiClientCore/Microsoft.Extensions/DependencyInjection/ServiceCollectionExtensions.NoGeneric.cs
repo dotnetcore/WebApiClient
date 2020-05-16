@@ -14,6 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services"></param>
         /// <param name="httpApiType"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi(this IServiceCollection services, Type httpApiType)
         {
@@ -26,6 +27,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="httpApiType"></param>
         /// <param name="configureOptions"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi(this IServiceCollection services, Type httpApiType, Action<HttpApiOptions> configureOptions)
         {
@@ -42,8 +44,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi(this IServiceCollection services, Type httpApiType, Action<HttpApiOptions, IServiceProvider> configureOptions)
         {
-            var type = typeof(HttpApiBuilder<>).MakeGenericType(httpApiType);
-            var builder = Lambda.CreateCtorFunc<IServiceCollection, IHttpApiBuilder>(type)(services);
+            var builder = services.CreateHttpApiBuilder(httpApiType);
             return builder.AddHttpApi(configureOptions);
         }
 
@@ -53,11 +54,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="httpApiType"></param>
         /// <param name="configureOptions"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         public static IServiceCollection ConfigureHttpApi(this IServiceCollection services, Type httpApiType, Action<HttpApiOptions> configureOptions)
         {
-            var type = typeof(HttpApiBuilder<>).MakeGenericType(httpApiType);
-            var builder = Lambda.CreateCtorFunc<IServiceCollection, IHttpApiBuilder>(type)(services);
+            var builder = services.CreateHttpApiBuilder(httpApiType);
             return builder.ConfigureHttpApi(configureOptions);
         }
 
@@ -67,12 +68,30 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="httpApiType"></param>
         /// <param name="configureOptions"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         public static IServiceCollection ConfigureHttpApi(this IServiceCollection services, Type httpApiType, IConfiguration configureOptions)
         {
-            var type = typeof(HttpApiBuilder<>).MakeGenericType(httpApiType);
-            var builder = Lambda.CreateCtorFunc<IServiceCollection, IHttpApiBuilder>(type)(services);
+            var builder = services.CreateHttpApiBuilder(httpApiType);
             return builder.ConfigureHttpApi(configureOptions);
+        }
+
+        /// <summary>
+        /// 创建HttpApiBuilder
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="httpApiType"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns></returns>
+        private static IHttpApiBuilder CreateHttpApiBuilder(this IServiceCollection services, Type httpApiType)
+        {
+            if (httpApiType == null)
+            {
+                throw new ArgumentNullException(nameof(httpApiType));
+            }
+
+            var builderType = typeof(HttpApiBuilder<>).MakeGenericType(httpApiType);
+            return Lambda.CreateCtorFunc<IServiceCollection, IHttpApiBuilder>(builderType)(services);
         }
 
         /// <summary>
