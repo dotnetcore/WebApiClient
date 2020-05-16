@@ -30,7 +30,6 @@ namespace WebApiClientCore
         /// </summary>
         public HttpApiRequestMessage()
         {
-            this.Headers.ExpectContinue = false;
             this.Headers.UserAgent.Add(defaultUserAgent);
         }
 

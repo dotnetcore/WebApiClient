@@ -45,7 +45,7 @@ namespace WebApiClientCore
             this.Client = client ?? throw new ArgumentNullException(nameof(client));
             this.Services = services ?? throw new ArgumentNullException(nameof(services)); ;
             this.Options = options ?? throw new ArgumentNullException(nameof(options)); ;
-            this.RequestMessage = new HttpApiRequestMessage { RequestUri = options.HttpHost };
+            this.RequestMessage = new HttpApiRequestMessage { RequestUri = options.HttpHost ?? client.BaseAddress };
         }
 
         /// <summary>
