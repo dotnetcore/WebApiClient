@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,6 +10,24 @@ namespace System.Net.Http
     /// </summary>
     public static class HttpResponseMessageExtensions
     {
+        /// <summary>
+        /// 读取响应头
+        /// </summary>
+        /// <param name="response">响应信息</param>
+        /// <returns></returns>
+        public static string GetHeadersString(this HttpResponseMessage response)
+        {
+            var builder = new StringBuilder()
+                .AppendLine($"HTTP/{response.Version} {(int)response.StatusCode} {response.ReasonPhrase}")
+                .Append(response.Headers.ToString());
+
+            if (response.Content != null)
+            {
+                builder.Append(response.Content.Headers.ToString());
+            }
+            return builder.ToString();
+        }
+
         /// <summary>
         /// 保存到指定路径
         /// </summary>

@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace WebApiClientCore.Attributes
@@ -15,7 +14,7 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// tag的key
         /// </summary>
-        private static readonly string tagKey = "$LoggingFilter";
+        private static readonly string tagKey = nameof(LoggingFilterAttribute);
 
         /// <summary>
         /// 获取或设置是否输出请求内容
@@ -52,20 +51,13 @@ namespace WebApiClientCore.Attributes
             {
                 var request = context.HttpContext.RequestMessage;
                 logMessage.RequestHeaders = request.GetHeadersString();
-
-                var httpContent = request.Content;
-                if (httpContent != null)
-                {
-                    if (httpContent is ICustomHttpContentConvertable convertable)
-                    {
-                        httpContent = convertable.ToCustomHttpContext();
-                    }
-                    logMessage.RequestContent = await httpContent.ReadAsStringAsync().ConfigureAwait(false);
-                }
+                logMessage.RequestContent = await this.ReadRequestContentAsync(request.Content).ConfigureAwait(false);
             }
 
             context.Tags.Set(tagKey, logMessage);
         }
+
+
 
         /// <summary>
         /// 响应后
@@ -83,33 +75,49 @@ namespace WebApiClientCore.Attributes
             if (this.LogResponse && response != null)
             {
                 logMessage.HasResponse = true;
-                logMessage.ResponseHeaders = this.ReadResponseHeadersString(response);
-                if (response.Content != null)
-                {
-                    logMessage.ResponseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                }
+                logMessage.ResponseHeaders = response.GetHeadersString();
+                logMessage.ResponseContent = await this.ReadResponseContentAsync(response.Content).ConfigureAwait(false);
             }
 
-            this.WriterLog(context, logMessage);
+            await this.WriteLogAsync(context, logMessage).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// 读取响应字符串
+        /// 读取请求内容
         /// </summary>
-        /// <param name="response">响应信息</param>
+        /// <param name="httpContent"></param>
         /// <returns></returns>
-        private string ReadResponseHeadersString(HttpResponseMessage response)
+        private async Task<string> ReadRequestContentAsync(HttpContent httpContent)
         {
-            var builder = new StringBuilder()
-                .AppendLine($"HTTP/{response.Version} {(int)response.StatusCode} {response.ReasonPhrase}")
-                .Append(response.Headers.ToString());
-
-            if (response.Content != null)
+            if (httpContent == null)
             {
-                builder.Append(response.Content.Headers.ToString());
+                return null;
             }
-            return builder.ToString();
+
+            if (httpContent is ICustomHttpContentConvertable convertable)
+            {
+                return await convertable.ToCustomHttpContext().ReadAsStringAsync().ConfigureAwait(false);
+            }
+            else
+            {
+                return await httpContent.ReadAsStringAsync().ConfigureAwait(false);
+            }
         }
+
+        /// <summary>
+        /// 读取响应内容
+        /// </summary>
+        /// <param name="httpContent"></param>
+        /// <returns></returns>
+        private Task<string> ReadResponseContentAsync(HttpContent httpContent)
+        {
+            if (httpContent == null)
+            {
+                return null;
+            }
+            return httpContent.ReadAsStringAsync();
+        }
+
 
         /// <summary>
         /// 写日志到LoggerFactory
@@ -117,29 +125,25 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <param name="logMessage">日志消息</param>
         /// <returns></returns>
-        protected virtual void WriterLog(ApiRequestContext context, LogMessage logMessage)
+        protected virtual Task WriteLogAsync(ApiResponseContext context, LogMessage logMessage)
         {
             var method = context.ApiAction.Member;
             var categoryName = $"{method.DeclaringType.Namespace}.{method.DeclaringType.Name}.{method.Name}";
-            var logger = context.HttpContext.Services.GetRequiredService<ILoggerFactory>().CreateLogger(categoryName);
 
-            var message = this.GetMessage(logMessage);
-            logger.LogInformation(message);
+            var loggerFactory = context.HttpContext.Services.GetService<ILoggerFactory>();
+            if (loggerFactory == null)
+            {
+                return Task.CompletedTask;
+            }
 
+            var logger = loggerFactory.CreateLogger(categoryName);
+            logger.LogInformation(logMessage.ToExcludeException().ToString());
             if (logMessage.Exception != null)
             {
                 logger.LogError(logMessage.Exception, logMessage.Exception.Message);
             }
-        }
 
-        /// <summary>
-        /// 获取文本格式的日志消息
-        /// </summary> 
-        /// <param name="logMessage">日志消息</param>
-        /// <returns></returns>
-        protected virtual string GetMessage(LogMessage logMessage)
-        {
-            return logMessage.ToExcludeException().ToString();
+            return Task.CompletedTask;
         }
     }
 }

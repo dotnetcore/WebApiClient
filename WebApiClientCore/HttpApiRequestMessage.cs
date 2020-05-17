@@ -292,7 +292,7 @@ namespace WebApiClientCore
         }
 
         /// <summary>
-        /// 返回请求头数据
+        /// 读取请求头
         /// </summary>
         /// <returns></returns>
         public string GetHeadersString()
