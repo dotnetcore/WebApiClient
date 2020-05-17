@@ -248,8 +248,7 @@ namespace WebApiClientCore
         {
             this.EnsureMediaTypeEqual(FormDataContent.MediaType);
 
-            var httpContent = this.Content as MultipartContent;
-            if (httpContent == null)
+            if (!(this.Content is MultipartContent httpContent))
             {
                 httpContent = new FormDataContent();
             }

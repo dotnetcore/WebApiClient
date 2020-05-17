@@ -94,14 +94,9 @@ namespace WebApiClientCore.Attributes
                 return null;
             }
 
-            if (httpContent is ICustomHttpContentConvertable convertable)
-            {
-                return await convertable.ToCustomHttpContext().ReadAsStringAsync().ConfigureAwait(false);
-            }
-            else
-            {
-                return await httpContent.ReadAsStringAsync().ConfigureAwait(false);
-            }
+            return httpContent is ICustomHttpContentConvertable convertable
+                ? await convertable.ToCustomHttpContext().ReadAsStringAsync().ConfigureAwait(false)
+                : await httpContent.ReadAsStringAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -111,13 +106,8 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         private Task<string> ReadResponseContentAsync(HttpContent httpContent)
         {
-            if (httpContent == null)
-            {
-                return null;
-            }
-            return httpContent.ReadAsStringAsync();
+            return httpContent?.ReadAsStringAsync();
         }
-
 
         /// <summary>
         /// 写日志到LoggerFactory

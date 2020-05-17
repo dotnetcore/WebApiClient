@@ -39,16 +39,13 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static object DefaultValue(this Type type)
         {
-            if (type == null)
-            {
-                return null;
-            }
-
-            return typeDefaultValueCache.GetOrAdd(type, t =>
-            {
-                var value = Expression.Convert(Expression.Default(t), typeof(object));
-                return Expression.Lambda<Func<object>>(value).Compile().Invoke();
-            });
+            return type == null
+                ? null
+                : typeDefaultValueCache.GetOrAdd(type, t =>
+                {
+                    var value = Expression.Convert(Expression.Default(t), typeof(object));
+                    return Expression.Lambda<Func<object>>(value).Compile().Invoke();
+                });
         }
 
         /// <summary>
