@@ -14,7 +14,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         protected sealed override async Task SetHttpContentAsync(ApiParameterContext context)
         {
-            var keyValues = context.SerializeParameterToKeyValues();
+            var keyValues = context.SerializeToKeyValues();
             var form = this.TransformForm(keyValues);
             await context.HttpContext.RequestMessage.AddFormFieldAsync(form).ConfigureAwait(false);
         }

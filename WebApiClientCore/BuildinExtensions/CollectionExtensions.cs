@@ -15,7 +15,7 @@ namespace WebApiClientCore
         /// <param name="collection">集合</param>
         /// <param name="format">格式</param>
         /// <returns></returns>
-        public static IEnumerable<KeyValue> FormatAs(this IEnumerable<KeyValue> collection, CollectionFormat format)
+        public static IEnumerable<KeyValue> CollectAs(this IEnumerable<KeyValue> collection, CollectionFormat format)
         {
             if (format == CollectionFormat.Multi)
             {
@@ -25,16 +25,16 @@ namespace WebApiClientCore
             switch (format)
             {
                 case CollectionFormat.Csv:
-                    return collection.FormatAs(@",");
+                    return collection.CollectAs(@",");
 
                 case CollectionFormat.Ssv:
-                    return collection.FormatAs(@" ");
+                    return collection.CollectAs(@" ");
 
                 case CollectionFormat.Tsv:
-                    return collection.FormatAs(@"\");
+                    return collection.CollectAs(@"\");
 
                 case CollectionFormat.Pipes:
-                    return collection.FormatAs(@"|");
+                    return collection.CollectAs(@"|");
 
                 default:
                     throw new NotImplementedException(format.ToString());
@@ -47,7 +47,7 @@ namespace WebApiClientCore
         /// <param name="collection">集合</param>
         /// <param name="separator">分隔符</param>
         /// <returns></returns>
-        private static IEnumerable<KeyValue> FormatAs(this IEnumerable<KeyValue> collection, string separator)
+        private static IEnumerable<KeyValue> CollectAs(this IEnumerable<KeyValue> collection, string separator)
         {
             return collection.GroupBy(item => item.Key).Select(item =>
             {

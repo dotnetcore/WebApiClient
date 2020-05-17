@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace WebApiClientCore.Attributes
@@ -24,13 +23,8 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public override async Task SetModelTypeResultAsync(ApiResponseContext context)
         {
-            var response = context.HttpContext.ResponseMessage;
-            var dataType = context.ApiAction.Return.DataType.Type;
-
-            var formatter = context.HttpContext.Services.GetRequiredService<IJsonFormatter>();
-            var json = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-            var options = context.HttpContext.Options.JsonDeserializeOptions;
-            context.Result = formatter.Deserialize(json, dataType, options);
+            var resultType = context.ApiAction.Return.DataType.Type;
+            context.Result = await context.JsonDeserializeAsync(resultType).ConfigureAwait(false);
         }
     }
 }

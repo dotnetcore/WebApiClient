@@ -47,7 +47,7 @@ namespace WebApiClientCore.Attributes
                 throw new HttpApiInvalidOperationException(Resx.required_HttpHost);
             }
 
-            var keyValues = context.SerializeParameterToKeyValues().FormatAs(this.CollectionFormat);
+            var keyValues = context.SerializeToKeyValues().CollectAs(this.CollectionFormat);
             context.HttpContext.RequestMessage.RequestUri = this.UsePathQuery(uri, keyValues);
             return Task.CompletedTask;
         }

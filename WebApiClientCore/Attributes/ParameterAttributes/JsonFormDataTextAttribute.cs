@@ -15,7 +15,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public sealed override Task OnRequestAsync(ApiParameterContext context)
         {
-            var json = context.SerializeParameterToJson();
+            var json = context.SerializeToJson();
             var fieldName = context.Parameter.Name;
             var fildValue = Encoding.UTF8.GetString(json);
             context.HttpContext.RequestMessage.AddFormDataText(fieldName, fildValue);

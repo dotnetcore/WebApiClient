@@ -17,7 +17,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public override Task OnRequestAsync(ApiParameterContext context)
         {
-            var keyValues = context.SerializeParameterToKeyValues();
+            var keyValues = context.SerializeToKeyValues();
             foreach (var kv in keyValues)
             {
                 var value = kv.Value;

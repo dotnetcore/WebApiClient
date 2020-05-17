@@ -46,7 +46,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         protected override void SetHttpContent(ApiParameterContext context)
         { 
-            var xml = context.SerializeParameterToXml(this.encoding);
+            var xml = context.SerializeToXml(this.encoding);
             context.HttpContext.RequestMessage.Content = new XmlContent(xml, this.encoding);
         }
     }

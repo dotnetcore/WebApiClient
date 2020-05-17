@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Threading.Tasks;
 
 namespace WebApiClientCore
 {
@@ -49,6 +51,31 @@ namespace WebApiClientCore
         public ApiResponseContext(ApiRequestContext context)
             : base(context.HttpContext, context.ApiAction, context.Arguments, context.Tags, context.CancellationTokens)
         {
+        }
+
+        /// <summary>
+        /// 使用Json反序列化响应内容为目标类型
+        /// </summary>
+        /// <param name="objType">目标类型</param>
+        /// <returns></returns>
+        public async Task<object> JsonDeserializeAsync(Type objType)
+        {
+            var formatter = this.HttpContext.Services.GetRequiredService<IJsonFormatter>();
+            var json = await this.HttpContext.ResponseMessage.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+            var options = this.HttpContext.Options.JsonDeserializeOptions;
+            return formatter.Deserialize(json, objType, options);
+        }
+
+        /// <summary>
+        /// 使用Xml反序列化响应内容为目标类型
+        /// </summary>
+        /// <param name="objType">目标类型</param>
+        /// <returns></returns>
+        public async Task<object> XmlDeserializeAsync(Type objType)
+        {
+            var formatter = this.HttpContext.Services.GetRequiredService<IXmlFormatter>();
+            var xml = await this.HttpContext.ResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+            return formatter.Deserialize(xml, objType);
         }
     }
 }

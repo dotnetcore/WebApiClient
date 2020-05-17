@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -15,7 +14,7 @@ namespace WebApiClientCore.Exceptions
         /// <summary>
         /// 上下文
         /// </summary>
-        private readonly ApiRequestContext context;
+        private readonly ApiResponseContext context;
 
         /// <summary>
         /// 获取响应消息
@@ -46,7 +45,7 @@ namespace WebApiClientCore.Exceptions
         /// </summary> 
         /// <param name="context"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public HttpStatusFailureException(ApiRequestContext context)
+        public HttpStatusFailureException(ApiResponseContext context)
         {
             this.context = context;
         }
@@ -87,21 +86,15 @@ namespace WebApiClientCore.Exceptions
         public async Task<TResult> ReadAsAsync<TResult>()
         {
             var dataType = typeof(TResult);
-            var content = this.ResponseMessage.Content;
-            var contentType = new ContentType(content.Headers.ContentType);
+            var contentType = new ContentType(this.ResponseMessage.Content.Headers.ContentType);
 
             if (contentType.IsJson() == true)
             {
-                var json = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                var formatter = this.context.HttpContext.Services.GetRequiredService<IJsonFormatter>();
-                var options = this.context.HttpContext.Options.JsonDeserializeOptions;
-                return (TResult)formatter.Deserialize(json, dataType, options);
+                return (TResult)await this.context.JsonDeserializeAsync(dataType).ConfigureAwait(false);
             }
             else if (contentType.IsXml() == true)
             {
-                var xml = await content.ReadAsStringAsync().ConfigureAwait(false);
-                var formatter = this.context.HttpContext.Services.GetRequiredService<IXmlFormatter>();
-                return (TResult)formatter.Deserialize(xml, dataType);
+                return (TResult)await this.context.XmlDeserializeAsync(dataType).ConfigureAwait(false);
             }
             throw new ApiResultNotSupportedExteption(this.ResponseMessage, dataType);
         }

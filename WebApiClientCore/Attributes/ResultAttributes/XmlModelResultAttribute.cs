@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace WebApiClientCore.Attributes
@@ -24,12 +23,8 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public override async Task SetModelTypeResultAsync(ApiResponseContext context)
         {
-            var response = context.HttpContext.ResponseMessage;
-            var dataType = context.ApiAction.Return.DataType.Type;
-
-            var formatter = context.HttpContext.Services.GetRequiredService<IXmlFormatter>();
-            var xml = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            context.Result = formatter.Deserialize(xml, dataType);
+            var resultType = context.ApiAction.Return.DataType.Type;
+            context.Result = await context.XmlDeserializeAsync(resultType).ConfigureAwait(false);
         }
     }
 }

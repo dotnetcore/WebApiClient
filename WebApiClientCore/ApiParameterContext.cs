@@ -1,4 +1,7 @@
-﻿namespace WebApiClientCore
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Text;
+
+namespace WebApiClientCore
 {
     /// <summary>
     /// 表示Api参数上下文
@@ -29,6 +32,42 @@
             : base(context.HttpContext, context.ApiAction, context.Arguments, context.Tags, context.CancellationTokens)
         {
             this.index = parameterIndex;
+        }
+
+        /// <summary>
+        /// 序列化参数值为Json
+        /// </summary>
+        /// <returns></returns>
+        public byte[] SerializeToJson()
+        {
+            var options = this.HttpContext.Options.JsonSerializeOptions;
+            return this.HttpContext.Services
+                .GetRequiredService<IJsonFormatter>()
+                .Serialize(this.ParameterValue, options);
+        }
+
+        /// <summary>
+        /// 序列化参数值为Xml
+        /// </summary>
+        /// <param name="encoding">xml编码</param>
+        /// <returns></returns>
+        public string SerializeToXml(Encoding encoding)
+        {
+            return this.HttpContext.Services
+                .GetRequiredService<IXmlFormatter>()
+                .Serialize(this.ParameterValue, encoding);
+        }
+
+        /// <summary>
+        /// 序列化参数值为键值对
+        /// </summary>
+        /// <returns></returns>
+        public KeyValue[] SerializeToKeyValues()
+        {
+            var options = this.HttpContext.Options.KeyValueSerializeOptions;
+            return this.HttpContext.Services
+                .GetRequiredService<IKeyValueFormatter>()
+                .Serialize(this.Parameter.Name, this.ParameterValue, options);
         }
     }
 }

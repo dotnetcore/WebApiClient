@@ -11,7 +11,7 @@
         /// <param name="context">上下文</param>
         protected override void SetHttpContent(ApiParameterContext context)
         {
-            var keyValues = context.SerializeParameterToKeyValues();
+            var keyValues = context.SerializeToKeyValues();
             context.HttpContext.RequestMessage.AddFormDataText(keyValues);
         }
     }
