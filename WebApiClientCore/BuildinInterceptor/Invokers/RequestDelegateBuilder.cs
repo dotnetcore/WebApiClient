@@ -8,7 +8,7 @@ namespace WebApiClientCore
     /// <summary>
     /// 提供Action的调用链委托创建
     /// </summary>
-    static class ActionHandlerBuilder
+    static class RequestDelegateBuilder
     {
         /// <summary>
         /// 创建执行委托

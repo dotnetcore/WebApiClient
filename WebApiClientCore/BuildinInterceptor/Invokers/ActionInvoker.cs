@@ -18,7 +18,7 @@ namespace WebApiClientCore
         /// <summary>
         /// ApiAction执行器
         /// </summary>
-        private readonly Func<ApiRequestContext, Task<ApiResponseContext>> handler;
+        private readonly Func<ApiRequestContext, Task<ApiResponseContext>> requestHandler;
 
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace WebApiClientCore
         public ActionInvoker(ApiActionDescriptor apiAction)
         {
             this.apiAction = apiAction;
-            this.handler = ActionHandlerBuilder.Build(apiAction);
+            this.requestHandler = RequestDelegateBuilder.Build(apiAction);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         private async Task<TResult> InvokeAsync(ApiRequestContext context)
         {
-            var response = await this.handler(context).ConfigureAwait(false);
+            var response = await this.requestHandler(context).ConfigureAwait(false);
 
             if (response.ResultStatus == ResultStatus.HasResult)
             {
