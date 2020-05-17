@@ -35,6 +35,7 @@
     <None Include="NugetPackage\tools\*.*" PackagePath="tools" Pack="true" />
     <None Include="NugetPackage\analyzers\dotnet\cs\*.*" PackagePath="analyzers\dotnet\cs" Pack="true" />
   </ItemGroup>
+  
   <ItemGroup>
     <Compile Update="Resx.Designer.cs">
       <DesignTime>True</DesignTime>

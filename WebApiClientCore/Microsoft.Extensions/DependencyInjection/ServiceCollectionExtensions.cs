@@ -54,7 +54,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTypedClient((client, serviceProvider) =>
                 {
                     var options = serviceProvider.GetService<IOptions<HttpApiOptions<THttpApi>>>();
-                    return HtttApi.Create<THttpApi>(client, serviceProvider, options.Value);
+                    return HttpApi.Create<THttpApi>(client, serviceProvider, options.Value);
                 });
         }
 

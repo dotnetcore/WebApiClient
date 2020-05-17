@@ -6,10 +6,9 @@ using System.Reflection.Emit;
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 表示HttpApi代理描述
-    /// 提供HttpApi代理类的实例化
+    /// 提供IHttpApi代理类的类型创建
     /// </summary>
-    partial class HttpApiProxy
+    static class HttpApiProxyTypeBuilder
     {
         /// <summary>
         /// IActionInterceptor的Intercept方法
@@ -22,58 +21,21 @@ namespace WebApiClientCore
         private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IActionInterceptor), typeof(MethodInfo[]) };
 
         /// <summary>
-        /// 接口类型与代理描述缓存
-        /// </summary>
-        private static readonly ConcurrentCache<Type, HttpApiProxy> interfaceProxyCache = new ConcurrentCache<Type, HttpApiProxy>();
-
-        /// <summary>
-        /// 返回HttpApi代理类的实例
-        /// </summary>
-        /// <typeparam name="THttpApi"></typeparam>
-        /// <param name="interceptor">拦截器</param>
-        /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="NotSupportedException"></exception>
-        /// <returns></returns>
-        public static THttpApi CreateInstance<THttpApi>(IActionInterceptor interceptor) where THttpApi : IHttpApi
-        {
-            return (THttpApi)CreateInstance(typeof(THttpApi), interceptor);
-        }
-
-        /// <summary>
-        /// 返回HttpApi代理类的实例
-        /// </summary>
-        /// <param name="interfaceType">接口类型</param>
-        /// <param name="interceptor">拦截器</param>
-        /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="NotSupportedException"></exception>
-        /// <returns></returns>
-        public static IHttpApi CreateInstance(Type interfaceType, IActionInterceptor interceptor)
-        {
-            var httpApiProxy = interfaceProxyCache.GetOrAdd(interfaceType, @interface =>
-            {
-                // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口            
-                if (interfaceType.IsVisible == false)
-                {
-                    var message = Resx.required_PublicInterface.Format(interfaceType);
-                    throw new NotSupportedException(message);
-                }
-
-                var apiMethods = @interface.GetAllApiMethods();
-                var proxyType = BuildProxyType(@interface, apiMethods);
-                return new HttpApiProxy(proxyType, apiMethods);
-            });
-
-            return httpApiProxy.CreateInstance(interceptor);
-        }
-
-        /// <summary>
-        /// 返回创建的接口的代理代理类型
+        /// 创建IHttpApi代理类的类型
         /// </summary>
         /// <param name="interfaceType">接口类型</param>
         /// <param name="apiMethods">接口方法集合</param>
+        /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        private static Type BuildProxyType(Type interfaceType, MethodInfo[] apiMethods)
+        public static Type Build(Type interfaceType, MethodInfo[] apiMethods)
         {
+            // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口            
+            if (interfaceType.IsVisible == false)
+            {
+                var message = Resx.required_PublicInterface.Format(interfaceType);
+                throw new NotSupportedException(message);
+            }
+
             var moduleName = interfaceType.Module.Name;
             var assemblyName = new AssemblyName(Guid.NewGuid().ToString());
 
