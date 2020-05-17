@@ -90,7 +90,7 @@ namespace WebApiClientCore
         {
             if (parameterType.IsInheritFrom<HttpContent>() == true)
             {
-                return RepeatOne<HttpContentAttribute>();
+                return RepeatOne<HttpContentTypeAttribute>();
             }
 
             if (parameterType.IsInheritFrom<IApiParameter>() || parameterType.IsInheritFrom<IEnumerable<IApiParameter>>())

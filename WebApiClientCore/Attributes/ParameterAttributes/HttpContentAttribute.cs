@@ -5,10 +5,9 @@ using WebApiClientCore.Exceptions;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 表示参数值理解为HttpContent类型的特性
-    /// 例如StringContent、ByteArrayContent、FormUrlEncodedContent等类型
+    /// 表示将参数值处理为请求Content的特性抽象
     /// </summary>
-    public class HttpContentAttribute : ApiParameterAttribute
+    public abstract class HttpContentAttribute : ApiParameterAttribute
     {
         /// <summary>
         /// http请求之前
@@ -31,7 +30,6 @@ namespace WebApiClientCore.Attributes
         /// 设置参数到http请求内容
         /// </summary>
         /// <param name="context">上下文</param>
-        /// <exception cref="HttpApiInvalidOperationException"></exception>
         /// <returns></returns>
         protected virtual Task SetHttpContentAsync(ApiParameterContext context)
         {
@@ -43,27 +41,8 @@ namespace WebApiClientCore.Attributes
         /// 设置参数到http请求内容
         /// </summary>
         /// <param name="context">上下文</param> 
-        /// <exception cref="HttpApiInvalidOperationException"></exception>
         protected virtual void SetHttpContent(ApiParameterContext context)
         {
-            if (context.HttpContext.RequestMessage.Content != null)
-            {
-                var message = Resx.parameter_MustPutForward.Format(context.Parameter.Member);
-                throw new HttpApiInvalidOperationException(message);
-            }
-
-            if (context.ParameterValue != null)
-            {
-                if (context.ParameterValue is HttpContent httpContent)
-                {
-                    context.HttpContext.RequestMessage.Content = httpContent;
-                }
-                else
-                {
-                    var message = Resx.parameter_MustbeHttpContenType.Format(context.Parameter.Member);
-                    throw new HttpApiInvalidOperationException(message);
-                }
-            }
         }
     }
 }
