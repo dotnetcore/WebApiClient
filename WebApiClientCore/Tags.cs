@@ -22,10 +22,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="key">键</param>
         /// <returns></returns>
-        public TagItem this[string key]
-        {
-            get => this.Get(key);
-        }
+        public TagItem this[string key] => this.Get(key);
 
         /// <summary>
         /// 根据键获取值
@@ -34,11 +31,9 @@ namespace WebApiClientCore
         /// <returns></returns>
         public TagItem Get(string key)
         {
-            if (this.lazy.Value.TryGetValue(key, out object value) == true)
-            {
-                return new TagItem(value);
-            }
-            return TagItem.NoValue;
+            return this.lazy.Value.TryGetValue(key, out object value) ?
+                new TagItem(value) :
+                TagItem.NoValue;
         }
 
         /// <summary>
@@ -48,11 +43,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         public bool Remove(string key)
         {
-            if (this.lazy.IsValueCreated == false)
-            {
-                return false;
-            }
-            return this.lazy.Value.Remove(key);
+            return this.lazy.IsValueCreated == false ? false : this.lazy.Value.Remove(key);
         }
 
         /// <summary>
@@ -107,7 +98,7 @@ namespace WebApiClientCore
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
             public KeyValuePair<string, object>[] Values
             {
-                get => this.value == null ? (new KeyValuePair<string, object>[0]) : this.value.ToArray();
+                get => this.value == null ? Array.Empty<KeyValuePair<string, object>>() : this.value.ToArray();
             }
         }
     }

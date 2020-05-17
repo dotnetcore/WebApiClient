@@ -152,8 +152,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static Func<TType> CreateCtorFunc<TType>(Type type)
         {
-            var args = TypeExtensions.EmptyTypes;
-            return CreateCtorFunc<Func<TType>>(type, args);
+            return CreateCtorFunc<Func<TType>>(type, Array.Empty<Type>());
         }
 
         /// <summary>
@@ -229,7 +228,7 @@ namespace WebApiClientCore
                 var argTypeNames = string.Join(", ", args.Select(a => a.Name));
                 throw new ArgumentException(Resx.missing_Ctor.Format(type, argTypeNames));
             }
-
+            
             var parameters = args.Select(t => Expression.Parameter(t)).ToArray();
             var body = Expression.New(ctor, parameters);
             return Expression.Lambda<TFunc>(body, parameters).Compile();

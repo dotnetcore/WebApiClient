@@ -23,11 +23,6 @@ namespace WebApiClientCore
         private static readonly ConcurrentCache<Type, object> typeDefaultValueCache = new ConcurrentCache<Type, object>();
 
         /// <summary>
-        /// 表示0个元素的类型集合
-        /// </summary>
-        public static readonly Type[] EmptyTypes = new Type[0];
-
-        /// <summary>
         /// 关联的AttributeUsageAttribute是否AllowMultiple
         /// </summary>
         /// <param name="type"></param>
