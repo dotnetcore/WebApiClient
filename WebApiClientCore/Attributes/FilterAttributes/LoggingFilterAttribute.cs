@@ -53,13 +53,14 @@ namespace WebApiClientCore.Attributes
                 var request = context.HttpContext.RequestMessage;
                 logMessage.RequestHeaders = request.GetHeadersString();
 
-                if (request.Content is ICustomTracable httpContent)
+                var httpContent = request.Content;
+                if (httpContent != null)
                 {
+                    if (httpContent is ICustomHttpContentConvertable convertable)
+                    {
+                        httpContent = convertable.ToCustomHttpContext();
+                    }
                     logMessage.RequestContent = await httpContent.ReadAsStringAsync().ConfigureAwait(false);
-                }
-                else if (request.Content != null)
-                {
-                    logMessage.RequestContent = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
             }
 

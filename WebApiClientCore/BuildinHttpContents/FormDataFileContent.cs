@@ -7,7 +7,7 @@ namespace WebApiClientCore
     /// <summary>
     /// 表示文件内容
     /// </summary>
-    class FormDataFileContent : StreamContent
+    class FormDataFileContent : StreamContent, ICustomHttpContentConvertable
     {
         /// <summary>
         /// 文件内容
@@ -40,7 +40,7 @@ namespace WebApiClientCore
         /// 转换为省略内容的HttpContent
         /// </summary>
         /// <returns></returns>
-        public HttpContent ToEllipsisContent()
+        public HttpContent ToCustomHttpContext()
         {
             return new EllipsisContent(this);
         }
@@ -53,14 +53,14 @@ namespace WebApiClientCore
             /// <summary>
             /// 省略号内容
             /// </summary>
-            private static readonly byte[] ellipsisContent = new[] { (byte)'.', (byte)'.', (byte)'.' };
+            private static readonly byte[] content = new[] { (byte)'.', (byte)'.', (byte)'.' };
 
             /// <summary>
             /// 省略内容的文件请求内容
             /// </summary>
             /// <param name="fileContent">文件内容</param>
             public EllipsisContent(FormDataFileContent fileContent)
-                : base(ellipsisContent)
+                : base(content)
             {
                 this.Headers.ContentDisposition = fileContent.Headers.ContentDisposition;
                 this.Headers.ContentType = fileContent.Headers.ContentType;

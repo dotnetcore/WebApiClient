@@ -1,4 +1,4 @@
-﻿namespace WebApiClientCore
+﻿namespace WebApiClientCore.Attributes
 {
     /// <summary>
     /// 定义支持Encoding的配置
