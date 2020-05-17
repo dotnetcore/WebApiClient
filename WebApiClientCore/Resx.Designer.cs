@@ -268,15 +268,6 @@ namespace WebApiClientCore {
         }
         
         /// <summary>
-        ///   查找类似 不支持手动设置Cookie 的本地化字符串。
-        /// </summary>
-        internal static string unsupported_ManaulCookie {
-            get {
-                return ResourceManager.GetString("unsupported_ManaulCookie", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   查找类似 不支持属性访问器: {0} 的本地化字符串。
         /// </summary>
         internal static string unsupported_Property {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using WebApiClientCore.Exceptions;
 
 namespace WebApiClientCore.Attributes
 {
@@ -85,7 +84,10 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public override Task OnRequestAsync(ApiRequestContext context)
         {
-            this.SetHeaderValue(context.HttpContext, this.value);
+            if (string.IsNullOrEmpty(this.value) == false)
+            {
+                context.HttpContext.RequestMessage.Headers.TryAddWithoutValidation(this.name, this.value);
+            }
             return Task.CompletedTask;
         }
 
@@ -98,29 +100,12 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public Task OnRequestAsync(ApiParameterContext context, Func<Task> next)
         {
-            this.SetHeaderValue(context.HttpContext, context.ParameterValue?.ToString());
+            var headerValue = context.ParameterValue?.ToString();
+            if (string.IsNullOrEmpty(headerValue) == false)
+            {
+                context.HttpContext.RequestMessage.Headers.TryAddWithoutValidation(this.name, headerValue);
+            }
             return next();
-        }
-
-        /// <summary>
-        /// 设置请求头
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="headerValue"></param>
-        /// <exception cref="HttpApiInvalidOperationException"></exception>
-        private void SetHeaderValue(HttpContext context, string headerValue)
-        {
-            if (string.Equals(this.name, "Cookie", StringComparison.OrdinalIgnoreCase))
-            {
-                throw new HttpApiInvalidOperationException(Resx.unsupported_ManaulCookie);
-            }
-
-            var headers = context.RequestMessage.Headers;
-            headers.Remove(this.name);
-            if (headerValue != null)
-            {
-                headers.TryAddWithoutValidation(this.name, headerValue);
-            }
         }
     }
 }

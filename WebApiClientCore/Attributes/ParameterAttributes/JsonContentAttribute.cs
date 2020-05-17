@@ -12,7 +12,7 @@
         /// <param name="context">上下文</param>
         protected override void SetHttpContent(ApiParameterContext context)
         {
-            var utf8Json = context.SerializeToJson();
+            var utf8Json = context.SerializeParameterToJson();
             context.HttpContext.RequestMessage.Content = new JsonContent(utf8Json);
         }
     }

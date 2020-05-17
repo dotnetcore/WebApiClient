@@ -186,9 +186,6 @@
   <data name="unsupported_GenericMethod" xml:space="preserve">
     <value>不支持泛型方法: {0}</value>
   </data>
-  <data name="unsupported_ManaulCookie" xml:space="preserve">
-    <value>不支持手动设置Cookie</value>
-  </data>
   <data name="unsupported_Property" xml:space="preserve">
     <value>不支持属性访问器: {0}</value>
   </data>
