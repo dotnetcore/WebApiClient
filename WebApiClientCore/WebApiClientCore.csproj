@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 
-    <Version>1.0.0-alpha5</Version>
+    <Version>1.0.0-alpha6</Version>
     <Authors>laojiu</Authors>
     <Company>laojiu</Company>
     <Product>WebApiClientCore</Product>
@@ -15,8 +15,8 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance> 
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/xljiulang/WebApiClientCore</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/dotnetcore/WebApiClient/master/icon.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/dotnetcore/WebApiClient</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/dotnetcore/WebApiClient/WebApiClient.JITAOT/icon.png</PackageIconUrl>
 
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Sign.snk</AssemblyOriginatorKeyFile>
