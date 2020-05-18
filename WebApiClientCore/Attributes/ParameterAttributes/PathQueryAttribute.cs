@@ -10,7 +10,7 @@ namespace WebApiClientCore.Attributes
     /// 使用KeyValueFormatter序列化参数值得到的键值对作为url路径参数或query参数的特性
     /// 没有任何特性修饰的参数，将默认被PathQueryAttribute修饰
     /// </summary>
-    public class PathQueryAttribute : ApiParameterAttribute, IEncodingable
+    public class PathQueryAttribute : ApiParameterAttribute, IEncodingable, ICollectionFormatable
     {
         /// <summary>
         /// 编码
@@ -39,7 +39,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <exception cref="HttpApiInvalidOperationException"></exception>
         /// <returns></returns>
-        public sealed override Task OnRequestAsync(ApiParameterContext context)
+        public override Task OnRequestAsync(ApiParameterContext context)
         {
             var uri = context.HttpContext.RequestMessage.RequestUri;
             if (uri == null)
@@ -48,17 +48,17 @@ namespace WebApiClientCore.Attributes
             }
 
             var keyValues = context.SerializeToKeyValues().CollectAs(this.CollectionFormat);
-            context.HttpContext.RequestMessage.RequestUri = this.UsePathQuery(uri, keyValues);
+            context.HttpContext.RequestMessage.RequestUri = this.CreateUri(uri, keyValues);
             return Task.CompletedTask;
         }
 
         /// <summary>
-        /// url添加query或替换segment
+        /// 创建新的uri
         /// </summary>
-        /// <param name="uri">url</param>
+        /// <param name="uri">原始uri</param>
         /// <param name="keyValues">键值对</param>
         /// <returns></returns>
-        protected virtual Uri UsePathQuery(Uri uri, IEnumerable<KeyValue> keyValues)
+        protected virtual Uri CreateUri(Uri uri, IEnumerable<KeyValue> keyValues)
         {
             var editor = new UriEditor(uri, this.encoding);
             foreach (var keyValue in keyValues)

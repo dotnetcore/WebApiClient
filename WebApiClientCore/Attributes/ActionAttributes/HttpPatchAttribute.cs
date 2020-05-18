@@ -9,15 +9,10 @@ namespace WebApiClientCore.Attributes
     public sealed class HttpPatchAttribute : HttpMethodAttribute
     {
         /// <summary>
-        /// 表示patch请求方式
-        /// </summary>
-        private static readonly HttpMethod patchMethod = new HttpMethod("PATCH");
-
-        /// <summary>
         /// Patch请求
         /// </summary>
         public HttpPatchAttribute()
-            : base(patchMethod)
+            : base(HttpMethod.Patch)
         {
         }
 
@@ -26,7 +21,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="path">请求绝对或相对路径</param>
         public HttpPatchAttribute(string path)
-            : base(patchMethod, path)
+            : base(HttpMethod.Patch, path)
         {
         }
     }
