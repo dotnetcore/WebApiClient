@@ -1,76 +1,18 @@
-## WebApiClient 　　　　　　　　　　　　　　　　　　　
-### 1 Nuget包
-
-> WebApiClient.JIT
-
-    PM> install-package WebApiClient.JIT
-* 不适用于不支持JIT技术的平台(IOS、UWP)；
-* Http接口声明要求为public；
-
-
-> WebApiClient.AOT
-
-    PM> install-package WebApiClient.AOT
-* 适用于不支持JIT技术的平台(IOS、UWP)；
-* Http接口声明不要求为public，可以嵌套在类里面；
-
-
-### 2. Http请求
-> 接口的声明
-
-```c#
-public interface IUserApi : IHttpApi
-{
-    // GET api/user?account=laojiu
-    // Return json或xml内容
-    [HttpGet("api/user")]
-    ITask<UserInfo> GetAsync(string account);
-
-    // POST api/user  
-    // Body Account=laojiu&password=123456
-    // Return json或xml内容
-    [HttpPost("api/user")]
-    ITask<boo> AddAsync([FormContent] UserInfo user);
-}
-```
+## WebApiClientCore 　　　　　　　　　　　　　　　　　　　
+[WebApiClient](https://github.com/dotnetcore/WebApiClient/tree/WebApiClient.JITAOT)的.netcore版本，目前尚属于alpha阶段，计划只支持.netcore平台，并紧密与.netcore新特性紧密结合。
  
-> 接口的配置
+### 项目原因
+ 
+1. WebApiClient很优秀，它将不同框架不同平台都实现了统一的api
+2. WebApiClient不够优秀，它在.netcore下完全可以更好，但它不得不兼容.net45开始所有框架而有所牺牲
 
-```c#
-HttpApi.Register<IUserApi>().ConfigureHttpApiConfig(c =>
-{
-    c.HttpHost = new Uri("http://www.webapiclient.com/");
-    c.FormatOptions.DateTimeFormat = DateTimeFormats.ISO8601_WithMillisecond;
-});;
-```
 
-> 接口的调用
-
-```c#
-var api = HttpApi.Resolve<IUserApi>();
-var user = new UserInfo { Account = "laojiu", Password = "123456" }; 
-var user1 = await api.GetAsync("laojiu");
-var state = await api.AddAsync(user);
-``` 
-
-#### 3. Api变化
-> 相对于[v0.3.6](https://github.com/dotnetcore/WebApiClient/tree/v0.3.6)或以前版本，Api有如下变化 
-
-* ~~HttpApiClient.Create()~~ -> HttpApi.Create()
-* ~~HttpApiFactory.Add()~~ -> HttpApi.Register()
-* ~~HttpApiFactory.Create()~~ -> HttpApi.Resolve()
-* ~~Timeout~~
-* ~~UrlAttribute~~
-* ~~DebugAttribute~~
-
-#### 4. Wiki文档
-1. [WebApiClient基础](https://github.com/dotnetcore/WebApiClient/wiki/WebApiClient%E5%9F%BA%E7%A1%80)
-2. [WebApiClient进阶](https://github.com/dotnetcore/WebApiClient/wiki/WebApiClient%E8%BF%9B%E9%98%B6)
-3. [WebApiClient高级](https://github.com/dotnetcore/WebApiClient/wiki/WebApiClient%E9%AB%98%E7%BA%A7)
-4. [WebApiClient.Extensions](https://github.com/xljiulang/WebApiClient.Extensions)
-5. [WebApiClient.Tools.Swagger](https://github.com/xljiulang/WebApiClient.Tools)
-
-#### 5. 联系方式
-1. 加Q群825135345 注明WeApiClient
-2. 邮箱366193849@qq.com，不重要的尽量不要发
-
+### 相对变化
+1. 将System.Text.Json替换Json.net
+2. 提升内置的HttpContent的性能
+3. 移除HttpApiFactory和HttApiConfig功能，使用DI和HttpClientFactory
+4. 移除AOT功能 
+5. 高效的ActionInvoker
+6. 所有特性都基于中间件思想开发
+7. 基于管道编排各个特性中间件
+8. 良好设计的HttpContext、ApiRequestContext、ApiParameterContext和ApiResponseContext
