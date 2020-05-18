@@ -8,12 +8,17 @@ namespace WebApiClientCore.JsonConverters
     /// <summary>
     /// 表示DateTime的本地格式化Json转换器
     /// </summary>
-    public class LocalDateTimeJsonConverter : JsonConverter<DateTime>
+    public class JsonLocalDateTimeConverter : JsonConverter<DateTime>
     {
         /// <summary>
         /// 获取O格式的默认实例
         /// </summary>
-        public static LocalDateTimeJsonConverter Default { get; } = new LocalDateTimeJsonConverter();
+        public static JsonLocalDateTimeConverter Default { get; } = new JsonLocalDateTimeConverter();
+
+        /// <summary>
+        /// 获取本设备的时间格式的实例
+        /// </summary>
+        public static JsonLocalDateTimeConverter LocalMachine { get; } = new JsonLocalDateTimeConverter($"{DateTimeFormatInfo.CurrentInfo.ShortDatePattern} {DateTimeFormatInfo.CurrentInfo.LongTimePattern}");
 
         /// <summary>
         /// 获取时间格式
@@ -25,10 +30,11 @@ namespace WebApiClientCore.JsonConverters
         /// </summary>      
         /// <param name="dateTimeFormat">时间格式</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public LocalDateTimeJsonConverter(string dateTimeFormat = "O")
+        public JsonLocalDateTimeConverter(string dateTimeFormat = "O")
         {
             this.DateTimeFormat = dateTimeFormat ?? throw new ArgumentNullException(nameof(dateTimeFormat));
         }
+
 
         /// <summary>
         /// 读取时间
