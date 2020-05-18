@@ -51,7 +51,7 @@ namespace App
             });
 
             // userApi客户端后台服务
-            services.AddHostedService<UserClientHostedService>(); 
+            services.AddScoped<UserService>().AddHostedService<UserHostedService>();
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace App
             else
             {
                 app.UseHsts();
-            } 
+            }
 
             app.UseRouting();
 

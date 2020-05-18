@@ -1,32 +1,21 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System;
-using System.Threading;
+﻿using System;
 using System.Threading.Tasks;
 using WebApiClientCore;
 using WebApiClientCore.Parameters;
 
 namespace App.Clients
 {
-    public class UserClientHostedService : BackgroundService
+    public class UserService
     {
-        private readonly IServiceProvider service;
+        private readonly IUserApi userApi;
 
-        public UserClientHostedService(IServiceProvider service)
+        public UserService(IUserApi userApi)
         {
-            this.service = service;
+            this.userApi = userApi;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public async Task RunRequestAsync()
         {
-            using var scope = this.service.CreateScope();
-            await this.RunAsync(scope.ServiceProvider);
-        }
-
-        private async Task RunAsync(IServiceProvider services)
-        {
-            var userApi = services.GetService<IUserApi>();
-
             var user = new User
             {
                 Account = "laojiu",
