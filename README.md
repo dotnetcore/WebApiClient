@@ -1,5 +1,5 @@
 ## WebApiClientCore 　　　　　　　　　　　　　　　　　　　
-[WebApiClient](https://github.com/dotnetcore/WebApiClient/tree/WebApiClient.JITAOT)的.netcore版本，目前尚属于alpha阶段，计划只支持.netcore平台，并紧密与.netcore新特性紧密结合。
+[WebApiClient.JIT](https://github.com/dotnetcore/WebApiClient/tree/WebApiClient.JITAOT)的.netcore版本，目前尚属于alpha阶段，计划只支持.netcore平台，并紧密与.netcore新特性紧密结合。
  
 ### 项目原因
  
