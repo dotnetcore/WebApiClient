@@ -8,6 +8,7 @@ namespace WebApiClientCore.OAuths
     /// <summary>
     /// 定义Token客户端的接口
     /// </summary>
+    [LoggingFilter]
     [JsonModelResult(EnsureMatchContentType = false, EnsureSuccessStatusCode = false)]
     public interface IOAuthClient : IHttpApi
     {

@@ -51,7 +51,7 @@ namespace WebApiClientCore.Attributes
             else if (this.token.IsExpired() == true)
             {
                 this.token = this.token.CanRefresh() == true
-                    ? await this.RefreshTokenAsync(context, this.token.RefreshToken).ConfigureAwait(false)
+                    ? await this.RefreshTokenAsync(context, this.token.Refresh_token).ConfigureAwait(false)
                     : await this.RequestTokenAsync(context).ConfigureAwait(false);
             }
 
@@ -71,8 +71,8 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected virtual void UseTokenResult(ApiRequestContext context, TokenResult tokenResult)
         {
-            var tokenType = tokenResult.TokenType ?? "Bearer";
-            context.HttpContext.RequestMessage.Headers.Authorization = new AuthenticationHeaderValue(tokenType, tokenResult.AccessToken);
+            var tokenType = tokenResult.Token_type ?? "Bearer";
+            context.HttpContext.RequestMessage.Headers.Authorization = new AuthenticationHeaderValue(tokenType, tokenResult.Access_token);
         }
 
         /// <summary>
