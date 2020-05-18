@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace WebApiClientCore.Attributes
 {
@@ -44,10 +45,12 @@ namespace WebApiClientCore.Attributes
         /// 设置参数到http请求内容
         /// </summary>
         /// <param name="context">上下文</param>
-        protected override void SetHttpContent(ApiParameterContext context)
-        { 
+        /// <returns></returns>
+        protected override Task SetHttpContentAsync(ApiParameterContext context)
+        {
             var xml = context.SerializeToXml(this.encoding);
             context.HttpContext.RequestMessage.Content = new XmlContent(xml, this.encoding);
+            return Task.CompletedTask;
         }
     }
 }

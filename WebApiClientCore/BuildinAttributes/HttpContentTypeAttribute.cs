@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Threading.Tasks;
 using WebApiClientCore.Attributes;
 using WebApiClientCore.Exceptions;
 
@@ -12,9 +13,9 @@ namespace WebApiClientCore
         /// <summary>
         /// 设置参数到http请求内容
         /// </summary>
-        /// <param name="context">上下文</param> 
-        /// <exception cref="HttpApiInvalidOperationException"></exception>
-        protected override void SetHttpContent(ApiParameterContext context)
+        /// <param name="context">上下文</param>
+        /// <returns></returns>
+        protected override Task SetHttpContentAsync(ApiParameterContext context)
         {
             if (context.HttpContext.RequestMessage.Content != null)
             {
@@ -34,6 +35,8 @@ namespace WebApiClientCore
                     throw new HttpApiInvalidOperationException(message);
                 }
             }
+
+            return Task.CompletedTask;
         }
     }
 }

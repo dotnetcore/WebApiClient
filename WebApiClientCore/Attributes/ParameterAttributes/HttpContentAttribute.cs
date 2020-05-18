@@ -31,18 +31,6 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        protected virtual Task SetHttpContentAsync(ApiParameterContext context)
-        {
-            this.SetHttpContent(context);
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// 设置参数到http请求内容
-        /// </summary>
-        /// <param name="context">上下文</param> 
-        protected virtual void SetHttpContent(ApiParameterContext context)
-        {
-        }
+        protected abstract Task SetHttpContentAsync(ApiParameterContext context);
     }
 }

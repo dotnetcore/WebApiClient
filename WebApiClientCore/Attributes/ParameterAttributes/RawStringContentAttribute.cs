@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace WebApiClientCore.Attributes
 {
@@ -43,14 +44,17 @@ namespace WebApiClientCore.Attributes
             this.mediaType = mediaType;
         }
 
+
         /// <summary>
         /// 设置参数到http请求内容
         /// </summary>
         /// <param name="context">上下文</param>
-        protected override void SetHttpContent(ApiParameterContext context)
+        /// <returns></returns>
+        protected override Task SetHttpContentAsync(ApiParameterContext context)
         {
             var content = context.ParameterValue?.ToString();
             context.HttpContext.RequestMessage.Content = new StringContent(content ?? string.Empty, this.encoding, this.mediaType);
+            return Task.CompletedTask;
         }
     }
 }
