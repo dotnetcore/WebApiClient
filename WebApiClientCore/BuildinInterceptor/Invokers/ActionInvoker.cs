@@ -48,11 +48,11 @@ namespace WebApiClientCore
         /// <param name="context">上下文</param>
         /// <param name="arguments">参数值</param>
         /// <returns></returns>
-        public Task<TResult> InvokeAsync(ServiceContext context, object[] arguments)
+        public async Task<TResult> InvokeAsync(ServiceContext context, object[] arguments)
         {
             using var httpContext = new HttpContext(context.Client, context.Services, context.Options);
             var requestContext = new ApiRequestContext(httpContext, this.apiAction, arguments);
-            return this.InvokeAsync(requestContext);
+            return await this.InvokeAsync(requestContext).ConfigureAwait(false);
         }
 
         /// <summary>

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using WebApiClientCore.OAuths;
 
 namespace App
 {
@@ -48,6 +49,17 @@ namespace App
             services.AddHttpApi<IUserApi>(o =>
             {
                 o.HttpHost = new Uri("http://localhost:6000/");
+            });
+
+            // 配置token获取选项
+            services.Configure<ClientCredentialsOptions<IUserApi>>(o =>
+            {
+                o.Endpoint = new Uri("http://localhost:6000/api/tokens");
+                o.Credentials = new ClientCredentials
+                {
+                    Client_id = "clientId",
+                    Client_secret = "xxyyzz"
+                };
             });
 
             // userApi客户端后台服务

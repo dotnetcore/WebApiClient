@@ -13,6 +13,7 @@ namespace App.Clients
     /// 用户操作接口
     /// </summary>
     [LoggingFilter]
+    [UserTokenFilter]
     [HttpHost("http://localhost:6000/")]
     public interface IUserApi : IHttpApi
     {
@@ -31,7 +32,7 @@ namespace App.Clients
         [HttpGet("api/users/{account}")]
         ITask<User> GetAsModelAsync([Required]string account, CancellationToken token = default);
 
-               
+
 
         [HttpPost("api/users/body")]
         Task<User> PostByJsonAsync([Required, JsonContent]User user, CancellationToken token = default);

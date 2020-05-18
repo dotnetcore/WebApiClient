@@ -17,7 +17,7 @@ namespace WebApiClientCore.OAuths
         /// <summary>
         /// 获取或设置Client身份信息
         /// </summary>
-        public PasswordCredentials Credentials { get; set; }
+        public PasswordCredentials Credentials { get; set; } = new PasswordCredentials();
     }
 
     /// <summary>
