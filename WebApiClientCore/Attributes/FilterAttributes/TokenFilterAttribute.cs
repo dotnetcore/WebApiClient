@@ -2,7 +2,7 @@
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
-using WebApiClientCore.Tokens;
+using WebApiClientCore.OAuths;
 
 namespace WebApiClientCore.Attributes
 {
@@ -51,7 +51,7 @@ namespace WebApiClientCore.Attributes
             else if (this.token.IsExpired() == true)
             {
                 this.token = this.token.CanRefresh() == true
-                    ? await this.RequestRefreshTokenAsync(context, this.token.RefreshToken).ConfigureAwait(false)
+                    ? await this.RefreshTokenAsync(context, this.token.RefreshToken).ConfigureAwait(false)
                     : await this.RequestTokenAsync(context).ConfigureAwait(false);
             }
 
@@ -60,15 +60,6 @@ namespace WebApiClientCore.Attributes
                 throw new HttpApiTokenException(Resx.cannot_GetToken);
             }
             this.token.EnsureSuccess();
-        }
-
-        /// <summary>
-        /// 清除Token
-        /// 迫使下次请求将重新获取token
-        /// </summary>
-        protected void ClearToken()
-        {
-            this.token = null;
         }
 
         /// <summary>
@@ -99,6 +90,6 @@ namespace WebApiClientCore.Attributes
         /// <param name="context"></param>
         /// <param name="refresh_token">获取token时返回的refresh_token</param>
         /// <returns></returns>
-        protected abstract Task<TokenResult> RequestRefreshTokenAsync(ApiRequestContext context, string refresh_token);
+        protected abstract Task<TokenResult> RefreshTokenAsync(ApiRequestContext context, string refresh_token);
     }
 }

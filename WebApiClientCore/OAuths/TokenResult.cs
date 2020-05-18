@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using WebApiClientCore.Exceptions;
 
-namespace WebApiClientCore.Tokens
+namespace WebApiClientCore.OAuths
 {
     /// <summary>
     /// 表示Token结果
