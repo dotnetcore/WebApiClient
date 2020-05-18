@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="cannot_GetToken" xml:space="preserve">
+    <value>获取不到token</value>
+  </data>
+  <data name="contenType_RemainAs" xml:space="preserve">
+    <value>Content-Type必须保持为{0}</value>
+  </data>
+  <data name="failure_StatusCode" xml:space="preserve">
+    <value>服务器响应了错误的http状态码：{0} {1}</value>
+  </data>
+  <data name="invalid_UriAttribute" xml:space="preserve">
+    <value>UriAttribute必须修饰于第一个参数</value>
+  </data>
+  <data name="missing_Ctor" xml:space="preserve">
+    <value>类型{0}不存在构造函数.ctor({1})</value>
+  </data>
+  <data name="outof_MaxLimited" xml:space="preserve">
+    <value>重试已经达到了最大次数限制：{0}</value>
+  </data>
+  <data name="parameter_CannotCvtTimeout" xml:space="preserve">
+    <value>无法将参数{0}转换为Timeout</value>
+  </data>
+  <data name="parameter_CannotMissing" xml:space="preserve">
+    <value>请传入{0}参数</value>
+  </data>
+  <data name="parameter_MustbeHttpContenType" xml:space="preserve">
+    <value>参数{0}必须为HttpContent类型</value>
+  </data>
+  <data name="parameter_MustPutForward" xml:space="preserve">
+    <value>参数{0}必须置前</value>
+  </data>
+  <data name="required_AbsoluteUri" xml:space="preserve">
+    <value>{0}要求为绝对Uri</value>
+  </data>
+  <data name="required_HttpHost" xml:space="preserve">
+    <value>未配置HttpHost，接口需要先配置HttpHost</value>
+  </data>
+  <data name="required_InterfaceType" xml:space="preserve">
+    <value>类型{0}必须为接口类型</value>
+  </data>
+  <data name="required_NameAndValue" xml:space="preserve">
+    <value>请传入name和value参数</value>
+  </data>
+  <data name="required_PatchMethod" xml:space="preserve">
+    <value>JsonPatchContent的请求方法要求为PATCH</value>
+  </data>
+  <data name="required_PublicInterface" xml:space="preserve">
+    <value>接口必须为public修饰：{0}</value>
+  </data>
+  <data name="required_RequestUri" xml:space="preserve">
+    <value>未配置RequestUri，RequestUri不能为null</value>
+  </data>
+  <data name="timeout_OutOfRange" xml:space="preserve">
+    <value>Timeout值{0}不能超时HttpClient.Timeout</value>
+  </data>
+  <data name="unexpected_Result" xml:space="preserve">
+    <value>结果不符合预期值</value>
+  </data>
+  <data name="unspported_ContentType" xml:space="preserve">
+    <value>不支持将ContentType为 {0} 的内容转换为{1}</value>
+  </data>
+  <data name="unspported_HttpContent" xml:space="preserve">
+    <value>{0}方法不支持使用{1}</value>
+  </data>
+  <data name="unsupported_ByRef" xml:space="preserve">
+    <value>接口参数不支持ref/out修饰: {0}</value>
+  </data>
+  <data name="unsupported_GenericMethod" xml:space="preserve">
+    <value>不支持泛型方法: {0}</value>
+  </data>
+  <data name="unsupported_Property" xml:space="preserve">
+    <value>不支持属性访问器: {0}</value>
+  </data>
+  <data name="unsupported_ReturnType" xml:space="preserve">
+    <value>返回类型必须为Task、Task&lt;&gt;或ITask&lt;&gt;: {0}</value>
+  </data>
+  <data name="unsupported_SetContent" xml:space="preserve">
+    <value>由于使用了{0}的请求方法，不支持设置RequestMessage.Content</value>
+  </data>
+</root>
