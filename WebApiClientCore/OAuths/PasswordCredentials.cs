@@ -1,7 +1,7 @@
 ﻿namespace WebApiClientCore.OAuths
 {
     /// <summary>
-    /// 表示账号密码身份信息
+    /// 表示用户名密码身份信息
     /// </summary>
     public class PasswordCredentials : ClientCredentials
     {

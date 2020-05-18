@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace WebApiClientCore.OAuths
 {
     /// <summary>
-    /// 表示账号密码身份信息选项
+    /// 表示用户名密码身份信息选项
     /// </summary>
     public class PasswordCredentialsOptions
     {

@@ -4,9 +4,9 @@ using WebApiClientCore.OAuths;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 表示提供client_credentials方式的token过滤器抽象
+    /// 表示提供client_credentials身份方式的token过滤器抽象
     /// </summary>
-    public abstract class ClientCredentialsTokenFilterAttribue : TokenFilterAttribute
+    public abstract class ClientTokenFilterAttribue : TokenFilterAttribute
     {
         /// <summary>
         /// 使用OAuthClient请求获取token
