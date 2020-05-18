@@ -49,7 +49,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="context">请求上下文</param>
         public ApiResponseContext(ApiRequestContext context)
-            : base(context.HttpContext, context.ApiAction, context.Arguments, context.Tags, context.CancellationTokens)
+            : base(context.HttpContext, context.ApiAction, context.Arguments, context.UserDatas, context.CancellationTokens)
         {
         }
 

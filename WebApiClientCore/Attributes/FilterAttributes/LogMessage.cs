@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -8,7 +7,6 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示日志消息
     /// </summary>
-    [DebuggerDisplay("Elapsed = {ResponseTime.Subtract(RequestTime)}")]
     public class LogMessage
     {
         /// <summary>

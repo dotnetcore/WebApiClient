@@ -12,11 +12,6 @@ namespace WebApiClientCore.Attributes
     public class LoggingFilterAttribute : ApiFilterAttribute
     {
         /// <summary>
-        /// tag的key
-        /// </summary>
-        private static readonly string tagKey = nameof(LoggingFilterAttribute);
-
-        /// <summary>
         /// 获取或设置是否输出请求内容
         /// </summary>
         public bool LogRequest { get; set; } = true;
@@ -54,7 +49,7 @@ namespace WebApiClientCore.Attributes
                 logMessage.RequestContent = await this.ReadRequestContentAsync(request.Content).ConfigureAwait(false);
             }
 
-            context.Tags.Set(tagKey, logMessage);
+            context.UserDatas.Set(typeof(LoggingFilterAttribute), logMessage);
         }
 
 
@@ -67,7 +62,7 @@ namespace WebApiClientCore.Attributes
         public sealed async override Task OnResponseAsync(ApiResponseContext context)
         {
             var response = context.HttpContext.ResponseMessage;
-            var logMessage = context.Tags.Take(tagKey).As<LogMessage>();
+            var logMessage = context.UserDatas.Get<LogMessage>(typeof(LoggingFilterAttribute));
 
             logMessage.ResponseTime = DateTime.Now;
             logMessage.Exception = context.Exception;
