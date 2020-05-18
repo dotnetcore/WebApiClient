@@ -14,6 +14,11 @@ namespace WebApiClientCore
     public class ApiActionDescriptor
     {
         /// <summary>
+        /// 获取描述的唯一标识
+        /// </summary>
+        public string Id { get; protected set; }
+
+        /// <summary>
         /// 获取Api名称
         /// </summary>
         public string Name { get; protected set; }
@@ -55,6 +60,11 @@ namespace WebApiClientCore
         public ApiReturnDescriptor Return { get; protected set; }
 
         /// <summary>
+        /// 获取自定义数据存储的字典
+        /// </summary>
+        public IDictionary<object, object> Properties { get; protected set; }
+
+        /// <summary>
         /// 请求Api描述
         /// </summary>
         /// <param name="method">接口的方法</param>
@@ -87,6 +97,7 @@ namespace WebApiClientCore
                 .Distinct(new MultiplableComparer<IApiResultAttribute>())
                 .ToReadOnlyList();
 
+            this.Id = Guid.NewGuid().ToString();
             this.Member = method;
             this.Name = method.Name;
             this.Attributes = actionAttributes;
@@ -96,6 +107,7 @@ namespace WebApiClientCore
 
             this.Return = new ApiReturnDescriptor(method);
             this.Parameters = method.GetParameters().Select(p => new ApiParameterDescriptor(p)).ToReadOnlyList();
+            this.Properties = new Dictionary<object, object>();
         }
 
         /// <summary>
