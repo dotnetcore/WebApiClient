@@ -10,11 +10,21 @@ namespace App.Clients
     /// </summary>
     class UserTokenFilterAttribute : TokenFilterAttribute
     {
+        /// <summary>
+        /// 获取token提供者
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         protected override TokenProvider GetTokenProvider(ApiRequestContext context)
         {
             return context.HttpContext.Services.GetRequiredService<ClientCredentialsTokenProvider<IUserApi>>();
         }
 
+        /// <summary>
+        /// 应用token
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="tokenResult"></param>
         protected override void UseTokenResult(ApiRequestContext context, TokenResult tokenResult)
         {
             base.UseTokenResult(context, tokenResult);

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
 
@@ -15,20 +17,33 @@ namespace WebApiClientCore.OAuths
         private TokenResult token;
 
         /// <summary>
+        /// 服务提供者
+        /// </summary>
+        private readonly IServiceProvider services;
+
+        /// <summary>
         /// 异步锁
         /// </summary>
         private readonly AsyncRoot asyncRoot = new AsyncRoot();
 
         /// <summary>
-        /// 获取token信息
+        /// Token提供者抽象类
         /// </summary>
-        /// <param name="context">请求上下文</param>
+        /// <param name="services"></param>
+        public TokenProvider(IServiceProvider services)
+        {
+            this.services = services;
+        }
+
+        /// <summary>
+        /// 获取token信息
+        /// </summary> 
         /// <returns></returns>
-        public async Task<TokenResult> GetTokenAsync(HttpContext context)
+        public async Task<TokenResult> GetTokenAsync()
         {
             using (await this.asyncRoot.LockAsync().ConfigureAwait(false))
             {
-                await this.InitOrRefreshTokenAsync(context).ConfigureAwait(false);
+                await this.InitOrRefreshTokenAsync().ConfigureAwait(false);
             }
             return this.token;
         }
@@ -36,22 +51,19 @@ namespace WebApiClientCore.OAuths
         /// <summary>
         /// 初始化或刷新token
         /// </summary>
-        /// <exception cref="HttpApiTokenException"></exception>
-        /// <param name="context"></param>
+        /// <exception cref="HttpApiTokenException"></exception> 
         /// <returns></returns>
-        private async Task InitOrRefreshTokenAsync(HttpContext context)
+        private async Task InitOrRefreshTokenAsync()
         {
             if (this.token == null)
             {
-                var oathClient = this.CreateOAuthClient(context);
-                this.token = await this.RequestTokenAsync(oathClient).ConfigureAwait(false);
+                this.token = await this.RequestTokenAsync().ConfigureAwait(false);
             }
             else if (this.token.IsExpired() == true)
             {
-                var oathClient = this.CreateOAuthClient(context);
                 this.token = this.token.CanRefresh() == true
-                    ? await this.RefreshTokenAsync(oathClient, this.token.Refresh_token).ConfigureAwait(false)
-                    : await this.RequestTokenAsync(oathClient).ConfigureAwait(false);
+                    ? await this.RefreshTokenAsync(this.token.Refresh_token).ConfigureAwait(false)
+                    : await this.RequestTokenAsync().ConfigureAwait(false);
             }
 
             if (this.token == null)
@@ -62,34 +74,29 @@ namespace WebApiClientCore.OAuths
         }
 
         /// <summary>
-        /// 创建用于请求Token的客户端
-        /// </summary>
-        /// <param name="context"></param>
+        /// 创建OAuth客户端
+        /// </summary> 
         /// <returns></returns>
-        private IOAuthClient CreateOAuthClient(HttpContext context)
+        protected IOAuthClient CreateOAuthClient()
         {
             var options = new HttpApiOptions();
             options.KeyValueSerializeOptions.IgnoreNullValues = true;
-            return HttpApi.Create<IOAuthClient>(context.Client, context.Services, options);
+            var client = this.services.GetRequiredService<IHttpClientFactory>().CreateClient();
+            return HttpApi.Create<IOAuthClient>(client, services, options);
         }
-
 
         /// <summary>
         /// 请求获取token
-        /// </summary>
-        /// <param name="oauthClient"></param>
+        /// </summary> 
         /// <returns></returns>
-        protected abstract Task<TokenResult> RequestTokenAsync(IOAuthClient oauthClient);
-
+        protected abstract Task<TokenResult> RequestTokenAsync();
 
         /// <summary>
         /// 刷新token
-        /// </summary>
-        /// <param name="oauthClient"></param> 
+        /// </summary> 
         /// <param name="refresh_token">刷新token</param>
         /// <returns></returns>
-        protected abstract Task<TokenResult> RefreshTokenAsync(IOAuthClient oauthClient, string refresh_token);
-
+        protected abstract Task<TokenResult> RefreshTokenAsync(string refresh_token);
 
         /// <summary>
         /// 释放资源

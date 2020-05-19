@@ -29,8 +29,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services)
         {
-            services.TryAddSingleton<ClientCredentialsTokenProvider<THttpApi>>();
+            services.AddHttpClient();
             services.AddOptions<ClientCredentialsOptions<THttpApi>>();
+            services.TryAddSingleton<ClientCredentialsTokenProvider<THttpApi>>();
             return services;
         }
 
@@ -54,10 +55,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddPasswordCredentialsTokenProvider<THttpApi>(this IServiceCollection services)
         {
-            services.TryAddSingleton<PasswordCredentialsOptions<THttpApi>>();
+            services.AddHttpClient();
             services.AddOptions<PasswordCredentialsOptions<THttpApi>>();
+            services.TryAddSingleton<PasswordCredentialsOptions<THttpApi>>();
             return services;
         }
-
     }
 }

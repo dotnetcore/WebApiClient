@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using System;
 using System.Threading.Tasks;
 
 namespace WebApiClientCore.OAuths
@@ -10,39 +11,39 @@ namespace WebApiClientCore.OAuths
     public class PasswordCredentialsTokenProvider<THttpApi> : TokenProvider
     {
         /// <summary>
-        /// 选项
+        /// 身份信息选项
         /// </summary>
-        private readonly IOptions<PasswordCredentialsOptions<THttpApi>> options;
+        private readonly IOptions<PasswordCredentialsOptions<THttpApi>> credentialsOptions;
 
         /// <summary>
         /// 用户名密码身份信息token提供者
         /// </summary>
-        /// <param name="options"></param>
-        public PasswordCredentialsTokenProvider(IOptions<PasswordCredentialsOptions<THttpApi>> options)
+        /// <param name="services"></param>
+        /// <param name="credentialsOptions"></param>
+        public PasswordCredentialsTokenProvider(IServiceProvider services, IOptions<PasswordCredentialsOptions<THttpApi>> credentialsOptions)
+            : base(services)
         {
-            this.options = options;
+            this.credentialsOptions = credentialsOptions;
         }
 
         /// <summary>
         /// 请求获取token
-        /// </summary>
-        /// <param name="oauthClient"></param>
+        /// </summary> 
         /// <returns></returns>
-        protected override Task<TokenResult> RequestTokenAsync(IOAuthClient oauthClient)
+        protected override Task<TokenResult> RequestTokenAsync()
         {
-            var options = this.options.Value;
-            return oauthClient.RequestTokenAsync(options.Endpoint, options.Credentials);
+            var options = this.credentialsOptions.Value;
+            return this.CreateOAuthClient().RequestTokenAsync(options.Endpoint, options.Credentials);
         }
 
         /// <summary>
         /// 请求刷新token
-        /// </summary>
-        /// <param name="oauthClient"></param> 
+        /// </summary> 
         /// <param name="refresh_token">刷新token</param>
         /// <returns></returns>
-        protected override Task<TokenResult> RefreshTokenAsync(IOAuthClient oauthClient, string refresh_token)
+        protected override Task<TokenResult> RefreshTokenAsync(string refresh_token)
         {
-            var options = this.options.Value;
+            var options = this.credentialsOptions.Value;
             var credentials = new RefreshTokenCredentials
             {
                 Client_id = options.Credentials.Client_id,
@@ -51,7 +52,7 @@ namespace WebApiClientCore.OAuths
                 Refresh_token = refresh_token
             };
 
-            return oauthClient.RefreshTokenAsync(options.Endpoint, credentials);
+            return this.CreateOAuthClient().RefreshTokenAsync(options.Endpoint, credentials);
         }
     }
 }

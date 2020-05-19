@@ -19,7 +19,7 @@ namespace WebApiClientCore.Attributes
         public sealed override async Task OnRequestAsync(ApiRequestContext context)
         {
             var provider = this.GetTokenProvider(context);
-            var token = await provider.GetTokenAsync(context.HttpContext).ConfigureAwait(false);
+            var token = await provider.GetTokenAsync().ConfigureAwait(false);
             this.UseTokenResult(context, token);
         }
 
