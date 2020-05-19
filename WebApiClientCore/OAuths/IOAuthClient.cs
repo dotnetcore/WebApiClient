@@ -11,7 +11,7 @@ namespace WebApiClientCore.OAuths
     /// </summary>
     [LoggingFilter]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    [JsonModelResult(EnsureMatchContentType = false, EnsureSuccessStatusCode = false)]
+    [JsonModelResult(EnsureMatchAcceptContentType = false, EnsureSuccessStatusCode = false)]
     public interface IOAuthClient
     {
         /// <summary>

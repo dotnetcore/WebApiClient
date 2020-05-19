@@ -15,9 +15,9 @@ namespace WebApiClientCore.Attributes
         protected MediaTypeWithQualityHeaderValue AcceptContentType { get; }
 
         /// <summary>
-        /// 获取或设置是否必须匹配响应的ContentType
+        /// 获取或设置是否确保响应的ContentType与指定可接受的ContentType一致
         /// </summary>
-        public bool EnsureMatchContentType { get; set; } = true;
+        public bool EnsureMatchAcceptContentType { get; set; } = true;
 
         /// <summary>
         /// 强类型模型结果抽象特性
@@ -50,10 +50,10 @@ namespace WebApiClientCore.Attributes
                 return;
             }
 
-            if (this.EnsureMatchContentType == true)
+            if (this.EnsureMatchAcceptContentType == true)
             {
                 var contenType = context.HttpContext.ResponseMessage.Content.Headers.ContentType;
-                if (this.IsMatchContentType(contenType) == false)
+                if (this.IsMatchAcceptContentType(contenType) == false)
                 {
                     return;
                 }
@@ -63,11 +63,11 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 验证ContentType是否匹配
+        /// 验证响应的ContentType与AcceptContentType是否匹配
         /// </summary>
         /// <param name="responseContentType"></param>
         /// <returns></returns>
-        protected virtual bool IsMatchContentType(MediaTypeHeaderValue responseContentType)
+        protected virtual bool IsMatchAcceptContentType(MediaTypeHeaderValue responseContentType)
         {
             var mediaType = responseContentType?.MediaType;
             return this.AcceptContentType.MediaType.StartsWith(mediaType, StringComparison.OrdinalIgnoreCase);
