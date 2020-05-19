@@ -7,15 +7,32 @@ using WebApiClientCore.Exceptions;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 回复内容处理特性抽象
+    /// 表示响应内容处理的抽象特性
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public abstract class ApiResultAttribute : Attribute, IApiResultAttribute
     {
         /// <summary>
-        /// 获取或设置顺序排序的索引
+        /// 获取接受的媒体类型
         /// </summary>
-        public int OrderIndex { get; set; }
+        protected MediaTypeWithQualityHeaderValue AcceptContentType { get; }
+
+        /// <summary>
+        /// 获取或设置过滤器的执行排序索引
+        /// </summary>
+        int IAttributeMultiplable.OrderIndex
+        {
+            get
+            {
+                var quality = this.AcceptContentType?.Quality ?? 0d;
+                return (int)((1d - quality) * int.MaxValue);
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置是否启用
+        /// </summary>
+        public bool Enable { get; set; } = true;
 
         /// <summary>
         /// 获取本类型是否允许在接口与方法上重复
@@ -30,6 +47,21 @@ namespace WebApiClientCore.Attributes
         public bool EnsureSuccessStatusCode { get; set; } = true;
 
         /// <summary>
+        /// 获取或设置是否确保响应的ContentType与指定的Accpet-ContentType一致
+        /// 默认为true
+        /// </summary>
+        public bool EnsureMatchAcceptContentType { get; set; } = true;
+
+        /// <summary>
+        /// 响应内容处理的抽象特性
+        /// </summary>
+        /// <param name="accpetContentType">收受的内容类型</param>
+        public ApiResultAttribute(MediaTypeWithQualityHeaderValue accpetContentType)
+        {
+            this.AcceptContentType = accpetContentType;
+        }
+
+        /// <summary>
         /// 执行前
         /// </summary>
         /// <param name="context">上下文</param>
@@ -37,7 +69,10 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public Task OnRequestAsync(ApiRequestContext context, Func<Task> next)
         {
-            this.ConfigureAccept(context.HttpContext.RequestMessage.Headers.Accept);
+            if (this.Enable == true && this.AcceptContentType != null)
+            {
+                context.HttpContext.RequestMessage.Headers.Accept.Add(this.AcceptContentType);
+            }
             return next();
         }
 
@@ -49,18 +84,18 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public async Task OnResponseAsync(ApiResponseContext context, Func<Task> next)
         {
-            if (context.ResultStatus == ResultStatus.None)
+            if (this.Enable &&
+                context.ResultStatus == ResultStatus.None &&
+                this.UseSuccessStatusCode(context) &&
+                this.UseMatchAcceptContentType(context))
             {
-                if (this.UseSuccessStatusCode(context) == true)
+                try
                 {
-                    try
-                    {
-                        await this.SetResultAsync(context).ConfigureAwait(false);
-                    }
-                    catch (Exception ex)
-                    {
-                        context.Exception = ex;
-                    }
+                    await this.SetResultAsync(context).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    context.Exception = ex;
                 }
             }
 
@@ -87,6 +122,24 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
+        /// 应用匹配ContentType
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private bool UseMatchAcceptContentType(ApiResponseContext context)
+        {
+            if (this.EnsureMatchAcceptContentType == true && this.AcceptContentType != null)
+            {
+                var contenType = context.HttpContext.ResponseMessage.Content.Headers.ContentType;
+                if (this.IsMatchAcceptContentType(contenType) == false)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
         /// 指示状态码是否为成功的状态码
         /// </summary>
         /// <param name="statusCode">状态码</param>
@@ -98,10 +151,15 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 配置请求头的accept
+        /// 验证响应的ContentType与AcceptContentType是否匹配
         /// </summary>
-        /// <param name="accept">请求头的accept</param>
-        public abstract void ConfigureAccept(HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> accept);
+        /// <param name="responseContentType"></param>
+        /// <returns></returns>
+        protected virtual bool IsMatchAcceptContentType(MediaTypeHeaderValue responseContentType)
+        {
+            var mediaType = responseContentType?.MediaType;
+            return this.AcceptContentType.MediaType.StartsWith(mediaType, StringComparison.OrdinalIgnoreCase);
+        }
 
         /// <summary>
         /// 设置结果值

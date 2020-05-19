@@ -6,13 +6,22 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示json内容的强类型模型结果特性
     /// </summary>
-    public class JsonModelResultAttribute : ModelTypeResultAttribute
+    public class JsonModelResultAttribute : ApiResultAttribute
     {
         /// <summary>
         /// json内容的强类型模型结果特性
         /// </summary>
         public JsonModelResultAttribute()
-            : base(MediaTypeWithQualityHeaderValue.Parse(JsonContent.MediaType))
+            : base(new MediaTypeWithQualityHeaderValue(JsonContent.MediaType))
+        {
+        }
+
+        /// <summary>
+        /// json内容的强类型模型结果特性
+        /// </summary>
+        /// <param name="acceptQuality">accept的质比</param>
+        public JsonModelResultAttribute(double acceptQuality)
+            : base(new MediaTypeWithQualityHeaderValue(JsonContent.MediaType, acceptQuality))
         {
         }
 
@@ -21,10 +30,13 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override async Task SetModelTypeResultAsync(ApiResponseContext context)
+        public override async Task SetResultAsync(ApiResponseContext context)
         {
-            var resultType = context.ApiAction.Return.DataType.Type;
-            context.Result = await context.JsonDeserializeAsync(resultType).ConfigureAwait(false);
+            if (context.ApiAction.Return.DataType.IsModelType == true)
+            {
+                var resultType = context.ApiAction.Return.DataType.Type;
+                context.Result = await context.JsonDeserializeAsync(resultType).ConfigureAwait(false);
+            }
         }
     }
 }

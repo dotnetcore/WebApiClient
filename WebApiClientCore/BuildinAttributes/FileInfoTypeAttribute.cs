@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using WebApiClientCore.Attributes;
 using WebApiClientCore.Parameters;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Attributes
 {
     /// <summary>
     /// 表示参数内容为FileInfo类型的处理特性

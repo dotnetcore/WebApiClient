@@ -72,10 +72,10 @@ namespace WebApiClientCore
         /// <summary>
         /// 请求Api描述
         /// </summary>
-        /// <param name="interfaceType">接口类型</param>
         /// <param name="method">接口的方法</param>
+        /// <param name="interfaceType">接口类型</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ApiActionDescriptor(Type interfaceType, MethodInfo method)
+        public ApiActionDescriptor(MethodInfo method, Type interfaceType = default)
         {
             if (method == null)
             {
@@ -96,15 +96,15 @@ namespace WebApiClientCore
 
             var resultAttributes = method
                 .FindDeclaringAttributes<IApiResultAttribute>(true)
-                .OrderBy(item => item.OrderIndex)
                 .Append(new JsonModelResultAttribute())
                 .Append(new XmlModelResultAttribute())
                 .Append(new RawTypeResultAttribute())
                 .Distinct(new MultiplableComparer<IApiResultAttribute>())
+                .OrderBy(item => item.OrderIndex)
                 .ToReadOnlyList();
 
             this.Id = Guid.NewGuid().ToString();
-            this.InterfaceType = interfaceType;
+            this.InterfaceType = interfaceType ?? method.DeclaringType;
 
             this.Member = method;
             this.Name = method.Name;

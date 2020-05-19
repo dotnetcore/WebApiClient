@@ -18,6 +18,8 @@ namespace App.Clients
     public interface IUserApi : IHttpApi
     {
         [HttpGet("api/users/{account}")]
+        [JsonModelResult(0.5)]
+        [XmlModelResult(0.2)]
         ITask<HttpResponseMessage> GetAsync([Required]string account);
 
         [HttpGet("api/users/{account}")]

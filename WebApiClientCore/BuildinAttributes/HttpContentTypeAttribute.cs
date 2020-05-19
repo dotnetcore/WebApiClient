@@ -1,9 +1,8 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
-using WebApiClientCore.Attributes;
 using WebApiClientCore.Exceptions;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Attributes
 {
     /// <summary>
     /// 表示参数内容为HttpContent类型的处理特性

@@ -49,7 +49,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         private static IActionInvoker CreateActionInvoker(Method method)
         {
-            var apiAction = new ApiActionDescriptor(method.InterfaceType, method.MethodInfo);
+            var apiAction = new ApiActionDescriptor(method.MethodInfo, method.InterfaceType);
             return new MultiplexedActionInvoker(apiAction);
         }
 

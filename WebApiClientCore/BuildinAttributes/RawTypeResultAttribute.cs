@@ -1,5 +1,4 @@
-﻿using System.Net.Http.Headers;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace WebApiClientCore.Attributes
 {
@@ -7,15 +6,14 @@ namespace WebApiClientCore.Attributes
     /// 表示原始值结果的特性
     /// 支持结果类型为string、byte[]、Stream和HttpResponseMessage
     /// </summary>
-    public class RawTypeResultAttribute : ApiResultAttribute
+    class RawTypeResultAttribute : ApiResultAttribute
     {
         /// <summary>
-        /// 配置请求头的accept
+        /// 原始值结果的特性
         /// </summary>
-        /// <param name="accept">请求头的accept</param>
-        public override void ConfigureAccept(HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> accept)
+        public RawTypeResultAttribute()
+            : base(null)
         {
-            accept.Add(new MediaTypeWithQualityHeaderValue("*/*", 0.1d));
         }
 
         /// <summary>
