@@ -14,6 +14,7 @@ namespace WebApiClientCore
 
         /// <summary>
         /// 获取或设置结果值
+        /// 在ApiResultAttribute设置该值之后会中断下一个ApiResultResult的执行
         /// </summary>
         public object Result
         {
@@ -27,6 +28,7 @@ namespace WebApiClientCore
 
         /// <summary>
         /// 获取或设置异常值
+        /// 在ApiResultAttribute设置该值之后会中断下一个ApiResultResult的执行
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         public Exception Exception

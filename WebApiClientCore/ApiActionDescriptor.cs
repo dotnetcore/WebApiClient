@@ -96,8 +96,8 @@ namespace WebApiClientCore
 
             var resultAttributes = method
                 .FindDeclaringAttributes<IApiResultAttribute>(true)
-                .Append(new JsonModelResultAttribute(0.01d))
-                .Append(new XmlModelResultAttribute(0.01d))
+                .Append(new JsonlResultAttribute(0.01d))
+                .Append(new XmlResultAttribute(0.01d))
                 .Append(new RawTypeResultAttribute())
                 .Distinct(new MultiplableComparer<IApiResultAttribute>())
                 .OrderBy(item => item.OrderIndex)

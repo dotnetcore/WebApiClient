@@ -25,12 +25,12 @@ namespace App.Clients
 
 
         [HttpGet("api/users/{account}")]
-        [JsonModelResult]
+        [JsonlResult]
         ITask<string> GetExpectJsonAsync([Required]string account, CancellationToken token = default);
 
 
         [HttpGet("api/users/{account}")]
-        [XmlModelResult]
+        [XmlResult]
         ITask<string> GetExpectXmlAsync([Required]string account, CancellationToken token = default);
 
 

@@ -4,24 +4,24 @@ using System.Threading.Tasks;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 表示xml内容的模型结果
+    /// 表示json内容的结果特性
     /// </summary>
-    public class XmlModelResultAttribute : ApiResultAttribute
+    public class JsonlResultAttribute : ApiResultAttribute
     {
         /// <summary>
-        /// xml内容的强类型模型结果特性
+        /// json内容的结果特性
         /// </summary>
-        public XmlModelResultAttribute()
-            : base(new MediaTypeWithQualityHeaderValue(XmlContent.MediaType))
+        public JsonlResultAttribute()
+            : base(new MediaTypeWithQualityHeaderValue(JsonContent.MediaType))
         {
         }
 
         /// <summary>
-        /// xml内容的强类型模型结果特性
+        /// json内容的结果特性
         /// </summary>
         /// <param name="acceptQuality">accept的质比</param>
-        public XmlModelResultAttribute(double acceptQuality)
-            : base(new MediaTypeWithQualityHeaderValue(XmlContent.MediaType, acceptQuality))
+        public JsonlResultAttribute(double acceptQuality)
+            : base(new MediaTypeWithQualityHeaderValue(JsonContent.MediaType, acceptQuality))
         {
         }
 
@@ -35,7 +35,7 @@ namespace WebApiClientCore.Attributes
             if (context.ApiAction.Return.DataType.IsModelType == true)
             {
                 var resultType = context.ApiAction.Return.DataType.Type;
-                context.Result = await context.XmlDeserializeAsync(resultType).ConfigureAwait(false);
+                context.Result = await context.JsonDeserializeAsync(resultType).ConfigureAwait(false);
             }
         }
     }
