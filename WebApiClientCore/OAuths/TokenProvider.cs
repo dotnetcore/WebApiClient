@@ -43,34 +43,23 @@ namespace WebApiClientCore.OAuths
         {
             using (await this.asyncRoot.LockAsync().ConfigureAwait(false))
             {
-                await this.InitOrRefreshTokenAsync().ConfigureAwait(false);
-            }
-            return this.token;
-        }
+                if (this.token == null)
+                {
+                    this.token = await this.RequestTokenAsync().ConfigureAwait(false);
+                }
+                else if (this.token.IsExpired() == true)
+                {
+                    this.token = this.token.CanRefresh() == true
+                        ? await this.RefreshTokenAsync(this.token.Refresh_token).ConfigureAwait(false)
+                        : await this.RequestTokenAsync().ConfigureAwait(false);
+                }
 
-        /// <summary>
-        /// 初始化或刷新token
-        /// </summary>
-        /// <exception cref="HttpApiTokenException"></exception> 
-        /// <returns></returns>
-        private async Task InitOrRefreshTokenAsync()
-        {
-            if (this.token == null)
-            {
-                this.token = await this.RequestTokenAsync().ConfigureAwait(false);
+                if (this.token == null)
+                {
+                    throw new HttpApiTokenException(Resx.cannot_GetToken);
+                }
+                return this.token.EnsureSuccess();
             }
-            else if (this.token.IsExpired() == true)
-            {
-                this.token = this.token.CanRefresh() == true
-                    ? await this.RefreshTokenAsync(this.token.Refresh_token).ConfigureAwait(false)
-                    : await this.RequestTokenAsync().ConfigureAwait(false);
-            }
-
-            if (this.token == null)
-            {
-                throw new HttpApiTokenException(Resx.cannot_GetToken);
-            }
-            this.token.EnsureSuccess();
         }
 
         /// <summary>
