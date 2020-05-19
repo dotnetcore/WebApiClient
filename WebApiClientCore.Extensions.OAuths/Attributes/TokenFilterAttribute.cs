@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using WebApiClientCore.OAuths;
+using WebApiClientCore.Extensions.OAuths;
 
 namespace WebApiClientCore.Attributes
 {

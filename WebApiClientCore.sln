@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore.Analyzers"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore.Test", "WebApiClientCore.Test\WebApiClientCore.Test.csproj", "{3692CADD-3B12-4720-BB56-CE7511C69F9A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore.Extensions.OAuths", "WebApiClientCore.Extensions.OAuths\WebApiClientCore.Extensions.OAuths.csproj", "{23DB119E-CFBD-426F-BDCD-1150AB29FF0D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		AOT_Debug|Any CPU = AOT_Debug|Any CPU
@@ -69,6 +71,18 @@ Global
 		{3692CADD-3B12-4720-BB56-CE7511C69F9A}.JIT_Release|Any CPU.Build.0 = Release|Any CPU
 		{3692CADD-3B12-4720-BB56-CE7511C69F9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3692CADD-3B12-4720-BB56-CE7511C69F9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23DB119E-CFBD-426F-BDCD-1150AB29FF0D}.AOT_Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23DB119E-CFBD-426F-BDCD-1150AB29FF0D}.AOT_Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23DB119E-CFBD-426F-BDCD-1150AB29FF0D}.AOT_Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23DB119E-CFBD-426F-BDCD-1150AB29FF0D}.AOT_Release|Any CPU.Build.0 = Release|Any CPU
+		{23DB119E-CFBD-426F-BDCD-1150AB29FF0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23DB119E-CFBD-426F-BDCD-1150AB29FF0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23DB119E-CFBD-426F-BDCD-1150AB29FF0D}.JIT_Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23DB119E-CFBD-426F-BDCD-1150AB29FF0D}.JIT_Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23DB119E-CFBD-426F-BDCD-1150AB29FF0D}.JIT_Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23DB119E-CFBD-426F-BDCD-1150AB29FF0D}.JIT_Release|Any CPU.Build.0 = Release|Any CPU
+		{23DB119E-CFBD-426F-BDCD-1150AB29FF0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23DB119E-CFBD-426F-BDCD-1150AB29FF0D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

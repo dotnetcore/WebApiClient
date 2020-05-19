@@ -1,4 +1,4 @@
-﻿namespace WebApiClientCore.OAuths
+﻿namespace WebApiClientCore.Extensions.OAuths
 {
     /// <summary>
     /// 表示Client身份信息

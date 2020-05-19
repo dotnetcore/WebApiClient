@@ -1,4 +1,4 @@
-﻿namespace WebApiClientCore.OAuths
+﻿namespace WebApiClientCore.Extensions.OAuths
 {
     /// <summary>
     /// 表示用于刷新token的身份信息

@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Extensions.OAuths
 {
     /// <summary>
     /// 提供异步锁

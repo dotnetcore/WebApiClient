@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using WebApiClientCore.OAuths;
+using WebApiClientCore.Extensions.OAuths;
 
 namespace App.Controllers
 {

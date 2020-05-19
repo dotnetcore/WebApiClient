@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Text.Json.Serialization;
-using WebApiClientCore.Exceptions;
 
-namespace WebApiClientCore.OAuths
+namespace WebApiClientCore.Extensions.OAuths
 {
     /// <summary>
     /// 表示Token结果
@@ -54,14 +53,14 @@ namespace WebApiClientCore.OAuths
         /// <summary>
         /// 确保token成功
         /// </summary>
-        /// <exception cref="HttpApiTokenException"></exception>
+        /// <exception cref="TokenException"></exception>
         public TokenResult EnsureSuccess()
         {
             if (this.IsSuccess() == true)
             {
                 return this;
             }
-            throw new HttpApiTokenException(this.Error);
+            throw new TokenException(this.Error);
         }
 
         /// <summary>

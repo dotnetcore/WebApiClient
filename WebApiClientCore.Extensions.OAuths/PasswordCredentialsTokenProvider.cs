@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace WebApiClientCore.OAuths
+namespace WebApiClientCore.Extensions.OAuths
 {
     /// <summary>
     /// 表示用户名密码身份信息token提供者

@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WebApiClientCore.Extensions.OAuths\WebApiClientCore.Extensions.OAuths.csproj" />
     <ProjectReference Include="..\WebApiClientCore\WebApiClientCore.csproj" />
   </ItemGroup>
 

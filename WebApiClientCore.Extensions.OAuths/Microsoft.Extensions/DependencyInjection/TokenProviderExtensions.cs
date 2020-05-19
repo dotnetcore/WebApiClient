@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
-using WebApiClientCore.OAuths;
+using WebApiClientCore.Extensions.OAuths;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

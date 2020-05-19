@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using WebApiClientCore;
 using WebApiClientCore.Attributes;
-using WebApiClientCore.OAuths;
+using WebApiClientCore.Extensions.OAuths;
 
 namespace App.Clients
 {

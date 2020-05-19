@@ -2,9 +2,8 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using WebApiClientCore.Exceptions;
 
-namespace WebApiClientCore.OAuths
+namespace WebApiClientCore.Extensions.OAuths
 {
     /// <summary>
     /// 表示Token提供者抽象类
@@ -67,7 +66,7 @@ namespace WebApiClientCore.OAuths
 
                 if (this.token == null)
                 {
-                    throw new HttpApiTokenException(Resx.cannot_GetToken);
+                    throw new TokenNullException();
                 }
                 return this.token.EnsureSuccess();
             }

@@ -61,15 +61,6 @@ namespace WebApiClientCore {
         }
         
         /// <summary>
-        ///   查找类似 获取不到token 的本地化字符串。
-        /// </summary>
-        internal static string cannot_GetToken {
-            get {
-                return ResourceManager.GetString("cannot_GetToken", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   查找类似 Content-Type必须保持为{0} 的本地化字符串。
         /// </summary>
         internal static string contenType_RemainAs {
