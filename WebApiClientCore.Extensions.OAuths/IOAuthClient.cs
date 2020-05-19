@@ -10,7 +10,7 @@ namespace WebApiClientCore.Extensions.OAuths
     /// </summary>
     [LoggingFilter]
     [XmlResult(Enable = false)]
-    [JsonlResult(EnsureMatchAcceptContentType = false, EnsureSuccessStatusCode = false)]
+    [JsonResult(EnsureMatchAcceptContentType = false, EnsureSuccessStatusCode = false)]
     public interface IOAuthClient
     {
         /// <summary>

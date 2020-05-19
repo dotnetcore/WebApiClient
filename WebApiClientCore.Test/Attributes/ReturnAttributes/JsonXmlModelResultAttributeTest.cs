@@ -23,7 +23,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
             var json = context.HttpContext.Services.GetRequiredService<IJsonFormatter>().Serialize(model, null);
             context.HttpContext.ResponseMessage.Content = new JsonContent(json);
 
-            var attr = new JsonlResultAttribute();
+            var attr = new JsonResultAttribute();
             await attr.OnResponseAsync(responseContext, () => Task.CompletedTask);
             var result = responseContext.Result as TestModel;
             Assert.True(model.Name == result.Name && model.Age == result.Age);
@@ -59,7 +59,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
             context.HttpContext.RequestMessage.Method = HttpMethod.Post;
             context.HttpContext.ResponseMessage.StatusCode = System.Net.HttpStatusCode.InternalServerError;
 
-            var attr = new JsonlResultAttribute() { EnsureSuccessStatusCode = true };
+            var attr = new JsonResultAttribute() { EnsureSuccessStatusCode = true };
             await attr.OnResponseAsync(responseContext, () => Task.CompletedTask);
 
             Assert.IsType<HttpStatusFailureException>(responseContext.Exception);

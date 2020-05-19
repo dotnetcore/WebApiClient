@@ -7,12 +7,12 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示json内容的结果特性
     /// </summary>
-    public class JsonlResultAttribute : ApiResultAttribute
+    public class JsonResultAttribute : ApiResultAttribute
     {
         /// <summary>
         /// json内容的结果特性
         /// </summary>
-        public JsonlResultAttribute()
+        public JsonResultAttribute()
             : base(new MediaTypeWithQualityHeaderValue(JsonContent.MediaType))
         {
         }
@@ -21,7 +21,7 @@ namespace WebApiClientCore.Attributes
         /// json内容的结果特性
         /// </summary>
         /// <param name="acceptQuality">accept的质比</param>
-        public JsonlResultAttribute(double acceptQuality)
+        public JsonResultAttribute(double acceptQuality)
             : base(new MediaTypeWithQualityHeaderValue(JsonContent.MediaType, acceptQuality))
         {
         }
