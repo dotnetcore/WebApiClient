@@ -15,7 +15,7 @@ namespace WebApiClientCore.Attributes
         public bool Enable { get; set; } = true;
 
         /// <summary>
-        /// 获取或设置过滤器的执行排序索引
+        /// 获取或设置执行排序索引
         /// </summary>
         public int OrderIndex { get; set; }
 

@@ -17,6 +17,11 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
+        /// 获取执行排序索引
+        /// </summary>
+        public override int OrderIndex => int.MaxValue;
+
+        /// <summary>
         /// 设置结果值
         /// </summary>
         /// <param name="context">上下文</param>

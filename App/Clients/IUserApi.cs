@@ -18,12 +18,22 @@ namespace App.Clients
     public interface IUserApi : IHttpApi
     {
         [HttpGet("api/users/{account}")]
-        [JsonModelResult(0.5)]
-        [XmlModelResult(0.2)]
         ITask<HttpResponseMessage> GetAsync([Required]string account);
 
         [HttpGet("api/users/{account}")]
         ITask<string> GetAsStringAsync([Required]string account, CancellationToken token = default);
+
+
+        [HttpGet("api/users/{account}")]
+        [JsonModelResult]
+        ITask<string> GetExpectJsonAsync([Required]string account, CancellationToken token = default);
+
+
+        [HttpGet("api/users/{account}")]
+        [XmlModelResult]
+        ITask<string> GetExpectXmlAsync([Required]string account, CancellationToken token = default);
+
+
 
         [HttpGet("api/users/{account}")]
         ITask<byte[]> GetAsByteArrayAsync([Required]string account, CancellationToken token = default);
@@ -33,7 +43,6 @@ namespace App.Clients
 
         [HttpGet("api/users/{account}")]
         ITask<User> GetAsModelAsync([Required]string account, CancellationToken token = default);
-
 
 
         [HttpPost("api/users/body")]

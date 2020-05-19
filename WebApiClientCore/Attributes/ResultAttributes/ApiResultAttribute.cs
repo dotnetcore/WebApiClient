@@ -18,13 +18,14 @@ namespace WebApiClientCore.Attributes
         protected MediaTypeWithQualityHeaderValue AcceptContentType { get; }
 
         /// <summary>
-        /// 获取或设置过滤器的执行排序索引
+        /// 获取执行排序索引
+        /// 默认通过Accept的Quality转换得到
         /// </summary>
-        int IAttributeMultiplable.OrderIndex
+        public virtual int OrderIndex
         {
             get
             {
-                var quality = this.AcceptContentType?.Quality ?? 0d;
+                var quality = this.AcceptContentType?.Quality ?? 1d;
                 return (int)((1d - quality) * int.MaxValue);
             }
         }
@@ -151,14 +152,15 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 验证响应的ContentType与AcceptContentType是否匹配
+        /// 验证响应的ContentType与Accept-ContentType是否匹配
         /// </summary>
         /// <param name="responseContentType"></param>
         /// <returns></returns>
         protected virtual bool IsMatchAcceptContentType(MediaTypeHeaderValue responseContentType)
         {
-            var mediaType = responseContentType?.MediaType;
-            return this.AcceptContentType.MediaType.StartsWith(mediaType, StringComparison.OrdinalIgnoreCase);
+            var accept = this.AcceptContentType.MediaType;
+            var response = responseContentType?.MediaType;
+            return string.Equals(accept, response, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>

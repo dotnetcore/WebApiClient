@@ -10,7 +10,7 @@ namespace WebApiClientCore.Attributes
     public abstract class ApiActionAttribute : Attribute, IApiActionAttribute
     {
         /// <summary>
-        /// 获取顺序排序索引
+        /// 获取或设置执行排序索引
         /// </summary>
         public int OrderIndex { get; set; }
 
