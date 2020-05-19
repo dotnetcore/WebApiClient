@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using WebApiClientCore.Attributes;
@@ -9,6 +10,7 @@ namespace WebApiClientCore.OAuths
     /// 定义Token客户端的接口
     /// </summary>
     [LoggingFilter]
+    [EditorBrowsable(EditorBrowsableState.Never)]
     [JsonModelResult(EnsureMatchContentType = false, EnsureSuccessStatusCode = false)]
     public interface IOAuthClient
     {
