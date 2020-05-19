@@ -4,16 +4,16 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 
-    <Version>1.0.0-alpha7</Version>
+    <Version>1.0.0-alpha8</Version>
     <Authors>laojiu</Authors>
     <Company>laojiu</Company>
     <Product>WebApiClientCore</Product>
     <Copyright>Copyright © laojiu 2017-2020</Copyright>
-    <Description>一款基于HttpClient封装，只需要定义c#接口并修饰相关特性，即可异步调用远程http接口的客户端库</Description>
+    <Description>.NetCore声明式的Http客户端库</Description>
     <Summary>一款基于HttpClient封装，只需要定义c#接口并修饰相关特性，即可异步调用远程http接口的客户端库</Summary>
 
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance> 
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/dotnetcore/WebApiClient</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/dotnetcore/WebApiClient/master/icon.png</PackageIconUrl>
@@ -35,7 +35,7 @@
     <None Include="NugetPackage\tools\*.*" PackagePath="tools" Pack="true" />
     <None Include="NugetPackage\analyzers\dotnet\cs\*.*" PackagePath="analyzers\dotnet\cs" Pack="true" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <Compile Update="Resx.Designer.cs">
       <DesignTime>True</DesignTime>

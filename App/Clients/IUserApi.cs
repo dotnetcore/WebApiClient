@@ -12,8 +12,8 @@ namespace App.Clients
     /// <summary>
     /// 用户操作接口
     /// </summary>
+    [UserToken]
     [LoggingFilter]
-    [UserTokenFilter]
     [HttpHost("http://localhost:6000/")]
     public interface IUserApi : IHttpApi
     {

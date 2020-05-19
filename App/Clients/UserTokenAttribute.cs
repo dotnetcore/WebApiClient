@@ -8,7 +8,7 @@ namespace App.Clients
     /// <summary>
     /// token获取与应用过滤器
     /// </summary>
-    class UserTokenFilterAttribute : TokenFilterAttribute
+    class UserTokenAttribute : OAuthTokenAttribute
     {
         /// <summary>
         /// 获取token提供者
