@@ -10,8 +10,21 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <summary>
     /// 提供HttpApi相关扩展
     /// </summary>
-    public static partial class HttpApiExtensions
+    public static class HttpApiExtensions
     {
+        /// <summary>
+        /// 尝试注册默认组件
+        /// </summary>
+        /// <param name="services"></param>
+        private static IServiceCollection AddHttpApi(this IServiceCollection services)
+        {
+            services.TryAddSingleton<IXmlFormatter, XmlFormatter>();
+            services.TryAddSingleton<IJsonFormatter, JsonFormatter>();
+            services.TryAddSingleton<IKeyValueFormatter, KeyValueFormatter>();
+            services.TryAddSingleton<IResponseCacheProvider, ResponseCacheProvider>();
+            return services;
+        }
+
         /// <summary>
         /// 添加HttpApi代理类到服务
         /// </summary>
@@ -45,7 +58,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IHttpClientBuilder AddHttpApi<THttpApi>(this IServiceCollection services, Action<HttpApiOptions<THttpApi>, IServiceProvider> configureOptions) where THttpApi : class
         {
             services
-                .AddHttpDefaults()
+                .AddHttpApi()
                 .AddOptions<HttpApiOptions<THttpApi>>()
                 .Configure(configureOptions);
 
@@ -58,18 +71,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 });
         }
 
-        /// <summary>
-        /// 注册默认组件
-        /// </summary>
-        /// <param name="services"></param>
-        private static IServiceCollection AddHttpDefaults(this IServiceCollection services)
-        {
-            services.TryAddSingleton<IXmlFormatter, XmlFormatter>();
-            services.TryAddSingleton<IJsonFormatter, JsonFormatter>();
-            services.TryAddSingleton<IKeyValueFormatter, KeyValueFormatter>();
-            services.TryAddSingleton<IResponseCacheProvider, ResponseCacheProvider>();
-            return services;
-        }
 
         /// <summary>
         /// 配置HttpApi

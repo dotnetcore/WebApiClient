@@ -36,6 +36,17 @@ namespace WebApiClientCore.OAuths
         }
 
         /// <summary>
+        /// 强制清除token以支持下次获取到新的token
+        /// </summary>
+        public void ClearToken()
+        {
+            using (this.asyncRoot.Lock())
+            {
+                this.token = null;
+            }
+        }
+
+        /// <summary>
         /// 获取token信息
         /// </summary> 
         /// <returns></returns>

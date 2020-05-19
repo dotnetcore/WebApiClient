@@ -5,9 +5,9 @@ using WebApiClientCore;
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// 提供HttpApi相关扩展
+    /// 提供HttpApi非泛型相关扩展
     /// </summary>
-    public static partial class HttpApiExtensions
+    public static class HttpApiNoGenericExtensions
     {
         /// <summary>
         /// 添加HttpApi代理类到服务
