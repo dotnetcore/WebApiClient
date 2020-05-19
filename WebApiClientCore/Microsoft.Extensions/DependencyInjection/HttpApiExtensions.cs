@@ -8,9 +8,9 @@ using WebApiClientCore.Defaults;
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// 提供项目相关扩展
+    /// 提供HttpApi相关扩展
     /// </summary>
-    public static partial class ServiceCollectionExtensions
+    public static partial class HttpApiExtensions
     {
         /// <summary>
         /// 添加HttpApi代理类到服务
