@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace WebApiClientCore.Attributes
@@ -32,10 +33,19 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public override async Task SetResultAsync(ApiResponseContext context)
         {
-            if (context.ApiAction.Return.DataType.IsModelType == true)
+            if (context.ApiAction.Return.DataType.IsModelType == false)
+            {
+                return;
+            }
+
+            try
             {
                 var resultType = context.ApiAction.Return.DataType.Type;
                 context.Result = await context.XmlDeserializeAsync(resultType).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                context.Exception = ex;
             }
         }
     }

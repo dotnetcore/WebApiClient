@@ -69,7 +69,7 @@ namespace WebApiClientCore
                 }
             }
 
-            // 结果特性请求前执行
+            // Result特性请求前执行
             foreach (var result in apiAction.ResultAttributes)
             {
                 if (result.Enable == true)
@@ -78,7 +78,7 @@ namespace WebApiClientCore
                 }
             }
 
-            // 过滤器请求前执行            
+            // Filter请求前执行            
             foreach (var filter in apiAction.FilterAttributes)
             {
                 if (filter.Enable == true)
@@ -99,13 +99,25 @@ namespace WebApiClientCore
         {
             var builder = new PipelineBuilder<ApiResponseContext>();
 
-            // 结果特性请求后执行
+            // Result特性请求后执行
             foreach (var result in apiAction.ResultAttributes)
             {
-                if (result.Enable == true)
+                if (result.Enable == false)
                 {
-                    builder.Use(result.OnResponseAsync);
+                    continue;
                 }
+
+                builder.Use(async (context, next) =>
+                {
+                    if (context.ResultStatus == ResultStatus.None)
+                    {
+                        await result.OnResponseAsync(context, next).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await next().ConfigureAwait(false);
+                    }
+                });
             }
 
             // 验证Result是否ok
@@ -122,7 +134,7 @@ namespace WebApiClientCore
                 return next(context);
             });
 
-            // 过滤器请求后执行
+            // Filter请求后执行
             foreach (var filter in apiAction.FilterAttributes)
             {
                 if (filter.Enable == true)

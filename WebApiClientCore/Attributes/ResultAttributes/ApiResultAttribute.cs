@@ -85,21 +85,11 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public async Task OnResponseAsync(ApiResponseContext context, Func<Task> next)
         {
-            if (context.ResultStatus == ResultStatus.None &&
-                this.UseSuccessStatusCode(context) &&
-                this.UseMatchAcceptContentType(context))
+            if (this.UseSuccessStatusCode(context) && this.UseMatchAcceptContentType(context))
             {
-                try
-                {
-                    await this.SetResultAsync(context).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    context.Exception = ex;
-                }
+                await this.SetResultAsync(context).ConfigureAwait(false);
             }
-
-            await next();
+            await next().ConfigureAwait(false);
         }
 
         /// <summary>
