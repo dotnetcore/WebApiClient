@@ -72,13 +72,19 @@ namespace WebApiClientCore
             // 结果特性请求前执行
             foreach (var result in apiAction.ResultAttributes)
             {
-                builder.Use(result.OnRequestAsync);
+                if (result.Enable == true)
+                {
+                    builder.Use(result.OnRequestAsync);
+                }
             }
 
             // 过滤器请求前执行            
             foreach (var filter in apiAction.FilterAttributes)
             {
-                builder.Use(filter.OnRequestAsync);
+                if (filter.Enable == true)
+                {
+                    builder.Use(filter.OnRequestAsync);
+                }
             }
 
             return builder.Build();
@@ -96,7 +102,10 @@ namespace WebApiClientCore
             // 结果特性请求后执行
             foreach (var result in apiAction.ResultAttributes)
             {
-                builder.Use(result.OnResponseAsync);
+                if (result.Enable == true)
+                {
+                    builder.Use(result.OnResponseAsync);
+                }
             }
 
             // 验证Result是否ok
@@ -116,7 +125,10 @@ namespace WebApiClientCore
             // 过滤器请求后执行
             foreach (var filter in apiAction.FilterAttributes)
             {
-                builder.Use(filter.OnResponseAsync);
+                if (filter.Enable == true)
+                {
+                    builder.Use(filter.OnResponseAsync);
+                }
             }
 
             return builder.Build();

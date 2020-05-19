@@ -70,7 +70,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public Task OnRequestAsync(ApiRequestContext context, Func<Task> next)
         {
-            if (this.Enable == true && this.AcceptContentType != null)
+            if (this.AcceptContentType != null)
             {
                 context.HttpContext.RequestMessage.Headers.Accept.Add(this.AcceptContentType);
             }
@@ -85,8 +85,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public async Task OnResponseAsync(ApiResponseContext context, Func<Task> next)
         {
-            if (this.Enable &&
-                context.ResultStatus == ResultStatus.None &&
+            if (context.ResultStatus == ResultStatus.None &&
                 this.UseSuccessStatusCode(context) &&
                 this.UseMatchAcceptContentType(context))
             {

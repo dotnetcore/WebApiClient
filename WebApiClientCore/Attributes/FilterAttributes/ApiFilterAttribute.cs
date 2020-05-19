@@ -32,10 +32,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public async Task OnRequestAsync(ApiRequestContext context, Func<Task> next)
         {
-            if (this.Enable == true)
-            {
-                await this.OnRequestAsync(context).ConfigureAwait(false);
-            }
+            await this.OnRequestAsync(context).ConfigureAwait(false);
             await next();
         }
 
@@ -47,10 +44,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public async Task OnResponseAsync(ApiResponseContext context, Func<Task> next)
         {
-            if (this.Enable == true)
-            {
-                await this.OnResponseAsync(context).ConfigureAwait(false);
-            }
+            await this.OnResponseAsync(context).ConfigureAwait(false);
             await next();
         }
 

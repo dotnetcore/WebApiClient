@@ -6,7 +6,7 @@ namespace WebApiClientCore
     /// <summary>
     /// 定义ApiAction过滤器修饰特性的行为
     /// </summary>
-    public interface IApiFilterAttribute : IAttributeMultiplable
+    public interface IApiFilterAttribute : IAttributeMultiplable, IAttributeEnable
     {
         /// <summary>
         /// 请求前
