@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.Http;
-using WebApiClientCore.OAuths;
 
 namespace WebApiClientCore
 {
@@ -47,18 +46,7 @@ namespace WebApiClientCore
             this.Services = services ?? throw new ArgumentNullException(nameof(services));
             this.Options = options ?? throw new ArgumentNullException(nameof(options));
             this.RequestMessage = new HttpApiRequestMessage { RequestUri = options.HttpHost ?? client.BaseAddress };
-        }
-
-        /// <summary>
-        /// 创建用于请求Token的客户端
-        /// </summary> 
-        /// <returns></returns>
-        public IOAuthClient CreateOAuthClient()
-        {
-            var options = new HttpApiOptions();
-            options.KeyValueSerializeOptions.IgnoreNullValues = true;
-            return HttpApi.Create<IOAuthClient>(this.Client, this.Services, options);
-        }
+        }         
 
         /// <summary>
         /// 释放资源
