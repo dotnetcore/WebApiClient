@@ -4,7 +4,7 @@ WebApiClientCore的OAuth功能扩展，支持client_credentials与password授权
 ### 使用方式
 #### 注册Token提供者
 ```
-// 注册与配置token提者选项
+// 为接口注册与配置token提者选项
 services.AddClientCredentialsTokenProvider<IUserApi>(o =>
 {
     o.Endpoint = new Uri("http://localhost:6000/api/tokens");
@@ -12,33 +12,13 @@ services.AddClientCredentialsTokenProvider<IUserApi>(o =>
     o.Credentials.Client_secret = "xxyyzz";
 });
 ```
-
-#### 实现OAuthTokenAttribute的自定义子类
-```
-/// <summary>
-/// token获取与应用过滤器
-/// </summary>
-class UserTokenAttribute : OAuthTokenAttribute
-{
-    /// <summary>
-    /// 获取token提供者
-    /// </summary>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    protected override TokenProvider GetTokenProvider(ApiRequestContext context)
-    {
-        return context.HttpContext.Services.GetRequiredService<ClientCredentialsTokenProvider<IUserApi>>();
-    } 
-}
-```
-
-
-#### 应用自定义子类
+ 
+#### 应用对应的Token特性
 ```
 /// <summary>
 /// 用户操作接口
 /// </summary>
-[UserToken] 
+[ClientCredentialsToken]
 public interface IUserApi : IHttpApi
 {
     ...

@@ -17,8 +17,9 @@ namespace WebApiClientCore
 
         /// <summary>
         /// 代理类型的构造器的参数类型
+        /// (IApiInterceptor interceptor,Type interfaceType, MethodInfo[] apiMethods)
         /// </summary>
-        private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IActionInterceptor), typeof(MethodInfo[]) };
+        private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IActionInterceptor), typeof(Type), typeof(MethodInfo[]) };
 
         /// <summary>
         /// 创建IHttpApi代理类的类型
@@ -47,10 +48,11 @@ namespace WebApiClientCore
             builder.AddInterfaceImplementation(interfaceType);
 
             var fieldInterceptor = BuildField(builder, "interceptor", typeof(IActionInterceptor));
+            var fieldInterfaceType = BuildField(builder, "interfaceType", typeof(Type));
             var fieldApiMethods = BuildField(builder, "apiMethods", typeof(MethodInfo[]));
 
-            BuildCtor(builder, fieldInterceptor, fieldApiMethods);
-            BuildMethods(builder, apiMethods, fieldInterceptor, fieldApiMethods);
+            BuildCtor(builder, fieldInterceptor, fieldInterfaceType, fieldApiMethods);
+            BuildMethods(builder, apiMethods, fieldInterceptor, fieldInterfaceType, fieldApiMethods);
 
             return builder.CreateTypeInfo().AsType();
         }
@@ -73,11 +75,12 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="builder">类型生成器</param>
         /// <param name="fieldInterceptor">拦截器字段</param>
+        /// <param name="fieldInterfaceType">接口类型</param>
         /// <param name="fieldApiMethods">接口方法集合字段</param>
         /// <returns></returns>
-        private static void BuildCtor(TypeBuilder builder, FieldBuilder fieldInterceptor, FieldBuilder fieldApiMethods)
+        private static void BuildCtor(TypeBuilder builder, FieldBuilder fieldInterceptor, FieldBuilder fieldInterfaceType, FieldBuilder fieldApiMethods)
         {
-            // .ctor(IApiInterceptor interceptor, MethodInfo[] methods)       
+            // .ctor(IApiInterceptor interceptor,Type interfaceType, MethodInfo[] apiMethods)
             var ctor = builder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, proxyTypeCtorArgTypes);
 
             var il = ctor.GetILGenerator();
@@ -87,9 +90,14 @@ namespace WebApiClientCore
             il.Emit(OpCodes.Ldarg_1);
             il.Emit(OpCodes.Stfld, fieldInterceptor);
 
-            // this.apiMethods = 第二个参数
+            // this.interfaceType = 第二个参数
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_2);
+            il.Emit(OpCodes.Stfld, fieldInterfaceType);
+
+            // this.apiMethods = 第三个参数
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldarg_3);
             il.Emit(OpCodes.Stfld, fieldApiMethods);
 
             il.Emit(OpCodes.Ret);
@@ -101,8 +109,9 @@ namespace WebApiClientCore
         /// <param name="builder">类型生成器</param>
         /// <param name="apiMethods">接口方法集合</param>
         /// <param name="fieldInterceptor">拦截器字段</param>
+        /// <param name="fieldInterfaceType">接口类型字段</param>
         /// <param name="fieldApiMethods">接口方法集合字段</param>
-        private static void BuildMethods(TypeBuilder builder, MethodInfo[] apiMethods, FieldBuilder fieldInterceptor, FieldBuilder fieldApiMethods)
+        private static void BuildMethods(TypeBuilder builder, MethodInfo[] apiMethods, FieldBuilder fieldInterceptor, FieldBuilder fieldInterfaceType, FieldBuilder fieldApiMethods)
         {
             const MethodAttributes implementAttribute = MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot | MethodAttributes.HideBySig;
 
@@ -120,8 +129,9 @@ namespace WebApiClientCore
                 iL.Emit(OpCodes.Ldarg_0);
                 iL.Emit(OpCodes.Ldfld, fieldInterceptor);
 
-                // 加载target参数
+                // this.interfaceType
                 iL.Emit(OpCodes.Ldarg_0);
+                iL.Emit(OpCodes.Ldfld, fieldInterfaceType);
 
                 // 加载method参数 this.apiMethods[i]
                 iL.Emit(OpCodes.Ldarg_0);

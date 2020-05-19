@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 namespace WebApiClientCore
 {
@@ -10,7 +12,7 @@ namespace WebApiClientCore
         /// <summary>
         /// action执行器的缓存
         /// </summary>
-        private static readonly ConcurrentCache<MethodInfo, IActionInvoker> invokerCache = new ConcurrentCache<MethodInfo, IActionInvoker>();
+        private static readonly ConcurrentCache<Method, IActionInvoker> invokerCache = new ConcurrentCache<Method, IActionInvoker>();
 
         /// <summary>
         /// 服务上下文
@@ -29,13 +31,14 @@ namespace WebApiClientCore
         /// <summary>
         /// 拦截方法的调用
         /// </summary>
-        /// <param name="target">接口的实例</param>
+        /// <param name="interfaceType">接口类型</param>
         /// <param name="method">接口的方法</param>
-        /// <param name="arguments">接口的参数集合</param>
+        /// <param name="arguments">方法的参数集合</param>
         /// <returns></returns>
-        public object Intercept(object target, MethodInfo method, object[] arguments)
+        public object Intercept(Type interfaceType, MethodInfo method, object[] arguments)
         {
-            var invoker = invokerCache.GetOrAdd(method, CreateActionInvoker);
+            var key = new Method(interfaceType, method);
+            var invoker = invokerCache.GetOrAdd(key, CreateActionInvoker);
             return invoker.Invoke(this.context, arguments);
         }
 
@@ -44,10 +47,56 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="method">接口的方法</param>
         /// <returns></returns>
-        private static IActionInvoker CreateActionInvoker(MethodInfo method)
+        private static IActionInvoker CreateActionInvoker(Method method)
         {
-            var apiAction = new ApiActionDescriptor(method);
+            var apiAction = new ApiActionDescriptor(method.InterfaceType, method.MethodInfo);
             return new MultiplexedActionInvoker(apiAction);
+        }
+
+        /// <summary>
+        /// 表示方法信息
+        /// </summary>
+        private struct Method : IEquatable<Method>
+        {
+            /// <summary>
+            /// 所在接口
+            /// </summary>
+            public Type InterfaceType { get; }
+
+            /// <summary>
+            /// 方法信息
+            /// </summary>
+            public MethodInfo MethodInfo { get; }
+
+            /// <summary>
+            /// 方法信息
+            /// </summary>
+            /// <param name="interfaceType"></param>
+            /// <param name="methodInfo"></param>
+            public Method(Type interfaceType, MethodInfo methodInfo)
+            {
+                this.InterfaceType = interfaceType;
+                this.MethodInfo = methodInfo;
+            }
+
+            /// <summary>
+            /// 是否相等
+            /// </summary>
+            /// <param name="other"></param>
+            /// <returns></returns>
+            public bool Equals([AllowNull] Method other)
+            {
+                return ReferenceEquals(this.MethodInfo, other.MethodInfo);
+            }
+
+            /// <summary>
+            /// 获取哈希
+            /// </summary>
+            /// <returns></returns>
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(this.MethodInfo);
+            }
         }
     }
 }

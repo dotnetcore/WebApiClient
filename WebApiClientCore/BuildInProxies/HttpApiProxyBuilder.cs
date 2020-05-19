@@ -9,6 +9,11 @@ namespace WebApiClientCore
     class HttpApiProxyBuilder
     {
         /// <summary>
+        /// 接口类型
+        /// </summary>
+        private readonly Type interfaceType;
+
+        /// <summary>
         /// 接口声明的Api方法
         /// </summary>
         private readonly MethodInfo[] apiMetods;
@@ -16,7 +21,8 @@ namespace WebApiClientCore
         /// <summary>
         /// 代理类的构造器
         /// </summary>
-        private readonly Func<IActionInterceptor, MethodInfo[], object> proxyTypeCtor;
+        private readonly Func<IActionInterceptor, Type, MethodInfo[], object> proxyTypeCtor;
+
 
         /// <summary>
         /// IHttpApi的代理类的实例创建者
@@ -26,14 +32,10 @@ namespace WebApiClientCore
         /// <exception cref="NotSupportedException"></exception>
         public HttpApiProxyBuilder(Type interfaceType)
         {
-            if (interfaceType == null)
-            {
-                throw new ArgumentNullException(nameof(interfaceType));
-            }
-
+            this.interfaceType = interfaceType ?? throw new ArgumentNullException(nameof(interfaceType));
             this.apiMetods = interfaceType.GetAllApiMethods();
             var proxyType = HttpApiProxyTypeBuilder.Build(interfaceType, this.apiMetods);
-            this.proxyTypeCtor = Lambda.CreateCtorFunc<IActionInterceptor, MethodInfo[], object>(proxyType);
+            this.proxyTypeCtor = Lambda.CreateCtorFunc<IActionInterceptor, Type, MethodInfo[], object>(proxyType);
         }
 
         /// <summary>
@@ -43,7 +45,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         public object Build(IActionInterceptor interceptor)
         {
-            return this.proxyTypeCtor.Invoke(interceptor, this.apiMetods);
+            return this.proxyTypeCtor.Invoke(interceptor, this.interfaceType, this.apiMetods);
         }
     }
 }

@@ -1,14 +1,12 @@
-﻿using System;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClientCore.Extensions.OAuths;
 
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 表示OAuth授权的token过滤器抽象
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Interface, AllowMultiple = false)]
+    /// 表示OAuth授权的token的token应用抽象特性
+    /// </summary> 
     public abstract class OAuthTokenAttribute : ApiActionAttribute
     {
         /// <summary>

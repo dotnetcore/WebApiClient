@@ -14,9 +14,14 @@ namespace WebApiClientCore
     public class ApiActionDescriptor
     {
         /// <summary>
-        /// 获取描述的唯一标识
+        /// 获取方法的唯一标识
         /// </summary>
         public string Id { get; protected set; }
+
+        /// <summary>
+        /// 获取所在接口类型
+        /// </summary>
+        public Type InterfaceType { get; protected set; }
 
         /// <summary>
         /// 获取Api名称
@@ -67,9 +72,10 @@ namespace WebApiClientCore
         /// <summary>
         /// 请求Api描述
         /// </summary>
+        /// <param name="interfaceType">接口类型</param>
         /// <param name="method">接口的方法</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ApiActionDescriptor(MethodInfo method)
+        public ApiActionDescriptor(Type interfaceType, MethodInfo method)
         {
             if (method == null)
             {
@@ -98,6 +104,8 @@ namespace WebApiClientCore
                 .ToReadOnlyList();
 
             this.Id = Guid.NewGuid().ToString();
+            this.InterfaceType = interfaceType;
+
             this.Member = method;
             this.Name = method.Name;
             this.Attributes = actionAttributes;

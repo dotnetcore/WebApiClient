@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Reflection;
 
 namespace WebApiClientCore
@@ -12,10 +13,10 @@ namespace WebApiClientCore
         /// <summary>
         /// 拦截方法的调用
         /// </summary>
-        /// <param name="target">接口的实例</param>
+        /// <param name="interfaceType">接口类型</param>
         /// <param name="method">接口的方法</param>
-        /// <param name="arguments">接口的参数集合</param>
+        /// <param name="arguments">方法的参数集合</param>
         /// <returns></returns>
-        object Intercept(object target, MethodInfo method, object[] arguments);
+        object Intercept(Type interfaceType, MethodInfo method, object[] arguments);
     }
 }
