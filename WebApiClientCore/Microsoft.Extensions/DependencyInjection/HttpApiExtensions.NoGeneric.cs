@@ -126,7 +126,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// httpApi的Builder
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
-        private class HttpApiBuilder<THttpApi> : IHttpApiBuilder where THttpApi : class, IHttpApi
+        private class HttpApiBuilder<THttpApi> : IHttpApiBuilder where THttpApi : class
         {
             private readonly IServiceCollection services;
 

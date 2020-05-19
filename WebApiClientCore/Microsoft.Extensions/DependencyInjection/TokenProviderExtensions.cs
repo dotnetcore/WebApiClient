@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
-using WebApiClientCore;
 using WebApiClientCore.OAuths;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -17,7 +16,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="configureOptions"></param>
         /// <returns></returns>
-        public static IServiceCollection AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services, Action<ClientCredentialsOptions<THttpApi>> configureOptions) where THttpApi : IHttpApi
+        public static IServiceCollection AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services, Action<ClientCredentialsOptions<THttpApi>> configureOptions)
         {
             return services.AddClientCredentialsTokenProvider<THttpApi>().Configure(configureOptions);
         }
@@ -28,7 +27,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="THttpApi"></typeparam>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static IServiceCollection AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services) where THttpApi : IHttpApi
+        public static IServiceCollection AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services)
         {
             services.TryAddSingleton<ClientCredentialsTokenProvider<THttpApi>>();
             services.AddOptions<ClientCredentialsOptions<THttpApi>>();
@@ -42,7 +41,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="configureOptions"></param>
         /// <returns></returns>
-        public static IServiceCollection AddPasswordCredentialsTokenProvider<THttpApi>(this IServiceCollection services, Action<PasswordCredentialsOptions<THttpApi>> configureOptions) where THttpApi : IHttpApi
+        public static IServiceCollection AddPasswordCredentialsTokenProvider<THttpApi>(this IServiceCollection services, Action<PasswordCredentialsOptions<THttpApi>> configureOptions)
         {
             return services.AddPasswordCredentialsTokenProvider<THttpApi>().Configure(configureOptions);
         }
@@ -53,7 +52,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="THttpApi"></typeparam>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static IServiceCollection AddPasswordCredentialsTokenProvider<THttpApi>(this IServiceCollection services) where THttpApi : IHttpApi
+        public static IServiceCollection AddPasswordCredentialsTokenProvider<THttpApi>(this IServiceCollection services)
         {
             services.TryAddSingleton<PasswordCredentialsOptions<THttpApi>>();
             services.AddOptions<PasswordCredentialsOptions<THttpApi>>();

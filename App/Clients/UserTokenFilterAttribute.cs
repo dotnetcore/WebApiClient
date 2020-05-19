@@ -13,6 +13,11 @@ namespace App.Clients
         protected override TokenProvider GetTokenProvider(ApiRequestContext context)
         {
             return context.HttpContext.Services.GetRequiredService<ClientCredentialsTokenProvider<IUserApi>>();
-        } 
+        }
+
+        protected override void UseTokenResult(ApiRequestContext context, TokenResult tokenResult)
+        {
+            base.UseTokenResult(context, tokenResult);
+        }
     }
 }

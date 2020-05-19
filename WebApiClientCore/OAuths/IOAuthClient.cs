@@ -10,7 +10,7 @@ namespace WebApiClientCore.OAuths
     /// </summary>
     [LoggingFilter]
     [JsonModelResult(EnsureMatchContentType = false, EnsureSuccessStatusCode = false)]
-    public interface IOAuthClient : IHttpApi
+    public interface IOAuthClient
     {
         /// <summary>
         /// 以client_credentials授权方式获取token

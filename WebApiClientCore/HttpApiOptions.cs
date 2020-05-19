@@ -66,7 +66,7 @@ namespace WebApiClientCore
     /// 表示HttpApi选项
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
-    public class HttpApiOptions<THttpApi> : HttpApiOptions where THttpApi : class, IHttpApi
+    public class HttpApiOptions<THttpApi> : HttpApiOptions
     {
     }
 }

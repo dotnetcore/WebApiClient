@@ -23,7 +23,7 @@ namespace WebApiClientCore
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        public static THttpApi Create<THttpApi>(HttpClient client, IServiceProvider services, HttpApiOptions options) where THttpApi : IHttpApi
+        public static THttpApi Create<THttpApi>(HttpClient client, IServiceProvider services, HttpApiOptions options)
         {
             if (client == null)
             {

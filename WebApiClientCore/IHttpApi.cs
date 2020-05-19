@@ -1,8 +1,8 @@
 ﻿namespace WebApiClientCore
 {
     /// <summary>
-    /// 定义HttpApi接口的基础接口
-    /// 要求所有HttpApi接口都继承此接口
+    /// 定义HttpApi标识的接口
+    /// 继承此接口将获得智能语法分析提示的能力
     /// </summary>
     public interface IHttpApi
     {
