@@ -6,12 +6,12 @@ namespace WebApiClientCore.Attributes
     /// 表示原始值结果的特性
     /// 支持结果类型为string、byte[]、Stream和HttpResponseMessage
     /// </summary>
-    class RawTypeResultAttribute : ApiResultAttribute
+    class RawTypeReturnAttribute : ApiReturnAttribute
     {
         /// <summary>
         /// 原始值结果的特性
         /// </summary>
-        public RawTypeResultAttribute()
+        public RawTypeReturnAttribute()
             : base(null)
         {
         }

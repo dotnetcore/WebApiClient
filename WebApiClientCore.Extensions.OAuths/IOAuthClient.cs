@@ -9,8 +9,8 @@ namespace WebApiClientCore.Extensions.OAuths
     /// 定义Token客户端的接口
     /// </summary>
     [LoggingFilter]
-    [XmlResult(Enable = false)]
-    [JsonResult(EnsureMatchAcceptContentType = false, EnsureSuccessStatusCode = false)]
+    [XmlReturn(Enable = false)]
+    [JsonReturn(EnsureMatchAcceptContentType = false, EnsureSuccessStatusCode = false)]
     public interface IOAuthClient
     {
         /// <summary>

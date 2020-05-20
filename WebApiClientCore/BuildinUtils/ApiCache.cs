@@ -9,9 +9,7 @@ namespace WebApiClientCore
     /// </summary>
     class ApiCache
     {
-        private readonly bool enable;
         private readonly ApiRequestContext context;
-        private readonly IResponseCacheProvider provider;
         private readonly IApiCacheAttribute attribute;
 
         /// <summary>
@@ -22,55 +20,61 @@ namespace WebApiClientCore
         {
             this.context = context;
             this.attribute = context.ApiAction.CacheAttribute;
-            this.provider = context.HttpContext.Services.GetService<IResponseCacheProvider>();
-            this.enable = this.attribute != null && this.provider != null;
         }
 
         /// <summary>
         /// 获取响应的缓存
         /// </summary>
         /// <returns></returns>
-        public async Task<CacheResult> GetAsync()
+        public async Task<ApiCacheValue> GetAsync()
         {
-            if (this.enable == false)
+            if (this.attribute == null)
             {
-                return CacheResult.Empty;
+                return default;
             }
 
             if (this.attribute.GetReadPolicy(this.context) == CachePolicy.Ignore)
             {
-                return CacheResult.Empty;
+                return default;
             }
 
             var cacheKey = await this.attribute.GetCacheKeyAsync(this.context).ConfigureAwait(false);
             if (string.IsNullOrEmpty(cacheKey) == true)
             {
-                return CacheResult.Empty;
+                return default;
             }
 
-            var cacheResult = await this.provider.GetAsync(cacheKey).ConfigureAwait(false);
-            if (cacheResult.HasValue == false || cacheResult.Value == null)
+            var provider = this.context.HttpContext.Services.GetService<IResponseCacheProvider>();
+            if (provider == null)
             {
-                return new CacheResult(cacheKey, null);
+                return default;
             }
 
-            var response = cacheResult.Value.ToResponseMessage(this.context.HttpContext.RequestMessage, this.provider.Name);
-            return new CacheResult(cacheKey, response);
+            var responseCache = await provider.GetAsync(cacheKey).ConfigureAwait(false);
+            if (responseCache.HasValue == false || responseCache.Value == null)
+            {
+                return new ApiCacheValue(cacheKey, null);
+            }
+
+            var request = this.context.HttpContext.RequestMessage;
+            var response = responseCache.Value.ToResponseMessage(request, provider.Name);
+            return new ApiCacheValue(cacheKey, response);
         }
 
         /// <summary>
         /// 更新响应到缓存
         /// </summary>
         /// <param name="cacheKey">缓存键</param>
+        /// <param name="response">响应消息</param>
         /// <returns></returns>
-        public async Task SetAsync(string cacheKey)
+        public async Task SetAsync(string cacheKey, HttpResponseMessage response)
         {
-            if (this.enable == false)
+            if (this.attribute == null)
             {
                 return;
             }
 
-            if (this.context.HttpContext.ResponseMessage == null)
+            if (response == null)
             {
                 return;
             }
@@ -90,41 +94,14 @@ namespace WebApiClientCore
                 return;
             }
 
-            var httpResponse = this.context.HttpContext.ResponseMessage;
-            var cacheEntry = await ResponseCacheEntry.FromResponseMessageAsync(httpResponse).ConfigureAwait(false);
-            await this.provider.SetAsync(cacheKey, cacheEntry, attribute.Expiration).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// 表示缓存结果
-        /// </summary>
-        public struct CacheResult
-        {
-            /// <summary>
-            /// 获取缓存的键
-            /// </summary>
-            public string CacheKey { get; }
-
-            /// <summary>
-            /// 获取响应信息
-            /// </summary>
-            public HttpResponseMessage ResponseMessage { get; }
-
-            /// <summary>
-            /// 获取空的缓存结果
-            /// </summary>
-            public static CacheResult Empty { get; } = new CacheResult(null, null);
-
-            /// <summary>
-            /// 缓存结果
-            /// </summary>
-            /// <param name="cacheKey">缓存的键</param>
-            /// <param name="responseMessage">响应信息</param>
-            public CacheResult(string cacheKey, HttpResponseMessage responseMessage)
+            var provider = this.context.HttpContext.Services.GetService<IResponseCacheProvider>();
+            if (provider == null)
             {
-                this.CacheKey = cacheKey;
-                this.ResponseMessage = responseMessage;
+                return;
             }
+
+            var cacheEntry = await ResponseCacheEntry.FromResponseMessageAsync(response).ConfigureAwait(false);
+            await provider.SetAsync(cacheKey, cacheEntry, attribute.Expiration).ConfigureAwait(false);
         }
     }
 }

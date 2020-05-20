@@ -59,22 +59,23 @@ namespace WebApiClientCore
             // 参数特性请求前执行
             foreach (var parameter in apiAction.Parameters)
             {
+                var index = parameter.Index;
                 foreach (var attr in parameter.Attributes)
                 {
                     builder.Use(async (context, next) =>
                     {
-                        var ctx = new ApiParameterContext(context, parameter.Index);
+                        var ctx = new ApiParameterContext(context, index);
                         await attr.OnRequestAsync(ctx, next).ConfigureAwait(false);
                     });
                 }
             }
 
-            // Result特性请求前执行
-            foreach (var result in apiAction.ResultAttributes)
+            // Return特性请求前执行
+            foreach (var @return in apiAction.Return.Attributes)
             {
-                if (result.Enable == true)
+                if (@return.Enable == true)
                 {
-                    builder.Use(result.OnRequestAsync);
+                    builder.Use(@return.OnRequestAsync);
                 }
             }
 
@@ -99,10 +100,10 @@ namespace WebApiClientCore
         {
             var builder = new PipelineBuilder<ApiResponseContext>();
 
-            // Result特性请求后执行
-            foreach (var result in apiAction.ResultAttributes)
+            // Return特性请求后执行
+            foreach (var @return in apiAction.Return.Attributes)
             {
-                if (result.Enable == false)
+                if (@return.Enable == false)
                 {
                     continue;
                 }
@@ -111,7 +112,7 @@ namespace WebApiClientCore
                 {
                     if (context.ResultStatus == ResultStatus.None)
                     {
-                        await result.OnResponseAsync(context, next).ConfigureAwait(false);
+                        await @return.OnResponseAsync(context, next).ConfigureAwait(false);
                     }
                     else
                     {
@@ -154,28 +155,29 @@ namespace WebApiClientCore
         /// <returns></returns>
         private static async Task<ApiResponseContext> SendRequestAsync(ApiRequestContext context)
         {
-            var response = new ApiResponseContext(context);
             try
             {
                 var apiCache = new ApiCache(context);
-                var cacheResult = await apiCache.GetAsync().ConfigureAwait(false);
+                var cacheValue = await apiCache.GetAsync().ConfigureAwait(false);
 
-                if (cacheResult.ResponseMessage != null)
+                if (cacheValue != null && cacheValue.Value != null)
                 {
-                    context.HttpContext.ResponseMessage = cacheResult.ResponseMessage;
+                    context.HttpContext.ResponseMessage = cacheValue.Value;
                 }
                 else
                 {
                     using var cancellation = CreateLinkedTokenSource(context);
-                    context.HttpContext.ResponseMessage = await context.HttpContext.Client.SendAsync(context.HttpContext.RequestMessage, cancellation.Token).ConfigureAwait(false);
-                    await apiCache.SetAsync(cacheResult.CacheKey).ConfigureAwait(false);
+                    var response = await context.HttpContext.Client.SendAsync(context.HttpContext.RequestMessage, cancellation.Token).ConfigureAwait(false);
+
+                    context.HttpContext.ResponseMessage = response;
+                    await apiCache.SetAsync(cacheValue?.Key, response).ConfigureAwait(false);
                 }
+                return new ApiResponseContext(context);
             }
             catch (Exception ex)
             {
-                response.Exception = ex;
+                return new ApiResponseContext(context) { Exception = ex };
             }
-            return response;
         }
 
         /// <summary>

@@ -10,7 +10,7 @@ namespace WebApiClientCore.Attributes
     /// 表示响应内容处理的抽象特性
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public abstract class ApiResultAttribute : Attribute, IApiResultAttribute
+    public abstract class ApiReturnAttribute : Attribute, IApiReturnAttribute
     {
         /// <summary>
         /// 获取接受的媒体类型
@@ -57,7 +57,7 @@ namespace WebApiClientCore.Attributes
         /// 响应内容处理的抽象特性
         /// </summary>
         /// <param name="accpetContentType">收受的内容类型</param>
-        public ApiResultAttribute(MediaTypeWithQualityHeaderValue accpetContentType)
+        public ApiReturnAttribute(MediaTypeWithQualityHeaderValue accpetContentType)
         {
             this.AcceptContentType = accpetContentType;
         }

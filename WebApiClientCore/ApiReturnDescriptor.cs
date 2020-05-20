@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
+using WebApiClientCore.Attributes;
 
 namespace WebApiClientCore
 {
@@ -29,6 +31,11 @@ namespace WebApiClientCore
         public bool IsTaskDefinition { get; protected set; }
 
         /// <summary>
+        /// 获取关联的IApiReturnAttribute
+        /// </summary>
+        public IReadOnlyList<IApiReturnAttribute> Attributes { get; protected set; }
+
+        /// <summary>
         /// 请求Api的返回描述
         /// </summary>
         /// <param name="method">方法信息</param>
@@ -47,6 +54,14 @@ namespace WebApiClientCore
             this.ReturnType = method.ReturnType;
             this.DataType = new ApiDataTypeDescriptor(dataType);
             this.IsTaskDefinition = method.ReturnType.IsInheritFrom<Task>();
+            this.Attributes = method
+                .FindDeclaringAttributes<IApiReturnAttribute>(true)
+                .Append(new JsonReturnAttribute(0.01d))
+                .Append(new XmlReturnAttribute(0.01d))
+                .Append(new RawTypeReturnAttribute())
+                .Distinct(new MultiplableComparer<IApiReturnAttribute>())
+                .OrderBy(item => item.OrderIndex)
+                .ToReadOnlyList();
         }
     }
 }
