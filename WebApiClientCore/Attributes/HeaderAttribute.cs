@@ -22,12 +22,6 @@ namespace WebApiClientCore.Attributes
         private readonly string value;
 
         /// <summary>
-        /// 获取是对cookie的Value进行Url utf-8编码
-        /// 默认为true
-        /// </summary>
-        public bool EncodeCookie { get; set; }
-
-        /// <summary>
         /// 将参数值设置到Header        
         /// </summary>
         /// <param name="name">header名称</param>
@@ -74,7 +68,6 @@ namespace WebApiClientCore.Attributes
             }
             this.name = name;
             this.value = value;
-            this.EncodeCookie = true;
         }
 
         /// <summary>
