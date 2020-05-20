@@ -7,7 +7,7 @@ namespace WebApiClientCore.Exceptions
     /// <summary>
     /// 表示不支持处理的响应消息异常
     /// </summary>
-    public class ApiResultNotSupportedExteption : HttpApiException
+    public class ApiReturnNotSupportedExteption : HttpApiException
     {
         /// <summary>
         /// 获取响应消息
@@ -39,7 +39,7 @@ namespace WebApiClientCore.Exceptions
         /// <param name="responseMessage">响应消息</param>
         /// <param name="returnDataType">反序列化的目标类型</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ApiResultNotSupportedExteption(HttpResponseMessage responseMessage, Type returnDataType)
+        public ApiReturnNotSupportedExteption(HttpResponseMessage responseMessage, Type returnDataType)
         {
             this.ResponseMessage = responseMessage ?? throw new ArgumentNullException(nameof(responseMessage));
             this.ReturnDataType = returnDataType ?? throw new ArgumentNullException(nameof(returnDataType));

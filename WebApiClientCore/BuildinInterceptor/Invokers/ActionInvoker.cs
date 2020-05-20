@@ -73,7 +73,7 @@ namespace WebApiClientCore
                 throw response.Exception;
             }
 
-            throw new ApiResultNotSupportedExteption(context.HttpContext.ResponseMessage, context.ApiAction.Return.DataType.Type);
+            throw new ApiReturnNotSupportedExteption(context.HttpContext.ResponseMessage, context.ApiAction.Return.DataType.Type);
         }
     }
 }
