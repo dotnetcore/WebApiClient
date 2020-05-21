@@ -64,6 +64,11 @@ namespace WebApiClientCore
                 throw new ArgumentNullException(nameof(property));
             }
 
+            if (property.DeclaringType == null)
+            {
+                throw new ArgumentNullException(nameof(property));
+            }
+
             return CreateGetFunc<TDeclaring, TProperty>(property.DeclaringType, property.Name, property.PropertyType);
         }
 
@@ -77,7 +82,7 @@ namespace WebApiClientCore
         /// <param name="propertyType">属性的类型</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        public static Func<TDeclaring, TProperty> CreateGetFunc<TDeclaring, TProperty>(Type declaringType, string propertyName, Type propertyType = null)
+        public static Func<TDeclaring, TProperty> CreateGetFunc<TDeclaring, TProperty>(Type declaringType, string propertyName, Type? propertyType = null)
         {
             if (declaringType == null)
             {
@@ -228,7 +233,7 @@ namespace WebApiClientCore
                 var argTypeNames = string.Join(", ", args.Select(a => a.Name));
                 throw new ArgumentException(Resx.missing_Ctor.Format(type, argTypeNames));
             }
-            
+
             var parameters = args.Select(t => Expression.Parameter(t)).ToArray();
             var body = Expression.New(ctor, parameters);
             return Expression.Lambda<TFunc>(body, parameters).Compile();

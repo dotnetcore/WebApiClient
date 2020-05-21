@@ -13,7 +13,7 @@ namespace WebApiClientCore
         /// </summary>     
         /// <param name="name">名称</param>
         /// <param name="value">文本</param>
-        public FormDataTextContent(string name, string value)
+        public FormDataTextContent(string name, string? value)
             : base(value ?? string.Empty)
         {
             if (this.Headers.ContentDisposition == null)

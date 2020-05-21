@@ -44,7 +44,9 @@ namespace WebApiClientCore
                 .DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run)
                 .DefineDynamicModule(moduleName);
 
+#pragma warning disable CS8604 // 可能的 null 引用参数。
             var builder = module.DefineType(interfaceType.FullName, TypeAttributes.Class);
+#pragma warning restore CS8604 // 可能的 null 引用参数。
             builder.AddInterfaceImplementation(interfaceType);
 
             var fieldInterceptor = BuildField(builder, "interceptor", typeof(IActionInterceptor));
@@ -54,7 +56,9 @@ namespace WebApiClientCore
             BuildCtor(builder, fieldInterceptor, fieldInterfaceType, fieldApiMethods);
             BuildMethods(builder, apiMethods, fieldInterceptor, fieldInterfaceType, fieldApiMethods);
 
-            return builder.CreateTypeInfo().AsType();
+#pragma warning disable CS8603 // 可能的 null 引用返回。
+            return builder.CreateType();
+#pragma warning restore CS8603 // 可能的 null 引用返回。
         }
 
         /// <summary>

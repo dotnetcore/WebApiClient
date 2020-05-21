@@ -17,7 +17,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取值
         /// </summary>
-        public string Value { get; }
+        public string? Value { get; }
 
         /// <summary>
         /// 键值对
@@ -25,7 +25,7 @@ namespace WebApiClientCore
         /// <param name="key">键</param>
         /// <param name="value">值</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public KeyValue(string key, string value)
+        public KeyValue(string key, string? value)
         {
             if (string.IsNullOrEmpty(key))
             {

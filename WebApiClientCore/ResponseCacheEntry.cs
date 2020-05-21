@@ -15,7 +15,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取或设置版本号
         /// </summary>
-        public string Version { get; set; }
+        public string Version { get; set; } = "1.1";
 
         /// <summary>
         /// 获取或设置状态码
@@ -25,22 +25,22 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取或设置状态说明
         /// </summary>
-        public string ReasonPhrase { get; set; }
+        public string? ReasonPhrase { get; set; }
 
         /// <summary>
         /// 获取或设置请求头
         /// </summary>
-        public Dictionary<string, string[]> Headers { get; set; }
+        public Dictionary<string, string[]>? Headers { get; set; }
 
         /// <summary>
         /// 获取或设置内容的请求头
         /// </summary>
-        public Dictionary<string, string[]> ContentHeaders { get; set; }
+        public Dictionary<string, string[]>? ContentHeaders { get; set; }
 
         /// <summary>
         /// 获取或设置响应内容
         /// </summary>
-        public byte[] Content { get; set; }
+        public byte[] Content { get; set; } = Array.Empty<byte>();
 
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace WebApiClientCore
         /// <param name="requestMessage">请求信息</param>
         /// <param name="cacheProviderName">缓存提供者名</param>
         /// <returns></returns>
-        public HttpResponseMessage ToResponseMessage(HttpRequestMessage requestMessage, string cacheProviderName)
+        public HttpResponseMessage ToResponseMessage(HttpRequestMessage requestMessage, string? cacheProviderName)
         {
             var response = new HttpResponseMessage
             {

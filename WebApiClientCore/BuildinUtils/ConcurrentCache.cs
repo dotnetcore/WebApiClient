@@ -9,7 +9,7 @@ namespace WebApiClientCore
     /// </summary>
     /// <typeparam name="TKey">键</typeparam>
     /// <typeparam name="TValue">值</typeparam>
-    class ConcurrentCache<TKey, TValue>
+    class ConcurrentCache<TKey, TValue> where TKey : notnull
     {
         /// <summary>
         /// 线程安全字典

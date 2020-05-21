@@ -27,14 +27,15 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <returns></returns>
         public override async Task SetResultAsync(ApiResponseContext context)
-        {            
+        {
             var dataType = context.ApiAction.Return.DataType;
-            if (dataType.IsModelType == true)
+            var response = context.HttpContext.ResponseMessage;
+
+            if (dataType.IsModelType == true || response == null)
             {
                 return;
             }
 
-            var response = context.HttpContext.ResponseMessage;
             if (dataType.IsHttpResponseMessage == true)
             {
                 context.Result = response;

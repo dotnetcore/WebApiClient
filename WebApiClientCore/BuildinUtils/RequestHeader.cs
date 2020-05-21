@@ -19,7 +19,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 请求头枚举和名称的缓存
         /// </summary>
-        private static readonly Dictionary<HttpRequestHeader, string> staticCache = new Dictionary<HttpRequestHeader, string>();
+        private static readonly Dictionary<HttpRequestHeader, string?> staticCache = new Dictionary<HttpRequestHeader, string?>();
 
         /// <summary>
         /// 请求头枚举到名称的转换
@@ -38,11 +38,11 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="header">请求头枚举</param>
         /// <returns></returns>
-        private static string GetDisplayName(this HttpRequestHeader header)
+        private static string? GetDisplayName(this HttpRequestHeader header)
         {
             return httpRequestHeaderType
-                .GetField(header.ToString())
-                .GetCustomAttribute<DisplayAttribute>()
+                .GetField(header.ToString())?
+                .GetCustomAttribute<DisplayAttribute>()?
                 .Name;
         }
 
@@ -51,9 +51,9 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="header">请求头枚举</param>
         /// <returns></returns>
-        public static string GetName(HttpRequestHeader header)
+        public static string? GetName(HttpRequestHeader header)
         {
-            staticCache.TryGetValue(header, out string name);
+            staticCache.TryGetValue(header, out string? name);
             return name;
         }
     }

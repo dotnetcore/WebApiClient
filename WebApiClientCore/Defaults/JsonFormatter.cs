@@ -14,7 +14,7 @@ namespace WebApiClientCore.Defaults
         /// <param name="obj">对象</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        public virtual byte[] Serialize(object obj, JsonSerializerOptions options)
+        public virtual byte[] Serialize(object? obj, JsonSerializerOptions? options)
         {
             return obj == null ? Array.Empty<byte>() : JsonSerializer.SerializeToUtf8Bytes(obj, obj.GetType(), options);
         }
@@ -26,9 +26,9 @@ namespace WebApiClientCore.Defaults
         /// <param name="objType">对象类型</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        public virtual object Deserialize(byte[] json, Type objType, JsonSerializerOptions options)
+        public virtual object? Deserialize(byte[]? json, Type objType, JsonSerializerOptions? options)
         {
-            return json == default || json.Length == 0 ? objType.DefaultValue() : JsonSerializer.Deserialize(json, objType, options);
+            return json == null || json.Length == 0 ? objType.DefaultValue() : JsonSerializer.Deserialize(json, objType, options);
         }
     }
 }

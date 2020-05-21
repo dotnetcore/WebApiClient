@@ -21,7 +21,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取参数值
         /// </summary>
-        public object ParameterValue => this.Arguments[index];
+        public object? ParameterValue => this.Arguments[index];
 
         /// <summary>
         /// Api参数上下文
@@ -51,7 +51,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="encoding">xml编码</param>
         /// <returns></returns>
-        public string SerializeToXml(Encoding encoding)
+        public string? SerializeToXml(Encoding encoding)
         {
             return this.HttpContext.Services
                 .GetRequiredService<IXmlFormatter>()

@@ -71,7 +71,7 @@ namespace WebApiClientCore.Attributes
             {
                 logMessage.HasResponse = true;
                 logMessage.ResponseHeaders = response.GetHeadersString();
-                logMessage.ResponseContent = await this.ReadResponseContentAsync(response.Content).ConfigureAwait(false);
+                logMessage.ResponseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
 
             await this.WriteLogAsync(context, logMessage).ConfigureAwait(false);
@@ -82,7 +82,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="httpContent"></param>
         /// <returns></returns>
-        private async Task<string> ReadRequestContentAsync(HttpContent httpContent)
+        private async Task<string?> ReadRequestContentAsync(HttpContent httpContent)
         {
             if (httpContent == null)
             {
@@ -95,16 +95,6 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 读取响应内容
-        /// </summary>
-        /// <param name="httpContent"></param>
-        /// <returns></returns>
-        private Task<string> ReadResponseContentAsync(HttpContent httpContent)
-        {
-            return httpContent?.ReadAsStringAsync();
-        }
-
-        /// <summary>
         /// 写日志到LoggerFactory
         /// </summary>
         /// <param name="context">上下文</param>
@@ -113,7 +103,7 @@ namespace WebApiClientCore.Attributes
         protected virtual Task WriteLogAsync(ApiResponseContext context, LogMessage logMessage)
         {
             var method = context.ApiAction.Member;
-            var categoryName = $"{method.DeclaringType.Namespace}.{method.DeclaringType.Name}.{method.Name}";
+            var categoryName = $"{method.DeclaringType?.Namespace}.{method.DeclaringType?.Name}.{method.Name}";
 
             var loggerFactory = context.HttpContext.Services.GetService<ILoggerFactory>();
             if (loggerFactory == null)

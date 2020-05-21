@@ -11,12 +11,8 @@
         /// <param name="str"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        public static string Format(this string str, params object[] args)
-        {
-            if (string.IsNullOrEmpty(str))
-            {
-                return default;
-            }
+        public static string Format(this string str, params object?[] args)
+        { 
             return string.Format(str, args);
         }
     }

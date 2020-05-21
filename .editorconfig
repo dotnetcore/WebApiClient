@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS8601: 可能的 null 引用赋值。
+dotnet_diagnostic.CS8601.severity = none

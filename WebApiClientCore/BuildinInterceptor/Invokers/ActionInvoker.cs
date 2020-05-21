@@ -70,10 +70,13 @@ namespace WebApiClientCore
             }
             else if (response.ResultStatus == ResultStatus.HasException)
             {
-                throw response.Exception;
+                if (response.Exception != null)
+                {
+                    throw response.Exception;
+                }
             }
 
-            throw new ApiReturnNotSupportedExteption(context.HttpContext.ResponseMessage, context.ApiAction.Return.DataType.Type);
+            throw new ApiReturnNotSupportedExteption(context);
         }
     }
 }

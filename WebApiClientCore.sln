@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore.Test", "We
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore.Extensions.OAuths", "WebApiClientCore.Extensions.OAuths\WebApiClientCore.Extensions.OAuths.csproj", "{23DB119E-CFBD-426F-BDCD-1150AB29FF0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiClientCore.Benchmarks", "WebApiClientCore.Benchmarks\WebApiClientCore.Benchmarks.csproj", "{3371725B-C3BC-492C-B7A2-2B982EEF28AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore.Benchmarks", "WebApiClientCore.Benchmarks\WebApiClientCore.Benchmarks.csproj", "{3371725B-C3BC-492C-B7A2-2B982EEF28AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

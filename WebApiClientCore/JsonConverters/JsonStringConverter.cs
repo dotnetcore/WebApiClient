@@ -55,7 +55,8 @@ namespace WebApiClientCore.JsonConverters
                 var json = reader.GetString();
                 var valueType = typeToConvert.GenericTypeArguments.First();
                 var value = JsonSerializer.Deserialize(json, valueType, options);
-                return (T)Activator.CreateInstance(typeToConvert, value);
+                var instance = Activator.CreateInstance(typeToConvert, value);
+                return instance == null ? default : (T)instance;
             }
 
             /// <summary>
@@ -66,7 +67,7 @@ namespace WebApiClientCore.JsonConverters
             /// <param name="options"></param>
             public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
             {
-                var jsonString = (IJsonString)value;
+                var jsonString = (IJsonString?)value;
                 if (jsonString == null)
                 {
                     writer.WriteStringValue(default(string));

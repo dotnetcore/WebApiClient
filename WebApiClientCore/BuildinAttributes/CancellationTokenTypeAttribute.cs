@@ -15,8 +15,10 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public override Task OnRequestAsync(ApiParameterContext context)
         {
-            var token = (CancellationToken)context.ParameterValue;
-            context.CancellationTokens.Add(token);
+            if (context.ParameterValue is CancellationToken token)
+            {
+                context.CancellationTokens.Add(token);
+            }
             return Task.CompletedTask;
         }
     }

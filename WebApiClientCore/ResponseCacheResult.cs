@@ -16,7 +16,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取缓存的值
         /// </summary>
-        public ResponseCacheEntry Value { get; }
+        public ResponseCacheEntry? Value { get; }
 
         /// <summary>
         /// 获取是否有缓存的值
@@ -28,7 +28,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="value">缓存的值</param>
         /// <param name="hasValue">是否有缓存的值</param>
-        public ResponseCacheResult(ResponseCacheEntry value, bool hasValue)
+        public ResponseCacheResult(ResponseCacheEntry? value, bool hasValue)
         {
             this.Value = value;
             this.HasValue = hasValue;

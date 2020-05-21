@@ -19,7 +19,7 @@ namespace WebApiClientCore.Defaults
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
-        public virtual string Serialize(object obj, Encoding encoding)
+        public virtual string? Serialize(object? obj, Encoding encoding)
         {
             if (encoding == null)
             {
@@ -48,7 +48,7 @@ namespace WebApiClientCore.Defaults
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
-        public virtual object Deserialize(string xml, Type objType)
+        public virtual object? Deserialize(string? xml, Type objType)
         {
             if (objType == null)
             {

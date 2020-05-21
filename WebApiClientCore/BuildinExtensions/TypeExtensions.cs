@@ -29,7 +29,9 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static bool IsAllowMultiple(this Type type)
         {
+#pragma warning disable CS8602 // Attribute肯定声明AttributeUsageAttribute
             return typeAllowMultipleCache.GetOrAdd(type, (t => t.IsInheritFrom<Attribute>() && t.GetCustomAttribute<AttributeUsageAttribute>(true).AllowMultiple));
+#pragma warning restore CS8602 
         }
 
         /// <summary>
@@ -37,7 +39,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static object DefaultValue(this Type type)
+        public static object? DefaultValue(this Type? type)
         {
             return type == null
                 ? null

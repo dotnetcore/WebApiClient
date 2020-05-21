@@ -31,7 +31,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取关联的的HttpResponseMessage
         /// </summary>
-        public HttpResponseMessage ResponseMessage { get; internal set; }
+        public HttpResponseMessage? ResponseMessage { get; internal set; }
 
         /// <summary>
         /// http上下文

@@ -26,7 +26,7 @@ namespace WebApiClientCore
         /// 获取响应的缓存
         /// </summary>
         /// <returns></returns>
-        public async Task<ApiCacheValue> GetAsync()
+        public async Task<ApiCacheValue?> GetAsync()
         {
             if (this.attribute == null)
             {
@@ -67,7 +67,7 @@ namespace WebApiClientCore
         /// <param name="cacheKey">缓存键</param>
         /// <param name="response">响应消息</param>
         /// <returns></returns>
-        public async Task SetAsync(string cacheKey, HttpResponseMessage response)
+        public async Task SetAsync(string? cacheKey, HttpResponseMessage? response)
         {
             if (this.attribute == null)
             {
@@ -89,7 +89,7 @@ namespace WebApiClientCore
                 cacheKey = await this.attribute.GetCacheKeyAsync(this.context).ConfigureAwait(false);
             }
 
-            if (string.IsNullOrEmpty(cacheKey) == true)
+            if (cacheKey == null)
             {
                 return;
             }

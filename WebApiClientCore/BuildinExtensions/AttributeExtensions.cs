@@ -28,9 +28,9 @@ namespace WebApiClientCore
         /// <param name="method">方法</param>
         /// <param name="inherit"></param>
         /// <returns></returns>
-        public static TAttribute FindDeclaringAttribute<TAttribute>(this MethodInfo method, bool inherit) where TAttribute : class
+        public static TAttribute? FindDeclaringAttribute<TAttribute>(this MethodInfo method, bool inherit) where TAttribute : class
         {
-            return method.GetAttribute<TAttribute>(inherit) ?? method.DeclaringType.GetAttribute<TAttribute>(inherit);
+            return method.GetAttribute<TAttribute>(inherit) ?? method.DeclaringType?.GetAttribute<TAttribute>(inherit);
         }
 
         /// <summary>
@@ -43,6 +43,11 @@ namespace WebApiClientCore
         public static IEnumerable<TAttribute> FindDeclaringAttributes<TAttribute>(this MethodInfo method, bool inherit) where TAttribute : class
         {
             var methodAttributes = method.GetAttributes<TAttribute>(inherit);
+            if (method.DeclaringType == null)
+            {
+                return methodAttributes;
+            }
+
             var interfaceAttributes = method.DeclaringType.GetAttributes<TAttribute>(inherit);
             return methodAttributes.Concat(interfaceAttributes);
         }
@@ -55,7 +60,7 @@ namespace WebApiClientCore
         /// <param name="member">成员</param>
         /// <param name="inherit"></param>
         /// <returns></returns>
-        public static TAttribute GetAttribute<TAttribute>(this MemberInfo member, bool inherit) where TAttribute : class
+        public static TAttribute? GetAttribute<TAttribute>(this MemberInfo member, bool inherit) where TAttribute : class
         {
             return member.GetAttributes<TAttribute>(inherit).FirstOrDefault();
         }

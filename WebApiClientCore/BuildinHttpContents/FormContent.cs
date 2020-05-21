@@ -93,9 +93,9 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="form">表单内容</param>
         /// <returns></returns>
-        public async Task AddRawFormAsync(string form)
+        public async Task AddRawFormAsync(string? form)
         {
-            if (string.IsNullOrEmpty(form) == true)
+            if (form == null)
             {
                 return;
             }
@@ -130,7 +130,7 @@ namespace WebApiClientCore
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        private async Task AddRawFormAsync(byte[] key, byte[] value)
+        private async Task AddRawFormAsync(byte[] key, byte[]? value)
         {
             if (this.stream.Length > 0)
             {

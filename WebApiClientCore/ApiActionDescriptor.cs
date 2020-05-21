@@ -71,7 +71,7 @@ namespace WebApiClientCore
         /// <param name="method">接口的方法</param>
         /// <param name="interfaceType">接口类型</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ApiActionDescriptor(MethodInfo method, Type interfaceType = default)
+        public ApiActionDescriptor(MethodInfo method, Type? interfaceType = default)
         {
             if (method == null)
             {

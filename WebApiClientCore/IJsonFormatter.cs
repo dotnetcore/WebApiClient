@@ -14,7 +14,7 @@ namespace WebApiClientCore
         /// <param name="obj">对象</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        byte[] Serialize(object obj, JsonSerializerOptions options);
+        byte[] Serialize(object? obj, JsonSerializerOptions? options);
 
         /// <summary>
         /// 将json文本反序列化对象
@@ -23,6 +23,6 @@ namespace WebApiClientCore
         /// <param name="objType">对象类型</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        object Deserialize(byte[] json, Type objType, JsonSerializerOptions options);
+        object? Deserialize(byte[]? json, Type objType, JsonSerializerOptions? options);
     }
 }

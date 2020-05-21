@@ -22,12 +22,12 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 获取或设置请求头
         /// </summary>
-        public string RequestHeaders { get; set; }
+        public string? RequestHeaders { get; set; }
 
         /// <summary>
         /// 获取或设置请求内容
         /// </summary>
-        public string RequestContent { get; set; }
+        public string? RequestContent { get; set; }
 
 
 
@@ -44,18 +44,18 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 获取或设置响应头
         /// </summary>
-        public string ResponseHeaders { get; set; }
+        public string? ResponseHeaders { get; set; }
 
         /// <summary>
         /// 获取或设置响应内容
         /// </summary>
-        public string ResponseContent { get; set; }
+        public string? ResponseContent { get; set; }
 
 
         /// <summary>
         /// 获取或设置异常
         /// </summary>
-        public Exception Exception { get; set; }
+        public Exception? Exception { get; set; }
 
 
         /// <summary>
@@ -213,7 +213,7 @@ namespace WebApiClientCore.Attributes
             /// </summary>
             /// <param name="value"></param>
             /// <returns></returns>
-            public TextBuilder AppendIfNotNull(string value)
+            public TextBuilder AppendIfNotNull(string? value)
             {
                 if (string.IsNullOrEmpty(value) == false)
                 {
@@ -227,7 +227,7 @@ namespace WebApiClientCore.Attributes
             /// </summary>
             /// <param name="value"></param>
             /// <returns></returns>
-            public TextBuilder AppendLineIfNotNull(string value)
+            public TextBuilder AppendLineIfNotNull(string? value)
             {
                 if (string.IsNullOrEmpty(value) == false)
                 {
