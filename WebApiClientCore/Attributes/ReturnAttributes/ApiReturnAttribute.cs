@@ -15,7 +15,7 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 获取接受的媒体类型
         /// </summary>
-        protected MediaTypeWithQualityHeaderValue AcceptContentType { get; }
+        protected MediaTypeWithQualityHeaderValue? AcceptContentType { get; }
 
         /// <summary>
         /// 获取执行排序索引
@@ -57,7 +57,7 @@ namespace WebApiClientCore.Attributes
         /// 响应内容处理的抽象特性
         /// </summary>
         /// <param name="accpetContentType">收受的内容类型</param>
-        public ApiReturnAttribute(MediaTypeWithQualityHeaderValue accpetContentType)
+        public ApiReturnAttribute(MediaTypeWithQualityHeaderValue? accpetContentType)
         {
             this.AcceptContentType = accpetContentType;
         }
@@ -99,12 +99,12 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         private bool UseSuccessStatusCode(ApiResponseContext context)
         {
-            if (this.EnsureSuccessStatusCode == true)
+            var response = context.HttpContext.ResponseMessage;
+            if (this.EnsureSuccessStatusCode == true && response != null)
             {
-                var statusCode = context.HttpContext.ResponseMessage.StatusCode;
-                if (this.IsSuccessStatusCode(statusCode) == false)
+                if (this.IsSuccessStatusCode(response.StatusCode) == false)
                 {
-                    context.Exception = new HttpStatusFailureException(context);
+                    context.Exception = new HttpStatusFailureException(response);
                     return false;
                 }
             }
@@ -120,7 +120,7 @@ namespace WebApiClientCore.Attributes
         {
             if (this.EnsureMatchAcceptContentType == true && this.AcceptContentType != null)
             {
-                var contenType = context.HttpContext.ResponseMessage.Content.Headers.ContentType;
+                var contenType = context.HttpContext.ResponseMessage?.Content.Headers.ContentType;
                 if (this.IsMatchAcceptContentType(contenType) == false)
                 {
                     return false;
@@ -145,9 +145,9 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="responseContentType"></param>
         /// <returns></returns>
-        protected virtual bool IsMatchAcceptContentType(MediaTypeHeaderValue responseContentType)
+        protected virtual bool IsMatchAcceptContentType(MediaTypeHeaderValue? responseContentType)
         {
-            var accept = this.AcceptContentType.MediaType;
+            var accept = this.AcceptContentType?.MediaType;
             var response = responseContentType?.MediaType;
             return string.Equals(accept, response, StringComparison.OrdinalIgnoreCase);
         }

@@ -21,7 +21,7 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 获取请求相对路径
         /// </summary>
-        public string Path { get; }
+        public string? Path { get; }
 
         /// <summary>
         /// http请求方法描述特性
@@ -37,7 +37,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="method">请求方法</param>
         /// <param name="path">请求绝对或相对路径</param>
-        public HttpMethodAttribute(string method, string path)
+        public HttpMethodAttribute(string method, string? path)
             : this(new HttpMethod(method), path)
         {
         }
@@ -56,7 +56,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="method">请求方法</param>
         /// <param name="path">请求绝对或相对路径</param>
-        protected HttpMethodAttribute(HttpMethod method, string path)
+        protected HttpMethodAttribute(HttpMethod method, string? path)
         {
             this.Method = method;
             this.Path = path;
@@ -87,7 +87,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="relative"></param>
         /// <exception cref="HttpApiInvalidOperationException"></exception>
         /// <returns></returns>
-        private Uri GetRequestUri(Uri baseUri, Uri relative)
+        private Uri? GetRequestUri(Uri? baseUri, Uri? relative)
         {
             if (baseUri == null)
             {
@@ -99,11 +99,7 @@ namespace WebApiClientCore.Attributes
             }
             else
             {
-                if (relative == null)
-                {
-                    return baseUri;
-                }
-                return new Uri(baseUri, relative);
+                return relative == null ? baseUri : new Uri(baseUri, relative);
             }
         }
     }

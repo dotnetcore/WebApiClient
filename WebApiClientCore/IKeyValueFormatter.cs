@@ -14,6 +14,6 @@ namespace WebApiClientCore
         /// <param name="obj">对象实例</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        KeyValue[] Serialize(string key, object obj, JsonSerializerOptions options);
+        KeyValue[] Serialize(string key, object? obj, JsonSerializerOptions? options);
     }
 }

@@ -19,7 +19,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="instance">实例</param>
         /// <returns></returns>
-        private static bool IsNeedValidateProperty(object instance)
+        private static bool IsNeedValidateProperty(object? instance)
         {
             if (instance == null)
             {
@@ -43,7 +43,7 @@ namespace WebApiClientCore
         /// <param name="parameterValue">参数值</param>
         /// <param name="validateProperty">是否验证属性值</param>
         /// <exception cref="ValidationException"></exception>
-        public static void ValidateParameter(ApiParameterDescriptor parameter, object parameterValue, bool validateProperty)
+        public static void ValidateParameter(ApiParameterDescriptor parameter, object? parameterValue, bool validateProperty)
         {
             var name = parameter.Name; 
             foreach (var validation in parameter.ValidationAttributes)
@@ -64,7 +64,7 @@ namespace WebApiClientCore
         /// <param name="value">结果值</param>
         /// <param name="validateProperty">是否验证属性值</param>
         /// <exception cref="ValidationException"></exception>
-        public static void ValidateReturnValue(object value, bool validateProperty)
+        public static void ValidateReturnValue(object? value, bool validateProperty)
         {
             if (validateProperty == true && IsNeedValidateProperty(value) == true)
             {

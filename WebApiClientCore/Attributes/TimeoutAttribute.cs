@@ -55,7 +55,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public override Task OnRequestAsync(ApiRequestContext context)
         {
-            if (this.TimeSpan.HasValue == false)
+            if (this.TimeSpan == null)
             {
                 throw new HttpApiInvalidOperationException(Resx.parameter_CannotMissing.Format("milliseconds"));
             }

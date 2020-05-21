@@ -26,7 +26,7 @@ namespace WebApiClientCore
         /// 例如http://www.webapiclient.com
         /// 设置了HttpHost值，HttpHostAttribute将失效  
         /// </summary>
-        public Uri HttpHost { get; set; }
+        public Uri? HttpHost { get; set; }
 
 
         /// <summary>

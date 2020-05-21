@@ -13,12 +13,12 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 字段名称
         /// </summary>
-        private readonly string name;
+        private readonly string? name;
 
         /// <summary>
         /// 字段的值
         /// </summary>
-        private readonly string value;
+        private readonly string? value;
 
         /// <summary>
         /// 表示参数值作为multipart/form-data表单的一个文本项
@@ -35,7 +35,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="value">字段的值</param>
         /// <exception cref="ArgumentNullException"></exception>
         [AttributeCtorUsage(AttributeTargets.Interface | AttributeTargets.Method)]
-        public FormDataTextAttribute(string name, object value)
+        public FormDataTextAttribute(string name, object? value)
         {
             if (string.IsNullOrEmpty(name))
             {

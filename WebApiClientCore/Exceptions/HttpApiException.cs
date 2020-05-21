@@ -19,7 +19,7 @@ namespace WebApiClientCore.Exceptions
         /// Http接口异常基础类
         /// </summary>
         /// <param name="message">异常消息</param>
-        public HttpApiException(string message)
+        public HttpApiException(string? message)
             : base(message)
         {
         }
@@ -29,7 +29,7 @@ namespace WebApiClientCore.Exceptions
         /// </summary>
         /// <param name="message">异常消息</param>
         /// <param name="inner">内部异常</param>
-        public HttpApiException(string message, Exception inner)
+        public HttpApiException(string? message, Exception? inner)
             : base(message, inner)
         {
         }

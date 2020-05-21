@@ -1,0 +1,4 @@
+﻿root = true
+
+[*.{cs,vb}]
+dotnet_style_prefer_conditional_expression_over_return = false

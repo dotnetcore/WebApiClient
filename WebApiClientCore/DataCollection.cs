@@ -15,7 +15,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 数据字典
         /// </summary>
-        private readonly Lazy<Dictionary<object, object>> lazy;
+        private readonly Lazy<Dictionary<object, object?>> lazy;
 
         /// <summary>
         /// 获取集合元素的数量
@@ -27,7 +27,7 @@ namespace WebApiClientCore
         /// </summary>
         public DataCollection()
         {
-            this.lazy = new Lazy<Dictionary<object, object>>(() => new Dictionary<object, object>());
+            this.lazy = new Lazy<Dictionary<object, object?>>(() => new Dictionary<object, object?>());
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="key">键</param>
         /// <param name="value">值</param>
-        public void Set(object key, object value)
+        public void Set(object key, object? value)
         {
             this.lazy.Value[key] = value;
         }
@@ -58,7 +58,11 @@ namespace WebApiClientCore
         /// <returns></returns>
         public T Get<T>(object key)
         {
-            return this.TryGetValue(key, out var value) ? (T)value : default;
+#nullable disable
+            return this.TryGetValue(key, out var value) ?
+                value == null ? default : (T)value :
+                default;
+#nullable enable
         }
 
         /// <summary>
@@ -67,7 +71,7 @@ namespace WebApiClientCore
         /// <param name="key">键</param>
         /// <param name="value">值</param>
         /// <returns></returns>
-        public bool TryGetValue(object key, out object value)
+        public bool TryGetValue(object key, out object? value)
         {
             if (this.lazy.IsValueCreated == false)
             {
@@ -84,7 +88,7 @@ namespace WebApiClientCore
         /// <param name="key">键</param>
         /// <param name="value">值</param>
         /// <returns></returns>
-        public bool TryRemove(object key, out object value)
+        public bool TryRemove(object key, out object? value)
         {
             if (this.lazy.IsValueCreated == false)
             {
@@ -118,13 +122,13 @@ namespace WebApiClientCore
             /// 查看的内容
             /// </summary>
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-            public KeyValuePair<object, object>[] Values
+            public KeyValuePair<object, object?>[] Values
             {
                 get
                 {
                     return this.target.lazy.IsValueCreated ?
                         this.target.lazy.Value.ToArray() :
-                        Array.Empty<KeyValuePair<object, object>>();
+                        Array.Empty<KeyValuePair<object, object?>>();
                 }
             }
         }

@@ -13,13 +13,13 @@ namespace WebApiClientCore.Parameters
         /// <summary>
         /// 文本内容
         /// </summary>
-        private readonly string stringValue;
+        private readonly string? stringValue;
 
         /// <summary>
         /// 将自身作为x-www-form-urlencoded的字段
         /// </summary>     
         /// <param name="value">文本内容</param>
-        public FormField(object value)
+        public FormField(object? value)
         {
             this.stringValue = value?.ToString();
         }
@@ -29,7 +29,7 @@ namespace WebApiClientCore.Parameters
         /// 如果有[FormContent]的参数，FormField需要放在其后
         /// </summary>     
         /// <param name="value">文本内容</param>
-        public FormField(string value)
+        public FormField(string? value)
         {
             this.stringValue = value;
         }
@@ -49,7 +49,7 @@ namespace WebApiClientCore.Parameters
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static implicit operator FormField(string value)
+        public static implicit operator FormField(string? value)
         {
             return new FormField(value);
         }

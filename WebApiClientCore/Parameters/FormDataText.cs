@@ -13,13 +13,13 @@ namespace WebApiClientCore.Parameters
         /// <summary>
         /// 文本内容
         /// </summary>
-        private readonly string stringValue;
+        private readonly string? stringValue;
 
         /// <summary>
         /// form-data表单的一个文本项
         /// </summary>     
         /// <param name="value">文本内容</param>
-        public FormDataText(object value)
+        public FormDataText(object? value)
         {
             this.stringValue = value?.ToString();
         }
@@ -28,7 +28,7 @@ namespace WebApiClientCore.Parameters
         /// form-data表单的一个文本项
         /// </summary>     
         /// <param name="value">文本内容</param>
-        public FormDataText(string value)
+        public FormDataText(string? value)
         {
             this.stringValue = value;
         }
@@ -49,7 +49,7 @@ namespace WebApiClientCore.Parameters
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static implicit operator FormDataText(string value)
+        public static implicit operator FormDataText(string? value)
         {
             return new FormDataText(value);
         }

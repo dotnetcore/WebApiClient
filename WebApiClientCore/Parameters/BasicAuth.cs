@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace WebApiClientCore.Parameters
@@ -14,7 +15,7 @@ namespace WebApiClientCore.Parameters
         /// <param name="userName">账号</param>
         /// <param name="password">密码</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public BasicAuth(string userName, string password)
+        public BasicAuth(string userName, string? password)
             : base("Basic", GetParameter(userName, password))
         {
         }
@@ -26,7 +27,7 @@ namespace WebApiClientCore.Parameters
         /// <param name="password">密码</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        public static string GetParameter(string userName, string password)
+        public static string GetParameter(string userName, string? password)
         {
             if (string.IsNullOrEmpty(userName))
             {

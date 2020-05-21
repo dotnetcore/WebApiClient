@@ -1,13 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Nullable>enable</Nullable>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Sign.snk</AssemblyOriginatorKeyFile>
 
-    <Version>1.0.0-alpha9</Version>
+    <Version>1.0.0-alpha10</Version>
     <Authors>laojiu</Authors>
     <Company>laojiu</Company> 
     <Copyright>Copyright © laojiu 2017-2020</Copyright>

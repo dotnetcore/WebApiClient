@@ -37,7 +37,7 @@ namespace WebApiClientCore
         /// <param name="context">上下文</param>
         /// <param name="arguments">参数值</param>
         /// <returns></returns>
-        object IActionInvoker.Invoke(ServiceContext context, object[] arguments)
+        object IActionInvoker.Invoke(ServiceContext context, object?[] arguments)
         {
             return this.InvokeAsync(context, arguments);
         }
@@ -48,12 +48,13 @@ namespace WebApiClientCore
         /// <param name="context">上下文</param>
         /// <param name="arguments">参数值</param>
         /// <returns></returns>
-        public async Task<TResult> InvokeAsync(ServiceContext context, object[] arguments)
+        public async Task<TResult> InvokeAsync(ServiceContext context, object?[] arguments)
         {
             using var httpContext = new HttpContext(context.Client, context.Services, context.Options);
             var requestContext = new ApiRequestContext(httpContext, this.apiAction, arguments);
             return await this.InvokeAsync(requestContext).ConfigureAwait(false);
         }
+
 
         /// <summary>
         /// 执行Api方法
@@ -62,8 +63,8 @@ namespace WebApiClientCore
         /// <returns></returns>
         private async Task<TResult> InvokeAsync(ApiRequestContext context)
         {
+#nullable disable
             var response = await this.requestHandler(context).ConfigureAwait(false);
-
             if (response.ResultStatus == ResultStatus.HasResult)
             {
                 return (TResult)response.Result;
@@ -72,8 +73,8 @@ namespace WebApiClientCore
             {
                 throw response.Exception;
             }
-
-            throw new ApiReturnNotSupportedExteption(context.HttpContext.ResponseMessage, context.ApiAction.Return.DataType.Type);
+            throw new ApiReturnNotSupportedExteption(response);
+#nullable enable
         }
     }
 }

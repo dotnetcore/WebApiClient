@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using WebApiClientCore.Exceptions;
 
 namespace WebApiClientCore
 {
@@ -13,7 +14,7 @@ namespace WebApiClientCore
         /// <summary>
         /// IActionInterceptor的Intercept方法
         /// </summary>
-        private static readonly MethodInfo interceptMethod = typeof(IActionInterceptor).GetMethod(nameof(IActionInterceptor.Intercept));
+        private static readonly MethodInfo interceptMethod = typeof(IActionInterceptor).GetMethod(nameof(IActionInterceptor.Intercept)) ?? throw new MissingMethodException(nameof(IActionInterceptor.Intercept));
 
         /// <summary>
         /// 代理类型的构造器的参数类型
@@ -27,6 +28,7 @@ namespace WebApiClientCore
         /// <param name="interfaceType">接口类型</param>
         /// <param name="apiMethods">接口方法集合</param>
         /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
         public static Type Build(Type interfaceType, MethodInfo[] apiMethods)
         {
@@ -44,7 +46,9 @@ namespace WebApiClientCore
                 .DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run)
                 .DefineDynamicModule(moduleName);
 
-            var builder = module.DefineType(interfaceType.FullName, TypeAttributes.Class);
+
+            var typeName = interfaceType.FullName ?? Guid.NewGuid().ToString();
+            var builder = module.DefineType(typeName, TypeAttributes.Class);
             builder.AddInterfaceImplementation(interfaceType);
 
             var fieldInterceptor = BuildField(builder, "interceptor", typeof(IActionInterceptor));
@@ -54,7 +58,8 @@ namespace WebApiClientCore
             BuildCtor(builder, fieldInterceptor, fieldInterfaceType, fieldApiMethods);
             BuildMethods(builder, apiMethods, fieldInterceptor, fieldInterfaceType, fieldApiMethods);
 
-            return builder.CreateTypeInfo().AsType();
+            var proxyType = builder.CreateType();
+            return proxyType ?? throw new ProxyTypeCreateException(interfaceType);
         }
 
         /// <summary>

@@ -13,7 +13,7 @@ namespace WebApiClientCore.Attributes
     public class BasicAuthAttribute : ApiActionAttribute
     {
         private readonly string userName;
-        private readonly string password;
+        private readonly string? password;
 
         /// <summary>
         /// 基本授权
@@ -21,7 +21,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="userName">账号</param>
         /// <param name="password">密码</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public BasicAuthAttribute(string userName, string password)
+        public BasicAuthAttribute(string userName, string? password)
         {
             this.userName = userName ?? throw new ArgumentNullException(userName);
             this.password = password;

@@ -4,9 +4,8 @@ namespace WebApiClientCore.Attributes
 {
     /// <summary>
     /// 表示Post请求
-    /// 不可继承
     /// </summary>
-    public sealed class HttpPostAttribute : HttpMethodAttribute
+    public class HttpPostAttribute : HttpMethodAttribute
     {
         /// <summary>
         /// Post请求
@@ -20,7 +19,7 @@ namespace WebApiClientCore.Attributes
         /// Post请求
         /// </summary>
         /// <param name="path">请求绝对或相对路径</param>
-        public HttpPostAttribute(string path)
+        public HttpPostAttribute(string? path)
             : base(HttpMethod.Post, path)
         {
         }

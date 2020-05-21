@@ -17,11 +17,11 @@ namespace WebApiClientCore.Defaults
         /// <param name="obj">对象实例</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        public virtual KeyValue[] Serialize(string key, object obj, JsonSerializerOptions options)
+        public virtual KeyValue[] Serialize(string key, object? obj, JsonSerializerOptions? options)
         {
             if (obj == null)
             {
-                if (string.IsNullOrEmpty(key) == true)
+                if (string.IsNullOrEmpty(key))
                 {
                     throw new ArgumentNullException(nameof(key));
                 }

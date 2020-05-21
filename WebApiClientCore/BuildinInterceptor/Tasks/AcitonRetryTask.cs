@@ -1,7 +1,8 @@
-﻿using WebApiClientCore;
+﻿using System;
+using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
 
-namespace System.Threading.Tasks
+namespace WebApiClientCore
 {
     /// <summary>
     /// 表示支持重试的Api请求任务
@@ -22,7 +23,7 @@ namespace System.Threading.Tasks
         /// <summary>
         /// 获取各次重试的延时时间
         /// </summary>
-        private readonly Func<int, TimeSpan> retryDelay;
+        private readonly Func<int, TimeSpan>? retryDelay;
 
         /// <summary>
         /// 支持重试的Api请求任务
@@ -31,7 +32,7 @@ namespace System.Threading.Tasks
         /// <param name="maxRetryCount">最大尝试次数</param>
         /// <param name="retryDelay">各次重试的延时时间</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public AcitonRetryTask(Func<Task<TResult>> invoker, int maxRetryCount, Func<int, TimeSpan> retryDelay)
+        public AcitonRetryTask(Func<Task<TResult>> invoker, int maxRetryCount, Func<int, TimeSpan>? retryDelay)
         {
             if (maxRetryCount < 1)
             {

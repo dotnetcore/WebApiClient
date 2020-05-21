@@ -15,14 +15,14 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取响应信息
         /// </summary>
-        public HttpResponseMessage Value { get; set; }
+        public HttpResponseMessage? Value { get; set; }
 
         /// <summary>
         /// 缓存结果
         /// </summary>
         /// <param name="key">缓存的键</param>
         /// <param name="value">响应信息</param>
-        public ApiCacheValue(string key, HttpResponseMessage value)
+        public ApiCacheValue(string key, HttpResponseMessage? value)
         {
             this.Key = key;
             this.Value = value;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -50,6 +51,7 @@ namespace WebApiClientCore.JsonConverters
             /// <param name="typeToConvert"></param>
             /// <param name="options"></param>
             /// <returns></returns>
+            [return: MaybeNull]
             public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
                 var json = reader.GetString();
@@ -66,7 +68,7 @@ namespace WebApiClientCore.JsonConverters
             /// <param name="options"></param>
             public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
             {
-                var jsonString = (IJsonString)value;
+                var jsonString = (IJsonString?)value;
                 if (jsonString == null)
                 {
                     writer.WriteStringValue(default(string));

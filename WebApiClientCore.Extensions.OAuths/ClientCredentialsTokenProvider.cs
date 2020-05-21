@@ -34,6 +34,10 @@ namespace WebApiClientCore.Extensions.OAuths
         protected override Task<TokenResult> RequestTokenAsync(IOAuthClient oAuthClient)
         {
             var options = this.CredentialsOptions.Value;
+            if (options.Endpoint == null)
+            {
+                throw new TokenEndPointNullException();
+            }
             return oAuthClient.RequestTokenAsync(options.Endpoint, options.Credentials);
         }
 
@@ -43,9 +47,14 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <param name="oAuthClient">Token客户端</param>
         /// <param name="refresh_token">刷新token</param>
         /// <returns></returns>
-        protected override Task<TokenResult> RefreshTokenAsync(IOAuthClient oAuthClient, string refresh_token)
+        protected override Task<TokenResult> RefreshTokenAsync(IOAuthClient oAuthClient, string? refresh_token)
         {
             var options = this.CredentialsOptions.Value;
+            if (options.Endpoint == null)
+            {
+                throw new TokenEndPointNullException();
+            }
+
             var credentials = new RefreshTokenCredentials
             {
                 Client_id = options.Credentials.Client_id,

@@ -26,37 +26,18 @@ namespace WebApiClientCore
         private readonly int fragmentLength;
 
 
-        /// <summary>
-        /// 当前的Uri
-        /// </summary>
-        private Uri uriValue;
-
-        /// <summary>
-        /// 当前的Uri是否可替换值
-        /// </summary>
-        private bool uriCanReplace = false;
-
 
         /// <summary>
         /// 获取当前的Uri
         /// </summary>
-        public Uri Uri
-        {
-            get
-            {
-                return this.uriValue;
-            }
-            private set
-            {
-                this.uriValue = value;
-                this.uriCanReplace = value.OriginalString.Contains('{');
-            }
-        }
+        public Uri Uri { get; private set; }
+
 
         /// <summary>
         /// 获取Uri参数的编码
         /// </summary>
         public Encoding Encoding { get; }
+
 
         /// <summary>
         /// Uri编辑器
@@ -78,12 +59,23 @@ namespace WebApiClientCore
         /// <exception cref="UriFormatException"></exception>
         public UriEditor(Uri uri, Encoding encoding)
         {
-            this.Uri = uri ?? throw new ArgumentNullException(nameof(uri));
-            this.Encoding = encoding ?? throw new ArgumentNullException(nameof(encoding));
+            if (uri == null)
+            {
+                throw new ArgumentNullException(nameof(uri));
+            }
+
+            if (encoding == null)
+            {
+                throw new ArgumentNullException(nameof(encoding));
+            }
+
             if (uri.IsAbsoluteUri == false)
             {
                 throw new UriFormatException(Resx.required_AbsoluteUri.Format(nameof(uri)));
             }
+
+            this.Uri = uri;
+            this.Encoding = encoding;
 
             const int delimiterLength = 3;
             this.fragment = uri.Fragment;
@@ -91,15 +83,16 @@ namespace WebApiClientCore
             this.fragmentLength = string.IsNullOrEmpty(uri.Fragment) ? 0 : uri.Fragment.Length;
         }
 
+
         /// <summary>
         /// 替换带有花括号的参数的值
         /// </summary>
         /// <param name="name">参数名称，不带花括号</param>
         /// <param name="value">参数的值</param>
         /// <returns>替换成功则返回true</returns>
-        public bool Replace(string name, string value)
+        public bool Replace(string name, string? value)
         {
-            if (this.uriCanReplace == false)
+            if (this.Uri.OriginalString.Contains('{') == false)
             {
                 return false;
             }
@@ -125,7 +118,7 @@ namespace WebApiClientCore
         /// <param name="name">参数名称</param>
         /// <param name="value">参数的值</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public void AddQuery(string name, string value)
+        public void AddQuery(string name, string? value)
         {
             if (string.IsNullOrEmpty(name))
             {

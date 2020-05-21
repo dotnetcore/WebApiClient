@@ -30,7 +30,7 @@ namespace WebApiClientCore.Parameters
         /// <param name="path">json路径</param>
         /// <param name="value">值</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public void Add(string path, object value)
+        public void Add(string path, object? value)
         {
             if (string.IsNullOrEmpty(path) == true)
             {
@@ -59,7 +59,7 @@ namespace WebApiClientCore.Parameters
         /// <param name="path">json路径</param>
         /// <param name="value">替换后的值</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public void Replace(string path, object value)
+        public void Replace(string path, object? value)
         {
             if (string.IsNullOrEmpty(path) == true)
             {

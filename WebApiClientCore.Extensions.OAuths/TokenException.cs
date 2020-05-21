@@ -11,7 +11,7 @@ namespace WebApiClientCore.Extensions.OAuths
         /// Token异常
         /// </summary>
         /// <param name="message">消息</param>
-        public TokenException(string message)
+        public TokenException(string? message)
             : base(message)
         {
         }

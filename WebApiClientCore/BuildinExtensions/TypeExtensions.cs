@@ -13,14 +13,9 @@ namespace WebApiClientCore
     static class TypeExtensions
     {
         /// <summary>
-        /// 类型是否AllowMultiple的缓存
-        /// </summary>
-        private static readonly ConcurrentCache<Type, bool> typeAllowMultipleCache = new ConcurrentCache<Type, bool>();
-
-        /// <summary>
         /// 类型的默认值缓存
         /// </summary>
-        private static readonly ConcurrentCache<Type, object> typeDefaultValueCache = new ConcurrentCache<Type, object>();
+        private static readonly ConcurrentCache<Type, object?> defaultValueCache = new ConcurrentCache<Type, object?>();
 
         /// <summary>
         /// 关联的AttributeUsageAttribute是否AllowMultiple
@@ -29,7 +24,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static bool IsAllowMultiple(this Type type)
         {
-            return typeAllowMultipleCache.GetOrAdd(type, (t => t.IsInheritFrom<Attribute>() && t.GetCustomAttribute<AttributeUsageAttribute>(true).AllowMultiple));
+            return type.GetCustomAttribute<AttributeUsageAttribute>()?.AllowMultiple == true;
         }
 
         /// <summary>
@@ -37,15 +32,13 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static object DefaultValue(this Type type)
+        public static object? DefaultValue(this Type? type)
         {
-            return type == null
-                ? null
-                : typeDefaultValueCache.GetOrAdd(type, t =>
-                {
-                    var value = Expression.Convert(Expression.Default(t), typeof(object));
-                    return Expression.Lambda<Func<object>>(value).Compile().Invoke();
-                });
+            return type == null ? null : defaultValueCache.GetOrAdd(type, t =>
+            {
+                var value = Expression.Convert(Expression.Default(t), typeof(object));
+                return Expression.Lambda<Func<object>>(value).Compile().Invoke();
+            });
         }
 
         /// <summary>

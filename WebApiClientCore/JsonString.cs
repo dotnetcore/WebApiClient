@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace WebApiClientCore
 {
@@ -10,7 +11,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取值
         /// </summary>
-        object Value { get; }
+        object? Value { get; }
 
         /// <summary>
         /// 获取值类型
@@ -33,7 +34,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取类型值
         /// </summary>
-        object IJsonString.Value => this.Value;
+        object? IJsonString.Value => this.Value;
 
         /// <summary>
         /// 获取值类型
@@ -64,9 +65,9 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static implicit operator T(JsonString<T> value)
+        public static implicit operator T([NotNull] JsonString<T> value)
         {
-            return value == null ? (default) : value.Value;
+            return value.Value;
         }
     }
 }

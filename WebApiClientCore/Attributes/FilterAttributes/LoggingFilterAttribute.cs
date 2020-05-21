@@ -46,10 +46,10 @@ namespace WebApiClientCore.Attributes
             {
                 var request = context.HttpContext.RequestMessage;
                 logMessage.RequestHeaders = request.GetHeadersString();
-                logMessage.RequestContent = await this.ReadRequestContentAsync(request.Content).ConfigureAwait(false);
+                logMessage.RequestContent = await this.ReadRequestContentAsync(request).ConfigureAwait(false);
             }
 
-            context.UserDatas.Set(typeof(LoggingFilterAttribute), logMessage);
+            context.Properties.Set(typeof(LoggingFilterAttribute), logMessage);
         }
 
 
@@ -62,7 +62,7 @@ namespace WebApiClientCore.Attributes
         public sealed async override Task OnResponseAsync(ApiResponseContext context)
         {
             var response = context.HttpContext.ResponseMessage;
-            var logMessage = context.UserDatas.Get<LogMessage>(typeof(LoggingFilterAttribute));
+            var logMessage = context.Properties.Get<LogMessage>(typeof(LoggingFilterAttribute));
 
             logMessage.ResponseTime = DateTime.Now;
             logMessage.Exception = context.Exception;
@@ -71,7 +71,7 @@ namespace WebApiClientCore.Attributes
             {
                 logMessage.HasResponse = true;
                 logMessage.ResponseHeaders = response.GetHeadersString();
-                logMessage.ResponseContent = await this.ReadResponseContentAsync(response.Content).ConfigureAwait(false);
+                logMessage.ResponseContent = await this.ReadResponseContentAsync(response).ConfigureAwait(false);
             }
 
             await this.WriteLogAsync(context, logMessage).ConfigureAwait(false);
@@ -80,28 +80,28 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 读取请求内容
         /// </summary>
-        /// <param name="httpContent"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        private async Task<string> ReadRequestContentAsync(HttpContent httpContent)
+        private async Task<string?> ReadRequestContentAsync(HttpRequestMessage request)
         {
-            if (httpContent == null)
+            if (request.Content == null)
             {
                 return null;
             }
 
-            return httpContent is ICustomHttpContentConvertable convertable
+            return request.Content is ICustomHttpContentConvertable convertable
                 ? await convertable.ToCustomHttpContext().ReadAsStringAsync().ConfigureAwait(false)
-                : await httpContent.ReadAsStringAsync().ConfigureAwait(false);
+                : await request.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
         /// <summary>
         /// 读取响应内容
         /// </summary>
-        /// <param name="httpContent"></param>
+        /// <param name="response"></param>
         /// <returns></returns>
-        private Task<string> ReadResponseContentAsync(HttpContent httpContent)
+        private async Task<string?> ReadResponseContentAsync(HttpResponseMessage response)
         {
-            return httpContent?.ReadAsStringAsync();
+            return response.Content == null ? null : await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace WebApiClientCore.Attributes
         protected virtual Task WriteLogAsync(ApiResponseContext context, LogMessage logMessage)
         {
             var method = context.ApiAction.Member;
-            var categoryName = $"{method.DeclaringType.Namespace}.{method.DeclaringType.Name}.{method.Name}";
+            var categoryName = $"{method.DeclaringType?.Namespace}.{method.DeclaringType?.Name}.{method.Name}";
 
             var loggerFactory = context.HttpContext.Services.GetService<ILoggerFactory>();
             if (loggerFactory == null)

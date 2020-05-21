@@ -23,7 +23,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 默认的UserAgent
         /// </summary>
-        private static readonly ProductInfoHeaderValue defaultUserAgent = new ProductInfoHeaderValue(assemblyName.Name, assemblyName.Version.ToString());
+        private static readonly ProductInfoHeaderValue defaultUserAgent = new ProductInfoHeaderValue(assemblyName.Name, assemblyName.Version?.ToString());
 
         /// <summary>
         /// httpApi的请求消息
@@ -90,7 +90,7 @@ namespace WebApiClientCore
         /// <param name="value">参数值</param>
         /// <exception cref="HttpApiInvalidOperationException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
-        public void AddUrlQuery(string key, string value)
+        public void AddUrlQuery(string key, string? value)
         {
             this.AddUrlQuery(key, value, Encoding.UTF8);
         }
@@ -103,7 +103,7 @@ namespace WebApiClientCore
         /// <param name="encoding">编码</param>
         /// <exception cref="HttpApiInvalidOperationException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
-        public void AddUrlQuery(string key, string value, Encoding encoding)
+        public void AddUrlQuery(string key, string? value, Encoding encoding)
         {
             if (this.RequestUri == null)
             {
@@ -134,9 +134,9 @@ namespace WebApiClientCore
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        public async Task AddFormFieldAsync(string name, string value)
+        public async Task AddFormFieldAsync(string name, string? value)
         {
-            if (string.IsNullOrEmpty(name))
+            if (name == null)
             {
                 throw new ArgumentNullException(nameof(name));
             }
@@ -175,7 +175,7 @@ namespace WebApiClientCore
         /// <param name="fileName">文件名</param>
         /// <param name="contentType">文件Mime</param>
         /// <exception cref="NotSupportedException"></exception>
-        public void AddFormDataFile(Stream stream, string name, string fileName, string contentType)
+        public void AddFormDataFile(Stream stream, string name, string? fileName, string? contentType)
         {
             this.EnsureNotGetOrHead();
 
@@ -210,7 +210,7 @@ namespace WebApiClientCore
         /// <param name="value">文本</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
-        public void AddFormDataText(string name, string value)
+        public void AddFormDataText(string name, string? value)
         {
             this.EnsureNotGetOrHead();
             this.AddFormDataTextInternal(name, value);
@@ -224,7 +224,7 @@ namespace WebApiClientCore
         /// <param name="value">文本</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
-        private void AddFormDataTextInternal(string name, string value)
+        private void AddFormDataTextInternal(string name, string? value)
         {
             if (string.IsNullOrEmpty(name))
             {

@@ -8,12 +8,12 @@
         /// <summary>
         /// 访问的范围
         /// </summary>        
-        public string Scope { get; set; }
+        public string? Scope { get; set; }
 
         /// <summary>
         /// 扩展信息
         /// 简单模型或字典
         /// </summary>
-        public object Extra { get; set; }
+        public object? Extra { get; set; }
     }
 }

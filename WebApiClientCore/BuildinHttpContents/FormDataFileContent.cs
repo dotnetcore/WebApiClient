@@ -16,7 +16,7 @@ namespace WebApiClientCore
         /// <param name="name">名称</param>
         /// <param name="fileName">文件名</param>
         /// <param name="contentType">文件Mime</param>
-        public FormDataFileContent(Stream stream, string name, string fileName, string contentType)
+        public FormDataFileContent(Stream stream, string name, string? fileName, string? contentType)
             : base(stream)
         {
             if (this.Headers.ContentDisposition == null)

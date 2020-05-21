@@ -16,7 +16,7 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 缓存键的请求头名称
         /// </summary>
-        private string includeHeaderString;
+        private string? includeHeaderString;
 
         /// <summary>
         /// 获取缓存键的请求头名称
@@ -27,7 +27,7 @@ namespace WebApiClientCore.Attributes
         /// 获取或设置连同作为缓存键的请求头名称
         /// 多个请求头使用英文逗号分隔
         /// </summary>
-        public string IncludeHeaders
+        public string? IncludeHeaders
         {
             get => this.includeHeaderString;
             set => this.SetIncludeHeaders(value);
@@ -46,7 +46,7 @@ namespace WebApiClientCore.Attributes
         /// 设置作为缓存键的请求头
         /// </summary>
         /// <param name="headersString"></param>
-        private void SetIncludeHeaders(string headersString)
+        private void SetIncludeHeaders(string? headersString)
         {
             this.includeHeaderString = headersString;
             if (headersString != null)

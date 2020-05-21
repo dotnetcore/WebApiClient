@@ -12,7 +12,7 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <summary>
         /// 最近请求到的token
         /// </summary>
-        private TokenResult token;
+        private TokenResult? token;
 
         /// <summary>
         /// 服务提供者
@@ -89,7 +89,7 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <param name="oAuthClient">Token客户端</param>
         /// <param name="refresh_token">刷新token</param>
         /// <returns></returns>
-        protected abstract Task<TokenResult> RefreshTokenAsync(IOAuthClient oAuthClient, string refresh_token);
+        protected abstract Task<TokenResult> RefreshTokenAsync(IOAuthClient oAuthClient, string? refresh_token);
 
         /// <summary>
         /// 释放资源

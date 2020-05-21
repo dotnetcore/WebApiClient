@@ -9,14 +9,14 @@ namespace WebApiClientCore
     /// </summary>
     public class ApiResponseContext : ApiRequestContext
     {
-        private object result;
-        private Exception exception;
+        private object? result;
+        private Exception? exception;
 
         /// <summary>
         /// 获取或设置结果值
         /// 在IApiReturnAttribute设置该值之后会中断下一个IApiReturnAttribute的执行
         /// </summary>
-        public object Result
+        public object? Result
         {
             get => this.result;
             set
@@ -32,7 +32,7 @@ namespace WebApiClientCore
         /// 在IApiReturnAttribute设置该值之后会中断下一个IApiReturnAttribute的执行
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
-        public Exception Exception
+        public Exception? Exception
         {
             get => this.exception;
             set
@@ -53,7 +53,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="context">请求上下文</param>
         public ApiResponseContext(ApiRequestContext context)
-            : base(context.HttpContext, context.ApiAction, context.Arguments, context.UserDatas, context.CancellationTokens)
+            : base(context.HttpContext, context.ApiAction, context.Arguments, context.Properties, context.CancellationTokens)
         {
         }
 
@@ -62,8 +62,13 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="objType">目标类型</param>
         /// <returns></returns>
-        public async Task<object> JsonDeserializeAsync(Type objType)
+        public async Task<object?> JsonDeserializeAsync(Type objType)
         {
+            if (this.HttpContext.ResponseMessage == null)
+            {
+                return objType.DefaultValue();
+            }
+
             var formatter = this.HttpContext.Services.GetRequiredService<IJsonFormatter>();
             var json = await this.HttpContext.ResponseMessage.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
             var options = this.HttpContext.Options.JsonDeserializeOptions;
@@ -75,8 +80,13 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="objType">目标类型</param>
         /// <returns></returns>
-        public async Task<object> XmlDeserializeAsync(Type objType)
+        public async Task<object?> XmlDeserializeAsync(Type objType)
         {
+            if (this.HttpContext.ResponseMessage == null)
+            {
+                return objType.DefaultValue();
+            }
+
             var formatter = this.HttpContext.Services.GetRequiredService<IXmlFormatter>();
             var xml = await this.HttpContext.ResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
             return formatter.Deserialize(xml, objType);

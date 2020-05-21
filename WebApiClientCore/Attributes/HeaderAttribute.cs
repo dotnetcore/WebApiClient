@@ -19,7 +19,7 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// Header值 
         /// </summary>
-        private readonly string value;
+        private readonly string? value;
 
         /// <summary>
         /// 将参数值设置到Header        
@@ -27,7 +27,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="name">header名称</param>
         [AttributeCtorUsage(AttributeTargets.Parameter)]
         public HeaderAttribute(HttpRequestHeader name)
-            : this(RequestHeader.GetName(name), null)
+            : this(RequestHeader.GetName(name) ?? throw new ArgumentOutOfRangeException(nameof(name)))
         {
         }
 
@@ -38,8 +38,8 @@ namespace WebApiClientCore.Attributes
         /// <exception cref="ArgumentNullException"></exception>
         [AttributeCtorUsage(AttributeTargets.Parameter)]
         public HeaderAttribute(string name)
-            : this(name, null)
         {
+            this.name = name ?? throw new ArgumentNullException(nameof(name));
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="value">header值</param>
         [AttributeCtorUsage(AttributeTargets.Interface | AttributeTargets.Method)]
         public HeaderAttribute(HttpRequestHeader name, string value)
-            : this(RequestHeader.GetName(name), value)
+            : this(RequestHeader.GetName(name) ?? throw new ArgumentOutOfRangeException(nameof(name)), value)
         {
         }
 
@@ -62,11 +62,7 @@ namespace WebApiClientCore.Attributes
         [AttributeCtorUsage(AttributeTargets.Interface | AttributeTargets.Method)]
         public HeaderAttribute(string name, string value)
         {
-            if (string.IsNullOrEmpty(name))
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-            this.name = name;
+            this.name = name ?? throw new ArgumentNullException(nameof(name));
             this.value = value;
         }
 

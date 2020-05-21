@@ -220,7 +220,7 @@ namespace WebApiClientCore.Parameters
             /// <param name="disposing"></param>
             protected override void Dispose(bool disposing)
             {
-                if (this.defaultPosition.HasValue == true)
+                if (this.defaultPosition != null)
                 {
                     this.stream.Position = this.defaultPosition.Value;
                 }
