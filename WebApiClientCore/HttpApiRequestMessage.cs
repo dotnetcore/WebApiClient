@@ -285,7 +285,7 @@ namespace WebApiClientCore
         {
             if (this.Method == HttpMethod.Get || this.Method == HttpMethod.Head)
             {
-                var message = Resx.unspported_HttpContent.Format(this.Method, this.GetType().Name);
+                var message = Resx.unsupported_HttpContent.Format(this.Method, this.GetType().Name);
                 throw new NotSupportedException(message);
             }
         }
