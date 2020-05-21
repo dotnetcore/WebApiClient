@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 
@@ -13,12 +12,21 @@ namespace WebApiClientCore.Defaults
         /// <summary>
         /// 内存缓存
         /// </summary>
-        private readonly MemoryCache cache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
+        private readonly IMemoryCache cache;
 
         /// <summary>
         /// 获取提供者的友好名称
         /// </summary>
         public string Name { get; } = nameof(MemoryCache);
+
+        /// <summary>
+        /// Api响应结果缓存提供者的接口
+        /// </summary>
+        /// <param name="cache"></param>
+        public ResponseCacheProvider(IMemoryCache cache)
+        {
+            this.cache = cache;
+        }
 
         /// <summary>
         /// 从缓存中获取响应实体

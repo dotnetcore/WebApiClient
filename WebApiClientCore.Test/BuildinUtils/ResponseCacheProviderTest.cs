@@ -1,4 +1,6 @@
 ﻿#if !NETSTANDARD1_3
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 using WebApiClientCore.Defaults;
@@ -11,7 +13,9 @@ namespace WebApiClientCore.Test.BuildinUtils
         [Fact]
         public async Task GetSetAsyncTest()
         {
-            var provider = new ResponseCacheProvider();
+            var options = Options.Create(new MemoryCacheOptions());
+            var memCache = new MemoryCache(options);
+            var provider = new ResponseCacheProvider(memCache);
             var cache = await provider.GetAsync("key");
             Assert.False(cache.HasValue);
 
