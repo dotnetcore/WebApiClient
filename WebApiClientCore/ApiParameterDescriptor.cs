@@ -73,7 +73,7 @@ namespace WebApiClientCore
                 .ToReadOnlyList();
 
             this.Member = parameter;
-            this.Name = parameterName;
+            this.Name = parameterName ?? string.Empty;
             this.Index = parameter.Position;
             this.Attributes = attributes;
             this.ParameterType = parameterType;

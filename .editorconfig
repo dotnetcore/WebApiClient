@@ -1,4 +1,4 @@
-﻿[*.cs]
+﻿root = true
 
-# CS8601: 可能的 null 引用赋值。
-dotnet_diagnostic.CS8601.severity = none
+[*.{cs,vb}]
+dotnet_style_prefer_conditional_expression_over_return = false

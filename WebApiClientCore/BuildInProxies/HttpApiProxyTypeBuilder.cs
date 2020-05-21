@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -15,7 +14,7 @@ namespace WebApiClientCore
         /// <summary>
         /// IActionInterceptor的Intercept方法
         /// </summary>
-        private static readonly MethodInfo interceptMethod = typeof(IActionInterceptor).GetMethod(nameof(IActionInterceptor.Intercept));
+        private static readonly MethodInfo interceptMethod = typeof(IActionInterceptor).GetMethod(nameof(IActionInterceptor.Intercept)) ?? throw new MissingMethodException(nameof(IActionInterceptor.Intercept));
 
         /// <summary>
         /// 代理类型的构造器的参数类型

@@ -71,6 +71,7 @@ namespace WebApiClientCore
         /// <param name="method">接口的方法</param>
         /// <param name="interfaceType">接口类型</param>
         /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         public ApiActionDescriptor(MethodInfo method, Type? interfaceType = default)
         {
             if (method == null)
@@ -91,7 +92,7 @@ namespace WebApiClientCore
                 .ToReadOnlyList();
 
             this.Id = Guid.NewGuid().ToString();
-            this.InterfaceType = interfaceType ?? method.DeclaringType;
+            this.InterfaceType = interfaceType ?? (method.DeclaringType ?? throw new ArgumentException(nameof(method)));
 
             this.Member = method;
             this.Name = method.Name;
