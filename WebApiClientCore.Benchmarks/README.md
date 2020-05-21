@@ -1,7 +1,7 @@
 ## WebApiClientCore.Benchmarks　
 WebApiClientCore、WebApiClient.JIT与原生HttpClient的性能比较
 
-```
+
 BenchmarkDotNet=v0.12.1, OS=Windows 10.0.18362.778 (1903/May2019Update/19H1)
 Intel Core i3-4150 CPU 3.50GHz (Haswell), 1 CPU, 4 logical and 2 physical cores
 .NET Core SDK=3.1.202
@@ -35,4 +35,3 @@ Outliers
   Error  : Half of 99.9% confidence interval
   StdDev : Standard deviation of all measurements
   1 us   : 1 Microsecond (0.000001 sec)
-```
