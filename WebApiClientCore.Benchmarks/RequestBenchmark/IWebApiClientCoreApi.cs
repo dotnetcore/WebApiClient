@@ -3,7 +3,7 @@ using WebApiClientCore.Attributes;
 
 namespace WebApiClientCore.Benchmarks.RequestBenchmark
 {
-    public interface IBenchmarkApi
+    public interface IWebApiClientCoreApi
     {
         [HttpGet("/benchmarks/{id}")]
         Task<Model> GetAsyc([PathQuery] string id);

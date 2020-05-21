@@ -20,10 +20,26 @@ namespace WebApiClientCore.Benchmarks.RequestBenchmark
             var services = new ServiceCollection();
 
             services
-                .AddHttpApi<IBenchmarkApi>(o => o.HttpHost = new Uri("http://webapiclient.com/"))
+                .AddHttpApi<IWebApiClientCoreApi>(o => o.HttpHost = new Uri("http://webapiclient.com/"))
+                .AddHttpMessageHandler(() => new NoneHttpDelegatingHandler());
+
+            WebApiClient.Extension
+                .AddHttpApi<IWebApiClientApi>(services, o => o.HttpHost = new Uri("http://webapiclient.com/"))
                 .AddHttpMessageHandler(() => new NoneHttpDelegatingHandler());
 
             this.serviceProvider = services.BuildServiceProvider();
+        }
+
+        /// <summary>
+        /// 使用WebApiClient.JIT请求
+        /// </summary>
+        /// <returns></returns>
+        [Benchmark]
+        public async Task<Model> WebApiClient_GetAsync()
+        {
+            using var scope = this.serviceProvider.CreateScope();
+            var banchmarkApi = scope.ServiceProvider.GetRequiredService<IWebApiClientApi>();
+            return await banchmarkApi.GetAsyc(id: "id");
         }
 
         /// <summary>
@@ -34,7 +50,7 @@ namespace WebApiClientCore.Benchmarks.RequestBenchmark
         public async Task<Model> WebApiClientCore_GetAsync()
         {
             using var scope = this.serviceProvider.CreateScope();
-            var banchmarkApi = scope.ServiceProvider.GetRequiredService<IBenchmarkApi>();
+            var banchmarkApi = scope.ServiceProvider.GetRequiredService<IWebApiClientCoreApi>();
             return await banchmarkApi.GetAsyc(id: "id");
         }
 
@@ -46,7 +62,7 @@ namespace WebApiClientCore.Benchmarks.RequestBenchmark
         public async Task<Model> HttpClient_GetAsync()
         {
             using var scope = this.serviceProvider.CreateScope();
-            var httpClient = scope.ServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(typeof(IBenchmarkApi).FullName);
+            var httpClient = scope.ServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(typeof(IWebApiClientCoreApi).FullName);
 
             var id = "id";
             var request = new HttpRequestMessage(HttpMethod.Get, $"http://webapiclient.com/{id}");
