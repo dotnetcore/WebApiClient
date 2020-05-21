@@ -22,6 +22,7 @@ namespace WebApiClientCore
             set
             {
                 this.result = value;
+                this.exception = null;
                 this.ResultStatus = ResultStatus.HasResult;
             }
         }
@@ -36,6 +37,7 @@ namespace WebApiClientCore
             get => this.exception;
             set
             {
+                this.result = null;
                 this.exception = value ?? throw new ArgumentNullException(nameof(Exception));
                 this.ResultStatus = ResultStatus.HasException;
             }

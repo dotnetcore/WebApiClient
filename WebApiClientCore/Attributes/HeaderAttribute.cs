@@ -7,8 +7,8 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示Http请求Header的特性
     /// </summary>
-    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method | AttributeTargets.Parameter, AllowMultiple = true, Inherited = true)]
     [DebuggerDisplay("{name} = {value}")]
+    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method | AttributeTargets.Parameter, AllowMultiple = true, Inherited = true)]
     public class HeaderAttribute : ApiActionAttribute, IApiParameterAttribute
     {
         /// <summary>
@@ -20,12 +20,6 @@ namespace WebApiClientCore.Attributes
         /// Header值 
         /// </summary>
         private readonly string value;
-
-        /// <summary>
-        /// 获取是对cookie的Value进行Url utf-8编码
-        /// 默认为true
-        /// </summary>
-        public bool EncodeCookie { get; set; }
 
         /// <summary>
         /// 将参数值设置到Header        
@@ -74,7 +68,6 @@ namespace WebApiClientCore.Attributes
             }
             this.name = name;
             this.value = value;
-            this.EncodeCookie = true;
         }
 
         /// <summary>

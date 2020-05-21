@@ -10,9 +10,9 @@ namespace WebApiClientCore.Attributes
     public abstract class ApiActionAttribute : Attribute, IApiActionAttribute
     {
         /// <summary>
-        /// 获取或设置执行排序索引
+        /// 获取执行排序索引
         /// </summary>
-        public int OrderIndex { get; set; }
+        public int OrderIndex { get; protected set; }
 
         /// <summary>
         /// 获取本类型是否允许在接口与方法上重复

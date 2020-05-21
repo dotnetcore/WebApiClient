@@ -13,6 +13,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 创建执行委托
         /// </summary>
+        /// <param name="apiAction">action描述器</param>
         /// <returns></returns>
         public static Func<ApiRequestContext, Task<ApiResponseContext>> Build(ApiActionDescriptor apiAction)
         {
@@ -22,12 +23,11 @@ namespace WebApiClientCore
             return async request =>
             {
                 await requestHandler(request).ConfigureAwait(false);
-                var response = await SendRequestAsync(request).ConfigureAwait(false);
+                var response = await SendHttpRequestAsync(request).ConfigureAwait(false);
                 await responseHandler(response).ConfigureAwait(false);
                 return response;
             };
         }
-
 
         /// <summary>
         /// 创建请求委托
@@ -149,11 +149,11 @@ namespace WebApiClientCore
 
 
         /// <summary>
-        /// 执行http请求
+        /// 发送http请求
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        private static async Task<ApiResponseContext> SendRequestAsync(ApiRequestContext context)
+        private static async Task<ApiResponseContext> SendHttpRequestAsync(ApiRequestContext context)
         {
             try
             {

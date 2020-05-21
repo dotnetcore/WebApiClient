@@ -10,6 +10,12 @@ namespace WebApiClientCore.Attributes
     public class HeadersAttribute : ApiParameterAttribute
     {
         /// <summary>
+        /// 获取或设置是否将请求名的_转换为-
+        /// 默认为true
+        /// </summary>
+        public bool UnderlineToMinus { get; set; } = true;
+
+        /// <summary>
         /// http请求之前
         /// </summary>
         /// <param name="context">上下文</param>
@@ -23,7 +29,7 @@ namespace WebApiClientCore.Attributes
                 var value = kv.Value;
                 if (value != null)
                 {
-                    var name = kv.Key.Replace("_", "-");
+                    var name = this.UnderlineToMinus ? kv.Key.Replace("_", "-") : kv.Key;
                     context.HttpContext.RequestMessage.Headers.TryAddWithoutValidation(name, value);
                 }
             }
