@@ -113,7 +113,7 @@ namespace WebApiClientCore.Benchmarks.RequestBenchmark
 
             var input = new Model { A = "a" };
             var json = JsonSerializer.SerializeToUtf8Bytes(input);
-            var request = new HttpRequestMessage(HttpMethod.Put, $"http://webapiclient.com/")
+            var request = new HttpRequestMessage(HttpMethod.Post, $"http://webapiclient.com/")
             {
                 Content = new JsonContent(json)
             };
