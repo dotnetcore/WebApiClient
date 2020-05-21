@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Running;
 using System;
+using System.Linq;
 
 namespace WebApiClientCore.Benchmarks
 {
@@ -7,7 +8,11 @@ namespace WebApiClientCore.Benchmarks
     {
         static void Main(string[] args)
         {
-            BenchmarkRunner.Run<GetAsModelContext>();
+            var benchmarkTypes = typeof(Program).Assembly.GetTypes().Where(item => typeof(IBenchmark).IsAssignableFrom(item));
+            foreach(var item in benchmarkTypes)
+            {
+                BenchmarkRunner.Run(item);
+            } 
             Console.ReadLine();
         }
     }

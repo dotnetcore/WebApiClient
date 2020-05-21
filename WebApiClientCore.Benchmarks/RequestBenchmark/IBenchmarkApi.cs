@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
 using WebApiClientCore.Attributes;
 
-namespace WebApiClientCore.Benchmarks
+namespace WebApiClientCore.Benchmarks.RequestBenchmark
 {
     public interface IBenchmarkApi
     {
         [HttpGet("/benchmarks/{id}")]
-        public Task<BenchmarkModel> GetAsModelAsync([PathQuery] string id);
+        Task<Model> GetAsyc([PathQuery] string id);
     }
 }

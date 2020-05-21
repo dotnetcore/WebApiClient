@@ -1,6 +1,6 @@
-﻿namespace WebApiClientCore.Benchmarks
+﻿namespace WebApiClientCore.Benchmarks.RequestBenchmark
 {
-    public class BenchmarkModel
+    public class Model
     {
         public string A { get; set; }
 
