@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace WebApiClientCore.Extensions.OAuths
@@ -8,7 +7,7 @@ namespace WebApiClientCore.Extensions.OAuths
     /// <summary>
     /// 表示Token提供者抽象类
     /// </summary>
-    public abstract class TokenProvider : IDisposable
+    public abstract class TokenProvider : ITokenProvider, IDisposable
     {
         /// <summary>
         /// 最近请求到的token
@@ -55,13 +54,17 @@ namespace WebApiClientCore.Extensions.OAuths
             {
                 if (this.token == null)
                 {
-                    this.token = await this.RequestTokenAsync().ConfigureAwait(false);
+                    using var scope = this.services.CreateScope();
+                    var oAuthClient = scope.ServiceProvider.GetRequiredService<IOAuthClient>();
+                    this.token = await this.RequestTokenAsync(oAuthClient).ConfigureAwait(false);
                 }
                 else if (this.token.IsExpired() == true)
                 {
-                    this.token = this.token.CanRefresh() == true
-                        ? await this.RefreshTokenAsync(this.token.Refresh_token).ConfigureAwait(false)
-                        : await this.RequestTokenAsync().ConfigureAwait(false);
+                    using var scope = this.services.CreateScope();
+                    var oAuthClient = scope.ServiceProvider.GetRequiredService<IOAuthClient>();
+                    this.token = this.token.CanRefresh() == false ?
+                        await this.RequestTokenAsync(oAuthClient).ConfigureAwait(false) :
+                        await this.RefreshTokenAsync(oAuthClient, this.token.Refresh_token).ConfigureAwait(false);
                 }
 
                 if (this.token == null)
@@ -72,30 +75,21 @@ namespace WebApiClientCore.Extensions.OAuths
             }
         }
 
-        /// <summary>
-        /// 创建OAuth客户端
-        /// </summary> 
-        /// <returns></returns>
-        protected IOAuthClient CreateOAuthClient()
-        {
-            var options = new HttpApiOptions();
-            options.KeyValueSerializeOptions.IgnoreNullValues = true;
-            var client = this.services.GetRequiredService<IHttpClientFactory>().CreateClient();
-            return HttpApi.Create<IOAuthClient>(client, services, options);
-        }
 
         /// <summary>
         /// 请求获取token
         /// </summary> 
+        /// <param name="oAuthClient">Token客户端</param>
         /// <returns></returns>
-        protected abstract Task<TokenResult> RequestTokenAsync();
+        protected abstract Task<TokenResult> RequestTokenAsync(IOAuthClient oAuthClient);
 
         /// <summary>
         /// 刷新token
         /// </summary> 
+        /// <param name="oAuthClient">Token客户端</param>
         /// <param name="refresh_token">刷新token</param>
         /// <returns></returns>
-        protected abstract Task<TokenResult> RefreshTokenAsync(string refresh_token);
+        protected abstract Task<TokenResult> RefreshTokenAsync(IOAuthClient oAuthClient, string refresh_token);
 
         /// <summary>
         /// 释放资源

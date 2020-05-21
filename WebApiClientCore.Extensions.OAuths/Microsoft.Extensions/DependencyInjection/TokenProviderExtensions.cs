@@ -29,9 +29,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services)
         {
-            services.AddHttpClient();
+            services.AddHttpApi<IOAuthClient>(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
             services.AddOptions<ClientCredentialsOptions<THttpApi>>();
             services.TryAddSingleton<ClientCredentialsTokenProvider<THttpApi>>();
+            services.AddSingleton(typeof(ITokenProvider), typeof(ClientCredentialsTokenProvider<>).MakeGenericType(typeof(THttpApi)));
             return services;
         }
 
@@ -55,9 +56,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddPasswordCredentialsTokenProvider<THttpApi>(this IServiceCollection services)
         {
-            services.AddHttpClient();
+            services.AddHttpApi<IOAuthClient>(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
             services.AddOptions<PasswordCredentialsOptions<THttpApi>>();
             services.TryAddSingleton<PasswordCredentialsOptions<THttpApi>>();
+            services.AddSingleton(typeof(ITokenProvider), typeof(PasswordCredentialsTokenProvider<>).MakeGenericType(typeof(THttpApi)));
             return services;
         }
     }
