@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -19,6 +20,7 @@ namespace WebApiClientCore
 
         /// <summary>
         /// 获取所在接口类型
+        /// 这个值不一定是声明方法的接口类型
         /// </summary>
         public Type InterfaceType { get; protected set; }
 
@@ -61,7 +63,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取自定义数据存储的字典
         /// </summary>
-        public IDictionary<object, object> Properties { get; protected set; }
+        public ConcurrentDictionary<object, object> Properties { get; protected set; }
 
         /// <summary>
         /// 请求Api描述
@@ -86,7 +88,7 @@ namespace WebApiClientCore
                 .FindDeclaringAttributes<IApiFilterAttribute>(true)
                 .Distinct(new MultiplableComparer<IApiFilterAttribute>())
                 .OrderBy(item => item.OrderIndex)
-                .ToReadOnlyList();          
+                .ToReadOnlyList();
 
             this.Id = Guid.NewGuid().ToString();
             this.InterfaceType = interfaceType ?? method.DeclaringType;
@@ -95,11 +97,11 @@ namespace WebApiClientCore
             this.Name = method.Name;
             this.Attributes = actionAttributes;
             this.CacheAttribute = method.GetAttribute<IApiCacheAttribute>(true);
-            this.FilterAttributes = filterAttributes; 
+            this.FilterAttributes = filterAttributes;
 
             this.Return = new ApiReturnDescriptor(method);
             this.Parameters = method.GetParameters().Select(p => new ApiParameterDescriptor(p)).ToReadOnlyList();
-            this.Properties = new Dictionary<object, object>();
+            this.Properties = new ConcurrentDictionary<object, object>();
         }
     }
 }

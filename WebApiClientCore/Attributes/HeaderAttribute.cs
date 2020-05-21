@@ -7,8 +7,8 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示Http请求Header的特性
     /// </summary>
-    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method | AttributeTargets.Parameter, AllowMultiple = true, Inherited = true)]
     [DebuggerDisplay("{name} = {value}")]
+    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method | AttributeTargets.Parameter, AllowMultiple = true, Inherited = true)]
     public class HeaderAttribute : ApiActionAttribute, IApiParameterAttribute
     {
         /// <summary>
