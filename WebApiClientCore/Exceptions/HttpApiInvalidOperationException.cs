@@ -9,7 +9,7 @@
         /// Http接口特性配置异常
         /// </summary>
         /// <param name="message">提示信息</param>
-        public HttpApiInvalidOperationException(string message) :
+        public HttpApiInvalidOperationException(string? message) :
             base(message)
         {
         }

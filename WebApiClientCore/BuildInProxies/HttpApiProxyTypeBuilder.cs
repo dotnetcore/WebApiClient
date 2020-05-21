@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using WebApiClientCore.Exceptions;
 
 namespace WebApiClientCore
 {
@@ -27,6 +29,7 @@ namespace WebApiClientCore
         /// <param name="interfaceType">接口类型</param>
         /// <param name="apiMethods">接口方法集合</param>
         /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
         public static Type Build(Type interfaceType, MethodInfo[] apiMethods)
         {
@@ -44,9 +47,9 @@ namespace WebApiClientCore
                 .DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run)
                 .DefineDynamicModule(moduleName);
 
-#pragma warning disable CS8604 // 可能的 null 引用参数。
-            var builder = module.DefineType(interfaceType.FullName, TypeAttributes.Class);
-#pragma warning restore CS8604 // 可能的 null 引用参数。
+
+            var typeName = interfaceType.FullName ?? Guid.NewGuid().ToString();
+            var builder = module.DefineType(typeName, TypeAttributes.Class);
             builder.AddInterfaceImplementation(interfaceType);
 
             var fieldInterceptor = BuildField(builder, "interceptor", typeof(IActionInterceptor));
@@ -56,9 +59,8 @@ namespace WebApiClientCore
             BuildCtor(builder, fieldInterceptor, fieldInterfaceType, fieldApiMethods);
             BuildMethods(builder, apiMethods, fieldInterceptor, fieldInterfaceType, fieldApiMethods);
 
-#pragma warning disable CS8603 // 可能的 null 引用返回。
-            return builder.CreateType();
-#pragma warning restore CS8603 // 可能的 null 引用返回。
+            var proxyType = builder.CreateType();
+            return proxyType ?? throw new ProxyTypeCreateException(interfaceType);
         }
 
         /// <summary>

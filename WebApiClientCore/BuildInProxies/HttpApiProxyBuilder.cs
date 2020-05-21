@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using WebApiClientCore.Exceptions;
 
 namespace WebApiClientCore
 {
@@ -30,6 +31,7 @@ namespace WebApiClientCore
         /// <param name="interfaceType">IHttpApi接口类型</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="ProxyTypeCreateException"></exception>
         public HttpApiProxyBuilder(Type interfaceType)
         {
             this.interfaceType = interfaceType ?? throw new ArgumentNullException(nameof(interfaceType));

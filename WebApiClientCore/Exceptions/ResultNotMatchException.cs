@@ -17,7 +17,7 @@ namespace WebApiClientCore.Exceptions
         /// </summary>
         /// <param name="message">消息</param>
         /// <param name="result">结果值</param>
-        public ResultNotMatchException(string message, object? result)
+        public ResultNotMatchException(string? message, object? result)
             : base(message)
         {
             this.Result = result;

@@ -18,20 +18,7 @@ namespace WebApiClientCore.Exceptions
         /// <param name="maxRetryCount">重试的最大次数</param>   
         /// <param name="inner">内部异常</param>
         public ApiRetryException(int maxRetryCount, Exception? inner)
-            : this(maxRetryCount, inner, Resx.outof_MaxLimited.Format(maxRetryCount))
-        {
-        }
-
-        /// <summary>
-        /// Http接口请求重试异常
-        /// </summary>
-        /// <param name="maxRetryCount">已重试的次数</param>        
-        /// <param name="inner">内部异常</param>
-        /// <param name="message">提示</param>
-        public ApiRetryException(int maxRetryCount, Exception? inner, string message)
-#pragma warning disable CS8604 // 可能的 null 引用参数。
-            : base(message, inner)
-#pragma warning restore CS8604 // 可能的 null 引用参数。
+            : base(Resx.outof_MaxLimited.Format(maxRetryCount), inner)
         {
             this.MaxRetryCount = maxRetryCount;
         }

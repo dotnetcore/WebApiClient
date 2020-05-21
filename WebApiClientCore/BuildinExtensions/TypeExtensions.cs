@@ -15,7 +15,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 类型的默认值缓存
         /// </summary>
-        private static readonly ConcurrentCache<Type, object?> typeDefaultValueCache = new ConcurrentCache<Type, object?>();
+        private static readonly ConcurrentCache<Type, object?> defaultValueCache = new ConcurrentCache<Type, object?>();
 
         /// <summary>
         /// 关联的AttributeUsageAttribute是否AllowMultiple
@@ -34,13 +34,11 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static object? DefaultValue(this Type? type)
         {
-            return type == null
-                ? null
-                : typeDefaultValueCache.GetOrAdd(type, t =>
-                {
-                    var value = Expression.Convert(Expression.Default(t), typeof(object));
-                    return Expression.Lambda<Func<object>>(value).Compile().Invoke();
-                });
+            return type == null ? null : defaultValueCache.GetOrAdd(type, t =>
+            {
+                var value = Expression.Convert(Expression.Default(t), typeof(object));
+                return Expression.Lambda<Func<object>>(value).Compile().Invoke();
+            });
         }
 
         /// <summary>
