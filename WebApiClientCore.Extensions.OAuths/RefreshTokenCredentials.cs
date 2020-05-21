@@ -8,12 +8,12 @@
         /// <summary>
         /// 刷新token值
         /// </summary>
-        public string Refresh_token { get; set; }
+        public string? Refresh_token { get; set; }
 
         /// <summary>
         /// 扩展信息
         /// 简单模型或字典
         /// </summary>
-        public object Extra { get; set; }
+        public object? Extra { get; set; }
     }
 }

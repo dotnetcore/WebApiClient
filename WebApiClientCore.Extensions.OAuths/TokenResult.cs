@@ -17,13 +17,13 @@ namespace WebApiClientCore.Extensions.OAuths
         /// access_token
         /// </summary>
         [JsonPropertyName("access_token")]
-        public string Access_token { get; set; }
+        public string? Access_token { get; set; }
 
         /// <summary>
         /// id_token
         /// </summary>
         [JsonPropertyName("id_token")]
-        public string Id_token { get; set; }
+        public string? Id_token { get; set; }
 
         /// <summary>
         /// expires_in
@@ -36,19 +36,19 @@ namespace WebApiClientCore.Extensions.OAuths
         /// token_type
         /// </summary>
         [JsonPropertyName("token_type")]
-        public string Token_type { get; set; }
+        public string? Token_type { get; set; }
 
         /// <summary>
         /// refresh_token
         /// </summary>
         [JsonPropertyName("refresh_token")]
-        public string Refresh_token { get; set; }
+        public string? Refresh_token { get; set; }
 
         /// <summary>
         /// error
         /// </summary>
         [JsonPropertyName("error")]
-        public string Error { get; set; }
+        public string? Error { get; set; }
 
         /// <summary>
         /// 确保token成功

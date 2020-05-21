@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace WebApiClientCore.Extensions.OAuths
 {
@@ -13,7 +14,8 @@ namespace WebApiClientCore.Extensions.OAuths
         /// 获取或设置提供Token获取的Url节点       
         /// </summary>
         [Required]
-        public Uri Endpoint { get; set; }
+        [DisallowNull]
+        public Uri? Endpoint { get; set; }
 
         /// <summary>
         /// 获取或设置Client身份信息
