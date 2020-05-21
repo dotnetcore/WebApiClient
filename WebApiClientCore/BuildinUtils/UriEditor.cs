@@ -26,37 +26,18 @@ namespace WebApiClientCore
         private readonly int fragmentLength;
 
 
-        /// <summary>
-        /// 当前的Uri
-        /// </summary>
-        private Uri __uri;
-
-        /// <summary>
-        /// 当前的Uri是否可替换值
-        /// </summary>
-        private bool uriCanReplace = false;
-
 
         /// <summary>
         /// 获取当前的Uri
         /// </summary>
-        public Uri Uri
-        {
-            get
-            {
-                return this.__uri;
-            }
-            private set
-            {
-                this.__uri = value;
-                this.uriCanReplace = value.OriginalString.Contains('{');
-            }
-        }
+        public Uri Uri { get; private set; }
+
 
         /// <summary>
         /// 获取Uri参数的编码
         /// </summary>
         public Encoding Encoding { get; }
+
 
         /// <summary>
         /// Uri编辑器
@@ -76,22 +57,32 @@ namespace WebApiClientCore
         /// <param name="encoding">参数的编码</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="UriFormatException"></exception>
-#pragma warning disable CS8618  
         public UriEditor(Uri uri, Encoding encoding)
-#pragma warning restore CS8618  
         {
-            this.Uri = uri ?? throw new ArgumentNullException(nameof(uri));
-            this.Encoding = encoding ?? throw new ArgumentNullException(nameof(encoding));
+            if (uri == null)
+            {
+                throw new ArgumentNullException(nameof(uri));
+            }
+
+            if (encoding == null)
+            {
+                throw new ArgumentNullException(nameof(encoding));
+            }
+
             if (uri.IsAbsoluteUri == false)
             {
                 throw new UriFormatException(Resx.required_AbsoluteUri.Format(nameof(uri)));
             }
+
+            this.Uri = uri;
+            this.Encoding = encoding;
 
             const int delimiterLength = 3;
             this.fragment = uri.Fragment;
             this.pathIndex = uri.AbsoluteUri.IndexOf('/', uri.Scheme.Length + delimiterLength);
             this.fragmentLength = string.IsNullOrEmpty(uri.Fragment) ? 0 : uri.Fragment.Length;
         }
+
 
         /// <summary>
         /// 替换带有花括号的参数的值
@@ -101,7 +92,7 @@ namespace WebApiClientCore
         /// <returns>替换成功则返回true</returns>
         public bool Replace(string name, string? value)
         {
-            if (this.uriCanReplace == false)
+            if (this.Uri.OriginalString.Contains('{') == false)
             {
                 return false;
             }

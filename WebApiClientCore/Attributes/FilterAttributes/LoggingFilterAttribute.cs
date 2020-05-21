@@ -49,7 +49,7 @@ namespace WebApiClientCore.Attributes
                 logMessage.RequestContent = await this.ReadRequestContentAsync(request).ConfigureAwait(false);
             }
 
-            context.UserDatas.Set(typeof(LoggingFilterAttribute), logMessage);
+            context.Properties.Set(typeof(LoggingFilterAttribute), logMessage);
         }
 
 
@@ -62,7 +62,7 @@ namespace WebApiClientCore.Attributes
         public sealed async override Task OnResponseAsync(ApiResponseContext context)
         {
             var response = context.HttpContext.ResponseMessage;
-            var logMessage = context.UserDatas.Get<LogMessage>(typeof(LoggingFilterAttribute));
+            var logMessage = context.Properties.Get<LogMessage>(typeof(LoggingFilterAttribute));
 
             logMessage.ResponseTime = DateTime.Now;
             logMessage.Exception = context.Exception;

@@ -10,7 +10,7 @@ namespace WebApiClientCore.Exceptions
         /// <summary>
         /// 获取请求上下文
         /// </summary>
-        public ApiRequestContext Context { get; }
+        public ApiResponseContext Context { get; }
 
         /// <summary>
         /// 获取异常提示信息
@@ -29,7 +29,7 @@ namespace WebApiClientCore.Exceptions
         /// </summary>
         /// <param name="context"></param> 
         /// <exception cref="ArgumentNullException"></exception>
-        public ApiReturnNotSupportedExteption(ApiRequestContext context)
+        public ApiReturnNotSupportedExteption(ApiResponseContext context)
         {
             this.Context = context ?? throw new ArgumentNullException(nameof(context));
         }

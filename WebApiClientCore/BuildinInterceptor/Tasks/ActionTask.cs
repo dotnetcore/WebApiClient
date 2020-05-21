@@ -10,7 +10,7 @@ namespace WebApiClientCore
     {
         private readonly ActionInvoker<TResult> invoker;
         private readonly ServiceContext context;
-        private readonly object[] arguments;
+        private readonly object?[] arguments;
 
         /// <summary>
         /// Api请求的任务
@@ -18,7 +18,7 @@ namespace WebApiClientCore
         /// <param name="invoker"></param>
         /// <param name="context"></param>
         /// <param name="arguments"></param>
-        public ActionTask(IActionInvoker invoker, ServiceContext context, object[] arguments)
+        public ActionTask(IActionInvoker invoker, ServiceContext context, object?[] arguments)
         {
             this.invoker = (ActionInvoker<TResult>)invoker;
             this.context = context;
