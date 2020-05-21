@@ -1,7 +1,8 @@
-﻿using WebApiClientCore;
+﻿using System;
+using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
 
-namespace System.Threading.Tasks
+namespace WebApiClientCore
 {
     /// <summary>
     /// 表示支持重试的Api请求任务
