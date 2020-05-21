@@ -21,7 +21,7 @@ namespace WebApiClientCore.Defaults
         {
             if (obj == null)
             {
-                if (key == null || key.Length == 0)
+                if (string.IsNullOrEmpty(key))
                 {
                     throw new ArgumentNullException(nameof(key));
                 }

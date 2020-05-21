@@ -21,7 +21,7 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 获取请求相对路径
         /// </summary>
-        public string Path { get; }
+        public string? Path { get; }
 
         /// <summary>
         /// http请求方法描述特性
@@ -99,11 +99,7 @@ namespace WebApiClientCore.Attributes
             }
             else
             {
-                if (relative == null)
-                {
-                    return baseUri;
-                }
-                return new Uri(baseUri, relative);
+                return relative == null ? baseUri : new Uri(baseUri, relative);
             }
         }
     }

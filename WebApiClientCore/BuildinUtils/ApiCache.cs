@@ -10,7 +10,7 @@ namespace WebApiClientCore
     class ApiCache
     {
         private readonly ApiRequestContext context;
-        private readonly IApiCacheAttribute attribute;
+        private readonly IApiCacheAttribute? attribute;
 
         /// <summary>
         /// Api缓存

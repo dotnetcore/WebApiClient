@@ -49,7 +49,7 @@ namespace WebApiClientCore
         /// <param name="requestMessage">请求信息</param>
         /// <param name="cacheProviderName">缓存提供者名</param>
         /// <returns></returns>
-        public HttpResponseMessage ToResponseMessage(HttpRequestMessage requestMessage, string? cacheProviderName)
+        public HttpResponseMessage ToResponseMessage(HttpRequestMessage requestMessage, string cacheProviderName)
         {
             var response = new HttpResponseMessage
             {

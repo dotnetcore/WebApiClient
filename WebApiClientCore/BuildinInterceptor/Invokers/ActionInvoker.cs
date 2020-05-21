@@ -66,14 +66,15 @@ namespace WebApiClientCore
 
             if (response.ResultStatus == ResultStatus.HasResult)
             {
+#pragma warning disable CS8603 // 可能的 null 引用返回。
                 return (TResult)response.Result;
+#pragma warning restore CS8603 // 可能的 null 引用返回。
             }
             else if (response.ResultStatus == ResultStatus.HasException)
             {
-                if (response.Exception != null)
-                {
-                    throw response.Exception;
-                }
+#pragma warning disable CS8597 // 引发的值可为 null。
+                throw response.Exception;
+#pragma warning restore CS8597 // 引发的值可为 null。
             }
 
             throw new ApiReturnNotSupportedExteption(context);

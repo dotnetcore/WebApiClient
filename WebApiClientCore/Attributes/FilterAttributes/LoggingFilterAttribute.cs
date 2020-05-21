@@ -46,7 +46,7 @@ namespace WebApiClientCore.Attributes
             {
                 var request = context.HttpContext.RequestMessage;
                 logMessage.RequestHeaders = request.GetHeadersString();
-                logMessage.RequestContent = await this.ReadRequestContentAsync(request.Content).ConfigureAwait(false);
+                logMessage.RequestContent = await this.ReadRequestContentAsync(request).ConfigureAwait(false);
             }
 
             context.UserDatas.Set(typeof(LoggingFilterAttribute), logMessage);
@@ -71,7 +71,7 @@ namespace WebApiClientCore.Attributes
             {
                 logMessage.HasResponse = true;
                 logMessage.ResponseHeaders = response.GetHeadersString();
-                logMessage.ResponseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                logMessage.ResponseContent = await this.ReadResponseContentAsync(response).ConfigureAwait(false);
             }
 
             await this.WriteLogAsync(context, logMessage).ConfigureAwait(false);
@@ -80,18 +80,28 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 读取请求内容
         /// </summary>
-        /// <param name="httpContent"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        private async Task<string?> ReadRequestContentAsync(HttpContent httpContent)
+        private async Task<string?> ReadRequestContentAsync(HttpRequestMessage request)
         {
-            if (httpContent == null)
+            if (request.Content == null)
             {
                 return null;
             }
 
-            return httpContent is ICustomHttpContentConvertable convertable
+            return request.Content is ICustomHttpContentConvertable convertable
                 ? await convertable.ToCustomHttpContext().ReadAsStringAsync().ConfigureAwait(false)
-                : await httpContent.ReadAsStringAsync().ConfigureAwait(false);
+                : await request.Content.ReadAsStringAsync().ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// 读取响应内容
+        /// </summary>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        private async Task<string?> ReadResponseContentAsync(HttpResponseMessage response)
+        {
+            return response.Content == null ? null : await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
         /// <summary>

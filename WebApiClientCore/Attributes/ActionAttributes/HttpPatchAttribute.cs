@@ -4,9 +4,8 @@ namespace WebApiClientCore.Attributes
 {
     /// <summary>
     /// 表示Patch请求
-    /// 不可继承
     /// </summary>
-    public sealed class HttpPatchAttribute : HttpMethodAttribute
+    public class HttpPatchAttribute : HttpMethodAttribute
     {
         /// <summary>
         /// Patch请求
@@ -20,7 +19,7 @@ namespace WebApiClientCore.Attributes
         /// Patch请求
         /// </summary>
         /// <param name="path">请求绝对或相对路径</param>
-        public HttpPatchAttribute(string path)
+        public HttpPatchAttribute(string? path)
             : base(HttpMethod.Patch, path)
         {
         }

@@ -90,7 +90,7 @@ namespace WebApiClientCore
         /// <param name="value">参数值</param>
         /// <exception cref="HttpApiInvalidOperationException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
-        public void AddUrlQuery(string key, string value)
+        public void AddUrlQuery(string key, string? value)
         {
             this.AddUrlQuery(key, value, Encoding.UTF8);
         }
@@ -175,7 +175,7 @@ namespace WebApiClientCore
         /// <param name="fileName">文件名</param>
         /// <param name="contentType">文件Mime</param>
         /// <exception cref="NotSupportedException"></exception>
-        public void AddFormDataFile(Stream stream, string name, string fileName, string contentType)
+        public void AddFormDataFile(Stream stream, string name, string? fileName, string? contentType)
         {
             this.EnsureNotGetOrHead();
 

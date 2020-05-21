@@ -37,7 +37,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取Api关联的缓存特性
         /// </summary>
-        public IApiCacheAttribute CacheAttribute { get; protected set; }
+        public IApiCacheAttribute? CacheAttribute { get; protected set; }
 
         /// <summary>
         /// 获取Api关联的特性

@@ -16,7 +16,9 @@ namespace WebApiClientCore.Defaults
         /// <returns></returns>
         public virtual byte[] Serialize(object? obj, JsonSerializerOptions? options)
         {
-            return obj == null ? Array.Empty<byte>() : JsonSerializer.SerializeToUtf8Bytes(obj, obj.GetType(), options);
+            return obj == null ?
+                Array.Empty<byte>() :
+                JsonSerializer.SerializeToUtf8Bytes(obj, obj.GetType(), options);
         }
 
         /// <summary>
@@ -28,7 +30,9 @@ namespace WebApiClientCore.Defaults
         /// <returns></returns>
         public virtual object? Deserialize(byte[]? json, Type objType, JsonSerializerOptions? options)
         {
-            return json == null || json.Length == 0 ? objType.DefaultValue() : JsonSerializer.Deserialize(json, objType, options);
+            return json == null || json.Length == 0 ?
+                objType.DefaultValue() :
+                JsonSerializer.Deserialize(json, objType, options);
         }
     }
 }

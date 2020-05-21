@@ -58,7 +58,9 @@ namespace WebApiClientCore
         /// <returns></returns>
         public T Get<T>(object key)
         {
+#pragma warning disable CS8603 // 可能的 null 引用返回。
             return this.TryGetValue(key, out var value) ? (T)value : default;
+#pragma warning restore CS8603 // 可能的 null 引用返回。
         }
 
         /// <summary>

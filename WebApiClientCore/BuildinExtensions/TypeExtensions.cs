@@ -13,14 +13,9 @@ namespace WebApiClientCore
     static class TypeExtensions
     {
         /// <summary>
-        /// 类型是否AllowMultiple的缓存
-        /// </summary>
-        private static readonly ConcurrentCache<Type, bool> typeAllowMultipleCache = new ConcurrentCache<Type, bool>();
-
-        /// <summary>
         /// 类型的默认值缓存
         /// </summary>
-        private static readonly ConcurrentCache<Type, object> typeDefaultValueCache = new ConcurrentCache<Type, object>();
+        private static readonly ConcurrentCache<Type, object?> typeDefaultValueCache = new ConcurrentCache<Type, object?>();
 
         /// <summary>
         /// 关联的AttributeUsageAttribute是否AllowMultiple
@@ -29,9 +24,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static bool IsAllowMultiple(this Type type)
         {
-#pragma warning disable CS8602 // Attribute肯定声明AttributeUsageAttribute
-            return typeAllowMultipleCache.GetOrAdd(type, (t => t.IsInheritFrom<Attribute>() && t.GetCustomAttribute<AttributeUsageAttribute>(true).AllowMultiple));
-#pragma warning restore CS8602 
+            return type.GetCustomAttribute<AttributeUsageAttribute>()?.AllowMultiple == true;
         }
 
         /// <summary>
