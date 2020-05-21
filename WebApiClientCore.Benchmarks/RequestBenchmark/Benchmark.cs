@@ -15,9 +15,12 @@ namespace WebApiClientCore.Benchmarks.RequestBenchmark
         private readonly IServiceProvider serviceProvider;
 
         public Benchmark()
-        {
-            var model = new Model { A = "A", B = 2, C = 3d };
+        { 
             var services = new ServiceCollection();
+
+            services
+                .AddHttpClient(typeof(HttpClient).FullName)
+                .AddHttpMessageHandler(() => new NoneHttpDelegatingHandler());
 
             services
                 .AddHttpApi<IWebApiClientCoreApi>(o => o.HttpHost = new Uri("http://webapiclient.com/"))
@@ -62,12 +65,61 @@ namespace WebApiClientCore.Benchmarks.RequestBenchmark
         public async Task<Model> HttpClient_GetAsync()
         {
             using var scope = this.serviceProvider.CreateScope();
-            var httpClient = scope.ServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(typeof(IWebApiClientCoreApi).FullName);
+            var httpClient = scope.ServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(typeof(HttpClient).FullName);
 
             var id = "id";
             var request = new HttpRequestMessage(HttpMethod.Get, $"http://webapiclient.com/{id}");
             var response = await httpClient.SendAsync(request);
             var json = await response.Content.ReadAsByteArrayAsync();
+            return JsonSerializer.Deserialize<Model>(json);
+        }
+
+
+        /// <summary>
+        /// 使用WebApiClient.JIT请求
+        /// </summary>
+        /// <returns></returns>
+        [Benchmark]
+        public async Task<Model> WebApiClient_PostAsync()
+        {
+            using var scope = this.serviceProvider.CreateScope();
+            var banchmarkApi = scope.ServiceProvider.GetRequiredService<IWebApiClientApi>();
+            var input = new Model { A = "a" };
+            return await banchmarkApi.PostAsync(input);
+        }
+
+        /// <summary>
+        /// 使用WebApiClientCore请求
+        /// </summary>
+        /// <returns></returns>
+        [Benchmark]
+        public async Task<Model> WebApiClientCore_PostAsync()
+        {
+            using var scope = this.serviceProvider.CreateScope();
+            var banchmarkApi = scope.ServiceProvider.GetRequiredService<IWebApiClientCoreApi>();
+            var input = new Model { A = "a" };
+            return await banchmarkApi.PostAsync(input);
+        }
+
+        /// <summary>
+        /// 使用原生HttpClient请求
+        /// </summary>
+        /// <returns></returns>
+        [Benchmark]
+        public async Task<Model> HttpClient_PostAsync()
+        {
+            using var scope = this.serviceProvider.CreateScope();
+            var httpClient = scope.ServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(typeof(HttpClient).FullName);
+
+            var input = new Model { A = "a" };
+            var json = JsonSerializer.SerializeToUtf8Bytes(input);
+            var request = new HttpRequestMessage(HttpMethod.Put, $"http://webapiclient.com/")
+            {
+                Content = new JsonContent(json)
+            };
+
+            var response = await httpClient.SendAsync(request);
+            json = await response.Content.ReadAsByteArrayAsync();
             return JsonSerializer.Deserialize<Model>(json);
         }
     }

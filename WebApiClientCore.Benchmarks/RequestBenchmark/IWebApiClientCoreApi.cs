@@ -7,5 +7,8 @@ namespace WebApiClientCore.Benchmarks.RequestBenchmark
     {
         [HttpGet("/benchmarks/{id}")]
         Task<Model> GetAsyc([PathQuery] string id);
+
+        [HttpPost("/benchmarks")]
+        Task<Model> PostAsync([Parameter(Kind.JsonBody)] Model model);
     }
 }
