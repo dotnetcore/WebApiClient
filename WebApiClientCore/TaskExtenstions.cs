@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 
 namespace WebApiClientCore
 {
@@ -58,7 +57,7 @@ namespace WebApiClientCore
             {
                 throw new ArgumentOutOfRangeException(nameof(maxCount));
             }
-            return new AcitonRetryTask<TResult>(task.InvokeAsync, maxCount, delay);
+            return new AcitonRetryTask<TResult>(async () => await task, maxCount, delay);
         }
     }
 }

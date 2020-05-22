@@ -26,10 +26,10 @@ namespace WebApiClientCore
         }
 
         /// <summary>
-        /// 执行任务
+        /// 创建新的请求任务
         /// </summary>
         /// <returns></returns>
-        public override Task<TResult> InvokeAsync()
+        protected override Task<TResult> InvokeAsync()
         {
             return this.invoker.InvokeAsync(this.context, this.arguments);
         }

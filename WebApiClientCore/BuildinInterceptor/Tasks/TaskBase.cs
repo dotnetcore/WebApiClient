@@ -10,8 +10,7 @@ namespace WebApiClientCore
     abstract class TaskBase<TResult> : ITask<TResult>
     {
         /// <summary>
-        /// 执行InvokeAsync
-        /// 并返回其TaskAwaiter对象
+        /// 返回新创建的请求任务的等待器 
         /// </summary>
         /// <returns></returns>
         public TaskAwaiter<TResult> GetAwaiter()
@@ -20,7 +19,7 @@ namespace WebApiClientCore
         }
 
         /// <summary>
-        /// 配置用于等待的等待者
+        /// 返回新创建的请求任务的等待器
         /// </summary>
         /// <param name="continueOnCapturedContext">试图继续回夺取的原始上下文，则为 true；否则为 false</param>
         /// <returns></returns>
@@ -30,9 +29,9 @@ namespace WebApiClientCore
         }
 
         /// <summary>
-        /// 执行任务
+        /// 创建新的请求任务
         /// </summary>
         /// <returns></returns>
-        public abstract Task<TResult> InvokeAsync();
+        protected abstract Task<TResult> InvokeAsync();
     }
 }

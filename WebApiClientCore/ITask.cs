@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace WebApiClientCore
 {
@@ -10,20 +9,13 @@ namespace WebApiClientCore
     public interface ITask<TResult>
     {
         /// <summary>
-        /// 创建请求任务
-        /// </summary>
-        /// <returns></returns>
-        Task<TResult> InvokeAsync();
-
-        /// <summary>
-        /// 调用InvokeAsync
-        /// 并返回其TaskAwaiter对象
+        /// 返回新创建的请求任务的等待器
         /// </summary>
         /// <returns></returns>
         TaskAwaiter<TResult> GetAwaiter();
 
         /// <summary>
-        /// 配置用于等待的等待者
+        /// 返回新创建的请求任务的等待器
         /// </summary>
         /// <param name="continueOnCapturedContext">试图继续回夺取的原始上下文，则为 true；否则为 false</param>
         /// <returns></returns>

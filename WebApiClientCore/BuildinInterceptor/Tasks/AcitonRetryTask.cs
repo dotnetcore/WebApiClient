@@ -44,10 +44,10 @@ namespace WebApiClientCore
         }
 
         /// <summary>
-        /// 创建请求任务
+        /// 创建新的请求任务
         /// </summary>
         /// <returns></returns>
-        public override async Task<TResult> InvokeAsync()
+        protected override async Task<TResult> InvokeAsync()
         {
             var inner = default(Exception);
             for (var i = 0; i <= this.maxRetryCount; i++)
