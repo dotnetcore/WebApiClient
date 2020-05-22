@@ -183,6 +183,20 @@ namespace WebApiClientCore.Extensions.OAuths
     }
 }
 ```
+### 编译时语法分析
+`WebApiClientCore.Analyzers`项目为WebApiClientCore提供编码时语法分析与提示，比如[Header]特性，可以修改Interface、Method和Parameter三个地方，但是必须使用正确的构造器，否则运行时会抛出异常。有了语法分析功能，在声明接口时就不会使用不当的语法。
+
+如果想让语法分析声明，你的接口必须继承没有任何方法的IHttpApi接口
+```
+/// <summary>
+/// 你的接口，记得要实现IHttpApi
+/// </summary>
+public interface IYourApi : IHttpApi
+{
+    ...
+}
+```
+
 
 ### 服务注册与获取
 > 服务注册
