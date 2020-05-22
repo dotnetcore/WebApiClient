@@ -24,7 +24,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
             context.HttpContext.ResponseMessage.Content = new JsonContent(json);
 
             var attr = new JsonReturnAttribute();
-            await attr.OnResponseAsync(responseContext, () => Task.CompletedTask);
+            await attr.OnResponseAsync(responseContext );
             var result = responseContext.Result as TestModel;
             Assert.True(model.Name == result.Name && model.Age == result.Age);
         }
@@ -43,7 +43,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
             context.HttpContext.ResponseMessage.Content = new XmlContent(xml, Encoding.UTF8);
 
             var attr = new XmlReturnAttribute();
-            await attr.OnResponseAsync(responseContext, () => Task.CompletedTask);
+            await attr.OnResponseAsync(responseContext );
             var result = responseContext.Result as TestModel;
             Assert.True(model.Name == result.Name && model.Age == result.Age);
         }
@@ -60,7 +60,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
             context.HttpContext.ResponseMessage.StatusCode = System.Net.HttpStatusCode.InternalServerError;
 
             var attr = new JsonReturnAttribute() { EnsureSuccessStatusCode = true };
-            await attr.OnResponseAsync(responseContext, () => Task.CompletedTask);
+            await attr.OnResponseAsync(responseContext);
 
             Assert.IsType<HttpStatusFailureException>(responseContext.Exception);
         }

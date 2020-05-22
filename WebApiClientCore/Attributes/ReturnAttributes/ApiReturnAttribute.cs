@@ -65,31 +65,28 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 执行前
         /// </summary>
-        /// <param name="context">上下文</param>
-        /// <param name="next"></param>
+        /// <param name="context">上下文</param> 
         /// <returns></returns>
-        public Task OnRequestAsync(ApiRequestContext context, Func<Task> next)
+        public Task OnRequestAsync(ApiRequestContext context)
         {
             if (this.AcceptContentType != null)
             {
                 context.HttpContext.RequestMessage.Headers.Accept.Add(this.AcceptContentType);
             }
-            return next();
+            return Task.CompletedTask;
         }
 
         /// <summary>
         /// 响应后
         /// </summary>
-        /// <param name="context">上下文</param>
-        /// <param name="next">下一个执行委托</param>
+        /// <param name="context">上下文</param> 
         /// <returns></returns>
-        public async Task OnResponseAsync(ApiResponseContext context, Func<Task> next)
+        public async Task OnResponseAsync(ApiResponseContext context)
         {
             if (this.UseSuccessStatusCode(context) && this.UseMatchAcceptContentType(context))
             {
                 await this.SetResultAsync(context).ConfigureAwait(false);
             }
-            await next().ConfigureAwait(false);
         }
 
         /// <summary>

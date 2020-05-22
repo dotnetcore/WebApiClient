@@ -27,7 +27,7 @@ namespace WebApiClientCore.Test.Attributes
             var parameterContext = new ApiParameterContext(context, 0);
 
             var attr = new FormDataTextAttribute();
-            await attr.OnRequestAsync(parameterContext, () => Task.CompletedTask);
+            await attr.OnRequestAsync(parameterContext );
             var body = await context.HttpContext.RequestMessage.Content.ReadAsStringAsync();
             Assert.Contains(get("value", "laojiu"), body);
         }

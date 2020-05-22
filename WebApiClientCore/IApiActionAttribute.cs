@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace WebApiClientCore
 {
@@ -11,9 +10,8 @@ namespace WebApiClientCore
         /// <summary>
         /// 请求前
         /// </summary>
-        /// <param name="context">上下文</param>
-        /// <param name="next">下一个执行委托</param>
+        /// <param name="context">上下文</param> 
         /// <returns></returns>
-        Task OnRequestAsync(ApiRequestContext context, Func<Task> next);
+        Task OnRequestAsync(ApiRequestContext context);
     }
 }

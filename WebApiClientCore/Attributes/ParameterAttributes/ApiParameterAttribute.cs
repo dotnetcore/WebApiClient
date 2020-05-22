@@ -10,18 +10,6 @@ namespace WebApiClientCore.Attributes
     public abstract class ApiParameterAttribute : Attribute, IApiParameterAttribute
     {
         /// <summary>
-        /// 请求前
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <param name="next">下一个执行委托</param>
-        /// <returns></returns>
-        public async Task OnRequestAsync(ApiParameterContext context, Func<Task> next)
-        {
-            await this.OnRequestAsync(context).ConfigureAwait(false);
-            await next();
-        }
-
-        /// <summary>
         /// http请求之前
         /// </summary>
         /// <param name="context">上下文</param> 

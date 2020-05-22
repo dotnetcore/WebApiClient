@@ -84,17 +84,16 @@ namespace WebApiClientCore.Attributes
         /// http请求之前
         /// 值从参数过来
         /// </summary>
-        /// <param name="context">上下文</param>
-        /// <param name="next"></param> 
+        /// <param name="context">上下文</param> 
         /// <returns></returns>
-        public Task OnRequestAsync(ApiParameterContext context, Func<Task> next)
+        public Task OnRequestAsync(ApiParameterContext context)
         {
             var headerValue = context.ParameterValue?.ToString();
             if (string.IsNullOrEmpty(headerValue) == false)
             {
                 context.HttpContext.RequestMessage.Headers.TryAddWithoutValidation(this.name, headerValue);
             }
-            return next();
+            return Task.CompletedTask;
         }
     }
 }

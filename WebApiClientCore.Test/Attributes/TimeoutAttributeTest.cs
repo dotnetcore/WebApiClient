@@ -31,7 +31,7 @@ namespace WebApiClientCore.Test.Attributes
 
             var attr = new TimeoutAttribute();
             var parameterContext = new ApiParameterContext(context, 0);
-            await attr.OnRequestAsync(parameterContext, () => Task.CompletedTask);
+            await attr.OnRequestAsync(parameterContext);
 
             await Task.Delay(20);
             var canceled = context.CancellationTokens[0].IsCancellationRequested;
@@ -47,7 +47,7 @@ namespace WebApiClientCore.Test.Attributes
             var attr = new TimeoutAttribute();
 
             var parameterContext = new ApiParameterContext(context, 0);
-            await attr.OnRequestAsync(parameterContext, () => Task.CompletedTask);
+            await attr.OnRequestAsync(parameterContext);
 
             await Task.Delay(20);
             var canceled = context.CancellationTokens[0].IsCancellationRequested;
@@ -56,11 +56,11 @@ namespace WebApiClientCore.Test.Attributes
             context.Arguments[0] = Guid.NewGuid();
 
             await Assert.ThrowsAsync<HttpApiInvalidOperationException>(()
-                => attr.OnRequestAsync(parameterContext, () => Task.CompletedTask));
+                => attr.OnRequestAsync(parameterContext));
 
             context.Arguments[0] = null;
 
-            await attr.OnRequestAsync(parameterContext, () => Task.CompletedTask);
+            await attr.OnRequestAsync(parameterContext);
             Assert.True(context.CancellationTokens.Count == 1);
         }
     }

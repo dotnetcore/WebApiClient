@@ -53,7 +53,11 @@ namespace WebApiClientCore
             // action特性请求前执行
             foreach (var attr in apiAction.Attributes)
             {
-                builder.Use(attr.OnRequestAsync);
+                builder.Use(next => async context =>
+                {
+                    await attr.OnRequestAsync(context).ConfigureAwait(false);
+                    await next(context).ConfigureAwait(false);
+                });
             }
 
             // 参数特性请求前执行
@@ -62,10 +66,11 @@ namespace WebApiClientCore
                 var index = parameter.Index;
                 foreach (var attr in parameter.Attributes)
                 {
-                    builder.Use(async (context, next) =>
+                    builder.Use(next => async context =>
                     {
                         var ctx = new ApiParameterContext(context, index);
-                        await attr.OnRequestAsync(ctx, next).ConfigureAwait(false);
+                        await attr.OnRequestAsync(ctx).ConfigureAwait(false);
+                        await next(context).ConfigureAwait(false);
                     });
                 }
             }
@@ -75,7 +80,11 @@ namespace WebApiClientCore
             {
                 if (@return.Enable == true)
                 {
-                    builder.Use(@return.OnRequestAsync);
+                    builder.Use(next => async context =>
+                    {
+                        await @return.OnRequestAsync(context).ConfigureAwait(false);
+                        await next(context).ConfigureAwait(false);
+                    });
                 }
             }
 
@@ -84,7 +93,11 @@ namespace WebApiClientCore
             {
                 if (filter.Enable == true)
                 {
-                    builder.Use(filter.OnRequestAsync);
+                    builder.Use(next => async context =>
+                    {
+                        await filter.OnRequestAsync(context).ConfigureAwait(false);
+                        await next(context).ConfigureAwait(false);
+                    });
                 }
             }
 
@@ -108,25 +121,44 @@ namespace WebApiClientCore
                     continue;
                 }
 
-                builder.Use(async (context, next) =>
+                builder.Use(next => async context =>
                 {
                     if (context.ResultStatus == ResultStatus.None)
                     {
-                        await @return.OnResponseAsync(context, next).ConfigureAwait(false);
+                        try
+                        {
+                            await @return.OnResponseAsync(context).ConfigureAwait(false);
+                        }
+                        catch (Exception ex)
+                        {
+                            context.Exception = ex;
+                        }
                     }
-                    else
-                    {
-                        await next().ConfigureAwait(false);
-                    }
+                    await next(context).ConfigureAwait(false);
                 });
             }
 
             // 验证Result是否ok
             builder.Use(next => context =>
             {
+                if (context.ApiAction.Return.DataType.IsModelType == false)
+                {
+                    return next(context);
+                }
+
+                if (context.ResultStatus != ResultStatus.HasResult)
+                {
+                    return next(context);
+                }
+
+                if (context.HttpContext.Options.UseReturnValuePropertyValidate == false)
+                {
+                    return next(context);
+                }
+
                 try
                 {
-                    ApiValidator.ValidateReturnValue(context.Result, context.HttpContext.Options.UseReturnValuePropertyValidate);
+                    ApiValidator.ValidateReturnValue(context.Result);
                 }
                 catch (Exception ex)
                 {
@@ -140,7 +172,11 @@ namespace WebApiClientCore
             {
                 if (filter.Enable == true)
                 {
-                    builder.Use(filter.OnResponseAsync);
+                    builder.Use(next => async context =>
+                    {
+                        await filter.OnResponseAsync(context).ConfigureAwait(false);
+                        await next(context).ConfigureAwait(false);
+                    });
                 }
             }
 
