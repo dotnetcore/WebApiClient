@@ -66,12 +66,11 @@ namespace WebApiClientCore.Attributes
         /// http请求之前
         /// </summary>
         /// <param name="context">上下文</param>
-        /// <param name="next"></param> 
         /// <returns></returns>
-        public Task OnRequestAsync(ApiParameterContext context, Func<Task> next)
+        public Task OnRequestAsync(ApiParameterContext context)
         {
             context.HttpContext.RequestMessage.AddFormDataText(context.Parameter.Name, context.ParameterValue?.ToString());
-            return next();
+            return Task.CompletedTask;
         }
     }
 }

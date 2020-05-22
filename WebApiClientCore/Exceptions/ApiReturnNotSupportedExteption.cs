@@ -20,7 +20,7 @@ namespace WebApiClientCore.Exceptions
             get
             {
                 var contentType = this.Context.HttpContext.ResponseMessage?.Content.Headers.ContentType.ToString();
-                return Resx.unspported_ContentType.Format(contentType, this.Context.ApiAction.Return.DataType.Type);
+                return Resx.unsupported_ContentType.Format(contentType, this.Context.ApiAction.Return.DataType.Type);
             }
         }
 

@@ -8,17 +8,14 @@
 
 
 ### 相对变化
-1. 使用System.Text.Json替换Json.net
-2. 提升内置的多个HttpContent性能
-3. 移除HttpApiFactory和HttApiConfig功能，紧密结合DependencyInjection和HttpClientFactory
-4. 移除AOT功能，目前依赖于Emit
-5. 高效的ActionInvoker
-6. 所有特性都基于中间件思想开发
-7. 基于管道编排各个特性中间件，执行逻辑清晰
-8. 良好设计的HttpContext、ApiRequestContext、ApiParameterContext和ApiResponseContext
-
+* 使用System.Text.Json替换Json.net，提升序列化性能
+* 移除HttpApiFactory和HttApiConfig功能，使用Microsoft.Extensions.Http的HttpClientFactory
+* 移除AOT功能，仅保留依赖于Emit的运行时代理
+* 高效的ActionInvoker，对返回Task<>和ITask<>作不同处理
+* 所有特性都都变成中间件，基于管道编排各个特性并生成Action执行委托
+* 良好设计的HttpContext、ApiRequestContext、ApiParameterContext和ApiResponseContext
 
 ### PackageReference
 > WebApiClientCore
 
-    <PackageReference Include="WebApiClientCore" Version="1.0.0-alpha9" /> 
+    <PackageReference Include="WebApiClientCore" Version="1.0.0-alpha10" /> 

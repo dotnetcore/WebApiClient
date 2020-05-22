@@ -28,44 +28,15 @@ namespace WebApiClientCore.Attributes
         /// 请求前
         /// </summary>
         /// <param name="context">上下文</param>
-        /// <param name="next">下一个执行委托</param>
         /// <returns></returns>
-        public async Task OnRequestAsync(ApiRequestContext context, Func<Task> next)
-        {
-            await this.OnRequestAsync(context).ConfigureAwait(false);
-            await next();
-        }
+        public abstract Task OnRequestAsync(ApiRequestContext context);
 
-        /// <summary>
-        /// 响应后
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <param name="next">下一个执行委托</param>
-        /// <returns></returns>
-        public async Task OnResponseAsync(ApiResponseContext context, Func<Task> next)
-        {
-            await this.OnResponseAsync(context).ConfigureAwait(false);
-            await next();
-        }
-
-        /// <summary>
-        /// 准备请求之前
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <returns></returns>
-        public virtual Task OnRequestAsync(ApiRequestContext context)
-        {
-            return Task.CompletedTask;
-        }
 
         /// <summary>
         /// 响应后
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public virtual Task OnResponseAsync(ApiResponseContext context)
-        {
-            return Task.CompletedTask;
-        }
+        public abstract Task OnResponseAsync(ApiResponseContext context);
     }
 }

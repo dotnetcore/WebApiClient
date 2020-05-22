@@ -17,21 +17,7 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 获取本类型是否允许在接口与方法上重复
         /// </summary>
-        public bool AllowMultiple => this.GetType().IsAllowMultiple();
-
-        /// <summary>
-        /// 请求前
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <param name="next">下一个中间件</param>
-        /// <returns></returns>
-        public async Task OnRequestAsync(ApiRequestContext context, Func<Task> next)
-        {
-            await this.OnRequestAsync(context).ConfigureAwait(false);
-
-            // 目前场景无中断需求，无条件执行下个中间件
-            await next();
-        }
+        public bool AllowMultiple => this.GetType().IsAllowMultiple(); 
 
         /// <summary>
         /// 执行前

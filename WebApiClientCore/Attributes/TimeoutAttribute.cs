@@ -67,15 +67,14 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// http请求之前
         /// </summary>
-        /// <param name="context">上下文</param>
-        /// <param name="next"></param>
+        /// <param name="context">上下文</param> 
         /// <exception cref="HttpApiInvalidOperationException"></exception>
         /// <returns></returns>
-        public Task OnRequestAsync(ApiParameterContext context, Func<Task> next)
+        public Task OnRequestAsync(ApiParameterContext context)
         {
             if (context.ParameterValue == null)
             {
-                return next();
+                return Task.CompletedTask;
             }
 
             if (context.ParameterValue is TimeSpan timespan)
@@ -93,7 +92,7 @@ namespace WebApiClientCore.Attributes
                 throw new HttpApiInvalidOperationException(Resx.parameter_CannotCvtTimeout.Format(context.Parameter.Member));
             }
 
-            return next();
+            return Task.CompletedTask;
         }
 
 

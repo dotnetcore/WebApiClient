@@ -18,6 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         private static IServiceCollection AddHttpApi(this IServiceCollection services)
         {
+            services.AddMemoryCache();
             services.TryAddSingleton<IXmlFormatter, XmlFormatter>();
             services.TryAddSingleton<IJsonFormatter, JsonFormatter>();
             services.TryAddSingleton<IKeyValueFormatter, KeyValueFormatter>();

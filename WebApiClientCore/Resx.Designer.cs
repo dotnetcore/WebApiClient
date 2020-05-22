@@ -223,24 +223,6 @@ namespace WebApiClientCore {
         }
         
         /// <summary>
-        ///   查找类似 不支持将ContentType为 {0} 的内容转换为{1} 的本地化字符串。
-        /// </summary>
-        internal static string unspported_ContentType {
-            get {
-                return ResourceManager.GetString("unspported_ContentType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 {0}方法不支持使用{1} 的本地化字符串。
-        /// </summary>
-        internal static string unspported_HttpContent {
-            get {
-                return ResourceManager.GetString("unspported_HttpContent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   查找类似 接口参数不支持ref/out修饰: {0} 的本地化字符串。
         /// </summary>
         internal static string unsupported_ByRef {
@@ -250,11 +232,29 @@ namespace WebApiClientCore {
         }
         
         /// <summary>
+        ///   查找类似 不支持将ContentType为 {0} 的内容转换为{1} 的本地化字符串。
+        /// </summary>
+        internal static string unsupported_ContentType {
+            get {
+                return ResourceManager.GetString("unsupported_ContentType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 不支持泛型方法: {0} 的本地化字符串。
         /// </summary>
         internal static string unsupported_GenericMethod {
             get {
                 return ResourceManager.GetString("unsupported_GenericMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {0}方法不支持使用{1} 的本地化字符串。
+        /// </summary>
+        internal static string unsupported_HttpContent {
+            get {
+                return ResourceManager.GetString("unsupported_HttpContent", resourceCulture);
             }
         }
         

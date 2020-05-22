@@ -16,7 +16,7 @@ namespace WebApiClientCore.Test.Attributes
             var parameterContext = new ApiParameterContext(context, 0);
 
             var attr = new HeaderAttribute("MyHeader");
-            await attr.OnRequestAsync(parameterContext, () => Task.CompletedTask);
+            await attr.OnRequestAsync(parameterContext);
 
             context.HttpContext.RequestMessage.Headers.TryGetValues("MyHeader", out IEnumerable<string> values);
             Assert.Equal("laojiu", values.First());

@@ -32,16 +32,16 @@ namespace WebApiClientCore.Test.BuildinUtils
         public void ValidateReturnValueTest()
         {
             var value = default(User);
-            ApiValidator.ValidateReturnValue(value, true);
+            ApiValidator.ValidateReturnValue(value);
 
             value = new User();
-            Assert.Throws<ValidationException>(() => ApiValidator.ValidateReturnValue(value, true));
+            Assert.Throws<ValidationException>(() => ApiValidator.ValidateReturnValue(value));
 
             value = new User { Account = "123" };
-            ApiValidator.ValidateReturnValue(value, true);
+            ApiValidator.ValidateReturnValue(value);
 
             value = new User { Account = "123456" };
-            Assert.Throws<ValidationException>(() => ApiValidator.ValidateReturnValue(value, true));
+            Assert.Throws<ValidationException>(() => ApiValidator.ValidateReturnValue(value));
         }
 
         class TestParameter
