@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using WebApiClientCore.Exceptions;
 
 namespace WebApiClientCore.JsonConverters
 {
@@ -50,14 +50,18 @@ namespace WebApiClientCore.JsonConverters
             /// <param name="reader"></param>
             /// <param name="typeToConvert"></param>
             /// <param name="options"></param>
-            /// <returns></returns>
-            [return: MaybeNull]
+            /// <returns></returns> 
             public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
                 var json = reader.GetString();
                 var valueType = typeToConvert.GenericTypeArguments.First();
                 var value = JsonSerializer.Deserialize(json, valueType, options);
-                return (T)Activator.CreateInstance(typeToConvert, value);
+                var jsonString = Activator.CreateInstance(typeToConvert, new object[] { value });
+                if (jsonString == null)
+                {
+                    throw new TypeInstanceCreateException(typeToConvert);
+                }
+                return (T)jsonString;
             }
 
             /// <summary>
