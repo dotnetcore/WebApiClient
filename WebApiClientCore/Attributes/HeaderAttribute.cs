@@ -27,7 +27,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="name">header名称</param>
         [AttributeCtorUsage(AttributeTargets.Parameter)]
         public HeaderAttribute(HttpRequestHeader name)
-            : this(RequestHeader.GetName(name) ?? throw new ArgumentOutOfRangeException(nameof(name)))
+            : this(RequestHeader.GetName(name))
         {
         }
 
@@ -49,7 +49,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="value">header值</param>
         [AttributeCtorUsage(AttributeTargets.Interface | AttributeTargets.Method)]
         public HeaderAttribute(HttpRequestHeader name, string value)
-            : this(RequestHeader.GetName(name) ?? throw new ArgumentOutOfRangeException(nameof(name)), value)
+            : this(RequestHeader.GetName(name), value)
         {
         }
 
