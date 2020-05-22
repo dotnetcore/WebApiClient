@@ -1,0 +1,27 @@
+﻿@inherits HtmlTemplateBase<HttpModel>
+
+@using WebApiClientCore.Extensions.OpenApi
+@using RazorEngine.Templating
+
+<HttpModel>
+    <usings>
+        <div>using System;</div>
+        <div>using System.Collections.Generic;</div>       
+        <div>using System.Text.Json.Serialization;</div>
+        <div>using System.Runtime.Serialization;</div>
+        <div>using System.Collections.ObjectModel;</div>
+        <div>using System.ComponentModel.DataAnnotations;</div>
+    </usings>
+
+    <namespace>
+        <div>namespace @(Model.NameSapce)</div>
+        <div>{</div>
+        <class>
+            @foreach (var line in Model.Lines)
+            {
+                <div>@line</div>
+            }
+        </class>
+        <div>}</div>
+    </namespace>
+</HttpModel>

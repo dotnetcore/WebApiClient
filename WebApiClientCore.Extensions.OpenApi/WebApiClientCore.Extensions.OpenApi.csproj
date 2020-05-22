@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net451</TargetFramework>
+    <Authors>laojiu</Authors>
+    <Company>laojiu</Company>
+    <Copyright>Copyright © laojiu 2017-2020</Copyright>
+    <Description>将swagger的本地或远程json文件解析生成WebApiClientCore的接口定义代码文件的工具</Description>
+    <Summary>将swagger的本地或远程json文件解析生成WebApiClientCore的接口定义代码文件的工具</Summary>
+  </PropertyGroup>
+ 
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="1.9.71" />
+    <PackageReference Include="RazorEngine" Version="3.10.0" />
+    <PackageReference Include="NSwag.CodeGeneration.CSharp" Version="13.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="petstore.openApi.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="petstore.openApi.bat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Views\HttpApi.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Views\HttpModel.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

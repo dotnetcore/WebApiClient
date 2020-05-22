@@ -1,0 +1,146 @@
+﻿@inherits HtmlTemplateBase<HttpApi>
+
+@using WebApiClientCore.Extensions.OpenApi
+@using RazorEngine.Templating
+@using NSwag
+
+<HttpApi>
+    <usings>
+        <div>using System;</div>
+        <div>using System.Collections.Generic;</div>
+        <div>using System.ComponentModel.DataAnnotations;</div>
+
+        <div>using System.Net.Http;</div>
+        <div>using System.Threading;</div>
+        <div>using System.Threading.Tasks;</div>
+
+        <div>using WebApiClientCore;</div>
+        <div>using WebApiClientCore.Attributes;</div> 
+        <div>using WebApiClientCore.Parameters;</div>       
+    </usings>
+
+    <namespace>
+        <div>namespace @(Model.NameSpace)</div>
+        <div>{</div>
+        <interface>
+            <summary>
+                @if (Model.HasSummary == true)
+                {
+                    <div>/// &lt;summary&gt;</div>
+                    foreach (var line in Model.Summary.Split(new[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        <div>/// @line</div>
+                    }
+                    <div>/// &lt;/summary&gt;</div>
+                }
+            </summary>
+            <attributes>
+                <div>[LoggingFilter]</div>
+                @if (string.IsNullOrEmpty(Model.BaseUrl) == false)
+                {
+                    <div>[HttpHost("@(Model.BaseUrl.TrimEnd('/'))/")]</div>
+                }
+            </attributes>
+            <div>public interface @(Model.TypeName) : IHttpApi</div>
+            <div>{</div>
+            @foreach (var method in Model.Operations)
+            {
+                var isFormData = method.Consumes.Contains("multipart/form-data");
+                <summary>
+                    @if (method.HasSummary == true)
+                    {
+                        <div>/// &lt;summary&gt;</div>
+                        foreach (var line in method.Summary.Split(new[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            <div>/// @line</div>
+                        }
+                        <div>/// &lt;/summary&gt;</div>
+                    }
+
+                    @foreach (var parameter in method.Parameters)
+                    {
+                        var description = parameter.HasDescription ? parameter.Description.Replace("\r", "\t").Replace("\n", "\t") : null;
+                        <div>/// &lt;param name="@(parameter.VariableName)"&gt;@(description)&lt;/param&gt;</div>
+                    }
+                    @if (method.HasResultDescription == true)
+                    {
+                        <div>/// &lt;returns&gt;@(method.ResultDescription)&lt;/returns&gt;</div>
+                    }
+                </summary>
+
+                <attributes>
+                    @if (method.IsDeprecated == true)
+                    {
+                        <div>[Obsolete]</div>
+                    }
+                    @if (isFormData == true)
+                    {
+                        <div>[LoggingFilter(Enable = false)]</div>
+                    }
+                    <div>[Http@(method.HttpMethodUpper)("@(method.Path)")]</div>
+                </attributes>
+
+                <div>
+                    <span>@(method.ResultType)</span>
+                    <span>@(method.ActualOperationName)Async(</span>
+                    <parameters>
+                        @foreach (var parameter in method.Parameters)
+                        {
+                            if (parameter.IsRequired == true)
+                            {
+                                <span>[Required]</span>
+                            }
+
+                            if (parameter.VariableName != parameter.Name&& parameter.Kind != OpenApiParameterKind.Header)
+                            {
+                                <span>[AliasAs("@(parameter.Name)")]</span>
+                            }
+
+                            if (parameter.Kind == OpenApiParameterKind.Path || parameter.Kind == OpenApiParameterKind.Query)
+                            {
+                                var schema = parameter.Schema as NSwag.OpenApiParameter;
+                                if (schema != null && schema.CollectionFormat != OpenApiParameterCollectionFormat.Undefined 
+                                    && schema.CollectionFormat != OpenApiParameterCollectionFormat.Multi)
+                                {
+                                    <span>[PathQuery(CollectionFormat = CollectionFormat.@(schema.CollectionFormat))]</span>
+                                }
+                            }
+                            else if (parameter.Kind == OpenApiParameterKind.Header)
+                            {
+                                <span>[Header("@(parameter.Name)")]</span>
+                            }
+                            else if (parameter.IsXmlBodyParameter == true)
+                            {
+                                <span>[XmlContent]</span>
+                            }
+                            else if (parameter.Kind == OpenApiParameterKind.Body)
+                            {
+                                <span>[JsonContent]</span>
+                            }
+                            else if (parameter.Kind == OpenApiParameterKind.FormData)
+                            {
+                                if (parameter.IsFile == false)
+                                {
+                                    if (isFormData == true)
+                                    {
+                                        <span>[FormDataContent]</span>
+                                    }
+                                    else
+                                    {
+                                        <span>[FormContent]</span>
+                                    }
+                                }
+                            }
+
+                            <span>@(parameter.TypeInControllerInterface)</span>
+                            <span>@(parameter.VariableName)@(parameter.IsLast ? null : ",")</span>
+                        }
+                    </parameters>
+                    <span>);</span>
+                </div>
+            }
+            <div>}</div>
+        </interface>
+        <div>}</div>
+    </namespace>
+</HttpApi>
