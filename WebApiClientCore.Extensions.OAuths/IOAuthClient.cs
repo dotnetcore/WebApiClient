@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using WebApiClientCore.Attributes;
 
@@ -22,7 +21,7 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <returns></returns>
         [HttpPost]
         [FormField("grant_type", "client_credentials")]
-        Task<TokenResult> RequestTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] ClientCredentials credentials);
+        Task<TokenResult?> RequestTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] ClientCredentials credentials);
 
         /// <summary>
         /// 以password授权方式获取token
@@ -32,7 +31,7 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <returns></returns>
         [HttpPost]
         [FormField("grant_type", "password")]
-        Task<TokenResult> RequestTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] PasswordCredentials credentials);
+        Task<TokenResult?> RequestTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] PasswordCredentials credentials);
 
         /// <summary>
         /// 刷新token
@@ -42,6 +41,6 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <returns></returns>
         [HttpPost]
         [FormField("grant_type", "refresh_token")]
-        Task<TokenResult> RefreshTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] RefreshTokenCredentials credentials);
+        Task<TokenResult?> RefreshTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] RefreshTokenCredentials credentials);
     }
 }

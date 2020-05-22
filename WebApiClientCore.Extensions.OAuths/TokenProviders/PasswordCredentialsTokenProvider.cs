@@ -32,7 +32,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// </summary> 
         /// <param name="oAuthClient">Token客户端</param>
         /// <returns></returns>
-        protected override Task<TokenResult> RequestTokenAsync(IOAuthClient oAuthClient)
+        protected override Task<TokenResult?> RequestTokenAsync(IOAuthClient oAuthClient)
         {
             var options = this.CredentialsOptions.Value;
             if (options.Endpoint == null)
@@ -48,7 +48,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <param name="oAuthClient">Token客户端</param>
         /// <param name="refresh_token">刷新token</param>
         /// <returns></returns>
-        protected override Task<TokenResult> RefreshTokenAsync(IOAuthClient oAuthClient, string? refresh_token)
+        protected override Task<TokenResult?> RefreshTokenAsync(IOAuthClient oAuthClient, string? refresh_token)
         {
             var options = this.CredentialsOptions.Value;
             if (options.Endpoint == null)
