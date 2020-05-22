@@ -21,7 +21,7 @@
 * 良好设计的HttpContext、ApiRequestContext、ApiParameterContext和ApiResponseContext
 
 ### Benchmark
-> WebApiClientCore、WebApiClient.JIT与原生HttpClient的性能比较相比原生HttpClient，WebApiClientCore几乎没有性能损耗。
+> WebApiClientCore、WebApiClient.JIT与原生HttpClient的性能比较，相比原生的HttpClient，WebApiClientCore几乎没有性能损耗。
 
 BenchmarkDotNet=v0.12.1, OS=Windows 10.0.18362.778 (1903/May2019Update/19H1)
 Intel Core i3-4150 CPU 3.50GHz (Haswell), 1 CPU, 4 logical and 2 physical cores
@@ -45,12 +45,14 @@ Intel Core i3-4150 CPU 3.50GHz (Haswell), 1 CPU, 4 logical and 2 physical cores
 
 ### 声明式接口定义
 * 支持Task、Task<>和ITask<>三种异步返回
-* 支持HttpResponseMessage、byte[]、string和Stream原生类型返回内容
 * 支持模型自动转换为Xml、Json、Form、和FormData共4种请求格式的内容
+* 支持HttpResponseMessage、byte[]、string和Stream原生类型返回内容
 * 支持原生HttpContent(比如StringContent)类型直接做为请求参数
-* 支持自定义IApiParameter类型直接作为就参数
-* 内置丰富的能满足各种环境的常用特性，支持用户自定义特性
+* 内置丰富的能满足各种环境的常用特性(ActionAttribute和ParameterAttribute)
+* 内置常用的FormDataFile等参数类型，同时支持自定义IApiParameter参数类型作为参数值
+* 支持用户自定义IApiActionAttribute、IApiParameterAttribue、IApiReturnAttribute和IApiFilterAttribute
 
+> 以下声明的代码为使用`WebApiClientCore.Extensions.OpenApi`工具将openApi文档反向生成得到
 ```
 namespace Petstore
 {
