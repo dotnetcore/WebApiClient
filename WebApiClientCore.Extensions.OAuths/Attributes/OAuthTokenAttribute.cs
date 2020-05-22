@@ -26,7 +26,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        protected abstract TokenProvider GetTokenProvider(ApiRequestContext context);
+        protected abstract ITokenProvider GetTokenProvider(ApiRequestContext context);
 
         /// <summary>
         /// 应用token

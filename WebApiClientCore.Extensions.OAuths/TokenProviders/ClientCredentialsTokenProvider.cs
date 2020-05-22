@@ -1,14 +1,15 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
+using WebApiClientCore.Extensions.OAuths.Exceptions;
 
-namespace WebApiClientCore.Extensions.OAuths
+namespace WebApiClientCore.Extensions.OAuths.TokenProviders
 {
     /// <summary>
     /// 表示Client身份信息token提供者
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
-    public class ClientCredentialsTokenProvider<THttpApi> : TokenProvider
+    public class ClientCredentialsTokenProvider<THttpApi> : TokenProvider, IClientCredentialsTokenProvider<THttpApi>
     {
         /// <summary>
         /// 身份选项

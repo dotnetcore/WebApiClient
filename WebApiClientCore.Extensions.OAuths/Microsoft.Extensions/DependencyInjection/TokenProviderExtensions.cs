@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using WebApiClientCore.Extensions.OAuths;
+using WebApiClientCore.Extensions.OAuths.TokenProviders;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -31,7 +32,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddHttpApi<IOAuthClient>(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
             services.AddOptions<ClientCredentialsOptions<THttpApi>>();
-            services.TryAddSingleton<ClientCredentialsTokenProvider<THttpApi>>();
+            services.TryAddSingleton<IClientCredentialsTokenProvider<THttpApi>, ClientCredentialsTokenProvider<THttpApi>>();
             services.AddSingleton(typeof(ITokenProvider), typeof(ClientCredentialsTokenProvider<>).MakeGenericType(typeof(THttpApi)));
             return services;
         }
@@ -58,7 +59,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddHttpApi<IOAuthClient>(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
             services.AddOptions<PasswordCredentialsOptions<THttpApi>>();
-            services.TryAddSingleton<PasswordCredentialsOptions<THttpApi>>();
+            services.TryAddSingleton<IPasswordCredentialsTokenProvider<THttpApi>, PasswordCredentialsTokenProvider<THttpApi>>();
             services.AddSingleton(typeof(ITokenProvider), typeof(PasswordCredentialsTokenProvider<>).MakeGenericType(typeof(THttpApi)));
             return services;
         }

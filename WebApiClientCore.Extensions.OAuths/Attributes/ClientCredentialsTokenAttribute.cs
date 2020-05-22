@@ -14,10 +14,10 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        protected override TokenProvider GetTokenProvider(ApiRequestContext context)
+        protected override ITokenProvider GetTokenProvider(ApiRequestContext context)
         {
-            var providerType = typeof(ClientCredentialsTokenProvider<>).MakeGenericType(context.ApiAction.InterfaceType);
-            return (TokenProvider)context.HttpContext.Services.GetRequiredService(providerType);
+            var providerType = typeof(IClientCredentialsTokenProvider<>).MakeGenericType(context.ApiAction.InterfaceType);
+            return (ITokenProvider)context.HttpContext.Services.GetRequiredService(providerType);
         }
     }
 }

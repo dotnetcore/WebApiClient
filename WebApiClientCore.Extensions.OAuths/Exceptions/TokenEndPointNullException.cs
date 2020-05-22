@@ -1,4 +1,4 @@
-﻿namespace WebApiClientCore.Extensions.OAuths
+﻿namespace WebApiClientCore.Extensions.OAuths.Exceptions
 {
     /// <summary>
     /// 表示获取Toke的Url节点为nul的异常  

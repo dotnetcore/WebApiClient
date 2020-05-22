@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.Json.Serialization;
+using WebApiClientCore.Extensions.OAuths.Exceptions;
 
 namespace WebApiClientCore.Extensions.OAuths
 {

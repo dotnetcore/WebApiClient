@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebApiClientCore.Extensions.OAuths
+namespace WebApiClientCore.Extensions.OAuths.Exceptions
 {
     /// <summary>
     /// 表示Token异常

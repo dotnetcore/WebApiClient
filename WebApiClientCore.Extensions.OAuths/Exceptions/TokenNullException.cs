@@ -1,4 +1,4 @@
-﻿namespace WebApiClientCore.Extensions.OAuths
+﻿namespace WebApiClientCore.Extensions.OAuths.Exceptions
 {
     /// <summary>
     /// 表示空token异常

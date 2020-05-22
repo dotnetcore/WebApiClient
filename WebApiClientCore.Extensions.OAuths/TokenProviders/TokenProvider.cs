@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
+using WebApiClientCore.Extensions.OAuths.Exceptions;
 
-namespace WebApiClientCore.Extensions.OAuths
+namespace WebApiClientCore.Extensions.OAuths.TokenProviders
 {
     /// <summary>
     /// 表示Token提供者抽象类
