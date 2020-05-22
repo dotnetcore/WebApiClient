@@ -1,5 +1,5 @@
 ## WebApiClientCore 　　　　　　　　　　　　　　　　　　　
-[WebApiClient.JIT](https://github.com/dotnetcore/WebApiClient/tree/WebApiClient.JITAOT)的.netcore版本，基于HttpClient的高性能与高可扩展性于一体的声明式Http客户端库，特别适用于微服务的restful资源请求，也适用于各种非标准的http接口请求。
+[WebApiClient.JIT](https://github.com/dotnetcore/WebApiClient/tree/WebApiClient.JITAOT)的`.netcore`版本，基于`HttpClient`的高性能与高可扩展性于一体的声明式http客户端库，特别适用于微服务的restful资源请求，也适用于各种非标准的http接口请求。
 
 ### PackageReference
 
@@ -8,17 +8,17 @@
  
 ### 项目原因
  
-1. WebApiClient很优秀，它将不同框架不同平台都实现了统一的api
-2. WebApiClient不够优秀，它在.netcore下完全可以更好，但它不得不兼容.net45开始所有框架而有所牺牲
+1. `WebApiClient`很优秀，它将不同框架不同平台都实现了统一的api
+2. `WebApiClient`不够优秀，它在`.netcore`下完全可以更好，但它不得不兼容`.net45`开始所有框架而有所牺牲
 
 
 ### 相对变化
-* 使用System.Text.Json替换Json.net，提升序列化性能
-* 移除HttpApiFactory和HttApiConfig功能，使用Microsoft.Extensions.Http的HttpClientFactory
+* 使用`System.Text.Json`替换`Json.net`，提升序列化性能
+* 移除`HttpApiFactory`和`HttApiConfig`功能，使用`Microsoft.Extensions.Http`的`HttpClientFactory`
 * 移除AOT功能，仅保留依赖于Emit的运行时代理
-* 高效的ActionInvoker，对返回Task<>和ITask<>作不同处理
+* 高效的`ActionInvoker`，对返回`Task<>`和`ITask<>`作不同处理
 * 所有特性都都变成中间件，基于管道编排各个特性并生成Action执行委托
-* 良好设计的HttpContext、ApiRequestContext、ApiParameterContext和ApiResponseContext
+* 良好设计的`HttpContext`、`ApiRequestContext`、`ApiParameterContext`和`ApiResponseContext`
 
 ### Benchmark
 > WebApiClientCore、WebApiClient.JIT与原生HttpClient的性能比较，相比原生的HttpClient，WebApiClientCore几乎没有性能损耗。
@@ -44,15 +44,17 @@ Intel Core i3-4150 CPU 3.50GHz (Haswell), 1 CPU, 4 logical and 2 physical cores
 
 
 ### 声明式接口定义
-* 支持Task、Task<>和ITask<>三种异步返回
-* 支持模型自动转换为Xml、Json、Form、和FormData共4种请求格式的内容
-* 支持HttpResponseMessage、byte[]、string和Stream原生类型返回内容
-* 支持原生HttpContent(比如StringContent)类型直接做为请求参数
-* 内置丰富的能满足各种环境的常用特性(ActionAttribute和ParameterAttribute)
-* 内置常用的FormDataFile等参数类型，同时支持自定义IApiParameter参数类型作为参数值
-* 支持用户自定义IApiActionAttribute、IApiParameterAttribue、IApiReturnAttribute和IApiFilterAttribute
+* 支持`Task`、`Task<>`和`ITask<>`三种异步返回
+* 支持模型自动转换为`Xml`、`Json`、`Form`、和`FormData`共4种请求格式的内容
+* 支持`HttpResponseMessage`、`byte[]`、`string`和`Stream`原生类型返回内容
+* 支持原生`HttpContent`(比如`StringContent`)类型直接做为请求参数
+* 内置丰富的能满足各种环境的常用特性(`ActionAttribute`和`ParameterAttribute`)
+* 内置常用的`FormDataFile`等参数类型，同时支持自定义`IApiParameter`参数类型作为参数值
+* 支持用户自定义`IApiActionAttribute`、`IApiParameterAttribue`、`IApiReturnAttribute`和`IApiFilterAttribute`
 
-> 以下声明的代码为使用`WebApiClientCore.Extensions.OpenApi`工具将openApi文档反向生成得到
+#### 1 `petstore.swagger.io`接口例子
+这个OpenApi文档是在[petstore.swagger.io](https://petstore.swagger.io/)上声明的，以下代码为使用`WebApiClientCore.Extensions.OpenApi`工具将其OpenApi文档反向生成得到
+
 ```
 namespace Petstore
 {
@@ -132,7 +134,8 @@ namespace Petstore
     }
 }
 ```
-> 另一个例子是`WebApiClientCore.Extensions.OAuths.IOAuthClient`接口声明
+####  2 IOAuthClient接口例子
+这个接口是在`WebApiClientCore.Extensions.OAuths.IOAuthClient.cs`代码中声明
 
 ```
 using System;
@@ -184,9 +187,10 @@ namespace WebApiClientCore.Extensions.OAuths
 }
 ```
 ### 编译时语法分析
-`WebApiClientCore.Analyzers`项目为WebApiClientCore提供编码时语法分析与提示，比如[Header]特性，可以修改Interface、Method和Parameter三个地方，但是必须使用正确的构造器，否则运行时会抛出异常。有了语法分析功能，在声明接口时就不会使用不当的语法。
+`WebApiClientCore.Analyzers`项目为`WebApiClientCore`提供编码时语法分析与提示。
 
-如果想让语法分析声明，你的接口必须继承没有任何方法的IHttpApi接口
+比如`[Header]`特性，可以声明在Interface、Method和Parameter三个地方，但是必须使用正确的构造器，否则运行时会抛出异常。有了语法分析功能，在声明接口时就不会使用不当的语法。如果想让语法分析声明，你的接口必须继承空方法的`IHttpApi`接口。
+
 ```
 /// <summary>
 /// 你的接口，记得要实现IHttpApi
@@ -199,7 +203,7 @@ public interface IYourApi : IHttpApi
 
 
 ### 服务注册与获取
-> 服务注册
+#### 1 服务注册
 
 ```
 var services = new ServiceCollection();
@@ -213,7 +217,7 @@ services.AddHttpApi<IPetApi>(o =>
 });
 ```
 
-> 服务获取
+#### 2 服务获取
 
 ```
 public class MyService
@@ -229,16 +233,16 @@ public class MyService
 ```
 
 ### 请求和响应日志
-在整个Interface或某个Method上声明[LoggingFilter]，即可把请求和响应的内容输出到LoggingFactory中。
+在整个Interface或某个Method上声明`[LoggingFilter]`，即可把请求和响应的内容输出到`LoggingFactory`中。
 
-如果要排除某个Method不打印日志（比如大流量传输接口），在方法上声明[LoggingFilter(Enable = false)]，即可将本Method排除。
+如果要排除某个Method不打印日志（比如大流量传输接口），在该Method上声明`[LoggingFilter(Enable = false)]`，即可将本Method排除。
 
 ### Accpet ContentType
-这个用于控制客户端希望服务器返回什么样的内容格式，比如json或xml，默认的配置值是Accept: application/json; q=0.01, application/xml; q=0.01
+这个用于控制客户端希望服务器返回什么样的内容格式，比如json或xml，默认的配置值是`Accept: application/json; q=0.01, application/xml; q=0.01`
 
-如果想json优先，可以在Interface或Method上声明[JsonReturn]，请求变为Accept: application/json, application/xml; q=0.01
+如果想json优先，可以在Interface或Method上声明`[JsonReturn]`，请求变为`Accept: application/json, application/xml; q=0.01`
 
-如果想禁用其中一种，比如禁用xml，可以在Interface或Method上声明[XmlReturn(Enable = false)]，请求变为Accept: application/json; q=0.01
+如果想禁用其中一种，比如禁用xml，可以在Interface或Method上声明`[XmlReturn(Enable = false)]`，请求变为`Accept: application/json; q=0.01`
 
 
 ### 请求条件重试
@@ -313,4 +317,14 @@ public interface IpetApi
     ...
 }
 ```
+
+
+### 生态融合
+`Microsoft.Extensions.Http`支持收入各种第三方的`HttpMessageHandler`来build出一种安全的`HttpClient`，同时支持将此`HttpClient`实例包装为强类型服务的目标服务类型注册功能。
+
+### 1 Polly
+`Microsoft.Extensions.Http.Polly`项目依托于Polly，将Polly策略实现到`System.Net.Http.DelegatingHandler`，其handler可以为`HttpClient`提供重试、降级和断路等功能。
+
+### 2 WebApiClientCore
+`WebApiClientCore`可以将`Microsoft.Extensions.Http`创建出来的`HttpClient`实例包装为声明式接口的代理实例，使开发者从面向命令式的编程模式直达声明式的AOP编程。
 
