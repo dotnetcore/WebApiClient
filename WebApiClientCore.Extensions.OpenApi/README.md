@@ -5,7 +5,7 @@
 ### 1.1 命令介绍
 ```
   -o OpenApi, --openapi=OpenApi          Required. openApi的json本地文件路径或远程Uri地址
-  -n Namespace, --namespace=Namespace    代码的命名空间，如WebApiClient.Swagger
+  -n Namespace, --namespace=Namespace    代码的命名空间，如WebApiClientCore
   --help                                 Display this help screen.
 ```
 ### 1.2 工作流程

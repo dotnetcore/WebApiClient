@@ -1,2 +1,2 @@
-WebApiClientCore.Extensions.OpenApi.exe -o petstore.openApi.json -n petstore.swagger
+WebApiClientCore.Extensions.OpenApi.exe -o petstore.openApi.json -n Petstore
 pause
