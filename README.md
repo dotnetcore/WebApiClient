@@ -132,6 +132,57 @@ namespace Petstore
     }
 }
 ```
+> 另一个例子是`WebApiClientCore.Extensions.OAuths.IOAuthClient`接口声明
+
+```
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
+using WebApiClientCore.Attributes;
+
+namespace WebApiClientCore.Extensions.OAuths
+{
+    /// <summary>
+    /// 定义Token客户端的接口
+    /// </summary>
+    [LoggingFilter]
+    [XmlReturn(Enable = false)]
+    [JsonReturn(EnsureMatchAcceptContentType = false, EnsureSuccessStatusCode = false)]
+    public interface IOAuthClient
+    {
+        /// <summary>
+        /// 以client_credentials授权方式获取token
+        /// </summary>
+        /// <param name="endpoint">token请求地址</param>
+        /// <param name="credentials">身份信息</param>
+        /// <returns></returns>
+        [HttpPost]
+        [FormField("grant_type", "client_credentials")]
+        Task<TokenResult> RequestTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] ClientCredentials credentials);
+
+        /// <summary>
+        /// 以password授权方式获取token
+        /// </summary>
+        /// <param name="endpoint">token请求地址</param>
+        /// <param name="credentials">身份信息</param>
+        /// <returns></returns>
+        [HttpPost]
+        [FormField("grant_type", "password")]
+        Task<TokenResult> RequestTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] PasswordCredentials credentials);
+
+        /// <summary>
+        /// 刷新token
+        /// </summary>
+        /// <param name="endpoint">token请求地址</param>
+        /// <param name="credentials">身份信息</param>
+        /// <returns></returns>
+        [HttpPost]
+        [FormField("grant_type", "refresh_token")]
+        Task<TokenResult> RefreshTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] RefreshTokenCredentials credentials);
+    }
+}
+```
 
 ### 服务注册与获取
 > 服务注册
