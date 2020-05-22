@@ -18,4 +18,4 @@
 ### PackageReference
 > WebApiClientCore
 
-    <PackageReference Include="WebApiClientCore" Version="1.0.0-alpha10" /> 
+    <PackageReference Include="WebApiClientCore" Version="1.0.0-beta1" /> 
