@@ -1,6 +1,6 @@
-## WebApiClientCore.Extensions.OpenApi
+## WebApiClientCore.OpenApi.SourceGenerator
  
-> 将openApi的本地或远程json文件解析生成WebApiClientCore的接口定义代码文件
+> 将OpenApi的本地或远程文档解析生成WebApiClientCore的接口定义代码文件
 
 ### 1.1 命令介绍
 ```
