@@ -189,6 +189,9 @@
   <data name="unsupported_ReturnType" xml:space="preserve">
     <value>返回类型必须为Task、Task&lt;&gt;或ITask&lt;&gt;: {0}</value>
   </data>
+  <data name="unsupported_SerializeApiParametern" xml:space="preserve">
+    <value>不支持序列化类型{0}，该类型只能做为方法的参数值</value>
+  </data>
   <data name="unsupported_SetContent" xml:space="preserve">
     <value>由于使用了{0}的请求方法，不支持设置RequestMessage.Content</value>
   </data>

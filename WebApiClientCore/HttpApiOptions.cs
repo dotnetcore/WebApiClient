@@ -57,7 +57,9 @@ namespace WebApiClientCore
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             };
+
             options.Converters.Add(JsonStringConverter.Default);
+            options.Converters.Add(FormDataFileJsonConverter.Default);            
             return options;
         }
     }

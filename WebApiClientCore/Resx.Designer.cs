@@ -277,6 +277,15 @@ namespace WebApiClientCore {
         }
         
         /// <summary>
+        ///   查找类似 不支持序列化类型{0}，该类型只能做为方法的参数值 的本地化字符串。
+        /// </summary>
+        internal static string unsupported_SerializeApiParametern {
+            get {
+                return ResourceManager.GetString("unsupported_SerializeApiParametern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 由于使用了{0}的请求方法，不支持设置RequestMessage.Content 的本地化字符串。
         /// </summary>
         internal static string unsupported_SetContent {
