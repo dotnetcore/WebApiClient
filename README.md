@@ -3,7 +3,7 @@
 
 ### PackageReference
 
-    <PackageReference Include="WebApiClientCore" Version="1.0.0-beta1" />
+    <PackageReference Include="WebApiClientCore" Version="1.0.0-beta*" />
  
 
 ### Benchmark
