@@ -3,7 +3,7 @@
 
 ### PackageReference
 
-    <PackageReference Include="WebApiClientCore" Version="1.0.0-beta*" />
+    <PackageReference Include="WebApiClientCore" Version="1.0.0-beta1" />
  
 
 ### Benchmark
@@ -95,7 +95,7 @@ namespace Petstore
         /// <param name="name">Updated name of the pet</param>
         /// <param name="status">Updated status of the pet</param>
         [HttpPost("pet/{petId}")]
-        Task UpdatePetWithFormAsync([Required] long petId, [FormContent] string name, [FormContent] string status);
+        Task UpdatePetWithFormAsync([Required] long petId, [FormFiled] string name, [FormFiled] string status);
 
         /// <summary>
         /// Deletes a pet
@@ -114,7 +114,7 @@ namespace Petstore
         /// <returns>successful operation</returns>
         [LoggingFilter(Enable = false)]
         [HttpPost("pet/{petId}/uploadImage")]
-        ITask<ApiResponse> UploadFileAsync([Required] long petId, [FormDataContent] string additionalMetadata, FormDataFile file);
+        ITask<ApiResponse> UploadFileAsync([Required] long petId, [FormDataText] string additionalMetadata, FormDataFile file);
     }
 }
 ```
@@ -186,8 +186,8 @@ public interface IYourApi : IHttpApi
 ```
 
 
-### 服务注册与获取
-#### 1 服务注册
+### 接口注册与实例获取
+#### 1 接口服务注册
 
 ```
 var services = new ServiceCollection();
@@ -201,7 +201,7 @@ services.AddHttpApi<IPetApi>(o =>
 });
 ```
 
-#### 2 服务获取
+#### 2 接口实例获取
 
 ```
 public class MyService
@@ -258,7 +258,7 @@ appsettings.json的文件配置
 
 
 ### 请求条件重试
-使用ITask<>异步声明，就有Retry的扩展，Retry的条件可以为捕获到某种Exception或响应模型符合某种条件。
+使用`ITask<>`异步声明，就有Retry的扩展，Retry的条件可以为捕获到某种`Exception`或响应模型符合某种条件。
 
 ```
 var result = await youApi.GetModelAsync(id: "id001")
@@ -291,10 +291,25 @@ var services = new ServiceCollection();
 services.AddSingleton<IResponseCacheProvider, RedisResponseCacheProvider>();
 ```
 
+### 表单集合处理
+按照OpenApi，一个集合在Query或表单中支持有5种表述方式，分别是：
+* Csv // 逗号分隔
+* Ssv // 空格分隔
+* Tsv // 反斜杠分隔
+* Pipes // 竖线分隔
+* Multi // 多个同名键的键值对
 
+对于 id = new string []{"001","002"} 这样的值，处理后分别是
+* id=001,002
+* id=001 002
+* id=001\002
+* id=001|002
+* id=001&id=002
+
+默认的，`PathQuryAttribute`与`FormContentAttribute`使用了Multi处理方式，可以设置其CollectionFormat属性为其它值，比如：`[FormContent(CollectionFormat = CollectionFormat.Csv)]`
 
 ### Http代理
-Http代理属于HttpMessageHandler层，所以应该在`Microsoft.Extensions.Http`的HttpClientBuilder里配置
+Http代理属于HttpMessageHandler层，所以应该在`Microsoft.Extensions.Http`的HttpClientBuilder里配置。
 
 ```
 services
@@ -317,7 +332,7 @@ services
     });
 ```
 
-### 非强类型模型请求
+### 非模型请求
 有时候我们未必需要强模型，假设我们有原始的form文本内容，或原始的json文本内容，或者是System.Net.Http.HttpContent对象，只需要把这些原始内请求到远程远程器。
 
 #### 1 原始文本
@@ -338,7 +353,7 @@ Task PostAsync([RawJsonContent] string json);
 #### 3 原始xml
 ```
 [HttpPost]
-Task PostAsync([RawXmlContent] string json);
+Task PostAsync([RawXmlContent] string xml);
 ```
 
 #### 4 原始表单内容
@@ -348,7 +363,7 @@ Task PostAsync([RawFormContent] string form);
 ```
 
 
-### 自定义参数类型
+### 自定义无特性的参数类型
 在某些极限情况下，我们输入模型与传输模型未必是对等的。比如人脸比对的接口，其要求如下的json请求格式：
 
 > 传输模型
@@ -408,8 +423,63 @@ public interface IFaceApi
 }
 ```
 
-### 适应非标准接口
-在实际环境中，有些平台未能提供标准的接口，主要早期还没有restful概念时期的接口，形形色色的各种，我们要区别对待。
+### 自定义请求内容与响应内容解析
+除了小常见的xml或json响应内容要反序列化为强类型结果模型，你可能会遇到其它的二进制协议响应内容，比如`google ProtoBuf`二进制内容。
+
+#### 1 自定义请求内容处理特性
+```
+public class ProtobufContentAttribute : HttpContentAttribute
+{
+    public string ContentType { get; set; } = "application/x-protobuf";
+
+    protected override Task SetHttpContentAsync(ApiParameterContext context)
+    {
+        var stream = new MemoryStream();
+        if (context.ParameterValue != null)
+        {
+            Serializer.NonGeneric.Serialize(stream, context.ParameterValue);
+            stream.Position = 0L;
+        }
+
+        var content = new StreamContent(stream);
+        content.Headers.ContentType = new MediaTypeHeaderValue(this.ContentType);
+        context.HttpContext.RequestMessage.Content = content;
+        return Task.CompletedTask;
+    }
+}
+```
+#### 2 自定义响应内容解析特性
+```
+public class ProtobufReturnAttribute : ApiReturnAttribute
+{
+    public ProtobufReturnAttribute(string acceptContentType = "application/x-protobuf")
+        : base(new MediaTypeWithQualityHeaderValue(acceptContentType))
+    {
+    }
+
+    public override async Task SetResultAsync(ApiResponseContext context)
+    {
+        if (context.ApiAction.Return.DataType.IsModelType)
+        {
+            var stream = await context.HttpContext.ResponseMessage.Content.ReadAsStreamAsync();
+            context.Result = Serializer.NonGeneric.Deserialize(context.ApiAction.Return.DataType.Type, stream);
+        }
+    }
+}
+```
+
+#### 3 为你的接口应用这些特性
+```
+[ProtobufReturn]
+public interface IProtobufApi
+{
+    [HttpPut("/users/{id}")]
+    Task<User> UpdateAsync([Required, PathQuery] string id, [ProtobufContent] User user);
+}
+```
+
+### 适配畸形接口
+在实际环境中，有些平台未能提供标准的接口，主要早期还没有restful概念时期的接口，产生各种畸形的接口，我们要区别对待。
 
 #### 1 参数别名`[Alias]`
 例如服务器要求一个Query参数的名字为`field-Name`，这个是c#关键字或变量命名不允许的，我们可以使用`[AliasAsAttribute]`来达到这个要求：
@@ -460,8 +530,8 @@ class Field2Data
 }
 ```
 
-#### 3 响应没有指明ContentType
-明明响应的内容是肉眼看上是json内容，但服务响应头里没有ContentType告诉客户端这内容是json，这好比客户端使用Form或json提交时就不在请求头告诉服务器内容格式是什么，而是让服务器猜测一样的道理。
+#### 3 响应未指明ContentType
+明明响应的内容肉眼看上是json内容，但服务响应头里没有ContentType告诉客户端这内容是json，这好比客户端使用Form或json提交时就不在请求头告诉服务器内容格式是什么，而是让服务器猜测一样的道理。
 
 解决办法是在Interface或Method声明`[JsonReturn]`特性，并设置其`EnsureMatchAcceptContentType`属性为false，表示ContentType不是期望值匹配也要处理。
 
@@ -471,7 +541,7 @@ public interface IJsonResponseApi : IHttpApi
 {
 }
 ```
-#### 4 形形色色的各种签名
+#### 4 自定义签名参数
 例如每个请求的url额外的动态添加一个叫sign的参数，这个sign可能和请求参数值有关联，每次都需要计算。
 
 我们可以自定义ApiFilterAttribute来实现自己的sign功能，然后把自定义Filter声明到Interface或Method即可
