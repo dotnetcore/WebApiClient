@@ -317,6 +317,97 @@ services
     });
 ```
 
+### 非强类型模型请求
+有时候我们未必需要强模型，假设我们有原始的form文本内容，或原始的json文本内容，或者是System.Net.Http.HttpContent对象，只需要把这些原始内请求到远程远程器。
+
+#### 1 原始文本
+```
+[HttpPost]
+Task PostAsync([RawStringContent("txt/plain")] string text);
+
+[HttpPost]
+Task PostAsync(StringContent text);
+```
+
+#### 2 原始json
+```
+[HttpPost]
+Task PostAsync([RawJsonContent] string json);
+```
+
+#### 3 原始xml
+```
+[HttpPost]
+Task PostAsync([RawXmlContent] string json);
+```
+
+#### 4 原始表单内容
+```
+[HttpPost]
+Task PostAsync([RawFormContent] string form);
+```
+
+
+### 自定义参数类型
+在某些极限情况下，我们输入模型与传输模型未必是对等的。比如人脸比对的接口，其要求如下的json请求格式：
+
+> 传输模型
+```
+{
+    "image1" : "图片1的base64",
+    "image2" : "图片2的base64"
+}
+```
+
+而我们的最方便的业务模型是这样子：
+```
+class FaceModel
+{
+    public Bitmap Image1 {get; set;}
+    public Bitmap Image2 {get; set;}
+}
+```
+
+我们希望构造模型实例时传入Bitmap对象，但传输的时候变成Bitmap的base64值，所以我们要改造FaceModel，让它实现IApiParameter接口：
+
+```
+class FaceModel : IApiParameter
+{
+    public Bitmap Image1 { get; set; }
+
+    public Bitmap Image2 { get; set; }
+
+
+    public Task OnRequestAsync(ApiParameterContext context)
+    {
+        var image1 = GetImageBase64(this.Image1);
+        var image2 = GetImageBase64(this.Image2);
+        var model = new { image1, image2 };
+
+        var options = context.HttpContext.Options.JsonSerializeOptions;
+        var json = System.Text.Json.JsonSerializer.Serialize(model, options);
+        context.HttpContext.RequestMessage.Content = new StringContent(json, Encoding.UTF8, "application/json");
+        return Task.CompletedTask;
+    }
+
+    private static string GetImageBase64(Bitmap image)
+    {
+        using var stream = new MemoryStream();
+        image.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
+        return Convert.ToBase64String(stream.ToArray());
+    }
+}
+```
+
+最后，我们在使用改进后的FaceModel来请求
+```
+public interface IFaceApi
+{
+    [HttpPost("/somePath")]
+    Task<HttpResponseMessage> PostAsync(FaceModel faces);
+}
+```
+
 ### 适应非标准接口
 在实际环境中，有些平台未能提供标准的接口，主要早期还没有restful概念时期的接口，形形色色的各种，我们要区别对待。
 
