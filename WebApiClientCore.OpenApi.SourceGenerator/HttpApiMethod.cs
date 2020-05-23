@@ -71,16 +71,14 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
         /// <returns></returns>
         protected override string ResolveParameterType(OpenApiParameter parameter)
         {
-            var schema = parameter.ActualSchema;
-            if (schema.Type == JsonObjectType.File)
+            if (parameter.IsBinary || parameter.IsBinaryBodyParameter)
             {
-                if (parameter.CollectionFormat == OpenApiParameterCollectionFormat.Multi && !schema.Type.HasFlag(JsonObjectType.Array))
+                if (parameter.CollectionFormat == OpenApiParameterCollectionFormat.Multi && !parameter.ActualSchema.Type.HasFlag(JsonObjectType.Array))
                 {
                     return "IEnumerable<FormDataFile>";
                 }
                 return "FormDataFile";
             }
-
             return base.ResolveParameterType(parameter);
         }
     }

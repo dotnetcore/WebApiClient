@@ -15,8 +15,8 @@
         <div>using System.Threading.Tasks;</div>
 
         <div>using WebApiClientCore;</div>
-        <div>using WebApiClientCore.Attributes;</div> 
-        <div>using WebApiClientCore.Parameters;</div>       
+        <div>using WebApiClientCore.Attributes;</div>
+        <div>using WebApiClientCore.Parameters;</div>
     </usings>
 
     <namespace>
@@ -45,7 +45,6 @@
             <div>{</div>
             @foreach (var method in Model.Operations)
             {
-                var isFormData = method.Consumes.Contains("multipart/form-data");
                 <summary>
                     @if (method.HasSummary == true)
                     {
@@ -73,10 +72,6 @@
                     {
                         <div>[Obsolete]</div>
                     }
-                    @if (isFormData == true)
-                    {
-                        <div>[LoggingFilter(Enable = false)]</div>
-                    }
                     <div>[Http@(method.HttpMethodUpper)("@(method.Path)")]</div>
                 </attributes>
 
@@ -91,7 +86,7 @@
                                 <span>[Required]</span>
                             }
 
-                            if (parameter.VariableName != parameter.Name&& parameter.Kind != OpenApiParameterKind.Header)
+                            if (parameter.VariableName != parameter.Name && parameter.Kind != OpenApiParameterKind.Header)
                             {
                                 <span>[AliasAs("@(parameter.Name)")]</span>
                             }
@@ -99,7 +94,7 @@
                             if (parameter.Kind == OpenApiParameterKind.Path || parameter.Kind == OpenApiParameterKind.Query)
                             {
                                 var schema = parameter.Schema as NSwag.OpenApiParameter;
-                                if (schema != null && schema.CollectionFormat != OpenApiParameterCollectionFormat.Undefined 
+                                if (schema != null && schema.CollectionFormat != OpenApiParameterCollectionFormat.Undefined
                                     && schema.CollectionFormat != OpenApiParameterCollectionFormat.Multi)
                                 {
                                     <span>[PathQuery(CollectionFormat = CollectionFormat.@(schema.CollectionFormat))]</span>
@@ -113,22 +108,25 @@
                             {
                                 <span>[XmlContent]</span>
                             }
-                            else if (parameter.Kind == OpenApiParameterKind.Body)
-                            {
-                                <span>[JsonContent]</span>
-                            }
                             else if (parameter.Kind == OpenApiParameterKind.FormData)
                             {
                                 if (parameter.IsFile == false)
                                 {
-                                    if (isFormData == true)
+                                    if (method.ConsumesFormUrlEncoded)
                                     {
-                                        <span>[FormDataContent]</span>
+                                        <span>[FormField]</span>
                                     }
                                     else
                                     {
-                                        <span>[FormContent]</span>
+                                        <span>[FormDataText]</span>
                                     }
+                                }
+                            }
+                            else if (parameter.Kind == OpenApiParameterKind.Body)
+                            {
+                                if (parameter.IsBinaryBody == false)
+                                {
+                                    <span>[JsonContent]</span>
                                 }
                             }
 
