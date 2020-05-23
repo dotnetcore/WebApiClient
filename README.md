@@ -1,5 +1,5 @@
 ## WebApiClientCore 　　　　　　　　　　　　　　　　　　　
-[WebApiClient.JIT](https://github.com/dotnetcore/WebApiClient/tree/WebApiClient.JITAOT)的netcoreapp版本，基于HttpClient集高性能高可扩展性于一体的声明式http客户端库，特别适用于微服务的restful资源请求，也适用于各种畸形http接口请求。
+[WebApiClient.JIT](https://github.com/dotnetcore/WebApiClient/tree/WebApiClient.JITAOT)的netcoreapp版本，集高性能高可扩展性于一体的声明式http客户端库，特别适用于微服务的restful资源请求，也适用于各种畸形http接口请求。
 
 ### PackageReference
 
@@ -217,7 +217,7 @@ public class MyService
 ```
 
 ### 接口选项与配置
-每个接口的选项对应为HttpApiOptions<THttpApi>，除了Action配置，我们也可以使用Configuration配置结合一起使用，这部分内容为Microsoft.Extensions.Options范畴。
+每个接口的选项对应为`HttpApiOptions<THttpApi>`，除了Action配置，我们也可以使用Configuration配置结合一起使用，这部分内容为Microsoft.Extensions.Options范畴。
 
 **Action配置**
 
@@ -226,7 +226,8 @@ services
     .ConfigureHttpApi<IpetApi>(Configuration.GetSection(nameof(IUserApi)))
     .ConfigureHttpApi<IpetApi>(o =>
     {
-        o.JsonSerializeOptions.Converters.Add(new MyJsonConverter());
+        // 符合国情的不标准时间格式，有些接口就是这么要求必须不标准
+        o.JsonSerializeOptions.Converters.Add(new JsonLocalDateTimeConverter("yyyy-MM-dd HH:mm:ss"));
     });
 ```
 
@@ -282,11 +283,20 @@ services
 默认的，PathQuryAttribute与FormContentAttribute使用了Multi处理方式，可以设置其CollectionFormat属性为其它值，比如：`[FormContent(CollectionFormat = CollectionFormat.Csv)]`
 
 ### Accpet ContentType
-这个用于控制客户端希望服务器返回什么样的内容格式，比如json或xml，默认的配置值是`Accept: application/json; q=0.01, application/xml; q=0.01`
+这个用于控制客户端希望服务器返回什么样的内容格式，比如json或xml。
 
-如果想json优先，可以在Interface或Method上声明`[JsonReturn]`，请求变为`Accept: application/json, application/xml; q=0.01`
+**缺省配置值**
 
-如果想禁用其中一种，比如禁用xml，可以在Interface或Method上声明`[XmlReturn(Enable = false)]`，请求变为`Accept: application/json; q=0.01`
+缺省配置是[JsonReturn(0.01),XmlReturn(0.01)]，对应的请求accept值是
+`Accept: application/json; q=0.01, application/xml; q=0.01`
+
+**Json优先**
+
+在Interface或Method上显式地声明`[JsonReturn]`，请求accept变为`Accept: application/json, application/xml; q=0.01`
+
+**禁用json**
+
+在Interface或Method上声明`[JsonReturn(Enable = false)]`，请求变为`Accept: application/xml; q=0.01`
 
 
 ### 请求和响应日志
@@ -320,7 +330,7 @@ class MyLogging : LoggingFilterAttribute
 }
 ```
 
-### 请求条件重试
+### 请求条件性重试
 使用ITask<>异步声明，就有Retry的扩展，Retry的条件可以为捕获到某种Exception或响应模型符合某种条件。
 
 ```
@@ -331,7 +341,7 @@ var result = await youApi.GetModelAsync(id: "id001")
 ```
 
 ### 响应内容缓存
-CacheAttribute做为缓存应用的配置，配置了这个特性的Method将本次的响应内容缓存起来，下一次如果符合预期条件的话，就不会再请求到远程服务器，而是从IResponseCacheProvider获取缓存内容，你也可以自己实现ResponseCacheProvider。
+配置CacheAttribute特性的Method会将本次的响应内容缓存起来，下一次如果符合预期条件的话，就不会再请求到远程服务器，而是从IResponseCacheProvider获取缓存内容，开发者可以自己实现ResponseCacheProvider。
 
 **声明缓存特性**
 ```
@@ -366,7 +376,8 @@ services.AddSingleton<IResponseCacheProvider, RedisResponseCacheProvider>();
 ### 非模型请求
 有时候我们未必需要强模型，假设我们已经有原始的form文本内容，或原始的json文本内容，甚至是System.Net.Http.HttpContent对象，只需要把这些原始内请求到远程远程器。
 
-#### 1 原始文本
+**原始文本**
+
 ```
 [HttpPost]
 Task PostAsync([RawStringContent("txt/plain")] string text);
@@ -375,19 +386,22 @@ Task PostAsync([RawStringContent("txt/plain")] string text);
 Task PostAsync(StringContent text);
 ```
 
-#### 2 原始json
+
+**原始json**
 ```
 [HttpPost]
 Task PostAsync([RawJsonContent] string json);
 ```
 
-#### 3 原始xml
+**原始xml**
+
 ```
 [HttpPost]
 Task PostAsync([RawXmlContent] string xml);
 ```
 
-#### 4 原始表单内容
+**原始表单内容**
+
 ```
 [HttpPost]
 Task PostAsync([RawFormContent] string form);
@@ -395,9 +409,9 @@ Task PostAsync([RawFormContent] string form);
 
 
 ### 自定义无特性的参数类型
-在某些极限情况下，我们输入模型与传输模型未必是对等的。比如人脸比对的接口，其要求如下的json请求格式：
+在某些极限情况下，比如人脸比对的接口，我们输入模型与传输模型未必是对等的：
 
-**传输模型**
+**服务端要求的json模型**
 ```
 {
     "image1" : "图片1的base64",
@@ -405,7 +419,7 @@ Task PostAsync([RawFormContent] string form);
 }
 ```
 
-而我们期望的业务模型是这样子：
+**客户端期望的业务模型**
 ```
 class FaceModel
 {
@@ -455,7 +469,7 @@ public interface IFaceApi
 ```
 
 ### 自定义请求内容与响应内容解析
-除了小常见的xml或json响应内容要反序列化为强类型结果模型，你可能会遇到其它的二进制协议响应内容，比如google的ProtoBuf二进制内容。
+除了常见的xml或json响应内容要反序列化为强类型结果模型，你可能会遇到其它的二进制协议响应内容，比如google的ProtoBuf二进制内容。
 
 #### 1 编写相关自定义特性
 
@@ -513,9 +527,9 @@ public interface IProtobufApi
 ```
 
 ### 适配畸形接口
-在实际环境中，有些平台未能提供标准的接口，主要早期还没有restful概念时期的接口，产生各种畸形的接口，我们要区别对待。
+在实际应用场景中，常常会遇到一些设计不标准的畸形接口，主要是早期还没有restful概念时期的接口，我们要区分分析这些接口，包装为好友的客户端调用接口。
 
-#### 1 参数别名
+#### 1 为不好友的参数名进行别名
 例如服务器要求一个Query参数的名字为`field-Name`，这个是c#关键字或变量命名不允许的，我们可以使用`[AliasAsAttribute]`来达到这个要求：
 
 ```
@@ -575,7 +589,7 @@ public interface IJsonResponseApi : IHttpApi
 {
 }
 ```
-#### 4 自定义签名参数
+#### 4 类签名参数或token参数
 例如每个请求的url额外的动态添加一个叫sign的参数，这个sign可能和请求参数值有关联，每次都需要计算。
 
 我们可以自定义ApiFilterAttribute来实现自己的sign功能，然后把自定义Filter声明到Interface或Method即可
@@ -599,8 +613,9 @@ public interface ISignedApi
 ```
 
 
-### Http代理
-Http代理属于HttpMessageHandler层，所以应该在`Microsoft.Extensions.Http`的HttpClientBuilder里配置。
+### HttpMessageHandler配置
+
+**Http代理配置**
 
 ```
 services
@@ -620,6 +635,42 @@ services
                 Password = "pasword"
             }
         }
+    });
+```
+
+**客户端证书配置**
+
+有些服务器为了限制客户端的连接，开启了https双向验证，只允许它执有它颁发的证书的客户端进行连接
+```
+services
+    .AddHttpApi<IMyApi>(o =>
+    {
+        o.HttpHost = new Uri("http://localhost:6000/");
+    })
+    .ConfigurePrimaryHttpMessageHandler(() =>
+    {
+        var handler = new HttpClientHandler();
+        handler.ClientCertificates.Add(yourCert);
+        return handler;
+    });
+```
+
+**维持CookieContainer不变**
+
+如果请求的接口不幸使用了Cookie保存身份信息机制，那么就要考虑维持CookieContainer实例不要跟随HttpMessageHandler的生命周期，默认的HttpMessageHandler最短只有2分钟的生命周期。
+
+```
+var cookieContainer = new CookieContainer();
+services
+    .AddHttpApi<IMyApi>(o =>
+    {
+        o.HttpHost = new Uri("http://localhost:6000/");
+    })
+    .ConfigurePrimaryHttpMessageHandler(() =>
+    {
+        var handler = new HttpClientHandler();
+        handler.CookieContainer = cookieContainer;
+        return handler;
     });
 ```
 
