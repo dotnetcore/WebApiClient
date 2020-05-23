@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace WebApiClientCore
@@ -202,8 +200,8 @@ namespace WebApiClientCore
                 }
                 else
                 {
-                    using var cancellation = CreateLinkedTokenSource(context);
-                    var response = await context.HttpContext.Client.SendAsync(context.HttpContext.RequestMessage, cancellation.Token).ConfigureAwait(false);
+                    using var linker = new CancellationTokenLinker(context.CancellationTokens);
+                    var response = await context.HttpContext.Client.SendAsync(context.HttpContext.RequestMessage, linker.Token).ConfigureAwait(false);
 
                     context.HttpContext.ResponseMessage = response;
                     await apiCache.SetAsync(cacheValue?.Key, response).ConfigureAwait(false);
@@ -213,24 +211,6 @@ namespace WebApiClientCore
             catch (Exception ex)
             {
                 return new ApiResponseContext(context) { Exception = ex };
-            }
-        }
-
-        /// <summary>
-        /// 创建取消令牌源
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        private static CancellationTokenSource CreateLinkedTokenSource(ApiRequestContext context)
-        {
-            if (context.CancellationTokens.Count == 0)
-            {
-                return CancellationTokenSource.CreateLinkedTokenSource(CancellationToken.None);
-            }
-            else
-            {
-                var tokens = context.CancellationTokens.ToArray();
-                return CancellationTokenSource.CreateLinkedTokenSource(tokens);
             }
         }
     }
