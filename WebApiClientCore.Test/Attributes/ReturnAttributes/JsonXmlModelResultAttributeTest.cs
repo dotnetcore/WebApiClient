@@ -24,7 +24,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
             context.HttpContext.ResponseMessage.Content = new JsonContent(json);
 
             var attr = new JsonReturnAttribute();
-            await attr.OnResponseAsync(responseContext );
+            await attr.OnResponseAsync(responseContext);
             var result = responseContext.Result as TestModel;
             Assert.True(model.Name == result.Name && model.Age == result.Age);
         }
@@ -43,7 +43,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
             context.HttpContext.ResponseMessage.Content = new XmlContent(xml, Encoding.UTF8);
 
             var attr = new XmlReturnAttribute();
-            await attr.OnResponseAsync(responseContext );
+            await attr.OnResponseAsync(responseContext);
             var result = responseContext.Result as TestModel;
             Assert.True(model.Name == result.Name && model.Age == result.Age);
         }
@@ -63,6 +63,17 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
             await attr.OnResponseAsync(responseContext);
 
             Assert.IsType<HttpStatusFailureException>(responseContext.Exception);
+        }
+
+        [Fact]
+        public void OrderIndexTest()
+        {
+            var attr = new JsonReturnAttribute();
+            var attr2 = new JsonReturnAttribute(1d);
+            var attr3 = new JsonReturnAttribute(0.5d);
+
+            Assert.Equal(attr.OrderIndex, attr2.OrderIndex);
+            Assert.True(attr.OrderIndex < attr3.OrderIndex);
         }
     }
 }
