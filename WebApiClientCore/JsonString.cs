@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace WebApiClientCore
 {
@@ -65,7 +64,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static implicit operator T([NotNull] JsonString<T> value)
+        public static implicit operator T(JsonString<T> value)
         {
             return value.Value;
         }

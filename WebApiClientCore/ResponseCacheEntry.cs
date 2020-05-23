@@ -15,7 +15,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取或设置版本号
         /// </summary>
-        public string Version { get; set; } = "1.1";
+        public string Version { get; set; } = string.Empty;
 
         /// <summary>
         /// 获取或设置状态码
