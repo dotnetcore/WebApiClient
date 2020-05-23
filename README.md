@@ -37,7 +37,7 @@ Intel Core i3-4150 CPU 3.50GHz (Haswell), 1 CPU, 4 logical and 2 physical cores
 * 支持用户自定义`IApiActionAttribute`、`IApiParameterAttribue`、`IApiReturnAttribute`和`IApiFilterAttribute`
 
 #### 1 Petstore接口例子
-这个OpenApi文档在[petstore.swagger.io](https://petstore.swagger.io/)，代码为使用`WebApiClientCore.Extensions.OpenApi`工具将其OpenApi文档反向生成得到
+这个OpenApi文档在[petstore.swagger.io](https://petstore.swagger.io/)，代码为使用`WebApiClientCore.OpenApi.SourceGenerator`工具将其OpenApi文档反向生成得到
 
 ```
 namespace Petstore

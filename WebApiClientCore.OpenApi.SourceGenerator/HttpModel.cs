@@ -1,6 +1,6 @@
 ﻿using NJsonSchema.CodeGeneration;
 
-namespace WebApiClientCore.Extensions.OpenApi
+namespace WebApiClientCore.OpenApi.SourceGenerator
 {
     /// <summary>
     /// 表示WebApiClient的模型描述

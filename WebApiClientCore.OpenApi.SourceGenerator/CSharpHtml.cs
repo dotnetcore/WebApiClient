@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 using System.Xml.Linq;
 
-namespace WebApiClientCore.Extensions.OpenApi
+namespace WebApiClientCore.OpenApi.SourceGenerator
 {
     /// <summary>
     /// 提供视图模板操作

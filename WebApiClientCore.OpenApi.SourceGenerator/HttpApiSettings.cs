@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace WebApiClientCore.Extensions.OpenApi
+namespace WebApiClientCore.OpenApi.SourceGenerator
 {
     /// <summary>
     /// 表示WebApiClientCore接口设置模型

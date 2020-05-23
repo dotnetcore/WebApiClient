@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace WebApiClientCore.Extensions.OpenApi
+namespace WebApiClientCore.OpenApi.SourceGenerator
 {
     /// <summary>
     /// 表示WebApiClient的接口数据模型

@@ -6,8 +6,8 @@
     <Authors>laojiu</Authors>
     <Company>laojiu</Company>
     <Copyright>Copyright © laojiu 2017-2020</Copyright>
-    <Description>将swagger的本地或远程json文件解析生成WebApiClientCore的接口定义代码文件的工具</Description>
-    <Summary>将swagger的本地或远程json文件解析生成WebApiClientCore的接口定义代码文件的工具</Summary>
+    <Description>WebApiClientCore声明接口的代码生成器</Description>
+    <Summary>将本地或远程OpenApi文档解析生成WebApiClientCore的接口定义代码文件的工具</Summary>
   </PropertyGroup>
  
 
