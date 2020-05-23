@@ -1,5 +1,5 @@
 ## WebApiClientCore 　　　　　　　　　　　　　　　　　　　
-[WebApiClient.JIT](https://github.com/dotnetcore/WebApiClient/tree/WebApiClient.JITAOT)的`.netcore`版本，基于`HttpClient`集高性能高可扩展性于一体的声明式http客户端库，特别适用于微服务的restful资源请求，也适用于各种非标准的http接口请求。
+[WebApiClient.JIT](https://github.com/dotnetcore/WebApiClient/tree/WebApiClient.JITAOT)的netcoreapp版本，基于HttpClient集高性能高可扩展性于一体的声明式http客户端库，特别适用于微服务的restful资源请求，也适用于各种畸形http接口请求。
 
 ### PackageReference
 
@@ -28,16 +28,16 @@ Intel Core i3-4150 CPU 3.50GHz (Haswell), 1 CPU, 4 logical and 2 physical cores
 
 
 ### 声明式接口定义
-* 支持`Task`、`Task<>`和`ITask<>`三种异步返回
-* 支持模型自动转换为`Xml`、`Json`、`Form`、和`FormData`共4种请求格式的内容
-* 支持`HttpResponseMessage`、`byte[]`、`string`和`Stream`原生类型返回内容
-* 支持原生`HttpContent`(比如`StringContent`)类型直接做为请求参数
-* 内置丰富的能满足各种环境的常用特性(`ActionAttribute`和`ParameterAttribute`)
-* 内置常用的`FormDataFile`等参数类型，同时支持自定义`IApiParameter`参数类型作为参数值
-* 支持用户自定义`IApiActionAttribute`、`IApiParameterAttribue`、`IApiReturnAttribute`和`IApiFilterAttribute`
+* 支持Task、Task<>和ITask<>三种异步返回
+* 支持模型自动转换为Xml、Json、Form、和FormData共4种请求格式的内容
+* 支持HttpResponseMessage、byte[]、string和Stream原生类型返回内容
+* 支持原生HttpContent(比如StringContent)类型直接做为请求参数
+* 内置丰富的能满足各种环境的常用特性(ActionAttribute和ParameterAttribute)
+* 内置常用的FormDataFile等参数类型，同时支持自定义IApiParameter参数类型作为参数值
+* 支持用户自定义IApiActionAttribute、IApiParameterAttribue、IApiReturnAttribute和IApiFilterAttribute
 
 #### 1 Petstore接口例子
-这个OpenApi文档在[petstore.swagger.io](https://petstore.swagger.io/)，代码为使用`WebApiClientCore.OpenApi.SourceGenerator`工具将其OpenApi文档反向生成得到
+这个OpenApi文档在[petstore.swagger.io](https://petstore.swagger.io/)，代码为使用WebApiClientCore.OpenApi.SourceGenerator工具将其OpenApi文档反向生成得到
 
 ```
 namespace Petstore
@@ -119,7 +119,7 @@ namespace Petstore
 }
 ```
 ####  2 IOAuthClient接口例子
-这个接口是在`WebApiClientCore.Extensions.OAuths.IOAuthClient.cs`代码中声明
+这个接口是在WebApiClientCore.Extensions.OAuths.IOAuthClient.cs代码中声明
 
 ```
 using System;
@@ -171,9 +171,9 @@ namespace WebApiClientCore.Extensions.OAuths
 }
 ```
 ### 编译时语法分析
-`WebApiClientCore.Analyzers`项目为`WebApiClientCore`提供编码时语法分析与提示。
+WebApiClientCore.Analyzers提供编码时语法分析与提示。
 
-比如`[Header]`特性，可以声明在Interface、Method和Parameter三个地方，但是必须使用正确的构造器，否则运行时会抛出异常。有了语法分析功能，在声明接口时就不会使用不当的语法。如果想让语法分析生效，你的接口必须继承空方法的`IHttpApi`接口。
+比如[Header]特性，可以声明在Interface、Method和Parameter三个地方，但是必须使用正确的构造器，否则运行时会抛出异常。有了语法分析功能，在声明接口时就不会使用不当的语法。如果想让语法分析生效，你的接口必须继承空方法的IHttpApi接口。
 
 ```
 /// <summary>
@@ -216,10 +216,11 @@ public class MyService
 }
 ```
 
-### `HttpApiOptions<THttpApi>`选项
-每个接口的选项对应为`HttpApiOptions<THttpApi>`，除了Action配置，我们也可以使用Configuration配置结合一起使用，这部分内容为`Microsoft.Extensions.Options`范畴。
+### 接口选项与配置
+每个接口的选项对应为HttpApiOptions<THttpApi>，除了Action配置，我们也可以使用Configuration配置结合一起使用，这部分内容为Microsoft.Extensions.Options范畴。
 
-服务配置
+**Action配置**
+
 ```
 services
     .ConfigureHttpApi<IpetApi>(Configuration.GetSection(nameof(IUserApi)))
@@ -229,7 +230,8 @@ services
     });
 ```
 
-appsettings.json的文件配置
+**appsettings.json的文件配置**
+
 ```
 {
   "IpetApi": {
@@ -244,10 +246,40 @@ appsettings.json的文件配置
 }
 ```
 
-### 请求和响应日志
-在整个Interface或某个Method上声明`[LoggingFilter]`，即可把请求和响应的内容输出到`LoggingFactory`中。
+### Uri拼接规则
+所有的Uri拼接都是通过Uri(Uri baseUri, Uri relativeUri)这个构造器生成。
 
-如果要排除某个Method不打印日志（比如大流量传输接口），在该Method上声明`[LoggingFilter(Enable = false)]`，即可将本Method排除。
+**带`/`结尾的baseUri**
+
+* `http://a.com/` + `b/c/d` = `http://a.com/b/c/d`
+* `http://a.com/path1/` + `b/c/d` = `http://a.com/path1/b/c/d`
+* `http://a.com/path1/path2/` + `b/c/d` = `http://a.com/path1/path2/b/c/d`
+
+**不带`/`结尾的baseUri**
+
+* `http://a.com` + `b/c/d` = `http://a.com/b/c/d`
+* `http://a.com/path1` + `b/c/d` = `http://a.com/b/c/d`
+* `http://a.com/path1/path2` + `b/c/d` = `http://a.com/path1/b/c/d`
+
+事实上`http://a.com`与`http://a.com/`是完全一样的，他们的path都是`/`，所以才会表现一样。为了避免低级错误的出现，请使用的标准baseUri书写方式，即使用`/`作为baseUri的结尾的第一种方式。
+
+
+### 表单集合处理
+按照OpenApi，一个集合在Uri的Query或表单中支持5种表述方式，分别是：
+* Csv // 逗号分隔
+* Ssv // 空格分隔
+* Tsv // 反斜杠分隔
+* Pipes // 竖线分隔
+* Multi // 多个同名键的键值对
+
+对于 id = new string []{"001","002"} 这样的值，处理后分别是
+* id=001,002
+* id=001 002
+* id=001\002
+* id=001|002
+* id=001&id=002
+
+默认的，PathQuryAttribute与FormContentAttribute使用了Multi处理方式，可以设置其CollectionFormat属性为其它值，比如：`[FormContent(CollectionFormat = CollectionFormat.Csv)]`
 
 ### Accpet ContentType
 这个用于控制客户端希望服务器返回什么样的内容格式，比如json或xml，默认的配置值是`Accept: application/json; q=0.01, application/xml; q=0.01`
@@ -257,8 +289,39 @@ appsettings.json的文件配置
 如果想禁用其中一种，比如禁用xml，可以在Interface或Method上声明`[XmlReturn(Enable = false)]`，请求变为`Accept: application/json; q=0.01`
 
 
+### 请求和响应日志
+在整个Interface或某个Method上声明`[LoggingFilter]`，即可把请求和响应的内容输出到LoggingFactory中。如果要排除某个Method不打印日志，在该Method上声明`[LoggingFilter(Enable = false)]`，即可将本Method排除。
+
+**默认日志**
+
+```
+[LoggingFilter]   
+public interface IUserApi : IHttpApi
+{
+    [HttpGet("api/users/{account}")]
+    ITask<HttpResponseMessage> GetAsync([Required]string account);  
+
+    // 禁用日志
+    [LoggingFilter(Enable =false)]
+    [HttpPost("api/users/body")]
+    Task<User> PostByJsonAsync([Required, JsonContent]User user, CancellationToken token = default);
+}
+```
+
+**自定义日志输出目标**
+```
+class MyLogging : LoggingFilterAttribute
+{
+    protected override Task WriteLogAsync(ApiResponseContext context, LogMessage logMessage)
+    {
+        xxlogger.Log(logMessage.ToIndentedString(spaceCount: 4));
+        return Task.CompletedTask;
+    }
+}
+```
+
 ### 请求条件重试
-使用`ITask<>`异步声明，就有Retry的扩展，Retry的条件可以为捕获到某种`Exception`或响应模型符合某种条件。
+使用ITask<>异步声明，就有Retry的扩展，Retry的条件可以为捕获到某种Exception或响应模型符合某种条件。
 
 ```
 var result = await youApi.GetModelAsync(id: "id001")
@@ -268,8 +331,17 @@ var result = await youApi.GetModelAsync(id: "id001")
 ```
 
 ### 响应内容缓存
-`ApiCacheAttribute`与`CacheAttribute`做为缓存应用的配置，配置了这个特性的Method将本次的响应内容缓存起来，下一次如果符合预期条件的话，就不会再请求到远程服务器，而是从`IResponseCacheProvider`获取缓存内容。你可以重写`CacheAttribute`或实现自定义`ResponseCacheProvider`来到达你自定义的要求。
+CacheAttribute做为缓存应用的配置，配置了这个特性的Method将本次的响应内容缓存起来，下一次如果符合预期条件的话，就不会再请求到远程服务器，而是从IResponseCacheProvider获取缓存内容，你也可以自己实现ResponseCacheProvider。
 
+**声明缓存特性**
+```
+// 缓存一分钟
+[Cache(60 * 1000)]
+[HttpGet("api/users/{account}")]
+ITask<HttpResponseMessage> GetAsync([Required]string account);
+```
+
+**自定义缓存提供者**
 ```
 public class RedisResponseCacheProvider : IResponseCacheProvider
 {
@@ -291,49 +363,8 @@ var services = new ServiceCollection();
 services.AddSingleton<IResponseCacheProvider, RedisResponseCacheProvider>();
 ```
 
-### 表单集合处理
-按照OpenApi，一个集合在Query或表单中支持有5种表述方式，分别是：
-* Csv // 逗号分隔
-* Ssv // 空格分隔
-* Tsv // 反斜杠分隔
-* Pipes // 竖线分隔
-* Multi // 多个同名键的键值对
-
-对于 id = new string []{"001","002"} 这样的值，处理后分别是
-* id=001,002
-* id=001 002
-* id=001\002
-* id=001|002
-* id=001&id=002
-
-默认的，`PathQuryAttribute`与`FormContentAttribute`使用了Multi处理方式，可以设置其CollectionFormat属性为其它值，比如：`[FormContent(CollectionFormat = CollectionFormat.Csv)]`
-
-### Http代理
-Http代理属于HttpMessageHandler层，所以应该在`Microsoft.Extensions.Http`的HttpClientBuilder里配置。
-
-```
-services
-    .AddHttpApi<IMyApi>(o =>
-    {
-        o.HttpHost = new Uri("http://localhost:6000/");
-    })
-    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-    {
-        UseProxy = true,
-        Proxy = new WebProxy
-        {
-            Address = new Uri("http://proxy.com"),
-            Credentials = new NetworkCredential
-            {
-                UserName = "useranme",
-                Password = "pasword"
-            }
-        }
-    });
-```
-
 ### 非模型请求
-有时候我们未必需要强模型，假设我们有原始的form文本内容，或原始的json文本内容，或者是System.Net.Http.HttpContent对象，只需要把这些原始内请求到远程远程器。
+有时候我们未必需要强模型，假设我们已经有原始的form文本内容，或原始的json文本内容，甚至是System.Net.Http.HttpContent对象，只需要把这些原始内请求到远程远程器。
 
 #### 1 原始文本
 ```
@@ -366,7 +397,7 @@ Task PostAsync([RawFormContent] string form);
 ### 自定义无特性的参数类型
 在某些极限情况下，我们输入模型与传输模型未必是对等的。比如人脸比对的接口，其要求如下的json请求格式：
 
-> 传输模型
+**传输模型**
 ```
 {
     "image1" : "图片1的base64",
@@ -374,7 +405,7 @@ Task PostAsync([RawFormContent] string form);
 }
 ```
 
-而我们的最方便的业务模型是这样子：
+而我们期望的业务模型是这样子：
 ```
 class FaceModel
 {
@@ -424,9 +455,11 @@ public interface IFaceApi
 ```
 
 ### 自定义请求内容与响应内容解析
-除了小常见的xml或json响应内容要反序列化为强类型结果模型，你可能会遇到其它的二进制协议响应内容，比如`google ProtoBuf`二进制内容。
+除了小常见的xml或json响应内容要反序列化为强类型结果模型，你可能会遇到其它的二进制协议响应内容，比如google的ProtoBuf二进制内容。
 
-#### 1 自定义请求内容处理特性
+#### 1 编写相关自定义特性
+
+**自定义请求内容处理特性**
 ```
 public class ProtobufContentAttribute : HttpContentAttribute
 {
@@ -448,7 +481,8 @@ public class ProtobufContentAttribute : HttpContentAttribute
     }
 }
 ```
-#### 2 自定义响应内容解析特性
+**自定义响应内容解析特性**
+
 ```
 public class ProtobufReturnAttribute : ApiReturnAttribute
 {
@@ -468,7 +502,7 @@ public class ProtobufReturnAttribute : ApiReturnAttribute
 }
 ```
 
-#### 3 为你的接口应用这些特性
+#### 2 应用相关自定义特性
 ```
 [ProtobufReturn]
 public interface IProtobufApi
@@ -481,7 +515,7 @@ public interface IProtobufApi
 ### 适配畸形接口
 在实际环境中，有些平台未能提供标准的接口，主要早期还没有restful概念时期的接口，产生各种畸形的接口，我们要区别对待。
 
-#### 1 参数别名`[Alias]`
+#### 1 参数别名
 例如服务器要求一个Query参数的名字为`field-Name`，这个是c#关键字或变量命名不允许的，我们可以使用`[AliasAsAttribute]`来达到这个要求：
 
 ```
@@ -491,7 +525,7 @@ ITask<HttpResponseMessage> GetAsync([Required]string account, [AliasAs("field-Na
 
 然后最终请求uri变为api/users/`account1`?field-name=`fileName1`
 
-#### 2 Form的某个字段为json描述的实体
+#### 2 Form的某个字段为json文本
 
 字段 | 值
 ---|---
@@ -533,7 +567,7 @@ class Field2Data
 #### 3 响应未指明ContentType
 明明响应的内容肉眼看上是json内容，但服务响应头里没有ContentType告诉客户端这内容是json，这好比客户端使用Form或json提交时就不在请求头告诉服务器内容格式是什么，而是让服务器猜测一样的道理。
 
-解决办法是在Interface或Method声明`[JsonReturn]`特性，并设置其`EnsureMatchAcceptContentType`属性为false，表示ContentType不是期望值匹配也要处理。
+解决办法是在Interface或Method声明`[JsonReturn]`特性，并设置其EnsureMatchAcceptContentType属性为false，表示ContentType不是期望值匹配也要处理。
 
 ```
 [JsonReturn(EnsureMatchAcceptContentType = false)] 
@@ -565,8 +599,32 @@ public interface ISignedApi
 ```
 
 
+### Http代理
+Http代理属于HttpMessageHandler层，所以应该在`Microsoft.Extensions.Http`的HttpClientBuilder里配置。
+
+```
+services
+    .AddHttpApi<IMyApi>(o =>
+    {
+        o.HttpHost = new Uri("http://localhost:6000/");
+    })
+    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+    {
+        UseProxy = true,
+        Proxy = new WebProxy
+        {
+            Address = new Uri("http://proxy.com"),
+            Credentials = new NetworkCredential
+            {
+                UserName = "useranme",
+                Password = "pasword"
+            }
+        }
+    });
+```
+
 ### OAuths&Token
-使用`WebApiClientCore.Extensions.OAuths`扩展，轻松支持token的获取、刷新与应用
+使用WebApiClientCore.Extensions.OAuths扩展，轻松支持token的获取、刷新与应用
 
 ### 1 注册相应类型的TokenProvider
 
@@ -627,11 +685,11 @@ public interface IMyApi
 ```
 
 ### 生态融合
-`Microsoft.Extensions.Http`支持收入各种第三方的`HttpMessageHandler`来build出一种安全的`HttpClient`，同时支持将此`HttpClient`实例包装为强类型服务的目标服务类型注册功能。
+Microsoft.Extensions.Http支持收入各种第三方的HttpMessageHandler来build出一种安全的HttpClient，同时支持将此HttpClient实例包装为强类型服务的目标服务类型注册功能。
 
 ### 1 Polly
-`Microsoft.Extensions.Http.Polly`项目依托于Polly，将Polly策略实现到`System.Net.Http.DelegatingHandler`，其handler可以为`HttpClient`提供重试、降级和断路等功能。
+Microsoft.Extensions.Http.Polly项目依托于Polly，将Polly策略实现到System.Net.Http.DelegatingHandler，其handler可以为HttpClient提供重试、降级和断路等功能。
 
 ### 2 WebApiClientCore
-`WebApiClientCore`可以将`Microsoft.Extensions.Http`创建出来的`HttpClient`实例包装为声明式接口的代理实例，使开发者从面向命令式的编程模式直达声明式的AOP编程。
+WebApiClientCore可以将Microsoft.Extensions.Http创建出来的HttpClient实例包装为声明式接口的代理实例，使开发者从面向命令式的编程模式直达声明式的AOP编程。
 
