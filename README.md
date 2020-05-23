@@ -1,28 +1,12 @@
 ## WebApiClientCore 　　　　　　　　　　　　　　　　　　　
-[WebApiClient.JIT](https://github.com/dotnetcore/WebApiClient/tree/WebApiClient.JITAOT)的`.netcore`版本，基于`HttpClient`的高性能与高可扩展性于一体的声明式http客户端库，特别适用于微服务的restful资源请求，也适用于各种非标准的http接口请求。
+[WebApiClient.JIT](https://github.com/dotnetcore/WebApiClient/tree/WebApiClient.JITAOT)的`.netcore`版本，基于`HttpClient`集高性能高可扩展性于一体的声明式http客户端库，特别适用于微服务的restful资源请求，也适用于各种非标准的http接口请求。
 
 ### PackageReference
 
     <PackageReference Include="WebApiClientCore" Version="1.0.0-beta1" />
-
  
-### 项目原因
- 
-1. `WebApiClient`很优秀，它将不同框架不同平台都实现了统一的api
-2. `WebApiClient`不够优秀，它在`.netcore`下完全可以更好，但它不得不兼容`.net45`开始所有框架而有所牺牲
-
-
-### 相对变化
-* 使用`System.Text.Json`替换`Json.net`，提升序列化性能
-* 移除`HttpApiFactory`和`HttApiConfig`功能，使用`Microsoft.Extensions.Http`的`HttpClientFactory`
-* 移除AOT功能，仅保留依赖于Emit的运行时代理
-* 高效的`ActionInvoker`，对返回`Task<>`和`ITask<>`作不同处理
-* 所有特性都都变成中间件，基于管道编排各个特性并生成Action执行委托
-* 良好设计的`HttpContext`、`ApiRequestContext`、`ApiParameterContext`和`ApiResponseContext`
 
 ### Benchmark
-> WebApiClientCore、WebApiClient.JIT与原生HttpClient的性能比较，相比原生的HttpClient，WebApiClientCore几乎没有性能损耗。
-
 BenchmarkDotNet=v0.12.1, OS=Windows 10.0.18362.778 (1903/May2019Update/19H1)
 Intel Core i3-4150 CPU 3.50GHz (Haswell), 1 CPU, 4 logical and 2 physical cores
 .NET Core SDK=3.1.202
@@ -52,8 +36,8 @@ Intel Core i3-4150 CPU 3.50GHz (Haswell), 1 CPU, 4 logical and 2 physical cores
 * 内置常用的`FormDataFile`等参数类型，同时支持自定义`IApiParameter`参数类型作为参数值
 * 支持用户自定义`IApiActionAttribute`、`IApiParameterAttribue`、`IApiReturnAttribute`和`IApiFilterAttribute`
 
-#### 1 `petstore.swagger.io`接口例子
-这个OpenApi文档是在[petstore.swagger.io](https://petstore.swagger.io/)上声明的，以下代码为使用`WebApiClientCore.Extensions.OpenApi`工具将其OpenApi文档反向生成得到
+#### 1 Petstore接口例子
+这个OpenApi文档在[petstore.swagger.io](https://petstore.swagger.io/)，代码为使用`WebApiClientCore.Extensions.OpenApi`工具将其OpenApi文档反向生成得到
 
 ```
 namespace Petstore
@@ -307,6 +291,32 @@ var services = new ServiceCollection();
 services.AddSingleton<IResponseCacheProvider, RedisResponseCacheProvider>();
 ```
 
+
+
+### Http代理
+Http代理属于HttpMessageHandler层，所以应该在`Microsoft.Extensions.Http`的HttpClientBuilder里配置
+
+```
+services
+    .AddHttpApi<IMyApi>(o =>
+    {
+        o.HttpHost = new Uri("http://localhost:6000/");
+    })
+    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+    {
+        UseProxy = true,
+        Proxy = new WebProxy
+        {
+            Address = new Uri("http://proxy.com"),
+            Credentials = new NetworkCredential
+            {
+                UserName = "useranme",
+                Password = "pasword"
+            }
+        }
+    });
+```
+
 ### 适应非标准接口
 在实际环境中，有些平台未能提供标准的接口，主要早期还没有restful概念时期的接口，形形色色的各种，我们要区别对待。
 
@@ -401,7 +411,7 @@ public interface ISignedApi
 
 ```
 // 为接口注册与配置token提者选项
-services.AddClientCredentialsTokenProvider<IpetApi>(o =>
+services.AddClientCredentialsTokenProvider<IMyApi>(o =>
 {
     o.Endpoint = new Uri("http://localhost:6000/api/tokens");
     o.Credentials.Client_id = "clientId";
@@ -416,7 +426,7 @@ services.AddClientCredentialsTokenProvider<IpetApi>(o =>
 /// 用户操作接口
 /// </summary>
 [ClientCredentialsToken]
-public interface IpetApi
+public interface IMyApi
 {
     ...
 }
@@ -449,13 +459,11 @@ class MyTokenAttribute : ClientCredentialsTokenAttribute
 /// 用户操作接口
 /// </summary>
 [MyToken]
-public interface IpetApi
+public interface IMyApi
 {
     ...
 }
 ```
-
-
 
 ### 生态融合
 `Microsoft.Extensions.Http`支持收入各种第三方的`HttpMessageHandler`来build出一种安全的`HttpClient`，同时支持将此`HttpClient`实例包装为强类型服务的目标服务类型注册功能。
