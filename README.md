@@ -189,7 +189,7 @@ namespace WebApiClientCore.Extensions.OAuths
 ### 编译时语法分析
 `WebApiClientCore.Analyzers`项目为`WebApiClientCore`提供编码时语法分析与提示。
 
-比如`[Header]`特性，可以声明在Interface、Method和Parameter三个地方，但是必须使用正确的构造器，否则运行时会抛出异常。有了语法分析功能，在声明接口时就不会使用不当的语法。如果想让语法分析声明，你的接口必须继承空方法的`IHttpApi`接口。
+比如`[Header]`特性，可以声明在Interface、Method和Parameter三个地方，但是必须使用正确的构造器，否则运行时会抛出异常。有了语法分析功能，在声明接口时就不会使用不当的语法。如果想让语法分析生效，你的接口必须继承空方法的`IHttpApi`接口。
 
 ```
 /// <summary>
@@ -232,6 +232,34 @@ public class MyService
 }
 ```
 
+### `HttpApiOptions<THttpApi>`选项
+每个接口的选项对应为`HttpApiOptions<THttpApi>`，除了Action配置，我们也可以使用Configuration配置结合一起使用，这部分内容为`Microsoft.Extensions.Options`范畴。
+
+服务配置
+```
+services
+    .ConfigureHttpApi<IpetApi>(Configuration.GetSection(nameof(IUserApi)))
+    .ConfigureHttpApi<IpetApi>(o =>
+    {
+        o.JsonSerializeOptions.Converters.Add(new MyJsonConverter());
+    });
+```
+
+appsettings.json的文件配置
+```
+{
+  "IpetApi": {
+    "HttpHost": "http://www.webappiclient.com/",
+    "UseParameterPropertyValidate": false,
+    "UseReturnValuePropertyValidate": false,
+    "JsonSerializeOptions": {
+      "IgnoreNullValues": true,
+      "WriteIndented": false
+    }
+  }
+}
+```
+
 ### 请求和响应日志
 在整个Interface或某个Method上声明`[LoggingFilter]`，即可把请求和响应的内容输出到`LoggingFactory`中。
 
@@ -255,6 +283,115 @@ var result = await youApi.GetModelAsync(id: "id001")
     .WhenResult(r => r.ErrorCode > 0);
 ```
 
+### 响应内容缓存
+`ApiCacheAttribute`与`CacheAttribute`做为缓存应用的配置，配置了这个特性的Method将本次的响应内容缓存起来，下一次如果符合预期条件的话，就不会再请求到远程服务器，而是从`IResponseCacheProvider`获取缓存内容。你可以重写`CacheAttribute`或实现自定义`ResponseCacheProvider`来到达你自定义的要求。
+
+```
+public class RedisResponseCacheProvider : IResponseCacheProvider
+{
+    public string Name => nameof(RedisResponseCacheProvider);
+
+    public Task<ResponseCacheResult> GetAsync(string key)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task SetAsync(string key, ResponseCacheEntry entry, TimeSpan expiration)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+// 注册RedisResponseCacheProvider
+var services = new ServiceCollection();
+services.AddSingleton<IResponseCacheProvider, RedisResponseCacheProvider>();
+```
+
+### 适应非标准接口
+在实际环境中，有些平台未能提供标准的接口，主要早期还没有restful概念时期的接口，形形色色的各种，我们要区别对待。
+
+#### 1 参数别名`[Alias]`
+例如服务器要求一个Query参数的名字为`field-Name`，这个是c#关键字或变量命名不允许的，我们可以使用`[AliasAsAttribute]`来达到这个要求：
+
+```
+[HttpGet("api/users/{account}")]
+ITask<HttpResponseMessage> GetAsync([Required]string account, [AliasAs("field-Name")] string fieldName);
+```
+
+然后最终请求uri变为api/users/`account1`?field-name=`fileName1`
+
+#### 2 Form的某个字段为json描述的实体
+
+字段 | 值
+---|---
+field1 | abc
+field2 | {"name":"jName","data":{"data1":"jData1"}}
+
+对应强类型模型是
+```
+class Model
+{
+    public string Filed1 {get; set;}
+    public string Field2 {get; set;}
+}
+
+```
+我们在构建这个Model的实例时，不得不使用json序列化将field2的实例得到json文本，然后赋值给field2这个string属性，工作量大而且没有约束性。
+
+依托于`JsonString<>`这个类型，现在只要我们把Field2结构声明为强类型模型，然后包装为`JsonString<>`类型即可。
+
+```
+class Model
+{
+    public string Filed1 {get; set;}
+    public JsonString<Field2Info> Field2 {get; set;}
+}
+
+class Field2Info
+{
+    public string Name {get; set;}
+    public Field2Data data {get; set;}
+}
+
+class Field2Data
+{
+    public string data1 {get; set;}
+}
+```
+
+#### 3 响应没有指明ContentType
+明明响应的内容是肉眼看上是json内容，但服务响应头里没有ContentType告诉客户端这内容是json，这好比客户端使用Form或json提交时就不在请求头告诉服务器内容格式是什么，而是让服务器猜测一样的道理。
+
+解决办法是在Interface或Method声明`[JsonReturn]`特性，并设置其`EnsureMatchAcceptContentType`属性为false，表示ContentType不是期望值匹配也要处理。
+
+```
+[JsonReturn(EnsureMatchAcceptContentType = false)] 
+public interface IJsonResponseApi : IHttpApi
+{
+}
+```
+#### 4 形形色色的各种签名
+例如每个请求的url额外的动态添加一个叫sign的参数，这个sign可能和请求参数值有关联，每次都需要计算。
+
+我们可以自定义ApiFilterAttribute来实现自己的sign功能，然后把自定义Filter声明到Interface或Method即可
+
+```
+class SignFilterAttribute : ApiFilterAttribute
+{
+    public override Task OnRequestAsync(ApiRequestContext context)
+    {
+        var sign = DateTime.Now.Ticks.ToString();
+        context.HttpContext.RequestMessage.AddUrlQuery("sign", sign);
+        return Task.CompletedTask;
+    }
+}
+
+[SignFilter]
+public interface ISignedApi 
+{
+    ...
+}
+```
 
 
 ### OAuths&Token
@@ -317,6 +454,7 @@ public interface IpetApi
     ...
 }
 ```
+
 
 
 ### 生态融合
