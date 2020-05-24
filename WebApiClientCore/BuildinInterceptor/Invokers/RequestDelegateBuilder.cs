@@ -21,7 +21,7 @@ namespace WebApiClientCore
             return async request =>
             {
                 await requestHandler(request).ConfigureAwait(false);
-                var response = await SendHttpRequestAsync(request).ConfigureAwait(false);
+                var response = await HttpRequest.SendAsync(request).ConfigureAwait(false);
                 await responseHandler(response).ConfigureAwait(false);
                 return response;
             };
@@ -43,7 +43,7 @@ namespace WebApiClientCore
                 foreach (var parameter in context.ApiAction.Parameters)
                 {
                     var parameterValue = context.Arguments[parameter.Index];
-                    ApiValidator.ValidateParameter(parameter, parameterValue, validateProperty);
+                    DataValidator.ValidateParameter(parameter, parameterValue, validateProperty);
                 }
                 return next(context);
             });
@@ -156,7 +156,7 @@ namespace WebApiClientCore
 
                 try
                 {
-                    ApiValidator.ValidateReturnValue(context.Result);
+                    DataValidator.ValidateReturnValue(context.Result);
                 }
                 catch (Exception ex)
                 {
@@ -179,39 +179,6 @@ namespace WebApiClientCore
             }
 
             return builder.Build();
-        }
-
-
-        /// <summary>
-        /// 发送http请求
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        private static async Task<ApiResponseContext> SendHttpRequestAsync(ApiRequestContext context)
-        {
-            try
-            {
-                var apiCache = new ApiCache(context);
-                var cacheValue = await apiCache.GetAsync().ConfigureAwait(false);
-
-                if (cacheValue != null && cacheValue.Value != null)
-                {
-                    context.HttpContext.ResponseMessage = cacheValue.Value;
-                }
-                else
-                {
-                    using var linker = new CancellationTokenLinker(context.CancellationTokens);
-                    var response = await context.HttpContext.Client.SendAsync(context.HttpContext.RequestMessage, linker.Token).ConfigureAwait(false);
-
-                    context.HttpContext.ResponseMessage = response;
-                    await apiCache.SetAsync(cacheValue?.Key, response).ConfigureAwait(false);
-                }
-                return new ApiResponseContext(context);
-            }
-            catch (Exception ex)
-            {
-                return new ApiResponseContext(context) { Exception = ex };
-            }
         }
     }
 }

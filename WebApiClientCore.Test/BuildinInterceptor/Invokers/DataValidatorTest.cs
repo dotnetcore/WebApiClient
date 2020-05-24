@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Xunit;
 
-namespace WebApiClientCore.Test.BuildinUtils
+namespace WebApiClientCore.Test.BuildinInterceptor.Invokers
 {
-    public class ApiValidatorTest
+    public class DataValidatorTest
     {
         class User
         {
@@ -16,32 +16,32 @@ namespace WebApiClientCore.Test.BuildinUtils
         public void ValidateParameterTest()
         {
             var parameter = TestParameter.Create();
-            Assert.Throws<ValidationException>(() => ApiValidator.ValidateParameter(parameter,null, true));
+            Assert.Throws<ValidationException>(() => DataValidator.ValidateParameter(parameter,null, true));
 
             parameter = TestParameter.Create();
-            Assert.Throws<ValidationException>(() => ApiValidator.ValidateParameter(parameter, new User { }, true));
+            Assert.Throws<ValidationException>(() => DataValidator.ValidateParameter(parameter, new User { }, true));
 
             parameter = TestParameter.Create();
-            ApiValidator.ValidateParameter(parameter, new User { Account = "123" }, true);
+            DataValidator.ValidateParameter(parameter, new User { Account = "123" }, true);
 
             parameter = TestParameter.Create();
-            Assert.Throws<ValidationException>(() => ApiValidator.ValidateParameter(parameter, new User { Account = "123456" }, true));
+            Assert.Throws<ValidationException>(() => DataValidator.ValidateParameter(parameter, new User { Account = "123456" }, true));
         }
 
         [Fact]
         public void ValidateReturnValueTest()
         {
             var value = default(User);
-            ApiValidator.ValidateReturnValue(value);
+            DataValidator.ValidateReturnValue(value);
 
             value = new User();
-            Assert.Throws<ValidationException>(() => ApiValidator.ValidateReturnValue(value));
+            Assert.Throws<ValidationException>(() => DataValidator.ValidateReturnValue(value));
 
             value = new User { Account = "123" };
-            ApiValidator.ValidateReturnValue(value);
+            DataValidator.ValidateReturnValue(value);
 
             value = new User { Account = "123456" };
-            Assert.Throws<ValidationException>(() => ApiValidator.ValidateReturnValue(value));
+            Assert.Throws<ValidationException>(() => DataValidator.ValidateReturnValue(value));
         }
 
         class TestParameter
