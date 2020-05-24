@@ -507,7 +507,7 @@ public class ProtobufReturnAttribute : ApiReturnAttribute
 
     public override async Task SetResultAsync(ApiResponseContext context)
     {
-        if (context.ApiAction.Return.DataType.IsModelType)
+        if (context.ApiAction.Return.DataType.IsRawType == false)
         {
             var stream = await context.HttpContext.ResponseMessage.Content.ReadAsStreamAsync();
             context.Result = Serializer.NonGeneric.Deserialize(context.ApiAction.Return.DataType.Type, stream);

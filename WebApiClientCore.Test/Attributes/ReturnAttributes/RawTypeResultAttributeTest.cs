@@ -18,7 +18,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
             context.HttpContext.RequestMessage.Method = HttpMethod.Post;
             context.HttpContext.ResponseMessage.Content = new StringContent("laojiu", Encoding.UTF8);
 
-            var attr = new RawTypeReturnAttribute();
+            var attr = new RawReturnAttribute();
             await attr.OnResponseAsync(responseContext);
             Assert.True(responseContext.Result is HttpResponseMessage);
         }
@@ -33,7 +33,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
             context.HttpContext.RequestMessage.Method = HttpMethod.Post;
             context.HttpContext.ResponseMessage.Content = new StringContent("laojiu", Encoding.UTF8);
 
-            var attr = new RawTypeReturnAttribute();
+            var attr = new RawReturnAttribute();
             await attr.OnResponseAsync(responseContext);
 
             Assert.True(responseContext.Result?.ToString() == "laojiu");
@@ -49,7 +49,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
             context.HttpContext.RequestMessage.Method = HttpMethod.Post;
             context.HttpContext.ResponseMessage.Content = new StringContent("laojiu", Encoding.UTF8);
 
-            var attr = new RawTypeReturnAttribute();
+            var attr = new RawReturnAttribute();
             await attr.OnResponseAsync(responseContext);
 
             var text = Encoding.UTF8.GetString((byte[])responseContext.Result);

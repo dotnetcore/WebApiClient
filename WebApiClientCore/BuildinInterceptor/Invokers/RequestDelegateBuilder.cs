@@ -76,27 +76,21 @@ namespace WebApiClientCore
             // Return特性请求前执行
             foreach (var @return in apiAction.Return.Attributes)
             {
-                if (@return.Enable == true)
+                builder.Use(next => async context =>
                 {
-                    builder.Use(next => async context =>
-                    {
-                        await @return.OnRequestAsync(context).ConfigureAwait(false);
-                        await next(context).ConfigureAwait(false);
-                    });
-                }
+                    await @return.OnRequestAsync(context).ConfigureAwait(false);
+                    await next(context).ConfigureAwait(false);
+                });
             }
 
             // Filter请求前执行            
             foreach (var filter in apiAction.FilterAttributes)
             {
-                if (filter.Enable == true)
+                builder.Use(next => async context =>
                 {
-                    builder.Use(next => async context =>
-                    {
-                        await filter.OnRequestAsync(context).ConfigureAwait(false);
-                        await next(context).ConfigureAwait(false);
-                    });
-                }
+                    await filter.OnRequestAsync(context).ConfigureAwait(false);
+                    await next(context).ConfigureAwait(false);
+                });
             }
 
             return builder.Build();
@@ -114,11 +108,6 @@ namespace WebApiClientCore
             // Return特性请求后执行
             foreach (var @return in apiAction.Return.Attributes)
             {
-                if (@return.Enable == false)
-                {
-                    continue;
-                }
-
                 builder.Use(next => async context =>
                 {
                     if (context.ResultStatus == ResultStatus.None)
@@ -139,7 +128,7 @@ namespace WebApiClientCore
             // 验证Result是否ok
             builder.Use(next => context =>
             {
-                if (context.ApiAction.Return.DataType.IsModelType == false)
+                if (context.ApiAction.Return.DataType.IsRawType == true)
                 {
                     return next(context);
                 }
@@ -168,14 +157,11 @@ namespace WebApiClientCore
             // Filter请求后执行
             foreach (var filter in apiAction.FilterAttributes)
             {
-                if (filter.Enable == true)
+                builder.Use(next => async context =>
                 {
-                    builder.Use(next => async context =>
-                    {
-                        await filter.OnResponseAsync(context).ConfigureAwait(false);
-                        await next(context).ConfigureAwait(false);
-                    });
-                }
+                    await filter.OnResponseAsync(context).ConfigureAwait(false);
+                    await next(context).ConfigureAwait(false);
+                });
             }
 
             return builder.Build();

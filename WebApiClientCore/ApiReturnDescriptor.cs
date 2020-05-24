@@ -47,21 +47,44 @@ namespace WebApiClientCore
                 throw new ArgumentNullException(nameof(method));
             }
 
-            var dataType = method.ReturnType.IsGenericType ?
+            var type = method.ReturnType.IsGenericType ?
                 method.ReturnType.GetGenericArguments().FirstOrDefault() :
                 typeof(HttpResponseMessage);
 
+            var dataType = new ApiDataTypeDescriptor(type);
+
             this.ReturnType = method.ReturnType;
-            this.DataType = new ApiDataTypeDescriptor(dataType);
+            this.DataType = dataType;
             this.IsTaskDefinition = method.ReturnType.IsInheritFrom<Task>();
             this.Attributes = method
                 .FindDeclaringAttributes<IApiReturnAttribute>(true)
-                .Append(new JsonReturnAttribute(0.01d))
-                .Append(new XmlReturnAttribute(0.01d))
-                .Append(new RawTypeReturnAttribute())
+                .Concat(GetDefaultAttributes(dataType))
                 .Distinct(new MultiplableComparer<IApiReturnAttribute>())
                 .OrderBy(item => item.OrderIndex)
+                .Where(item => item.Enable)
                 .ToReadOnlyList();
+        }
+
+        /// <summary>
+        /// 获取默认特性
+        /// </summary>
+        /// <param name="dataType"></param>
+        /// <returns></returns>
+        private static IEnumerable<IApiReturnAttribute> GetDefaultAttributes(ApiDataTypeDescriptor dataType)
+        {
+            const double acceptQuality = 0.01d;
+            if (dataType.IsRawType == true)
+            {
+                yield return new RawReturnAttribute(acceptQuality);
+                yield return new JsonReturnAttribute(acceptQuality);
+                yield return new XmlReturnAttribute(acceptQuality);
+            }
+            else
+            {
+                yield return new JsonReturnAttribute(acceptQuality);
+                yield return new XmlReturnAttribute(acceptQuality);
+                yield return new RawReturnAttribute(acceptQuality);
+            }
         }
     }
 }

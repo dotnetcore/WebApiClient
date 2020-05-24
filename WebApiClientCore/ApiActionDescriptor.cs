@@ -89,6 +89,7 @@ namespace WebApiClientCore
                 .FindDeclaringAttributes<IApiFilterAttribute>(true)
                 .Distinct(new MultiplableComparer<IApiFilterAttribute>())
                 .OrderBy(item => item.OrderIndex)
+                .Where(item => item.Enable)
                 .ToReadOnlyList();
 
             this.Id = Guid.NewGuid().ToString();

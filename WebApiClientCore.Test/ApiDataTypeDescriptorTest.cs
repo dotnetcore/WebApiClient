@@ -20,12 +20,12 @@ namespace WebApiClientCore.Test
             var m5 = Create("Get5");
             var m6 = Create("Get6");
 
-            Assert.True(m1.IsString);
-            Assert.True(m2.IsHttpResponseMessage);
-            Assert.True(m3.IsStream);
-            Assert.True(m4.IsHttpResponseMessage);
-            Assert.True(m6.IsByteArray);
-            Assert.True(m5.IsModelType);
+            Assert.True(m1.IsRawString);
+            Assert.True(m2.IsRawHttpResponseMessage);
+            Assert.True(m3.IsRawStream);
+            Assert.True(m4.IsRawHttpResponseMessage);
+            Assert.True(m6.IsRawByteArray);
+            Assert.False(m5.IsRawType);
         }
     }
 }

@@ -17,29 +17,29 @@ namespace WebApiClientCore
         public Type Type { get; protected set; }
 
         /// <summary>
-        /// 获取是否为String类型
+        /// 获取是否为原始类型的String
         /// </summary>
-        public bool IsString { get; protected set; }
+        public bool IsRawString { get; protected set; }
 
         /// <summary>
-        /// 获取是否为Stream类型
+        /// 获取是否为原始类型的Stream
         /// </summary>
-        public bool IsStream { get; protected set; }
+        public bool IsRawStream { get; protected set; }
 
         /// <summary>
-        /// 获取是否为byte[]类型
+        /// 获取是否为原始类型的byte[]
         /// </summary>
-        public bool IsByteArray { get; protected set; }
+        public bool IsRawByteArray { get; protected set; }
 
         /// <summary>
-        ///  获取是否为HttpResponseMessage类型
+        ///  获取是否为原始类型的HttpResponseMessage
         /// </summary>
-        public bool IsHttpResponseMessage { get; protected set; }
+        public bool IsRawHttpResponseMessage { get; protected set; }
 
         /// <summary>
-        /// 获取是否为强类型模型结果
+        /// 获取是否为原始类型中的一个
         /// </summary>
-        public bool IsModelType { get; protected set; }
+        public bool IsRawType { get; protected set; }
 
         /// <summary>
         /// 返回的Task(Of T)的T类型描述
@@ -50,11 +50,11 @@ namespace WebApiClientCore
         {
             this.Type = dataType ?? throw new ArgumentNullException(nameof(dataType));
 
-            this.IsString = dataType == typeof(string);
-            this.IsStream = dataType == typeof(Stream);
-            this.IsByteArray = dataType == typeof(byte[]);
-            this.IsHttpResponseMessage = dataType == typeof(HttpResponseMessage);
-            this.IsModelType = !(IsString || IsStream || IsByteArray || IsHttpResponseMessage);
+            this.IsRawString = dataType == typeof(string);
+            this.IsRawStream = dataType == typeof(Stream);
+            this.IsRawByteArray = dataType == typeof(byte[]);
+            this.IsRawHttpResponseMessage = dataType == typeof(HttpResponseMessage);
+            this.IsRawType = IsRawString || IsRawStream || IsRawByteArray || IsRawHttpResponseMessage;
         }
     }
 }
