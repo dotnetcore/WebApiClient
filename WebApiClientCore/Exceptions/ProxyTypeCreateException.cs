@@ -5,7 +5,7 @@ namespace WebApiClientCore.Exceptions
     /// <summary>
     /// 表示代理类创建异常
     /// </summary>
-    public class ProxyTypeCreateException : HttpApiException
+    public class ProxyTypeCreateException : Exception
     {
         /// <summary>
         /// 接口类型

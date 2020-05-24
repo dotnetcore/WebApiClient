@@ -207,7 +207,7 @@ namespace WebApiClientCore
                 var result = await this.invoker.Invoke().ConfigureAwait(false);
                 if (await predicate.Invoke(result).ConfigureAwait(false) == true)
                 {
-                    var inner = new ResultNotMatchException(Resx.unexpected_Result, result);
+                    var inner = new ApiResultNotMatchException(Resx.unexpected_Result, result);
                     throw new RetryMarkException(inner);
                 }
                 return result;

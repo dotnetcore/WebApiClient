@@ -94,7 +94,7 @@ namespace WebApiClientCore.Attributes
         /// 应用成功状态码
         /// </summary>
         /// <param name="context"></param>
-        /// <exception cref="HttpStatusFailureException"></exception>
+        /// <exception cref="ApiResponseStatusException"></exception>
         private void UseSuccessStatusCode(ApiResponseContext context)
         {
             var response = context.HttpContext.ResponseMessage;
@@ -105,7 +105,7 @@ namespace WebApiClientCore.Attributes
 
             if (this.IsSuccessStatusCode(response.StatusCode) == false)
             {
-                throw new HttpStatusFailureException(response);
+                throw new ApiResponseStatusException(response);
             }
         }
 

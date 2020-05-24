@@ -37,7 +37,7 @@ namespace WebApiClientCore
         /// 追加Query参数到请求路径
         /// </summary>
         /// <param name="keyValue">参数</param>
-        /// <exception cref="ApiInvalidOperationException"></exception>
+        /// <exception cref="ApiInvalidConfigException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(IEnumerable<KeyValue> keyValue)
         {
@@ -49,7 +49,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="keyValue">参数</param>
         /// <param name="encoding">编码</param>
-        /// <exception cref="ApiInvalidOperationException"></exception>
+        /// <exception cref="ApiInvalidConfigException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(IEnumerable<KeyValue> keyValue, Encoding encoding)
         {
@@ -63,7 +63,7 @@ namespace WebApiClientCore
         /// 追加Query参数到请求路径
         /// </summary>
         /// <param name="keyValue">参数</param>
-        /// <exception cref="ApiInvalidOperationException"></exception>
+        /// <exception cref="ApiInvalidConfigException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(KeyValue keyValue)
         {
@@ -75,7 +75,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="keyValue">参数</param>
         /// <param name="encoding">编码</param>
-        /// <exception cref="ApiInvalidOperationException"></exception>
+        /// <exception cref="ApiInvalidConfigException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(KeyValue keyValue, Encoding encoding)
         {
@@ -88,7 +88,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="key">参数名</param>
         /// <param name="value">参数值</param>
-        /// <exception cref="ApiInvalidOperationException"></exception>
+        /// <exception cref="ApiInvalidConfigException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(string key, string? value)
         {
@@ -101,13 +101,13 @@ namespace WebApiClientCore
         /// <param name="key">参数名</param>
         /// <param name="value">参数值</param>
         /// <param name="encoding">编码</param>
-        /// <exception cref="ApiInvalidOperationException"></exception>
+        /// <exception cref="ApiInvalidConfigException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(string key, string? value, Encoding encoding)
         {
             if (this.RequestUri == null)
             {
-                throw new ApiInvalidOperationException(Resx.required_RequestUri);
+                throw new ApiInvalidConfigException(Resx.required_RequestUri);
             }
 
             if (string.IsNullOrEmpty(key))

@@ -62,7 +62,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
             var attr = new JsonReturnAttribute() { EnsureSuccessStatusCode = true };
             await attr.OnResponseAsync(responseContext);
 
-            Assert.IsType<HttpStatusFailureException>(responseContext.Exception);
+            Assert.IsType<ApiResponseStatusException>(responseContext.Exception);
         }
 
         [Fact]

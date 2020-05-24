@@ -81,12 +81,13 @@ namespace WebApiClientCore
             {
                 return (TResult)response.Result;
             }
-            else if (response.ResultStatus == ResultStatus.HasException)
+
+            if (response.ResultStatus == ResultStatus.HasException)
             {
-                // 这里如果直接throw inner，会覆盖掉它的StackTrace
                 var inner = response.Exception;
                 throw new HttpRequestException(inner.Message, inner);
             }
+
             throw new ApiReturnNotSupportedExteption(response);
 #nullable enable
         }

@@ -17,31 +17,25 @@ namespace WebApiClientCore
         /// 发送http请求
         /// </summary>
         /// <param name="context"></param>
+        /// <exception cref="HttpRequestException"></exception>
         /// <returns></returns>
         public static async Task<ApiResponseContext> SendAsync(ApiRequestContext context)
         {
-            try
+            var actionCache = await GetCaheAsync(context).ConfigureAwait(false);
+            if (actionCache != null && actionCache.Value != null)
             {
-                var actionCache = await GetCaheAsync(context).ConfigureAwait(false);
-                if (actionCache != null && actionCache.Value != null)
-                {
-                    context.HttpContext.ResponseMessage = actionCache.Value;
-                }
-                else
-                {
-                    var client = context.HttpContext.Client;
-                    using var tokenLinker = new CancellationTokenLinker(context.CancellationTokens);
-                    var response = await client.SendAsync(context.HttpContext.RequestMessage, tokenLinker.Token).ConfigureAwait(false);
+                context.HttpContext.ResponseMessage = actionCache.Value;
+            }
+            else
+            {
+                var client = context.HttpContext.Client;
+                using var tokenLinker = new CancellationTokenLinker(context.CancellationTokens);
+                var response = await client.SendAsync(context.HttpContext.RequestMessage, tokenLinker.Token).ConfigureAwait(false);
 
-                    context.HttpContext.ResponseMessage = response;
-                    await SetCacheAsync(context, actionCache?.Key, response).ConfigureAwait(false);
-                }
-                return new ApiResponseContext(context);
+                context.HttpContext.ResponseMessage = response;
+                await SetCacheAsync(context, actionCache?.Key, response).ConfigureAwait(false);
             }
-            catch (Exception ex)
-            {
-                return new ApiResponseContext(context) { Exception = ex };
-            }
+            return new ApiResponseContext(context);
         }
 
         /// <summary>

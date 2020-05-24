@@ -55,7 +55,7 @@ namespace WebApiClientCore.Test.Attributes
 
             context.Arguments[0] = Guid.NewGuid();
 
-            await Assert.ThrowsAsync<ApiInvalidOperationException>(()
+            await Assert.ThrowsAsync<ApiInvalidConfigException>(()
                 => attr.OnRequestAsync(parameterContext));
 
             context.Arguments[0] = null;

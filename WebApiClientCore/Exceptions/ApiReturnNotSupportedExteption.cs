@@ -3,9 +3,9 @@
 namespace WebApiClientCore.Exceptions
 {
     /// <summary>
-    /// 表示不支持处理的响应消息异常
+    /// 表示接口不支持处理响应消息的异常
     /// </summary>
-    public class ApiReturnNotSupportedExteption : HttpApiException
+    public class ApiReturnNotSupportedExteption : ApiException
     {
         /// <summary>
         /// 获取请求上下文
@@ -25,7 +25,7 @@ namespace WebApiClientCore.Exceptions
         }
 
         /// <summary>
-        /// 不支持处理的响应消息异常
+        /// 接口不支持处理响应消息的异常
         /// </summary>
         /// <param name="context"></param> 
         /// <exception cref="ArgumentNullException"></exception>

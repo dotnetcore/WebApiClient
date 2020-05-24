@@ -5,7 +5,7 @@ namespace WebApiClientCore.Exceptions
     /// <summary>
     /// 表示IApiParameter类型序列化异常
     /// </summary>
-    public class ApiParameterSerializeException : HttpApiException
+    public class ApiParameterSerializeException : ApiException
     {
         /// <summary>
         /// ApiParameter的类型

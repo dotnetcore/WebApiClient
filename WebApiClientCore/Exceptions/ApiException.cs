@@ -3,33 +3,33 @@
 namespace WebApiClientCore.Exceptions
 {
     /// <summary>
-    /// 表示Http接口异常基础类
+    /// 表示接口异常基础抽象类
     /// </summary>
-    public class HttpApiException : Exception
+    public abstract class ApiException : Exception
     {
         /// <summary>
-        /// Http接口异常基础类
+        /// 接口异常基础类
         /// </summary>
-        public HttpApiException()
+        public ApiException()
             : base()
         {
         }
 
         /// <summary>
-        /// Http接口异常基础类
+        /// 接口异常基础类
         /// </summary>
         /// <param name="message">异常消息</param>
-        public HttpApiException(string? message)
+        public ApiException(string? message)
             : base(message)
         {
         }
 
         /// <summary>
-        /// Http接口异常基础类
+        /// 接口异常基础类
         /// </summary>
         /// <param name="message">异常消息</param>
         /// <param name="inner">内部异常</param>
-        public HttpApiException(string? message, Exception? inner)
+        public ApiException(string? message, Exception? inner)
             : base(message, inner)
         {
         }

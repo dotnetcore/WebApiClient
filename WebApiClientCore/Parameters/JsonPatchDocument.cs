@@ -77,7 +77,7 @@ namespace WebApiClientCore.Parameters
         {
             if (context.HttpContext.RequestMessage.Method != HttpMethod.Patch)
             {
-                throw new ApiInvalidOperationException(Resx.required_PatchMethod);
+                throw new ApiInvalidConfigException(Resx.required_PatchMethod);
             }
 
             var formatter = context.HttpContext.Services.GetRequiredService<IJsonFormatter>();
