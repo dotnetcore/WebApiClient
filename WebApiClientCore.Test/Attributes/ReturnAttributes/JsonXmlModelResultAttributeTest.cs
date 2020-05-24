@@ -59,10 +59,11 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
             context.HttpContext.RequestMessage.Method = HttpMethod.Post;
             context.HttpContext.ResponseMessage.StatusCode = System.Net.HttpStatusCode.InternalServerError;
 
-            var attr = new JsonReturnAttribute() { EnsureSuccessStatusCode = true };
-            await attr.OnResponseAsync(responseContext);
-
-            Assert.IsType<ApiResponseStatusException>(responseContext.Exception);
+            await Assert.ThrowsAsync<ApiResponseStatusException>(async () =>
+            {
+                var attr = new JsonReturnAttribute() { EnsureSuccessStatusCode = true };
+                await attr.OnResponseAsync(responseContext);
+            });
         }
 
         [Fact]

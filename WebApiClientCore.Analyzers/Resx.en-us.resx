@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="WA1001_message" xml:space="preserve">
-    <value>This constructor does not support attributes，Please use This constructor does not support attributes，Please use another constructor</value>
+    <value>This constructor does not support attributes，Please use another constructor</value>
   </data>
   <data name="WA1001_title" xml:space="preserve">
     <value>Mismatched property constructor</value>
