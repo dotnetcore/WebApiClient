@@ -219,11 +219,11 @@ public class MyService
 ### 接口选项与配置
 每个接口的选项对应为`HttpApiOptions<THttpApi>`，除了Action配置，我们也可以使用Configuration配置结合一起使用，这部分内容为Microsoft.Extensions.Options范畴。
 
-**Action配置**
+#### Action配置
 
 ```
 services
-    .ConfigureHttpApi<IpetApi>(Configuration.GetSection(nameof(IUserApi)))
+    .ConfigureHttpApi<IpetApi>(Configuration.GetSection(nameof(IpetApi)))
     .ConfigureHttpApi<IpetApi>(o =>
     {
         // 符合国情的不标准时间格式，有些接口就是这么要求必须不标准
@@ -231,7 +231,7 @@ services
     });
 ```
 
-**appsettings.json的文件配置**
+#### appsettings.json的文件配置
 
 ```
 {
@@ -250,13 +250,13 @@ services
 ### Uri拼接规则
 所有的Uri拼接都是通过Uri(Uri baseUri, Uri relativeUri)这个构造器生成。
 
-**带`/`结尾的baseUri**
+#### 带`/`结尾的baseUri
 
 * `http://a.com/` + `b/c/d` = `http://a.com/b/c/d`
 * `http://a.com/path1/` + `b/c/d` = `http://a.com/path1/b/c/d`
 * `http://a.com/path1/path2/` + `b/c/d` = `http://a.com/path1/path2/b/c/d`
 
-**不带`/`结尾的baseUri**
+#### 不带`/`结尾的baseUri
 
 * `http://a.com` + `b/c/d` = `http://a.com/b/c/d`
 * `http://a.com/path1` + `b/c/d` = `http://a.com/b/c/d`
@@ -285,16 +285,16 @@ services
 ### Accpet ContentType
 这个用于控制客户端希望服务器返回什么样的内容格式，比如json或xml。
 
-**缺省配置值**
+#### 缺省配置值
 
 缺省配置是[JsonReturn(0.01),XmlReturn(0.01)]，对应的请求accept值是
 `Accept: application/json; q=0.01, application/xml; q=0.01`
 
-**Json优先**
+#### Json优先
 
 在Interface或Method上显式地声明`[JsonReturn]`，请求accept变为`Accept: application/json, application/xml; q=0.01`
 
-**禁用json**
+#### 禁用json
 
 在Interface或Method上声明`[JsonReturn(Enable = false)]`，请求变为`Accept: application/xml; q=0.01`
 
@@ -302,7 +302,7 @@ services
 ### 请求和响应日志
 在整个Interface或某个Method上声明`[LoggingFilter]`，即可把请求和响应的内容输出到LoggingFactory中。如果要排除某个Method不打印日志，在该Method上声明`[LoggingFilter(Enable = false)]`，即可将本Method排除。
 
-**默认日志**
+#### 默认日志
 
 ```
 [LoggingFilter]   
@@ -318,7 +318,7 @@ public interface IUserApi : IHttpApi
 }
 ```
 
-**自定义日志输出目标**
+#### 自定义日志输出目标
 ```
 class MyLogging : LoggingFilterAttribute
 {
@@ -343,7 +343,7 @@ var result = await youApi.GetModelAsync(id: "id001")
 ### 响应内容缓存
 配置CacheAttribute特性的Method会将本次的响应内容缓存起来，下一次如果符合预期条件的话，就不会再请求到远程服务器，而是从IResponseCacheProvider获取缓存内容，开发者可以自己实现ResponseCacheProvider。
 
-**声明缓存特性**
+#### 声明缓存特性
 ```
 // 缓存一分钟
 [Cache(60 * 1000)]
@@ -351,7 +351,7 @@ var result = await youApi.GetModelAsync(id: "id001")
 ITask<HttpResponseMessage> GetAsync([Required]string account);
 ```
 
-**自定义缓存提供者**
+#### 自定义缓存提供者
 ```
 public class RedisResponseCacheProvider : IResponseCacheProvider
 {
@@ -376,7 +376,7 @@ services.AddSingleton<IResponseCacheProvider, RedisResponseCacheProvider>();
 ### 非模型请求
 有时候我们未必需要强模型，假设我们已经有原始的form文本内容，或原始的json文本内容，甚至是System.Net.Http.HttpContent对象，只需要把这些原始内请求到远程远程器。
 
-**原始文本**
+#### 原始文本
 
 ```
 [HttpPost]
@@ -387,20 +387,20 @@ Task PostAsync(StringContent text);
 ```
 
 
-**原始json**
+#### 原始json
 ```
 [HttpPost]
 Task PostAsync([RawJsonContent] string json);
 ```
 
-**原始xml**
+#### 原始xml
 
 ```
 [HttpPost]
 Task PostAsync([RawXmlContent] string xml);
 ```
 
-**原始表单内容**
+#### 原始表单内容
 
 ```
 [HttpPost]
@@ -411,7 +411,7 @@ Task PostAsync([RawFormContent] string form);
 ### 自定义无特性的参数类型
 在某些极限情况下，比如人脸比对的接口，我们输入模型与传输模型未必是对等的：
 
-**服务端要求的json模型**
+#### 服务端要求的json模型
 ```
 {
     "image1" : "图片1的base64",
@@ -419,7 +419,7 @@ Task PostAsync([RawFormContent] string form);
 }
 ```
 
-**客户端期望的业务模型**
+#### 客户端期望的业务模型
 ```
 class FaceModel
 {
@@ -473,7 +473,7 @@ public interface IFaceApi
 
 #### 1 编写相关自定义特性
 
-**自定义请求内容处理特性**
+##### 自定义请求内容处理特性
 ```
 public class ProtobufContentAttribute : HttpContentAttribute
 {
@@ -495,7 +495,7 @@ public class ProtobufContentAttribute : HttpContentAttribute
     }
 }
 ```
-**自定义响应内容解析特性**
+##### 自定义响应内容解析特性
 
 ```
 public class ProtobufReturnAttribute : ApiReturnAttribute
@@ -529,7 +529,7 @@ public interface IProtobufApi
 ### 适配畸形接口
 在实际应用场景中，常常会遇到一些设计不标准的畸形接口，主要是早期还没有restful概念时期的接口，我们要区分分析这些接口，包装为好友的客户端调用接口。
 
-#### 1 为不好友的参数名进行别名
+#### 不好友的参数名别名
 例如服务器要求一个Query参数的名字为`field-Name`，这个是c#关键字或变量命名不允许的，我们可以使用`[AliasAsAttribute]`来达到这个要求：
 
 ```
@@ -539,7 +539,7 @@ ITask<HttpResponseMessage> GetAsync([Required]string account, [AliasAs("field-Na
 
 然后最终请求uri变为api/users/`account1`?field-name=`fileName1`
 
-#### 2 Form的某个字段为json文本
+#### Form的某个字段为json文本
 
 字段 | 值
 ---|---
@@ -578,7 +578,7 @@ class Field2Data
 }
 ```
 
-#### 3 响应未指明ContentType
+#### 响应未指明ContentType
 明明响应的内容肉眼看上是json内容，但服务响应头里没有ContentType告诉客户端这内容是json，这好比客户端使用Form或json提交时就不在请求头告诉服务器内容格式是什么，而是让服务器猜测一样的道理。
 
 解决办法是在Interface或Method声明`[JsonReturn]`特性，并设置其EnsureMatchAcceptContentType属性为false，表示ContentType不是期望值匹配也要处理。
@@ -589,7 +589,7 @@ public interface IJsonResponseApi : IHttpApi
 {
 }
 ```
-#### 4 类签名参数或token参数
+#### 类签名参数或token参数
 例如每个请求的url额外的动态添加一个叫sign的参数，这个sign可能和请求参数值有关联，每次都需要计算。
 
 我们可以自定义ApiFilterAttribute来实现自己的sign功能，然后把自定义Filter声明到Interface或Method即可
@@ -615,7 +615,7 @@ public interface ISignedApi
 
 ### HttpMessageHandler配置
 
-**Http代理配置**
+#### Http代理配置
 
 ```
 services
@@ -638,7 +638,7 @@ services
     });
 ```
 
-**客户端证书配置**
+#### 客户端证书配置
 
 有些服务器为了限制客户端的连接，开启了https双向验证，只允许它执有它颁发的证书的客户端进行连接
 ```
@@ -655,7 +655,7 @@ services
     });
 ```
 
-**维持CookieContainer不变**
+#### 维持CookieContainer不变
 
 如果请求的接口不幸使用了Cookie保存身份信息机制，那么就要考虑维持CookieContainer实例不要跟随HttpMessageHandler的生命周期，默认的HttpMessageHandler最短只有2分钟的生命周期。
 
@@ -677,7 +677,7 @@ services
 ### OAuths&Token
 使用WebApiClientCore.Extensions.OAuths扩展，轻松支持token的获取、刷新与应用
 
-### 1 注册相应类型的TokenProvider
+#### 1 注册相应类型的TokenProvider
 
 ```
 // 为接口注册与配置token提者选项
@@ -738,9 +738,9 @@ public interface IMyApi
 ### 生态融合
 Microsoft.Extensions.Http支持收入各种第三方的HttpMessageHandler来build出一种安全的HttpClient，同时支持将此HttpClient实例包装为强类型服务的目标服务类型注册功能。
 
-### 1 Polly
+#### Polly
 Microsoft.Extensions.Http.Polly项目依托于Polly，将Polly策略实现到System.Net.Http.DelegatingHandler，其handler可以为HttpClient提供重试、降级和断路等功能。
 
-### 2 WebApiClientCore
+#### WebApiClientCore
 WebApiClientCore可以将Microsoft.Extensions.Http创建出来的HttpClient实例包装为声明式接口的代理实例，使开发者从面向命令式的编程模式直达声明式的AOP编程。
 
