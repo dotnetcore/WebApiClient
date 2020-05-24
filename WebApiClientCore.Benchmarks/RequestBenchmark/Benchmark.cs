@@ -20,15 +20,15 @@ namespace WebApiClientCore.Benchmarks.RequestBenchmark
 
             services
                 .AddHttpClient(typeof(HttpClient).FullName)
-                .AddHttpMessageHandler(() => new NoneHttpDelegatingHandler());
+                .AddHttpMessageHandler(() => new MockResponseHandler());
 
             services
                 .AddHttpApi<IWebApiClientCoreApi>(o => o.HttpHost = new Uri("http://webapiclient.com/"))
-                .AddHttpMessageHandler(() => new NoneHttpDelegatingHandler());
+                .AddHttpMessageHandler(() => new MockResponseHandler());
 
             WebApiClient.Extension
                 .AddHttpApi<IWebApiClientApi>(services, o => o.HttpHost = new Uri("http://webapiclient.com/"))
-                .AddHttpMessageHandler(() => new NoneHttpDelegatingHandler());
+                .AddHttpMessageHandler(() => new MockResponseHandler());
 
             this.serviceProvider = services.BuildServiceProvider();
         }

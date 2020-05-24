@@ -9,11 +9,11 @@ namespace WebApiClientCore.Benchmarks.RequestBenchmark
     /// <summary>
     /// 无真实http请求的Handler
     /// </summary>
-    class NoneHttpDelegatingHandler : DelegatingHandler
+    class MockResponseHandler : DelegatingHandler
     {
         private readonly HttpResponseMessage benchmarkModelResponseMessage;
 
-        public NoneHttpDelegatingHandler()
+        public MockResponseHandler()
         {
             var model = new Model { A = "A", B = 2, C = 3d };
             var json = JsonSerializer.SerializeToUtf8Bytes(model);
