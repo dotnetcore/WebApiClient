@@ -13,7 +13,7 @@ namespace WebApiClientCore.Test
         public void AddUrlQueryTest()
         {
             var request = new HttpApiRequestMessage();
-            Assert.Throws<HttpApiInvalidOperationException>(() => request.AddUrlQuery("xKey", "xValue"));
+            Assert.Throws<ApiInvalidOperationException>(() => request.AddUrlQuery("xKey", "xValue"));
 
             request.RequestUri = new Uri("http://webapiclient.com/");
             request.AddUrlQuery("xKey", "xValue");

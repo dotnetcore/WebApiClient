@@ -5,7 +5,7 @@ namespace WebApiClientCore.Exceptions
     /// <summary>
     /// 表示类型实例创建异常
     /// </summary>
-    public class TypeInstanceCreateException : Exception
+    public class TypeInstanceCreateException : HttpApiException
     {
         /// <summary>
         /// 实例类型

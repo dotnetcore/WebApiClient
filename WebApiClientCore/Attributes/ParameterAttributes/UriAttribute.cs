@@ -15,7 +15,7 @@ namespace WebApiClientCore.Attributes
         /// http请求之前
         /// </summary>
         /// <param name="context">上下文</param>
-        /// <exception cref="HttpApiInvalidOperationException"></exception>
+        /// <exception cref="ApiInvalidOperationException"></exception>
         /// <returns></returns>
         public sealed override Task OnRequestAsync(ApiParameterContext context)
         {
@@ -27,7 +27,7 @@ namespace WebApiClientCore.Attributes
 
             if (context.Parameter.Index > 0)
             {
-                throw new HttpApiInvalidOperationException(Resx.invalid_UriAttribute);
+                throw new ApiInvalidOperationException(Resx.invalid_UriAttribute);
             }
 
             var relative = new Uri(uriString, UriKind.RelativeOrAbsolute);
@@ -40,7 +40,7 @@ namespace WebApiClientCore.Attributes
                 var baseUri = context.HttpContext.RequestMessage.RequestUri;
                 if (baseUri == null)
                 {
-                    throw new HttpApiInvalidOperationException(Resx.required_HttpHost);
+                    throw new ApiInvalidOperationException(Resx.required_HttpHost);
                 }
                 context.HttpContext.RequestMessage.RequestUri = new Uri(baseUri, relative);
             }

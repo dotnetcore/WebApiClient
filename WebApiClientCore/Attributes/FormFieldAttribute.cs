@@ -55,7 +55,7 @@ namespace WebApiClientCore.Attributes
         {
             if (string.IsNullOrEmpty(this.name))
             {
-                throw new HttpApiInvalidOperationException(Resx.required_NameAndValue);
+                throw new ApiInvalidOperationException(Resx.required_NameAndValue);
             }
 
             await context.HttpContext.RequestMessage.AddFormFieldAsync(this.name, this.value).ConfigureAwait(false);

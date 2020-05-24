@@ -12,7 +12,7 @@ namespace WebApiClientCore.Attributes
         /// 设置参数到http请求内容
         /// </summary>
         /// <param name="context">上下文</param>
-        /// <exception cref="HttpApiInvalidOperationException"></exception>
+        /// <exception cref="ApiInvalidOperationException"></exception>
         /// <returns></returns>
         protected override async Task SetHttpContentAsync(ApiParameterContext context)
         {

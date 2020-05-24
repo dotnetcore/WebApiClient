@@ -51,13 +51,13 @@ namespace WebApiClientCore.Attributes
         /// 执行前
         /// </summary>
         /// <param name="context">上下文</param>
-        /// <exception cref="HttpApiInvalidOperationException"></exception>
+        /// <exception cref="ApiInvalidOperationException"></exception>
         /// <returns></returns>
         public override Task OnRequestAsync(ApiRequestContext context)
         {
             if (this.TimeSpan == null)
             {
-                throw new HttpApiInvalidOperationException(Resx.parameter_CannotMissing.Format("milliseconds"));
+                throw new ApiInvalidOperationException(Resx.parameter_CannotMissing.Format("milliseconds"));
             }
 
             this.SetTimeout(context, this.TimeSpan.Value);
@@ -68,7 +68,7 @@ namespace WebApiClientCore.Attributes
         /// http请求之前
         /// </summary>
         /// <param name="context">上下文</param> 
-        /// <exception cref="HttpApiInvalidOperationException"></exception>
+        /// <exception cref="ApiInvalidOperationException"></exception>
         /// <returns></returns>
         public Task OnRequestAsync(ApiParameterContext context)
         {
@@ -89,7 +89,7 @@ namespace WebApiClientCore.Attributes
             }
             else
             {
-                throw new HttpApiInvalidOperationException(Resx.parameter_CannotCvtTimeout.Format(context.Parameter.Member));
+                throw new ApiInvalidOperationException(Resx.parameter_CannotCvtTimeout.Format(context.Parameter.Member));
             }
 
             return Task.CompletedTask;
@@ -101,13 +101,13 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="timeout">超时时间</param>
-        /// <exception cref="HttpApiInvalidOperationException"></exception>
+        /// <exception cref="ApiInvalidOperationException"></exception>
         private void SetTimeout(ApiRequestContext context, TimeSpan timeout)
         {
             var maxTimeout = context.HttpContext.Client.Timeout;
             if (maxTimeout >= System.TimeSpan.Zero && timeout > maxTimeout)
             {
-                throw new HttpApiInvalidOperationException(Resx.timeout_OutOfRange.Format(timeout));
+                throw new ApiInvalidOperationException(Resx.timeout_OutOfRange.Format(timeout));
             }
 
             var cancellation = new CancellationTokenSource(timeout);

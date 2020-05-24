@@ -3,7 +3,7 @@
 namespace WebApiClientCore.Exceptions
 {
     /// <summary>
-    /// 表示Http接口请求重试异常
+    /// 表示Api请求重试异常
     /// </summary>
     public class ApiRetryException : HttpApiException
     {
@@ -13,7 +13,7 @@ namespace WebApiClientCore.Exceptions
         public int MaxRetryCount { get; }
 
         /// <summary>
-        /// Http接口请求重试异常
+        /// Api请求重试异常
         /// </summary>
         /// <param name="maxRetryCount">重试的最大次数</param>   
         /// <param name="inner">内部异常</param>

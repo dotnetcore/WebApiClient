@@ -83,7 +83,8 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public async Task OnResponseAsync(ApiResponseContext context)
         {
-            if (this.UseSuccessStatusCode(context) && this.UseMatchAcceptContentType(context))
+            this.UseSuccessStatusCode(context);
+            if (this.UseMatchAcceptContentType(context) == true)
             {
                 await this.SetResultAsync(context).ConfigureAwait(false);
             }
@@ -93,19 +94,19 @@ namespace WebApiClientCore.Attributes
         /// 应用成功状态码
         /// </summary>
         /// <param name="context"></param>
-        /// <returns></returns>
-        private bool UseSuccessStatusCode(ApiResponseContext context)
+        /// <exception cref="HttpStatusFailureException"></exception>
+        private void UseSuccessStatusCode(ApiResponseContext context)
         {
             var response = context.HttpContext.ResponseMessage;
-            if (this.EnsureSuccessStatusCode == true && response != null)
+            if (response == null || this.EnsureSuccessStatusCode == false)
             {
-                if (this.IsSuccessStatusCode(response.StatusCode) == false)
-                {
-                    context.Exception = new HttpStatusFailureException(response);
-                    return false;
-                }
+                return;
             }
-            return true;
+
+            if (this.IsSuccessStatusCode(response.StatusCode) == false)
+            {
+                throw new HttpStatusFailureException(response);
+            }
         }
 
         /// <summary>

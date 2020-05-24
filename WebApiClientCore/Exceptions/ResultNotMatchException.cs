@@ -5,7 +5,7 @@ namespace WebApiClientCore.Exceptions
     /// <summary>
     /// 表示结果不匹配异常
     /// </summary>
-    public class ResultNotMatchException : Exception
+    public class ResultNotMatchException : HttpApiException
     {
         /// <summary>
         /// 获取结果值

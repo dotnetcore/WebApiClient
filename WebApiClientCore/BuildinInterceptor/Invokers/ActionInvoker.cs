@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
 
@@ -50,9 +51,20 @@ namespace WebApiClientCore
         /// <returns></returns>
         public async Task<TResult> InvokeAsync(ServiceContext context, object?[] arguments)
         {
-            using var httpContext = new HttpContext(context.Client, context.Services, context.Options);
-            var requestContext = new ApiRequestContext(httpContext, this.apiAction, arguments);
-            return await this.InvokeAsync(requestContext).ConfigureAwait(false);
+            try
+            {
+                using var httpContext = new HttpContext(context.Client, context.Services, context.Options);
+                var requestContext = new ApiRequestContext(httpContext, this.apiAction, arguments);
+                return await this.InvokeAsync(requestContext).ConfigureAwait(false);
+            }
+            catch (HttpRequestException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new HttpRequestException(ex.Message, ex);
+            }
         }
 
 
@@ -71,7 +83,9 @@ namespace WebApiClientCore
             }
             else if (response.ResultStatus == ResultStatus.HasException)
             {
-                throw response.Exception;
+                // 这里如果直接throw inner，会覆盖掉它的StackTrace
+                var inner = response.Exception;
+                throw new HttpRequestException(inner.Message, inner);
             }
             throw new ApiReturnNotSupportedExteption(response);
 #nullable enable

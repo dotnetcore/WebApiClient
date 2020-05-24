@@ -37,14 +37,14 @@ namespace WebApiClientCore.Attributes
         /// http请求之前
         /// </summary>
         /// <param name="context">上下文</param>
-        /// <exception cref="HttpApiInvalidOperationException"></exception>
+        /// <exception cref="ApiInvalidOperationException"></exception>
         /// <returns></returns>
         public override Task OnRequestAsync(ApiParameterContext context)
         {
             var uri = context.HttpContext.RequestMessage.RequestUri;
             if (uri == null)
             {
-                throw new HttpApiInvalidOperationException(Resx.required_HttpHost);
+                throw new ApiInvalidOperationException(Resx.required_HttpHost);
             }
 
             var keyValues = context.SerializeToKeyValues().CollectAs(this.CollectionFormat);

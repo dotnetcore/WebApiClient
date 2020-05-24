@@ -13,7 +13,7 @@ namespace WebApiClientCore.Attributes
         /// http请求之前
         /// </summary>
         /// <param name="context">上下文</param> 
-        /// <exception cref="HttpApiInvalidOperationException"></exception>
+        /// <exception cref="ApiInvalidOperationException"></exception>
         /// <returns></returns>
         public sealed override async Task OnRequestAsync(ApiParameterContext context)
         {
@@ -21,7 +21,7 @@ namespace WebApiClientCore.Attributes
             if (method == HttpMethod.Get || method == HttpMethod.Head)
             {
                 var message = Resx.unsupported_SetContent.Format(method);
-                throw new HttpApiInvalidOperationException(message);
+                throw new ApiInvalidOperationException(message);
             }
             await this.SetHttpContentAsync(context).ConfigureAwait(false);
         }

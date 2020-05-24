@@ -67,7 +67,7 @@ namespace WebApiClientCore.Attributes
         /// 执行前
         /// </summary>
         /// <param name="context">上下文</param>
-        /// <exception cref="HttpApiInvalidOperationException"></exception>
+        /// <exception cref="ApiInvalidOperationException"></exception>
         /// <returns></returns>
         public override Task OnRequestAsync(ApiRequestContext context)
         {
@@ -85,7 +85,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="baseUri"></param>
         /// <param name="relative"></param>
-        /// <exception cref="HttpApiInvalidOperationException"></exception>
+        /// <exception cref="ApiInvalidOperationException"></exception>
         /// <returns></returns>
         private Uri? GetRequestUri(Uri? baseUri, Uri? relative)
         {
@@ -95,7 +95,7 @@ namespace WebApiClientCore.Attributes
                 {
                     return relative;
                 }
-                throw new HttpApiInvalidOperationException(Resx.required_HttpHost);
+                throw new ApiInvalidOperationException(Resx.required_HttpHost);
             }
             else
             {

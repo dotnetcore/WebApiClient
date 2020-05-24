@@ -19,7 +19,7 @@ namespace WebApiClientCore.Attributes
             if (context.HttpContext.RequestMessage.Content != null)
             {
                 var message = Resx.parameter_MustPutForward.Format(context.Parameter.Member);
-                throw new HttpApiInvalidOperationException(message);
+                throw new ApiInvalidOperationException(message);
             }
 
             if (context.ParameterValue != null)
@@ -31,7 +31,7 @@ namespace WebApiClientCore.Attributes
                 else
                 {
                     var message = Resx.parameter_MustbeHttpContenType.Format(context.Parameter.Member);
-                    throw new HttpApiInvalidOperationException(message);
+                    throw new ApiInvalidOperationException(message);
                 }
             }
 

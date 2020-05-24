@@ -19,7 +19,7 @@ namespace WebApiClientCore.Attributes
         /// http请求之前
         /// </summary>
         /// <param name="context">上下文</param>
-        /// <exception cref="HttpApiInvalidOperationException"></exception>
+        /// <exception cref="ApiInvalidOperationException"></exception>
         /// <returns></returns>
         public override Task OnRequestAsync(ApiParameterContext context)
         {
