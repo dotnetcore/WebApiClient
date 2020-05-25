@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
@@ -215,7 +216,7 @@ namespace WebApiClientCore.Parameters
             /// <summary>
             /// 属性名称缓存
             /// </summary>
-            private static readonly ConcurrentCache<MemberInfo, string> staticNameCache = new ConcurrentCache<MemberInfo, string>();
+            private static readonly ConcurrentDictionary<MemberInfo, string> staticNameCache = new ConcurrentDictionary<MemberInfo, string>();
 
             /// <summary>
             /// Path访问器

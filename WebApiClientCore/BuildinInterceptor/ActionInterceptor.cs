@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
@@ -12,7 +13,7 @@ namespace WebApiClientCore
         /// <summary>
         /// action执行器的缓存
         /// </summary>
-        private static readonly ConcurrentCache<Method, IActionInvoker> invokerCache = new ConcurrentCache<Method, IActionInvoker>();
+        private static readonly ConcurrentDictionary<Method, IActionInvoker> invokerCache = new ConcurrentDictionary<Method, IActionInvoker>();
 
         /// <summary>
         /// 服务上下文

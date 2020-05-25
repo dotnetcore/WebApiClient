@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -15,7 +16,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 类型的默认值缓存
         /// </summary>
-        private static readonly ConcurrentCache<Type, object?> defaultValueCache = new ConcurrentCache<Type, object?>();
+        private static readonly ConcurrentDictionary<Type, object?> defaultValueCache = new ConcurrentDictionary<Type, object?>();
 
         /// <summary>
         /// 关联的AttributeUsageAttribute是否AllowMultiple

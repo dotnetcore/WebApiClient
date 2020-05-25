@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -13,7 +14,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 类型的属性否需要验证缓存
         /// </summary>
-        private static readonly ConcurrentCache<Type, bool> cache = new ConcurrentCache<Type, bool>();
+        private static readonly ConcurrentDictionary<Type, bool> cache = new ConcurrentDictionary<Type, bool>();
 
         /// <summary>
         /// 验证参数值输入合法性
