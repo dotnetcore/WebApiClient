@@ -98,12 +98,13 @@ namespace WebApiClientCore
             }
 
             using var writer = new BufferWriter<char>(256);
-            var uriSpan = uri.ToLower().AsSpan();
-            var nameSpan = $"{{{name}}}".ToLower().AsSpan();
+            var uriSpan = uri.ToLowerInvariant().AsSpan();
+            var nameSpan = $"{{{name}}}".ToLowerInvariant().AsSpan();
             var valueSpan = value == null
-                ? Span<char>.Empty :
-                HttpUtility.UrlEncode(value, this.Encoding).AsSpan();
+                ? Span<char>.Empty
+                : HttpUtility.UrlEncode(value, this.Encoding).AsSpan();
 
+            var replaced = false;
             while (uriSpan.Length > 0)
             {
                 var index = uriSpan.IndexOf(nameSpan);
@@ -117,6 +118,7 @@ namespace WebApiClientCore
                     writer.Advance(valueSpan.Length);
 
                     uriSpan = uriSpan.Slice(index + nameSpan.Length);
+                    replaced = true;
                 }
                 else
                 {
@@ -128,7 +130,7 @@ namespace WebApiClientCore
 
             uri = writer.GetWrittenSpan().ToString();
             this.Uri = new Uri(uri);
-            return true;
+            return replaced;
         }
 
         /// <summary>
