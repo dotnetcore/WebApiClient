@@ -51,9 +51,9 @@ namespace WebApiClientCore
             var builder = module.DefineType(typeName, TypeAttributes.Class);
             builder.AddInterfaceImplementation(interfaceType);
 
-            var fieldInterceptor = BuildField(builder, "interceptor", typeof(IActionInterceptor));
-            var fieldInterfaceType = BuildField(builder, "interfaceType", typeof(Type));
-            var fieldApiMethods = BuildField(builder, "apiMethods", typeof(MethodInfo[]));
+            var fieldInterceptor = BuildField(builder, "<>interceptor", typeof(IActionInterceptor));
+            var fieldInterfaceType = BuildField(builder, "<>interfaceType", typeof(Type));
+            var fieldApiMethods = BuildField(builder, "<>apiMethods", typeof(MethodInfo[]));
 
             BuildCtor(builder, fieldInterceptor, fieldInterfaceType, fieldApiMethods);
             BuildMethods(builder, apiMethods, fieldInterceptor, fieldInterfaceType, fieldApiMethods);
