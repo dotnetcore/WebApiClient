@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Text;
 using System.Web;
 
@@ -95,73 +94,21 @@ namespace WebApiClientCore
         /// <returns>替换成功则返回true</returns>
         public bool Replace(string name, string? value)
         {
-            var uriSpan = this.Uri.OriginalString.AsSpan();
-            if (uriSpan.Contains('{') == false)
+            var uri = this.Uri.OriginalString;
+            if (uri.Contains('{') == false)
             {
                 return false;
             }
 
-            // 申请可回收的缓冲区，用于转换uri为小写
-            using var owner = ArrayPool.Rent<char>(uriSpan.Length);
-            var uriLowerSpan = owner.Array.AsSpan();
-            var length = uriSpan.ToLowerInvariant(uriLowerSpan);
-            uriLowerSpan = uriLowerSpan.Slice(0, length);
-
-            var nameLowerSpan = $"{{{name}}}".ToLowerInvariant().AsSpan();
-            var valueSpan = value == null
-                ? Span<char>.Empty
-                : HttpUtility.UrlEncode(value, this.Encoding).AsSpan();
-
-            var replaced = false;
-            using var writer = new BufferWriter<char>(256);
-
-            while (uriLowerSpan.Length > 0)
+            name = $"{{{name}}}";
+            value = value == null ? null : HttpUtility.UrlEncode(value);
+            if (uri.RepaceIgnoreCase(name, value, out var newUri) == true)
             {
-                var index = uriLowerSpan.IndexOf(nameLowerSpan);
-                if (index > -1)
-                {
-                    // 左边未替换的
-                    var left = uriSpan.Slice(0, index);
-                    left.CopyTo(writer.GetSpan(left.Length));
-                    writer.Advance(left.Length);
-
-                    // 替换的值
-                    valueSpan.CopyTo(writer.GetSpan(valueSpan.Length));
-                    writer.Advance(valueSpan.Length);
-
-                    // 切割长度
-                    var sliceLength = index + nameLowerSpan.Length;
-
-                    // 原始值与小写值同步切割
-                    uriSpan = uriSpan.Slice(sliceLength);
-                    uriLowerSpan = uriLowerSpan.Slice(sliceLength);
-
-                    replaced = true;
-                }
-                else
-                {
-                    // 替换过剩下的原始值
-                    if (replaced == true)
-                    {
-                        Debug.Assert(uriSpan.Length > 0);
-
-                        uriSpan.CopyTo(writer.GetSpan(uriSpan.Length));
-                        writer.Advance(uriSpan.Length);
-                    }
-
-                    // 再也无匹配替换值，退出
-                    break;
-                }
+                this.Uri = new Uri(newUri);
+                return true;
             }
 
-            // 成功替换过，writer的值才是有效值
-            if (replaced == true)
-            {
-                var uri = writer.GetWrittenSpan().ToString();
-                this.Uri = new Uri(uri);
-            }
-
-            return replaced;
+            return false;
         }
 
         /// <summary>
