@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 using System.Text;
 
 namespace WebApiClientCore
@@ -62,7 +63,7 @@ namespace WebApiClientCore
         /// 序列化参数值为键值对
         /// </summary>
         /// <returns></returns>
-        public KeyValue[] SerializeToKeyValues()
+        public IList<KeyValue> SerializeToKeyValues()
         {
             var options = this.HttpContext.Options.KeyValueSerializeOptions;
             return this.HttpContext.Services

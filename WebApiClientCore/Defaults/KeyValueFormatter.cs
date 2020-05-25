@@ -11,9 +11,16 @@ namespace WebApiClientCore.Defaults
     public class KeyValueFormatter : IKeyValueFormatter
     {
         /// <summary>
-        /// 512byte
+        /// 预留的缓冲区大小
         /// </summary>
-        private const int normalJsonSize = 512;
+        private const int sizeHint = 512;
+        private const string trueString = "true";
+        private const string falseString = "false";
+
+        /// <summary>
+        /// 默认的序列化选项
+        /// </summary>
+        private static readonly JsonSerializerOptions defaultOptions = new JsonSerializerOptions();
 
         /// <summary>
         /// 序列化对象为键值对
@@ -22,31 +29,46 @@ namespace WebApiClientCore.Defaults
         /// <param name="obj">对象实例</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        public virtual KeyValue[] Serialize(string key, object? obj, JsonSerializerOptions? options)
+        public virtual IList<KeyValue> Serialize(string key, object? obj, JsonSerializerOptions? options)
         {
             if (obj == null)
             {
-                if (string.IsNullOrEmpty(key))
-                {
-                    throw new ArgumentNullException(nameof(key));
-                }
-                else
-                {
-                    return new[] { new KeyValue(key, null) };
-                }
+                var keyValue = new KeyValue(key, null);
+                return new List<KeyValue>(1) { keyValue };
             }
 
-            using var bufferWriter = new ByteBufferWriter(normalJsonSize);
+            var typeCode = Type.GetTypeCode(obj.GetType());
+            if (typeCode == TypeCode.String)
+            {
+                var keyValue = new KeyValue(key, obj.ToString());
+                return new List<KeyValue>(1) { keyValue };
+            }
+
+            if (typeCode == TypeCode.Boolean)
+            {
+                var boolValue = ((bool)obj) ? trueString : falseString;
+                var keyValue = new KeyValue(key, boolValue);
+                return new List<KeyValue>(1) { keyValue };
+            }
+
+            var jsonOptions = options ?? defaultOptions;
+            using var bufferWriter = new ByteBufferWriter(sizeHint);
             using var utf8JsonWriter = new Utf8JsonWriter(bufferWriter, new JsonWriterOptions
             {
                 Indented = false,
                 SkipValidation = true,
-                Encoder = options?.Encoder
+                Encoder = jsonOptions.Encoder
             });
 
             JsonSerializer.Serialize(utf8JsonWriter, obj, obj.GetType(), options);
-            var utf8JsonReader = new Utf8JsonReader(bufferWriter.WrittenSpan);
-            return GetKeyValues(key, utf8JsonReader);
+            var span = bufferWriter.GetWrittenSpan();
+            var utf8JsonReader = new Utf8JsonReader(span, new JsonReaderOptions
+            {
+                MaxDepth = jsonOptions.MaxDepth,
+                CommentHandling = jsonOptions.ReadCommentHandling,
+                AllowTrailingCommas = jsonOptions.AllowTrailingCommas,
+            });
+            return GetKeyValueList(key, ref utf8JsonReader);
         }
 
         /// <summary>
@@ -55,9 +77,9 @@ namespace WebApiClientCore.Defaults
         /// <param name="key"></param>
         /// <param name="reader"></param>
         /// <returns></returns>
-        private static KeyValue[] GetKeyValues(string key, Utf8JsonReader reader)
+        private static IList<KeyValue> GetKeyValueList(string key, ref Utf8JsonReader reader)
         {
-            var result = new List<KeyValue>();
+            var list = new List<KeyValue>();
             while (reader.Read())
             {
                 switch (reader.TokenType)
@@ -70,7 +92,7 @@ namespace WebApiClientCore.Defaults
 
                     case JsonTokenType.Null:
                         {
-                            result.Add(new KeyValue(key, null));
+                            list.Add(new KeyValue(key, null));
                             break;
                         }
                     case JsonTokenType.False:
@@ -80,12 +102,12 @@ namespace WebApiClientCore.Defaults
                         {
                             var value = Encoding.UTF8.GetString(reader.ValueSpan);
                             var keyValue = new KeyValue(key, value);
-                            result.Add(keyValue);
+                            list.Add(keyValue);
                             break;
                         }
                 }
             }
-            return result.ToArray();
+            return list;
         }
     }
 }

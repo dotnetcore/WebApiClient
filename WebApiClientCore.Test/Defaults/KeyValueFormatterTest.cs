@@ -27,6 +27,11 @@ namespace WebApiClientCore.Test.Defaults
             Assert.True(kvs.Count == 1);
             Assert.True(kvs["pName"] == "30");
 
+            var bools = formatter.Serialize("bool", true, null);
+            Assert.Equal("true", bools[0].Value);
+
+            var strings = formatter.Serialize("strings", "string", null);
+            Assert.Equal("string", strings[0].Value);
 
 
             var dic = new System.Collections.Concurrent.ConcurrentDictionary<string, object>();

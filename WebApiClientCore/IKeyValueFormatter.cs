@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Collections.Generic;
+using System.Text.Json;
 
 namespace WebApiClientCore
 {
@@ -14,6 +15,6 @@ namespace WebApiClientCore
         /// <param name="obj">对象实例</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        KeyValue[] Serialize(string key, object? obj, JsonSerializerOptions? options);
+        IList<KeyValue> Serialize(string key, object? obj, JsonSerializerOptions? options);
     }
 }

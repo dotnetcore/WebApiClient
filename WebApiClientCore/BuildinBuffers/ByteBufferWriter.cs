@@ -28,17 +28,6 @@ namespace WebApiClientCore
 
 
         /// <summary>
-        /// 获取已数入的数据
-        /// </summary>
-        public ReadOnlySpan<byte> WrittenSpan => this.byteArrayOwner.Array.AsSpan(0, this.WrittenCount);
-
-        /// <summary>
-        /// 获取已数入的数据
-        /// </summary>
-        public ReadOnlyMemory<byte> WrittenMemory => this.byteArrayOwner.Array.AsMemory(0, this.WrittenCount);
-
-
-        /// <summary>
         /// 字节缓冲区写入对象
         /// </summary>
         /// <param name="initialCapacity">初始容量</param>
@@ -97,6 +86,22 @@ namespace WebApiClientCore
         {
             this.CheckAndResizeBuffer(sizeHint);
             return byteArrayOwner.Array.AsSpan(this.WrittenCount);
+        }
+
+        /// <summary>
+        /// 获取已数入的数据
+        /// </summary>
+        public ReadOnlySpan<byte> GetWrittenSpan()
+        {
+            return this.byteArrayOwner.Array.AsSpan(0, this.WrittenCount);
+        }
+
+        /// <summary>
+        /// 获取已数入的数据
+        /// </summary>
+        public ReadOnlyMemory<byte> GetWrittenMemory()
+        {
+            return this.byteArrayOwner.Array.AsMemory(0, this.WrittenCount);
         }
 
         /// <summary>
