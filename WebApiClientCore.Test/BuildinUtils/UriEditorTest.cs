@@ -57,14 +57,14 @@ namespace WebApiClientCore.Test.BuildinUtils
             Assert.True(editor.Uri.ToString() == "http://www.webapiclient.com/path/?x=1&a=我");
 
 
-            url = new Uri("http://www.webapiclient.com/path/?x={x}&y={y}&");
+            url = new Uri("http://www.webapiclient.com/path/?x={x}&y={Y}&");
             editor = new UriEditor(url, encoding);
 
             editor.AddQuery("a", "我");
             Assert.True(editor.Replace("x", "你"));
             Assert.False(editor.Replace("x", "你"));
 
-            Assert.True(editor.Uri.ToString() == "http://www.webapiclient.com/path/?x=你&y={y}&a=我");
+            Assert.True(editor.Uri.ToString() == "http://www.webapiclient.com/path/?x=你&y={Y}&a=我");
 
             url = new Uri("http://www.webapiclient.com");
             editor = new UriEditor(url, encoding);
