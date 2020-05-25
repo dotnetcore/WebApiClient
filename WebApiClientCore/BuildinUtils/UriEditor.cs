@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Text;
 using System.Web;
 
@@ -104,7 +105,7 @@ namespace WebApiClientCore
             using var owner = ArrayPool.Rent<char>(uriSpan.Length);
             var uriLowerSpan = owner.Array.AsSpan();
             var length = uriSpan.ToLowerInvariant(uriLowerSpan);
-            uriLowerSpan.Slice(0, length);
+            uriLowerSpan = uriLowerSpan.Slice(0, length);
 
             var nameLowerSpan = $"{{{name}}}".ToLowerInvariant().AsSpan();
             var valueSpan = value == null
@@ -139,9 +140,11 @@ namespace WebApiClientCore
                 }
                 else
                 {
+                    // 替换过剩下的原始值
                     if (replaced == true)
                     {
-                        // 替换过剩下的原始值
+                        Debug.Assert(uriSpan.Length > 0);
+
                         uriSpan.CopyTo(writer.GetSpan(uriSpan.Length));
                         writer.Advance(uriSpan.Length);
                     }
