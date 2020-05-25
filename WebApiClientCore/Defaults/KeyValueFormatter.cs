@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 
@@ -15,8 +13,6 @@ namespace WebApiClientCore.Defaults
         /// 预留的缓冲区大小
         /// </summary>
         private const int sizeHint = 512;
-        private const string trueString = "true";
-        private const string falseString = "false";
 
         /// <summary>
         /// 默认的序列化选项
@@ -34,23 +30,11 @@ namespace WebApiClientCore.Defaults
         {
             if (obj == null)
             {
-                return new List<KeyValue>(1) { new KeyValue(key, null) };
+                var keyValue = new KeyValue(key, null);
+                return new List<KeyValue>(1) { keyValue };
             }
 
-            var type = obj.GetType();
             var jsonOptions = options ?? defaultOptions;
-
-            if (TypeCanToString(type) && jsonOptions.Converters.Any(c => c.CanConvert(type) == false))
-            {
-                return new List<KeyValue>(1) { new KeyValue(key, obj.ToString()) };
-            }
-
-            if (type == typeof(bool) && jsonOptions.Converters.Any(c => c.CanConvert(type) == false))
-            {
-                var boolValue = ((bool)obj) ? trueString : falseString;
-                return new List<KeyValue>(1) { new KeyValue(key, boolValue) };
-            }
-
             using var bufferWriter = new ByteBufferWriter(sizeHint);
             using var utf8JsonWriter = new Utf8JsonWriter(bufferWriter, new JsonWriterOptions
             {
@@ -68,21 +52,6 @@ namespace WebApiClientCore.Defaults
                 AllowTrailingCommas = jsonOptions.AllowTrailingCommas,
             });
             return GetKeyValueList(key, ref utf8JsonReader);
-        }
-
-        /// <summary>
-        /// 返回类型是否可以使用ToString转换
-        /// </summary>
-        /// <param name="notNullableTpe"></param>
-        /// <returns></returns>
-        private bool TypeCanToString(Type notNullableTpe)
-        {
-            return notNullableTpe == typeof(string)
-              || notNullableTpe == typeof(int)
-              || notNullableTpe == typeof(double)
-              || notNullableTpe == typeof(decimal)
-              || notNullableTpe == typeof(Guid)
-              || notNullableTpe == typeof(float);
         }
 
         /// <summary>
