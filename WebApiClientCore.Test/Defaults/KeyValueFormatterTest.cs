@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using WebApiClientCore.Defaults;
 using Xunit;
 
@@ -9,14 +10,14 @@ namespace WebApiClientCore.Test.Defaults
     {
         [Fact]
         public void SerializeTest()
-        {           
-            var obj1 = new FormatModel { Age = 18, Name = "laojiu" };
+        {
+            var obj1 = new FormatModel { Age = 18, Name = "lao九" };
             var formatter = new KeyValueFormatter();
-            var kvs = formatter.Serialize("pName", obj1, null)
-                .ToDictionary(item => item.Key, item => item.Value);
+            var kvs = formatter.Serialize("pName", obj1, HttpApiOptions.CreateDefaultJsonOptions())
+                .ToDictionary(item => item.Key, item => item.Value, StringComparer.OrdinalIgnoreCase);
 
             Assert.True(kvs.Count == 2);
-            Assert.True(kvs["Name"] == "laojiu");
+            Assert.True(kvs["Name"] == "lao九");
             Assert.True(kvs["Age"] == "18");
 
 
@@ -32,8 +33,8 @@ namespace WebApiClientCore.Test.Defaults
             dic.TryAdd("Key", "Value");
 
             var options = HttpApiOptions.CreateDefaultJsonOptions();
-            var kvs2 = formatter.Serialize("dic", dic, options ); 
-            Assert.True(kvs2.First().Key == "key"); 
+            var kvs2 = formatter.Serialize("dic", dic, options);
+            Assert.True(kvs2.First().Key == "key");
 
 
             Assert.True(formatter.Serialize("null", null, null).Any());

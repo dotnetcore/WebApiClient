@@ -18,7 +18,6 @@ namespace App.Clients
     public interface IUserApi : IHttpApi
     {
         [HttpGet("api/users/{account}")]
-        [Timeout(10*1000)]
         ITask<HttpResponseMessage> GetAsync([Required]string account);
 
         [HttpGet("api/users/{account}")]

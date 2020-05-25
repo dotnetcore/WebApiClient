@@ -11,6 +11,11 @@ namespace WebApiClientCore.Defaults
     public class KeyValueFormatter : IKeyValueFormatter
     {
         /// <summary>
+        /// 512byte
+        /// </summary>
+        private const int normalJsonSize = 512;
+
+        /// <summary>
         /// 序列化对象为键值对
         /// </summary>
         /// <param name="key">对象名称</param>
@@ -31,9 +36,17 @@ namespace WebApiClientCore.Defaults
                 }
             }
 
-            var json = JsonSerializer.SerializeToUtf8Bytes(obj, obj.GetType(), options);
-            var jsonReader = new Utf8JsonReader(json);
-            return GetKeyValues(key, jsonReader);
+            using var bufferWriter = new ByteBufferWriter(normalJsonSize);
+            using var utf8JsonWriter = new Utf8JsonWriter(bufferWriter, new JsonWriterOptions
+            {
+                Indented = false,
+                SkipValidation = true,
+                Encoder = options?.Encoder
+            });
+
+            JsonSerializer.Serialize(utf8JsonWriter, obj, obj.GetType(), options);
+            var utf8JsonReader = new Utf8JsonReader(bufferWriter.WrittenSpan);
+            return GetKeyValues(key, utf8JsonReader);
         }
 
         /// <summary>
