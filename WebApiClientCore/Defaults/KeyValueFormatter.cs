@@ -35,7 +35,7 @@ namespace WebApiClientCore.Defaults
             }
 
             var jsonOptions = options ?? defaultOptions;
-            using var bufferWriter = new ByteBufferWriter(sizeHint);
+            using var bufferWriter = new BufferWriter<byte>(sizeHint);
             using var utf8JsonWriter = new Utf8JsonWriter(bufferWriter, new JsonWriterOptions
             {
                 Indented = false,

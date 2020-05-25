@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Web;
 
 namespace WebApiClientCore
@@ -92,24 +91,44 @@ namespace WebApiClientCore
         /// <returns>替换成功则返回true</returns>
         public bool Replace(string name, string? value)
         {
-            if (this.Uri.OriginalString.Contains('{') == false)
+            var uri = this.Uri.OriginalString;
+            if (uri.Contains('{') == false)
             {
                 return false;
             }
 
-            var replaced = false;
-            var regex = new Regex($"{{{name}}}", RegexOptions.IgnoreCase);
-            var url = regex.Replace(this.Uri.OriginalString, m =>
-            {
-                replaced = true;
-                return HttpUtility.UrlEncode(value, this.Encoding);
-            });
+            using var writer = new BufferWriter<char>(256);
+            var uriSpan = uri.ToLower().AsSpan();
+            var nameSpan = $"{{{name}}}".ToLower().AsSpan();
+            var valueSpan = value == null
+                ? Span<char>.Empty :
+                HttpUtility.UrlEncode(value, this.Encoding).AsSpan();
 
-            if (replaced == true)
+            while (uriSpan.Length > 0)
             {
-                this.Uri = new Uri(url);
+                var index = uriSpan.IndexOf(nameSpan);
+                if (index > -1)
+                {
+                    var left = uriSpan.Slice(0, index);
+                    left.CopyTo(writer.GetSpan(left.Length));
+                    writer.Advance(left.Length);
+
+                    valueSpan.CopyTo(writer.GetSpan(valueSpan.Length));
+                    writer.Advance(valueSpan.Length);
+
+                    uriSpan = uriSpan.Slice(index + nameSpan.Length);
+                }
+                else
+                {
+                    uriSpan.CopyTo(writer.GetSpan(uriSpan.Length));
+                    writer.Advance(uriSpan.Length);
+                    break;
+                }
             }
-            return replaced;
+
+            uri = writer.GetWrittenSpan().ToString();
+            this.Uri = new Uri(uri);
+            return true;
         }
 
         /// <summary>
@@ -148,6 +167,7 @@ namespace WebApiClientCore
                 Span<char>.Empty :
                 originalUri.Slice(this.pathIndex, length).TrimEnd('&').TrimEnd('?');
         }
+
 
         /// <summary>
         /// 转换为字符串

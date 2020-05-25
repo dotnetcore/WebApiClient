@@ -6,10 +6,10 @@ namespace WebApiClientCore
     /// <summary>
     /// 表示字节缓冲区写入对象
     /// </summary>
-    class ByteBufferWriter : IBufferWriter<byte>, IDisposable
+    class BufferWriter<T> : IBufferWriter<T>, IDisposable
     {
         private const int MinimumBufferSize = 256;
-        private IArrayOwner<byte> byteArrayOwner;
+        private IArrayOwner<T> byteArrayOwner;
 
         /// <summary>
         /// 获取已写入的字节数
@@ -32,13 +32,13 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="initialCapacity">初始容量</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public ByteBufferWriter(int initialCapacity)
+        public BufferWriter(int initialCapacity)
         {
             if (initialCapacity <= 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(initialCapacity));
             }
-            this.byteArrayOwner = ArrayPool.Rent<byte>(initialCapacity);
+            this.byteArrayOwner = ArrayPool.Rent<T>(initialCapacity);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace WebApiClientCore
         /// <param name="sizeHint">意图大小</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <returns></returns>
-        public Memory<byte> GetMemory(int sizeHint = 0)
+        public Memory<T> GetMemory(int sizeHint = 0)
         {
             this.CheckAndResizeBuffer(sizeHint);
             return this.byteArrayOwner.Array.AsMemory(this.WrittenCount);
@@ -82,7 +82,7 @@ namespace WebApiClientCore
         /// <param name="sizeHint">意图大小</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <returns></returns>
-        public Span<byte> GetSpan(int sizeHint = 0)
+        public Span<T> GetSpan(int sizeHint = 0)
         {
             this.CheckAndResizeBuffer(sizeHint);
             return byteArrayOwner.Array.AsSpan(this.WrittenCount);
@@ -91,7 +91,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取已数入的数据
         /// </summary>
-        public ReadOnlySpan<byte> GetWrittenSpan()
+        public ReadOnlySpan<T> GetWrittenSpan()
         {
             return this.byteArrayOwner.Array.AsSpan(0, this.WrittenCount);
         }
@@ -99,7 +99,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取已数入的数据
         /// </summary>
-        public ReadOnlyMemory<byte> GetWrittenMemory()
+        public ReadOnlyMemory<T> GetWrittenMemory()
         {
             return this.byteArrayOwner.Array.AsMemory(0, this.WrittenCount);
         }
@@ -135,7 +135,7 @@ namespace WebApiClientCore
                 var newSize = checked(this.Capacity + growBy);
 
                 var oldByteArrayOwner = this.byteArrayOwner;
-                this.byteArrayOwner = ArrayPool.Rent<byte>(newSize);
+                this.byteArrayOwner = ArrayPool.Rent<T>(newSize);
 
                 oldByteArrayOwner.Array.AsSpan(0, this.WrittenCount).CopyTo(this.byteArrayOwner.Array);
                 oldByteArrayOwner.Dispose();
