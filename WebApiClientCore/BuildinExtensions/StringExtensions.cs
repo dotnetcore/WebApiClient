@@ -30,6 +30,12 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static bool RepaceIgnoreCase(this string str, string oldValue, string? newValue, out string replacedString)
         {
+            if (string.IsNullOrEmpty(str) == true)
+            {
+                replacedString = str;
+                return false;
+            }
+
             if (string.IsNullOrEmpty(oldValue) == true)
             {
                 throw new ArgumentNullException(nameof(oldValue));
@@ -45,7 +51,7 @@ namespace WebApiClientCore
             var newValueSpan = newValue.AsSpan();
 
             var replaced = false;
-            using var writer = new BufferWriter<char>(256);
+            using var writer = new BufferWriter<char>(str.Length);
 
             while (strLowerSpan.Length > 0)
             {
