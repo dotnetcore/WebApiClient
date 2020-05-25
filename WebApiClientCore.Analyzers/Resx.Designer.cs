@@ -177,5 +177,23 @@ namespace WebApiClientCore.Analyzers {
                 return ResourceManager.GetString("WA1006_title", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   查找类似 接口必须为public修饰 的本地化字符串。
+        /// </summary>
+        internal static string WA1007_message {
+            get {
+                return ResourceManager.GetString("WA1007_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 不支持的修饰符 的本地化字符串。
+        /// </summary>
+        internal static string WA1007_title {
+            get {
+                return ResourceManager.GetString("WA1007_title", resourceCulture);
+            }
+        }
     }
 }

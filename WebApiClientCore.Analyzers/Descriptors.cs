@@ -43,6 +43,13 @@ namespace WebApiClientCore.Analyzers
         public static DiagnosticDescriptor UriAttributeDescriptor { get; }
             = Create("WA1006", Resx.WA1006_title, Resx.WA1006_message);
 
+
+        /// <summary>
+        /// 修饰符诊断描述器
+        /// </summary>
+        public static DiagnosticDescriptor ModifierDescriptor { get; }
+            = Create("WA1007", Resx.WA1007_title, Resx.WA1007_message);
+
         /// <summary>
         /// 创建诊断描述器
         /// </summary>

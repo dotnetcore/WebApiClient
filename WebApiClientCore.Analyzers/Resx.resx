@@ -156,4 +156,10 @@
   <data name="WA1006_title" xml:space="preserve">
     <value>不支持的修饰的参数索引</value>
   </data>
+  <data name="WA1007_message" xml:space="preserve">
+    <value>接口必须为public修饰</value>
+  </data>
+  <data name="WA1007_title" xml:space="preserve">
+    <value>不支持的修饰符</value>
+  </data>
 </root>

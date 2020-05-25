@@ -26,7 +26,8 @@ namespace WebApiClientCore.Analyzers
                     Descriptors.RefParameterDescriptor,
                     Descriptors.NotMethodDefindedDescriptor,
                     Descriptors.GenericMethodDescriptor,
-                    Descriptors.UriAttributeDescriptor);
+                    Descriptors.UriAttributeDescriptor,
+                    Descriptors.ModifierDescriptor);
             }
         }
 
@@ -62,6 +63,7 @@ namespace WebApiClientCore.Analyzers
             yield return new NotMethodDefindedDiagnostic(context);
             yield return new GenericMethodDiagnostic(context);
             yield return new UriAttributeDiagnostic(context);
+            yield return new ModifierDiagnostic(context);
         }
     }
 }
