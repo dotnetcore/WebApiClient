@@ -15,14 +15,19 @@ namespace WebApiClientCore
     class FormContent : HttpContent
     {
         /// <summary>
-        /// 用于保存表单内容
+        /// buffer预期大小
         /// </summary>
-        private readonly MemoryStream stream = new MemoryStream();
+        private const int sizeHint = 512;
+
+        /// <summary>
+        /// buffer定入器
+        /// </summary>
+        private readonly BufferWriter<byte> writer = new BufferWriter<byte>(sizeHint);
 
         /// <summary>
         /// 默认的http编码
         /// </summary>
-        private static readonly Encoding uriEncoding = Encoding.GetEncoding(28591);
+        private static readonly Encoding httpEncoding = Encoding.GetEncoding(28591);
 
         /// <summary>
         /// 获取对应的ContentType
@@ -58,7 +63,7 @@ namespace WebApiClientCore
 
             formContent = new FormContent();
             var byteArray = await httpContent.ReadAsByteArrayAsync().ConfigureAwait(false);
-            await formContent.AddRawFormAsync(byteArray).ConfigureAwait(false);
+            formContent.AddRawForm(byteArray);
 
             if (disposeHttpContent == true)
             {
@@ -71,8 +76,7 @@ namespace WebApiClientCore
         /// 添加键值对
         /// </summary>
         /// <param name="keyValues">键值对</param>
-        /// <returns></returns>
-        public async Task AddFormFieldAsync(IEnumerable<KeyValue> keyValues)
+        public void AddFormField(IEnumerable<KeyValue> keyValues)
         {
             if (keyValues == null)
             {
@@ -83,45 +87,41 @@ namespace WebApiClientCore
             {
                 var key = HttpUtility.UrlEncodeToBytes(item.Key);
                 var value = item.Value == null ? null : HttpUtility.UrlEncodeToBytes(item.Value);
-                await this.AddRawFormAsync(key, value).ConfigureAwait(false);
+                this.AddRawForm(key, value);
             }
         }
-
 
         /// <summary>
         /// 添加已编码的原始内容表单
         /// </summary>
         /// <param name="form">表单内容</param>
-        /// <returns></returns>
-        public async Task AddRawFormAsync(string? form)
+        public void AddRawForm(string? form)
         {
             if (form == null)
             {
                 return;
             }
 
-            var formBytes = uriEncoding.GetBytes(form);
-            await this.AddRawFormAsync(formBytes).ConfigureAwait(false);
+            var formBytes = httpEncoding.GetBytes(form);
+            this.AddRawForm(formBytes);
         }
-
 
         /// <summary>
         /// 添加已编码的二进制数据内容
         /// </summary>
         /// <param name="form">数据内容</param>
-        /// <returns></returns>
-        private async Task AddRawFormAsync(byte[] form)
+        private void AddRawForm(byte[] form)
         {
             if (form == null || form.Length == 0)
             {
                 return;
             }
 
-            if (this.stream.Length > 0)
+            if (this.writer.WrittenCount > 0)
             {
-                this.stream.WriteByte((byte)'&');
+                this.writer.Write((byte)'&');
             }
-            await this.stream.WriteAsync(form, 0, form.Length).ConfigureAwait(false);
+            this.writer.Write(form);
         }
 
         /// <summary>
@@ -129,20 +129,16 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        /// <returns></returns>
-        private async Task AddRawFormAsync(byte[] key, byte[]? value)
+        private void AddRawForm(byte[] key, byte[]? value)
         {
-            if (this.stream.Length > 0)
+            if (this.writer.WrittenCount > 0)
             {
-                this.stream.WriteByte((byte)'&');
+                this.writer.Write((byte)'&');
             }
 
-            await this.stream.WriteAsync(key, 0, key.Length).ConfigureAwait(false);
-            this.stream.WriteByte((byte)'=');
-            if (value != null && value.Length > 0)
-            {
-                await this.stream.WriteAsync(value, 0, value.Length).ConfigureAwait(false);
-            }
+            this.writer.Write(key);
+            this.writer.Write((byte)'=');
+            this.writer.Write(value);
         }
 
         /// <summary>
@@ -152,7 +148,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         protected override bool TryComputeLength(out long length)
         {
-            length = this.stream.Length;
+            length = this.writer.WrittenCount;
             return true;
         }
 
@@ -162,7 +158,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         protected override Task<Stream> CreateContentReadStreamAsync()
         {
-            var buffer = this.stream.ToArray();
+            var buffer = this.writer.GetWrittenSpan().ToArray();
             var readStream = new MemoryStream(buffer, 0, buffer.Length, writable: false);
             return Task.FromResult<Stream>(readStream);
         }
@@ -175,10 +171,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         protected override async Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
-            var position = this.stream.Position;
-            this.stream.Position = 0;
-            await this.stream.CopyToAsync(stream).ConfigureAwait(false);
-            this.stream.Position = position;
+            await stream.WriteAsync(this.writer.GetWrittenMemory()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -187,7 +180,7 @@ namespace WebApiClientCore
         /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
-            this.stream.Dispose();
+            this.writer.Dispose();
             base.Dispose(disposing);
         }
     }

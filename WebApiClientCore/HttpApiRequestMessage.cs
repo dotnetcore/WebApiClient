@@ -162,7 +162,7 @@ namespace WebApiClientCore
             }
 
             var formContent = await FormContent.FromHttpContentAsync(this.Content).ConfigureAwait(false);
-            await formContent.AddFormFieldAsync(keyValues).ConfigureAwait(false);
+            formContent.AddFormField(keyValues);
             this.Content = formContent;
         }
 
