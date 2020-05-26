@@ -10,27 +10,9 @@ namespace WebApiClientCore
     class UriEditor
     {
         /// <summary>
-        /// uri的fragment
-        /// </summary>
-        private readonly string fragment;
-
-        /// <summary>
-        /// Path的索引
-        /// </summary>
-        private readonly int pathIndex;
-
-        /// <summary>
-        /// fragment长度
-        /// </summary>
-        private readonly int fragmentLength;
-
-
-
-        /// <summary>
         /// 获取当前的Uri
         /// </summary>
         public Uri Uri { get; private set; }
-
 
         /// <summary>
         /// 获取Uri参数的编码
@@ -75,11 +57,6 @@ namespace WebApiClientCore
 
             this.Uri = uri;
             this.Encoding = encoding;
-
-            const int delimiterLength = 3;
-            this.fragment = uri.Fragment;
-            this.pathIndex = uri.AbsoluteUri.IndexOf('/', uri.Scheme.Length + delimiterLength);
-            this.fragmentLength = string.IsNullOrEmpty(uri.Fragment) ? 0 : uri.Fragment.Length;
         }
 
 
@@ -128,21 +105,17 @@ namespace WebApiClientCore
             value = value == null ? null : HttpUtility.UrlEncode(value, this.Encoding);
 
             var uriSpan = this.Uri.OriginalString.AsSpan();
-            if (this.fragment.Length > 0)
-            {
-                uriSpan = uriSpan.Slice(0, uriSpan.Length - this.fragmentLength);
-            }
-            uriSpan = uriSpan.TrimEnd('?').TrimEnd('&');
-
+            var fragmentSpan = this.Uri.Fragment.AsSpan();
+            uriSpan = uriSpan.Slice(0, uriSpan.Length - fragmentSpan.Length).TrimEnd('?').TrimEnd('&');
             var concat = uriSpan.Contains('?') ? '&' : '?';
-            using var writer = new BufferWriter<char>(256);
 
+            using var writer = new BufferWriter<char>(256);
             writer.Write(uriSpan);
             writer.Write(concat);
             writer.Write(name);
             writer.Write('=');
             writer.Write(value);
-            writer.Write(this.fragment);
+            writer.Write(fragmentSpan);
 
             var uri = writer.GetWrittenSpan().ToString();
             this.Uri = new Uri(uri);
