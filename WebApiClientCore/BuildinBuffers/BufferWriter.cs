@@ -89,6 +89,37 @@ namespace WebApiClientCore
         }
 
         /// <summary>
+        /// 写入数据
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public int Write(T value)
+        {
+            const int length = 1;
+            this.GetSpan(length)[0] = value;
+            this.Advance(length);
+            return length;
+        }
+
+        /// <summary>
+        /// 写入数据
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <returns></returns>
+        public int Write(ReadOnlySpan<T> value)
+        {
+            var length = value.Length;
+            if (length == 0)
+            {
+                return 0;
+            }
+
+            value.CopyTo(this.GetSpan(length));
+            this.Advance(length);
+            return length;
+        }
+
+        /// <summary>
         /// 获取已数入的数据
         /// </summary>
         public ReadOnlySpan<T> GetWrittenSpan()

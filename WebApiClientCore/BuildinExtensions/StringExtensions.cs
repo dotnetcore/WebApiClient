@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace WebApiClientCore
 {
@@ -51,7 +50,7 @@ namespace WebApiClientCore
             var newValueSpan = newValue.AsSpan();
 
             var replaced = false;
-            using var writer = new BufferWriter<char>(str.Length);
+            using var writer = new BufferWriter<char>(strSpan.Length);
 
             while (strLowerSpan.Length > 0)
             {
@@ -59,19 +58,11 @@ namespace WebApiClientCore
                 if (index > -1)
                 {
                     // 左边未替换的
-                    if (index > 0)
-                    {
-                        var left = strSpan.Slice(0, index);
-                        left.CopyTo(writer.GetSpan(left.Length));
-                        writer.Advance(left.Length);
-                    }
+                    var left = strSpan.Slice(0, index);
+                    writer.Write(left);
 
                     // 替换的值
-                    if (newValueSpan.Length > 0)
-                    {
-                        newValueSpan.CopyTo(writer.GetSpan(newValueSpan.Length));
-                        writer.Advance(newValueSpan.Length);
-                    }
+                    writer.Write(newValueSpan);
 
                     // 切割长度
                     var sliceLength = index + oldValueLowerSpan.Length;
@@ -87,10 +78,7 @@ namespace WebApiClientCore
                     // 替换过剩下的原始值
                     if (replaced == true)
                     {
-                        Debug.Assert(strSpan.Length > 0);
-
-                        strSpan.CopyTo(writer.GetSpan(strSpan.Length));
-                        writer.Advance(strSpan.Length);
+                        writer.Write(strSpan);
                     }
 
                     // 再也无匹配替换值，退出

@@ -125,29 +125,28 @@ namespace WebApiClientCore
             }
 
             name = HttpUtility.UrlEncode(name, this.Encoding);
-            value = HttpUtility.UrlEncode(value, this.Encoding);
+            value = value == null ? null : HttpUtility.UrlEncode(value, this.Encoding);
 
-            var pathQuery = this.GetPathAndQuery();
-            var concat = pathQuery.Contains('?') ? "&" : "?";
-            var relativeUri = $"{pathQuery.ToString()}{concat}{name}={value}{this.fragment}";
+            var uriSpan = this.Uri.OriginalString.AsSpan();
+            if (this.fragment.Length > 0)
+            {
+                uriSpan = uriSpan.Slice(0, uriSpan.Length - this.fragmentLength);
+            }
+            uriSpan = uriSpan.TrimEnd('?').TrimEnd('&');
 
-            this.Uri = new Uri(this.Uri, relativeUri);
+            var concat = uriSpan.Contains('?') ? '&' : '?';
+            using var writer = new BufferWriter<char>(256);
+
+            writer.Write(uriSpan);
+            writer.Write(concat);
+            writer.Write(name);
+            writer.Write('=');
+            writer.Write(value);
+            writer.Write(this.fragment);
+
+            var uri = writer.GetWrittenSpan().ToString();
+            this.Uri = new Uri(uri);
         }
-
-        /// <summary>
-        /// 获取原始的PathAndQuery
-        /// </summary>
-        /// <returns></returns>
-        private ReadOnlySpan<char> GetPathAndQuery()
-        {
-            var originalUri = this.Uri.OriginalString.AsSpan();
-            var length = originalUri.Length - this.pathIndex - this.fragmentLength;
-
-            return length == 0 ?
-                Span<char>.Empty :
-                originalUri.Slice(this.pathIndex, length).TrimEnd('&').TrimEnd('?');
-        }
-
 
         /// <summary>
         /// 转换为字符串
