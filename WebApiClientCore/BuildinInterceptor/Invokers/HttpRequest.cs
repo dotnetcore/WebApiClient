@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using WebApiClientCore.Exceptions;
 
 namespace WebApiClientCore
 {
@@ -18,9 +19,15 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="context"></param>
         /// <exception cref="HttpRequestException"></exception>
+        /// <exception cref="ApiInvalidConfigException"></exception>
         /// <returns></returns>
         public static async Task<ApiResponseContext> SendAsync(ApiRequestContext context)
         {
+            if (context.HttpContext.RequestMessage.RequestUri == null)
+            {
+                throw new ApiInvalidConfigException(Resx.required_HttpHost);
+            }
+
             var actionCache = await GetCaheAsync(context).ConfigureAwait(false);
             if (actionCache != null && actionCache.Value != null)
             {
