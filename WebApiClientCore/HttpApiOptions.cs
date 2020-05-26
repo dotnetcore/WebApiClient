@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using WebApiClientCore.JsonConverters;
 
 namespace WebApiClientCore
 {
@@ -56,10 +55,7 @@ namespace WebApiClientCore
                 PropertyNameCaseInsensitive = true,
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            };
-
-            options.Converters.Add(JsonStringConverter.Default);
-            options.Converters.Add(FormDataFileJsonConverter.Default);            
+            };           
             return options;
         }
     }

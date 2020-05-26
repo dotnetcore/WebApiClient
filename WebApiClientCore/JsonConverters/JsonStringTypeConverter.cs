@@ -7,14 +7,14 @@ using WebApiClientCore.Exceptions;
 namespace WebApiClientCore.JsonConverters
 {
     /// <summary>
-    /// JsonString的类型转换器
+    /// 表示JsonString的类型转换器
     /// </summary>
-    class JsonStringConverter : JsonConverterFactory
+    public class JsonStringTypeConverter : JsonConverterFactory
     {
         /// <summary>
-        /// 获取唯一实例
+        /// 获取默认实例
         /// </summary>
-        public static JsonStringConverter Default { get; } = new JsonStringConverter();
+        public static JsonStringTypeConverter Default { get; } = new JsonStringTypeConverter();
 
         /// <summary>
         /// 返回是否可以转换

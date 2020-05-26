@@ -7,21 +7,25 @@
  
 
 ### Benchmark
-BenchmarkDotNet=v0.12.1, OS=Windows 10.0.18362.778 (1903/May2019Update/19H1)
-Intel Core i3-4150 CPU 3.50GHz (Haswell), 1 CPU, 4 logical and 2 physical cores
-.NET Core SDK=3.1.202
-  [Host]     : .NET Core 3.1.4 (CoreCLR 4.700.20.20201, CoreFX 4.700.20.22101), X64 RyuJIT
-  DefaultJob : .NET Core 3.1.4 (CoreCLR 4.700.20.20201, CoreFX 4.700.20.22101), X64 RyuJIT
+``` ini
+BenchmarkDotNet=v0.12.1, OS=Windows 10.0.18363.836 (1909/November2018Update/19H2)
+Intel Core i7-8565U CPU 1.80GHz (Whiskey Lake), 1 CPU, 8 logical and 4 physical cores
+.NET Core SDK=3.1.201
+  [Host]     : .NET Core 3.1.3 (CoreCLR 4.700.20.11803, CoreFX 4.700.20.12001), X64 RyuJIT
+  DefaultJob : .NET Core 3.1.3 (CoreCLR 4.700.20.11803, CoreFX 4.700.20.12001), X64 RyuJIT
+```
+|                    Method |      Mean |     Error |    StdDev |
+|-------------------------- |----------:|----------:|----------:|
+|     WebApiClient_GetAsync | 25.602 μs | 0.3146 μs | 0.2943 μs |
+| WebApiClientCore_GetAsync | 10.133 μs | 0.1286 μs | 0.1074 μs |
+|       HttpClient_GetAsync |  2.291 μs | 0.0456 μs | 0.1011 μs |
 
+|                     Method |      Mean |     Error |    StdDev |
+|--------------------------- |----------:|----------:|----------:|
+|     WebApiClient_PostAsync | 18.832 μs | 0.2402 μs | 0.2246 μs |
+| WebApiClientCore_PostAsync |  8.945 μs | 0.1534 μs | 0.1360 μs |
+|       HttpClient_PostAsync |  3.514 μs | 0.0400 μs | 0.0334 μs |
 
-|                     Method |       Mean |      Error |     StdDev |
-|--------------------------- |-----------:|-----------:|-----------:|
-|      WebApiClient_GetAsync | 279.479 us | 22.5466 us | 64.3268 us |
-|  WebApiClientCore_GetAsync |  25.298 us |  0.4953 us |  0.7999 us |
-|        HttpClient_GetAsync |   2.849 us |  0.0568 us |  0.1393 us |
-|     WebApiClient_PostAsync |  25.942 us |  0.3817 us |  0.3188 us |
-| WebApiClientCore_PostAsync |  13.462 us |  0.2551 us |  0.6258 us |
-|       HttpClient_PostAsync |   4.515 us |  0.0866 us |  0.0926 us |
 
 
 
@@ -591,7 +595,7 @@ class Model
 ```
 我们在构建这个Model的实例时，不得不使用json序列化将field2的实例得到json文本，然后赋值给field2这个string属性，工作量大而且没有约束性。
 
-依托于`JsonString<>`这个类型，现在只要我们把Field2结构声明为强类型模型，然后包装为`JsonString<>`类型即可。
+依托于`JsonString<>`这个类型，现在只要我们把Field2结构声明为强类型模型，然后包装为`JsonString<>`类型，最后为HttpApiOptions添加JsonStringTypeConverter即可。
 
 ```
 class Model
@@ -610,7 +614,16 @@ class Field2Data
 {
     public string data1 {get; set;}
 }
-```
+
+
+// 添加转换器 
+services
+    .AddHttpApi<IMyApi>(o =>
+    {
+        o.HttpHost = new Uri("http://localhost:6000/");
+        o.KeyValueSerializeOptions.Converters.Add(JsonStringTypeConverter.Default);
+    }); 
+``` 
 
 #### 响应未指明ContentType
 明明响应的内容肉眼看上是json内容，但服务响应头里没有ContentType告诉客户端这内容是json，这好比客户端使用Form或json提交时就不在请求头告诉服务器内容格式是什么，而是让服务器猜测一样的道理。
