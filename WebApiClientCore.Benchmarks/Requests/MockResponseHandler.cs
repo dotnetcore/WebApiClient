@@ -11,18 +11,18 @@ namespace WebApiClientCore.Benchmarks.Requests
     /// </summary>
     class MockResponseHandler : DelegatingHandler
     {
-        private readonly HttpResponseMessage benchmarkModelResponseMessage;
+        private readonly byte[] json;
 
         public MockResponseHandler()
         {
             var model = new Model { A = "A", B = 2, C = 3d };
-            var json = JsonSerializer.SerializeToUtf8Bytes(model);
-            this.benchmarkModelResponseMessage = new HttpResponseMessage(HttpStatusCode.OK) { Content = new JsonContent(json) };
+            this.json = JsonSerializer.SerializeToUtf8Bytes(model);
         }
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            return Task.FromResult(this.benchmarkModelResponseMessage);
+            var response = new HttpResponseMessage(HttpStatusCode.OK) { Content = new JsonContent(this.json) };
+            return Task.FromResult(response);
         }
     }
 }

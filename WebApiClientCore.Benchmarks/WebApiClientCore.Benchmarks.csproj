@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
-    <PackageReference Include="WebApiClient.JIT" Version="1.1.3" />
+    <PackageReference Include="Refit.HttpClientFactory" Version="5.1.67" />
   </ItemGroup>
 
   <ItemGroup>

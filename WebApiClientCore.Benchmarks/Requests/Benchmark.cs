@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Refit;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace WebApiClientCore.Benchmarks.Requests
 {
@@ -19,27 +19,31 @@ namespace WebApiClientCore.Benchmarks.Requests
                 .AddHttpMessageHandler(() => new MockResponseHandler());
 
             services
-                .AddHttpApi<IWebApiClientCoreApi>(o => o.HttpHost = new Uri("http://webapiclient.com/"))
-                .AddHttpMessageHandler(() => new MockResponseHandler());
+                .AddHttpApi<IWebApiClientCoreApi>()
+                .AddHttpMessageHandler(() => new MockResponseHandler())
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://webapiclient.com/"));
 
-            WebApiClient.Extension
-                .AddHttpApi<IWebApiClientApi>(services, o => o.HttpHost = new Uri("http://webapiclient.com/"))
-                .AddHttpMessageHandler(() => new MockResponseHandler());
+            services
+                .AddRefitClient<IRefitApi>()
+                .AddHttpMessageHandler(() => new MockResponseHandler())
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://webapiclient.com/"));
 
             this.ServiceProvider = services.BuildServiceProvider();
-
             this.PreheatAsync().Wait();
         }
 
         private async Task PreheatAsync()
         {
             using var scope = this.ServiceProvider.CreateScope();
-            var api = scope.ServiceProvider.GetService<IWebApiClientApi>();
-            var coreApi = scope.ServiceProvider.GetService<IWebApiClientCoreApi>();
-            await api.GetAsyc("id");
-            await coreApi.GetAsyc("id");
-            await api.PostAsync(new Model { });
-            await coreApi.PostAsync(new Model { });
+
+            var core = scope.ServiceProvider.GetService<IWebApiClientCoreApi>();
+            var refit = scope.ServiceProvider.GetService<IRefitApi>();
+
+            await core.GetAsyc("id");
+            await core.PostAsync(new Model { });
+
+            await refit.GetAsyc("id");
+            await refit.PostAsync(new Model { });
         }
     }
 }

@@ -7,27 +7,26 @@
  
 
 ### Benchmark
+使用[MockResponseHandler](https://github.com/dotnetcore/WebApiClient/tree/master/WebApiClientCore.Benchmarks/Requests)消除真实http请求，原生HttpClient、WebApiClientCore和[Refit](https://github.com/reactiveui/refit)的性能参考：
+
 ``` ini
-BenchmarkDotNet=v0.12.1, OS=Windows 10.0.18363.836 (1909/November2018Update/19H2)
-Intel Core i7-8565U CPU 1.80GHz (Whiskey Lake), 1 CPU, 8 logical and 4 physical cores
-.NET Core SDK=3.1.201
-  [Host]     : .NET Core 3.1.3 (CoreCLR 4.700.20.11803, CoreFX 4.700.20.12001), X64 RyuJIT
-  DefaultJob : .NET Core 3.1.3 (CoreCLR 4.700.20.11803, CoreFX 4.700.20.12001), X64 RyuJIT
+BenchmarkDotNet=v0.12.1, OS=Windows 10.0.18362.836 (1903/May2019Update/19H1)
+Intel Core i3-4150 CPU 3.50GHz (Haswell), 1 CPU, 4 logical and 2 physical cores
+.NET Core SDK=3.1.202
+  [Host]     : .NET Core 3.1.4 (CoreCLR 4.700.20.20201, CoreFX 4.700.20.22101), X64 RyuJIT
+  DefaultJob : .NET Core 3.1.4 (CoreCLR 4.700.20.20201, CoreFX 4.700.20.22101), X64 RyuJIT
 ```
 |                    Method |      Mean |     Error |    StdDev |
 |-------------------------- |----------:|----------:|----------:|
-|     WebApiClient_GetAsync | 25.602 μs | 0.3146 μs | 0.2943 μs |
-| WebApiClientCore_GetAsync | 10.133 μs | 0.1286 μs | 0.1074 μs |
-|       HttpClient_GetAsync |  2.291 μs | 0.0456 μs | 0.1011 μs |
+|       HttpClient_GetAsync |  3.945 μs | 0.2050 μs | 0.5850 μs |
+| WebApiClientCore_GetAsync | 13.320 μs | 0.2604 μs | 0.3199 μs |
+|            Refit_GetAsync | 43.503 μs | 0.8489 μs | 1.0426 μs |
 
 |                     Method |      Mean |     Error |    StdDev |
 |--------------------------- |----------:|----------:|----------:|
-|     WebApiClient_PostAsync | 18.832 μs | 0.2402 μs | 0.2246 μs |
-| WebApiClientCore_PostAsync |  8.945 μs | 0.1534 μs | 0.1360 μs |
-|       HttpClient_PostAsync |  3.514 μs | 0.0400 μs | 0.0334 μs |
-
-
-
+|       HttpClient_PostAsync |  4.876 μs | 0.0972 μs | 0.2092 μs |
+| WebApiClientCore_PostAsync | 14.018 μs | 0.1829 μs | 0.2246 μs |
+|            Refit_PostAsync | 46.512 μs | 0.7885 μs | 0.7376 μs |
 
 
 

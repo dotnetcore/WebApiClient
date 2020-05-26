@@ -12,32 +12,6 @@ namespace WebApiClientCore.Benchmarks.Requests
     public class PostBenchmark : BenChmark
     {
         /// <summary>
-        /// 使用WebApiClient.JIT请求
-        /// </summary>
-        /// <returns></returns>
-        [Benchmark]
-        public async Task<Model> WebApiClient_PostAsync()
-        {
-            using var scope = this.ServiceProvider.CreateScope();
-            var banchmarkApi = scope.ServiceProvider.GetRequiredService<IWebApiClientApi>();
-            var input = new Model { A = "a" };
-            return await banchmarkApi.PostAsync(input);
-        }
-
-        /// <summary>
-        /// 使用WebApiClientCore请求
-        /// </summary>
-        /// <returns></returns>
-        [Benchmark]
-        public async Task<Model> WebApiClientCore_PostAsync()
-        {
-            using var scope = this.ServiceProvider.CreateScope();
-            var banchmarkApi = scope.ServiceProvider.GetRequiredService<IWebApiClientCoreApi>();
-            var input = new Model { A = "a" };
-            return await banchmarkApi.PostAsync(input);
-        }
-
-        /// <summary>
         /// 使用原生HttpClient请求
         /// </summary>
         /// <returns></returns>
@@ -57,6 +31,29 @@ namespace WebApiClientCore.Benchmarks.Requests
             var response = await httpClient.SendAsync(request);
             json = await response.Content.ReadAsByteArrayAsync();
             return JsonSerializer.Deserialize<Model>(json);
+        }
+
+        /// <summary>
+        /// 使用WebApiClientCore请求
+        /// </summary>
+        /// <returns></returns>
+        [Benchmark]
+        public async Task<Model> WebApiClientCore_PostAsync()
+        {
+            using var scope = this.ServiceProvider.CreateScope();
+            var banchmarkApi = scope.ServiceProvider.GetRequiredService<IWebApiClientCoreApi>();
+            var input = new Model { A = "a" };
+            return await banchmarkApi.PostAsync(input);
+        }
+
+
+        [Benchmark]
+        public async Task<Model> Refit_PostAsync()
+        {
+            using var scope = this.ServiceProvider.CreateScope();
+            var banchmarkApi = scope.ServiceProvider.GetRequiredService<IRefitApi>();
+            var input = new Model { A = "a" };
+            return await banchmarkApi.PostAsync(input);
         }
     }
 }
