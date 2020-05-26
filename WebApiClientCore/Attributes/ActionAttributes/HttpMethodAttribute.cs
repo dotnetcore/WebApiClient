@@ -9,8 +9,8 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示http请求方法描述特性
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     [DebuggerDisplay("Method = {Method}")]
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]   
     public class HttpMethodAttribute : ApiActionAttribute
     {
         /// <summary>
@@ -87,11 +87,11 @@ namespace WebApiClientCore.Attributes
         /// <param name="relative"></param>
         /// <exception cref="ApiInvalidConfigException"></exception>
         /// <returns></returns>
-        private static Uri GetRequestUri(Uri? baseUri, Uri? relative)
+        private static Uri? GetRequestUri(Uri? baseUri, Uri? relative)
         {
             if (baseUri == null)
             {
-                if (relative == null || relative.IsAbsoluteUri == false)
+                if (relative != null && relative.IsAbsoluteUri == false)
                 {
                     throw new ApiInvalidConfigException(Resx.required_HttpHost);
                 }
