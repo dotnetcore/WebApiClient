@@ -63,7 +63,7 @@ namespace WebApiClientCore
 
             formContent = new FormContent();
             var byteArray = await httpContent.ReadAsByteArrayAsync().ConfigureAwait(false);
-            formContent.AddRawForm(byteArray);
+            formContent.AddForm(byteArray);
 
             if (disposeHttpContent == true)
             {
@@ -85,34 +85,34 @@ namespace WebApiClientCore
 
             foreach (var item in keyValues)
             {
-                var key = HttpUtility.UrlEncodeToBytes(item.Key);
-                var value = item.Value == null ? null : HttpUtility.UrlEncodeToBytes(item.Value);
-                this.AddRawForm(key, value);
+                var encodedKey = HttpUtility.UrlEncodeToBytes(item.Key);
+                var encodedValue = item.Value == null ? null : HttpUtility.UrlEncodeToBytes(item.Value);
+                this.AddKeyValue(encodedKey, encodedValue);
             }
         }
 
         /// <summary>
         /// 添加已编码的原始内容表单
         /// </summary>
-        /// <param name="form">表单内容</param>
-        public void AddRawForm(string? form)
+        /// <param name="encodedForm">表单内容</param>
+        public void AddForm(string? encodedForm)
         {
-            if (form == null)
+            if (encodedForm == null)
             {
                 return;
             }
 
-            var formBytes = httpEncoding.GetBytes(form);
-            this.AddRawForm(formBytes);
+            var formBytes = httpEncoding.GetBytes(encodedForm);
+            this.AddForm(formBytes);
         }
 
         /// <summary>
         /// 添加已编码的二进制数据内容
         /// </summary>
-        /// <param name="form">数据内容</param>
-        private void AddRawForm(byte[] form)
+        /// <param name="encodedForm">数据内容</param>
+        private void AddForm(byte[] encodedForm)
         {
-            if (form == null || form.Length == 0)
+            if (encodedForm == null || encodedForm.Length == 0)
             {
                 return;
             }
@@ -121,24 +121,24 @@ namespace WebApiClientCore
             {
                 this.writer.Write((byte)'&');
             }
-            this.writer.Write(form);
+            this.writer.Write(encodedForm);
         }
 
         /// <summary>
         /// 添加已编码的二进制数据内容
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        private void AddRawForm(byte[] key, byte[]? value)
+        /// <param name="encodedKey"></param>
+        /// <param name="encodedValue"></param>
+        private void AddKeyValue(byte[] encodedKey, byte[]? encodedValue)
         {
             if (this.writer.WrittenCount > 0)
             {
                 this.writer.Write((byte)'&');
             }
 
-            this.writer.Write(key);
+            this.writer.Write(encodedKey);
             this.writer.Write((byte)'=');
-            this.writer.Write(value);
+            this.writer.Write(encodedValue);
         }
 
         /// <summary>

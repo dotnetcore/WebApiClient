@@ -18,7 +18,7 @@ namespace WebApiClientCore.Attributes
         {
             var form = context.ParameterValue?.ToString();
             var fromContent = await FormContent.FromHttpContentAsync(context.HttpContext.RequestMessage.Content).ConfigureAwait(false);
-            fromContent.AddRawForm(form);
+            fromContent.AddForm(form);
             context.HttpContext.RequestMessage.Content = fromContent;
         }
     }

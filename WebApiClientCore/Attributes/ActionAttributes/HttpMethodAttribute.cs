@@ -73,7 +73,7 @@ namespace WebApiClientCore.Attributes
         {
             var baseUri = context.HttpContext.RequestMessage.RequestUri;
             var relative = string.IsNullOrEmpty(this.Path) ? null : new Uri(this.Path, UriKind.RelativeOrAbsolute);
-            var requestUri = this.GetRequestUri(baseUri, relative);
+            var requestUri = GetRequestUri(baseUri, relative);
 
             context.HttpContext.RequestMessage.Method = this.Method;
             context.HttpContext.RequestMessage.RequestUri = requestUri;
@@ -87,20 +87,28 @@ namespace WebApiClientCore.Attributes
         /// <param name="relative"></param>
         /// <exception cref="ApiInvalidConfigException"></exception>
         /// <returns></returns>
-        private Uri? GetRequestUri(Uri? baseUri, Uri? relative)
+        private static Uri GetRequestUri(Uri? baseUri, Uri? relative)
         {
             if (baseUri == null)
             {
-                if (relative == null || relative.IsAbsoluteUri == true)
+                if (relative == null || relative.IsAbsoluteUri == false)
                 {
-                    return relative;
+                    throw new ApiInvalidConfigException(Resx.required_HttpHost);
                 }
-                throw new ApiInvalidConfigException(Resx.required_HttpHost);
+                return relative;
             }
-            else
+
+            if (relative == null)
             {
-                return relative == null ? baseUri : new Uri(baseUri, relative);
+                return baseUri;
             }
+
+            if (relative.IsAbsoluteUri == true)
+            {
+                return relative;
+            }
+
+            return new Uri(baseUri, relative);
         }
     }
 }
