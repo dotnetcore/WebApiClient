@@ -8,7 +8,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
     /// <summary>
     /// 表示Token提供者抽象类
     /// </summary>
-    public abstract class TokenProvider : ITokenProvider, IDisposable
+    public abstract class TokenProvider : Disposable, ITokenProvider
     {
         /// <summary>
         /// 最近请求到的token
@@ -95,7 +95,8 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <summary>
         /// 释放资源
         /// </summary>
-        public void Dispose()
+        /// <param name="disposing"></param>
+        protected override void Dispose(bool disposing)
         {
             this.asyncRoot.Dispose();
         }

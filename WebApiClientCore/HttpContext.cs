@@ -6,7 +6,7 @@ namespace WebApiClientCore
     /// <summary>
     /// 表示http上下文
     /// </summary>
-    public class HttpContext : IDisposable
+    public class HttpContext : Disposable
     {
         /// <summary>
         /// 获取关联的HttpClient实例
@@ -46,12 +46,13 @@ namespace WebApiClientCore
             this.Services = services ?? throw new ArgumentNullException(nameof(services));
             this.Options = options ?? throw new ArgumentNullException(nameof(options));
             this.RequestMessage = new HttpApiRequestMessage { RequestUri = options.HttpHost ?? client.BaseAddress };
-        }         
+        }
 
         /// <summary>
         /// 释放资源
-        /// </summary> 
-        void IDisposable.Dispose()
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected override void Dispose(bool disposing)
         {
             this.RequestMessage?.Dispose();
         }

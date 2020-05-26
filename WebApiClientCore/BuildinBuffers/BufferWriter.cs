@@ -6,7 +6,7 @@ namespace WebApiClientCore
     /// <summary>
     /// 表示字节缓冲区写入对象
     /// </summary>
-    class BufferWriter<T> : IBufferWriter<T>, IDisposable
+    class BufferWriter<T> : Disposable, IBufferWriter<T>
     {
         private const int MinimumBufferSize = 256;
         private IArrayOwner<T> byteArrayOwner;
@@ -138,7 +138,8 @@ namespace WebApiClientCore
         /// <summary>
         /// 释放资源
         /// </summary>
-        public void Dispose()
+        /// <param name="disposing"></param>
+        protected override void Dispose(bool disposing)
         {
             this.byteArrayOwner?.Dispose();
         }

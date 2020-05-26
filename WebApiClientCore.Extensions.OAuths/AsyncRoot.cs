@@ -7,7 +7,7 @@ namespace WebApiClientCore.Extensions.OAuths
     /// <summary>
     /// 提供异步锁
     /// </summary>
-    class AsyncRoot : IDisposable
+    class AsyncRoot : Disposable
     {
         /// <summary>
         /// 信号量
@@ -56,7 +56,8 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <summary>
         /// 释放资源
         /// </summary>
-        public void Dispose()
+        /// <param name="disposing"></param>
+        protected override void Dispose(bool disposing)
         {
             this.semaphoreSlim.Dispose();
         }
@@ -64,7 +65,7 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <summary>
         /// 提供解锁
         /// </summary>
-        private class UnLocker : IDisposable
+        private class UnLocker : Disposable
         {
             /// <summary>
             /// 信号量
@@ -83,7 +84,8 @@ namespace WebApiClientCore.Extensions.OAuths
             /// <summary>
             /// 释放锁
             /// </summary>
-            public void Dispose()
+            /// <param name="disposing"></param>
+            protected override void Dispose(bool disposing)
             {
                 this.root.semaphoreSlim.Release();
             }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace WebApiClientCore.Test.Attributes.ParameterAttributes
 {
-    public interface IMyApi : IDisposable
+    public interface IMyApi
     {
         ITask<HttpResponseMessage> PostAsync(object headers);
     }

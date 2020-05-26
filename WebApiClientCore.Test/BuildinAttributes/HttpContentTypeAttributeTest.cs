@@ -8,7 +8,7 @@ namespace WebApiClientCore.Test.BuildinAttributes
 {
     public class HttpContentTypeAttributeTest
     {
-        public interface IMyApi : IDisposable
+        public interface IMyApi
         {
             ITask<HttpResponseMessage> PostAsync(HttpContent content);
         }
