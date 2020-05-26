@@ -34,6 +34,13 @@ namespace WebApiClientCore.Defaults
                 return new List<KeyValue>(1) { keyValue };
             }
 
+            var objType = obj.GetType();
+            if (objType == typeof(string))
+            {
+                var keyValue = new KeyValue(key, obj.ToString());
+                return new List<KeyValue>(1) { keyValue };
+            }
+
             var jsonOptions = options ?? defaultOptions;
             using var bufferWriter = new BufferWriter<byte>(sizeHint);
             using var utf8JsonWriter = new Utf8JsonWriter(bufferWriter, new JsonWriterOptions
@@ -43,7 +50,7 @@ namespace WebApiClientCore.Defaults
                 Encoder = jsonOptions.Encoder
             });
 
-            JsonSerializer.Serialize(utf8JsonWriter, obj, obj.GetType(), options);
+            JsonSerializer.Serialize(utf8JsonWriter, obj, objType, options);
             var span = bufferWriter.GetWrittenSpan();
             var utf8JsonReader = new Utf8JsonReader(span, new JsonReaderOptions
             {
