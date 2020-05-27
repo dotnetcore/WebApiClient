@@ -5,7 +5,7 @@ namespace WebApiClientCore
     /// <summary>
     /// 可以在客户端请求中指定的 HTTP 标头
     /// </summary>
-    public enum HttpRequestHeader
+    public enum HttpRequestHeader : byte
     {
         /// <summary>
         /// Cache-Control 标头，指定请求/响应链上所有缓存控制机制必须服从的指令

@@ -3,7 +3,7 @@
     /// <summary>
     /// 缓存策略
     /// </summary>
-    public enum CachePolicy
+    public enum CachePolicy : byte
     {
         /// <summary>
         /// 尝试使用缓存

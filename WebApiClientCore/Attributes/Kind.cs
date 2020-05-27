@@ -3,7 +3,7 @@
     /// <summary>
     /// 表示参数类型
     /// </summary>
-    public enum Kind
+    public enum Kind : byte
     {
         /// <summary>
         /// Uri路径参数

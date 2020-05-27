@@ -3,7 +3,7 @@
     /// <summary>
     /// 表示结果状态
     /// </summary>
-    public enum ResultStatus
+    public enum ResultStatus : byte
     {
         /// <summary>
         /// 无状态

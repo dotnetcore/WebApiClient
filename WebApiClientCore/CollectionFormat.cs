@@ -3,7 +3,7 @@
     /// <summary>
     /// 集合格式化方式
     /// </summary>
-    public enum CollectionFormat
+    public enum CollectionFormat : byte
     {
         /// <summary>
         /// 逗号分隔
