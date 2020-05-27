@@ -18,7 +18,7 @@ namespace App.Clients
         {
             var user = new User
             {
-                Account = "laojiu",
+                Account = "lao九",
                 Password = "123456",
                 BirthDay = DateTime.Parse("2018-01-01 12:30:30"),
                 Email = "laojiu@webapiclient.com",

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -13,7 +14,7 @@ namespace WebApiClientCore.Serialization
         /// <summary>
         /// 包装的jsonOptions
         /// </summary>
-        private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions();
+        private readonly JsonSerializerOptions jsonOptions;
 
         /// <summary>
         /// 获取转换器
@@ -74,6 +75,18 @@ namespace WebApiClientCore.Serialization
         /// </summary>
         public KeyNamingStyle KeyNamingStyle { get; set; }
 
+        /// <summary>
+        /// KeyValue序列化选项
+        /// </summary>
+        public KeyValueSerializerOptions()
+        {
+            this.jsonOptions = new JsonSerializerOptions
+            {
+                DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            };
+        }
 
         /// <summary>
         /// 返回类型的转换器
