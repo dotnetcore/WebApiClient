@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using System;
 using WebApiClientCore;
 using WebApiClientCore.Defaults;
+using WebApiClientCore.Serialization;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -19,9 +20,9 @@ namespace Microsoft.Extensions.DependencyInjection
         private static IServiceCollection AddHttpApi(this IServiceCollection services)
         {
             services.AddMemoryCache();
-            services.TryAddSingleton<IXmlFormatter, XmlFormatter>();
-            services.TryAddSingleton<IJsonFormatter, JsonFormatter>();
-            services.TryAddSingleton<IKeyValueFormatter, KeyValueFormatter>();
+            services.TryAddSingleton<IXmlSerializer, XmlSerializer>();
+            services.TryAddSingleton<IJsonSerializer, JsonSerializer>();
+            services.TryAddSingleton<IKeyValueSerializer, KeyValueSerializer>();
             services.TryAddSingleton<IResponseCacheProvider, ResponseCacheProvider>();
             return services;
         }

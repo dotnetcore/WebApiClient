@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 使用XmlFormatter序列化参数值得到的xml文本作为application/xml请求
+    /// 使用XmlSerializer序列化参数值得到的xml文本作为application/xml请求
     /// </summary>
     public class XmlContentAttribute : HttpContentAttribute, IEncodingable
     {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
+using WebApiClientCore.Serialization;
 
 namespace WebApiClientCore
 {
@@ -69,10 +70,10 @@ namespace WebApiClientCore
                 return objType.DefaultValue();
             }
 
-            var formatter = this.HttpContext.Services.GetRequiredService<IJsonFormatter>();
+            var serializer = this.HttpContext.Services.GetRequiredService<IJsonSerializer>();
             var json = await this.HttpContext.ResponseMessage.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
             var options = this.HttpContext.Options.JsonDeserializeOptions;
-            return formatter.Deserialize(json, objType, options);
+            return serializer.Deserialize(json, objType, options);
         }
 
         /// <summary>
@@ -87,9 +88,9 @@ namespace WebApiClientCore
                 return objType.DefaultValue();
             }
 
-            var formatter = this.HttpContext.Services.GetRequiredService<IXmlFormatter>();
+            var serializer = this.HttpContext.Services.GetRequiredService<IXmlSerializer>();
             var xml = await this.HttpContext.ResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return formatter.Deserialize(xml, objType);
+            return serializer.Deserialize(xml, objType);
         }
     }
 }

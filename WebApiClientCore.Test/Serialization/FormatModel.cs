@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace WebApiClientCore.Test.Defaults
+namespace WebApiClientCore.Test.Serialization
 {
     public class FormatModel
     {

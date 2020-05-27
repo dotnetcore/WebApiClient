@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using WebApiClientCore.JsonConverters;
+using WebApiClientCore.Serialization.JsonConverters;
 using Xunit;
 
 namespace WebApiClientCore.Test
@@ -9,7 +9,8 @@ namespace WebApiClientCore.Test
         [Fact]
         public void JsonStringReadWriteTest()
         {
-            var options = HttpApiOptions.CreateDefaultJsonOptions(); 
+            var options = new HttpApiOptions().JsonSerializeOptions;
+
             options.Converters.Add(JsonStringTypeConverter.Default);
             var b = new JsonString<B>(new B());
             var json1 = JsonSerializer.Serialize(b, options);

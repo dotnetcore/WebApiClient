@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClientCore.Attributes;
+using WebApiClientCore.Serialization;
 using Xunit;
 
 namespace WebApiClientCore.Test.Attributes.ParameterAttributes
@@ -34,7 +35,7 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
             await attr.OnRequestAsync(new ApiParameterContext(context, 0));
 
             var body = await context.HttpContext.RequestMessage.Content.ReadAsStringAsync();
-            var target = context.HttpContext.Services.GetService<IXmlFormatter>().Serialize(context.Arguments[0], Encoding.UTF8);
+            var target = context.HttpContext.Services.GetService<IXmlSerializer>().Serialize(context.Arguments[0], Encoding.UTF8);
             Assert.True(body == target);
         }
     }

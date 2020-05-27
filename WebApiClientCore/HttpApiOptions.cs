@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using WebApiClientCore.Serialization;
 
 namespace WebApiClientCore
 {
@@ -29,34 +30,40 @@ namespace WebApiClientCore
 
 
         /// <summary>
-        /// 获取或设置json序列化选项
+        /// 获取json序列化选项
         /// </summary>
-        public JsonSerializerOptions JsonSerializeOptions { get; set; } = CreateDefaultJsonOptions();
+        public JsonSerializerOptions JsonSerializeOptions { get; } = new JsonSerializerOptions();
 
         /// <summary>
-        /// 获取或设置json反序列化选项
+        /// 获取json反序列化选项
         /// </summary>
-        public JsonSerializerOptions JsonDeserializeOptions { get; set; } = CreateDefaultJsonOptions();
+        public JsonSerializerOptions JsonDeserializeOptions { get; } = new JsonSerializerOptions();
 
         /// <summary>
-        /// 获取或设置keyValue序列化选项
+        /// 获取keyValue序列化选项
         /// </summary>
-        public JsonSerializerOptions KeyValueSerializeOptions { get; set; } = CreateDefaultJsonOptions();
+        public KeyValueSerializerOptions KeyValueSerializeOptions { get; } = new KeyValueSerializerOptions();
 
         /// <summary>
-        /// 创建默认的json序列化选项
+        /// HttpApi选项
         /// </summary>
-        /// <returns></returns>
-        public static JsonSerializerOptions CreateDefaultJsonOptions()
+        public HttpApiOptions()
         {
-            var options = new JsonSerializerOptions
-            {
-                DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
-                PropertyNameCaseInsensitive = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            };           
-            return options;
+            ConfigureDefault(this.JsonSerializeOptions);
+            ConfigureDefault(this.JsonDeserializeOptions);
+            ConfigureDefault(this.KeyValueSerializeOptions.GetJsonSerializerOptions());
+        }
+
+        /// <summary>
+        /// 配置默认值
+        /// </summary>
+        /// <param name="options"></param> 
+        private static void ConfigureDefault(JsonSerializerOptions options)
+        {
+            options.PropertyNameCaseInsensitive = true;
+            options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            options.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+            options.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
         }
     }
 

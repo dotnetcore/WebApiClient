@@ -11,6 +11,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
+using WebApiClientCore.Serialization;
 
 namespace WebApiClientCore.Parameters
 {
@@ -81,8 +82,8 @@ namespace WebApiClientCore.Parameters
                 throw new ApiInvalidConfigException(Resx.required_PatchMethod);
             }
 
-            var formatter = context.HttpContext.Services.GetRequiredService<IJsonFormatter>();
-            var json = formatter.Serialize(this.oprations, context.HttpContext.Options.JsonSerializeOptions);
+            var serializer = context.HttpContext.Services.GetRequiredService<IJsonSerializer>();
+            var json = serializer.Serialize(this.oprations, context.HttpContext.Options.JsonSerializeOptions);
             context.HttpContext.RequestMessage.Content = new JsonPatchContent(json);
 
             return Task.CompletedTask;

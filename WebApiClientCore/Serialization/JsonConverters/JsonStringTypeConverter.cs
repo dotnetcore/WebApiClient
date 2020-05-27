@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using WebApiClientCore.Exceptions;
 
-namespace WebApiClientCore.JsonConverters
+namespace WebApiClientCore.Serialization.JsonConverters
 {
     /// <summary>
     /// 表示JsonString的类型转换器
@@ -55,7 +55,7 @@ namespace WebApiClientCore.JsonConverters
             {
                 var json = reader.GetString();
                 var valueType = typeToConvert.GenericTypeArguments.First();
-                var value = JsonSerializer.Deserialize(json, valueType, options);
+                var value = System.Text.Json.JsonSerializer.Deserialize(json, valueType, options);
                 var jsonString = Activator.CreateInstance(typeToConvert, new object[] { value });
                 if (jsonString == null)
                 {
@@ -79,7 +79,7 @@ namespace WebApiClientCore.JsonConverters
                 }
                 else
                 {
-                    var json = JsonSerializer.Serialize(jsonString.Value, jsonString.ValueType, options);
+                    var json = System.Text.Json.JsonSerializer.Serialize(jsonString.Value, jsonString.ValueType, options);
                     writer.WriteStringValue(json);
                 }
             }

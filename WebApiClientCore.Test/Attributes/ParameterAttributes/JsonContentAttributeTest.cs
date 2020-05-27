@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using WebApiClientCore.Attributes;
+using WebApiClientCore.Serialization;
 using Xunit;
 
 namespace WebApiClientCore.Test.Attributes.ParameterAttributes
@@ -29,7 +30,7 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
             var body = await context.HttpContext.RequestMessage.Content.ReadAsByteArrayAsync();
 
             var options = context.HttpContext.Options.JsonSerializeOptions;
-            var target = context.HttpContext.Services.GetService<IJsonFormatter>().Serialize(context.Arguments[0], options);
+            var target = context.HttpContext.Services.GetService<IJsonSerializer>().Serialize(context.Arguments[0], options);
             Assert.True(body.SequenceEqual(target));
         }
     }

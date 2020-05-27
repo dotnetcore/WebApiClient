@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiClientCore.Attributes;
 using WebApiClientCore.Exceptions;
+using WebApiClientCore.Serialization;
 using Xunit;
 
 namespace WebApiClientCore.Test.Attributes.ReturnAttributes
@@ -20,7 +21,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
             context.HttpContext.RequestMessage.Method = HttpMethod.Post;
 
             var model = new TestModel();
-            var json = context.HttpContext.Services.GetRequiredService<IJsonFormatter>().Serialize(model, null);
+            var json = context.HttpContext.Services.GetRequiredService<IJsonSerializer>().Serialize(model, null);
             context.HttpContext.ResponseMessage.Content = new JsonContent(json);
 
             var attr = new JsonReturnAttribute();
@@ -39,7 +40,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
             context.HttpContext.RequestMessage.Method = HttpMethod.Post;
 
             var model = new TestModel();
-            var xml = context.HttpContext.Services.GetRequiredService<IXmlFormatter>().Serialize(model, Encoding.UTF8);
+            var xml = context.HttpContext.Services.GetRequiredService<IXmlSerializer>().Serialize(model, Encoding.UTF8);
             context.HttpContext.ResponseMessage.Content = new XmlContent(xml, Encoding.UTF8);
 
             var attr = new XmlReturnAttribute();

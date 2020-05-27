@@ -7,7 +7,7 @@ using WebApiClientCore.Exceptions;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 使用KeyValueFormatter序列化参数值得到的键值对作为url路径参数或query参数的特性
+    /// 使用KeyValueSerializer序列化参数值得到的键值对作为url路径参数或query参数的特性
     /// 没有任何特性修饰的参数，将默认被PathQueryAttribute修饰
     /// </summary>
     public class PathQueryAttribute : ApiParameterAttribute, IEncodingable, ICollectionFormatable

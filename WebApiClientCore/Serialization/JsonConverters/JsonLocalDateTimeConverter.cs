@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace WebApiClientCore.JsonConverters
+namespace WebApiClientCore.Serialization.JsonConverters
 {
     /// <summary>
     /// 表示DateTime的本地格式化Json转换器

@@ -1,17 +1,18 @@
 ﻿using System.Text;
+using System.Text.Json;
 using Xunit;
 
-namespace WebApiClientCore.Test.Defaults
+namespace WebApiClientCore.Test.Serialization
 {
     public class JsonFormatterTest
     {
         [Fact]
         public void ReadWriteTest()
         {
-            var options = HttpApiOptions.CreateDefaultJsonOptions();
+            var options = new HttpApiOptions().JsonSerializeOptions; 
 
             var obj1 = new FormatModel { Age = 18, Name = "老九" };
-            var formatter = new WebApiClientCore.Defaults.JsonFormatter();
+            var formatter = new WebApiClientCore.Serialization.JsonSerializer();
             var json = formatter.Serialize(obj1, options);
             var obj2 = formatter.Deserialize(json, typeof(FormatModel), options);
             Assert.True(obj1.Equals(obj2));

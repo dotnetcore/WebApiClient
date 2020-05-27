@@ -2,14 +2,13 @@
 using System.IO;
 using System.Text;
 using System.Xml;
-using System.Xml.Serialization;
 
-namespace WebApiClientCore.Defaults
+namespace WebApiClientCore.Serialization
 {
     /// <summary>
     /// 默认的Xml序列化工具
     /// </summary>
-    public class XmlFormatter : IXmlFormatter
+    public class XmlSerializer : IXmlSerializer
     {
         /// <summary>
         /// 将对象序列化为xml文本
@@ -32,7 +31,7 @@ namespace WebApiClientCore.Defaults
             }
 
             var stringWriter = new EncodingStringWriter(encoding);
-            var xmlSerializer = new XmlSerializer(obj.GetType());
+            var xmlSerializer = new System.Xml.Serialization.XmlSerializer(obj.GetType());
             using (var xmlWriter = XmlWriter.Create(stringWriter))
             {
                 xmlSerializer.Serialize(xmlWriter, obj);
@@ -60,7 +59,7 @@ namespace WebApiClientCore.Defaults
                 return objType.DefaultValue();
             }
 
-            var xmlSerializer = new XmlSerializer(objType);
+            var xmlSerializer = new System.Xml.Serialization.XmlSerializer(objType);
             using var reader = new StringReader(xml);
             return xmlSerializer.Deserialize(reader);
         }

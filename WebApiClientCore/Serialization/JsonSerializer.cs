@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Text.Json;
 
-namespace WebApiClientCore.Defaults
+namespace WebApiClientCore.Serialization
 {
     /// <summary>
     /// 默认的json序列化工具
     /// </summary>
-    public class JsonFormatter : IJsonFormatter
+    public class JsonSerializer : IJsonSerializer
     {
         /// <summary>
         /// 将对象列化为json
@@ -18,7 +18,7 @@ namespace WebApiClientCore.Defaults
         {
             return obj == null ?
                 Array.Empty<byte>() :
-                JsonSerializer.SerializeToUtf8Bytes(obj, obj.GetType(), options);
+                System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(obj, obj.GetType(), options);
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace WebApiClientCore.Defaults
         {
             return json == null || json.Length == 0 ?
                 objType.DefaultValue() :
-                JsonSerializer.Deserialize(json, objType, options);
+                System.Text.Json.JsonSerializer.Deserialize(json, objType, options);
         }
     }
 }

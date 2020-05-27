@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Text;
+using WebApiClientCore.Serialization;
 
 namespace WebApiClientCore
 {
@@ -43,7 +44,7 @@ namespace WebApiClientCore
         {
             var options = this.HttpContext.Options.JsonSerializeOptions;
             return this.HttpContext.Services
-                .GetRequiredService<IJsonFormatter>()
+                .GetRequiredService<IJsonSerializer>()
                 .Serialize(this.ParameterValue, options);
         }
 
@@ -55,7 +56,7 @@ namespace WebApiClientCore
         public string? SerializeToXml(Encoding encoding)
         {
             return this.HttpContext.Services
-                .GetRequiredService<IXmlFormatter>()
+                .GetRequiredService<IXmlSerializer>()
                 .Serialize(this.ParameterValue, encoding);
         }
 
@@ -67,7 +68,7 @@ namespace WebApiClientCore
         {
             var options = this.HttpContext.Options.KeyValueSerializeOptions;
             return this.HttpContext.Services
-                .GetRequiredService<IKeyValueFormatter>()
+                .GetRequiredService<IKeyValueSerializer>()
                 .Serialize(this.Parameter.Name, this.ParameterValue, options);
         }
     }

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Text;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Serialization
 {
     /// <summary>
     /// 定义xml序列化/反序列化的行为
     /// </summary>
-    public interface IXmlFormatter
+    public interface IXmlSerializer
     {
         /// <summary>
         /// 将对象序列化为xml文本

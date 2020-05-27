@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq;
 using WebApiClientCore.Defaults;
+using WebApiClientCore.Serialization;
 using Xunit;
 
 
-namespace WebApiClientCore.Test.Defaults
+namespace WebApiClientCore.Test.Serialization
 {
     public class KeyValueFormatterTest
     {
@@ -12,8 +13,10 @@ namespace WebApiClientCore.Test.Defaults
         public void SerializeTest()
         {
             var obj1 = new FormatModel { Age = 18, Name = "lao九" };
-            var formatter = new KeyValueFormatter();
-            var kvs = formatter.Serialize("pName", obj1, HttpApiOptions.CreateDefaultJsonOptions())
+            var formatter = new KeyValueSerializer();
+            var options = new HttpApiOptions().KeyValueSerializeOptions;
+
+            var kvs = formatter.Serialize("pName", obj1, options)
                 .ToDictionary(item => item.Key, item => item.Value, StringComparer.OrdinalIgnoreCase);
 
             Assert.True(kvs.Count == 2);
@@ -37,7 +40,6 @@ namespace WebApiClientCore.Test.Defaults
             var dic = new System.Collections.Concurrent.ConcurrentDictionary<string, object>();
             dic.TryAdd("Key", "Value");
 
-            var options = HttpApiOptions.CreateDefaultJsonOptions();
             var kvs2 = formatter.Serialize("dic", dic, options);
             Assert.True(kvs2.First().Key == "key");
 

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Text.Json;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Serialization
 {
     /// <summary>
     /// 定义json序列化/反序列化的行为
     /// </summary>
-    public interface IJsonFormatter
+    public interface IJsonSerializer
     { 
         /// <summary>
         /// 将对象序列化为utf8 json

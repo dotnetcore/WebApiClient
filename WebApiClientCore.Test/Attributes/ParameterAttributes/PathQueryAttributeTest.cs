@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using WebApiClientCore.Attributes;
+using WebApiClientCore.Serialization;
 using Xunit;
 
 namespace WebApiClientCore.Test.Attributes.ParameterAttributes
@@ -27,7 +28,7 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
             var attr = new PathQueryAttribute();
             await attr.OnRequestAsync(new ApiParameterContext(context, 0));
 
-            var birthday = context.HttpContext.Services.GetService<IKeyValueFormatter>().Serialize("time", DateTime.Parse("2010-10-10"), null)[0].Value;
+            var birthday = context.HttpContext.Services.GetService<IKeyValueSerializer>().Serialize("time", DateTime.Parse("2010-10-10"), null)[0].Value;
             var target = new Uri("http://www.webapi.com?name=laojiu&birthDay=" + HttpUtility.UrlEncode(birthday, Encoding.GetEncoding(attr.Encoding)));
             Assert.True(context.HttpContext.RequestMessage.RequestUri == target);
         }

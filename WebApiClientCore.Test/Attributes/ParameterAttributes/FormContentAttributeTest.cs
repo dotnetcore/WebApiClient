@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using WebApiClientCore.Attributes;
+using WebApiClientCore.Serialization;
 using Xunit;
 
 namespace WebApiClientCore.Test.Attributes.ParameterAttributes
@@ -28,7 +29,7 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
             await attr.OnRequestAsync(new ApiParameterContext(context, 0));
 
             var body = await context.HttpContext.RequestMessage.Content.ReadAsStringAsync();
-            var time = context.HttpContext.Services.GetService<IKeyValueFormatter>().Serialize("time", DateTime.Parse("2010-10-10"), null);
+            var time = context.HttpContext.Services.GetService<IKeyValueSerializer>().Serialize("time", DateTime.Parse("2010-10-10"), null);
             var target = $"name={HttpUtility.UrlEncode("老 九", Encoding.UTF8)}&birthDay={HttpUtility.UrlEncode(time[0].Value, Encoding.UTF8)}";
             Assert.True(body.ToUpper() == target.ToUpper());
         }
