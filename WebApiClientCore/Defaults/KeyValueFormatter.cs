@@ -26,7 +26,7 @@ namespace WebApiClientCore.Defaults
         /// <param name="obj">对象实例</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        public virtual IList<KeyValue> Serialize(string key, object? obj, JsonSerializerOptions? options)
+        public IList<KeyValue> Serialize(string key, object? obj, JsonSerializerOptions? options)
         {
             if (obj == null)
             {
@@ -50,7 +50,7 @@ namespace WebApiClientCore.Defaults
                 Encoder = jsonOptions.Encoder
             });
 
-            JsonSerializer.Serialize(utf8JsonWriter, obj, objType, options);
+            JsonSerializer.Serialize(utf8JsonWriter, obj, objType, jsonOptions);
             var span = bufferWriter.GetWrittenSpan();
             var utf8JsonReader = new Utf8JsonReader(span, new JsonReaderOptions
             {
@@ -58,7 +58,7 @@ namespace WebApiClientCore.Defaults
                 CommentHandling = jsonOptions.ReadCommentHandling,
                 AllowTrailingCommas = jsonOptions.AllowTrailingCommas,
             });
-            return GetKeyValueList(key, ref utf8JsonReader);
+            return this.GetKeyValueList(key, ref utf8JsonReader);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace WebApiClientCore.Defaults
         /// <param name="key"></param>
         /// <param name="reader"></param>
         /// <returns></returns>
-        private static IList<KeyValue> GetKeyValueList(string key, ref Utf8JsonReader reader)
+        protected virtual IList<KeyValue> GetKeyValueList(string key, ref Utf8JsonReader reader)
         {
             var list = new List<KeyValue>();
             while (reader.Read())
