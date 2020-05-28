@@ -98,7 +98,7 @@ namespace WebApiClientCore
                 return RepeatOne<ApiParameterTypeAttribute>();
             }
 
-            if (parameterType == typeof(CancellationToken))
+            if (parameterType == typeof(CancellationToken) || parameterType.IsInheritFrom<IEnumerable<CancellationToken>>())
             {
                 return RepeatOne<CancellationTokenTypeAttribute>();
             }
