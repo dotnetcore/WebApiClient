@@ -14,5 +14,10 @@
         /// 完整名称
         /// </summary>
         FullName,
+
+        /// <summary>
+        /// 同时包含根的完整名称
+        /// </summary>
+        FullNameWithRoot
     }
 }

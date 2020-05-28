@@ -60,9 +60,17 @@ namespace WebApiClientCore.Serialization
                 AllowTrailingCommas = jsonOptions.AllowTrailingCommas,
             });
 
-            return kvOptions.KeyNamingStyle == KeyNamingStyle.ShortName
-                ? this.GetShortNameKeyValueList(key, ref utf8JsonReader)
-                : this.GetFullNameKeyValueList(key, ref utf8JsonReader, kvOptions.IncludeRootKeyName);
+            if (kvOptions.KeyNamingStyle == KeyNamingStyle.ShortName)
+            {
+                return this.GetShortNameKeyValueList(key, ref utf8JsonReader);
+            }
+
+            if (kvOptions.KeyNamingStyle == KeyNamingStyle.FullName)
+            {
+                return this.GetFullNameKeyValueList(key, ref utf8JsonReader, withRoot: false);
+            }
+
+            return this.GetFullNameKeyValueList(key, ref utf8JsonReader, withRoot: true);
         }
 
 
@@ -90,6 +98,7 @@ namespace WebApiClientCore.Serialization
                             list.Add(new KeyValue(key, null));
                             break;
                         }
+
                     case JsonTokenType.False:
                     case JsonTokenType.True:
                     case JsonTokenType.String:
@@ -110,13 +119,13 @@ namespace WebApiClientCore.Serialization
         /// </summary>
         /// <param name="key"></param>
         /// <param name="reader"></param>
-        /// <param name="includeRootKeyName"></param>
+        /// <param name="withRoot"></param>
         /// <returns></returns>
-        protected virtual IList<KeyValue> GetFullNameKeyValueList(string key, ref Utf8JsonReader reader, bool includeRootKeyName)
+        protected virtual IList<KeyValue> GetFullNameKeyValueList(string key, ref Utf8JsonReader reader, bool withRoot)
         {
             var list = new List<KeyValue>();
             var root = JsonDocument.ParseValue(ref reader).RootElement;
-            ParseJsonElement(key, ref root, list, includeRootKeyName);
+            ParseJsonElement(key, ref root, list, withRoot);
             return list;
         }
 
@@ -126,8 +135,8 @@ namespace WebApiClientCore.Serialization
         /// <param name="key"></param>
         /// <param name="element"></param>
         /// <param name="list"></param>
-        /// <param name="includeRootKeyName"></param>
-        private static void ParseJsonElement(string key, ref JsonElement element, IList<KeyValue> list, bool includeRootKeyName)
+        /// <param name="withRoot"></param>
+        private static void ParseJsonElement(string key, ref JsonElement element, IList<KeyValue> list, bool withRoot)
         {
             switch (element.ValueKind)
             {
@@ -149,8 +158,8 @@ namespace WebApiClientCore.Serialization
                     foreach (var item in element.EnumerateObject())
                     {
                         var ele = item.Value;
-                        var itemKey = includeRootKeyName ? $"{key}.{item.Name}" : item.Name;
-                        ParseJsonElement(itemKey, ref ele, list, includeRootKeyName: true);
+                        var itemKey = withRoot ? $"{key}.{item.Name}" : item.Name;
+                        ParseJsonElement(itemKey, ref ele, list, withRoot: true);
                     }
                     break;
 
@@ -160,7 +169,7 @@ namespace WebApiClientCore.Serialization
                     {
                         var ele = item;
                         var itemKey = $"{key}[{index}]";
-                        ParseJsonElement(itemKey, ref ele, list, includeRootKeyName: true);
+                        ParseJsonElement(itemKey, ref ele, list, withRoot: true);
                         index += 1;
                     }
                     break;
