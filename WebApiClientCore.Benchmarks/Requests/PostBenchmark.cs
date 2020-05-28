@@ -25,7 +25,7 @@ namespace WebApiClientCore.Benchmarks.Requests
             var json = JsonSerializer.SerializeToUtf8Bytes(input);
             var request = new HttpRequestMessage(HttpMethod.Post, $"http://webapiclient.com/")
             {
-                Content = new JsonContent(json)
+                Content = new ByteArrayJsonContent(json)
             };
 
             var response = await httpClient.SendAsync(request);

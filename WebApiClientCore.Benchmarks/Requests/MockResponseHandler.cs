@@ -21,7 +21,7 @@ namespace WebApiClientCore.Benchmarks.Requests
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var response = new HttpResponseMessage(HttpStatusCode.OK) { Content = new JsonContent(this.json) };
+            var response = new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayJsonContent(this.json) };
             return Task.FromResult(response);
         }
     }
