@@ -3,10 +3,10 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
-using WebApiClientCore.Defaults;
+using WebApiClientCore.ResponseCaches;
 using Xunit;
 
-namespace WebApiClientCore.Test.BuildinUtils
+namespace WebApiClientCore.Test.ResponseCaches
 {
     public class ResponseCacheProviderTest
     {

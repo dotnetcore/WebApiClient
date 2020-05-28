@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.ResponseCaches
 {
     /// <summary>
     /// 表示响应缓存结果

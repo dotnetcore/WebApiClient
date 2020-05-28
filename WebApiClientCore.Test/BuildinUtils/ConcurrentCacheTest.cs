@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Xunit;
 
-namespace WebApiClientCore.Test.BuildinUtils
+namespace WebApiClientCore.Test.ResponseCaches
 {
     public class ConcurrentCacheTest
     {

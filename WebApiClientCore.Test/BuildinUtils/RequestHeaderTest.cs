@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace WebApiClientCore.Test.BuildinUtils
+namespace WebApiClientCore.Test.ResponseCaches
 {
     public class RequestHeaderTest
     {

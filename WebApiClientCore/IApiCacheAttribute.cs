@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using WebApiClientCore.ResponseCaches;
 
 namespace WebApiClientCore
 {
@@ -26,6 +27,13 @@ namespace WebApiClientCore
         /// <param name="context"></param>
         /// <returns></returns>
         CachePolicy GetWritePolicy(ApiRequestContext context);
+
+        /// <summary>
+        /// 获取缓存提供者
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        IResponseCacheProvider GetCacheProvider(ApiRequestContext context);
 
         /// <summary>
         /// 返回请求对应的缓存的键

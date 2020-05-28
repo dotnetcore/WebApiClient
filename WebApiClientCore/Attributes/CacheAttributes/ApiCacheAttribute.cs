@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using WebApiClientCore.ResponseCaches;
 
 namespace WebApiClientCore.Attributes
 {
@@ -44,6 +46,17 @@ namespace WebApiClientCore.Attributes
         public virtual CachePolicy GetWritePolicy(ApiRequestContext context)
         {
             return CachePolicy.Include;
+        }
+
+
+        /// <summary>
+        /// 获取缓存提供者
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public virtual IResponseCacheProvider GetCacheProvider(ApiRequestContext context)
+        {
+            return context.HttpContext.Services.GetService<IResponseCacheProvider>();
         }
 
         /// <summary>

@@ -2,7 +2,7 @@
 using System.Text;
 using Xunit;
 
-namespace WebApiClientCore.Test.BuildinUtils
+namespace WebApiClientCore.Test.ResponseCaches
 {
     public class UriEditorTest
     {

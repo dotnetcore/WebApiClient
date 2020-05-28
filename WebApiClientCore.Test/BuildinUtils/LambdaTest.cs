@@ -4,7 +4,7 @@ using System.Text;
 using WebApiClientCore;
 using Xunit;
 
-namespace WebApiClientCore.Test.BuildinUtils
+namespace WebApiClientCore.Test.ResponseCaches
 {
     public class LambdaTest
     {

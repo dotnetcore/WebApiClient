@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using WebApiClientCore.Defaults;
 using WebApiClientCore.Serialization;
 using Xunit;
 

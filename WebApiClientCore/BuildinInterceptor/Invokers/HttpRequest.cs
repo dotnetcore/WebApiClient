@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
+using WebApiClientCore.ResponseCaches;
 
 namespace WebApiClientCore
 {
@@ -64,12 +64,12 @@ namespace WebApiClientCore
             }
 
             var cacheKey = await attribute.GetCacheKeyAsync(context).ConfigureAwait(false);
-            if (string.IsNullOrEmpty(cacheKey) == true)
+            if (string.IsNullOrEmpty(cacheKey))
             {
                 return default;
             }
 
-            var provider = context.HttpContext.Services.GetService<IResponseCacheProvider>();
+            var provider = attribute.GetCacheProvider(context);
             if (provider == null)
             {
                 return default;
@@ -121,7 +121,7 @@ namespace WebApiClientCore
                 return;
             }
 
-            var provider = context.HttpContext.Services.GetService<IResponseCacheProvider>();
+            var provider = attribute.GetCacheProvider(context);
             if (provider == null)
             {
                 return;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.ResponseCaches
 {
     /// <summary>
     /// 定义Api响应结果缓存提供者的接口

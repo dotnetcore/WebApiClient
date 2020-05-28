@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.ResponseCaches
 {
     /// <summary>
     /// 表示要缓存的响应实体

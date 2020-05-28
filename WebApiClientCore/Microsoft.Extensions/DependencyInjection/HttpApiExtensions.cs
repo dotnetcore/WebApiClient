@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using System;
 using WebApiClientCore;
-using WebApiClientCore.Defaults;
+using WebApiClientCore.ResponseCaches;
 using WebApiClientCore.Serialization;
 
 namespace Microsoft.Extensions.DependencyInjection
