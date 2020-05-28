@@ -6,17 +6,17 @@
     public enum KeyNamingStyle : byte
     {
         /// <summary>
-        /// 短名称
+        /// 只包含最后一级属性名的短键名风格
         /// </summary>
         ShortName,
 
         /// <summary>
-        /// 完整名称
+        /// 包含多级属性名的完整键名风格
         /// </summary>
         FullName,
 
         /// <summary>
-        /// 同时包含根的完整名称
+        /// 同时包含根与多级属性名的完整键名风格
         /// </summary>
         FullNameWithRoot
     }
