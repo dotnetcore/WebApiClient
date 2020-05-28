@@ -76,6 +76,12 @@ namespace WebApiClientCore.Serialization
         public KeyNamingStyle KeyNamingStyle { get; set; }
 
         /// <summary>
+        /// 是否包含根键名
+        /// 当KeyNamingStyle为FullName格式时才使用
+        /// </summary>
+        public bool IncludeRootKeyName { get; set; }
+
+        /// <summary>
         /// KeyValue序列化选项
         /// </summary>
         public KeyValueSerializerOptions()

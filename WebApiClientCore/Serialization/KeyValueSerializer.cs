@@ -62,7 +62,7 @@ namespace WebApiClientCore.Serialization
 
             return kvOptions.KeyNamingStyle == KeyNamingStyle.ShortName
                 ? this.GetShortNameKeyValueList(key, ref utf8JsonReader)
-                : this.GetFullNameKeyValueList(key, ref utf8JsonReader);
+                : this.GetFullNameKeyValueList(key, ref utf8JsonReader, kvOptions.IncludeRootKeyName);
         }
 
 
@@ -110,12 +110,13 @@ namespace WebApiClientCore.Serialization
         /// </summary>
         /// <param name="key"></param>
         /// <param name="reader"></param>
+        /// <param name="includeRootKeyName"></param>
         /// <returns></returns>
-        protected virtual IList<KeyValue> GetFullNameKeyValueList(string key, ref Utf8JsonReader reader)
+        protected virtual IList<KeyValue> GetFullNameKeyValueList(string key, ref Utf8JsonReader reader, bool includeRootKeyName)
         {
             var list = new List<KeyValue>();
             var root = JsonDocument.ParseValue(ref reader).RootElement;
-            ParseJsonElement(key, ref root, list);
+            ParseJsonElement(key, ref root, list, includeRootKeyName);
             return list;
         }
 
@@ -125,7 +126,8 @@ namespace WebApiClientCore.Serialization
         /// <param name="key"></param>
         /// <param name="element"></param>
         /// <param name="list"></param>
-        private static void ParseJsonElement(string key, ref JsonElement element, IList<KeyValue> list)
+        /// <param name="includeRootKeyName"></param>
+        private static void ParseJsonElement(string key, ref JsonElement element, IList<KeyValue> list, bool includeRootKeyName)
         {
             switch (element.ValueKind)
             {
@@ -147,8 +149,8 @@ namespace WebApiClientCore.Serialization
                     foreach (var item in element.EnumerateObject())
                     {
                         var ele = item.Value;
-                        var itemKey = $"{key}.{item.Name}";
-                        ParseJsonElement(itemKey, ref ele, list);
+                        var itemKey = includeRootKeyName ? $"{key}.{item.Name}" : item.Name;
+                        ParseJsonElement(itemKey, ref ele, list, includeRootKeyName: true);
                     }
                     break;
 
@@ -158,11 +160,12 @@ namespace WebApiClientCore.Serialization
                     {
                         var ele = item;
                         var itemKey = $"{key}[{index}]";
-                        ParseJsonElement(itemKey, ref ele, list);
+                        ParseJsonElement(itemKey, ref ele, list, includeRootKeyName: true);
                         index += 1;
                     }
                     break;
             }
         }
+
     }
 }
