@@ -6,9 +6,9 @@
     <PackageReference Include="WebApiClientCore" Version="1.0.0-beta*" />
  
 ### QQ群
-> 825135345
+> [825135345](https://shang.qq.com/wpa/qunwpa?idkey=c6df21787c9a774ca7504a954402c9f62b6595d1e63120eabebd6b2b93007410)
 
-*添加要注明WebApiClient*
+*进群注明WebApiClient*
 
 ### Benchmark
 使用[MockResponseHandler](https://github.com/dotnetcore/WebApiClient/tree/master/WebApiClientCore.Benchmarks/Requests)消除真实http请求，原生HttpClient、WebApiClientCore和[Refit](https://github.com/reactiveui/refit)的性能参考：
