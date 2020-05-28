@@ -1,10 +1,14 @@
 ## WebApiClientCore 　　　　　　　　　　　　　　　　　　　
-[WebApiClient.JIT](https://github.com/dotnetcore/WebApiClient/tree/WebApiClient.JITAOT)的netcoreapp版本，集高性能高可扩展性于一体的声明式http客户端库，特别适用于微服务的restful资源请求，也适用于各种畸形http接口请求。
+[WebApiClient](https://github.com/dotnetcore/WebApiClient/tree/WebApiClient.JITAOT)的netcoreapp版本，集高性能高可扩展性于一体的声明式http客户端库，特别适用于微服务的restful资源请求，也适用于各种畸形http接口请求。
 
 ### PackageReference
 
     <PackageReference Include="WebApiClientCore" Version="1.0.0-beta*" />
  
+### QQ群
+> 825135345
+
+*添加要注明WebApiClient*
 
 ### Benchmark
 使用[MockResponseHandler](https://github.com/dotnetcore/WebApiClient/tree/master/WebApiClientCore.Benchmarks/Requests)消除真实http请求，原生HttpClient、WebApiClientCore和[Refit](https://github.com/reactiveui/refit)的性能参考：
@@ -284,6 +288,14 @@ services
 * id=001&id=002
 
 默认的，PathQuryAttribute与FormContentAttribute使用了Multi处理方式，可以设置其CollectionFormat属性为其它值，比如：`[FormContent(CollectionFormat = CollectionFormat.Csv)]`
+
+### CancellationToken参数
+每个接口都支持声明一个CancellationToken类型的参数，用于支持取消请求操作。
+
+```
+[HttpGet("api/users/{id}")]
+ITask<User> GetAsync([Required]string id, CancellationToken token = default);
+```
 
 ### Accpet ContentType
 这个用于控制客户端希望服务器返回什么样的内容格式，比如json或xml。
@@ -580,8 +592,8 @@ ITask<HttpResponseMessage> GetAsync([Required]string account, [AliasAs("field-Na
 
 字段 | 值
 ---|---
-field1 | abc
-field2 | {"name":"jName","data":{"data1":"jData1"}}
+field1 | someValue
+field2 | {"name":"sb","age":18}
 
 对应强类型模型是
 ```
@@ -600,18 +612,14 @@ class Model
 class Model
 {
     public string Filed1 {get; set;}
-    public JsonString<Field2Info> Field2 {get; set;}
+    public JsonString<Field2> Field2 {get; set;}
 }
 
-class Field2Info
+class Field2
 {
     public string Name {get; set;}
-    public Field2Data data {get; set;}
-}
-
-class Field2Data
-{
-    public string data1 {get; set;}
+    
+    public int  Age {get; set;}
 }
 
 
@@ -623,6 +631,34 @@ services
         o.KeyValueSerializeOptions.Converters.Add(JsonStringTypeConverter.Default);
     }); 
 ``` 
+
+#### Form提交嵌套的模型
+
+字段 | 值
+---|---|
+|filed1 |someValue|
+|field2.name | sb|
+|field2.age | 18|
+
+其对应的json格式为
+```
+{
+    "field1" : "someValue",
+    "filed2" : {
+        "name" : "sb",
+        "age" : 18
+    }
+}
+```
+合理情况下，对于复杂嵌套结构的数据模型，应当使用applicaiton/json，但接口要求必须使用Form提交，我可以配置KeyValueSerializeOptions来达到这个格式要求：
+
+```
+// 注册userApi
+services.AddHttpApi<IUserApi>(o =>
+{
+    o.KeyValueSerializeOptions.KeyNamingStyle = KeyNamingStyle.FullName;
+});
+```
 
 #### 响应未指明ContentType
 明明响应的内容肉眼看上是json内容，但服务响应头里没有ContentType告诉客户端这内容是json，这好比客户端使用Form或json提交时就不在请求头告诉服务器内容格式是什么，而是让服务器猜测一样的道理。
