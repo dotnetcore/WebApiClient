@@ -290,7 +290,7 @@ services
 默认的，PathQuryAttribute与FormContentAttribute使用了Multi处理方式，可以设置其CollectionFormat属性为其它值，比如：`[FormContent(CollectionFormat = CollectionFormat.Csv)]`
 
 ### CancellationToken参数
-每个接口都支持声明一个CancellationToken类型的参数，用于支持取消请求操作。
+每个接口都支持声明一个CancellationToken类型的参数，用于支持取消请求操作。CancellationToken.None表示永不取消，创建一个CancellationTokenSource，可以提供一个CancellationToken。
 
 ```
 [HttpGet("api/users/{id}")]
@@ -389,6 +389,39 @@ catch (Exception ex)
     // 异常
 }
 ```
+
+### PATCH请求
+json patch是为客户端能够局部更新服务端已存在的资源而设计的一种标准交互，在RFC6902里有详细的介绍json patch，通俗来讲有以下几个要点：
+
+1. 使用HTTP PATCH请求方法；
+2. 请求body为描述多个opration的数据json内容；
+3. 请求的Content-Type为application/json-patch+json；
+
+#### 声明Patch方法
+```
+[HttpPatch("api/users/{id}")]
+Task<UserInfo> PatchAsync(string id, JsonPatchDocument<User> doc);
+```
+
+#### 实例化JsonPatchDocument
+```
+var doc = new JsonPatchDocument<User>();
+doc.Replace(item => item.Account, "laojiu");
+doc.Replace(item => item.Email, "laojiu@qq.com");
+```
+
+#### 请求内容
+```
+PATCH /api/users/id001 HTTP/1.1
+Host: localhost:6000
+User-Agent: WebApiClientCore/1.0.0.0
+Accept: application/json; q=0.01, application/xml; q=0.01
+Content-Type: application/json-patch+json
+
+[{"op":"replace","path":"/account","value":"laojiu"},{"op":"replace","path":"/email","value":"laojiu@qq.com"}]
+```
+
+
 ### 响应内容缓存
 配置CacheAttribute特性的Method会将本次的响应内容缓存起来，下一次如果符合预期条件的话，就不会再请求到远程服务器，而是从IResponseCacheProvider获取缓存内容，开发者可以自己实现ResponseCacheProvider。
 
