@@ -171,7 +171,8 @@ namespace WebApiClientCore
         /// <returns></returns>
         protected override async Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
-            await stream.WriteAsync(this.writer.GetWrittenMemory()).ConfigureAwait(false);
+            var memory = this.writer.GetWrittenMemory();
+            await stream.WriteAsync(memory).ConfigureAwait(false);
         }
 
         /// <summary>

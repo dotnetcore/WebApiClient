@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Text;
 using WebApiClientCore.Serialization;
@@ -34,6 +35,18 @@ namespace WebApiClientCore
             : base(context.HttpContext, context.ApiAction, context.Arguments, context.Properties, context.CancellationTokens)
         {
             this.index = parameterIndex;
+        }
+
+        /// <summary>
+        /// 序列化参数值为Json
+        /// </summary>
+        /// <param name="bufferWriter">buffer写入器</param>
+        public void SerializeToJson(IBufferWriter<byte> bufferWriter)
+        {
+            var options = this.HttpContext.Options.JsonSerializeOptions;
+            this.HttpContext.Services
+                .GetRequiredService<IJsonSerializer>()
+                .Serialize(bufferWriter, this.ParameterValue, options);
         }
 
         /// <summary>

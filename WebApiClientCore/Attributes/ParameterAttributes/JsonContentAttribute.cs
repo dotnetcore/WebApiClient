@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace WebApiClientCore.Attributes
 {
@@ -9,15 +10,30 @@ namespace WebApiClientCore.Attributes
     public class JsonContentAttribute : HttpContentAttribute
     {
         /// <summary>
+        /// 预留的缓冲区大小
+        /// </summary>
+        private const int sizeHint = 512;
+
+        /// <summary>
         /// 设置参数到http请求内容
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
         protected override Task SetHttpContentAsync(ApiParameterContext context)
         {
-            var utf8Json = context.SerializeToJson();
-            context.HttpContext.RequestMessage.Content = new JsonContent(utf8Json);
-            return Task.CompletedTask;
+            var bufferWriter = new BufferWriter<byte>(sizeHint);
+            try
+            {
+                context.SerializeToJson(bufferWriter);
+                context.HttpContext.RequestMessage.Content = new JsonContent(bufferWriter);
+                return Task.CompletedTask;
+            }
+            catch (Exception)
+            {
+                // 如果遇到异常则回收bufferWriter
+                bufferWriter.Dispose();
+                throw;
+            }
         }
     }
 }
