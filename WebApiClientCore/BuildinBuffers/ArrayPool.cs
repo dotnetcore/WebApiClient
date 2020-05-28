@@ -1,5 +1,4 @@
-﻿using System;
-using System.Buffers;
+﻿using System.Buffers;
 using System.Diagnostics;
 
 namespace WebApiClientCore
@@ -25,8 +24,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <typeparam name="T"></typeparam>
         [DebuggerDisplay("Count = {Count}")]
-        [DebuggerTypeProxy(typeof(ArrayOwnerDebugView<>))]
-        private class ArrayOwner<T> : IArrayOwner<T>
+        private class ArrayOwner<T> : Disposable, IArrayOwner<T>
         {
             /// <summary>
             /// 获取持有的数组
@@ -44,35 +42,17 @@ namespace WebApiClientCore
             /// <param name="minLength"></param> 
             public ArrayOwner(int minLength)
             {
-                this.Array = ArrayPool<T>.Shared.Rent(minLength);
                 this.Count = minLength;
+                this.Array = ArrayPool<T>.Shared.Rent(minLength);
             }
 
             /// <summary>
             /// 归还数组
             /// </summary>
-            public void Dispose()
+            /// <param name="disposing"></param>
+            protected override void Dispose(bool disposing)
             {
                 ArrayPool<T>.Shared.Return(this.Array);
-            }
-        }
-
-        /// <summary>
-        /// 调试视图
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        private class ArrayOwnerDebugView<T>
-        {
-            [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-            public T[] Items { get; }
-
-            /// <summary>
-            /// 调试视图
-            /// </summary>
-            /// <param name="owner"></param>
-            public ArrayOwnerDebugView(IArrayOwner<T> owner)
-            {
-                this.Items = owner.Array.AsSpan(0, owner.Count).ToArray();
             }
         }
     }
