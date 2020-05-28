@@ -151,7 +151,7 @@ namespace WebApiClientCore
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         private void CheckAndResizeBuffer(int sizeHint)
         {
-            if (sizeHint <= 0)
+            if (sizeHint < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(sizeHint));
             }
