@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 namespace WebApiClientCore.Benchmarks.Requests
 {
     /// <summary> 
-    /// 跳过真实的http请求环节的模拟Get请求
+    /// 跳过真实的http请求环节的模拟Post json请求
     /// </summary>
-    public class PostBenchmark : BenChmark
+    public class PostJsonBenchmark : BenChmark
     {
         /// <summary>
         /// 使用原生HttpClient请求
         /// </summary>
         /// <returns></returns>
         [Benchmark]
-        public async Task<Model> HttpClient_PostAsync()
+        public async Task<Model> HttpClient_PostJsonAsync()
         {
             using var scope = this.ServiceProvider.CreateScope();
             var httpClient = scope.ServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(typeof(HttpClient).FullName);
@@ -38,22 +38,22 @@ namespace WebApiClientCore.Benchmarks.Requests
         /// </summary>
         /// <returns></returns>
         [Benchmark]
-        public async Task<Model> WebApiClientCore_PostAsync()
+        public async Task<Model> WebApiClientCore_PostJsonAsync()
         {
             using var scope = this.ServiceProvider.CreateScope();
             var banchmarkApi = scope.ServiceProvider.GetRequiredService<IWebApiClientCoreApi>();
             var input = new Model { A = "a" };
-            return await banchmarkApi.PostAsync(input);
+            return await banchmarkApi.PostJsonAsync(input);
         }
 
 
         [Benchmark]
-        public async Task<Model> Refit_PostAsync()
+        public async Task<Model> Refit_PostJsonAsync()
         {
             using var scope = this.ServiceProvider.CreateScope();
             var banchmarkApi = scope.ServiceProvider.GetRequiredService<IRefitApi>();
             var input = new Model { A = "a" };
-            return await banchmarkApi.PostAsync(input);
+            return await banchmarkApi.PostJsonAsync(input);
         }
     }
 }

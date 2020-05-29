@@ -9,6 +9,9 @@ namespace WebApiClientCore.Benchmarks.Requests
         Task<Model> GetAsyc(string id);
 
         [HttpPost("/benchmarks")]
-        Task<Model> PostAsync([JsonContent] Model model);
+        Task<Model> PostJsonAsync([JsonContent] Model model);
+
+        [HttpPost("/benchmarks")]
+        Task<Model> PostFormAsync([FormContent] Model model);
     }
 }

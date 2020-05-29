@@ -19,12 +19,19 @@ namespace WebApiClientCore.Benchmarks.Requests
                 .AddHttpMessageHandler(() => new MockResponseHandler());
 
             services
-                .AddHttpApi<IWebApiClientCoreApi>()
+                .AddHttpApi<IWebApiClientCoreApi>(o =>
+                {
+                    o.UseParameterPropertyValidate = false;
+                    o.UseReturnValuePropertyValidate = false;
+                })
                 .AddHttpMessageHandler(() => new MockResponseHandler())
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://webapiclient.com/"));
 
             services
-                .AddRefitClient<IRefitApi>()
+                .AddRefitClient<IRefitApi>(new RefitSettings
+                {
+                    Buffered = true,
+                })
                 .AddHttpMessageHandler(() => new MockResponseHandler())
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://webapiclient.com/"));
 
@@ -40,10 +47,10 @@ namespace WebApiClientCore.Benchmarks.Requests
             var refit = scope.ServiceProvider.GetService<IRefitApi>();
 
             await core.GetAsyc("id");
-            await core.PostAsync(new Model { });
+            await core.PostJsonAsync(new Model { });
 
             await refit.GetAsyc("id");
-            await refit.PostAsync(new Model { });
+            await refit.PostJsonAsync(new Model { });
         }
     }
 }
