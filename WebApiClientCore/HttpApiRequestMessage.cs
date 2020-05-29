@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
@@ -36,56 +37,6 @@ namespace WebApiClientCore
         /// <summary>
         /// 追加Query参数到请求路径
         /// </summary>
-        /// <param name="keyValue">参数</param>
-        /// <exception cref="ApiInvalidConfigException"></exception>
-        /// <exception cref="ArgumentNullException"></exception>
-        public void AddUrlQuery(IEnumerable<KeyValue> keyValue)
-        {
-            this.AddUrlQuery(keyValue, Encoding.UTF8);
-        }
-
-        /// <summary>
-        /// 追加Query参数到请求路径
-        /// </summary>
-        /// <param name="keyValue">参数</param>
-        /// <param name="encoding">编码</param>
-        /// <exception cref="ApiInvalidConfigException"></exception>
-        /// <exception cref="ArgumentNullException"></exception>
-        public void AddUrlQuery(IEnumerable<KeyValue> keyValue, Encoding encoding)
-        {
-            foreach (var kv in keyValue)
-            {
-                this.AddUrlQuery(kv, encoding);
-            }
-        }
-
-        /// <summary>
-        /// 追加Query参数到请求路径
-        /// </summary>
-        /// <param name="keyValue">参数</param>
-        /// <exception cref="ApiInvalidConfigException"></exception>
-        /// <exception cref="ArgumentNullException"></exception>
-        public void AddUrlQuery(KeyValue keyValue)
-        {
-            this.AddUrlQuery(keyValue, Encoding.UTF8);
-        }
-
-        /// <summary>
-        /// 追加Query参数到请求路径
-        /// </summary>
-        /// <param name="keyValue">参数</param>
-        /// <param name="encoding">编码</param>
-        /// <exception cref="ApiInvalidConfigException"></exception>
-        /// <exception cref="ArgumentNullException"></exception>
-        public void AddUrlQuery(KeyValue keyValue, Encoding encoding)
-        {
-            this.AddUrlQuery(keyValue.Key, keyValue.Value, encoding);
-        }
-
-
-        /// <summary>
-        /// 追加Query参数到请求路径
-        /// </summary>
         /// <param name="key">参数名</param>
         /// <param name="value">参数值</param>
         /// <exception cref="ApiInvalidConfigException"></exception>
@@ -110,16 +61,6 @@ namespace WebApiClientCore
                 throw new ApiInvalidConfigException(Resx.required_RequestUri);
             }
 
-            if (string.IsNullOrEmpty(key))
-            {
-                throw new ArgumentNullException(nameof(key));
-            }
-
-            if (encoding == null)
-            {
-                throw new ArgumentNullException(nameof(encoding));
-            }
-
             var editor = new UriEditor(this.RequestUri, encoding);
             editor.AddQuery(key, value);
             this.RequestUri = editor.Uri;
@@ -136,10 +77,6 @@ namespace WebApiClientCore
         /// <returns></returns>
         public async Task AddFormFieldAsync(string name, string? value)
         {
-            if (name == null)
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
             var kv = new KeyValue(name, value);
             await this.AddFormFieldAsync(new[] { kv }).ConfigureAwait(false);
         }
@@ -156,15 +93,43 @@ namespace WebApiClientCore
             this.EnsureNotGetOrHead();
             this.EnsureMediaTypeEqual(FormContent.MediaType);
 
-            if (keyValues == null)
-            {
-                return;
-            }
-
             var formContent = await FormContent.FromHttpContentAsync(this.Content).ConfigureAwait(false);
             formContent.AddFormField(keyValues);
             this.Content = formContent;
         }
+
+
+        /// <summary>
+        /// 添加文本内容到已有的Content
+        /// 要求content-type为multipart/form-data
+        /// </summary>     
+        /// <param name="name">名称</param>
+        /// <param name="value">文本</param>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        public void AddFormDataText(string name, string? value)
+        {
+            this.EnsureNotGetOrHead();
+            this.AddFormDataTextInternal(name, value);
+        }
+
+        /// <summary>
+        /// 添加文本内容到已有的Content
+        /// 要求content-type为multipart/form-data
+        /// </summary>     
+        /// <param name="keyValues">键值对</param>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        public void AddFormDataText(IEnumerable<KeyValue> keyValues)
+        {
+            this.EnsureNotGetOrHead();
+
+            foreach (var kv in keyValues)
+            {
+                this.AddFormDataTextInternal(kv.Key, kv.Value);
+            }
+        }
+
 
         /// <summary>
         /// 添加文件内容到已有的Content
@@ -189,41 +154,11 @@ namespace WebApiClientCore
         /// 添加文本内容到已有的Content
         /// 要求content-type为multipart/form-data
         /// </summary>     
-        /// <param name="keyValues">键值对</param>
-        /// <exception cref="NotSupportedException"></exception>
-        /// <exception cref="ArgumentNullException"></exception>
-        public void AddFormDataText(IEnumerable<KeyValue> keyValues)
-        {
-            this.EnsureNotGetOrHead();
-
-            foreach (var kv in keyValues)
-            {
-                this.AddFormDataTextInternal(kv.Key, kv.Value);
-            }
-        }
-
-        /// <summary>
-        /// 添加文本内容到已有的Content
-        /// 要求content-type为multipart/form-data
-        /// </summary>     
         /// <param name="name">名称</param>
         /// <param name="value">文本</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
-        public void AddFormDataText(string name, string? value)
-        {
-            this.EnsureNotGetOrHead();
-            this.AddFormDataTextInternal(name, value);
-        }
-
-        /// <summary>
-        /// 添加文本内容到已有的Content
-        /// 要求content-type为multipart/form-data
-        /// </summary>     
-        /// <param name="name">名称</param>
-        /// <param name="value">文本</param>
-        /// <exception cref="NotSupportedException"></exception>
-        /// <exception cref="ArgumentNullException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void AddFormDataTextInternal(string name, string? value)
         {
             if (string.IsNullOrEmpty(name))
@@ -243,7 +178,8 @@ namespace WebApiClientCore
         /// 为null则返回FormDataContent的实例
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
-        /// <returns></returns>
+        /// <returns></returns> 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private MultipartContent CastToFormDataContent()
         {
             this.EnsureMediaTypeEqual(FormDataContent.MediaType);
@@ -260,6 +196,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="newMediaType">新的MediaType</param>
         /// <exception cref="NotSupportedException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EnsureMediaTypeEqual(string newMediaType)
         {
             var existsMediaType = this.Content?.Headers.ContentType?.MediaType;
@@ -275,12 +212,12 @@ namespace WebApiClientCore
             }
         }
 
-
         /// <summary>
         /// 确保不是Get或Head请求
         /// 返回关联的HttpContent对象
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EnsureNotGetOrHead()
         {
             if (this.Method == HttpMethod.Get || this.Method == HttpMethod.Head)

@@ -8,7 +8,7 @@ using Xunit;
 namespace WebApiClientCore.Test
 {
     public class HttpApiRequestMessageTest
-    { 
+    {
         [Fact]
         public void AddUrlQueryTest()
         {
@@ -21,12 +21,11 @@ namespace WebApiClientCore.Test
 
             Assert.Throws<ArgumentNullException>(() => request.AddUrlQuery(null, string.Empty));
 
-            var kv = new KeyValue("yKey", "yValue");
-            request.AddUrlQuery(kv);
+            request.AddUrlQuery("yKey", "yValue");
             Assert.True(request.RequestUri == new Uri("http://webapiclient.com?xKey=xValue&yKey=yValue"));
 
             var unicodeValue = HttpUtility.UrlEncode("老九", Encoding.UTF8);
-            request.AddUrlQuery(new[] { new KeyValue("zKey", "老九") }, Encoding.UTF8);
+            request.AddUrlQuery("zKey", "老九", Encoding.UTF8);
             var url = new Uri($"http://webapiclient.com?xKey=xValue&yKey=yValue&zKey={unicodeValue}");
             Assert.True(request.RequestUri == url);
         }
@@ -70,6 +69,6 @@ namespace WebApiClientCore.Test
             Assert.Contains(get("name", "laojiu"), body);
             Assert.Contains(get("age", "18"), body);
             Assert.True(reqeust.Content.Headers.ContentType.MediaType == "multipart/form-data");
-        }         
+        }
     }
 }
