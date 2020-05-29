@@ -19,43 +19,20 @@ namespace WebApiClientCore
         /// </summary>
         public Encoding Encoding { get; }
 
-
-        /// <summary>
-        /// Uri编辑器
-        /// </summary>
-        /// <param name="uri">绝对路径的uri</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="UriFormatException"></exception>
-        public UriEditor(Uri uri)
-            : this(uri, Encoding.UTF8)
-        {
-        }
-
         /// <summary>
         /// Url创建者
         /// </summary>
-        /// <param name="uri">绝对路径的uri</param>
+        /// <param name="absoluteUri">绝对路径的uri</param>
         /// <param name="encoding">参数的编码</param>
-        /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="UriFormatException"></exception>
-        public UriEditor(Uri uri, Encoding encoding)
+        public UriEditor(Uri absoluteUri, Encoding encoding)
         {
-            if (uri == null)
+            if (absoluteUri.IsAbsoluteUri == false)
             {
-                throw new ArgumentNullException(nameof(uri));
+                throw new UriFormatException(Resx.required_AbsoluteUri.Format(nameof(absoluteUri)));
             }
 
-            if (encoding == null)
-            {
-                throw new ArgumentNullException(nameof(encoding));
-            }
-
-            if (uri.IsAbsoluteUri == false)
-            {
-                throw new UriFormatException(Resx.required_AbsoluteUri.Format(nameof(uri)));
-            }
-
-            this.Uri = uri;
+            this.Uri = absoluteUri;
             this.Encoding = encoding;
         }
 
@@ -78,7 +55,7 @@ namespace WebApiClientCore
             }
 
             name = $"{{{name}}}";
-            value = value == null ? null : HttpUtility.UrlEncode(value);
+            value = value == null ? null : HttpUtility.UrlEncode(value, this.Encoding);
             if (uri.RepaceIgnoreCase(name, value, out var newUri) == true)
             {
                 this.Uri = new Uri(newUri);

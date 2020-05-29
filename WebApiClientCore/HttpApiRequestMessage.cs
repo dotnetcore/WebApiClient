@@ -77,8 +77,8 @@ namespace WebApiClientCore
         /// <returns></returns>
         public async Task AddFormFieldAsync(string name, string? value)
         {
-            var kv = new KeyValue(name, value);
-            await this.AddFormFieldAsync(new[] { kv }).ConfigureAwait(false);
+            var keyValue = new KeyValue(name, value);
+            await this.AddFormFieldAsync(new[] { keyValue }).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -109,8 +109,8 @@ namespace WebApiClientCore
         /// <exception cref="ArgumentNullException"></exception>
         public void AddFormDataText(string name, string? value)
         {
-            this.EnsureNotGetOrHead();
-            this.AddFormDataTextInternal(name, value);
+            var keyValue = new KeyValue(name, value);
+            this.AddFormDataText(new[] { keyValue });
         }
 
         /// <summary>
@@ -123,10 +123,18 @@ namespace WebApiClientCore
         public void AddFormDataText(IEnumerable<KeyValue> keyValues)
         {
             this.EnsureNotGetOrHead();
+            this.EnsureMediaTypeEqual(FormDataContent.MediaType);
 
-            foreach (var kv in keyValues)
+            if (!(this.Content is MultipartContent httpContent))
             {
-                this.AddFormDataTextInternal(kv.Key, kv.Value);
+                httpContent = new FormDataContent();
+            }
+
+            foreach (var keyValue in keyValues)
+            {
+                var textContent = new FormDataTextContent(keyValue);
+                httpContent.Add(textContent);
+                this.Content = httpContent;
             }
         }
 
@@ -143,52 +151,31 @@ namespace WebApiClientCore
         public void AddFormDataFile(Stream stream, string name, string? fileName, string? contentType)
         {
             this.EnsureNotGetOrHead();
-
-            var httpContent = this.CastToFormDataContent();
-            var fileContent = new FormDataFileContent(stream, name, fileName, contentType);
-            httpContent.Add(fileContent);
-            this.Content = httpContent;
-        }
-
-        /// <summary>
-        /// 添加文本内容到已有的Content
-        /// 要求content-type为multipart/form-data
-        /// </summary>     
-        /// <param name="name">名称</param>
-        /// <param name="value">文本</param>
-        /// <exception cref="NotSupportedException"></exception>
-        /// <exception cref="ArgumentNullException"></exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void AddFormDataTextInternal(string name, string? value)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-
-            var httpContent = this.CastToFormDataContent();
-            var textContent = new FormDataTextContent(name, value);
-            httpContent.Add(textContent);
-            this.Content = httpContent;
-        }
-
-
-        /// <summary>
-        /// 转换为FormDataContent
-        /// 为null则返回FormDataContent的实例
-        /// </summary>
-        /// <exception cref="NotSupportedException"></exception>
-        /// <returns></returns> 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private MultipartContent CastToFormDataContent()
-        {
             this.EnsureMediaTypeEqual(FormDataContent.MediaType);
 
             if (!(this.Content is MultipartContent httpContent))
             {
                 httpContent = new FormDataContent();
             }
-            return httpContent;
+
+            var fileContent = new FormDataFileContent(stream, name, fileName, contentType);
+            httpContent.Add(fileContent);
+            this.Content = httpContent;
+        }
+
+        /// <summary>
+        /// 确保不是Get或Head请求
+        /// 返回关联的HttpContent对象
+        /// </summary>
+        /// <exception cref="NotSupportedException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void EnsureNotGetOrHead()
+        {
+            if (this.Method == HttpMethod.Get || this.Method == HttpMethod.Head)
+            {
+                var message = Resx.unsupported_HttpContent.Format(this.Method, this.GetType().Name);
+                throw new NotSupportedException(message);
+            }
         }
 
         /// <summary>
@@ -208,21 +195,6 @@ namespace WebApiClientCore
             if (string.Equals(existsMediaType, newMediaType, StringComparison.OrdinalIgnoreCase) == false)
             {
                 var message = Resx.contenType_RemainAs.Format(existsMediaType);
-                throw new NotSupportedException(message);
-            }
-        }
-
-        /// <summary>
-        /// 确保不是Get或Head请求
-        /// 返回关联的HttpContent对象
-        /// </summary>
-        /// <exception cref="NotSupportedException"></exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void EnsureNotGetOrHead()
-        {
-            if (this.Method == HttpMethod.Get || this.Method == HttpMethod.Head)
-            {
-                var message = Resx.unsupported_HttpContent.Format(this.Method, this.GetType().Name);
                 throw new NotSupportedException(message);
             }
         }

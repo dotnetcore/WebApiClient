@@ -11,6 +11,15 @@ namespace WebApiClientCore
         /// <summary>
         /// 文本内容
         /// </summary>     
+        /// <param name="keyValue">键值对</param>
+        public FormDataTextContent(KeyValue keyValue)
+            : this(keyValue.Key, keyValue.Value)
+        {
+        }
+
+        /// <summary>
+        /// 文本内容
+        /// </summary>     
         /// <param name="name">名称</param>
         /// <param name="value">文本</param>
         public FormDataTextContent(string name, string? value)
