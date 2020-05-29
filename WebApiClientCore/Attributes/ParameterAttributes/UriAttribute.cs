@@ -17,7 +17,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <exception cref="ApiInvalidConfigException"></exception>
         /// <returns></returns>
-        public sealed override Task OnRequestAsync(ApiParameterContext context)
+        public override Task OnRequestAsync(ApiParameterContext context)
         {
             var uriString = context.ParameterValue?.ToString();
             if (uriString == null)

@@ -17,7 +17,7 @@ namespace WebApiClientCore.Attributes
         protected override async Task SetHttpContentAsync(ApiParameterContext context)
         {
             var form = context.ParameterValue?.ToString();
-            var fromContent = await FormContent.FromHttpContentAsync(context.HttpContext.RequestMessage.Content).ConfigureAwait(false);
+            var fromContent = await FormContent.ParseAsync(context.HttpContext.RequestMessage.Content).ConfigureAwait(false);
             fromContent.AddForm(form);
             context.HttpContext.RequestMessage.Content = fromContent;
         }

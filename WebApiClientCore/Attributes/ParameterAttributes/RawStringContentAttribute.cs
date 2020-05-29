@@ -52,8 +52,8 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected override Task SetHttpContentAsync(ApiParameterContext context)
         {
-            var content = context.ParameterValue?.ToString();
-            context.HttpContext.RequestMessage.Content = new StringContent(content ?? string.Empty, this.encoding, this.mediaType);
+            var content = context.ParameterValue?.ToString() ?? string.Empty;
+            context.HttpContext.RequestMessage.Content = new StringContent(content, this.encoding, this.mediaType);
             return Task.CompletedTask;
         }
     }

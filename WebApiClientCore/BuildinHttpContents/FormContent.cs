@@ -15,9 +15,9 @@ namespace WebApiClientCore
     class FormContent : HttpContent
     {
         /// <summary>
-        /// buffer定入器
+        /// buffer写入器
         /// </summary>
-        private readonly BufferWriter<byte> writer = new BufferWriter<byte>();
+        private readonly BufferWriter<byte> bufferWriter = new BufferWriter<byte>();
 
         /// <summary>
         /// 默认的http编码
@@ -44,7 +44,7 @@ namespace WebApiClientCore
         /// <param name="httpContent">httpContent实例</param>
         /// <param name="disposeHttpContent">是否释放httpContent</param>
         /// <returns></returns>
-        public static async Task<FormContent> FromHttpContentAsync(HttpContent httpContent, bool disposeHttpContent = true)
+        public static async Task<FormContent> ParseAsync(HttpContent httpContent, bool disposeHttpContent = true)
         {
             if (httpContent == null)
             {
@@ -82,7 +82,15 @@ namespace WebApiClientCore
             {
                 var encodedKey = HttpUtility.UrlEncodeToBytes(item.Key);
                 var encodedValue = item.Value == null ? null : HttpUtility.UrlEncodeToBytes(item.Value);
-                this.AddKeyValue(encodedKey, encodedValue);
+
+                if (this.bufferWriter.WrittenCount > 0)
+                {
+                    this.bufferWriter.Write((byte)'&');
+                }
+
+                this.bufferWriter.Write(encodedKey);
+                this.bufferWriter.Write((byte)'=');
+                this.bufferWriter.Write(encodedValue);
             }
         }
 
@@ -112,28 +120,11 @@ namespace WebApiClientCore
                 return;
             }
 
-            if (this.writer.WrittenCount > 0)
+            if (this.bufferWriter.WrittenCount > 0)
             {
-                this.writer.Write((byte)'&');
+                this.bufferWriter.Write((byte)'&');
             }
-            this.writer.Write(encodedForm);
-        }
-
-        /// <summary>
-        /// 添加已编码的二进制数据内容
-        /// </summary>
-        /// <param name="encodedKey"></param>
-        /// <param name="encodedValue"></param>
-        private void AddKeyValue(byte[] encodedKey, byte[]? encodedValue)
-        {
-            if (this.writer.WrittenCount > 0)
-            {
-                this.writer.Write((byte)'&');
-            }
-
-            this.writer.Write(encodedKey);
-            this.writer.Write((byte)'=');
-            this.writer.Write(encodedValue);
+            this.bufferWriter.Write(encodedForm);
         }
 
         /// <summary>
@@ -143,7 +134,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         protected override bool TryComputeLength(out long length)
         {
-            length = this.writer.WrittenCount;
+            length = this.bufferWriter.WrittenCount;
             return true;
         }
 
@@ -153,7 +144,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         protected override Task<Stream> CreateContentReadStreamAsync()
         {
-            var buffer = this.writer.GetWrittenSpan().ToArray();
+            var buffer = this.bufferWriter.GetWrittenSpan().ToArray();
             var readStream = new MemoryStream(buffer, 0, buffer.Length, writable: false);
             return Task.FromResult<Stream>(readStream);
         }
@@ -166,7 +157,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         protected override async Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
-            var memory = this.writer.GetWrittenMemory();
+            var memory = this.bufferWriter.GetWrittenMemory();
             await stream.WriteAsync(memory).ConfigureAwait(false);
         }
 
@@ -176,7 +167,7 @@ namespace WebApiClientCore
         /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
-            this.writer.Dispose();
+            this.bufferWriter.Dispose();
             base.Dispose(disposing);
         }
     }

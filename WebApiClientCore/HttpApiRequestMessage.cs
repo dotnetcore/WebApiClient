@@ -93,7 +93,7 @@ namespace WebApiClientCore
             this.EnsureNotGetOrHead();
             this.EnsureMediaTypeEqual(FormContent.MediaType);
 
-            var formContent = await FormContent.FromHttpContentAsync(this.Content).ConfigureAwait(false);
+            var formContent = await FormContent.ParseAsync(this.Content).ConfigureAwait(false);
             formContent.AddFormField(keyValues);
             this.Content = formContent;
         }

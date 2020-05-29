@@ -36,7 +36,7 @@ namespace WebApiClientCore.Serialization
 
             using var utf8JsonWriter = new Utf8JsonWriter(bufferWriter, writerOptions);
             System.Text.Json.JsonSerializer.Serialize(utf8JsonWriter, obj, obj.GetType(), jsonOptions);
-        }         
+        }
 
         /// <summary>
         /// 反序列化json为对象
@@ -47,9 +47,9 @@ namespace WebApiClientCore.Serialization
         /// <returns></returns>
         public object? Deserialize(byte[]? json, Type objType, JsonSerializerOptions? options)
         {
-            return json == null || json.Length == 0 ?
-                objType.DefaultValue() :
-                System.Text.Json.JsonSerializer.Deserialize(json, objType, options);
+            return json == null || json.Length == 0
+                ? objType.DefaultValue()
+                : System.Text.Json.JsonSerializer.Deserialize(json, objType, options);
         }
     }
 }
