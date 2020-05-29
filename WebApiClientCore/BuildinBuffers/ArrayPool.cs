@@ -24,7 +24,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <typeparam name="T"></typeparam>
         [DebuggerDisplay("Count = {Count}")]
-        private class ArrayOwner<T> : Disposable, IArrayOwner<T>
+        private sealed class ArrayOwner<T> : Disposable, IArrayOwner<T>
         {
             /// <summary>
             /// 获取持有的数组
@@ -50,7 +50,7 @@ namespace WebApiClientCore
             /// 归还数组
             /// </summary>
             /// <param name="disposing"></param>
-            protected override void Dispose(bool disposing)
+            protected sealed override void Dispose(bool disposing)
             {
                 ArrayPool<T>.Shared.Return(this.Array);
             }

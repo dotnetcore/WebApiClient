@@ -7,9 +7,9 @@ namespace WebApiClientCore
     /// <summary>
     /// 表示字节缓冲区写入对象
     /// </summary>
-    class BufferWriter<T> : Disposable, IBufferWriter<T>
+    sealed class BufferWriter<T> : Disposable, IBufferWriter<T>
     {
-        private const int MinimumBufferSize = 256;
+        private const int defaultSizeHint = 256;
         private IArrayOwner<T> byteArrayOwner;
 
         /// <summary>
@@ -91,25 +91,20 @@ namespace WebApiClientCore
         public void Write(T value)
         {
             this.GetSpan(1)[0] = value;
-            this.Advance(1);
+            this.WrittenCount += 1;
         }
 
         /// <summary>
         /// 写入数据
         /// </summary>
-        /// <param name="value">值</param>
-        /// <returns></returns>
-        public int Write(ReadOnlySpan<T> value)
+        /// <param name="value">值</param> 
+        public void Write(ReadOnlySpan<T> value)
         {
-            var length = value.Length;
-            if (length == 0)
+            if (value.IsEmpty == false)
             {
-                return 0;
+                value.CopyTo(this.GetSpan(value.Length));
+                this.WrittenCount += value.Length;
             }
-
-            value.CopyTo(this.GetSpan(length));
-            this.Advance(length);
-            return length;
         }
 
         /// <summary>
@@ -132,7 +127,7 @@ namespace WebApiClientCore
         /// 释放资源
         /// </summary>
         /// <param name="disposing"></param>
-        protected override void Dispose(bool disposing)
+        protected sealed override void Dispose(bool disposing)
         {
             this.byteArrayOwner?.Dispose();
         }
@@ -152,7 +147,7 @@ namespace WebApiClientCore
 
             if (sizeHint == 0)
             {
-                sizeHint = MinimumBufferSize;
+                sizeHint = defaultSizeHint;
             }
 
             var freeCapacity = this.Capacity - this.WrittenCount;
