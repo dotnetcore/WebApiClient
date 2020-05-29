@@ -12,7 +12,7 @@ namespace WebApiClientCore
     {
         /// <summary>
         /// 获取或设置Http服务完整主机域名
-        /// 例如http://www.webapiclient.com
+        /// 例如http://www.webapiclient.com/
         /// 设置了HttpHost值，HttpHostAttribute将失效  
         /// </summary>
         public Uri? HttpHost { get; set; }
