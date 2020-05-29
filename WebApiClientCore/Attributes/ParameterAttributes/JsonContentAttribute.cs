@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace WebApiClientCore.Attributes
 {
@@ -16,19 +15,10 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected override Task SetHttpContentAsync(ApiParameterContext context)
         {
-            var bufferWriter = new BufferWriter<byte>();
-            try
-            {
-                context.SerializeToJson(bufferWriter);
-                context.HttpContext.RequestMessage.Content = new JsonContent(bufferWriter);
-                return Task.CompletedTask;
-            }
-            catch (Exception)
-            {
-                // 如果遇到异常则回收bufferWriter
-                bufferWriter.Dispose();
-                throw;
-            }
+            var jsonContent = new JsonContent();
+            context.HttpContext.RequestMessage.Content = jsonContent;
+            context.SerializeToJson(jsonContent);
+            return Task.CompletedTask;
         }
     }
 }

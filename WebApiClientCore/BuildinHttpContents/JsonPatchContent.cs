@@ -1,12 +1,9 @@
-﻿using System.Net.Http;
-using System.Net.Http.Headers;
-
-namespace WebApiClientCore
+﻿namespace WebApiClientCore
 {
     /// <summary>
     /// 表示http请求的JsonPatch内容
     /// </summary>
-    class JsonPatchContent : ByteArrayContent
+    class JsonPatchContent : BufferContent
     {
         /// <summary>
         /// 获取对应的ContentType
@@ -14,13 +11,11 @@ namespace WebApiClientCore
         public static string MediaType => "application/json-patch+json";
 
         /// <summary>
-        /// http请求的JsonPatch内容
+        /// JsonPatch内容
         /// </summary>
-        /// <param name="json">json内容</param> 
-        public JsonPatchContent(byte[] json)
-            : base(json)
+        public JsonPatchContent()
+            : base(MediaType)
         {
-            this.Headers.ContentType = new MediaTypeHeaderValue(MediaType);
         }
     }
 }

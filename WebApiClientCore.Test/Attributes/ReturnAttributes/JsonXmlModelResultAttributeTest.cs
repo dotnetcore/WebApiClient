@@ -21,9 +21,9 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
             context.HttpContext.RequestMessage.Method = HttpMethod.Post;
 
             var model = new TestModel();
-            var bufferWriter = new BufferWriter<byte>(256);
-            context.HttpContext.Services.GetRequiredService<IJsonSerializer>().Serialize(bufferWriter, model, null);
-            context.HttpContext.ResponseMessage.Content = new JsonContent(bufferWriter);
+            var jsonContent = new JsonContent();
+            context.HttpContext.ResponseMessage.Content = jsonContent;
+            context.HttpContext.Services.GetRequiredService<IJsonSerializer>().Serialize(jsonContent, model, null);
 
             var attr = new JsonReturnAttribute();
             await attr.OnResponseAsync(responseContext);
