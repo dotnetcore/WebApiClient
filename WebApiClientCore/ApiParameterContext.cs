@@ -55,10 +55,11 @@ namespace WebApiClientCore
         /// <returns></returns>
         public byte[] SerializeToJson()
         {
+            using var bufferWriter = new BufferWriter<byte>();
             var options = this.HttpContext.Options.JsonSerializeOptions;
-            return this.HttpContext.Services
-                .GetRequiredService<IJsonSerializer>()
-                .Serialize(this.ParameterValue, options);
+            var serializer = this.HttpContext.Services.GetRequiredService<IJsonSerializer>();
+            serializer.Serialize(bufferWriter, this.ParameterValue, options);
+            return bufferWriter.GetWrittenSpan().ToArray();
         }
 
         /// <summary>

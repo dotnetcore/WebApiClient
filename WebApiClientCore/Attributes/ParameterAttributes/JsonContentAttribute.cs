@@ -10,18 +10,13 @@ namespace WebApiClientCore.Attributes
     public class JsonContentAttribute : HttpContentAttribute
     {
         /// <summary>
-        /// 预留的缓冲区大小
-        /// </summary>
-        private const int sizeHint = 512;
-
-        /// <summary>
         /// 设置参数到http请求内容
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
         protected override Task SetHttpContentAsync(ApiParameterContext context)
         {
-            var bufferWriter = new BufferWriter<byte>(sizeHint);
+            var bufferWriter = new BufferWriter<byte>();
             try
             {
                 context.SerializeToJson(bufferWriter);

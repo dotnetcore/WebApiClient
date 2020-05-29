@@ -10,11 +10,6 @@ namespace WebApiClientCore.Serialization
     public class KeyValueSerializer : IKeyValueSerializer
     {
         /// <summary>
-        /// 预留的缓冲区大小
-        /// </summary>
-        private const int sizeHint = 512;
-
-        /// <summary>
         /// 默认的序列化选项
         /// </summary>
         private static readonly KeyValueSerializerOptions defaultOptions = new KeyValueSerializerOptions();
@@ -43,7 +38,7 @@ namespace WebApiClientCore.Serialization
 
             var kvOptions = options ?? defaultOptions;
             var jsonOptions = kvOptions.GetJsonSerializerOptions();
-            using var bufferWriter = new BufferWriter<byte>(sizeHint);
+            using var bufferWriter = new BufferWriter<byte>();
             using var utf8JsonWriter = new Utf8JsonWriter(bufferWriter, new JsonWriterOptions
             {
                 Indented = false,

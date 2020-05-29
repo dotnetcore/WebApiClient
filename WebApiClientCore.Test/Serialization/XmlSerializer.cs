@@ -3,7 +3,7 @@ using Xunit;
 
 namespace WebApiClientCore.Test.Serialization
 {
-    public class XmlFormaterTest
+    public class XmlSerializer
     {
         [Fact]
         public void ReadWriteTest()

@@ -6,7 +6,7 @@ using Xunit;
 
 namespace WebApiClientCore.Test.Serialization
 {
-    public class KeyValueFormatterTest
+    public class KeyValueSerializerTest
     {
         [Fact]
         public void SerializeTest()

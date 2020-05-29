@@ -36,20 +36,7 @@ namespace WebApiClientCore.Serialization
 
             using var utf8JsonWriter = new Utf8JsonWriter(bufferWriter, writerOptions);
             System.Text.Json.JsonSerializer.Serialize(utf8JsonWriter, obj, obj.GetType(), jsonOptions);
-        }
-
-        /// <summary>
-        /// 将对象列化为json
-        /// </summary>
-        /// <param name="obj">对象</param>
-        /// <param name="options">选项</param>
-        /// <returns></returns>
-        public byte[] Serialize(object? obj, JsonSerializerOptions? options)
-        {
-            return obj == null ?
-                Array.Empty<byte>() :
-                System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(obj, obj.GetType(), options);
-        }
+        }         
 
         /// <summary>
         /// 反序列化json为对象

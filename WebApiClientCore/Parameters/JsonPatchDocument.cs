@@ -82,8 +82,10 @@ namespace WebApiClientCore.Parameters
                 throw new ApiInvalidConfigException(Resx.required_PatchMethod);
             }
 
+            using var bufferWriter = new BufferWriter<byte>();
             var serializer = context.HttpContext.Services.GetRequiredService<IJsonSerializer>();
-            var json = serializer.Serialize(this.oprations, context.HttpContext.Options.JsonSerializeOptions);
+            serializer.Serialize(bufferWriter, this.oprations, context.HttpContext.Options.JsonSerializeOptions);
+            var json = bufferWriter.GetWrittenSpan().ToArray();
             context.HttpContext.RequestMessage.Content = new JsonPatchContent(json);
 
             return Task.CompletedTask;

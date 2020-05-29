@@ -32,7 +32,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="initialCapacity">初始容量</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public BufferWriter(int initialCapacity)
+        public BufferWriter(int initialCapacity = 512)
         {
             if (initialCapacity <= 0)
             {

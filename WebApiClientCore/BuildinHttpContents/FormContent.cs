@@ -15,14 +15,9 @@ namespace WebApiClientCore
     class FormContent : HttpContent
     {
         /// <summary>
-        /// buffer预期大小
-        /// </summary>
-        private const int sizeHint = 512;
-
-        /// <summary>
         /// buffer定入器
         /// </summary>
-        private readonly BufferWriter<byte> writer = new BufferWriter<byte>(sizeHint);
+        private readonly BufferWriter<byte> writer = new BufferWriter<byte>();
 
         /// <summary>
         /// 默认的http编码
