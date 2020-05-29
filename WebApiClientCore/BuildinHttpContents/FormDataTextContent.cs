@@ -16,6 +16,7 @@ namespace WebApiClientCore
         public FormDataTextContent(string name, string? value)
             : base(value ?? string.Empty)
         {
+            this.Headers.ContentType = null;
             if (this.Headers.ContentDisposition == null)
             {
                 var disposition = new ContentDispositionHeaderValue("form-data")
@@ -24,7 +25,6 @@ namespace WebApiClientCore
                 };
                 this.Headers.ContentDisposition = disposition;
             }
-            this.Headers.Remove("Content-Type");
         }
     }
 }
