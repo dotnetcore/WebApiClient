@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace WebApiClientCore
 {
@@ -80,17 +79,14 @@ namespace WebApiClientCore
 
             foreach (var item in keyValues)
             {
-                var encodedKey = HttpUtility.UrlEncodeToBytes(item.Key);
-                var encodedValue = item.Value == null ? null : HttpUtility.UrlEncodeToBytes(item.Value);
-
                 if (this.bufferWriter.WrittenCount > 0)
                 {
                     this.bufferWriter.Write((byte)'&');
                 }
 
-                this.bufferWriter.Write(encodedKey);
+                HttpUtility.UrlEncode(item.Key, this.bufferWriter);
                 this.bufferWriter.Write((byte)'=');
-                this.bufferWriter.Write(encodedValue);
+                HttpUtility.UrlEncode(item.Value, this.bufferWriter);
             }
         }
 
