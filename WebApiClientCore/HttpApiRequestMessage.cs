@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
+using WebApiClientCore.HttpContents;
 
 namespace WebApiClientCore
 {
@@ -30,7 +31,17 @@ namespace WebApiClientCore
         /// httpApi的请求消息
         /// </summary>
         public HttpApiRequestMessage()
+            : this(null)
         {
+        }
+
+        /// <summary>
+        /// httpApi的请求消息
+        /// </summary>
+        /// <param name="requestUri">请求uri</param>
+        public HttpApiRequestMessage(Uri? requestUri)
+        {
+            this.RequestUri = requestUri;
             this.Headers.UserAgent.Add(defaultUserAgent);
         }
 

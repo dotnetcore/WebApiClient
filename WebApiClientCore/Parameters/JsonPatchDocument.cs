@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
+using WebApiClientCore.HttpContents;
 using WebApiClientCore.Serialization;
 
 namespace WebApiClientCore.Parameters

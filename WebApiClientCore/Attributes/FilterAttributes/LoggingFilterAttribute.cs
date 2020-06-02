@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using WebApiClientCore.HttpContents;
 
 namespace WebApiClientCore.Attributes
 {

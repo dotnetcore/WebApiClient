@@ -6,12 +6,12 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.HttpContents
 {
     /// <summary>
     /// 表示BufferWriter优化的HttpContent
     /// </summary>
-    class BufferContent : HttpContent, IBufferWriter<byte>
+    public class BufferContent : HttpContent, IBufferWriter<byte>
     {
         /// <summary>
         /// buffer
@@ -30,7 +30,7 @@ namespace WebApiClientCore
         /// 设置向前推进
         /// </summary>
         /// <param name="count"></param>
-        void IBufferWriter<byte>.Advance(int count)
+        public void Advance(int count)
         {
             this.bufferWriter.Advance(count);
         }
@@ -40,7 +40,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="sizeHint"></param>
         /// <returns></returns>
-        Memory<byte> IBufferWriter<byte>.GetMemory(int sizeHint)
+        public Memory<byte> GetMemory(int sizeHint)
         {
             return this.bufferWriter.GetMemory(sizeHint);
         }
@@ -50,7 +50,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="sizeHint"></param>
         /// <returns></returns>
-        Span<byte> IBufferWriter<byte>.GetSpan(int sizeHint)
+        public Span<byte> GetSpan(int sizeHint)
         {
             return this.bufferWriter.GetSpan(sizeHint);
         }

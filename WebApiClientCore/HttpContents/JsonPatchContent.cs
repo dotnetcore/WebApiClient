@@ -1,9 +1,9 @@
-﻿namespace WebApiClientCore
+﻿namespace WebApiClientCore.HttpContents
 {
     /// <summary>
-    /// 表示http请求的JsonPatch内容
+    /// 表示JsonPatch内容
     /// </summary>
-    class JsonPatchContent : BufferContent
+    public class JsonPatchContent : BufferContent
     {
         /// <summary>
         /// 获取对应的ContentType

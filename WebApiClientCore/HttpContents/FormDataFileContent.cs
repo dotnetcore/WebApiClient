@@ -2,15 +2,15 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.HttpContents
 {
     /// <summary>
-    /// 表示文件内容
+    /// 表示form-data文件内容
     /// </summary>
-    class FormDataFileContent : StreamContent, ICustomHttpContentConvertable
+    public class FormDataFileContent : StreamContent, ICustomHttpContentConvertable
     {
         /// <summary>
-        /// 文件内容
+        /// form-data文件内容
         /// </summary>
         /// <param name="stream">文件流</param>
         /// <param name="name">名称</param>

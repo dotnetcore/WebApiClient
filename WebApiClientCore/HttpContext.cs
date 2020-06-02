@@ -44,7 +44,7 @@ namespace WebApiClientCore
             this.Client = client;
             this.Services = services;
             this.Options = options;
-            this.RequestMessage = new HttpApiRequestMessage { RequestUri = options.HttpHost ?? client.BaseAddress };
+            this.RequestMessage = new HttpApiRequestMessage(options.HttpHost ?? client.BaseAddress);
         }
 
         /// <summary>

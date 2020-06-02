@@ -2,12 +2,12 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.HttpContents
 {
     /// <summary>
     /// 表示form-data表单
     /// </summary>
-    class FormDataContent : MultipartContent, ICustomHttpContentConvertable
+    public class FormDataContent : MultipartContent, ICustomHttpContentConvertable
     {
         /// <summary>
         /// 分隔符

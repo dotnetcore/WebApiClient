@@ -6,12 +6,12 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.HttpContents
 {
     /// <summary>
     /// 表示键值对表单内容
     /// </summary>
-    class FormContent : HttpContent
+    public class FormContent : HttpContent
     {
         /// <summary>
         /// buffer写入器

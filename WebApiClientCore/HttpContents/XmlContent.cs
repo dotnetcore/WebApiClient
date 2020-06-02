@@ -1,12 +1,12 @@
 ﻿using System.Net.Http;
 using System.Text;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.HttpContents
 {
     /// <summary>
-    /// 表示http请求的xml内容
+    /// 表示xml内容
     /// </summary>
-    class XmlContent : StringContent
+    public class XmlContent : StringContent
     {
         /// <summary>
         /// 获取对应的ContentType
@@ -14,7 +14,7 @@ namespace WebApiClientCore
         public static string MediaType => "application/xml";
 
         /// <summary>
-        /// http请求的xml内容
+        /// xml内容
         /// </summary>
         /// <param name="xml">xml内容</param>
         /// <param name="encoding">编码</param>

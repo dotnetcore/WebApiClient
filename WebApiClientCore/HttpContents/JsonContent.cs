@@ -1,10 +1,9 @@
-﻿namespace WebApiClientCore
+﻿namespace WebApiClientCore.HttpContents
 {
     /// <summary>
-    /// 表示http请求的json内容
-    /// 从对象的json序列化到HttpContext发送过程为0拷贝
+    /// 表示json内容
     /// </summary>
-    class JsonContent : BufferContent
+    public class JsonContent : BufferContent
     {
         /// <summary>
         /// 获取对应的ContentType
@@ -12,7 +11,7 @@
         public static string MediaType => "application/json";
 
         /// <summary>
-        /// http请求的json内容
+        /// json内容
         /// </summary> 
         public JsonContent()
             : base(MediaType)

@@ -128,9 +128,9 @@ namespace WebApiClientCore
             {
                 get
                 {
-                    return this.target.lazy.IsValueCreated ?
-                        this.target.lazy.Value.ToArray() :
-                        Array.Empty<KeyValuePair<object, object?>>();
+                    return this.target.lazy.IsValueCreated
+                        ? this.target.lazy.Value.ToArray()
+                        : Array.Empty<KeyValuePair<object, object?>>();
                 }
             }
         }
