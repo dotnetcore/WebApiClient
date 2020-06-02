@@ -59,5 +59,35 @@ namespace WebApiClientCore
             }
             return new AcitonRetryTask<TResult>(async () => await task, maxCount, delay);
         }
+
+        /// <summary>
+        /// 当遇到异常时返回默认值
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="task"></param> 
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns></returns>
+        public static ITask<TResult> HandleAsDefaultWhenException<TResult>(this ITask<TResult> task)
+        {
+#nullable disable
+            return task.Handle().WhenCatch<Exception>(ex => default);
+#nullable enable
+        }
+
+        /// <summary>
+        /// 返回提供异常处理请求任务对象
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="task"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns></returns>
+        public static IHandleTask<TResult> Handle<TResult>(this ITask<TResult> task)
+        {
+            if (task == null)
+            {
+                throw new ArgumentNullException(nameof(task));
+            }
+            return new ActionHandleTask<TResult>(async () => await task);
+        }
     }
 }
