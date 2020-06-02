@@ -57,7 +57,7 @@ namespace WebApiClientCore
             this.DataType = dataType;
             this.IsTaskDefinition = method.ReturnType.IsInheritFrom<Task>();
             this.Attributes = method
-                .FindDeclaringAttributes<IApiReturnAttribute>(true)
+                .GetAttributes<IApiReturnAttribute>(true)
                 .Concat(GetDefaultAttributes(dataType))
                 .Distinct(new MultiplableComparer<IApiReturnAttribute>())
                 .OrderBy(item => item.OrderIndex)

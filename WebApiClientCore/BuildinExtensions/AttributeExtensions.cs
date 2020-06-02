@@ -13,68 +13,41 @@ namespace WebApiClientCore
         /// 获取成员的特性
         /// </summary>
         /// <typeparam name="TAttribute"></typeparam>
-        /// <param name="parameter">参数</param>
-        /// <param name="inherit"></param>
+        /// <param name="member">成员</param> 
         /// <returns></returns>
-        public static IEnumerable<TAttribute> GetAttributes<TAttribute>(this ParameterInfo parameter, bool inherit) where TAttribute : class
+        public static TAttribute? GetAttribute<TAttribute>(this MemberInfo member) where TAttribute : class
         {
-            return parameter.GetCustomAttributes(inherit).OfType<TAttribute>();
+            return member.GetCustomAttributes().OfType<TAttribute>().FirstOrDefault();
         }
 
         /// <summary>
-        /// 从方法或声明的类型中查找第一个特性
+        /// 获取成员的特性
         /// </summary>
         /// <typeparam name="TAttribute"></typeparam>
-        /// <param name="method">方法</param>
-        /// <param name="inherit"></param>
+        /// <param name="member">成员</param>
+        /// <param name="includeDeclaringType">是否也包括声明类型</param>
         /// <returns></returns>
-        public static TAttribute? FindDeclaringAttribute<TAttribute>(this MethodInfo method, bool inherit) where TAttribute : class
+        public static IEnumerable<TAttribute> GetAttributes<TAttribute>(this MemberInfo member, bool includeDeclaringType) where TAttribute : class
         {
-            return method.GetAttribute<TAttribute>(inherit) ?? method.DeclaringType?.GetAttribute<TAttribute>(inherit);
-        }
-
-        /// <summary>
-        /// 从方法和声明的类型中查找所有特性
-        /// </summary>
-        /// <typeparam name="TAttribute"></typeparam>
-        /// <param name="method">方法</param>
-        /// <param name="inherit"></param>
-        /// <returns></returns>
-        public static IEnumerable<TAttribute> FindDeclaringAttributes<TAttribute>(this MethodInfo method, bool inherit) where TAttribute : class
-        {
-            var methodAttributes = method.GetAttributes<TAttribute>(inherit);
-            if (method.DeclaringType == null)
+            var self = member.GetCustomAttributes().OfType<TAttribute>();
+            if (includeDeclaringType == false || member.DeclaringType == null)
             {
-                return methodAttributes;
+                return self;
             }
 
-            var interfaceAttributes = method.DeclaringType.GetAttributes<TAttribute>(inherit);
-            return methodAttributes.Concat(interfaceAttributes);
-        }
-
-
-        /// <summary>
-        /// 获取成员的特性
-        /// </summary>
-        /// <typeparam name="TAttribute"></typeparam>
-        /// <param name="member">成员</param>
-        /// <param name="inherit"></param>
-        /// <returns></returns>
-        public static TAttribute? GetAttribute<TAttribute>(this MemberInfo member, bool inherit) where TAttribute : class
-        {
-            return member.GetAttributes<TAttribute>(inherit).FirstOrDefault();
+            var decalring = member.DeclaringType.GetCustomAttributes().OfType<TAttribute>();
+            return self.Concat(decalring);
         }
 
         /// <summary>
         /// 获取成员的特性
         /// </summary>
         /// <typeparam name="TAttribute"></typeparam>
-        /// <param name="member">成员</param>
-        /// <param name="inherit"></param>
+        /// <param name="parameter">参数</param> 
         /// <returns></returns>
-        private static IEnumerable<TAttribute> GetAttributes<TAttribute>(this MemberInfo member, bool inherit) where TAttribute : class
+        public static IEnumerable<TAttribute> GetAttributes<TAttribute>(this ParameterInfo parameter) where TAttribute : class
         {
-            return member.GetCustomAttributes(inherit).OfType<TAttribute>();
+            return parameter.GetCustomAttributes().OfType<TAttribute>();
         }
     }
 }

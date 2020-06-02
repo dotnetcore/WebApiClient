@@ -42,24 +42,16 @@ namespace WebApiClientCore.Test.BuildinExtensions
             {
             }
         }
+         
 
         [Fact]
-        public void FindDeclaringAttributeTest()
-        {
-            var m1 = typeof(D1).GetMethod("M1");
-            var m2 = typeof(D1).GetMethod("M2");
-            Assert.Null(m1.FindDeclaringAttribute<MyAttribute>(true));
-            Assert.NotNull(m2.FindDeclaringAttribute<MyAttribute>(true));
-        }
-
-        [Fact]
-        public void FindDeclaringAttributesTest()
+        public void GetAttributesTest()
         {
             var m1 = typeof(D1).GetMethod("M1");
             var m2 = typeof(D1).GetMethod("M2");
 
-            Assert.True(m1.FindDeclaringAttributes<MyAttribute>(true).Count() == 0);
-            Assert.True(m2.FindDeclaringAttributes<MyAttribute>(true).Count() == 1);
+            Assert.True(m1.GetAttributes<MyAttribute>(true).Count() == 0);
+            Assert.True(m2.GetAttributes<MyAttribute>(true).Count() == 1);
         }
     }
 }
