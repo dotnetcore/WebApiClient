@@ -29,11 +29,12 @@ namespace WebApiClientCore
         /// <param name="client"></param>
         /// <param name="services"></param>
         /// <param name="options"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public ServiceContext(HttpClient client, IServiceProvider services, HttpApiOptions options)
         {
-            this.Client = client;
-            this.Services = services;
-            this.Options = options;
+            this.Client = client ?? throw new ArgumentNullException(nameof(client));
+            this.Services = services ?? throw new ArgumentNullException(nameof(services));
+            this.Options = options ?? throw new ArgumentNullException(nameof(options));
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 
 namespace WebApiClientCore
@@ -41,7 +40,6 @@ namespace WebApiClientCore
         /// <param name="httpContext"></param> 
         /// <param name="apiAction"></param>
         /// <param name="arguments"></param>
-        /// <exception cref="ArgumentNullException"></exception>
         public ApiRequestContext(HttpContext httpContext, ApiActionDescriptor apiAction, object?[] arguments)
             : this(httpContext, apiAction, arguments, new DataCollection(), new List<CancellationToken>())
         {
@@ -55,12 +53,11 @@ namespace WebApiClientCore
         /// <param name="arguments"></param>
         /// <param name="properties"></param>
         /// <param name="cancellationTokens"></param>
-        /// <exception cref="ArgumentNullException"></exception>
         protected ApiRequestContext(HttpContext httpContext, ApiActionDescriptor apiAction, object?[] arguments, DataCollection properties, IList<CancellationToken> cancellationTokens)
         {
-            this.HttpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
-            this.ApiAction = apiAction ?? throw new ArgumentNullException(nameof(apiAction));
-            this.Arguments = arguments ?? throw new ArgumentNullException(nameof(arguments));
+            this.HttpContext = httpContext;
+            this.ApiAction = apiAction;
+            this.Arguments = arguments;
 
             this.Properties = properties;
             this.CancellationTokens = cancellationTokens;
