@@ -30,7 +30,7 @@ namespace WebApiClientCore
         /// 设置向前推进
         /// </summary>
         /// <param name="count"></param>
-        public void Advance(int count)
+        void IBufferWriter<byte>.Advance(int count)
         {
             this.bufferWriter.Advance(count);
         }
@@ -40,7 +40,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="sizeHint"></param>
         /// <returns></returns>
-        public Memory<byte> GetMemory(int sizeHint = 0)
+        Memory<byte> IBufferWriter<byte>.GetMemory(int sizeHint)
         {
             return this.bufferWriter.GetMemory(sizeHint);
         }
@@ -50,7 +50,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="sizeHint"></param>
         /// <returns></returns>
-        public Span<byte> GetSpan(int sizeHint = 0)
+        Span<byte> IBufferWriter<byte>.GetSpan(int sizeHint)
         {
             return this.bufferWriter.GetSpan(sizeHint);
         }
