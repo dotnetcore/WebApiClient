@@ -11,7 +11,7 @@ namespace WebApiClientCore.Benchmarks.Requests
         [Post("/benchmarks")]
         Task<Model> PostJsonAsync([Body(BodySerializationMethod.Serialized)]Model model);
 
-        [Post("/benchmarks")]
-        Task<Model> PostFormAsync([Body(BodySerializationMethod.UrlEncoded)]Model model);
+        [Put("/benchmarks/{id}")]
+        Task<Model> PutFormAsync(string id, [Body(BodySerializationMethod.UrlEncoded)]Model model);
     }
 }

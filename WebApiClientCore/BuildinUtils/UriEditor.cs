@@ -54,7 +54,7 @@ namespace WebApiClientCore
             }
 
             name = $"{{{name}}}";
-            value = value == null ? null : HttpUtility.UrlEncode(value, this.Encoding);
+            value = HttpUtility.UrlEncode(value, this.Encoding);
             if (uri.RepaceIgnoreCase(name, value, out var newUri) == true)
             {
                 this.Uri = new Uri(newUri);
@@ -78,7 +78,7 @@ namespace WebApiClientCore
             }
 
             name = HttpUtility.UrlEncode(name, this.Encoding);
-            value = value == null ? null : HttpUtility.UrlEncode(value, this.Encoding);
+            value = HttpUtility.UrlEncode(value, this.Encoding);
 
             var uriSpan = this.Uri.OriginalString.AsSpan();
             var fragmentSpan = this.Uri.Fragment.AsSpan();

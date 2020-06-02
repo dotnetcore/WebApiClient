@@ -4,7 +4,6 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace WebApiClientCore.Parameters
 {
@@ -32,7 +31,7 @@ namespace WebApiClientCore.Parameters
         /// <summary>
         /// 获取编码后的文件好友名称
         /// </summary>
-        public virtual string? EncodedFileName => this.FileName == null ? null : HttpUtility.UrlEncode(this.FileName, Encoding.UTF8);
+        public virtual string? EncodedFileName => HttpUtility.UrlEncode(this.FileName, Encoding.UTF8);
 
         /// <summary>
         /// form-data的一个文件项
