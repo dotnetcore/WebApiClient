@@ -25,14 +25,15 @@ namespace WebApiClientCore
             }
 
             var source = encoding.GetBytes(str).AsSpan();
-            using var bufferWriter = new BufferWriter<byte>();
-            if (UrlEncodeToBuffer(source, bufferWriter) == false)
+            if (UrlEncodeTest(source, out var destLength) == false)
             {
                 return str;
             }
 
-            var span = bufferWriter.GetWrittenSpan();
-            return Encoding.ASCII.GetString(span);
+            using var owner = ArrayPool.Rent<byte>(destLength);
+            var destination = owner.Array.AsSpan(0, destLength);
+            UrlEncodeCore(source, destination);
+            return Encoding.ASCII.GetString(destination);
         }
 
         /// <summary>
@@ -48,37 +49,42 @@ namespace WebApiClientCore
             }
 
             var source = Encoding.UTF8.GetBytes(str).AsSpan();
-            if (UrlEncodeToBuffer(source, bufferWriter) == true)
+            if (UrlEncodeTest(source, out var destLength) == false)
             {
-                return;
+                var destination = bufferWriter.GetSpan(destLength);
+                source.CopyTo(destination);
+                bufferWriter.Advance(destLength);
             }
-
-            var length = source.Length;
-            source.CopyTo(bufferWriter.GetSpan(length));
-            bufferWriter.Advance(length);
+            else
+            {
+                var destination = bufferWriter.GetSpan(destLength);
+                UrlEncodeCore(source, destination);
+                bufferWriter.Advance(destLength);
+            }
         }
 
+
         /// <summary>
-        /// Uri编码到指定bufferWriter
+        /// 测试是否需要进行编码
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="bufferWriter"></param>
-        /// <returns>不需要编码则返回false</returns>
-        private static bool UrlEncodeToBuffer(ReadOnlySpan<byte> source, IBufferWriter<byte> bufferWriter)
+        /// <param name="source">源</param>
+        /// <param name="destLength">编码后的长度</param> 
+        private static bool UrlEncodeTest(ReadOnlySpan<byte> source, out int destLength)
         {
+            destLength = 0;
             if (source.IsEmpty == true)
             {
                 return false;
             }
 
             var cUnsafe = 0;
-            var cSpace = 0;
+            var hasSapce = false;
             for (var i = 0; i < source.Length; i++)
             {
                 var ch = (char)source[i];
                 if (ch == ' ')
                 {
-                    cSpace++;
+                    hasSapce = true;
                 }
                 else if (!IsUrlSafeChar(ch))
                 {
@@ -86,15 +92,19 @@ namespace WebApiClientCore
                 }
             }
 
-            if (cSpace == 0 && cUnsafe == 0)
-            {
-                return false;
-            }
+            destLength = source.Length + cUnsafe * 2;
+            return !(hasSapce == false && cUnsafe == 0);
+        }
 
+
+        /// <summary>
+        /// 将source编码到destination
+        /// </summary>
+        /// <param name="source">源</param>
+        /// <param name="destination">目标</param>  
+        private static void UrlEncodeCore(ReadOnlySpan<byte> source, Span<byte> destination)
+        {
             var index = 0;
-            var length = source.Length + cUnsafe * 2;
-            var span = bufferWriter.GetSpan(length);
-
             for (var i = 0; i < source.Length; i++)
             {
                 var b = source[i];
@@ -102,22 +112,19 @@ namespace WebApiClientCore
 
                 if (IsUrlSafeChar(ch))
                 {
-                    span[index++] = b;
+                    destination[index++] = b;
                 }
                 else if (ch == ' ')
                 {
-                    span[index++] = (byte)'+';
+                    destination[index++] = (byte)'+';
                 }
                 else
                 {
-                    span[index++] = (byte)'%';
-                    span[index++] = (byte)ToCharLower(b >> 4);
-                    span[index++] = (byte)ToCharLower(b);
+                    destination[index++] = (byte)'%';
+                    destination[index++] = (byte)ToCharLower(b >> 4);
+                    destination[index++] = (byte)ToCharLower(b);
                 }
             }
-
-            bufferWriter.Advance(length);
-            return true;
         }
 
         /// <summary>
