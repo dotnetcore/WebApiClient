@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
 
@@ -10,28 +9,12 @@ namespace WebApiClientCore.Attributes
     /// 使用KeyValueSerializer序列化参数值得到的键值对作为url路径参数或query参数的特性
     /// 没有任何特性修饰的参数，将默认被PathQueryAttribute修饰
     /// </summary>
-    public class PathQueryAttribute : ApiParameterAttribute, IEncodingable, ICollectionFormatable
+    public class PathQueryAttribute : ApiParameterAttribute, ICollectionFormatable
     {
-        /// <summary>
-        /// 编码
-        /// </summary>
-        private Encoding encoding = System.Text.Encoding.UTF8;
-
-        /// <summary>
-        /// 获取或设置参数的编码名称
-        /// </summary>
-        /// <exception cref="ArgumentException"></exception>
-        public string Encoding
-        {
-            get => this.encoding.WebName;
-            set => this.encoding = System.Text.Encoding.GetEncoding(value);
-        }
-
         /// <summary>
         /// 获取或设置集合格式化方式
         /// </summary>
         public CollectionFormat CollectionFormat { get; set; } = CollectionFormat.Multi;
-
 
         /// <summary>
         /// http请求之前
@@ -60,7 +43,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected virtual Uri CreateUri(Uri uri, IEnumerable<KeyValue> keyValues)
         {
-            var editor = new UriEditor(uri, this.encoding);
+            var editor = new UriEditor(uri);
             foreach (var keyValue in keyValues)
             {
                 if (editor.Replace(keyValue.Key, keyValue.Value) == false)

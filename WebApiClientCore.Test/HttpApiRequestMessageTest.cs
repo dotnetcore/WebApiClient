@@ -24,8 +24,8 @@ namespace WebApiClientCore.Test
             request.AddUrlQuery("yKey", "yValue");
             Assert.True(request.RequestUri == new Uri("http://webapiclient.com?xKey=xValue&yKey=yValue"));
 
-            var unicodeValue = HttpUtility.UrlEncode("老九", Encoding.UTF8);
-            request.AddUrlQuery("zKey", "老九", Encoding.UTF8);
+            var unicodeValue = Uri.EscapeDataString("老九");
+            request.AddUrlQuery("zKey", "老九");
             var url = new Uri($"http://webapiclient.com?xKey=xValue&yKey=yValue&zKey={unicodeValue}");
             Assert.True(request.RequestUri == url);
         }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 
 namespace WebApiClientCore
 {
@@ -14,33 +13,22 @@ namespace WebApiClientCore
         public Uri Uri { get; private set; }
 
         /// <summary>
-        /// 获取Uri参数的编码
-        /// </summary>
-        public Encoding Encoding { get; }
-
-        /// <summary>
         /// Url创建者
         /// </summary>
-        /// <param name="absoluteUri">绝对路径的uri</param>
-        /// <param name="encoding">参数的编码</param>
+        /// <param name="uri">绝对路径的uri</param>
         /// <exception cref="UriFormatException"></exception>
-        public UriEditor(Uri absoluteUri, Encoding encoding)
+        public UriEditor(Uri uri)
         {
-            if (absoluteUri.IsAbsoluteUri == false)
+            if (uri.IsAbsoluteUri == false)
             {
-                throw new UriFormatException(Resx.required_AbsoluteUri.Format(nameof(absoluteUri)));
+                throw new UriFormatException(Resx.required_AbsoluteUri.Format(nameof(uri)));
             }
-
-            this.Uri = absoluteUri;
-            this.Encoding = encoding;
+            this.Uri = uri;
         }
 
 
         /// <summary>
         /// 替换带有花括号的参数的值
-        /// 这个方法是经过严格的benchmark测试的
-        /// 时间占用为Regex.Replace的1/2
-        /// 时间占用为New Regex的1/12
         /// </summary>
         /// <param name="name">参数名称，不带花括号</param>
         /// <param name="value">参数的值</param>
@@ -53,9 +41,12 @@ namespace WebApiClientCore
                 return false;
             }
 
-            name = $"{{{name}}}";
-            value = HttpUtility.UrlEncode(value, this.Encoding);
-            if (uri.RepaceIgnoreCase(name, value, out var newUri) == true)
+            if (!string.IsNullOrEmpty(value))
+            {
+                value = Uri.EscapeDataString(value);
+            }
+
+            if (uri.RepaceIgnoreCase($"{{{name}}}", value, out var newUri) == true)
             {
                 this.Uri = new Uri(newUri);
                 return true;
@@ -69,16 +60,13 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="name">参数名称</param>
         /// <param name="value">参数的值</param>
-        /// <exception cref="ArgumentNullException"></exception>
         public void AddQuery(string name, string? value)
         {
-            if (string.IsNullOrEmpty(name))
+            name = Uri.EscapeDataString(name);
+            if (!string.IsNullOrEmpty(value))
             {
-                throw new ArgumentNullException(nameof(name));
+                value = Uri.EscapeDataString(value);
             }
-
-            name = HttpUtility.UrlEncode(name, this.Encoding);
-            value = HttpUtility.UrlEncode(value, this.Encoding);
 
             var uriSpan = this.Uri.OriginalString.AsSpan();
             var fragmentSpan = this.Uri.Fragment.AsSpan();
