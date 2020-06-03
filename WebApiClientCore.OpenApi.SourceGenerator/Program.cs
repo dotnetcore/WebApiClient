@@ -15,7 +15,6 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
             }
             else
             {
-                Console.WriteLine(options.GetUsage());
                 Console.Read();
             }
         }
