@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 
-    <Version>1.0.0-beta6</Version>
+    <Version>1.0.0-rc1</Version>
     <Authors>laojiu</Authors>
     <Company>laojiu</Company>
     <Product>WebApiClientCore</Product>
