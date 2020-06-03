@@ -8,7 +8,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Sign.snk</AssemblyOriginatorKeyFile>
 
-    <Version>1.0.0-beta6</Version>
+    <Version>1.0.0-rc1</Version>
     <Authors>laojiu</Authors>
     <Company>laojiu</Company> 
     <Copyright>Copyright © laojiu 2017-2020</Copyright>

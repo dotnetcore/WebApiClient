@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiClientCore.Attributes;
 using WebApiClientCore.Exceptions;
+using WebApiClientCore.HttpContents;
 using WebApiClientCore.Serialization;
 using Xunit;
 
