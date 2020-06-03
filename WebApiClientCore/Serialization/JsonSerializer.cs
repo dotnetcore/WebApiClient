@@ -41,15 +41,15 @@ namespace WebApiClientCore.Serialization
         /// <summary>
         /// 反序列化json为对象
         /// </summary>
-        /// <param name="json">json</param>
+        /// <param name="utf8Json">json</param>
         /// <param name="objType">对象类型</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        public object? Deserialize(byte[]? json, Type objType, JsonSerializerOptions? options)
+        public object? Deserialize(Span<byte> utf8Json, Type objType, JsonSerializerOptions? options)
         {
-            return json == null || json.Length == 0
+            return utf8Json.IsEmpty
                 ? objType.DefaultValue()
-                : System.Text.Json.JsonSerializer.Deserialize(json, objType, options);
+                : System.Text.Json.JsonSerializer.Deserialize(utf8Json, objType, options);
         }
     }
 }

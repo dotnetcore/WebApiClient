@@ -119,7 +119,8 @@ namespace WebApiClientCore.Serialization
         protected virtual IList<KeyValue> GetFullNameKeyValueList(string key, ref Utf8JsonReader reader, bool withRoot)
         {
             var list = new List<KeyValue>();
-            var root = JsonDocument.ParseValue(ref reader).RootElement;
+            using var doc = JsonDocument.ParseValue(ref reader);
+            var root = doc.RootElement;
             ParseJsonElement(key, ref root, list, withRoot);
             return list;
         }

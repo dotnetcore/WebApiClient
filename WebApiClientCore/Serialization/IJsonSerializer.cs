@@ -20,10 +20,10 @@ namespace WebApiClientCore.Serialization
         /// <summary>
         /// 将json文本反序列化对象
         /// </summary>
-        /// <param name="json">utf8 json</param>
+        /// <param name="utf8Json">utf8 json</param>
         /// <param name="objType">对象类型</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        object? Deserialize(byte[]? json, Type objType, JsonSerializerOptions? options);
+        object? Deserialize(Span<byte> utf8Json, Type objType, JsonSerializerOptions? options);
     }
 }
