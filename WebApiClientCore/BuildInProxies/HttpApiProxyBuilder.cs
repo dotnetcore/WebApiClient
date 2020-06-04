@@ -42,11 +42,11 @@ namespace WebApiClientCore
         /// <summary>
         /// 创建IHttpApi的代理类的实例
         /// </summary>
-        /// <param name="interceptor">拦截器</param>
+        /// <param name="actionInterceptor">拦截器</param>
         /// <returns></returns>
-        public static THttpApi Build(IActionInterceptor interceptor)
+        public static THttpApi Build(IActionInterceptor actionInterceptor)
         {
-            return proxyTypeCtor.Invoke(interceptor, actionInvokers);
+            return proxyTypeCtor.Invoke(actionInterceptor, actionInvokers);
         }
     }
 }

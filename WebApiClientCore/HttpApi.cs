@@ -23,22 +23,20 @@ namespace WebApiClientCore
         public static THttpApi Create<THttpApi>(HttpClient client, IServiceProvider services, HttpApiOptions options)
         {
             var context = new ServiceContext(client, services, options);
-            return Create<THttpApi>(context);
+            return Create<THttpApi>(new ActionInterceptor(context));
         }
 
         /// <summary>
         /// 创建THttpApi的代理实例
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
-        /// <param name="context">服务上下文</param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="actionInterceptor">Action拦截器</param>  
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
-        public static THttpApi Create<THttpApi>(ServiceContext context)
+        public static THttpApi Create<THttpApi>(IActionInterceptor actionInterceptor)
         {
-            var interceptor = new ActionInterceptor(context);
-            return HttpApiProxyBuilder<THttpApi>.Build(interceptor);
+            return HttpApiProxyBuilder<THttpApi>.Build(actionInterceptor);
         }
     }
 }

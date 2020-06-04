@@ -22,6 +22,7 @@ namespace WebApiClientCore
         /// http上下文
         /// </summary>
         /// <param name="context">服务上下文</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public HttpContext(ServiceContext context)
             : this(context.Client, context.Services, context.Options)
         {
@@ -33,6 +34,7 @@ namespace WebApiClientCore
         /// <param name="client">httpClient</param>
         /// <param name="services">服务提供者</param>
         /// <param name="options">接口选项</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public HttpContext(HttpClient client, IServiceProvider services, HttpApiOptions options)
             : base(client, services, options)
         {

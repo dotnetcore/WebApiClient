@@ -18,22 +18,22 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取返回类型
         /// </summary>
-        public Type ReturnType { get; protected set; }
+        public Type ReturnType { get; }
 
         /// <summary>
         /// 获取ITask(Of T)或Task(Of T)的T类型描述
         /// </summary>
-        public ApiDataTypeDescriptor DataType { get; protected set; }
+        public ApiDataTypeDescriptor DataType { get; }
 
         /// <summary>
         /// 获取返回类型是否为Task定义
         /// </summary>
-        public bool IsTaskDefinition { get; protected set; }
+        public bool IsTaskDefinition { get; }
 
         /// <summary>
         /// 获取关联的IApiReturnAttribute
         /// </summary>
-        public IReadOnlyList<IApiReturnAttribute> Attributes { get; protected set; }
+        public IReadOnlyList<IApiReturnAttribute> Attributes { get; }
 
         /// <summary>
         /// 请求Api的返回描述

@@ -25,7 +25,7 @@
         /// <param name="actionInvoker">action执行器</param> 
         /// <param name="arguments">方法的参数集合</param>
         /// <returns></returns>
-        public object Intercept(IActionInvoker actionInvoker, object[] arguments)
+        public object Intercept(IActionInvoker actionInvoker, object?[] arguments)
         {
             return actionInvoker.Invoke(this.context, arguments);
         }

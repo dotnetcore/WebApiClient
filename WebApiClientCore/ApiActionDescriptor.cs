@@ -16,54 +16,54 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取方法的唯一标识
         /// </summary>
-        public string Id { get; protected set; }
+        public string Id { get; }
 
         /// <summary>
         /// 获取所在接口类型
         /// 这个值不一定是声明方法的接口类型
         /// </summary>
-        public Type InterfaceType { get; protected set; }
+        public Type InterfaceType { get; }
 
         /// <summary>
         /// 获取Api名称
         /// </summary>
-        public string Name { get; protected set; }
+        public string Name { get; }
 
         /// <summary>
         /// 获取关联的方法信息
         /// </summary>
-        public MethodInfo Member { get; protected set; }
+        public MethodInfo Member { get; }
 
         /// <summary>
         /// 获取Api关联的缓存特性
         /// </summary>
-        public IApiCacheAttribute? CacheAttribute { get; protected set; }
+        public IApiCacheAttribute? CacheAttribute { get; }
 
         /// <summary>
         /// 获取Api关联的特性
         /// </summary>
-        public IReadOnlyList<IApiActionAttribute> Attributes { get; protected set; }
+        public IReadOnlyList<IApiActionAttribute> Attributes { get; }
 
         /// <summary>
         /// 获取Api关联的过滤器特性
         /// </summary>
-        public IReadOnlyList<IApiFilterAttribute> FilterAttributes { get; protected set; }
+        public IReadOnlyList<IApiFilterAttribute> FilterAttributes { get; }
 
 
         /// <summary>
         /// 获取Api的参数描述
         /// </summary>
-        public IReadOnlyList<ApiParameterDescriptor> Parameters { get; protected set; }
+        public IReadOnlyList<ApiParameterDescriptor> Parameters { get; }
 
         /// <summary>
         /// 获取Api的返回描述
         /// </summary>
-        public ApiReturnDescriptor Return { get; protected set; }
+        public ApiReturnDescriptor Return { get; }
 
         /// <summary>
         /// 获取自定义数据存储的字典
         /// </summary>
-        public ConcurrentDictionary<object, object> Properties { get; protected set; }
+        public ConcurrentDictionary<object, object> Properties { get; }
 
         /// <summary>
         /// 请求Api描述

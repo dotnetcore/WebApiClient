@@ -14,32 +14,32 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取类型
         /// </summary>
-        public Type Type { get; protected set; }
+        public Type Type { get; }
 
         /// <summary>
         /// 获取是否为原始类型的String
         /// </summary>
-        public bool IsRawString { get; protected set; }
+        public bool IsRawString { get; }
 
         /// <summary>
         /// 获取是否为原始类型的Stream
         /// </summary>
-        public bool IsRawStream { get; protected set; }
+        public bool IsRawStream { get; }
 
         /// <summary>
         /// 获取是否为原始类型的byte[]
         /// </summary>
-        public bool IsRawByteArray { get; protected set; }
+        public bool IsRawByteArray { get; }
 
         /// <summary>
         ///  获取是否为原始类型的HttpResponseMessage
         /// </summary>
-        public bool IsRawHttpResponseMessage { get; protected set; }
+        public bool IsRawHttpResponseMessage { get; }
 
         /// <summary>
         /// 获取是否为原始类型中的一个
         /// </summary>
-        public bool IsRawType { get; protected set; }
+        public bool IsRawType { get; }
 
         /// <summary>
         /// 返回的Task(Of T)的T类型描述

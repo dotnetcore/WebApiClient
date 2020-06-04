@@ -20,32 +20,32 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取参数名称
         /// </summary>
-        public string Name { get; protected set; }
+        public string Name { get; }
 
         /// <summary>
         /// 获取关联的参数信息
         /// </summary>
-        public ParameterInfo Member { get; protected set; }
+        public ParameterInfo Member { get; }
 
         /// <summary>
         /// 获取参数索引
         /// </summary>
-        public int Index { get; protected set; }
+        public int Index { get; }
 
         /// <summary>
         /// 获取参数类型
         /// </summary>
-        public Type ParameterType { get; protected set; }
+        public Type ParameterType { get; }
 
         /// <summary>
         /// 获取关联的参数特性
         /// </summary>
-        public IReadOnlyList<IApiParameterAttribute> Attributes { get; protected set; }
+        public IReadOnlyList<IApiParameterAttribute> Attributes { get; }
 
         /// <summary>
         /// 获取关联的ValidationAttribute特性
         /// </summary>
-        public IReadOnlyList<ValidationAttribute> ValidationAttributes { get; protected set; }
+        public IReadOnlyList<ValidationAttribute> ValidationAttributes { get; }
 
         /// <summary>
         /// 请求Api的参数描述

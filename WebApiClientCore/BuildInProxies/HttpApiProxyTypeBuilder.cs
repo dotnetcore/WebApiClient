@@ -50,11 +50,11 @@ namespace WebApiClientCore
             var builder = module.DefineType(typeName, TypeAttributes.Class);
             builder.AddInterfaceImplementation(interfaceType);
 
-            var fieldInterceptor = BuildField(builder, "<>interceptor", typeof(IActionInterceptor));
+            var fieldActionInterceptor = BuildField(builder, "<>actionInterceptor", typeof(IActionInterceptor));
             var fieldActionInvokers = BuildField(builder, "<>actionInvokers", typeof(IActionInvoker[]));
 
-            BuildCtor(builder, fieldInterceptor, fieldActionInvokers);
-            BuildMethods(builder, actionInvokers, fieldInterceptor, fieldActionInvokers);
+            BuildCtor(builder, fieldActionInterceptor, fieldActionInvokers);
+            BuildMethods(builder, actionInvokers, fieldActionInterceptor, fieldActionInvokers);
 
             var proxyType = builder.CreateType();
             return proxyType ?? throw new ProxyTypeCreateException(interfaceType);
@@ -77,22 +77,22 @@ namespace WebApiClientCore
         /// 生成代理类型的构造器
         /// </summary>
         /// <param name="builder">类型生成器</param>
-        /// <param name="fieldInterceptor">拦截器字段</param>
+        /// <param name="fieldActionInterceptor">拦截器字段</param>
         /// <param name="fieldActionInvokers">action执行器字段</param> 
         /// <returns></returns>
-        private static void BuildCtor(TypeBuilder builder, FieldBuilder fieldInterceptor, FieldBuilder fieldActionInvokers)
+        private static void BuildCtor(TypeBuilder builder, FieldBuilder fieldActionInterceptor, FieldBuilder fieldActionInvokers)
         {
-            // .ctor(IApiInterceptor interceptor, IActionInvoker[] actionInvokers)
+            // .ctor(IApiInterceptor actionInterceptor, IActionInvoker[] actionInvokers)
             var ctor = builder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, proxyTypeCtorArgTypes);
 
             var il = ctor.GetILGenerator();
 
-            // this.interceptor = 第一个参数
+            // this.actionInterceptor = 第一个参数
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
-            il.Emit(OpCodes.Stfld, fieldInterceptor);
+            il.Emit(OpCodes.Stfld, fieldActionInterceptor);
 
-            // this.interfaceType = 第二个参数
+            // this.actionInvokers = 第二个参数
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_2);
             il.Emit(OpCodes.Stfld, fieldActionInvokers);
@@ -105,9 +105,9 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="builder">类型生成器</param>
         /// <param name="actionInvokers">action执行器</param>
-        /// <param name="fieldInterceptor">拦截器字段</param>
+        /// <param name="fieldActionInterceptor">拦截器字段</param>
         /// <param name="fieldActionInvokers">action执行器字段</param> 
-        private static void BuildMethods(TypeBuilder builder, IActionInvoker[] actionInvokers, FieldBuilder fieldInterceptor, FieldBuilder fieldActionInvokers)
+        private static void BuildMethods(TypeBuilder builder, IActionInvoker[] actionInvokers, FieldBuilder fieldActionInterceptor, FieldBuilder fieldActionInvokers)
         {
             const MethodAttributes implementAttribute = MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot | MethodAttributes.HideBySig;
 
@@ -121,9 +121,9 @@ namespace WebApiClientCore
                     .DefineMethod(actionMethod.Name, implementAttribute, CallingConventions.Standard, actionMethod.ReturnType, parameterTypes)
                     .GetILGenerator();
 
-                // this.interceptor
+                // this.actionInterceptor
                 iL.Emit(OpCodes.Ldarg_0);
-                iL.Emit(OpCodes.Ldfld, fieldInterceptor);
+                iL.Emit(OpCodes.Ldfld, fieldActionInterceptor);
 
                 // this.actionInvokers[i]
                 iL.Emit(OpCodes.Ldarg_0);
