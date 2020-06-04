@@ -4,12 +4,12 @@ using System.Net.Http;
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 表示服务上下文
+    /// 表示HttpClient上下文
     /// </summary>
-    public class ServiceContext
+    public class HttpClientContext
     {
         /// <summary>
-        /// 获取关联的HttpClient实例
+        /// 获取HttpClient实例
         /// </summary>
         public HttpClient Client { get; }
 
@@ -24,13 +24,13 @@ namespace WebApiClientCore
         public IServiceProvider Services { get; }
 
         /// <summary>
-        /// 服务上下文
+        /// HttpClient上下文
         /// </summary>
-        /// <param name="client"></param>
-        /// <param name="services"></param>
-        /// <param name="options"></param>
+        /// <param name="client">httpClient实例</param>
+        /// <param name="services">服务提供者</param>
+        /// <param name="options">httpApi选项</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ServiceContext(HttpClient client, IServiceProvider services, HttpApiOptions options)
+        public HttpClientContext(HttpClient client, IServiceProvider services, HttpApiOptions options)
         {
             this.Client = client ?? throw new ArgumentNullException(nameof(client));
             this.Services = services ?? throw new ArgumentNullException(nameof(services));

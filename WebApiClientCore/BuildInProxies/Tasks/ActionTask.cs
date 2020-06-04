@@ -9,7 +9,7 @@ namespace WebApiClientCore
     class ActionTask<TResult> : TaskBase<TResult>
     {
         private readonly ActionInvoker<TResult> invoker;
-        private readonly ServiceContext context;
+        private readonly HttpClientContext context;
         private readonly object?[] arguments;
 
         /// <summary>
@@ -18,7 +18,7 @@ namespace WebApiClientCore
         /// <param name="invoker"></param>
         /// <param name="context"></param>
         /// <param name="arguments"></param>
-        public ActionTask(ActionInvoker<TResult> invoker, ServiceContext context, object?[] arguments)
+        public ActionTask(ActionInvoker<TResult> invoker, HttpClientContext context, object?[] arguments)
         {
             this.invoker = invoker;
             this.context = context;

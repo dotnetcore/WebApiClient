@@ -22,7 +22,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static THttpApi Create<THttpApi>(HttpClient client, IServiceProvider services, HttpApiOptions options)
         {
-            var context = new ServiceContext(client, services, options);
+            var context = new HttpClientContext(client, services, options);
             return Create<THttpApi>(new ActionInterceptor(context));
         }
 

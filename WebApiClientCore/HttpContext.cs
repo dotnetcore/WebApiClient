@@ -6,7 +6,7 @@ namespace WebApiClientCore
     /// <summary>
     /// 表示http上下文
     /// </summary>
-    public class HttpContext : ServiceContext, IDisposable
+    public class HttpContext : HttpClientContext, IDisposable
     {
         /// <summary>
         /// 获取关联的HttpRequestMessage
@@ -23,7 +23,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="context">服务上下文</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public HttpContext(ServiceContext context)
+        public HttpContext(HttpClientContext context)
             : this(context.Client, context.Services, context.Options)
         {
         }
@@ -31,9 +31,9 @@ namespace WebApiClientCore
         /// <summary>
         /// http上下文
         /// </summary>
-        /// <param name="client">httpClient</param>
+        /// <param name="client">httpClient实例</param>
         /// <param name="services">服务提供者</param>
-        /// <param name="options">接口选项</param>
+        /// <param name="options">httpApi选项</param>
         /// <exception cref="ArgumentNullException"></exception>
         public HttpContext(HttpClient client, IServiceProvider services, HttpApiOptions options)
             : base(client, services, options)

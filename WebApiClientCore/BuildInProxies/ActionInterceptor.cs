@@ -8,13 +8,13 @@
         /// <summary>
         /// 服务上下文
         /// </summary>
-        private readonly ServiceContext context;
+        private readonly HttpClientContext context;
 
         /// <summary>
         /// httpApi方法调用的拦截器
         /// </summary>
         /// <param name="context">服务上下文</param> 
-        public ActionInterceptor(ServiceContext context)
+        public ActionInterceptor(HttpClientContext context)
         {
             this.context = context;
         }

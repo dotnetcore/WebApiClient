@@ -16,6 +16,6 @@
         /// <param name="context">服务上下文</param>
         /// <param name="arguments">action参数值</param>
         /// <returns></returns>
-        object Invoke(ServiceContext context, object?[] arguments);
+        object Invoke(HttpClientContext context, object?[] arguments);
     }
 }
