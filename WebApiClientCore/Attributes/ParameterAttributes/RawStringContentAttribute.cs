@@ -8,7 +8,7 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示将参数的文本内容作为请求内容
     /// </summary>
-    public class RawStringContentAttribute : HttpContentAttribute, IEncodingable
+    public class RawStringContentAttribute : HttpContentAttribute, ICharSetable
     {
         /// <summary>
         /// 媒体类型
@@ -18,16 +18,16 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 编码方式
         /// </summary>
-        private Encoding encoding = System.Text.Encoding.UTF8;
+        private Encoding encoding = Encoding.UTF8;
 
         /// <summary>
         /// 获取或设置编码名称
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public string Encoding
+        public string CharSet
         {
             get => this.encoding.WebName;
-            set => this.encoding = System.Text.Encoding.GetEncoding(value);
+            set => this.encoding = Encoding.GetEncoding(value);
         }
 
         /// <summary>

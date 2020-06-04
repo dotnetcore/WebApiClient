@@ -1,8 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System.Buffers;
+﻿using System.Buffers;
 using System.Collections.Generic;
 using System.Text;
-using WebApiClientCore.Serialization;
 
 namespace WebApiClientCore
 {
@@ -38,26 +36,27 @@ namespace WebApiClientCore
         }
 
         /// <summary>
-        /// 序列化参数值为Json
+        /// 序列化参数值为utf8编码的Json
         /// </summary>
         /// <param name="bufferWriter">buffer写入器</param>
         public void SerializeToJson(IBufferWriter<byte> bufferWriter)
         {
             var options = this.HttpContext.Options.JsonSerializeOptions;
-            this.HttpContext.Services
-                .GetRequiredService<IJsonSerializer>()
+            this.HttpContext
+                .Services
+                .GetJsonSerializer()
                 .Serialize(bufferWriter, this.ParameterValue, options);
         }
 
         /// <summary>
-        /// 序列化参数值为Json
+        /// 序列化参数值为utf8编码的Json
         /// </summary>
         /// <returns></returns>
         public byte[] SerializeToJson()
         {
             using var bufferWriter = new BufferWriter<byte>();
             var options = this.HttpContext.Options.JsonSerializeOptions;
-            var serializer = this.HttpContext.Services.GetRequiredService<IJsonSerializer>();
+            var serializer = this.HttpContext.Services.GetJsonSerializer();
             serializer.Serialize(bufferWriter, this.ParameterValue, options);
             return bufferWriter.GetWrittenSpan().ToArray();
         }
@@ -69,8 +68,9 @@ namespace WebApiClientCore
         /// <returns></returns>
         public string? SerializeToXml(Encoding encoding)
         {
-            return this.HttpContext.Services
-                .GetRequiredService<IXmlSerializer>()
+            return this.HttpContext
+                .Services
+                .GetXmlSerializer()
                 .Serialize(this.ParameterValue, encoding);
         }
 
@@ -81,8 +81,9 @@ namespace WebApiClientCore
         public IList<KeyValue> SerializeToKeyValues()
         {
             var options = this.HttpContext.Options.KeyValueSerializeOptions;
-            return this.HttpContext.Services
-                .GetRequiredService<IKeyValueSerializer>()
+            return this.HttpContext
+                .Services
+                .GetKeyValueSerializer()
                 .Serialize(this.Parameter.Name, this.ParameterValue, options);
         }
     }

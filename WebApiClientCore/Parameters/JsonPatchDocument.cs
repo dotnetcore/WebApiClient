@@ -1,12 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
 using WebApiClientCore.HttpContents;
-using WebApiClientCore.Serialization;
 
 namespace WebApiClientCore.Parameters
 {
@@ -81,7 +79,7 @@ namespace WebApiClientCore.Parameters
             context.HttpContext.RequestMessage.Content = jsonPatchContent;
 
             var options = context.HttpContext.Options.JsonSerializeOptions;
-            var serializer = context.HttpContext.Services.GetRequiredService<IJsonSerializer>();
+            var serializer = context.HttpContext.Services.GetJsonSerializer();
             serializer.Serialize(jsonPatchContent, this.oprations, options);
 
             return Task.CompletedTask;

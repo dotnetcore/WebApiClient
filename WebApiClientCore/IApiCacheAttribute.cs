@@ -33,7 +33,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        IResponseCacheProvider GetCacheProvider(ApiRequestContext context);
+        IResponseCacheProvider? GetCacheProvider(ApiRequestContext context);
 
         /// <summary>
         /// 返回请求对应的缓存的键

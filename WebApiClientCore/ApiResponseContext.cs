@@ -1,7 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Threading.Tasks;
-using WebApiClientCore.Serialization;
 
 namespace WebApiClientCore
 {
@@ -70,7 +68,7 @@ namespace WebApiClientCore
                 return objType.DefaultValue();
             }
 
-            var serializer = this.HttpContext.Services.GetRequiredService<IJsonSerializer>();
+            var serializer = this.HttpContext.Services.GetJsonSerializer();
             var json = await this.HttpContext.ResponseMessage.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
             var options = this.HttpContext.Options.JsonDeserializeOptions;
             return serializer.Deserialize(json, objType, options);
@@ -88,7 +86,7 @@ namespace WebApiClientCore
                 return objType.DefaultValue();
             }
 
-            var serializer = this.HttpContext.Services.GetRequiredService<IXmlSerializer>();
+            var serializer = this.HttpContext.Services.GetXmlSerializer();
             var xml = await this.HttpContext.ResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
             return serializer.Deserialize(xml, objType);
         }

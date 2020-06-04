@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using WebApiClientCore.ResponseCaches;
@@ -54,7 +53,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public virtual IResponseCacheProvider GetCacheProvider(ApiRequestContext context)
+        public virtual IResponseCacheProvider? GetCacheProvider(ApiRequestContext context)
         {
             return context.HttpContext.Services.GetService<IResponseCacheProvider>();
         }

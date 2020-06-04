@@ -10,7 +10,7 @@ namespace WebApiClientCore.Serialization
     public interface IJsonSerializer
     {
         /// <summary>
-        /// 将对象序列化为utf8 json到指定的bufferWriter
+        /// 将对象序列化为utf8编码的Json到指定的bufferWriter
         /// </summary>
         /// <param name="bufferWriter">buffer写入器</param>
         /// <param name="obj">对象</param>
@@ -18,9 +18,9 @@ namespace WebApiClientCore.Serialization
         void Serialize(IBufferWriter<byte> bufferWriter, object? obj, JsonSerializerOptions? options);
 
         /// <summary>
-        /// 将json文本反序列化对象
+        /// 将utf8编码的Json反序列化对象
         /// </summary>
-        /// <param name="utf8Json">utf8 json</param>
+        /// <param name="utf8Json">utf8编码的Json</param>
         /// <param name="objType">对象类型</param>
         /// <param name="options">选项</param>
         /// <returns></returns>

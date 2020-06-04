@@ -15,7 +15,7 @@ namespace WebApiClientCore.Serialization
         private static readonly JsonSerializerOptions defaultOptions = new JsonSerializerOptions();
 
         /// <summary>
-        /// 将对象序列化为utf8 json到指定的bufferWriter
+        /// 将对象序列化为utf8编码的Json到指定的bufferWriter
         /// </summary>
         /// <param name="bufferWriter">buffer写入器</param>
         /// <param name="obj">对象</param>
@@ -39,7 +39,7 @@ namespace WebApiClientCore.Serialization
         }
 
         /// <summary>
-        /// 反序列化json为对象
+        /// 反序列化utf8编码的Json为对象
         /// </summary>
         /// <param name="utf8Json">json</param>
         /// <param name="objType">对象类型</param>
