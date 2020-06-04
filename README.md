@@ -2,9 +2,11 @@
 [WebApiClient](https://github.com/dotnetcore/WebApiClient/tree/WebApiClient.JITAOT)的netcoreapp版本，集高性能高可扩展性于一体的声明式http客户端库，特别适用于微服务的restful资源请求，也适用于各种畸形http接口请求。
 
 ### PackageReference
-
+#### 主包
     <PackageReference Include="WebApiClientCore" Version="1.0.0-rc*" />
- 
+#### 扩展包
+    <PackageReference Include="WebApiClientCore.Extensions.OAuths" Version="1.0.0-rc*" />
+    
 ### QQ群
 > [825135345](https://shang.qq.com/wpa/qunwpa?idkey=c6df21787c9a774ca7504a954402c9f62b6595d1e63120eabebd6b2b93007410)
 
@@ -22,17 +24,20 @@ Intel Core i3-4150 CPU 3.50GHz (Haswell), 1 CPU, 4 logical and 2 physical cores
 ```
 |                    Method |      Mean |     Error |    StdDev |
 |-------------------------- |----------:|----------:|----------:|
-|       HttpClient_GetAsync |  3.945 μs | 0.2050 μs | 0.5850 μs |
-| WebApiClientCore_GetAsync | 13.320 μs | 0.2604 μs | 0.3199 μs |
-|            Refit_GetAsync | 43.503 μs | 0.8489 μs | 1.0426 μs |
+|       HttpClient_GetAsync |  3.146 μs | 0.0396 μs | 0.0370 μs |
+| WebApiClientCore_GetAsync | 12.421 μs | 0.2324 μs | 0.2174 μs |
+|            Refit_GetAsync | 43.241 μs | 0.6713 μs | 0.6279 μs |
 
-|                     Method |      Mean |     Error |    StdDev |
-|--------------------------- |----------:|----------:|----------:|
-|       HttpClient_PostAsync |  4.876 μs | 0.0972 μs | 0.2092 μs |
-| WebApiClientCore_PostAsync | 14.018 μs | 0.1829 μs | 0.2246 μs |
-|            Refit_PostAsync | 46.512 μs | 0.7885 μs | 0.7376 μs |
+|                         Method |      Mean |     Error |    StdDev |
+|------------------------------- |----------:|----------:|----------:|
+|       HttpClient_PostJsonAsync |  5.263 μs | 0.0784 μs | 0.0733 μs |
+| WebApiClientCore_PostJsonAsync | 13.823 μs | 0.1874 μs | 0.1753 μs |
+|            Refit_PostJsonAsync | 45.218 μs | 0.8166 μs | 0.7639 μs |
 
-
+|                        Method |     Mean |    Error |   StdDev |
+|------------------------------ |---------:|---------:|---------:|
+| WebApiClientCore_PutFormAsync | 21.14 μs | 0.407 μs | 0.418 μs |
+|            Refit_PutFormAsync | 65.16 μs | 0.933 μs | 0.873 μs |
 
 ### 声明式接口定义
 * 支持Task、Task<>和ITask<>三种异步返回
@@ -534,10 +539,12 @@ class FaceModel : IApiParameter
         var image2 = GetImageBase64(this.Image2);
         var model = new { image1, image2 };
 
+        var jsonContent = new JsonContent();
+        context.HttpContext.RequestMessage.Content = jsonContent;
+
         var options = context.HttpContext.Options.JsonSerializeOptions;
-        var json = System.Text.Json.JsonSerializer.Serialize(model, options);
-        context.HttpContext.RequestMessage.Content = new StringContent(json, Encoding.UTF8, "application/json");
-        return Task.CompletedTask;
+        var serializer = context.HttpContext.Services.GetJsonSerializer();
+        serializer.Serialize(jsonContent, model, options);
     }
 
     private static string GetImageBase64(Bitmap image)
