@@ -18,19 +18,19 @@ namespace WebApiClientCore
 
         /// <summary>
         /// 代理类型的构造器的参数类型
-        /// (IApiInterceptor interceptor,Type interfaceType, MethodInfo[] apiMethods)
+        /// (IApiInterceptor interceptor,IActionInvoker[] actionInvokers)
         /// </summary>
-        private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IActionInterceptor), typeof(Type), typeof(MethodInfo[]) };
+        private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IActionInterceptor), typeof(IActionInvoker[]) };
 
         /// <summary>
         /// 创建IHttpApi代理类的类型
         /// </summary>
         /// <param name="interfaceType">接口类型</param>
-        /// <param name="apiMethods">接口方法集合</param>
+        /// <param name="actionInvokers">action执行器</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
-        public static Type Build(Type interfaceType, MethodInfo[] apiMethods)
+        public static Type Build(Type interfaceType, IActionInvoker[] actionInvokers)
         {
             // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口            
             if (interfaceType.IsVisible == false)
@@ -46,17 +46,15 @@ namespace WebApiClientCore
                 .DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run)
                 .DefineDynamicModule(moduleName);
 
-
             var typeName = interfaceType.FullName ?? Guid.NewGuid().ToString();
             var builder = module.DefineType(typeName, TypeAttributes.Class);
             builder.AddInterfaceImplementation(interfaceType);
 
             var fieldInterceptor = BuildField(builder, "<>interceptor", typeof(IActionInterceptor));
-            var fieldInterfaceType = BuildField(builder, "<>interfaceType", typeof(Type));
-            var fieldApiMethods = BuildField(builder, "<>apiMethods", typeof(MethodInfo[]));
+            var fieldActionInvokers = BuildField(builder, "<>actionInvokers", typeof(IActionInvoker[]));
 
-            BuildCtor(builder, fieldInterceptor, fieldInterfaceType, fieldApiMethods);
-            BuildMethods(builder, apiMethods, fieldInterceptor, fieldInterfaceType, fieldApiMethods);
+            BuildCtor(builder, fieldInterceptor, fieldActionInvokers);
+            BuildMethods(builder, actionInvokers, fieldInterceptor, fieldActionInvokers);
 
             var proxyType = builder.CreateType();
             return proxyType ?? throw new ProxyTypeCreateException(interfaceType);
@@ -80,12 +78,11 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="builder">类型生成器</param>
         /// <param name="fieldInterceptor">拦截器字段</param>
-        /// <param name="fieldInterfaceType">接口类型</param>
-        /// <param name="fieldApiMethods">接口方法集合字段</param>
+        /// <param name="fieldActionInvokers">action执行器字段</param> 
         /// <returns></returns>
-        private static void BuildCtor(TypeBuilder builder, FieldBuilder fieldInterceptor, FieldBuilder fieldInterfaceType, FieldBuilder fieldApiMethods)
+        private static void BuildCtor(TypeBuilder builder, FieldBuilder fieldInterceptor, FieldBuilder fieldActionInvokers)
         {
-            // .ctor(IApiInterceptor interceptor,Type interfaceType, MethodInfo[] apiMethods)
+            // .ctor(IApiInterceptor interceptor, IActionInvoker[] actionInvokers)
             var ctor = builder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, proxyTypeCtorArgTypes);
 
             var il = ctor.GetILGenerator();
@@ -98,12 +95,7 @@ namespace WebApiClientCore
             // this.interfaceType = 第二个参数
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_2);
-            il.Emit(OpCodes.Stfld, fieldInterfaceType);
-
-            // this.apiMethods = 第三个参数
-            il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Ldarg_3);
-            il.Emit(OpCodes.Stfld, fieldApiMethods);
+            il.Emit(OpCodes.Stfld, fieldActionInvokers);
 
             il.Emit(OpCodes.Ret);
         }
@@ -112,45 +104,40 @@ namespace WebApiClientCore
         /// 生成代理类型的接口实现方法
         /// </summary>
         /// <param name="builder">类型生成器</param>
-        /// <param name="apiMethods">接口方法集合</param>
+        /// <param name="actionInvokers">action执行器</param>
         /// <param name="fieldInterceptor">拦截器字段</param>
-        /// <param name="fieldInterfaceType">接口类型字段</param>
-        /// <param name="fieldApiMethods">接口方法集合字段</param>
-        private static void BuildMethods(TypeBuilder builder, MethodInfo[] apiMethods, FieldBuilder fieldInterceptor, FieldBuilder fieldInterfaceType, FieldBuilder fieldApiMethods)
+        /// <param name="fieldActionInvokers">action执行器字段</param> 
+        private static void BuildMethods(TypeBuilder builder, IActionInvoker[] actionInvokers, FieldBuilder fieldInterceptor, FieldBuilder fieldActionInvokers)
         {
             const MethodAttributes implementAttribute = MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot | MethodAttributes.HideBySig;
 
-            for (var i = 0; i < apiMethods.Length; i++)
+            for (var i = 0; i < actionInvokers.Length; i++)
             {
-                var apiMethod = apiMethods[i];
-                var apiParameters = apiMethod.GetParameters();
-                var parameterTypes = apiParameters.Select(p => p.ParameterType).ToArray();
+                var actionMethod = actionInvokers[i].ApiAction.Member;
+                var actionParameters = actionMethod.GetParameters();
+                var parameterTypes = actionParameters.Select(p => p.ParameterType).ToArray();
 
                 var iL = builder
-                    .DefineMethod(apiMethod.Name, implementAttribute, CallingConventions.Standard, apiMethod.ReturnType, parameterTypes)
+                    .DefineMethod(actionMethod.Name, implementAttribute, CallingConventions.Standard, actionMethod.ReturnType, parameterTypes)
                     .GetILGenerator();
 
                 // this.interceptor
                 iL.Emit(OpCodes.Ldarg_0);
                 iL.Emit(OpCodes.Ldfld, fieldInterceptor);
 
-                // this.interfaceType
+                // this.actionInvokers[i]
                 iL.Emit(OpCodes.Ldarg_0);
-                iL.Emit(OpCodes.Ldfld, fieldInterfaceType);
-
-                // 加载method参数 this.apiMethods[i]
-                iL.Emit(OpCodes.Ldarg_0);
-                iL.Emit(OpCodes.Ldfld, fieldApiMethods);
+                iL.Emit(OpCodes.Ldfld, fieldActionInvokers);
                 iL.Emit(OpCodes.Ldc_I4, i);
                 iL.Emit(OpCodes.Ldelem_Ref);
 
                 // var arguments = new object[parameters.Length]
                 var arguments = iL.DeclareLocal(typeof(object[]));
-                iL.Emit(OpCodes.Ldc_I4, apiParameters.Length);
+                iL.Emit(OpCodes.Ldc_I4, actionParameters.Length);
                 iL.Emit(OpCodes.Newarr, typeof(object));
                 iL.Emit(OpCodes.Stloc, arguments);
 
-                for (var j = 0; j < apiParameters.Length; j++)
+                for (var j = 0; j < actionParameters.Length; j++)
                 {
                     iL.Emit(OpCodes.Ldloc, arguments);
                     iL.Emit(OpCodes.Ldc_I4, j);
@@ -164,18 +151,18 @@ namespace WebApiClientCore
                     iL.Emit(OpCodes.Stelem_Ref);
                 }
 
-                // 加载parameters参数
+                // 加载arguments参数
                 iL.Emit(OpCodes.Ldloc, arguments);
 
-                // Intercep(this, method, parameters)
+                // Intercep(actionInvoker, arguments)
                 iL.Emit(OpCodes.Callvirt, interceptMethod);
 
-                if (apiMethod.ReturnType == typeof(void))
+                if (actionMethod.ReturnType == typeof(void))
                 {
                     iL.Emit(OpCodes.Pop);
                 }
 
-                iL.Emit(OpCodes.Castclass, apiMethod.ReturnType);
+                iL.Emit(OpCodes.Castclass, actionMethod.ReturnType);
                 iL.Emit(OpCodes.Ret);
             }
         }

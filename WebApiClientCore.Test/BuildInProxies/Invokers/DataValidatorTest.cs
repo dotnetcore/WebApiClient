@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Xunit;
 
-namespace WebApiClientCore.Test.BuildinInterceptor.Invokers
+namespace WebApiClientCore.Test.BuildInProxies.Invokers
 {
     public class DataValidatorTest
     {

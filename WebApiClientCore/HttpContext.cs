@@ -6,23 +6,8 @@ namespace WebApiClientCore
     /// <summary>
     /// 表示http上下文
     /// </summary>
-    public class HttpContext : Disposable
+    public class HttpContext : ServiceContext, IDisposable
     {
-        /// <summary>
-        /// 获取关联的HttpClient实例
-        /// </summary>
-        public HttpClient Client { get; }
-
-        /// <summary>
-        /// 获取Api配置选项
-        /// </summary>
-        public HttpApiOptions Options { get; }
-
-        /// <summary>
-        /// 获取服务提供者
-        /// </summary>
-        public IServiceProvider Services { get; }
-
         /// <summary>
         /// 获取关联的HttpRequestMessage
         /// </summary>
@@ -36,22 +21,28 @@ namespace WebApiClientCore
         /// <summary>
         /// http上下文
         /// </summary>
+        /// <param name="context">服务上下文</param>
+        public HttpContext(ServiceContext context)
+            : this(context.Client, context.Services, context.Options)
+        {
+        }
+
+        /// <summary>
+        /// http上下文
+        /// </summary>
         /// <param name="client">httpClient</param>
         /// <param name="services">服务提供者</param>
         /// <param name="options">接口选项</param>
         public HttpContext(HttpClient client, IServiceProvider services, HttpApiOptions options)
+            : base(client, services, options)
         {
-            this.Client = client;
-            this.Services = services;
-            this.Options = options;
             this.RequestMessage = new HttpApiRequestMessage(options.HttpHost ?? client.BaseAddress);
         }
 
         /// <summary>
         /// 释放资源
         /// </summary>
-        /// <param name="disposing"></param>
-        protected override void Dispose(bool disposing)
+        public virtual void Dispose()
         {
             this.RequestMessage?.Dispose();
         }

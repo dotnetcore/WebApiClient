@@ -24,6 +24,11 @@ namespace WebApiClientCore
         private readonly Func<IActionInvoker, ServiceContext, object?[], object> actionTaskCtor;
 
         /// <summary>
+        /// 获取Action描述
+        /// </summary>
+        public ApiActionDescriptor ApiAction => this.actionInvoker.ApiAction;
+
+        /// <summary>
         /// 复合的ApiAction执行器
         /// </summary>
         /// <param name="apiAction">Api描述</param>

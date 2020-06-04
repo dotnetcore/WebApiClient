@@ -6,7 +6,7 @@ namespace WebApiClientCore
     /// <summary>
     /// 表示服务上下文
     /// </summary>
-    class ServiceContext
+    public class ServiceContext
     {
         /// <summary>
         /// 获取关联的HttpClient实例

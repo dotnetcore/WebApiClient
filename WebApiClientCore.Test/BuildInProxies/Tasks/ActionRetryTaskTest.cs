@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
 using Xunit;
 
-namespace WebApiClientCore.Test.BuildinInterceptor.Tasks
+namespace WebApiClientCore.Test.BuildInProxies.Tasks
 {
     public class ActionRetryTaskTest
     {

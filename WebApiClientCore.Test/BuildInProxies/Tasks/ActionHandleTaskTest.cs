@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Xunit;
 
-namespace WebApiClientCore.Test.BuildinInterceptor.Tasks
+namespace WebApiClientCore.Test.BuildInProxies.Tasks
 {
     public class ActionHandleTaskTest
     {

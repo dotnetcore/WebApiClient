@@ -1,43 +1,42 @@
 ﻿using System;
-using System.Reflection;
+using System.Linq;
 using WebApiClientCore.Exceptions;
 
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 表示IHttpApi的代理类的实例创建者
+    /// 表示THttpApi的代理类的实例创建者
     /// </summary>
-    class HttpApiProxyBuilder
+    /// <typeparam name="THttpApi">接口类型</typeparam>
+    static class HttpApiProxyBuilder<THttpApi>
     {
         /// <summary>
-        /// 接口类型
+        /// 接口包含的所有action执行器 
         /// </summary>
-        private readonly Type interfaceType;
+        private static readonly IActionInvoker[] actionInvokers;
 
         /// <summary>
-        /// 接口声明的Api方法
+        /// 接口代理类的构造器
         /// </summary>
-        private readonly MethodInfo[] apiMetods;
-
-        /// <summary>
-        /// 代理类的构造器
-        /// </summary>
-        private readonly Func<IActionInterceptor, Type, MethodInfo[], object> proxyTypeCtor;
-
+        private static readonly Func<IActionInterceptor, IActionInvoker[], THttpApi> proxyTypeCtor;
 
         /// <summary>
         /// IHttpApi的代理类的实例创建者
-        /// </summary>
-        /// <param name="interfaceType">IHttpApi接口类型</param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// </summary> 
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ProxyTypeCreateException"></exception>
-        public HttpApiProxyBuilder(Type interfaceType)
+        static HttpApiProxyBuilder()
         {
-            this.interfaceType = interfaceType ?? throw new ArgumentNullException(nameof(interfaceType));
-            this.apiMetods = interfaceType.GetAllApiMethods();
-            var proxyType = HttpApiProxyTypeBuilder.Build(interfaceType, this.apiMetods);
-            this.proxyTypeCtor = Lambda.CreateCtorFunc<IActionInterceptor, Type, MethodInfo[], object>(proxyType);
+            var interfaceType = typeof(THttpApi);
+
+            actionInvokers = interfaceType
+                .GetAllApiMethods()
+                .Select(item => new ApiActionDescriptor(item, interfaceType))
+                .Select(item => new MultiplexedActionInvoker(item))
+                .ToArray();
+
+            var proxyType = HttpApiProxyTypeBuilder.Build(interfaceType, actionInvokers);
+            proxyTypeCtor = Lambda.CreateCtorFunc<IActionInterceptor, IActionInvoker[], THttpApi>(proxyType);
         }
 
         /// <summary>
@@ -45,9 +44,9 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="interceptor">拦截器</param>
         /// <returns></returns>
-        public object Build(IActionInterceptor interceptor)
+        public static THttpApi Build(IActionInterceptor interceptor)
         {
-            return this.proxyTypeCtor.Invoke(interceptor, this.interfaceType, this.apiMetods);
+            return proxyTypeCtor.Invoke(interceptor, actionInvokers);
         }
     }
 }

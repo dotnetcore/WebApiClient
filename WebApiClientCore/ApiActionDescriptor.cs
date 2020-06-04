@@ -8,7 +8,7 @@ using System.Reflection;
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 表示请求Api描述
+    /// 表示Action描述
     /// </summary>
     [DebuggerDisplay("Name = {Name}")]
     public class ApiActionDescriptor
