@@ -1,7 +1,7 @@
 ﻿namespace WebApiClientCore.HttpContents
 {
     /// <summary>
-    /// 表示JsonPatch内容
+    /// 表示utf8的JsonPatch内容
     /// </summary>
     public class JsonPatchContent : BufferContent
     {
@@ -11,7 +11,7 @@
         public static string MediaType => "application/json-patch+json";
 
         /// <summary>
-        /// JsonPatch内容
+        /// utf8的JsonPatch内容
         /// </summary>
         public JsonPatchContent()
             : base(MediaType)

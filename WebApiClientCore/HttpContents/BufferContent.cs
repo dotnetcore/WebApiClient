@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace WebApiClientCore.HttpContents
 {
     /// <summary>
-    /// 表示BufferWriter优化的HttpContent
+    /// 表示utf8的BufferContent
     /// </summary>
     public class BufferContent : HttpContent, IBufferWriter<byte>
     {
@@ -19,7 +19,7 @@ namespace WebApiClientCore.HttpContents
         private readonly BufferWriter<byte> bufferWriter = new BufferWriter<byte>();
 
         /// <summary>
-        /// BufferWriter优化的HttpContent
+        /// utf8的BufferContent
         /// </summary> 
         public BufferContent(string mediaType)
         {

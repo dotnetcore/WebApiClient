@@ -1,7 +1,7 @@
 ﻿namespace WebApiClientCore.HttpContents
 {
     /// <summary>
-    /// 表示json内容
+    /// 表示uft8的json内容
     /// </summary>
     public class JsonContent : BufferContent
     {
@@ -11,11 +11,11 @@
         public static string MediaType => "application/json";
 
         /// <summary>
-        /// json内容
+        /// uft8的json内容
         /// </summary> 
         public JsonContent()
             : base(MediaType)
         {
-        }
+        } 
     }
 }
