@@ -46,9 +46,9 @@ namespace WebApiClientCore
         /// <returns></returns>
         private static IActionInvoker CreateActionInvoker(ApiActionDescriptor apiAction)
         {
-            var dataType = apiAction.Return.DataType.Type;
-            var invokerType = typeof(MultiplexedActionInvoker<>).MakeGenericType(dataType);
-            return Lambda.CreateCtorFunc<ApiActionDescriptor, IActionInvoker>(invokerType)(apiAction);
+            var resultType = apiAction.Return.DataType.Type;
+            var invokerType = typeof(MultiplexedActionInvoker<>).MakeGenericType(resultType);
+            return invokerType.CreateInstance<IActionInvoker>(apiAction);
         }
 
         /// <summary>

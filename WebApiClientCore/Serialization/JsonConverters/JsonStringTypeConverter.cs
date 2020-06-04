@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using WebApiClientCore.Exceptions;
 
 namespace WebApiClientCore.Serialization.JsonConverters
 {
@@ -34,14 +33,14 @@ namespace WebApiClientCore.Serialization.JsonConverters
         /// <returns></returns>
         public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
         {
-            return Lambda.CreateCtorFunc<JsonConverter>(typeof(Converter<>).MakeGenericType(typeToConvert))();
+            return typeof(Converter<>).MakeGenericType(typeToConvert).CreateInstance<JsonConverter>();
         }
 
         /// <summary>
         /// 转换器
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        private class Converter<T> : JsonConverter<T>
+        /// <typeparam name="TJsonString"></typeparam>
+        private class Converter<TJsonString> : JsonConverter<TJsonString> where TJsonString : IJsonString
         {
             /// <summary>
             /// 将json文本反序列化JsonString的Value的类型
@@ -51,17 +50,12 @@ namespace WebApiClientCore.Serialization.JsonConverters
             /// <param name="typeToConvert"></param>
             /// <param name="options"></param>
             /// <returns></returns> 
-            public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            public override TJsonString Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
                 var json = reader.GetString();
                 var valueType = typeToConvert.GenericTypeArguments.First();
                 var value = System.Text.Json.JsonSerializer.Deserialize(json, valueType, options);
-                var jsonString = Activator.CreateInstance(typeToConvert, new object[] { value });
-                if (jsonString == null)
-                {
-                    throw new TypeInstanceCreateException(typeToConvert);
-                }
-                return (T)jsonString;
+                return typeToConvert.CreateInstance<TJsonString>(value);
             }
 
             /// <summary>
@@ -70,16 +64,15 @@ namespace WebApiClientCore.Serialization.JsonConverters
             /// <param name="writer"></param>
             /// <param name="value"></param>
             /// <param name="options"></param>
-            public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
+            public override void Write(Utf8JsonWriter writer, TJsonString value, JsonSerializerOptions options)
             {
-                var jsonString = (IJsonString?)value;
-                if (jsonString == null)
+                if (value == null || value.Value == null)
                 {
                     writer.WriteStringValue(default(string));
                 }
                 else
                 {
-                    var json = System.Text.Json.JsonSerializer.Serialize(jsonString.Value, jsonString.ValueType, options);
+                    var json = System.Text.Json.JsonSerializer.Serialize(value.Value, value.ValueType, options);
                     writer.WriteStringValue(json);
                 }
             }

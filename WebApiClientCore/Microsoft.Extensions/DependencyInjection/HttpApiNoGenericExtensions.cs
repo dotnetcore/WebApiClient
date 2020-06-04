@@ -91,7 +91,7 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             var builderType = typeof(HttpApiBuilder<>).MakeGenericType(httpApiType);
-            return Lambda.CreateCtorFunc<IServiceCollection, IHttpApiBuilder>(builderType)(services);
+            return builderType.CreateInstance<IHttpApiBuilder>(services);
         }
 
         /// <summary>

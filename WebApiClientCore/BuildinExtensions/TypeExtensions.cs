@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiClientCore.Exceptions;
 
 namespace WebApiClientCore
 {
@@ -52,6 +53,26 @@ namespace WebApiClientCore
         {
             return typeof(TBase).IsAssignableFrom(type);
         }
+
+
+        /// <summary>
+        /// 创建实例
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="type">实例类型</param>
+        /// <param name="args">参数值</param>
+        /// <exception cref="TypeInstanceCreateException"></exception>
+        /// <returns></returns>
+        public static T CreateInstance<T>(this Type type, params object?[] args)
+        {
+            var instance = Activator.CreateInstance(type, args);
+            if (instance == null)
+            {
+                throw new TypeInstanceCreateException(type);
+            }
+            return (T)instance;
+        }
+
 
         /// <summary>
         /// 获取接口类型及其继承的接口的所有方法
