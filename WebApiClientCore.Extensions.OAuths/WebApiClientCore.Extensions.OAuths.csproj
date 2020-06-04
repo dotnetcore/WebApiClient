@@ -25,5 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\WebApiClientCore\WebApiClientCore.csproj" />
   </ItemGroup>
-
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
 </Project>

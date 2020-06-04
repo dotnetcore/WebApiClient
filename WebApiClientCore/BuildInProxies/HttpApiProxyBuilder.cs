@@ -8,6 +8,8 @@ namespace WebApiClientCore
     /// 表示THttpApi的代理类的实例创建者
     /// </summary>
     /// <typeparam name="THttpApi">接口类型</typeparam>
+    /// <exception cref="NotSupportedException"></exception>
+    /// <exception cref="ProxyTypeCreateException"></exception>
     static class HttpApiProxyBuilder<THttpApi>
     {
         /// <summary>

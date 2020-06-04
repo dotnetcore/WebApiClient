@@ -64,9 +64,7 @@ namespace WebApiClientCore
             var parameterName = parameterAlias == null ? parameter.Name : parameterAlias.Name;
 
             var defined = parameter.GetAttributes<IApiParameterAttribute>();
-            var attributes = this
-                .GetAttributes(parameterType, defined)
-                .ToReadOnlyList();
+            var attributes = GetAttributes(parameterType, defined).ToReadOnlyList();
 
             var validationAttributes = parameter
                 .GetCustomAttributes<ValidationAttribute>(true)
@@ -86,7 +84,7 @@ namespace WebApiClientCore
         /// <param name="parameterType">参数类型</param>
         /// <param name="defined">参数上声明的特性</param>
         /// <returns></returns>
-        protected virtual IEnumerable<IApiParameterAttribute> GetAttributes(Type parameterType, IEnumerable<IApiParameterAttribute> defined)
+        private static IEnumerable<IApiParameterAttribute> GetAttributes(Type parameterType, IEnumerable<IApiParameterAttribute> defined)
         {
             if (parameterType.IsInheritFrom<HttpContent>() == true)
             {

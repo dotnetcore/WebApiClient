@@ -33,7 +33,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="client">httpClient实例</param>
         /// <param name="services">服务提供者</param>
-        /// <param name="options">httpApi选项</param>
+        /// <param name="options">Api配置选项</param>
         /// <exception cref="ArgumentNullException"></exception>
         public HttpContext(HttpClient client, IServiceProvider services, HttpApiOptions options)
             : base(client, services, options)

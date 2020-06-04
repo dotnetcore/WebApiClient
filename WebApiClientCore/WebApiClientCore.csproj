@@ -8,7 +8,6 @@
     <Version>1.0.0-rc2</Version>
     <Authors>laojiu</Authors>
     <Company>laojiu</Company>
-    <Product>WebApiClientCore</Product>
     <Copyright>Copyright © laojiu 2017-2020</Copyright>
     <Description>.NetCore声明式的Http客户端库</Description>
     <Summary>一款基于HttpClient封装，只需要定义c#接口并修饰相关特性，即可异步调用远程http接口的客户端库</Summary>
@@ -24,7 +23,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.0.0" />
@@ -36,6 +34,7 @@
     <None Include="NugetPackage\tools\*.*" PackagePath="tools" Pack="true" />
     <None Include="NugetPackage\analyzers\dotnet\cs\*.*" PackagePath="analyzers\dotnet\cs" Pack="true" />
   </ItemGroup>
+  
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
