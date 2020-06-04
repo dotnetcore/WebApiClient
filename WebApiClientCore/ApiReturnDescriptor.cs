@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
-using System.Threading.Tasks;
 using WebApiClientCore.Attributes;
 
 namespace WebApiClientCore
@@ -23,12 +22,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取ITask(Of T)或Task(Of T)的T类型描述
         /// </summary>
-        public ApiDataTypeDescriptor DataType { get; }
-
-        /// <summary>
-        /// 获取返回类型是否为Task定义
-        /// </summary>
-        public bool IsTaskDefinition { get; }
+        public ApiDataTypeDescriptor DataType { get; } 
 
         /// <summary>
         /// 获取关联的IApiReturnAttribute
@@ -54,8 +48,7 @@ namespace WebApiClientCore
             var dataType = new ApiDataTypeDescriptor(type);
 
             this.ReturnType = method.ReturnType;
-            this.DataType = dataType;
-            this.IsTaskDefinition = method.ReturnType.IsInheritFrom<Task>();
+            this.DataType = dataType;         
             this.Attributes = method
                 .GetAttributes<IApiReturnAttribute>(true)
                 .Concat(GetDefaultAttributes(dataType))

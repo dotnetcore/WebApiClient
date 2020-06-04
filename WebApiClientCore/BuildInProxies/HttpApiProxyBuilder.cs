@@ -32,11 +32,23 @@ namespace WebApiClientCore
             actionInvokers = interfaceType
                 .GetAllApiMethods()
                 .Select(item => new ApiActionDescriptor(item, interfaceType))
-                .Select(item => new MultiplexedActionInvoker(item))
+                .Select(item => CreateActionInvoker(item))
                 .ToArray();
 
             var proxyType = HttpApiProxyTypeBuilder.Build(interfaceType, actionInvokers);
             proxyTypeCtor = Lambda.CreateCtorFunc<IActionInterceptor, IActionInvoker[], THttpApi>(proxyType);
+        }
+
+        /// <summary>
+        /// 创建Action执行器 
+        /// </summary>
+        /// <param name="apiAction">action描述器</param>
+        /// <returns></returns>
+        private static IActionInvoker CreateActionInvoker(ApiActionDescriptor apiAction)
+        {
+            var dataType = apiAction.Return.DataType.Type;
+            var invokerType = typeof(MultiplexedActionInvoker<>).MakeGenericType(dataType);
+            return Lambda.CreateCtorFunc<ApiActionDescriptor, IActionInvoker>(invokerType)(apiAction);
         }
 
         /// <summary>

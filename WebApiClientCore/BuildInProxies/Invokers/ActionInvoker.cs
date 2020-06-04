@@ -32,18 +32,18 @@ namespace WebApiClientCore
         }
 
         /// <summary>
-        /// 执行任务
+        /// 执行Action
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="arguments">参数值</param>
         /// <returns></returns>
-        object IActionInvoker.Invoke(ServiceContext context, object?[] arguments)
+        public object Invoke(ServiceContext context, object?[] arguments)
         {
             return this.InvokeAsync(context, arguments);
         }
 
         /// <summary>
-        /// 执行任务
+        /// 执行Action
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="arguments">参数值</param>

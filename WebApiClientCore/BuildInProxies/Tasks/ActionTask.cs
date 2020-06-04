@@ -18,9 +18,9 @@ namespace WebApiClientCore
         /// <param name="invoker"></param>
         /// <param name="context"></param>
         /// <param name="arguments"></param>
-        public ActionTask(IActionInvoker invoker, ServiceContext context, object?[] arguments)
+        public ActionTask(ActionInvoker<TResult> invoker, ServiceContext context, object?[] arguments)
         {
-            this.invoker = (ActionInvoker<TResult>)invoker;
+            this.invoker = invoker;
             this.context = context;
             this.arguments = arguments;
         }
