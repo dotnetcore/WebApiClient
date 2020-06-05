@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 
-    <Version>1.0.0-rc3</Version>
+    <Version>1.0.0</Version>
     <Authors>laojiu</Authors>
     <Company>laojiu</Company>
     <Copyright>Copyright © laojiu 2017-2020</Copyright>
@@ -32,7 +32,7 @@
   <!--nuget analyzers和tools目录-->
   <ItemGroup>
     <None Include="NugetPackage\tools\*.*" PackagePath="tools" Pack="true" />
-    <None Include="NugetPackage\analyzers\dotnet\cs\*.*" PackagePath="analyzers\dotnet\cs" Pack="true" />
+    <None Include="NugetPackage\analyzers\dotnet\cs\**" PackagePath="analyzers\dotnet\cs" Pack="true" />
   </ItemGroup>
   
   <ItemGroup>
