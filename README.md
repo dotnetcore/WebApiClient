@@ -542,8 +542,8 @@ class FaceModel : IApiParameter
         var jsonContent = new JsonContent();
         context.HttpContext.RequestMessage.Content = jsonContent;
 
-        var options = context.HttpContext.Options.JsonSerializeOptions;
-        var serializer = context.HttpContext.Services.GetJsonSerializer();
+        var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
+        var serializer = context.HttpContext.ServiceProvider.GetJsonSerializer();
         serializer.Serialize(jsonContent, model, options);
     }
 
