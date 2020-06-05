@@ -104,14 +104,14 @@ namespace WebApiClientCore.Attributes
         /// <exception cref="ApiInvalidConfigException"></exception>
         private void SetTimeout(ApiRequestContext context, TimeSpan timeout)
         {
-            var maxTimeout = context.HttpContext.Client.Timeout;
+            var maxTimeout = context.HttpContext.HttpClient.Timeout;
             if (maxTimeout >= System.TimeSpan.Zero && timeout > maxTimeout)
             {
                 throw new ApiInvalidConfigException(Resx.timeout_OutOfRange.Format(timeout));
             }
 
             var cancellation = new CancellationTokenSource(timeout);
-            context.CancellationTokens.Add(cancellation.Token);
+            context.HttpContext.CancellationTokens.Add(cancellation.Token);
         }
     }
 }

@@ -55,7 +55,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public virtual IResponseCacheProvider? GetCacheProvider(ApiRequestContext context)
         {
-            return context.HttpContext.Services.GetService<IResponseCacheProvider>();
+            return context.HttpContext.ServiceProvider.GetService<IResponseCacheProvider>();
         }
 
         /// <summary>

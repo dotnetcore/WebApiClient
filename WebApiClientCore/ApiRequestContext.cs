@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-
-namespace WebApiClientCore
+﻿namespace WebApiClientCore
 {
     /// <summary>
     /// 表示Api请求的上下文
@@ -29,19 +26,13 @@ namespace WebApiClientCore
         public DataCollection Properties { get; }
 
         /// <summary>
-        /// 获取请求取消令牌集合
-        /// </summary>
-        public IList<CancellationToken> CancellationTokens { get; }
-
-
-        /// <summary>
         /// 请求Api的上下文
         /// </summary> 
         /// <param name="httpContext"></param> 
         /// <param name="apiAction"></param>
         /// <param name="arguments"></param>
         public ApiRequestContext(HttpContext httpContext, ApiActionDescriptor apiAction, object?[] arguments)
-            : this(httpContext, apiAction, arguments, new DataCollection(), new List<CancellationToken>())
+            : this(httpContext, apiAction, arguments, new DataCollection())
         {
         }
 
@@ -51,16 +42,13 @@ namespace WebApiClientCore
         /// <param name="httpContext"></param> 
         /// <param name="apiAction"></param>
         /// <param name="arguments"></param>
-        /// <param name="properties"></param>
-        /// <param name="cancellationTokens"></param>
-        protected ApiRequestContext(HttpContext httpContext, ApiActionDescriptor apiAction, object?[] arguments, DataCollection properties, IList<CancellationToken> cancellationTokens)
+        /// <param name="properties"></param> 
+        protected ApiRequestContext(HttpContext httpContext, ApiActionDescriptor apiAction, object?[] arguments, DataCollection properties)
         {
             this.HttpContext = httpContext;
             this.ApiAction = apiAction;
             this.Arguments = arguments;
-
             this.Properties = properties;
-            this.CancellationTokens = cancellationTokens;
         }
     }
 }

@@ -28,7 +28,7 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
             var attr = new PathQueryAttribute();
             await attr.OnRequestAsync(new ApiParameterContext(context, 0));
 
-            var birthday = context.HttpContext.Services.GetService<IKeyValueSerializer>().Serialize("time", DateTime.Parse("2010-10-10"), null)[0].Value;
+            var birthday = context.HttpContext.ServiceProvider.GetService<IKeyValueSerializer>().Serialize("time", DateTime.Parse("2010-10-10"), null)[0].Value;
             var target = new Uri("http://www.webapi.com?name=laojiu&birthDay=" + Uri.EscapeDataString(birthday));
             Assert.True(context.HttpContext.RequestMessage.RequestUri == target);
         }

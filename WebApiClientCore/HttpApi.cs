@@ -13,16 +13,16 @@ namespace WebApiClientCore
         /// 创建THttpApi的代理实例
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
-        /// <param name="client">httpClient</param>
-        /// <param name="services">服务提供者</param>
-        /// <param name="options">Api配置选项</param>
+        /// <param name="httpClient">httpClient</param>
+        /// <param name="serviceProvider">服务提供者</param>
+        /// <param name="httpApiOptions">Api配置选项</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
-        public static THttpApi Create<THttpApi>(HttpClient client, IServiceProvider services, HttpApiOptions options)
+        public static THttpApi Create<THttpApi>(HttpClient httpClient, IServiceProvider serviceProvider, HttpApiOptions httpApiOptions)
         {
-            return Create<THttpApi>(new HttpClientContext(client, services, options));
+            return Create<THttpApi>(new HttpClientContext(httpClient, serviceProvider, httpApiOptions));
         }
 
         /// <summary>

@@ -35,7 +35,7 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
             await attr.OnRequestAsync(new ApiParameterContext(context, 0));
 
             var body = await context.HttpContext.RequestMessage.Content.ReadAsStringAsync();
-            var target = context.HttpContext.Services.GetService<IXmlSerializer>().Serialize(context.Arguments[0], Encoding.UTF8);
+            var target = context.HttpContext.ServiceProvider.GetService<IXmlSerializer>().Serialize(context.Arguments[0], Encoding.UTF8);
             Assert.True(body == target);
         }
     }

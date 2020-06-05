@@ -52,7 +52,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="context">请求上下文</param>
         public ApiResponseContext(ApiRequestContext context)
-            : base(context.HttpContext, context.ApiAction, context.Arguments, context.Properties, context.CancellationTokens)
+            : base(context.HttpContext, context.ApiAction, context.Arguments, context.Properties)
         {
         }
 
@@ -68,9 +68,9 @@ namespace WebApiClientCore
                 return objType.DefaultValue();
             }
 
-            var serializer = this.HttpContext.Services.GetJsonSerializer();
+            var serializer = this.HttpContext.ServiceProvider.GetJsonSerializer();
             var json = await this.HttpContext.ResponseMessage.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-            var options = this.HttpContext.Options.JsonDeserializeOptions;
+            var options = this.HttpContext.HttpApiOptions.JsonDeserializeOptions;
             return serializer.Deserialize(json, objType, options);
         }
 
@@ -86,7 +86,7 @@ namespace WebApiClientCore
                 return objType.DefaultValue();
             }
 
-            var serializer = this.HttpContext.Services.GetXmlSerializer();
+            var serializer = this.HttpContext.ServiceProvider.GetXmlSerializer();
             var xml = await this.HttpContext.ResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
             return serializer.Deserialize(xml, objType);
         }

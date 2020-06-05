@@ -17,7 +17,7 @@ namespace WebApiClientCore.Attributes
         protected override ITokenProvider GetTokenProvider(ApiRequestContext context)
         {
             var providerType = typeof(IPasswordCredentialsTokenProvider<>).MakeGenericType(context.ApiAction.InterfaceType);
-            return (ITokenProvider)context.HttpContext.Services.GetRequiredService(providerType);
+            return (ITokenProvider)context.HttpContext.ServiceProvider.GetRequiredService(providerType);
         }
     }
 }

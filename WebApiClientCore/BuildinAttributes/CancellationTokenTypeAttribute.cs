@@ -17,7 +17,7 @@ namespace WebApiClientCore.Attributes
         {
             if (context.ParameterValue is CancellationToken token)
             {
-                context.CancellationTokens.Add(token);
+                context.HttpContext.CancellationTokens.Add(token);
             }
             return Task.CompletedTask;
         }

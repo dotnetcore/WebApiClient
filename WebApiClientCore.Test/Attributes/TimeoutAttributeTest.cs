@@ -19,7 +19,7 @@ namespace WebApiClientCore.Test.Attributes
             await attr.OnRequestAsync(context);
 
             await Task.Delay(100);
-            var canceled = context.CancellationTokens[0].IsCancellationRequested;
+            var canceled = context.HttpContext.CancellationTokens[0].IsCancellationRequested;
             Assert.True(canceled);
         }
 
@@ -34,7 +34,7 @@ namespace WebApiClientCore.Test.Attributes
             await attr.OnRequestAsync(parameterContext);
 
             await Task.Delay(20);
-            var canceled = context.CancellationTokens[0].IsCancellationRequested;
+            var canceled = context.HttpContext.CancellationTokens[0].IsCancellationRequested;
             Assert.True(canceled);
         }
 
@@ -50,7 +50,7 @@ namespace WebApiClientCore.Test.Attributes
             await attr.OnRequestAsync(parameterContext);
 
             await Task.Delay(20);
-            var canceled = context.CancellationTokens[0].IsCancellationRequested;
+            var canceled = context.HttpContext.CancellationTokens[0].IsCancellationRequested;
             Assert.True(canceled);
 
             context.Arguments[0] = Guid.NewGuid();
@@ -61,7 +61,7 @@ namespace WebApiClientCore.Test.Attributes
             context.Arguments[0] = null;
 
             await attr.OnRequestAsync(parameterContext);
-            Assert.True(context.CancellationTokens.Count == 1);
+            Assert.True(context.HttpContext.CancellationTokens.Count == 1);
         }
     }
 }

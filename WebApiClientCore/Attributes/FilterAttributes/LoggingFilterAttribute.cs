@@ -115,7 +115,7 @@ namespace WebApiClientCore.Attributes
             var method = context.ApiAction.Member;
             var categoryName = $"{method.DeclaringType?.Namespace}.{method.DeclaringType?.Name}.{method.Name}";
 
-            var loggerFactory = context.HttpContext.Services.GetService<ILoggerFactory>();
+            var loggerFactory = context.HttpContext.ServiceProvider.GetService<ILoggerFactory>();
             if (loggerFactory == null)
             {
                 return Task.CompletedTask;

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 
 namespace WebApiClientCore
 {
@@ -9,12 +11,17 @@ namespace WebApiClientCore
     public class HttpContext : HttpClientContext, IDisposable
     {
         /// <summary>
-        /// 获取关联的HttpRequestMessage
+        /// 获取请求取消令牌集合
+        /// </summary>
+        public IList<CancellationToken> CancellationTokens { get; }
+
+        /// <summary>
+        /// 获取请求消息
         /// </summary>
         public HttpApiRequestMessage RequestMessage { get; }
 
         /// <summary>
-        /// 获取关联的的HttpResponseMessage
+        /// 获取响应消息
         /// </summary>
         public HttpResponseMessage? ResponseMessage { get; internal set; }
 
@@ -24,21 +31,22 @@ namespace WebApiClientCore
         /// <param name="context">服务上下文</param>
         /// <exception cref="ArgumentNullException"></exception>
         public HttpContext(HttpClientContext context)
-            : this(context.Client, context.Services, context.Options)
+            : this(context.HttpClient, context.ServiceProvider, context.HttpApiOptions)
         {
         }
 
         /// <summary>
         /// http上下文
         /// </summary>
-        /// <param name="client">httpClient实例</param>
-        /// <param name="services">服务提供者</param>
-        /// <param name="options">Api配置选项</param>
+        /// <param name="httpClient">httpClient实例</param>
+        /// <param name="serviceProvider">服务提供者</param>
+        /// <param name="httpApiOptions">Api配置选项</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public HttpContext(HttpClient client, IServiceProvider services, HttpApiOptions options)
-            : base(client, services, options)
+        public HttpContext(HttpClient httpClient, IServiceProvider serviceProvider, HttpApiOptions httpApiOptions)
+            : base(httpClient, serviceProvider, httpApiOptions)
         {
-            this.RequestMessage = new HttpApiRequestMessage(options.HttpHost ?? client.BaseAddress);
+            this.CancellationTokens = new List<CancellationToken>();
+            this.RequestMessage = new HttpApiRequestMessage(httpApiOptions.HttpHost ?? httpClient.BaseAddress);
         }
 
         /// <summary>

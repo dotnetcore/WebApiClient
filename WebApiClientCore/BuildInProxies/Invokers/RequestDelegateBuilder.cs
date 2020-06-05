@@ -39,7 +39,7 @@ namespace WebApiClientCore
             // 参数验证特性验证和参数模型属性特性验证
             builder.Use(next => context =>
             {
-                var validateProperty = context.HttpContext.Options.UseParameterPropertyValidate;
+                var validateProperty = context.HttpContext.HttpApiOptions.UseParameterPropertyValidate;
                 foreach (var parameter in context.ApiAction.Parameters)
                 {
                     var parameterValue = context.Arguments[parameter.Index];
@@ -138,7 +138,7 @@ namespace WebApiClientCore
                     return next(context);
                 }
 
-                if (context.HttpContext.Options.UseReturnValuePropertyValidate == false)
+                if (context.HttpContext.HttpApiOptions.UseReturnValuePropertyValidate == false)
                 {
                     return next(context);
                 }

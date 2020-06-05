@@ -35,9 +35,10 @@ namespace WebApiClientCore
             }
             else
             {
-                var client = context.HttpContext.Client;
-                using var tokenLinker = new CancellationTokenLinker(context.CancellationTokens);
-                var response = await client.SendAsync(context.HttpContext.RequestMessage, tokenLinker.Token).ConfigureAwait(false);
+                var client = context.HttpContext.HttpClient;
+                var request = context.HttpContext.RequestMessage;
+                using var tokenLinker = new CancellationTokenLinker(context.HttpContext.CancellationTokens);
+                var response = await client.SendAsync(request, tokenLinker.Token).ConfigureAwait(false);
 
                 context.HttpContext.ResponseMessage = response;
                 await SetCacheAsync(context, actionCache?.Key, response).ConfigureAwait(false);

@@ -30,7 +30,7 @@ namespace WebApiClientCore
         /// <param name="context">上下文</param>
         /// <param name="parameterIndex">参数索引</param>
         public ApiParameterContext(ApiRequestContext context, int parameterIndex)
-            : base(context.HttpContext, context.ApiAction, context.Arguments, context.Properties, context.CancellationTokens)
+            : base(context.HttpContext, context.ApiAction, context.Arguments, context.Properties)
         {
             this.index = parameterIndex;
         }
@@ -41,9 +41,9 @@ namespace WebApiClientCore
         /// <param name="bufferWriter">buffer写入器</param>
         public void SerializeToJson(IBufferWriter<byte> bufferWriter)
         {
-            var options = this.HttpContext.Options.JsonSerializeOptions;
+            var options = this.HttpContext.HttpApiOptions.JsonSerializeOptions;
             this.HttpContext
-                .Services
+                .ServiceProvider
                 .GetJsonSerializer()
                 .Serialize(bufferWriter, this.ParameterValue, options);
         }
@@ -55,8 +55,8 @@ namespace WebApiClientCore
         public byte[] SerializeToJson()
         {
             using var bufferWriter = new BufferWriter<byte>();
-            var options = this.HttpContext.Options.JsonSerializeOptions;
-            var serializer = this.HttpContext.Services.GetJsonSerializer();
+            var options = this.HttpContext.HttpApiOptions.JsonSerializeOptions;
+            var serializer = this.HttpContext.ServiceProvider.GetJsonSerializer();
             serializer.Serialize(bufferWriter, this.ParameterValue, options);
             return bufferWriter.GetWrittenSpan().ToArray();
         }
@@ -69,7 +69,7 @@ namespace WebApiClientCore
         public string? SerializeToXml(Encoding encoding)
         {
             return this.HttpContext
-                .Services
+                .ServiceProvider
                 .GetXmlSerializer()
                 .Serialize(this.ParameterValue, encoding);
         }
@@ -80,9 +80,9 @@ namespace WebApiClientCore
         /// <returns></returns>
         public IList<KeyValue> SerializeToKeyValues()
         {
-            var options = this.HttpContext.Options.KeyValueSerializeOptions;
+            var options = this.HttpContext.HttpApiOptions.KeyValueSerializeOptions;
             return this.HttpContext
-                .Services
+                .ServiceProvider
                 .GetKeyValueSerializer()
                 .Serialize(this.Parameter.Name, this.ParameterValue, options);
         }

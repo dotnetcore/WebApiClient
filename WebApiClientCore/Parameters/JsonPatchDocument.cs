@@ -78,8 +78,8 @@ namespace WebApiClientCore.Parameters
             var jsonPatchContent = new JsonPatchContent();
             context.HttpContext.RequestMessage.Content = jsonPatchContent;
 
-            var options = context.HttpContext.Options.JsonSerializeOptions;
-            var serializer = context.HttpContext.Services.GetJsonSerializer();
+            var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
+            var serializer = context.HttpContext.ServiceProvider.GetJsonSerializer();
             serializer.Serialize(jsonPatchContent, this.oprations, options);
 
             return Task.CompletedTask;

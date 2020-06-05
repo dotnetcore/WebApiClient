@@ -24,7 +24,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
             var model = new TestModel();
             var jsonContent = new JsonContent();
             context.HttpContext.ResponseMessage.Content = jsonContent;
-            context.HttpContext.Services.GetRequiredService<IJsonSerializer>().Serialize(jsonContent, model, null);
+            context.HttpContext.ServiceProvider.GetRequiredService<IJsonSerializer>().Serialize(jsonContent, model, null);
 
             var attr = new JsonReturnAttribute();
             await attr.OnResponseAsync(responseContext);
@@ -42,7 +42,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
             context.HttpContext.RequestMessage.Method = HttpMethod.Post;
 
             var model = new TestModel();
-            var xml = context.HttpContext.Services.GetRequiredService<IXmlSerializer>().Serialize(model, Encoding.UTF8);
+            var xml = context.HttpContext.ServiceProvider.GetRequiredService<IXmlSerializer>().Serialize(model, Encoding.UTF8);
             context.HttpContext.ResponseMessage.Content = new XmlContent(xml, Encoding.UTF8);
 
             var attr = new XmlReturnAttribute();
