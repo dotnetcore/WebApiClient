@@ -25,7 +25,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
                 apiActionDescriptor: new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync")));
 
             context.RequestMessage.RequestUri = new Uri("http://www.webapi.com/");
-            context.RequestMessage.Method = HttpMethod.Post; 
+            context.RequestMessage.Method = HttpMethod.Post;
 
             var parameter = context.ApiActionDescriptor.Parameters[0].Clone(new
             {
@@ -37,7 +37,7 @@ namespace WebApiClient.Test.Attributes.HttpActionAttributes
             await ((IApiParameterAttribute)attr).BeforeRequestAsync(context, parameter);
 
             var birthday = context.HttpApiConfig.FormatOptions.CloneChange(attr.DateTimeFormat).FormatDateTime(DateTime.Parse("2010-10-10"));
-            var target = new Uri("http://www.webapi.com?name=laojiu&birthDay=" + HttpUtility.UrlEncode(birthday, Encoding.GetEncoding(attr.Encoding)));
+            var target = new Uri("http://www.webapi.com?name=laojiu&birthDay=" + Uri.EscapeDataString(birthday));
             Assert.True(context.RequestMessage.RequestUri == target);
         }
     }

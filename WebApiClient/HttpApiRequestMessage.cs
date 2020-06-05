@@ -41,7 +41,10 @@ namespace WebApiClient
         /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(IEnumerable<KeyValuePair<string, string>> keyValue)
         {
-            this.AddUrlQuery(keyValue, Encoding.UTF8);
+            foreach (var kv in keyValue)
+            {
+                this.AddUrlQuery(kv);
+            }
         }
 
         /// <summary>
@@ -51,11 +54,12 @@ namespace WebApiClient
         /// <param name="encoding">编码</param>
         /// <exception cref="HttpApiConfigException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
+        [Obsolete("encoding参数不会再使用")]
         public void AddUrlQuery(IEnumerable<KeyValuePair<string, string>> keyValue, Encoding encoding)
         {
             foreach (var kv in keyValue)
             {
-                this.AddUrlQuery(kv, encoding);
+                this.AddUrlQuery(kv);
             }
         }
 
@@ -67,7 +71,7 @@ namespace WebApiClient
         /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(KeyValuePair<string, string> keyValue)
         {
-            this.AddUrlQuery(keyValue, Encoding.UTF8);
+            AddUrlQuery(keyValue.Key, keyValue.Value);
         }
 
         /// <summary>
@@ -77,9 +81,10 @@ namespace WebApiClient
         /// <param name="encoding">编码</param>
         /// <exception cref="HttpApiConfigException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
+        [Obsolete("encoding参数不会再使用")]
         public void AddUrlQuery(KeyValuePair<string, string> keyValue, Encoding encoding)
         {
-            this.AddUrlQuery(keyValue.Key, keyValue.Value, encoding);
+            this.AddUrlQuery(keyValue.Key, keyValue.Value);
         }
 
 
@@ -92,19 +97,6 @@ namespace WebApiClient
         /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(string key, string value)
         {
-            this.AddUrlQuery(key, value, Encoding.UTF8);
-        }
-
-        /// <summary>
-        /// 追加Query参数到请求路径
-        /// </summary>
-        /// <param name="key">参数名</param>
-        /// <param name="value">参数值</param>
-        /// <param name="encoding">编码</param>
-        /// <exception cref="HttpApiConfigException"></exception>
-        /// <exception cref="ArgumentNullException"></exception>
-        public void AddUrlQuery(string key, string value, Encoding encoding)
-        {
             if (this.RequestUri == null)
             {
                 throw new HttpApiConfigException("未配置RequestUri，RequestUri不能为null");
@@ -115,15 +107,24 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(key));
             }
 
-            if (encoding == null)
-            {
-                throw new ArgumentNullException(nameof(encoding));
-            }
-
-            var editor = new UriEditor(this.RequestUri, encoding);
+            var editor = new UriEditor(this.RequestUri);
             editor.AddQuery(key, value);
             this.RequestUri = editor.Uri;
         }
+
+        /// <summary>
+        /// 追加Query参数到请求路径
+        /// </summary>
+        /// <param name="key">参数名</param>
+        /// <param name="value">参数值</param>
+        /// <param name="encoding">编码</param>
+        /// <exception cref="HttpApiConfigException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        [Obsolete("encoding参数不会再使用")]
+        public void AddUrlQuery(string key, string value, Encoding encoding)
+        {
+            AddUrlQuery(key, value);
+        }         
 
         /// <summary>
         /// 添加字段到已有的Content

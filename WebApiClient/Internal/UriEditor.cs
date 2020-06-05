@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace WebApiClient
@@ -51,34 +50,15 @@ namespace WebApiClient
                 this.uriCanReplace = value.OriginalString.IndexOf('{') > -1;
             }
         }
-
-        /// <summary>
-        /// 获取Uri参数的编码
-        /// </summary>
-        public Encoding Encoding { get; }
-
-        /// <summary>
-        /// Uri编辑器
-        /// </summary>
-        /// <param name="uri">绝对路径的uri</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="UriFormatException"></exception>
-        public UriEditor(Uri uri)
-            : this(uri, Encoding.UTF8)
-        {
-        }
-
         /// <summary>
         /// Url创建者
         /// </summary>
-        /// <param name="uri">绝对路径的uri</param>
-        /// <param name="encoding">参数的编码</param>
+        /// <param name="uri">绝对路径的uri</param> 
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="UriFormatException"></exception>
-        public UriEditor(Uri uri, Encoding encoding)
+        public UriEditor(Uri uri)
         {
             this.Uri = uri ?? throw new ArgumentNullException(nameof(uri));
-            this.Encoding = encoding ?? throw new ArgumentNullException(nameof(encoding));
             if (uri.IsAbsoluteUri == false)
             {
                 throw new UriFormatException($"{nameof(uri)}必须为绝对完整URI");
@@ -104,12 +84,11 @@ namespace WebApiClient
             }
 
             var replaced = false;
-            var regex = new Regex($"{{{name}}}", RegexOptions.IgnoreCase);
-            var url = regex.Replace(this.Uri.OriginalString, m =>
+            var url = Regex.Replace(this.Uri.OriginalString, $"{{{name}}}", m =>
             {
                 replaced = true;
-                return HttpUtility.UrlEncode(value, this.Encoding);
-            });
+                return value == null ? null : Uri.EscapeDataString(value);
+            }, RegexOptions.IgnoreCase);
 
             if (replaced == true)
             {
@@ -131,8 +110,11 @@ namespace WebApiClient
                 throw new ArgumentNullException(nameof(name));
             }
 
-            name = HttpUtility.UrlEncode(name, this.Encoding);
-            value = HttpUtility.UrlEncode(value, this.Encoding);
+            name = Uri.EscapeDataString(name);
+            if (value != null)
+            {
+                value = Uri.EscapeDataString(value);
+            }
 
             var pathQuery = this.GetPathAndQuery();
             var concat = pathQuery.IndexOf('?') > -1 ? "&" : "?";

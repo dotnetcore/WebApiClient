@@ -16,12 +16,14 @@ namespace WebApiClient.Attributes
         /// <summary>
         /// 编码
         /// </summary>
+        [Obsolete]
         private Encoding encoding = System.Text.Encoding.UTF8;
 
         /// <summary>
         /// 获取或设置参数的编码名称
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [Obsolete("Encoding将不再生效")]
         public string Encoding
         {
             get => this.encoding.WebName;
@@ -104,7 +106,7 @@ namespace WebApiClient.Attributes
         /// <returns></returns>
         protected virtual Uri UsePathQuery(Uri uri, IEnumerable<KeyValuePair<string, string>> keyValues)
         {
-            var editor = new UriEditor(uri, this.encoding);
+            var editor = new UriEditor(uri);
             foreach (var keyValue in keyValues)
             {
                 if (editor.Replace(keyValue.Key, keyValue.Value) == false)

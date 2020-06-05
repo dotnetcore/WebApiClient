@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -143,7 +142,8 @@ namespace WebApiClient
             {
                 return string.Empty;
             }
-            return Uri.EscapeDataString(value).Replace("%20", "+");
+
+            return HttpUtility.UrlEncode(value, Encoding.UTF8);
         }
 
         /// <summary>
