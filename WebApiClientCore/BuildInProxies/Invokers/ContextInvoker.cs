@@ -4,19 +4,33 @@ using System.Threading.Tasks;
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 提供Action的调用链委托创建
+    /// 上下文执行器
     /// </summary>
-    static class RequestDelegateBuilder
+    static class ContextInvoker
     {
         /// <summary>
-        /// 创建执行委托
+        /// 上下文处理委托
         /// </summary>
-        /// <param name="apiAction">action描述器</param>
+        private static readonly Func<ApiRequestContext, Task<ApiResponseContext>> handler = BuildHandler();
+
+        /// <summary>
+        /// 执行上下文
+        /// </summary>
+        /// <param name="request">请求上下文</param>
         /// <returns></returns>
-        public static Func<ApiRequestContext, Task<ApiResponseContext>> Build(ApiActionDescriptor apiAction)
+        public static Task<ApiResponseContext> InvokeAsync(ApiRequestContext request)
         {
-            var requestHandler = BuildRequestHandler(apiAction);
-            var responseHandler = BuildResponseHandler(apiAction);
+            return handler(request);
+        }
+
+        /// <summary>
+        /// 创建上下文执行委托
+        /// </summary>
+        /// <returns></returns>
+        private static Func<ApiRequestContext, Task<ApiResponseContext>> BuildHandler()
+        {
+            var requestHandler = BuildRequestHandler();
+            var responseHandler = BuildResponseHandler();
 
             return async request =>
             {
@@ -28,15 +42,14 @@ namespace WebApiClientCore
         }
 
         /// <summary>
-        /// 创建请求委托
+        /// 创建请求上下文处理委托
         /// </summary>
-        /// <param name="apiAction"></param>
         /// <returns></returns>
-        private static InvokeDelegate<ApiRequestContext> BuildRequestHandler(ApiActionDescriptor apiAction)
+        private static InvokeDelegate<ApiRequestContext> BuildRequestHandler()
         {
             var builder = new PipelineBuilder<ApiRequestContext>();
 
-            // 参数验证特性验证和参数模型属性特性验证
+            // 参数验证
             builder.Use(next => context =>
             {
                 var validateProperty = context.HttpContext.HttpApiOptions.UseParameterPropertyValidate;
@@ -49,81 +62,81 @@ namespace WebApiClientCore
             });
 
             // action特性请求前执行
-            foreach (var attr in apiAction.Attributes)
+            builder.Use(next => async context =>
             {
-                builder.Use(next => async context =>
+                foreach (var attr in context.ApiAction.Attributes)
                 {
                     await attr.OnRequestAsync(context).ConfigureAwait(false);
-                    await next(context).ConfigureAwait(false);
-                });
-            }
+                }
+                await next(context).ConfigureAwait(false);
+            });
 
             // 参数特性请求前执行
-            foreach (var parameter in apiAction.Parameters)
+            builder.Use(next => async context =>
             {
-                var index = parameter.Index;
-                foreach (var attr in parameter.Attributes)
+                foreach (var parameter in context.ApiAction.Parameters)
                 {
-                    builder.Use(next => async context =>
+                    var ctx = new ApiParameterContext(context, parameter.Index);
+                    foreach (var attr in parameter.Attributes)
                     {
-                        var ctx = new ApiParameterContext(context, index);
                         await attr.OnRequestAsync(ctx).ConfigureAwait(false);
-                        await next(context).ConfigureAwait(false);
-                    });
+                    }
                 }
-            }
+                await next(context).ConfigureAwait(false);
+            });
 
             // Return特性请求前执行
-            foreach (var @return in apiAction.Return.Attributes)
+            builder.Use(next => async context =>
             {
-                builder.Use(next => async context =>
+                foreach (var @return in context.ApiAction.Return.Attributes)
                 {
                     await @return.OnRequestAsync(context).ConfigureAwait(false);
-                    await next(context).ConfigureAwait(false);
-                });
-            }
+                }
+                await next(context).ConfigureAwait(false);
+            });
 
-            // Filter请求前执行            
-            foreach (var filter in apiAction.FilterAttributes)
+            // Filter请求前执行    
+            builder.Use(next => async context =>
             {
-                builder.Use(next => async context =>
+                foreach (var filter in context.ApiAction.FilterAttributes)
                 {
                     await filter.OnRequestAsync(context).ConfigureAwait(false);
-                    await next(context).ConfigureAwait(false);
-                });
-            }
+                }
+                await next(context).ConfigureAwait(false);
+            });
 
             return builder.Build();
         }
 
         /// <summary>
-        /// 创建响应委托
+        /// 创建响应上下文处理委托
         /// </summary>
-        /// <param name="apiAction"></param>
         /// <returns></returns>
-        private static InvokeDelegate<ApiResponseContext> BuildResponseHandler(ApiActionDescriptor apiAction)
+        private static InvokeDelegate<ApiResponseContext> BuildResponseHandler()
         {
             var builder = new PipelineBuilder<ApiResponseContext>();
 
             // Return特性请求后执行
-            foreach (var @return in apiAction.Return.Attributes)
+            builder.Use(next => async context =>
             {
-                builder.Use(next => async context =>
+                foreach (var @return in context.ApiAction.Return.Attributes)
                 {
-                    if (context.ResultStatus == ResultStatus.None)
+                    try
                     {
-                        try
-                        {
-                            await @return.OnResponseAsync(context).ConfigureAwait(false);
-                        }
-                        catch (Exception ex)
-                        {
-                            context.Exception = ex;
-                        }
+                        await @return.OnResponseAsync(context).ConfigureAwait(false);
                     }
-                    await next(context).ConfigureAwait(false);
-                });
-            }
+                    catch (Exception ex)
+                    {
+                        context.Exception = ex;
+                    }
+
+                    if (context.ResultStatus != ResultStatus.None)
+                    {
+                        break;
+                    }
+                }
+                await next(context).ConfigureAwait(false);
+            });
 
             // 验证Result是否ok
             builder.Use(next => context =>
@@ -155,14 +168,14 @@ namespace WebApiClientCore
             });
 
             // Filter请求后执行
-            foreach (var filter in apiAction.FilterAttributes)
+            builder.Use(next => async context =>
             {
-                builder.Use(next => async context =>
+                foreach (var filter in context.ApiAction.FilterAttributes)
                 {
                     await filter.OnResponseAsync(context).ConfigureAwait(false);
-                    await next(context).ConfigureAwait(false);
-                });
-            }
+                }
+                await next(context).ConfigureAwait(false);
+            });
 
             return builder.Build();
         }

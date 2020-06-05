@@ -12,11 +12,6 @@ namespace WebApiClientCore
     class ActionInvoker<TResult> : IActionInvoker
     {
         /// <summary>
-        /// ApiAction执行器
-        /// </summary>
-        private readonly Func<ApiRequestContext, Task<ApiResponseContext>> requestHandler;
-
-        /// <summary>
         /// 获取Action描述
         /// </summary>
         public ApiActionDescriptor ApiAction { get; }
@@ -28,7 +23,6 @@ namespace WebApiClientCore
         public ActionInvoker(ApiActionDescriptor apiAction)
         {
             this.ApiAction = apiAction;
-            this.requestHandler = RequestDelegateBuilder.Build(apiAction);
         }
 
         /// <summary>
@@ -70,12 +64,12 @@ namespace WebApiClientCore
         /// <summary>
         /// 执行Api方法
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        private async Task<TResult> InvokeAsync(ApiRequestContext context)
+        private async Task<TResult> InvokeAsync(ApiRequestContext request)
         {
 #nullable disable
-            var response = await this.requestHandler(context).ConfigureAwait(false);
+            var response = await ContextInvoker.InvokeAsync(request).ConfigureAwait(false);
             if (response.ResultStatus == ResultStatus.HasResult)
             {
                 return (TResult)response.Result;
