@@ -45,5 +45,59 @@ namespace WebApiClientCore.Test.Serialization
 
             Assert.True(formatter.Serialize("null", null, null).Any());
         }
+
+        [Fact]
+        public void KeyNamingStyleTest()
+        {
+            var formatter = new KeyValueSerializer();
+            var model = new { x = new { y = 1 } };
+
+            var value = formatter.Serialize("root", model, null).First();
+            Assert.Equal("y", value.Key);
+
+            value = formatter.Serialize("root", model, new KeyValueSerializerOptions
+            {
+                KeyNamingStyle = KeyNamingStyle.FullName
+            }).First();
+            Assert.Equal("x.y", value.Key);
+
+
+            value = formatter.Serialize("root", model, new KeyValueSerializerOptions
+            {
+                KeyNamingStyle = KeyNamingStyle.FullName,
+                KeyDelimiter = "|"
+            }).First();
+            Assert.Equal("x|y", value.Key);
+
+
+            value = formatter.Serialize("root", model, new KeyValueSerializerOptions
+            {
+                KeyNamingStyle = KeyNamingStyle.FullNameWithRoot,
+                KeyDelimiter = "-"
+            }).First();
+            Assert.Equal("root-x-y", value.Key);
+        }
+
+        [Fact]
+        public void ArrayIndexFormatTest()
+        {
+            var formatter = new KeyValueSerializer();
+            var model = new { x = new { y = new[] { 1, 2 } } };
+
+            var kv = formatter.Serialize("root", model, new KeyValueSerializerOptions
+            {
+                KeyNamingStyle = KeyNamingStyle.FullName
+            }).First();
+            Assert.Equal("x.y[0]", kv.Key);
+            Assert.Equal("1", kv.Value);
+
+            kv = formatter.Serialize("root", model, new KeyValueSerializerOptions
+            {
+                KeyNamingStyle = KeyNamingStyle.FullName,
+                KeyArrayIndex = (i) => $"({i})"
+            }).First();
+            Assert.Equal("x.y(0)", kv.Key);
+            Assert.Equal("1", kv.Value);
+        }
     }
 }

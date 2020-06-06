@@ -30,8 +30,9 @@ namespace WebApiClientCore.Serialization
             var jsonOptions = options ?? defaultOptions;
             var writerOptions = new JsonWriterOptions
             {
-                Indented = jsonOptions.WriteIndented,
-                Encoder = jsonOptions.Encoder
+                SkipValidation = true,
+                Encoder = jsonOptions.Encoder,
+                Indented = jsonOptions.WriteIndented
             };
 
             using var utf8JsonWriter = new Utf8JsonWriter(bufferWriter, writerOptions);

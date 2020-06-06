@@ -47,27 +47,34 @@ namespace WebApiClientCore.Serialization
             });
 
             System.Text.Json.JsonSerializer.Serialize(utf8JsonWriter, obj, objType, jsonOptions);
-            var span = bufferWriter.GetWrittenSpan();
-            var utf8JsonReader = new Utf8JsonReader(span, new JsonReaderOptions
+            var utf8JsonReader = new Utf8JsonReader(bufferWriter.GetWrittenSpan(), new JsonReaderOptions
             {
                 MaxDepth = jsonOptions.MaxDepth,
                 CommentHandling = jsonOptions.ReadCommentHandling,
                 AllowTrailingCommas = jsonOptions.AllowTrailingCommas,
             });
 
-            if (kvOptions.KeyNamingStyle == KeyNamingStyle.ShortName)
-            {
-                return this.GetShortNameKeyValueList(key, ref utf8JsonReader);
-            }
-
-            if (kvOptions.KeyNamingStyle == KeyNamingStyle.FullName)
-            {
-                return this.GetFullNameKeyValueList(key, ref utf8JsonReader, withRoot: false);
-            }
-
-            return this.GetFullNameKeyValueList(key, ref utf8JsonReader, withRoot: true);
+            return this.GetKeyValueList(key, ref utf8JsonReader, kvOptions);
         }
 
+        /// <summary>
+        /// 获取键值对
+        /// </summary>
+        /// <param name="key">根键名</param>
+        /// <param name="reader">utf8JsonReader</param>
+        /// <param name="options">选项</param>
+        /// <returns></returns>
+        protected virtual IList<KeyValue> GetKeyValueList(string key, ref Utf8JsonReader reader, KeyNamingOptions options)
+        {
+            if (options.KeyNamingStyle == KeyNamingStyle.ShortName)
+            {
+                return GetShortNameKeyValueList(key, ref reader);
+            }
+            else
+            {
+                return GetFullNameKeyValueList(key, ref reader, options);
+            }
+        }
 
         /// <summary>
         /// 获取shortName键值对
@@ -75,7 +82,7 @@ namespace WebApiClientCore.Serialization
         /// <param name="key"></param>
         /// <param name="reader"></param>
         /// <returns></returns>
-        protected virtual IList<KeyValue> GetShortNameKeyValueList(string key, ref Utf8JsonReader reader)
+        private static IList<KeyValue> GetShortNameKeyValueList(string key, ref Utf8JsonReader reader)
         {
             var list = new List<KeyValue>();
             while (reader.Read())
@@ -114,14 +121,15 @@ namespace WebApiClientCore.Serialization
         /// </summary>
         /// <param name="key"></param>
         /// <param name="reader"></param>
-        /// <param name="withRoot"></param>
+        /// <param name="options"></param>
         /// <returns></returns>
-        protected virtual IList<KeyValue> GetFullNameKeyValueList(string key, ref Utf8JsonReader reader, bool withRoot)
+        private static IList<KeyValue> GetFullNameKeyValueList(string key, ref Utf8JsonReader reader, KeyNamingOptions options)
         {
-            var list = new List<KeyValue>();
             using var doc = JsonDocument.ParseValue(ref reader);
             var root = doc.RootElement;
-            ParseJsonElement(key, ref root, list, withRoot);
+            var list = new List<KeyValue>();
+            var withRoot = options.KeyNamingStyle == KeyNamingStyle.FullNameWithRoot;
+            ParseJsonElement(key, ref root, list, options, withRoot);
             return list;
         }
 
@@ -131,8 +139,9 @@ namespace WebApiClientCore.Serialization
         /// <param name="key"></param>
         /// <param name="element"></param>
         /// <param name="list"></param>
+        /// <param name="options"></param>
         /// <param name="withRoot"></param>
-        private static void ParseJsonElement(string key, ref JsonElement element, IList<KeyValue> list, bool withRoot)
+        private static void ParseJsonElement(string key, ref JsonElement element, IList<KeyValue> list, KeyNamingOptions options, bool withRoot = true)
         {
             switch (element.ValueKind)
             {
@@ -154,8 +163,11 @@ namespace WebApiClientCore.Serialization
                     foreach (var item in element.EnumerateObject())
                     {
                         var ele = item.Value;
-                        var itemKey = withRoot ? $"{key}.{item.Name}" : item.Name;
-                        ParseJsonElement(itemKey, ref ele, list, withRoot: true);
+                        var itemKey = withRoot
+                            ? $"{key}{options.KeyDelimiter}{item.Name}"
+                            : item.Name;
+
+                        ParseJsonElement(itemKey, ref ele, list, options);
                     }
                     break;
 
@@ -164,8 +176,9 @@ namespace WebApiClientCore.Serialization
                     foreach (var item in element.EnumerateArray())
                     {
                         var ele = item;
-                        var itemKey = $"{key}[{index}]";
-                        ParseJsonElement(itemKey, ref ele, list, withRoot: true);
+                        var itemKey = $"{key}{options.KeyArrayIndex(index)}";
+
+                        ParseJsonElement(itemKey, ref ele, list, options);
                         index += 1;
                     }
                     break;

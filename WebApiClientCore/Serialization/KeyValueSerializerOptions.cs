@@ -9,7 +9,7 @@ namespace WebApiClientCore.Serialization
     /// <summary>
     /// 表示KeyValue序列化选项
     /// </summary>
-    public sealed class KeyValueSerializerOptions
+    public sealed class KeyValueSerializerOptions : KeyNamingOptions
     {
         /// <summary>
         /// 包装的jsonOptions
@@ -69,11 +69,6 @@ namespace WebApiClientCore.Serialization
             get => jsonOptions.PropertyNamingPolicy;
             set => jsonOptions.PropertyNamingPolicy = value;
         }
-
-        /// <summary>
-        /// 获取或设置键名风格
-        /// </summary>
-        public KeyNamingStyle KeyNamingStyle { get; set; }
 
         /// <summary>
         /// KeyValue序列化选项
