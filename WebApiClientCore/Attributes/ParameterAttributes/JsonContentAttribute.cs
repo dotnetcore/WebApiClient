@@ -33,7 +33,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected override Task SetHttpContentAsync(ApiParameterContext context)
         {
-            if (this.encoding.CodePage == Encoding.UTF8.CodePage)
+            if (Encoding.UTF8.Equals(this.encoding) == true)
             {
                 var jsonContent = new JsonContent();
                 context.HttpContext.RequestMessage.Content = jsonContent;
@@ -45,12 +45,8 @@ namespace WebApiClientCore.Attributes
                 jsonContent.Headers.ContentType.CharSet = this.encoding.WebName;
                 context.HttpContext.RequestMessage.Content = jsonContent;
 
-                using var bufferWriter = new BufferWriter<byte>();
-                context.SerializeToJson(bufferWriter);
-                var utf8Buffer = bufferWriter.GetWrittenSegment();
-
-                var dstBuffer = Encoding.Convert(Encoding.UTF8, this.encoding, utf8Buffer.Array, utf8Buffer.Offset, utf8Buffer.Count);
-                jsonContent.Write(dstBuffer);
+                var buffer = context.SerializeToJson(this.encoding);
+                jsonContent.Write(buffer);
             }
 
             return Task.CompletedTask;

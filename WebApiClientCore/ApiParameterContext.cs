@@ -41,9 +41,28 @@ namespace WebApiClientCore
         /// <returns></returns>
         public byte[] SerializeToJson()
         {
+            return this.SerializeToJson(Encoding.UTF8);
+        }
+
+        /// <summary>
+        /// 序列化参数值为指定编码的Json
+        /// </summary>
+        /// <param name="encoding">编码</param>
+        /// <returns></returns>
+        public byte[] SerializeToJson(Encoding encoding)
+        {
             using var bufferWriter = new BufferWriter<byte>();
             this.SerializeToJson(bufferWriter);
-            return bufferWriter.GetWrittenSpan().ToArray();
+
+            if (Encoding.UTF8.Equals(encoding) == true)
+            {
+                return bufferWriter.GetWrittenSpan().ToArray();
+            }
+            else
+            {
+                var utf8Json = bufferWriter.GetWrittenSegment();
+                return Encoding.Convert(Encoding.UTF8, encoding, utf8Json.Array, utf8Json.Offset, utf8Json.Count);
+            }
         }
 
         /// <summary>
@@ -67,7 +86,7 @@ namespace WebApiClientCore
         public string? SerializeToXml(Encoding? encoding)
         {
             var options = this.HttpContext.HttpApiOptions.XmlSerializeOptions;
-            if (encoding != null && encoding.CodePage != options.Encoding.CodePage)
+            if (encoding != null && encoding.Equals(options.Encoding) == false)
             {
                 options = options.Clone();
                 options.Encoding = encoding;
