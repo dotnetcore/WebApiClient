@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace WebApiClientCore
@@ -21,8 +22,8 @@ namespace WebApiClientCore
             set
             {
                 this.result = value;
-                this.exception = null;
                 this.ResultStatus = ResultStatus.HasResult;
+                this.exception = null;
             }
         }
 
@@ -31,14 +32,15 @@ namespace WebApiClientCore
         /// 在IApiReturnAttribute设置该值之后会中断下一个IApiReturnAttribute的执行
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
+        [DisallowNull]
         public Exception? Exception
         {
             get => this.exception;
             set
             {
-                this.result = null;
                 this.exception = value ?? throw new ArgumentNullException(nameof(Exception));
                 this.ResultStatus = ResultStatus.HasException;
+                this.result = null;
             }
         }
 
