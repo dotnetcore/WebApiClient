@@ -3,9 +3,9 @@
 
 ### PackageReference
 #### 主包
-    <PackageReference Include="WebApiClientCore" Version="1.0.0-rc*" />
+    <PackageReference Include="WebApiClientCore" Version="1.0.*" />
 #### 扩展包
-    <PackageReference Include="WebApiClientCore.Extensions.OAuths" Version="1.0.0-rc*" />
+    <PackageReference Include="WebApiClientCore.Extensions.OAuths" Version="1.0.*" />
     
 ### QQ群
 > [825135345](https://shang.qq.com/wpa/qunwpa?idkey=c6df21787c9a774ca7504a954402c9f62b6595d1e63120eabebd6b2b93007410)
