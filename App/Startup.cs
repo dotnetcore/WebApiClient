@@ -47,13 +47,13 @@ namespace App
             // 注册userApi
             services.AddHttpApi<IUserApi>(o =>
             {
-                o.HttpHost = new Uri("http://localhost:6000/");
+                o.HttpHost = new Uri("http://localhost:5000/");
             });
 
             // 注册与配置token提者选项
             services.AddClientCredentialsTokenProvider<IUserApi>(o =>
             {
-                o.Endpoint = new Uri("http://localhost:6000/api/tokens");
+                o.Endpoint = new Uri("http://localhost:5000/api/tokens");
                 o.Credentials.Client_id = "clientId";
                 o.Credentials.Client_secret = "xxyyzz";
             });
