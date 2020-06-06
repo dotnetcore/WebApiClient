@@ -18,7 +18,7 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 获取或设置编码名称
         /// </summary>
-        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentException"></exception>        
         public string CharSet
         {
             get => this.encoding.WebName;

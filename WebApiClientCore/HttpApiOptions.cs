@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Xml;
 using WebApiClientCore.Serialization;
 
 namespace WebApiClientCore
@@ -38,6 +39,16 @@ namespace WebApiClientCore
         public JsonSerializerOptions JsonDeserializeOptions { get; } = new JsonSerializerOptions();
 
         /// <summary>
+        /// xml序列化选项
+        /// </summary>
+        public XmlWriterSettings XmlSerializeOptions { get; } = new XmlWriterSettings();
+
+        /// <summary>
+        /// xml反序列化选项
+        /// </summary>
+        public XmlReaderSettings XmlDeserializeOptions { get; } = new XmlReaderSettings();
+
+        /// <summary>
         /// 获取keyValue序列化选项
         /// </summary>
         public KeyValueSerializerOptions KeyValueSerializeOptions { get; } = new KeyValueSerializerOptions();
@@ -48,7 +59,7 @@ namespace WebApiClientCore
         public HttpApiOptions()
         {
             ConfigureJsonDefault(this.JsonSerializeOptions);
-            ConfigureJsonDefault(this.JsonDeserializeOptions); 
+            ConfigureJsonDefault(this.JsonDeserializeOptions);
         }
 
         /// <summary>

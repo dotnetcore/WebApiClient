@@ -38,6 +38,17 @@ namespace WebApiClientCore
         /// <summary>
         /// 序列化参数值为utf8编码的Json
         /// </summary>
+        /// <returns></returns>
+        public byte[] SerializeToJson()
+        {
+            using var bufferWriter = new BufferWriter<byte>();
+            this.SerializeToJson(bufferWriter);
+            return bufferWriter.GetWrittenSpan().ToArray();
+        }
+
+        /// <summary>
+        /// 序列化参数值为utf8编码的Json
+        /// </summary>
         /// <param name="bufferWriter">buffer写入器</param>
         public void SerializeToJson(IBufferWriter<byte> bufferWriter)
         {
@@ -49,29 +60,23 @@ namespace WebApiClientCore
         }
 
         /// <summary>
-        /// 序列化参数值为utf8编码的Json
-        /// </summary>
-        /// <returns></returns>
-        public byte[] SerializeToJson()
-        {
-            using var bufferWriter = new BufferWriter<byte>();
-            var options = this.HttpContext.HttpApiOptions.JsonSerializeOptions;
-            var serializer = this.HttpContext.ServiceProvider.GetJsonSerializer();
-            serializer.Serialize(bufferWriter, this.ParameterValue, options);
-            return bufferWriter.GetWrittenSpan().ToArray();
-        }
-
-        /// <summary>
         /// 序列化参数值为Xml
         /// </summary>
-        /// <param name="encoding">xml编码</param>
+        /// <param name="encoding">xml的编码</param>
         /// <returns></returns>
-        public string? SerializeToXml(Encoding encoding)
+        public string? SerializeToXml(Encoding? encoding)
         {
+            var options = this.HttpContext.HttpApiOptions.XmlSerializeOptions;
+            if (encoding != null && encoding.CodePage != options.Encoding.CodePage)
+            {
+                options = options.Clone();
+                options.Encoding = encoding;
+            }
+
             return this.HttpContext
                 .ServiceProvider
                 .GetXmlSerializer()
-                .Serialize(this.ParameterValue, encoding);
+                .Serialize(this.ParameterValue, options);
         }
 
         /// <summary>

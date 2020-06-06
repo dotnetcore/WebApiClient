@@ -10,44 +10,38 @@ namespace WebApiClientCore.Serialization
     /// </summary>
     public class XmlSerializer : IXmlSerializer
     {
+        private static readonly XmlReaderSettings readerSettings = new XmlReaderSettings();
+        private static readonly XmlWriterSettings writerSettings = new XmlWriterSettings();
+
         /// <summary>
         /// 将对象序列化为xml文本
         /// </summary>
         /// <param name="obj">对象</param>
-        /// <param name="encoding">编码</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="InvalidOperationException"></exception>
+        /// <param name="options">配置选项</param> 
         /// <returns></returns>
-        public virtual string? Serialize(object? obj, Encoding encoding)
+        public string? Serialize(object? obj, XmlWriterSettings? options)
         {
-            if (encoding == null)
-            {
-                throw new ArgumentNullException(nameof(encoding));
-            }
-
             if (obj == null)
             {
                 return null;
             }
 
-            var stringWriter = new EncodingStringWriter(encoding);
+            var settings = options ?? writerSettings;
+            var writer = new EncodingWriter(settings.Encoding);
+            using var xmlWriter = XmlWriter.Create(writer, settings);
             var xmlSerializer = new System.Xml.Serialization.XmlSerializer(obj.GetType());
-            using (var xmlWriter = XmlWriter.Create(stringWriter))
-            {
-                xmlSerializer.Serialize(xmlWriter, obj);
-            }
-            return stringWriter.ToString();
+            xmlSerializer.Serialize(xmlWriter, obj);
+            return writer.ToString();
         }
 
         /// <summary>
-        /// 反序列化xml为对象
+        /// 将xml文本反序列化对象
         /// </summary>
-        /// <param name="xml">xml</param>
+        /// <param name="xml">xml文本内容</param>
         /// <param name="objType">对象类型</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="InvalidOperationException"></exception>
+        /// <param name="options">配置选项</param>
         /// <returns></returns>
-        public virtual object? Deserialize(string? xml, Type objType)
+        public object? Deserialize(string? xml, Type objType, XmlReaderSettings? options)
         {
             if (objType == null)
             {
@@ -59,15 +53,17 @@ namespace WebApiClientCore.Serialization
                 return objType.DefaultValue();
             }
 
-            var xmlSerializer = new System.Xml.Serialization.XmlSerializer(objType);
+            var settings = options ?? readerSettings;
             using var reader = new StringReader(xml);
-            return xmlSerializer.Deserialize(reader);
+            using var xmlReader = XmlReader.Create(reader, settings);
+            var xmlSerializer = new System.Xml.Serialization.XmlSerializer(objType);
+            return xmlSerializer.Deserialize(xmlReader);
         }
 
         /// <summary>
         /// 表示可指定编码文本写入器
         /// </summary>
-        private class EncodingStringWriter : StringWriter
+        private class EncodingWriter : StringWriter
         {
             /// <summary>
             /// 编码
@@ -77,16 +73,13 @@ namespace WebApiClientCore.Serialization
             /// <summary>
             /// 获取编码
             /// </summary>
-            public override Encoding Encoding
-            {
-                get => this.encoding;
-            }
+            public override Encoding Encoding => this.encoding;
 
             /// <summary>
             /// 可指定编码文本写入器
             /// </summary>
             /// <param name="encoding">编码</param>
-            public EncodingStringWriter(Encoding encoding)
+            public EncodingWriter(Encoding encoding)
             {
                 this.encoding = encoding;
             }

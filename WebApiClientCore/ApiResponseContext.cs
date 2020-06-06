@@ -86,9 +86,10 @@ namespace WebApiClientCore
                 return objType.DefaultValue();
             }
 
+            var options = this.HttpContext.HttpApiOptions.XmlDeserializeOptions;
             var serializer = this.HttpContext.ServiceProvider.GetXmlSerializer();
             var xml = await this.HttpContext.ResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return serializer.Deserialize(xml, objType);
+            return serializer.Deserialize(xml, objType, options);
         }
     }
 }
