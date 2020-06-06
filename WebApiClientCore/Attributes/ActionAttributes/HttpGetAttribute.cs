@@ -11,7 +11,7 @@ namespace WebApiClientCore.Attributes
         /// Get请求
         /// </summary>
         public HttpGetAttribute()
-            : base(HttpMethod.Get)
+           : this(path: null)
         {
         }
 

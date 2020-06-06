@@ -11,7 +11,7 @@ namespace WebApiClientCore.Attributes
         /// Post请求
         /// </summary>
         public HttpPostAttribute()
-            : base(HttpMethod.Post)
+          : this(path: null)
         {
         }
 

@@ -11,7 +11,7 @@ namespace WebApiClientCore.Attributes
         /// Put请求
         /// </summary>
         public HttpPutAttribute()
-            : base(HttpMethod.Put)
+           : this(path: null)
         {
         }
 

@@ -11,7 +11,7 @@ namespace WebApiClientCore.Attributes
         /// Head请求
         /// </summary>
         public HttpHeadAttribute()
-            : base(HttpMethod.Head)
+           : this(path: null)
         {
         }
 

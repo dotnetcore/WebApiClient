@@ -11,7 +11,7 @@ namespace WebApiClientCore.Attributes
         /// Delete请求
         /// </summary>
         public HttpDeleteAttribute()
-            : base(HttpMethod.Delete)
+            : this(path: null)
         {
         }
 

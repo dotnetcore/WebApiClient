@@ -11,7 +11,7 @@ namespace WebApiClientCore.Attributes
         /// Options请求
         /// </summary>
         public HttpOptionsAttribute()
-            : base(HttpMethod.Options)
+           : this(path: null)
         {
         }
 

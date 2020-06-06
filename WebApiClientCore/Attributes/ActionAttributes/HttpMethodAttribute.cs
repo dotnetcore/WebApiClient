@@ -10,7 +10,7 @@ namespace WebApiClientCore.Attributes
     /// 表示http请求方法描述特性
     /// </summary>
     [DebuggerDisplay("Method = {Method}")]
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]   
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class HttpMethodAttribute : ApiActionAttribute
     {
         /// <summary>
@@ -28,7 +28,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="method">请求方法</param>
         public HttpMethodAttribute(string method)
-            : this(new HttpMethod(method))
+            : this(method, path: null)
         {
         }
 
@@ -39,15 +39,6 @@ namespace WebApiClientCore.Attributes
         /// <param name="path">请求绝对或相对路径</param>
         public HttpMethodAttribute(string method, string? path)
             : this(new HttpMethod(method), path)
-        {
-        }
-
-        /// <summary>
-        /// http请求方法描述特性
-        /// </summary>
-        /// <param name="method">请求方法</param>
-        protected HttpMethodAttribute(HttpMethod method)
-            : this(method, null)
         {
         }
 

@@ -11,7 +11,7 @@ namespace WebApiClientCore.Attributes
         /// Patch请求
         /// </summary>
         public HttpPatchAttribute()
-            : base(HttpMethod.Patch)
+            : this(path: null)
         {
         }
 
