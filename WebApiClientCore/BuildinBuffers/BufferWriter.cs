@@ -110,6 +110,15 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取已数入的数据
         /// </summary>
+        /// <returns></returns>
+        public ArraySegment<T> GetWrittenSegment()
+        {
+            return new ArraySegment<T>(this.byteArrayOwner.Array, 0, this.WrittenCount);
+        }
+
+        /// <summary>
+        /// 获取已数入的数据
+        /// </summary>
         public ReadOnlySpan<T> GetWrittenSpan()
         {
             return this.byteArrayOwner.Array.AsSpan(0, this.WrittenCount);

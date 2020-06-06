@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClientCore.HttpContents;
@@ -42,10 +41,16 @@ namespace WebApiClientCore.Attributes
             }
             else
             {
-                var utf8Json = context.SerializeToJson();
-                var jsonText = Encoding.UTF8.GetString(utf8Json) ?? string.Empty;
-                var jsonContent = new StringContent(jsonText, this.encoding, JsonContent.MediaType);
+                var jsonContent = new JsonContent();
+                jsonContent.Headers.ContentType.CharSet = this.encoding.WebName;
                 context.HttpContext.RequestMessage.Content = jsonContent;
+
+                using var bufferWriter = new BufferWriter<byte>();
+                context.SerializeToJson(bufferWriter);
+                var utf8Buffer = bufferWriter.GetWrittenSegment();
+
+                var dstBuffer = Encoding.Convert(Encoding.UTF8, this.encoding, utf8Buffer.Array, utf8Buffer.Offset, utf8Buffer.Count);
+                jsonContent.Write(dstBuffer);
             }
 
             return Task.CompletedTask;

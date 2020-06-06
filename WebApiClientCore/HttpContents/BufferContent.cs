@@ -27,9 +27,9 @@ namespace WebApiClientCore.HttpContents
         }
 
         /// <summary>
-        /// 设置向前推进
+        /// 设置向前推进实际写入的数据长度
         /// </summary>
-        /// <param name="count"></param>
+        /// <param name="count">数据长度</param>
         public void Advance(int count)
         {
             this.bufferWriter.Advance(count);
@@ -38,7 +38,7 @@ namespace WebApiClientCore.HttpContents
         /// <summary>
         /// 返回用于写入数据的Memory
         /// </summary>
-        /// <param name="sizeHint"></param>
+        /// <param name="sizeHint">预计数据大小</param>
         /// <returns></returns>
         public Memory<byte> GetMemory(int sizeHint)
         {
@@ -48,11 +48,29 @@ namespace WebApiClientCore.HttpContents
         /// <summary>
         /// 返回用于写入数据的Span
         /// </summary>
-        /// <param name="sizeHint"></param>
+        /// <param name="sizeHint">预计数据大小</param>
         /// <returns></returns>
         public Span<byte> GetSpan(int sizeHint)
         {
             return this.bufferWriter.GetSpan(sizeHint);
+        }
+
+        /// <summary>
+        /// 写入数据
+        /// </summary>
+        /// <param name="buffer">数据</param>
+        public void Write(byte buffer)
+        {
+            this.bufferWriter.Write(buffer);
+        }
+
+        /// <summary>
+        /// 写入数据
+        /// </summary>
+        /// <param name="buffer">数据</param>
+        public void Write(Span<byte> buffer)
+        {
+            this.bufferWriter.Write(buffer);
         }
 
         /// <summary>

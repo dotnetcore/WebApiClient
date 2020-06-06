@@ -32,17 +32,11 @@ namespace WebApiClientCore
             public T[] Array { get; }
 
             /// <summary>
-            /// 获取数组的有效长度
-            /// </summary>
-            public int Count { get; }
-
-            /// <summary>
             /// 数组持有者
             /// </summary>
             /// <param name="minLength"></param> 
             public ArrayOwner(int minLength)
             {
-                this.Count = minLength;
                 this.Array = ArrayPool<T>.Shared.Rent(minLength);
             }
 
