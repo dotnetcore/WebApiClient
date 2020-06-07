@@ -24,7 +24,7 @@ namespace WebApiClientCore.Benchmarks.Requests
             var id = "id";
             var request = new HttpRequestMessage(HttpMethod.Get, $"http://webapiclient.com/{id}");
             var response = await httpClient.SendAsync(request);
-            var json = await response.Content.ReadAsByteArrayAsync();
+            var json = await response.Content.ReadAsUtf8ByteArrayAsync();
             return JsonSerializer.Deserialize<Model>(json);
         }
 

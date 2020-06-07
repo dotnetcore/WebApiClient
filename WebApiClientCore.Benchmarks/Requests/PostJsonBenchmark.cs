@@ -29,7 +29,7 @@ namespace WebApiClientCore.Benchmarks.Requests
             };
 
             var response = await httpClient.SendAsync(request);
-            json = await response.Content.ReadAsByteArrayAsync();
+            json = await response.Content.ReadAsUtf8ByteArrayAsync();
             return JsonSerializer.Deserialize<Model>(json);
         }
 

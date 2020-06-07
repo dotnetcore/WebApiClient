@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace WebApiClientCore
@@ -71,9 +72,9 @@ namespace WebApiClientCore
             }
 
             var serializer = this.HttpContext.ServiceProvider.GetJsonSerializer();
-            var json = await this.HttpContext.ResponseMessage.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+            var utf8Json = await this.HttpContext.ResponseMessage.Content.ReadAsUtf8ByteArrayAsync().ConfigureAwait(false);
             var options = this.HttpContext.HttpApiOptions.JsonDeserializeOptions;
-            return serializer.Deserialize(json, objType, options);
+            return serializer.Deserialize(utf8Json, objType, options);
         }
 
         /// <summary>

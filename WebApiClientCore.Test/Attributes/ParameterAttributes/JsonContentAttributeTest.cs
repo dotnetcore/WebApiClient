@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -24,10 +23,10 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
             context.HttpContext.RequestMessage.RequestUri = new Uri("http://www.webapi.com/");
             context.HttpContext.RequestMessage.Method = HttpMethod.Post;
 
-            var attr = new JsonContentAttribute();
+            var attr = new JsonContentAttribute() { CharSet = "utf-16" };
             await attr.OnRequestAsync(new ApiParameterContext(context, 0));
 
-            var body = await context.HttpContext.RequestMessage.Content.ReadAsByteArrayAsync();
+            var body = await context.HttpContext.RequestMessage.Content.ReadAsUtf8ByteArrayAsync();
 
             var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
             using var buffer = new BufferWriter<byte>();
