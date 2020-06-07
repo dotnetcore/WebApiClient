@@ -39,7 +39,8 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 验证响应的ContentType与Accept-ContentType是否匹配
+        /// 指示响应的ContentType与Accept-ContentType是否匹配
+        /// 返回false则调用下一个ApiReturnAttribute来处理响应结果
         /// </summary>
         /// <param name="responseContentType"></param>
         /// <returns></returns>
