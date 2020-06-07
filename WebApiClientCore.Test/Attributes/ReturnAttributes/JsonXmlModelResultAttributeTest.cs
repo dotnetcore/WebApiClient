@@ -60,6 +60,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
             var responseContext = new ApiResponseContext(context);
 
             context.HttpContext.RequestMessage.Method = HttpMethod.Post;
+            context.HttpContext.ResponseMessage.Content = new JsonContent();
             context.HttpContext.ResponseMessage.StatusCode = System.Net.HttpStatusCode.InternalServerError;
 
             await Assert.ThrowsAsync<ApiResponseStatusException>(async () =>
