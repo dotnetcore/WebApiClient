@@ -16,10 +16,11 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/dotnetcore/WebApiClient</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/dotnetcore/WebApiClient/master/icon.png</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
 
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Sign.snk</AssemblyOriginatorKeyFile>
+
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,6 +33,10 @@
 
   <!--nuget analyzers和tools目录-->
   <ItemGroup>
+    <None Include="..\icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
     <None Include="NugetPackage\tools\*.*" PackagePath="tools" Pack="true" />
     <None Include="NugetPackage\analyzers\dotnet\cs\**" PackagePath="analyzers\dotnet\cs" Pack="true" />
   </ItemGroup>

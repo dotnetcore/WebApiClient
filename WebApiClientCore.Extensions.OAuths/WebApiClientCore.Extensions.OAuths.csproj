@@ -19,7 +19,7 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/dotnetcore/WebApiClient</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/dotnetcore/WebApiClient/master/icon.png</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon> 
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,5 +27,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="..\icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 </Project>
