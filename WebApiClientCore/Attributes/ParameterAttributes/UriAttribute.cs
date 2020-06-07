@@ -19,8 +19,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public override Task OnRequestAsync(ApiParameterContext context)
         {
-            var uriString = context.ParameterValue?.ToString();
-            if (uriString == null)
+            if (context.ParameterValue == null)
             {
                 throw new ArgumentNullException(context.Parameter.Name);
             }
@@ -30,10 +29,14 @@ namespace WebApiClientCore.Attributes
                 throw new ApiInvalidConfigException(Resx.invalid_UriAttribute);
             }
 
-            var relative = new Uri(uriString, UriKind.RelativeOrAbsolute);
-            if (relative.IsAbsoluteUri == true)
+            if (!(context.ParameterValue is Uri uri))
             {
-                context.HttpContext.RequestMessage.RequestUri = relative;
+                uri = new Uri(context.ParameterValue.ToString(), UriKind.RelativeOrAbsolute);
+            }
+
+            if (uri.IsAbsoluteUri == true)
+            {
+                context.HttpContext.RequestMessage.RequestUri = uri;
             }
             else
             {
@@ -42,7 +45,7 @@ namespace WebApiClientCore.Attributes
                 {
                     throw new ApiInvalidConfigException(Resx.required_HttpHost);
                 }
-                context.HttpContext.RequestMessage.RequestUri = new Uri(baseUri, relative);
+                context.HttpContext.RequestMessage.RequestUri = new Uri(baseUri, uri);
             }
             return Task.CompletedTask;
         }
