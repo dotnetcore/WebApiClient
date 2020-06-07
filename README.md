@@ -293,14 +293,18 @@ services
 * Pipes // 竖线分隔
 * Multi // 多个同名键的键值对
 
-对于 id = new string []{"001","002"} 这样的值，处理后分别是
-* id=001,002
-* id=001 002
-* id=001\002
-* id=001|002
-* id=001&id=002
+对于 id = new string []{"001","002"} 这样的值，在PathQueryAttribute与FormContentAttribute处理后分别是：
 
-默认的，PathQuryAttribute与FormContentAttribute使用了Multi处理方式，可以设置其CollectionFormat属性为其它值，比如：`[FormContent(CollectionFormat = CollectionFormat.Csv)]`
+CollectionFormat | Data
+---|---
+[PathQuery(CollectionFormat = CollectionFormat.Csv)] | id=001,002
+[PathQuery(CollectionFormat = CollectionFormat.Ssv)] | id=001 002
+[PathQuery(CollectionFormat = CollectionFormat.Tsv)] | id=001\002
+[PathQuery(CollectionFormat = CollectionFormat.Pipes)] | id=001|002
+[PathQuery(CollectionFormat = CollectionFormat.Multi)] | id=001&id=002
+ 
+
+
 
 ### CancellationToken参数
 每个接口都支持声明一个CancellationToken类型的参数，用于支持取消请求操作。CancellationToken.None表示永不取消，创建一个CancellationTokenSource，可以提供一个CancellationToken。
@@ -309,6 +313,18 @@ services
 [HttpGet("api/users/{id}")]
 ITask<User> GetAsync([Required]string id, CancellationToken token = default);
 ```
+
+### ContentType CharSet
+对于非表单的body内容，默认或缺省时的charset值，对应的是UTF8编码，可以根据服务器要求调整编码。
+
+
+Attribute | ContentType
+---|---
+[JsonContent] | Content-Type: application/json; charset=utf-8
+[JsonContent(CharSet ="utf-8")] | Content-Type: application/json; charset=utf-8
+[JsonContent(CharSet ="unicode")] | Content-Type: application/json; charset=utf-16
+
+
 
 ### Accpet ContentType
 这个用于控制客户端希望服务器返回什么样的内容格式，比如json或xml。
@@ -719,7 +735,7 @@ public interface IJsonResponseApi : IHttpApi
 {
 }
 ```
-#### 类签名参数或token参数
+#### 类签名参数或apikey参数
 例如每个请求的url额外的动态添加一个叫sign的参数，这个sign可能和请求参数值有关联，每次都需要计算。
 
 我们可以自定义ApiFilterAttribute来实现自己的sign功能，然后把自定义Filter声明到Interface或Method即可
