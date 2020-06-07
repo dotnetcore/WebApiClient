@@ -25,11 +25,10 @@ namespace WebApiClientCore.Attributes
         {
             foreach (var item in context.SerializeToKeyValues())
             {
-                var value = item.Value;
-                if (string.IsNullOrEmpty(value) == false)
+                if (string.IsNullOrEmpty(item.Value) == false)
                 {
                     var name = this.UnderlineToMinus ? item.Key.Replace("_", "-") : item.Key;
-                    context.HttpContext.RequestMessage.Headers.TryAddWithoutValidation(name, value);
+                    context.HttpContext.RequestMessage.Headers.TryAddWithoutValidation(name, item.Value);
                 }
             }
             return Task.CompletedTask;

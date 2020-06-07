@@ -17,28 +17,15 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static IEnumerable<KeyValue> CollectAs(this IEnumerable<KeyValue> collection, CollectionFormat format)
         {
-            if (format == CollectionFormat.Multi)
+            return format switch
             {
-                return collection;
-            }
-
-            switch (format)
-            {
-                case CollectionFormat.Csv:
-                    return collection.CollectAs(@",");
-
-                case CollectionFormat.Ssv:
-                    return collection.CollectAs(@" ");
-
-                case CollectionFormat.Tsv:
-                    return collection.CollectAs(@"\");
-
-                case CollectionFormat.Pipes:
-                    return collection.CollectAs(@"|");
-
-                default:
-                    throw new NotImplementedException(format.ToString());
-            }
+                CollectionFormat.Multi => collection,
+                CollectionFormat.Csv => collection.CollectAs(@","),
+                CollectionFormat.Ssv => collection.CollectAs(@" "),
+                CollectionFormat.Tsv => collection.CollectAs(@"\"),
+                CollectionFormat.Pipes => collection.CollectAs(@"|"),
+                _ => throw new NotImplementedException(format.ToString()),
+            };
         }
 
         /// <summary>

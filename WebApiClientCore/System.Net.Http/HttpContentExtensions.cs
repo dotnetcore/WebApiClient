@@ -12,6 +12,7 @@ namespace System.Net.Http
         /// 读取为二进制数组并转换为utf8编码
         /// </summary>
         /// <param name="httpContent"></param>
+        /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
         public static Task<byte[]> ReadAsUtf8ByteArrayAsync(this HttpContent httpContent)
         {
@@ -23,12 +24,13 @@ namespace System.Net.Http
         /// </summary>
         /// <param name="httpContent"></param>
         /// <param name="dstEncoding">目标编码</param>
+        /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
         public static async Task<byte[]> ReadAsByteArrayAsync(this HttpContent httpContent, Encoding dstEncoding)
         {
             var byteArray = await httpContent.ReadAsByteArrayAsync().ConfigureAwait(false);
             var charSet = httpContent.Headers.ContentType?.CharSet;
-            var encoding = charSet == null ? Encoding.UTF8 : Encoding.GetEncoding(charSet);
+            var encoding = string.IsNullOrEmpty(charSet) ? Encoding.UTF8 : Encoding.GetEncoding(charSet);
 
             return encoding.Equals(dstEncoding)
                 ? byteArray
