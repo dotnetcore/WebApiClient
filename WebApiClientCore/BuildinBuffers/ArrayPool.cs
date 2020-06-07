@@ -1,5 +1,4 @@
 ﻿using System.Buffers;
-using System.Diagnostics;
 
 namespace WebApiClientCore
 {
@@ -23,7 +22,6 @@ namespace WebApiClientCore
         /// 表示数组持有者
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        [DebuggerDisplay("Count = {Count}")]
         private sealed class ArrayOwner<T> : Disposable, IArrayOwner<T>
         {
             /// <summary>
