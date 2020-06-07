@@ -297,11 +297,11 @@ services
 
 CollectionFormat | Data
 ---|---
-[PathQuery(CollectionFormat = CollectionFormat.Csv)] | id=001,002
-[PathQuery(CollectionFormat = CollectionFormat.Ssv)] | id=001 002
-[PathQuery(CollectionFormat = CollectionFormat.Tsv)] | id=001\002
-[PathQuery(CollectionFormat = CollectionFormat.Pipes)] | id=001|002
-[PathQuery(CollectionFormat = CollectionFormat.Multi)] | id=001&id=002
+[PathQuery(CollectionFormat = CollectionFormat.Csv)] | `id=001,002`
+[PathQuery(CollectionFormat = CollectionFormat.Ssv)] | `id=001 002`
+[PathQuery(CollectionFormat = CollectionFormat.Tsv)] | `id=001\002`
+[PathQuery(CollectionFormat = CollectionFormat.Pipes)] | `id=001|002`
+[PathQuery(CollectionFormat = CollectionFormat.Multi)] | `id=001&id=002`
  
 
 
