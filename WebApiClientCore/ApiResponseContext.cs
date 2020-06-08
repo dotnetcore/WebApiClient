@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace WebApiClientCore
@@ -71,10 +72,27 @@ namespace WebApiClientCore
                 return objType.DefaultValue();
             }
 
-            var serializer = this.HttpContext.ServiceProvider.GetJsonSerializer();
-            var utf8Json = await this.HttpContext.ResponseMessage.Content.ReadAsUtf8ByteArrayAsync().ConfigureAwait(false);
+            var content = this.HttpContext.ResponseMessage.Content;
+            if (content == null)
+            {
+                return objType.DefaultValue();
+            }
+
+            var encoding = content.GetEncoding();
             var options = this.HttpContext.HttpApiOptions.JsonDeserializeOptions;
-            return serializer.Deserialize(utf8Json, objType, options);
+            var serializer = this.HttpContext.ServiceProvider.GetJsonSerializer();
+
+            if (Encoding.UTF8.Equals(encoding) == true)
+            {
+                var utf8Json = await content.ReadAsStreamAsync().ConfigureAwait(false);
+                return await serializer.DeserializeAsync(utf8Json, objType, options).ConfigureAwait(false);
+            }
+            else
+            {
+                var byteArray = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                var utf8Json = Encoding.Convert(encoding, Encoding.UTF8, byteArray);
+                return serializer.Deserialize(utf8Json, objType, options);
+            }
         }
 
         /// <summary>

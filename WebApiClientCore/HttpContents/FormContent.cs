@@ -151,10 +151,10 @@ namespace WebApiClientCore.HttpContents
         /// <param name="stream">目标流</param>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        protected override async Task SerializeToStreamAsync(Stream stream, TransportContext context)
+        protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
             var memory = this.bufferWriter.GetWrittenMemory();
-            await stream.WriteAsync(memory).ConfigureAwait(false);
+            return stream.WriteAsync(memory).AsTask();
         }
 
         /// <summary>

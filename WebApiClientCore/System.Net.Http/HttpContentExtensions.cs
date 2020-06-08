@@ -28,13 +28,23 @@ namespace System.Net.Http
         /// <returns></returns>
         public static async Task<byte[]> ReadAsByteArrayAsync(this HttpContent httpContent, Encoding dstEncoding)
         {
+            var encoding = httpContent.GetEncoding();
             var byteArray = await httpContent.ReadAsByteArrayAsync().ConfigureAwait(false);
-            var charSet = httpContent.Headers.ContentType?.CharSet;
-            var encoding = string.IsNullOrEmpty(charSet) ? Encoding.UTF8 : Encoding.GetEncoding(charSet);
 
             return encoding.Equals(dstEncoding)
                 ? byteArray
                 : Encoding.Convert(encoding, dstEncoding, byteArray);
+        }
+
+        /// <summary>
+        /// 获取编码信息
+        /// </summary>
+        /// <param name="httpContent"></param>
+        /// <returns></returns>
+        public static Encoding GetEncoding(this HttpContent httpContent)
+        {
+            var charSet = httpContent.Headers.ContentType?.CharSet;
+            return string.IsNullOrEmpty(charSet) ? Encoding.UTF8 : Encoding.GetEncoding(charSet);
         }
     }
 }

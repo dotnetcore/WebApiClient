@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Buffers;
+using System.IO;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace WebApiClientCore.Serialization
 {
@@ -25,5 +27,14 @@ namespace WebApiClientCore.Serialization
         /// <param name="options">选项</param>
         /// <returns></returns>
         object? Deserialize(Span<byte> utf8Json, Type objType, JsonSerializerOptions? options);
+
+        /// <summary>
+        /// 将utf8编码的Json流反序列化对象
+        /// </summary>
+        /// <param name="utf8Json">utf8编码的Json流</param>
+        /// <param name="objType">对象类型</param>
+        /// <param name="options">选项</param>
+        /// <returns></returns>
+        Task<object> DeserializeAsync(Stream utf8Json, Type objType, JsonSerializerOptions? options);
     }
 }
