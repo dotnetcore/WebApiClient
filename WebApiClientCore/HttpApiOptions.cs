@@ -11,6 +11,12 @@ namespace WebApiClientCore
     /// </summary>
     public class HttpApiOptions
     {
+        private JsonSerializerOptions? jsonSerializeOptions;
+        private JsonSerializerOptions? jsonDeserializeOptions;
+        private XmlWriterSettings? xmlSerializeOptions;
+        private XmlReaderSettings? xmlDeserializeOptions;
+        private KeyValueSerializerOptions? keyValueSerializeOptions;
+
         /// <summary>
         /// 获取或设置Http服务完整主机域名
         /// 例如http://www.abc.com/或http://www.abc.com/path/
@@ -31,55 +37,91 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取json序列化选项
         /// </summary>
-        public JsonSerializerOptions JsonSerializeOptions { get; } = new JsonSerializerOptions();
+        public JsonSerializerOptions JsonSerializeOptions
+        {
+            get
+            {
+                if (this.jsonSerializeOptions == null)
+                {
+                    this.jsonSerializeOptions = CreateDefaultJsonOptions();
+                }
+                return this.jsonSerializeOptions;
+            }
+        }
 
         /// <summary>
         /// 获取json反序列化选项
         /// </summary>
-        public JsonSerializerOptions JsonDeserializeOptions { get; } = new JsonSerializerOptions();
+        public JsonSerializerOptions JsonDeserializeOptions
+        {
+            get
+            {
+                if (this.jsonDeserializeOptions == null)
+                {
+                    this.jsonDeserializeOptions = CreateDefaultJsonOptions();
+                }
+                return this.jsonDeserializeOptions;
+            }
+        }
 
         /// <summary>
         /// xml序列化选项
         /// </summary>
-        public XmlWriterSettings XmlSerializeOptions { get; } = new XmlWriterSettings();
+        public XmlWriterSettings XmlSerializeOptions
+        {
+            get
+            {
+                if (this.xmlSerializeOptions == null)
+                {
+                    this.xmlSerializeOptions = new XmlWriterSettings();
+                }
+                return this.xmlSerializeOptions;
+            }
+        }
 
         /// <summary>
         /// xml反序列化选项
         /// </summary>
-        public XmlReaderSettings XmlDeserializeOptions { get; } = new XmlReaderSettings();
+        public XmlReaderSettings XmlDeserializeOptions
+        {
+            get
+            {
+                if (this.xmlDeserializeOptions == null)
+                {
+                    this.xmlDeserializeOptions = new XmlReaderSettings();
+                }
+                return this.xmlDeserializeOptions;
+            }
+        }
 
         /// <summary>
         /// 获取keyValue序列化选项
         /// </summary>
-        public KeyValueSerializerOptions KeyValueSerializeOptions { get; } = new KeyValueSerializerOptions();
-
-        /// <summary>
-        /// HttpApi选项
-        /// </summary>
-        public HttpApiOptions()
+        public KeyValueSerializerOptions KeyValueSerializeOptions
         {
-            ConfigureJsonDefault(this.JsonSerializeOptions);
-            ConfigureJsonDefault(this.JsonDeserializeOptions);
+            get
+            {
+                if (this.keyValueSerializeOptions == null)
+                {
+                    this.keyValueSerializeOptions = new KeyValueSerializerOptions();
+                }
+                return this.keyValueSerializeOptions;
+            }
         }
 
-        /// <summary>
-        /// 配置默认值
-        /// </summary>
-        /// <param name="options"></param> 
-        private static void ConfigureJsonDefault(JsonSerializerOptions options)
-        {
-            options.PropertyNameCaseInsensitive = true;
-            options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-            options.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
-            options.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
-        }
-    }
 
-    /// <summary>
-    /// 表示HttpApi选项
-    /// </summary>
-    /// <typeparam name="THttpApi"></typeparam>
-    public class HttpApiOptions<THttpApi> : HttpApiOptions
-    {
+        /// <summary>
+        /// 创建默认JsonSerializerOptions
+        /// </summary> 
+        private static JsonSerializerOptions CreateDefaultJsonOptions()
+        {
+            return new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            };
+        }
     }
 }
