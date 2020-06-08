@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace WebApiClientCore
 {
@@ -7,6 +8,11 @@ namespace WebApiClientCore
     /// </summary>
     public interface IApiReturnAttribute : IAttributeMultiplable, IAttributeEnable
     {
+        /// <summary>
+        /// 获取期望的媒体类型
+        /// </summary>
+        MediaTypeWithQualityHeaderValue? AcceptContentType { get; }
+
         /// <summary>
         /// 请求前
         /// </summary>

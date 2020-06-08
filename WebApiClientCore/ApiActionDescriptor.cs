@@ -93,13 +93,13 @@ namespace WebApiClientCore
             var actionAttributes = methodAttributes
                 .Concat(interfaceAttributes)
                 .Concat(decalringAttributes)
-                .Distinct(new MultiplableComparer<IApiActionAttribute>())
+                .Distinct(MultiplableComparer<IApiActionAttribute>.Default)
                 .OrderBy(item => item.OrderIndex)
                 .ToReadOnlyList();
 
             var filterAttributes = method
                 .GetAttributes<IApiFilterAttribute>(true)
-                .Distinct(new MultiplableComparer<IApiFilterAttribute>())
+                .Distinct(MultiplableComparer<IApiFilterAttribute>.Default)
                 .OrderBy(item => item.OrderIndex)
                 .Where(item => item.Enable)
                 .ToReadOnlyList();

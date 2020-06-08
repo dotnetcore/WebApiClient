@@ -16,7 +16,7 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 获取接受的媒体类型
         /// </summary>
-        protected MediaTypeWithQualityHeaderValue? AcceptContentType { get; }
+        public MediaTypeWithQualityHeaderValue? AcceptContentType { get; }
 
         /// <summary>
         /// 获取执行排序索引
@@ -99,7 +99,7 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 指示响应的ContentType与Accept-ContentType是否匹配
+        /// 指示响应的ContentType与AcceptContentType是否匹配
         /// 返回false则调用下一个ApiReturnAttribute来处理响应结果
         /// </summary>
         /// <param name="responseContentType">响应的ContentType</param>

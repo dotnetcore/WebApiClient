@@ -5,8 +5,13 @@ namespace WebApiClientCore
     /// <summary>
     /// 是否允许重复的特性比较器
     /// </summary>
-    class MultiplableComparer<TAttributeMultiplable> : IEqualityComparer<TAttributeMultiplable> where TAttributeMultiplable : IAttributeMultiplable
+    sealed class MultiplableComparer<TAttributeMultiplable> : IEqualityComparer<TAttributeMultiplable> where TAttributeMultiplable : IAttributeMultiplable
     {
+        /// <summary>
+        /// 获取默认实例
+        /// </summary>
+        public static MultiplableComparer<TAttributeMultiplable> Default { get; } = new MultiplableComparer<TAttributeMultiplable>();
+
         /// <summary>
         /// 是否相等
         /// </summary>
