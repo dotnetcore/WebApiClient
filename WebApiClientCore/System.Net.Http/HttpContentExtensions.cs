@@ -44,7 +44,11 @@ namespace System.Net.Http
         public static Encoding GetEncoding(this HttpContent httpContent)
         {
             var charSet = httpContent.Headers.ContentType?.CharSet;
-            return string.IsNullOrEmpty(charSet) ? Encoding.UTF8 : Encoding.GetEncoding(charSet);
+            if (string.IsNullOrEmpty(charSet) || charSet == Encoding.UTF8.WebName)
+            {
+                return Encoding.UTF8;
+            }
+            return Encoding.GetEncoding(charSet);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Text;
@@ -11,7 +12,10 @@ namespace WebApiClientCore
     /// </summary>
     public class ApiResponseContext : ApiRequestContext
     {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private object? result;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Exception? exception;
 
         /// <summary>

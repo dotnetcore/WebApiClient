@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Xml;
@@ -11,10 +12,19 @@ namespace WebApiClientCore
     /// </summary>
     public class HttpApiOptions
     {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private JsonSerializerOptions? jsonSerializeOptions;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private JsonSerializerOptions? jsonDeserializeOptions;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private XmlWriterSettings? xmlSerializeOptions;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private XmlReaderSettings? xmlDeserializeOptions;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private KeyValueSerializerOptions? keyValueSerializeOptions;
 
         /// <summary>
