@@ -56,16 +56,14 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
                 if (this.token == null)
                 {
                     using var scope = this.services.CreateScope();
-                    var oAuthClient = scope.ServiceProvider.GetRequiredService<IOAuthClient>();
-                    this.token = await this.RequestTokenAsync(oAuthClient).ConfigureAwait(false);
+                    this.token = await this.RequestTokenAsync(scope.ServiceProvider).ConfigureAwait(false);
                 }
                 else if (this.token.IsExpired() == true)
                 {
                     using var scope = this.services.CreateScope();
-                    var oAuthClient = scope.ServiceProvider.GetRequiredService<IOAuthClient>();
-                    this.token = this.token.CanRefresh() == false ?
-                        await this.RequestTokenAsync(oAuthClient).ConfigureAwait(false) :
-                        await this.RefreshTokenAsync(oAuthClient, this.token.Refresh_token).ConfigureAwait(false);
+                    this.token = this.token.CanRefresh() == false
+                        ? await this.RequestTokenAsync(scope.ServiceProvider).ConfigureAwait(false)
+                        : await this.RefreshTokenAsync(scope.ServiceProvider, this.token.Refresh_token).ConfigureAwait(false);
                 }
 
                 if (this.token == null)
@@ -80,17 +78,17 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <summary>
         /// 请求获取token
         /// </summary> 
-        /// <param name="oAuthClient">Token客户端</param>
+        /// <param name="serviceProvider">服务提供者</param>
         /// <returns></returns>
-        protected abstract Task<TokenResult?> RequestTokenAsync(IOAuthClient oAuthClient);
+        protected abstract Task<TokenResult?> RequestTokenAsync(IServiceProvider serviceProvider);
 
         /// <summary>
         /// 刷新token
         /// </summary> 
-        /// <param name="oAuthClient">Token客户端</param>
+        /// <param name="serviceProvider">服务提供者</param>
         /// <param name="refresh_token">刷新token</param>
         /// <returns></returns>
-        protected abstract Task<TokenResult?> RefreshTokenAsync(IOAuthClient oAuthClient, string? refresh_token);
+        protected abstract Task<TokenResult?> RefreshTokenAsync(IServiceProvider serviceProvider, string? refresh_token);
 
         /// <summary>
         /// 释放资源

@@ -18,37 +18,35 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services)
         {
-            return services.AddClientCredentialsTokenProvider<THttpApi>(o => { });
-        }
-
-        /// <summary>
-        /// 添加接口的Client身份读取token提供者
-        /// </summary>
-        /// <typeparam name="THttpApi"></typeparam>
-        /// <param name="services"></param>
-        /// <param name="configureOptions"></param>
-        /// <returns></returns>
-        public static IServiceCollection AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services, Action<ClientCredentialsOptions<THttpApi>> configureOptions)
-        {
-            return services.AddClientCredentialsTokenProvider<THttpApi>((o, s) => configureOptions(o));
-        }
-
-        /// <summary>
-        /// 添加接口的Client身份读取token提供者
-        /// </summary>
-        /// <typeparam name="THttpApi"></typeparam>
-        /// <param name="services"></param>
-        /// <param name="configureOptions"></param>
-        /// <returns></returns>
-        public static IServiceCollection AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services, Action<ClientCredentialsOptions<THttpApi>, IServiceProvider> configureOptions)
-        {
-            services.AddHttpApi<IOAuthClient>(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
-            services.AddOptions<ClientCredentialsOptions<THttpApi>>().Configure(configureOptions);
             services.TryAddSingleton<IClientCredentialsTokenProvider<THttpApi>, ClientCredentialsTokenProvider<THttpApi>>();
-            services.AddSingleton(typeof(ITokenProvider), typeof(ClientCredentialsTokenProvider<>).MakeGenericType(typeof(THttpApi)));
-            return services;
+            return services.AddTokenProvider();
         }
 
+        /// <summary>
+        /// 添加接口的Client身份读取token提供者
+        /// </summary>
+        /// <typeparam name="THttpApi"></typeparam>
+        /// <param name="services"></param>
+        /// <param name="configureOptions"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services, Action<ClientCredentialsOptions> configureOptions)
+        {
+            services.AddOptions<ClientCredentialsOptions>(typeof(THttpApi).FullName).Configure(configureOptions);
+            return services.AddClientCredentialsTokenProvider<THttpApi>();
+        }
+
+        /// <summary>
+        /// 添加接口的Client身份读取token提供者
+        /// </summary>
+        /// <typeparam name="THttpApi"></typeparam>
+        /// <param name="services"></param>
+        /// <param name="configureOptions"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services, Action<ClientCredentialsOptions, IServiceProvider> configureOptions)
+        {
+            services.AddOptions<ClientCredentialsOptions>(typeof(THttpApi).FullName).Configure(configureOptions);
+            return services.AddClientCredentialsTokenProvider<THttpApi>();
+        }
 
         /// <summary>
         /// 添加接口的Password身份读取token提供者
@@ -58,7 +56,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddPasswordCredentialsTokenProvider<THttpApi>(this IServiceCollection services)
         {
-            return services.AddPasswordCredentialsTokenProvider<THttpApi>(o => { });
+            services.TryAddSingleton<IClientCredentialsTokenProvider<THttpApi>, ClientCredentialsTokenProvider<THttpApi>>();
+            return services.AddTokenProvider();
         }
 
         /// <summary>
@@ -68,9 +67,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="configureOptions"></param>
         /// <returns></returns>
-        public static IServiceCollection AddPasswordCredentialsTokenProvider<THttpApi>(this IServiceCollection services, Action<PasswordCredentialsOptions<THttpApi>> configureOptions)
+        public static IServiceCollection AddPasswordCredentialsTokenProvider<THttpApi>(this IServiceCollection services, Action<PasswordCredentialsOptions> configureOptions)
         {
-            return services.AddPasswordCredentialsTokenProvider<THttpApi>((o, s) => configureOptions(o));
+            services.AddOptions<PasswordCredentialsOptions>(typeof(THttpApi).FullName).Configure(configureOptions);
+            return services.AddPasswordCredentialsTokenProvider<THttpApi>();
         }
 
         /// <summary>
@@ -80,12 +80,21 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="configureOptions"></param>
         /// <returns></returns>
-        public static IServiceCollection AddPasswordCredentialsTokenProvider<THttpApi>(this IServiceCollection services, Action<PasswordCredentialsOptions<THttpApi>, IServiceProvider> configureOptions)
+        public static IServiceCollection AddPasswordCredentialsTokenProvider<THttpApi>(this IServiceCollection services, Action<PasswordCredentialsOptions, IServiceProvider> configureOptions)
         {
+            services.AddOptions<PasswordCredentialsOptions>(typeof(THttpApi).FullName).Configure(configureOptions);
+            return services.AddPasswordCredentialsTokenProvider<THttpApi>();
+        }
+
+        /// <summary>
+        /// 添加TokenProvider依赖项
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddTokenProvider(this IServiceCollection services)
+        {
+            services.AddOptions();
             services.AddHttpApi<IOAuthClient>(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
-            services.AddOptions<PasswordCredentialsOptions<THttpApi>>().Configure(configureOptions);
-            services.TryAddSingleton<IPasswordCredentialsTokenProvider<THttpApi>, PasswordCredentialsTokenProvider<THttpApi>>();
-            services.AddSingleton(typeof(ITokenProvider), typeof(PasswordCredentialsTokenProvider<>).MakeGenericType(typeof(THttpApi)));
             return services;
         }
     }
