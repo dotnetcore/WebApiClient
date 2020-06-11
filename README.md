@@ -667,33 +667,21 @@ class Model
     public string Field2 {get; set;}
 }
 
-```
-我们在构建这个Model的实例时，不得不使用json序列化将field2的实例得到json文本，然后赋值给field2这个string属性，工作量大而且没有约束性。
-
-依托于`JsonString<>`这个类型，现在只要我们把Field2结构声明为强类型模型，然后包装为`JsonString<>`类型，最后为HttpApiOptions添加JsonStringTypeConverter即可。
-
-```
-class Model
-{
-    public string Filed1 {get; set;}
-    public JsonString<Field2> Field2 {get; set;}
-}
-
 class Field2
 {
     public string Name {get; set;}
     
-    public int  Age {get; set;}
+    public int Age {get; set;}
 }
+```
+我们在构建这个Model的实例时，不得不使用json序列化将field2的实例得到json文本，然后赋值给field2这个string属性。使用[JsonFormField]特性可以轻松帮我们自动完成Field2类型的json序列化并将结果字符串作为表单的一个字段。
+ 
 
-
-// 添加转换器 
-services
-    .AddHttpApi<IMyApi>(o =>
-    {
-        o.HttpHost = new Uri("http://localhost:6000/");
-        o.KeyValueSerializeOptions.Converters.Add(JsonStringTypeConverter.Default);
-    }); 
+```
+public interface IMyApi
+{
+    Task PostAsync([FormField] string field1, [JsonFormField] Field2 field2)
+}
 ``` 
 
 #### Form提交嵌套的模型
@@ -848,19 +836,8 @@ public interface IMyApi
 }
 ```
 
-#### 3 其它操作
-> 清空Token，未过期的token也强制刷新
-
-```
-var providers = serviceProvider.GetServices<ITokenProvider>();
-foreach(var item in providers)
-{
-    // 强制清除token以支持下次获取到新的token
-    item.ClearToken();
-}
-```
-
-> 自定义Token应用，得到token值，怎么用自己说了算
+#### 3 自定义Token应用
+得到token值之后，怎么具体应用自己说了算
 
 ```
 class MyTokenAttribute : ClientCredentialsTokenAttribute
