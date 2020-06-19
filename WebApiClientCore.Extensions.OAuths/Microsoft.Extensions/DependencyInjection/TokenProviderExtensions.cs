@@ -56,7 +56,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddPasswordCredentialsTokenProvider<THttpApi>(this IServiceCollection services)
         {
-            services.TryAddSingleton<IClientCredentialsTokenProvider<THttpApi>, ClientCredentialsTokenProvider<THttpApi>>();
+            services.TryAddSingleton<IPasswordCredentialsTokenProvider<THttpApi>, PasswordCredentialsTokenProvider<THttpApi>>();
             return services.AddTokenProvider();
         }
 
