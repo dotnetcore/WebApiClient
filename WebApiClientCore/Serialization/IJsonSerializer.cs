@@ -26,7 +26,7 @@ namespace WebApiClientCore.Serialization
         /// <param name="objType">对象类型</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        object? Deserialize(Span<byte> utf8Json, Type objType, JsonSerializerOptions? options);
+        object? Deserialize(ReadOnlySpan<byte> utf8Json, Type objType, JsonSerializerOptions? options);
 
         /// <summary>
         /// 将utf8编码的Json流反序列化对象

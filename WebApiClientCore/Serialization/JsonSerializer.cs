@@ -48,7 +48,7 @@ namespace WebApiClientCore.Serialization
         /// <param name="objType">对象类型</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        public object? Deserialize(Span<byte> utf8Json, Type objType, JsonSerializerOptions? options)
+        public object? Deserialize(ReadOnlySpan<byte> utf8Json, Type objType, JsonSerializerOptions? options)
         {
             return utf8Json.IsEmpty
                 ? objType.DefaultValue()
