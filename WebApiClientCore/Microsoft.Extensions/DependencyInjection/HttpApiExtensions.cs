@@ -27,13 +27,13 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddSingleton<IKeyValueSerializer, KeyValueSerializer>();
             services.TryAddSingleton<IResponseCacheProvider, ResponseCacheProvider>();
 
-            var name = typeof(THttpApi).FullName;
             return services
-                .AddHttpClient(name)
-                .AddTypedClient((client, serviceProvider) =>
+                .AddHttpClient(typeof(THttpApi).FullName)
+                .AddTypedClient((httpClient, serviceProvider) =>
                 {
-                    var options = serviceProvider.GetRequiredService<IOptionsMonitor<HttpApiOptions>>().Get(name);
-                    return HttpApi.Create<THttpApi>(client, serviceProvider, options);
+                    var name = typeof(THttpApi).FullName;
+                    var httpApiOptions = serviceProvider.GetRequiredService<IOptionsMonitor<HttpApiOptions>>().Get(name);
+                    return HttpApi.Create<THttpApi>(httpClient, serviceProvider, httpApiOptions);
                 });
         }
 
@@ -46,10 +46,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi<THttpApi>(this IServiceCollection services, Action<HttpApiOptions> configureOptions) where THttpApi : class
         {
-            services
-                .AddOptions<HttpApiOptions>(typeof(THttpApi).FullName)
-                .Configure(configureOptions);
-
+            var name = typeof(THttpApi).FullName;
+            services.AddOptions<HttpApiOptions>(name).Configure(configureOptions);
             return services.AddHttpApi<THttpApi>();
         }
 
@@ -62,10 +60,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi<THttpApi>(this IServiceCollection services, Action<HttpApiOptions, IServiceProvider> configureOptions) where THttpApi : class
         {
-            services
-                .AddOptions<HttpApiOptions>(typeof(THttpApi).FullName)
-                .Configure(configureOptions);
-
+            var name = typeof(THttpApi).FullName;
+            services.AddOptions<HttpApiOptions>(name).Configure(configureOptions);
             return services.AddHttpApi<THttpApi>();
         }
 
@@ -79,7 +75,13 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi(this IServiceCollection services, Type httpApiType)
         {
-            return services.CreateHttpApiBuilder(httpApiType).AddHttpApi();
+            if (httpApiType == null)
+            {
+                throw new ArgumentNullException(nameof(httpApiType));
+            }
+
+            var builderType = typeof(HttpApiBuilder<>).MakeGenericType(httpApiType);
+            return builderType.CreateInstance<IHttpApiBuilder>(services).AddHttpApi();
         }
 
         /// <summary>
@@ -92,11 +94,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi(this IServiceCollection services, Type httpApiType, Action<HttpApiOptions> configureOptions)
         {
-            services
-                .AddOptions<HttpApiOptions>(httpApiType.FullName)
-                .Configure(configureOptions);
-
-            return services.CreateHttpApiBuilder(httpApiType).AddHttpApi();
+            var name = httpApiType.FullName;
+            services.AddOptions<HttpApiOptions>(name).Configure(configureOptions);
+            return services.AddHttpApi(httpApiType);
         }
 
         /// <summary>
@@ -109,29 +109,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi(this IServiceCollection services, Type httpApiType, Action<HttpApiOptions, IServiceProvider> configureOptions)
         {
-            services
-                .AddOptions<HttpApiOptions>(httpApiType.FullName)
-                .Configure(configureOptions);
-
-            return services.CreateHttpApiBuilder(httpApiType).AddHttpApi();
-        }
-
-        /// <summary>
-        /// 创建HttpApiBuilder
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="httpApiType">接口类型</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <returns></returns>
-        private static IHttpApiBuilder CreateHttpApiBuilder(this IServiceCollection services, Type httpApiType)
-        {
-            if (httpApiType == null)
-            {
-                throw new ArgumentNullException(nameof(httpApiType));
-            }
-
-            var builderType = typeof(HttpApiBuilder<>).MakeGenericType(httpApiType);
-            return builderType.CreateInstance<IHttpApiBuilder>(services);
+            var name = httpApiType.FullName;
+            services.AddOptions<HttpApiOptions>(name).Configure(configureOptions);
+            return services.AddHttpApi(httpApiType);
         }
 
         /// <summary>
