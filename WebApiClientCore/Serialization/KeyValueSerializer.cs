@@ -23,8 +23,13 @@ namespace WebApiClientCore.Serialization
         /// <returns></returns>
         public IList<KeyValue> Serialize(string key, object? obj, KeyValueSerializerOptions? options)
         {
+            var kvOptions = options ?? defaultOptions;
             if (obj == null)
             {
+                if (kvOptions.IgnoreNullValues == true)
+                {
+                    return new List<KeyValue>();
+                }
                 var keyValue = new KeyValue(key, null);
                 return new List<KeyValue>(1) { keyValue };
             }
@@ -36,7 +41,6 @@ namespace WebApiClientCore.Serialization
                 return new List<KeyValue>(1) { keyValue };
             }
 
-            var kvOptions = options ?? defaultOptions;
             var jsonOptions = kvOptions.GetJsonSerializerOptions();
             using var bufferWriter = new BufferWriter<byte>();
             using var utf8JsonWriter = new Utf8JsonWriter(bufferWriter, new JsonWriterOptions
