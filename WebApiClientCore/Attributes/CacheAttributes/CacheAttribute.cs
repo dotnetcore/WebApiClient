@@ -43,6 +43,15 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
+        /// 使用缓存的特性
+        /// </summary>
+        /// <param name="expiration"></param>
+        protected CacheAttribute(TimeSpan expiration)
+            : base(expiration)
+        {
+        }
+
+        /// <summary>
         /// 设置作为缓存键的请求头
         /// </summary>
         /// <param name="headersString"></param>

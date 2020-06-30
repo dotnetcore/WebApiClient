@@ -22,10 +22,18 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="expiration">缓存毫秒数</param>
         public ApiCacheAttribute(double expiration)
+            : this(TimeSpan.FromMilliseconds(expiration))
         {
-            this.Expiration = TimeSpan.FromMilliseconds(expiration);
         }
 
+        /// <summary>
+        /// 使用缓存的特性
+        /// </summary>
+        /// <param name="expiration"></param>
+        protected ApiCacheAttribute(TimeSpan expiration)
+        {
+            this.Expiration = expiration;
+        }
 
         /// <summary>
         /// 返回读取缓存的策略
