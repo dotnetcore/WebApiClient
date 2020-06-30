@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClientCore.HttpContents;
 
@@ -24,6 +25,23 @@ namespace WebApiClientCore.Attributes
         public XmlReturnAttribute(double acceptQuality)
             : base(new MediaTypeWithQualityHeaderValue(XmlContent.MediaType, acceptQuality))
         {
+        }
+
+        /// <summary>
+        /// 指示响应的ContentType与AcceptContentType是否匹配
+        /// 返回false则调用下一个ApiReturnAttribute来处理响应结果
+        /// </summary>
+        /// <param name="responseContentType">响应的ContentType</param>
+        /// <returns></returns>
+        protected override bool IsMatchAcceptContentType(MediaTypeHeaderValue? responseContentType)
+        {
+            var result = base.IsMatchAcceptContentType(responseContentType);
+            if (result == false)
+            {
+                var mediaType = responseContentType?.MediaType;
+                result = string.Equals(mediaType, "text/xml", StringComparison.OrdinalIgnoreCase);
+            }
+            return result;
         }
 
         /// <summary>
