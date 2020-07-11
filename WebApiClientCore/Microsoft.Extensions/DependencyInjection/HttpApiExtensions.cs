@@ -65,7 +65,6 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.AddHttpApi<THttpApi>();
         }
 
-
         /// <summary>
         /// 添加HttpApi代理类到服务
         /// </summary>
@@ -114,6 +113,8 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.AddHttpApi(httpApiType);
         }
 
+        #region 定义httpApi的Builder的行为
+
         /// <summary>
         /// 定义httpApi的Builder的行为
         /// </summary>
@@ -145,12 +146,14 @@ namespace Microsoft.Extensions.DependencyInjection
 
             /// <summary>
             /// 添加HttpApi代理类到服务
-            /// </summary> 
+            /// </summary>
             /// <returns></returns>
             public IHttpClientBuilder AddHttpApi()
             {
                 return this.services.AddHttpApi<THttpApi>();
             }
         }
+
+        #endregion 定义httpApi的Builder的行为
     }
 }

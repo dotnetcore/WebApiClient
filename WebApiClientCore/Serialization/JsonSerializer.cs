@@ -3,6 +3,7 @@ using System.Buffers;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace WebApiClientCore.Serialization
 {
@@ -17,7 +18,7 @@ namespace WebApiClientCore.Serialization
         private static readonly JsonSerializerOptions defaultOptions = new JsonSerializerOptions();
 
         /// <summary>
-        /// 将对象序列化为utf8编码的Json到指定的bufferWriter
+        ///  将对象序列化为 utf8编码的Json 到指定的bufferWriter
         /// </summary>
         /// <param name="bufferWriter">buffer写入器</param>
         /// <param name="obj">对象</param>
@@ -42,7 +43,7 @@ namespace WebApiClientCore.Serialization
         }
 
         /// <summary>
-        /// 反序列化utf8编码的Json为对象
+        /// 将utf8编码的Json反序列化为对象
         /// </summary>
         /// <param name="utf8Json">json</param>
         /// <param name="objType">对象类型</param>
@@ -56,15 +57,15 @@ namespace WebApiClientCore.Serialization
         }
 
         /// <summary>
-        /// 将utf8编码的Json流反序列化对象
+        /// 将utf8编码的Json流 反序列化为对象
         /// </summary>
-        /// <param name="utf8Json">utf8编码的Json流</param>
+        /// <param name="utf8JsonStream">utf8编码的Json流</param>
         /// <param name="objType">对象类型</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
-        public Task<object> DeserializeAsync(Stream utf8Json, Type objType, JsonSerializerOptions? options)
+        public Task<object> DeserializeAsync(Stream utf8JsonStream, Type objType, JsonSerializerOptions? options)
         {
-            return System.Text.Json.JsonSerializer.DeserializeAsync(utf8Json, objType, options).AsTask();
+            return System.Text.Json.JsonSerializer.DeserializeAsync(utf8JsonStream, objType, options).AsTask();
         }
     }
 }

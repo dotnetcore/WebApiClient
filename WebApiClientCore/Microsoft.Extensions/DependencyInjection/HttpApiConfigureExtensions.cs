@@ -1,6 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Newtonsoft.Json;
 using System;
+using System.Linq;
 using WebApiClientCore;
+using WebApiClientCore.Serialization;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -23,9 +27,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
         /// <summary>
         /// 配置HttpApi
-        /// </summary> 
+        /// </summary>
         /// <param name="services"></param>
-        /// <param name="httpApiType">接口类型</param> 
+        /// <param name="httpApiType">接口类型</param>
         /// <param name="configureOptions">配置选项</param>
         /// <returns></returns>
         public static IServiceCollection ConfigureHttpApi(this IServiceCollection services, Type httpApiType, Action<HttpApiOptions> configureOptions)
@@ -47,14 +51,34 @@ namespace Microsoft.Extensions.DependencyInjection
 
         /// <summary>
         /// 配置HttpApi
-        /// </summary> 
+        /// </summary>
         /// <param name="services"></param>
-        /// <param name="httpApiType">接口类型</param> 
+        /// <param name="httpApiType">接口类型</param>
         /// <param name="configureOptions">配置选项</param>
         /// <returns></returns>
         public static IServiceCollection ConfigureHttpApi(this IServiceCollection services, Type httpApiType, IConfiguration configureOptions)
         {
             return services.Configure<HttpApiOptions>(httpApiType.FullName, configureOptions);
+        }
+
+        /// <summary>
+        /// 配置HttpApi序列化json时使用NewtonsoftJson
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="optionAction"></param>
+        /// <returns></returns>
+        public static IServiceCollection ConfigureHttpApiUseNewtonsoftJson(this IServiceCollection services, Action<JsonSerializerSettings?>? optionAction = null)
+        {
+            ServiceDescriptor sd = services.FirstOrDefault(t => t.ServiceType == typeof(IJsonSerializer));
+
+            if (sd != null)
+            {
+                services.Remove(sd);
+            }
+
+            services.AddSingleton<IJsonSerializer, NewtonsoftJsonSerializer>(t => NewtonsoftJsonSerializer.CreateJsonSerializer(optionAction));
+
+            return services;
         }
     }
 }

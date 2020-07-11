@@ -1,12 +1,23 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
+using WebApiClientCore.Serialization;
 using Xunit;
+using System.Linq;
 
 namespace WebApiClientCore.Test.Microsoft.Extensions.DependencyInjection
 {
     public class DependencyInjectionTest
     {
+        public interface IDiApi
+        {
+        }
+
+        public interface IDiApi2
+        {
+        }
+
         [Fact]
         public static void AddHttpApiTest()
         {
@@ -42,7 +53,6 @@ namespace WebApiClientCore.Test.Microsoft.Extensions.DependencyInjection
             Assert.True(options.HttpHost == host);
         }
 
-
         [Fact]
         public static void ConfigureHttpApiNoGenericTest()
         {
@@ -54,12 +64,38 @@ namespace WebApiClientCore.Test.Microsoft.Extensions.DependencyInjection
 
             var options = services.GetService<IOptionsMonitor<HttpApiOptions>>().Get(typeof(IDiApi).FullName);
             Assert.True(options.HttpHost == host);
-             
-            Assert.Null(services.GetService<IOptions<HttpApiOptions>>().Value.HttpHost); 
+
+            Assert.Null(services.GetService<IOptions<HttpApiOptions>>().Value.HttpHost);
         }
 
-        public interface IDiApi
+        //测试替换为NewtonsoftJsonSerializer
+        [Fact]
+        public static void ConfigureHttpApiJsonSerializerReplaceToNewtonsoftJsonSerializerTest()
         {
+            var di = new ServiceCollection();
+            di.AddHttpApi<IDiApi>();
+            di.ConfigureHttpApiUseNewtonsoftJson();
+            var services = di.BuildServiceProvider();
+
+            IJsonSerializer jsonSerializer = services.GetService<IJsonSerializer>();
+            Assert.IsType<NewtonsoftJsonSerializer>(jsonSerializer);
+        }
+
+        //测试IJsonSerializer只有一个，且为NewtonsoftJsonSerializer
+        [Fact]
+        public static void ConfigureHttpApiJsonSerializerOnlyNewtonsoftJsonSerializer()
+        {
+            var di = new ServiceCollection();
+            di.AddHttpApi<IDiApi>();
+            di.AddHttpApi<IDiApi2>();
+            di.ConfigureHttpApiUseNewtonsoftJson();
+
+            int count = di.Count(t => t.ServiceType == typeof(IJsonSerializer));
+            Assert.Equal(1, count);
+
+            var services = di.BuildServiceProvider();
+            IJsonSerializer jsonSerializer = services.GetService<IJsonSerializer>();
+            Assert.IsType<NewtonsoftJsonSerializer>(jsonSerializer);
         }
     }
 }
