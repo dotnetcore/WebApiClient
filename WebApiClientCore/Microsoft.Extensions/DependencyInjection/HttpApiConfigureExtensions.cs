@@ -69,15 +69,24 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection ConfigureHttpApiUseNewtonsoftJson(this IServiceCollection services, Action<JsonSerializerSettings?>? optionAction = null)
         {
-            ServiceDescriptor sd = services.FirstOrDefault(t => t.ServiceType == typeof(IJsonSerializer));
+            Type serviceType = typeof(IJsonSerializer);
+            ServiceDescriptor sd = services.FirstOrDefault(t => t.ServiceType == serviceType);
 
-            if (sd != null)
+            if (sd == null)//未添加过，需要添加
             {
-                services.Remove(sd);
+                services.AddSingleton<IJsonSerializer, NewtonsoftJsonSerializer>(t => NewtonsoftJsonSerializer.CreateJsonSerializer(optionAction));
+                return services;
             }
 
-            services.AddSingleton<IJsonSerializer, NewtonsoftJsonSerializer>(t => NewtonsoftJsonSerializer.CreateJsonSerializer(optionAction));
+            Type implementationType = typeof(NewtonsoftJsonSerializer);
+            if (sd.ImplementationType != implementationType)//需要替换
+            {
+                services.Remove(sd);
+                services.AddSingleton<IJsonSerializer, NewtonsoftJsonSerializer>(t => NewtonsoftJsonSerializer.CreateJsonSerializer(optionAction));
+                return services;
+            }
 
+            //不需要替换
             return services;
         }
     }
