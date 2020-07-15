@@ -48,9 +48,6 @@ namespace App
             services.AddHttpApi<IUserApi>(o =>
             {
                 o.HttpHost = new Uri("http://localhost:5000/");
-            }).AddNewtonsoftJson(x =>
-            {
-
             });
 
             // 注册与配置token提者选项

@@ -14,7 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="builder"></param>
         /// <param name="configureOptions">配置选项</param>
         /// <returns></returns>
-        public static IHttpClientBuilder AddNewtonsoftJson(this IHttpClientBuilder builder, Action<JsonNetSerializerOptions> configureOptions)
+        public static IHttpClientBuilder ConfigureNewtonsoftJson(this IHttpClientBuilder builder, Action<JsonNetSerializerOptions> configureOptions)
         {
             builder.Services.AddOptions<JsonNetSerializerOptions>(builder.Name).Configure(configureOptions);
             return builder;
@@ -26,7 +26,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="builder"></param>
         /// <param name="configureOptions">配置选项</param>
         /// <returns></returns>
-        public static IHttpClientBuilder AddNewtonsoftJson(this IHttpClientBuilder builder, Action<JsonNetSerializerOptions, IServiceProvider> configureOptions)
+        public static IHttpClientBuilder ConfigureNewtonsoftJson(this IHttpClientBuilder builder, Action<JsonNetSerializerOptions, IServiceProvider> configureOptions)
         {
             builder.Services.AddOptions<JsonNetSerializerOptions>(builder.Name).Configure(configureOptions);
             return builder;
