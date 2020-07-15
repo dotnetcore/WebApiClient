@@ -40,7 +40,10 @@ namespace WebApiClientCore.Attributes
         {
             var name = context.ApiAction.InterfaceType.FullName;
             var options = context.HttpContext.ServiceProvider.GetService<IOptionsMonitor<JsonNetSerializerOptions>>().Get(name);
-            var json = JsonConvert.SerializeObject(context.ParameterValue, options.JsonSerializeOptions);
+            var json = context.ParameterValue == null
+                ? string.Empty
+                : JsonConvert.SerializeObject(context.ParameterValue, options.JsonSerializeOptions);
+
             var jsonContent = new StringContent(json ?? string.Empty, this.encoding, JsonContent.MediaType);
             context.HttpContext.RequestMessage.Content = jsonContent;
             return Task.CompletedTask;

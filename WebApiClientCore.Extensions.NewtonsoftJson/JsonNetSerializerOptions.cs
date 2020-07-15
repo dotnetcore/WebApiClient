@@ -4,15 +4,15 @@ using Newtonsoft.Json.Serialization;
 namespace WebApiClientCore.Extensions.NewtonsoftJson
 {
     /// <summary>
-    /// json.net序列化选项
+    /// json.net选项
     /// </summary>
     public class JsonNetSerializerOptions
     {
         /// <summary>
-        /// camelCase
-        /// Resolver不能多次创建，影响到反向的缓存
+        /// camelCaseResolver
+        /// 不能多次创建，否则影响到反射缓存
         /// </summary>
-        private static readonly IContractResolver camelCase = new CamelCasePropertyNamesContractResolver();
+        private static readonly IContractResolver camelCaseResolver = new CamelCasePropertyNamesContractResolver();
 
         /// <summary>
         /// 序列化设置
@@ -31,7 +31,7 @@ namespace WebApiClientCore.Extensions.NewtonsoftJson
         {
             return new JsonSerializerSettings
             {
-                ContractResolver = camelCase,
+                ContractResolver = camelCaseResolver,
             };
         }
     }

@@ -42,7 +42,7 @@ namespace WebApiClientCore.Attributes
 
             if (context.ApiAction.Return.DataType.IsRawType == false)
             {
-                var json = await context.HttpContext.RequestMessage.Content.ReadAsStringAsync();
+                var json = await context.HttpContext.RequestMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var resultType = context.ApiAction.Return.DataType.Type;
                 var name = context.ApiAction.InterfaceType.FullName;
                 var options = context.HttpContext.ServiceProvider.GetService<IOptionsMonitor<JsonNetSerializerOptions>>().Get(name);
