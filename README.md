@@ -1,11 +1,14 @@
 ## WebApiClientCore 　　　　　　　　　　　　　　　　　　　
 [WebApiClient](https://github.com/dotnetcore/WebApiClient/tree/WebApiClient.JITAOT)的netcoreapp版本，集高性能高可扩展性于一体的声明式http客户端库，特别适用于微服务的restful资源请求，也适用于各种畸形http接口请求。
 
-### PackageReference
-#### 主包
-    <PackageReference Include="WebApiClientCore" Version="1.0.*" />
-#### 扩展包
-    <PackageReference Include="WebApiClientCore.Extensions.OAuths" Version="1.0.*" />
+
+### Nuget
+
+| 包名 | 描述 | Nuget |
+---|---|--|
+| WebApiClientCore | 基础包 | [![NuGet](https://buildstats.info/nuget/WebApiClientCore)](https://www.nuget.org/packages/WebApiClientCore) |
+| WebApiClientCore.Extensions.OAuths | OAuth扩展包 | [![NuGet](https://buildstats.info/nuget/WebApiClientCore.Extensions.OAuths)](https://www.nuget.org/packages/WebApiClientCore.Extensions.OAuths) |
+| WebApiClientCore.Extensions.NewtonsoftJson | Json.Net扩展包 | [![NuGet](https://buildstats.info/nuget/WebApiClientCore.Extensions.NewtonsoftJson)](https://www.nuget.org/packages/WebApiClientCore.Extensions.NewtonsoftJson) |
     
 ### QQ群
 > [825135345](https://shang.qq.com/wpa/qunwpa?idkey=c6df21787c9a774ca7504a954402c9f62b6595d1e63120eabebd6b2b93007410)
@@ -857,6 +860,40 @@ public interface IMyApi
     ...
 }
 ```
+
+### NewtonsoftJson处理json
+不可否认，System.Text.Json由于性能的优势，会越来越得到广泛使用，但NewtonsoftJson也不会因此而退出舞台。
+
+System.Text.Json在默认情况下十分严格，避免代表调用方进行任何猜测或解释，强调确定性行为，该库是为了实现性能和安全性而特意这样设计的。Newtonsoft.Json默认情况下十分灵活，默认的配置下，你几乎不会遇到反序列化的种种问题，虽然这些问题很多情况下是由于不严谨的json结构或类型声明造成的。
+
+  
+#### 扩展包
+
+默认的基础包是不包含NewtonsoftJson功能的，需要额外引用WebApiClientCore.Extensions.NewtonsoftJson这个扩展包。
+
+#### 配置[可选]
+```
+// ConfigureNewtonsoftJson
+services.AddHttpApi<IUserApi>().ConfigureNewtonsoftJson(o =>
+{
+    o.JsonSerializeOptions.NullValueHandling = NullValueHandling.Ignore;
+});
+```
+ 
+#### 声明特性
+使用[JsonNetReturn]替换内置的[JsonReturn]，[JsonNetContent]替换内置[JsonContent]
+```
+/// <summary>
+/// 用户操作接口
+/// </summary>
+[JsonNetReturn]
+public interface IUserApi : IHttpApi
+{
+    [HttpPost("/users")]
+    Task PostAsync([JsonNetContent] User user);
+}
+```
+
 
 ### 生态融合
 Microsoft.Extensions.Http支持收入各种第三方的HttpMessageHandler来build出一种安全的HttpClient，同时支持将此HttpClient实例包装为强类型服务的目标服务类型注册功能。
