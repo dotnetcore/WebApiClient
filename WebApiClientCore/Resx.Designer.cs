@@ -241,6 +241,15 @@ namespace WebApiClientCore {
         }
         
         /// <summary>
+        ///   查找类似 无法将JsonTokenType.{0}转换为{1}类型 的本地化字符串。
+        /// </summary>
+        internal static string unsupported_ConvertType {
+            get {
+                return ResourceManager.GetString("unsupported_ConvertType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 不支持泛型方法: {0} 的本地化字符串。
         /// </summary>
         internal static string unsupported_GenericMethod {

@@ -177,6 +177,9 @@
   <data name="unsupported_ContentType" xml:space="preserve">
     <value>不支持将ContentType为 {0} 的内容转换为{1}</value>
   </data>
+  <data name="unsupported_ConvertType" xml:space="preserve">
+    <value>无法将JsonTokenType.{0}转换为{1}类型</value>
+  </data>
   <data name="unsupported_GenericMethod" xml:space="preserve">
     <value>不支持泛型方法: {0}</value>
   </data>
