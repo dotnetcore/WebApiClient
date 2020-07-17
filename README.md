@@ -9,49 +9,295 @@
 | WebApiClientCore | 基础包 | [![NuGet](https://buildstats.info/nuget/WebApiClientCore)](https://www.nuget.org/packages/WebApiClientCore) |
 | WebApiClientCore.Extensions.OAuths | OAuth扩展包 | [![NuGet](https://buildstats.info/nuget/WebApiClientCore.Extensions.OAuths)](https://www.nuget.org/packages/WebApiClientCore.Extensions.OAuths) |
 | WebApiClientCore.Extensions.NewtonsoftJson | Json.Net扩展包 | [![NuGet](https://buildstats.info/nuget/WebApiClientCore.Extensions.NewtonsoftJson)](https://www.nuget.org/packages/WebApiClientCore.Extensions.NewtonsoftJson) |
+
+### 如何使用
+
+```
+[HttpHost("http://localhost:5000/")]
+public interface IUserApi
+{
+    [HttpGet("api/users/{id}")]
+    Task<User> GetAsync(string id);
     
-### QQ群
+    [HttpPost("api/users")]
+    Task<User> PostAsync([JsonContent] User user);
+}
+```
+```
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddHttpApi<IUserApi>();
+}
+```
+
+```
+public class MyService
+{
+    private readonly IUserApi userApi;
+    public MyService(IUserApi userApi)
+    {
+        this.userApi = userApi;
+    }
+}
+```
+    
+### QQ群协助
 > [825135345](https://shang.qq.com/wpa/qunwpa?idkey=c6df21787c9a774ca7504a954402c9f62b6595d1e63120eabebd6b2b93007410)
 
-*进群注明WebApiClient*
+进群时请注明**WebApiClient**，在咨询问题之前，请先认真阅读以下剩余的文档，避免消耗作者不必要的重复解答时间。
+ 
+### 编译时语法分析
+WebApiClientCore.Analyzers提供编码时语法分析与提示，声明的接口继承了空方法的IHttpApi接口，语法分析将生效，建议开发者开启这个功能。
 
-### Benchmark
-使用[MockResponseHandler](https://github.com/dotnetcore/WebApiClient/tree/master/WebApiClientCore.Benchmarks/Requests)消除真实http请求，原生HttpClient、WebApiClientCore和[Refit](https://github.com/reactiveui/refit)的性能参考：
+比如[Header]特性，可以声明在Interface、Method和Parameter三个地方，但是必须使用正确的构造器，否则运行时会抛出异常。有了语法分析功能，在声明接口时就不会使用不当的语法。如果想让语法分析生效，你的接口必须继承空方法的IHttpApi接口。
 
-``` ini
-BenchmarkDotNet=v0.12.1, OS=Windows 10.0.18362.836 (1903/May2019Update/19H1)
-Intel Core i3-4150 CPU 3.50GHz (Haswell), 1 CPU, 4 logical and 2 physical cores
-.NET Core SDK=3.1.202
-  [Host]     : .NET Core 3.1.4 (CoreCLR 4.700.20.20201, CoreFX 4.700.20.22101), X64 RyuJIT
-  DefaultJob : .NET Core 3.1.4 (CoreCLR 4.700.20.20201, CoreFX 4.700.20.22101), X64 RyuJIT
 ```
-|                    Method |      Mean |     Error |    StdDev |
-|-------------------------- |----------:|----------:|----------:|
-|       HttpClient_GetAsync |  3.146 μs | 0.0396 μs | 0.0370 μs |
-| WebApiClientCore_GetAsync | 12.421 μs | 0.2324 μs | 0.2174 μs |
-|            Refit_GetAsync | 43.241 μs | 0.6713 μs | 0.6279 μs |
+/// <summary>
+/// 记得要实现IHttpApi
+/// </summary>
+public interface IUserApi : IHttpApi
+{
+    ...
+}
+```
 
-|                         Method |      Mean |     Error |    StdDev |
-|------------------------------- |----------:|----------:|----------:|
-|       HttpClient_PostJsonAsync |  5.263 μs | 0.0784 μs | 0.0733 μs |
-| WebApiClientCore_PostJsonAsync | 13.823 μs | 0.1874 μs | 0.1753 μs |
-|            Refit_PostJsonAsync | 45.218 μs | 0.8166 μs | 0.7639 μs |
+### 接口配置与选项
+每个接口的选项对应为`HttpApiOptions`，选项名称为接口的完整名称。除了Action配置，我们也可以使用Configuration配置结合一起使用，这部分内容为Microsoft.Extensions.Options范畴。
 
-|                        Method |     Mean |    Error |   StdDev |
-|------------------------------ |---------:|---------:|---------:|
-| WebApiClientCore_PutFormAsync | 21.14 μs | 0.407 μs | 0.418 μs |
-|            Refit_PutFormAsync | 65.16 μs | 0.933 μs | 0.873 μs |
+#### 注册时配置
+```
+services.AddHttpApi<IUserApi >(o =>
+{
+    o.UseParameterPropertyValidate = true;
+    o.UseReturnValuePropertyValidate = false;
+    o.KeyValueSerializeOptions.IgnoreNullValues = true;
+    o.HttpHost = new Uri("http://localhost:5000/");
+});
+```
 
-### 声明式接口定义
-* 支持Task、Task<>和ITask<>三种异步返回
-* 支持模型自动转换为Xml、Json、Form、和FormData共4种请求格式的内容
-* 支持HttpResponseMessage、byte[]、string和Stream原生类型返回内容
-* 支持原生HttpContent(比如StringContent)类型直接做为请求参数
-* 内置丰富的能满足各种环境的常用特性(ActionAttribute和ParameterAttribute)
-* 内置常用的FormDataFile等参数类型，同时支持自定义IApiParameter参数类型作为参数值
-* 支持用户自定义IApiActionAttribute、IApiParameterAttribue、IApiReturnAttribute和IApiFilterAttribute
+#### Action配置
 
-#### 1 Petstore接口例子
+```
+services.ConfigureHttpApi<IUserApi >(o =>
+{
+    // 符合国情的不标准时间格式，有些接口就是这么要求必须不标准
+    o.JsonSerializeOptions.Converters.Add(new JsonLocalDateTimeConverter("yyyy-MM-dd HH:mm:ss"));
+});
+```
+
+#### Configuration配置
+```
+services.ConfigureHttpApi<IpetApi>(Configuration.GetSection(nameof(IpetApi)))
+```
+```
+{
+  "IpetApi": {
+    "HttpHost": "http://www.webappiclient.com/",
+    "UseParameterPropertyValidate": false,
+    "UseReturnValuePropertyValidate": false,
+    "JsonSerializeOptions": {
+      "IgnoreNullValues": true,
+      "WriteIndented": false
+    }
+  }
+}
+```
+
+### 数据验证
+#### 请求参数值验证
+对于参数值，支持系统各个ValidationAttribute特性修饰来验证值
+```
+[HttpGet("api/users/{email}")]
+Task<User> GetAsync([EmailAddress, Required] string email);
+```
+
+#### 参数模型与返回模型字段验证
+```
+[HttpPost("api/users")]
+Task<User> PostAsync([Required][XmlContent] User user);
+
+public class User
+{
+    [Required]
+    [StringLength(10, MinimumLength = 1)]
+    public string Account { get; set; }
+
+    [Required]
+    [StringLength(10, MinimumLength = 1)]
+    public string Password { get; set; }
+}
+```
+
+### 常用内置特性
+内置特性指框架本身提供了的一些特性，拿来即用就能满足一般情况下的各种应用。当然，开发者也可以在实际应用中，编写满足特定场景需求的特性，然后将自定义特性修饰到接口、方法或参数即可。
+
+#### Return特性
+
+特性名称 | 功能描述 | 备注
+---|---|---|
+RawReturnAttribute | 处理原始类型返回值 | 缺省也生效
+JsonReturnAttribute | 处理Json模型返回值 | 缺省也生效
+XmlReturnAttribute | 处理Xml模型返回值 | 缺省也生效
+
+#### 常用Action特性
+
+特性名称 | 功能描述 | 备注
+---|---|---|
+HttpHostAttribute | 请求服务http绝对完整主机域名| 优先级比Options配置低
+HttpGetAttribute | 声明Get请求方法与路径| 支持null、绝对或相对路径
+HttpPostAttribute | 声明Post请求方法与路径| 支持null、绝对或相对路径
+HttpPutAttribute | 声明Put请求方法与路径| 支持null、绝对或相对路径
+HttpDeleteAttribute | 声明Delete请求方法与路径| 支持null、绝对或相对路径
+*HeaderAttribute* | 声明请求头 | 常量值
+*TimeoutAttribute* | 声明超时时间 | 常量值
+*FormFieldAttribute* | 声明Form表单字段与值 | 常量键和值
+*FormDataTextAttribute* | 声明FormData表单字段与值 | 常量键和值
+
+#### 常用Parameter特性
+
+特性名称 | 功能描述 | 备注
+---|---|---|
+PathQueryAttribute | 参数值的键值对作为url路径参数或query参数的特性 | 缺省特性的参数默认为该特性
+FormContentAttribute | 参数值的键值对作为x-www-form-urlencoded表单 | 
+FormDataContentAttribute | 参数值的键值对作为multipart/form-data表单 | 
+JsonContentAttribute | 参数值序列化为请求的json内容 |
+XmlContentAttribute | 参数值序列化为请求的xml内容 |
+UriAttribute | 参数值作为请求uri | 只能修饰第一个参数
+ParameterAttribute | 聚合性的请求参数声明 | 不支持细颗粒配置
+*HeaderAttribute* | 参数值作为请求头 | 
+*TimeoutAttribute* | 参数值作为超时时间 | 值不能大于HttpClient的Timeout属性
+*FormFieldAttribute* | 参数值作为Form表单字段与值 | 只支持简单类型参数
+*FormDataTextAttribute* | 参数值作为FormData表单字段与值 | 只支持简单类型参数
+
+#### Filter特性
+
+特性名称 | 功能描述
+---|---
+ApiFilterAttribute | Filter特性抽象类
+LoggingFilterAttribute | 请求和响应内容的输出为日志的过滤器
+
+#### 自解释参数类型
+
+类型名称 | 功能描述 | 备注
+---|---|---|
+FormDataFile | form-data的一个文件项 | 无需特性修饰
+JsonPatchDocument | 表示将JsonPatch请求文档 | 无需特性修饰
+
+
+### Uri拼接规则
+所有的Uri拼接都是通过Uri(Uri baseUri, Uri relativeUri)这个构造器生成。
+
+#### 带`/`结尾的baseUri
+
+* `http://a.com/` + `b/c/d` = `http://a.com/b/c/d`
+* `http://a.com/path1/` + `b/c/d` = `http://a.com/path1/b/c/d`
+* `http://a.com/path1/path2/` + `b/c/d` = `http://a.com/path1/path2/b/c/d`
+
+#### 不带`/`结尾的baseUri
+
+* `http://a.com` + `b/c/d` = `http://a.com/b/c/d`
+* `http://a.com/path1` + `b/c/d` = `http://a.com/b/c/d`
+* `http://a.com/path1/path2` + `b/c/d` = `http://a.com/path1/b/c/d`
+
+事实上`http://a.com`与`http://a.com/`是完全一样的，他们的path都是`/`，所以才会表现一样。为了避免低级错误的出现，请使用的标准baseUri书写方式，即使用`/`作为baseUri的结尾的第一种方式。
+
+
+### 表单集合处理
+按照OpenApi，一个集合在Uri的Query或表单中支持5种表述方式，分别是：
+* Csv // 逗号分隔
+* Ssv // 空格分隔
+* Tsv // 反斜杠分隔
+* Pipes // 竖线分隔
+* Multi // 多个同名键的键值对
+
+对于 id = new string []{"001","002"} 这样的值，在PathQueryAttribute与FormContentAttribute处理后分别是：
+
+CollectionFormat | Data
+---|---
+[PathQuery(CollectionFormat = CollectionFormat.Csv)] | `id=001,002`
+[PathQuery(CollectionFormat = CollectionFormat.Ssv)] | `id=001 002`
+[PathQuery(CollectionFormat = CollectionFormat.Tsv)] | `id=001\002`
+[PathQuery(CollectionFormat = CollectionFormat.Pipes)] | `id=001|002`
+[PathQuery(CollectionFormat = CollectionFormat.Multi)] | `id=001&id=002`
+ 
+
+
+
+### CancellationToken参数
+每个接口都支持声明一个CancellationToken类型的参数，用于支持取消请求操作。CancellationToken.None表示永不取消，创建一个CancellationTokenSource，可以提供一个CancellationToken。
+
+```
+[HttpGet("api/users/{id}")]
+ITask<User> GetAsync([Required]string id, CancellationToken token = default);
+```
+
+### ContentType CharSet
+对于非表单的body内容，默认或缺省时的charset值，对应的是UTF8编码，可以根据服务器要求调整编码。
+
+
+Attribute | ContentType
+---|---
+[JsonContent] | Content-Type: application/json; charset=utf-8
+[JsonContent(CharSet ="utf-8")] | Content-Type: application/json; charset=utf-8
+[JsonContent(CharSet ="unicode")] | Content-Type: application/json; charset=utf-16
+
+
+
+### Accpet ContentType
+这个用于控制客户端希望服务器返回什么样的内容格式，比如json或xml。
+
+#### 缺省配置值
+
+缺省配置是[JsonReturn(0.01),XmlReturn(0.01)]，对应的请求accept值是
+`Accept: application/json; q=0.01, application/xml; q=0.01`
+
+#### Json优先
+
+在Interface或Method上显式地声明`[JsonReturn]`，请求accept变为`Accept: application/json, application/xml; q=0.01`
+
+#### 禁用json
+
+在Interface或Method上声明`[JsonReturn(Enable = false)]`，请求变为`Accept: application/xml; q=0.01`
+
+
+### 请求和响应日志
+在整个Interface或某个Method上声明`[LoggingFilter]`，即可把请求和响应的内容输出到LoggingFactory中。如果要排除某个Method不打印日志，在该Method上声明`[LoggingFilter(Enable = false)]`，即可将本Method排除。
+
+#### 默认日志
+
+```
+[LoggingFilter]   
+public interface IUserApi
+{
+    [HttpGet("api/users/{account}")]
+    ITask<HttpResponseMessage> GetAsync([Required]string account);  
+
+    // 禁用日志
+    [LoggingFilter(Enable =false)]
+    [HttpPost("api/users/body")]
+    Task<User> PostByJsonAsync([Required, JsonContent]User user, CancellationToken token = default);
+}
+```
+
+#### 自定义日志输出目标
+```
+class MyLogging : LoggingFilterAttribute
+{
+    protected override Task WriteLogAsync(ApiResponseContext context, LogMessage logMessage)
+    {
+        xxlogger.Log(logMessage.ToIndentedString(spaceCount: 4));
+        return Task.CompletedTask;
+    }
+}
+
+[MyLogging]   
+public interface IUserApi
+{
+}
+```
+
+### 接口声明示例
+#### Petstore接口
 这个OpenApi文档在[petstore.swagger.io](https://petstore.swagger.io/)，代码为使用WebApiClientCore.OpenApi.SourceGenerator工具将其OpenApi文档反向生成得到
 
 ```
@@ -141,7 +387,7 @@ public interface IPetApi : IHttpApi
     ITask<ApiResponse> UploadFileAsync([Required] long petId, [FormDataText] string additionalMetadata, FormDataFile file, CancellationToken cancellationToken = default);
 }
 ```
-####  2 IOAuthClient接口例子
+#### IOAuthClient接口
 这个接口是在WebApiClientCore.Extensions.OAuths.IOAuthClient.cs代码中声明
 
 ```
@@ -190,268 +436,6 @@ namespace WebApiClientCore.Extensions.OAuths
         [HttpPost]
         [FormField("grant_type", "refresh_token")]
         Task<TokenResult> RefreshTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] RefreshTokenCredentials credentials);
-    }
-}
-```
-### 编译时语法分析
-WebApiClientCore.Analyzers提供编码时语法分析与提示。
-
-比如[Header]特性，可以声明在Interface、Method和Parameter三个地方，但是必须使用正确的构造器，否则运行时会抛出异常。有了语法分析功能，在声明接口时就不会使用不当的语法。如果想让语法分析生效，你的接口必须继承空方法的IHttpApi接口。
-
-```
-/// <summary>
-/// 你的接口，记得要实现IHttpApi
-/// </summary>
-public interface IYourApi : IHttpApi
-{
-    ...
-}
-```
-
-
-### 接口注册与实例获取
-#### 1 接口服务注册
-
-```
-var services = new ServiceCollection();
-
-services.AddHttpApi<IPetApi>(o =>
-{
-    o.UseParameterPropertyValidate = true;
-    o.UseReturnValuePropertyValidate = false;
-    o.KeyValueSerializeOptions.IgnoreNullValues = true;
-    o.HttpHost = new Uri("http://localhost:6000/");
-});
-```
-
-#### 2 接口实例获取
-
-```
-public class MyService
-{
-    private readonly IpetApi petApi;
-    
-    // 构造器注入IpetApi
-    public MyService(IpetApi petApi)
-    {
-        tihs.petApi = petApi;
-    }
-}
-```
-
-### 接口选项与配置
-每个接口的选项对应为`HttpApiOptions`，选项名称为接口的完整名称。除了Action配置，我们也可以使用Configuration配置结合一起使用，这部分内容为Microsoft.Extensions.Options范畴。
-
-#### Action配置
-
-```
-services
-    .ConfigureHttpApi<IpetApi>(Configuration.GetSection(nameof(IpetApi)))
-    .ConfigureHttpApi<IpetApi>(o =>
-    {
-        // 符合国情的不标准时间格式，有些接口就是这么要求必须不标准
-        o.JsonSerializeOptions.Converters.Add(new JsonLocalDateTimeConverter("yyyy-MM-dd HH:mm:ss"));
-    });
-```
-
-#### appsettings.json的文件配置
-
-```
-{
-  "IpetApi": {
-    "HttpHost": "http://www.webappiclient.com/",
-    "UseParameterPropertyValidate": false,
-    "UseReturnValuePropertyValidate": false,
-    "JsonSerializeOptions": {
-      "IgnoreNullValues": true,
-      "WriteIndented": false
-    }
-  }
-}
-```
-
-### 数据验证
-#### 请求参数值验证
-对于参数值，支持系统各个ValidationAttribute特性修饰来验证值
-```
-[HttpGet("api/users/{email}")]
-Task<User> GetAsync([EmailAddress, Required] string email);
-```
-
-#### 参数模型与返回模型字段验证
-```
-[HttpPost("api/users")]
-Task<User> PostAsync([Required] User user);
-
-public class User
-{
-    [Required]
-    [StringLength(10, MinimumLength = 1)]
-    public string Account { get; set; }
-
-    [Required]
-    [StringLength(10, MinimumLength = 1)]
-    public string Password { get; set; }
-}
-```
-
-### Uri拼接规则
-所有的Uri拼接都是通过Uri(Uri baseUri, Uri relativeUri)这个构造器生成。
-
-#### 带`/`结尾的baseUri
-
-* `http://a.com/` + `b/c/d` = `http://a.com/b/c/d`
-* `http://a.com/path1/` + `b/c/d` = `http://a.com/path1/b/c/d`
-* `http://a.com/path1/path2/` + `b/c/d` = `http://a.com/path1/path2/b/c/d`
-
-#### 不带`/`结尾的baseUri
-
-* `http://a.com` + `b/c/d` = `http://a.com/b/c/d`
-* `http://a.com/path1` + `b/c/d` = `http://a.com/b/c/d`
-* `http://a.com/path1/path2` + `b/c/d` = `http://a.com/path1/b/c/d`
-
-事实上`http://a.com`与`http://a.com/`是完全一样的，他们的path都是`/`，所以才会表现一样。为了避免低级错误的出现，请使用的标准baseUri书写方式，即使用`/`作为baseUri的结尾的第一种方式。
-
-### 常用内置特性
-内置特性指框架本身提供了的一些特性，拿来即用就能满足一般情况下的各种应用。当然，开发者也可以在实际应用中，编写满足特定场景需求的特性，然后将自定义特性修饰到接口、方法或参数即可。
-
-#### Return特性
-
-特性名称 | 功能描述 | 备注
----|---|---|
-RawReturnAttribute | 处理原始类型返回值 | 缺省也生效
-JsonReturnAttribute | 处理Json模型返回值 | 缺省也生效
-XmlReturnAttribute | 处理Xml模型返回值 | 缺省也生效
-
-#### 常用Action特性
-
-特性名称 | 功能描述 | 备注
----|---|---|
-HttpHostAttribute | 请求服务http绝对完整主机域名| 优先级比Options配置低
-HttpGetAttribute | 声明Get请求方法与路径| 支持null、绝对或相对路径
-HttpPostAttribute | 声明Post请求方法与路径| 支持null、绝对或相对路径
-HttpPutAttribute | 声明Put请求方法与路径| 支持null、绝对或相对路径
-HttpDeleteAttribute | 声明Delete请求方法与路径| 支持null、绝对或相对路径
-*HeaderAttribute* | 声明请求头 | 常量值
-*TimeoutAttribute* | 声明超时时间 | 常量值
-*FormFieldAttribute* | 声明Form表单字段与值 | 常量键和值
-*FormDataTextAttribute* | 声明FormData表单字段与值 | 常量键和值
-
-#### 常用Parameter特性
-
-特性名称 | 功能描述 | 备注
----|---|---|
-PathQueryAttribute | 参数值的键值对作为url路径参数或query参数的特性 | 缺省特性的参数默认为该特性
-FormContentAttribute | 参数值的键值对作为x-www-form-urlencoded表单 | 
-FormDataContentAttribute | 参数值的键值对作为multipart/form-data表单 | 
-JsonContentAttribute | 参数值序列化为请求的json内容 |
-XmlContentAttribute | 参数值序列化为请求的xml内容 |
-UriAttribute | 参数值作为请求uri | 只能修饰第一个参数
-ParameterAttribute | 聚合性的请求参数声明 | 不支持细颗粒配置
-*HeaderAttribute* | 参数值作为请求头 | 
-*TimeoutAttribute* | 参数值作为超时时间 | 值不能大于HttpClient的Timeout属性
-*FormFieldAttribute* | 参数值作为Form表单字段与值 | 只支持简单类型参数
-*FormDataTextAttribute* | 参数值作为FormData表单字段与值 | 只支持简单类型参数
-
-#### Filter特性
-
-特性名称 | 功能描述
----|---
-ApiFilterAttribute | Filter特性抽象类
-LoggingFilterAttribute | 请求和响应内容的输出为日志的过滤器
-
-#### 自解释参数类型
-
-类型名称 | 功能描述
----|---
-FormDataFile | form-data的一个文件项
-JsonPatchDocument | 表示将JsonPatch请求文档
-
-### 表单集合处理
-按照OpenApi，一个集合在Uri的Query或表单中支持5种表述方式，分别是：
-* Csv // 逗号分隔
-* Ssv // 空格分隔
-* Tsv // 反斜杠分隔
-* Pipes // 竖线分隔
-* Multi // 多个同名键的键值对
-
-对于 id = new string []{"001","002"} 这样的值，在PathQueryAttribute与FormContentAttribute处理后分别是：
-
-CollectionFormat | Data
----|---
-[PathQuery(CollectionFormat = CollectionFormat.Csv)] | `id=001,002`
-[PathQuery(CollectionFormat = CollectionFormat.Ssv)] | `id=001 002`
-[PathQuery(CollectionFormat = CollectionFormat.Tsv)] | `id=001\002`
-[PathQuery(CollectionFormat = CollectionFormat.Pipes)] | `id=001|002`
-[PathQuery(CollectionFormat = CollectionFormat.Multi)] | `id=001&id=002`
- 
-
-
-
-### CancellationToken参数
-每个接口都支持声明一个CancellationToken类型的参数，用于支持取消请求操作。CancellationToken.None表示永不取消，创建一个CancellationTokenSource，可以提供一个CancellationToken。
-
-```
-[HttpGet("api/users/{id}")]
-ITask<User> GetAsync([Required]string id, CancellationToken token = default);
-```
-
-### ContentType CharSet
-对于非表单的body内容，默认或缺省时的charset值，对应的是UTF8编码，可以根据服务器要求调整编码。
-
-
-Attribute | ContentType
----|---
-[JsonContent] | Content-Type: application/json; charset=utf-8
-[JsonContent(CharSet ="utf-8")] | Content-Type: application/json; charset=utf-8
-[JsonContent(CharSet ="unicode")] | Content-Type: application/json; charset=utf-16
-
-
-
-### Accpet ContentType
-这个用于控制客户端希望服务器返回什么样的内容格式，比如json或xml。
-
-#### 缺省配置值
-
-缺省配置是[JsonReturn(0.01),XmlReturn(0.01)]，对应的请求accept值是
-`Accept: application/json; q=0.01, application/xml; q=0.01`
-
-#### Json优先
-
-在Interface或Method上显式地声明`[JsonReturn]`，请求accept变为`Accept: application/json, application/xml; q=0.01`
-
-#### 禁用json
-
-在Interface或Method上声明`[JsonReturn(Enable = false)]`，请求变为`Accept: application/xml; q=0.01`
-
-
-### 请求和响应日志
-在整个Interface或某个Method上声明`[LoggingFilter]`，即可把请求和响应的内容输出到LoggingFactory中。如果要排除某个Method不打印日志，在该Method上声明`[LoggingFilter(Enable = false)]`，即可将本Method排除。
-
-#### 默认日志
-
-```
-[LoggingFilter]   
-public interface IUserApi : IHttpApi
-{
-    [HttpGet("api/users/{account}")]
-    ITask<HttpResponseMessage> GetAsync([Required]string account);  
-
-    // 禁用日志
-    [LoggingFilter(Enable =false)]
-    [HttpPost("api/users/body")]
-    Task<User> PostByJsonAsync([Required, JsonContent]User user, CancellationToken token = default);
-}
-```
-
-#### 自定义日志输出目标
-```
-class MyLogging : LoggingFilterAttribute
-{
-    protected override Task WriteLogAsync(ApiResponseContext context, LogMessage logMessage)
-    {
-        xxlogger.Log(logMessage.ToIndentedString(spaceCount: 4));
-        return Task.CompletedTask;
     }
 }
 ```
@@ -601,7 +585,7 @@ Task PostAsync([RawFormContent] string form);
 ```
 
 
-### 自定义无特性的参数类型
+### 自定义自解释的参数类型
 在某些极限情况下，比如人脸比对的接口，我们输入模型与传输模型未必是对等的：
 
 #### 服务端要求的json模型
@@ -722,7 +706,7 @@ public interface IProtobufApi
 ```
 
 ### 适配畸形接口
-在实际应用场景中，常常会遇到一些设计不标准的畸形接口，主要是早期还没有restful概念时期的接口，我们要区分分析这些接口，包装为好友的客户端调用接口。
+在实际应用场景中，常常会遇到一些设计不标准的畸形接口，主要是早期还没有restful概念时期的接口，我们要区分分析这些接口，包装为友好的客户端调用接口。
 
 #### 不友好的参数名别名
 例如服务器要求一个Query参数的名字为`field-Name`，这个是c#关键字或变量命名不允许的，我们可以使用`[AliasAsAttribute]`来达到这个要求：
