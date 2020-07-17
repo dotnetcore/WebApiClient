@@ -240,7 +240,7 @@ public class MyService
 ```
 
 ### 接口选项与配置
-每个接口的选项对应为`HttpApiOptions<THttpApi>`，除了Action配置，我们也可以使用Configuration配置结合一起使用，这部分内容为Microsoft.Extensions.Options范畴。
+每个接口的选项对应为`HttpApiOptions`，选项名称为接口的完整名称。除了Action配置，我们也可以使用Configuration配置结合一起使用，这部分内容为Microsoft.Extensions.Options范畴。
 
 #### Action配置
 
@@ -267,6 +267,31 @@ services
       "WriteIndented": false
     }
   }
+}
+```
+
+### 数据验证
+#### 请求参数值验证
+对于参数值，支持系统各个ValidationAttribute特性修饰来验证值
+```
+[HttpGet("api/users/{email}")]
+Task<User> GetAsync([EmailAddress, Required] string email);
+```
+
+#### 参数模型与返回模型字段验证
+```
+[HttpPost("api/users")]
+Task<User> PostAsync([Required] User user);
+
+public class User
+{
+    [Required]
+    [StringLength(10, MinimumLength = 1)]
+    public string Account { get; set; }
+
+    [Required]
+    [StringLength(10, MinimumLength = 1)]
+    public string Password { get; set; }
 }
 ```
 
