@@ -35,14 +35,15 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public override async Task SetResultAsync(ApiResponseContext context)
         {
-            if (context.HttpContext.ResponseMessage == null)
+            var response = context.HttpContext.ResponseMessage;
+            if (response == null || response.Content == null)
             {
                 return;
             }
 
             if (context.ApiAction.Return.DataType.IsRawType == false)
             {
-                var json = await context.HttpContext.ResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var resultType = context.ApiAction.Return.DataType.Type;
                 var name = context.ApiAction.InterfaceType.FullName;
                 var options = context.HttpContext.ServiceProvider.GetService<IOptionsMonitor<JsonNetSerializerOptions>>().Get(name);
