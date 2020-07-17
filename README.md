@@ -1,19 +1,11 @@
-## WebApiClient 　　　　　　　　　　　　　　　　　　　
+## WebApiClient 　　　　　
+一款声明式的http客户端库，只需要定义c#接口并修饰相关特性，即可异步调用远程http接口。
+
 ### 1 Nuget包
-
-> WebApiClient.JIT
-
-    PM> install-package WebApiClient.JIT
-* 不适用于不支持JIT技术的平台(IOS、UWP)；
-* Http接口声明要求为public；
-
-
-> WebApiClient.AOT
-
-    PM> install-package WebApiClient.AOT
-* 适用于不支持JIT技术的平台(IOS、UWP)；
-* Http接口声明不要求为public，可以嵌套在类里面；
-
+| 包名 | 描述 | Nuget |
+---|---|--|
+| WebApiClient.JIT | 适用于非AOT编译的所有平台，稳定性好 | [![NuGet](https://buildstats.info/nuget/WebApiClient.JIT)](https://www.nuget.org/packages/WebApiClient.JIT) |
+| WebApiClient.AOT | 适用于所有平台，包括IOS和UWP，复杂依赖项目可能编译不通过 | [![NuGet](https://buildstats.info/nuget/WebApiClient.AOT)](https://www.nuget.org/packages/WebApiClient.AOT) | 
 
 ### 2. Http请求
 > 接口的声明
@@ -51,26 +43,15 @@ var api = HttpApi.Resolve<IUserApi>();
 var user = new UserInfo { Account = "laojiu", Password = "123456" }; 
 var user1 = await api.GetAsync("laojiu");
 var state = await api.AddAsync(user);
-``` 
+```  
 
-#### 3. Api变化
-> 相对于[v0.3.6](https://github.com/dotnetcore/WebApiClient/tree/v0.3.6)或以前版本，Api有如下变化 
-
-* ~~HttpApiClient.Create()~~ -> HttpApi.Create()
-* ~~HttpApiFactory.Add()~~ -> HttpApi.Register()
-* ~~HttpApiFactory.Create()~~ -> HttpApi.Resolve()
-* ~~Timeout~~
-* ~~UrlAttribute~~
-* ~~DebugAttribute~~
-
-#### 4. Wiki文档
+#### 3. Wiki文档
 1. [WebApiClient基础](https://github.com/dotnetcore/WebApiClient/wiki/WebApiClient%E5%9F%BA%E7%A1%80)
 2. [WebApiClient进阶](https://github.com/dotnetcore/WebApiClient/wiki/WebApiClient%E8%BF%9B%E9%98%B6)
 3. [WebApiClient高级](https://github.com/dotnetcore/WebApiClient/wiki/WebApiClient%E9%AB%98%E7%BA%A7)
 4. [WebApiClient.Extensions](https://github.com/xljiulang/WebApiClient.Extensions)
 5. [WebApiClient.Tools.Swagger](https://github.com/xljiulang/WebApiClient.Tools)
 
-#### 5. 联系方式
-1. 加Q群825135345 注明WeApiClient
-2. 邮箱366193849@qq.com，不重要的尽量不要发
+### 4 QQ群
+> 加Q群[825135345](https://shang.qq.com/wpa/qunwpa?idkey=c6df21787c9a774ca7504a954402c9f62b6595d1e63120eabebd6b2b93007410),注明WeApiClient
 
