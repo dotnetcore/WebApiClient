@@ -1,5 +1,5 @@
 ## WebApiClientCore 　　　　　　　　　　　　　　　　　　　
-[WebApiClient.JIT/WebApiClient.AOT](https://github.com/dotnetcore/WebApiClient/tree/WebApiClient.JITAOT)的netcoreapp版本，集高性能高可扩展性于一体的声明式http客户端库，特别适用于微服务的restful资源请求，也适用于各种畸形http接口请求。
+[WebApiClient.JIT/AOT](https://github.com/dotnetcore/WebApiClient/tree/WebApiClient.JITAOT)的netcore版本，集高性能高可扩展性于一体的声明式http客户端库，特别适用于微服务的restful资源请求，也适用于各种畸形http接口请求。
 
 
 ### Nuget
@@ -49,7 +49,7 @@ public class MyService
 ### 编译时语法分析
 WebApiClientCore.Analyzers提供编码时语法分析与提示，声明的接口继承了空方法的IHttpApi接口，语法分析将生效，建议开发者开启这个功能。
 
-比如[Header]特性，可以声明在Interface、Method和Parameter三个地方，但是必须使用正确的构造器，否则运行时会抛出异常。有了语法分析功能，在声明接口时就不会使用不当的语法。如果想让语法分析生效，你的接口必须继承空方法的IHttpApi接口。
+例如[Header]特性，可以声明在Interface、Method和Parameter三个地方，但是必须使用正确的构造器，否则运行时会抛出异常。有了语法分析功能，在声明接口时就不会使用不当的语法。
 
 ```
 /// <summary>
@@ -62,7 +62,7 @@ public interface IUserApi : IHttpApi
 ```
 
 ### 接口配置与选项
-每个接口的选项对应为`HttpApiOptions`，选项名称为接口的完整名称。除了Action配置，我们也可以使用Configuration配置结合一起使用，这部分内容为Microsoft.Extensions.Options范畴。
+每个接口的选项对应为`HttpApiOptions`，选项名称为接口的完整名称。
 
 #### 注册时配置
 ```
@@ -104,17 +104,23 @@ services.ConfigureHttpApi<IpetApi>(Configuration.GetSection(nameof(IpetApi)))
 ```
 
 ### 数据验证
-#### 请求参数值验证
-对于参数值，支持系统各个ValidationAttribute特性修饰来验证值
+#### 参数值验证
+对于参数值，支持ValidationAttribute特性修饰来验证值。
 ```
-[HttpGet("api/users/{email}")]
-Task<User> GetAsync([EmailAddress, Required] string email);
+public interface IUserApi
+{
+    [HttpGet("api/users/{email}")]
+    Task<User> GetAsync([EmailAddress, Required] string email);
+}
 ```
 
-#### 参数模型与返回模型字段验证
+#### 参数或返回模型属性验证
 ```
-[HttpPost("api/users")]
-Task<User> PostAsync([Required][XmlContent] User user);
+public interface IUserApi
+{
+    [HttpPost("api/users")]
+    Task<User> PostAsync([Required][XmlContent] User user);
+}
 
 public class User
 {
@@ -129,7 +135,7 @@ public class User
 ```
 
 ### 常用内置特性
-内置特性指框架本身提供了的一些特性，拿来即用就能满足一般情况下的各种应用。当然，开发者也可以在实际应用中，编写满足特定场景需求的特性，然后将自定义特性修饰到接口、方法或参数即可。
+内置特性指框架内提供的一些特性，拿来即用就能满足一般情况下的各种应用。当然，开发者也可以在实际应用中，编写满足特定场景需求的特性，然后将自定义特性修饰到接口、方法或参数即可。
 
 #### Return特性
 
@@ -171,10 +177,10 @@ ParameterAttribute | 聚合性的请求参数声明 | 不支持细颗粒配置
 
 #### Filter特性
 
-特性名称 | 功能描述
----|---
-ApiFilterAttribute | Filter特性抽象类
-LoggingFilterAttribute | 请求和响应内容的输出为日志的过滤器
+特性名称 | 功能描述| 备注
+---|---|---|
+ApiFilterAttribute | Filter特性抽象类 | 
+LoggingFilterAttribute | 请求和响应内容的输出为日志的过滤器 |
 
 #### 自解释参数类型
 
@@ -281,7 +287,7 @@ public interface IUserApi
 
 #### 自定义日志输出目标
 ```
-class MyLogging : LoggingFilterAttribute
+class MyLoggingAttribute : LoggingFilterAttribute
 {
     protected override Task WriteLogAsync(ApiResponseContext context, LogMessage logMessage)
     {
@@ -444,11 +450,18 @@ namespace WebApiClientCore.Extensions.OAuths
 使用ITask<>异步声明，就有Retry的扩展，Retry的条件可以为捕获到某种Exception或响应模型符合某种条件。
 
 ```
-var result = await youApi.GetModelAsync(id: "id001")
+public interface IUserApi
+{
+    [HttpGet("api/users/{id}")]
+    ITask<User> GetAsync(string id);
+}
+
+var result = await userApi.GetAsync(id: "id001")
     .Retry(maxCount: 3)
     .WhenCatch<HttpRequestException>()
-    .WhenResult(r => r.ErrorCode > 0);
+    .WhenResult(r => r.Age <= 0);
 ```
+
 ### 异常和异常处理
 请求一个接口，不管出现何种异常，最终都抛出HttpRequestException，HttpRequestException的内部异常为实际具体异常，之所以设计为内部异常，是为了完好的保存内部异常的堆栈信息。
 
@@ -494,8 +507,11 @@ json patch是为客户端能够局部更新服务端已存在的资源而设计�
 
 #### 声明Patch方法
 ```
-[HttpPatch("api/users/{id}")]
-Task<UserInfo> PatchAsync(string id, JsonPatchDocument<User> doc);
+public interface IUserApi
+{
+    [HttpPatch("api/users/{id}")]
+    Task<UserInfo> PatchAsync(string id, JsonPatchDocument<User> doc);
+}
 ```
 
 #### 实例化JsonPatchDocument
@@ -522,13 +538,18 @@ Content-Type: application/json-patch+json
 
 #### 声明缓存特性
 ```
-// 缓存一分钟
-[Cache(60 * 1000)]
-[HttpGet("api/users/{account}")]
-ITask<HttpResponseMessage> GetAsync([Required]string account);
+public interface IUserApi
+{
+    // 缓存一分钟
+    [Cache(60 * 1000)]
+    [HttpGet("api/users/{account}")]
+    ITask<HttpResponseMessage> GetAsync([Required]string account);
+}
 ```
 
 #### 自定义缓存提供者
+默认的缓存提供者为内存缓存，如果希望将缓存保存到其它存储位置，则需要自定义 缓存提者，并注册替换默认的缓存提供者。
+
 ```
 public class RedisResponseCacheProvider : IResponseCacheProvider
 {
@@ -586,9 +607,9 @@ Task PostAsync([RawFormContent] string form);
 
 
 ### 自定义自解释的参数类型
-在某些极限情况下，比如人脸比对的接口，我们输入模型与传输模型未必是对等的：
+在某些极限情况下，比如人脸比对的接口，我们输入模型与传输模型未必是对等的，例如：
 
-#### 服务端要求的json模型
+**服务端要求的json模型**
 ```
 {
     "image1" : "图片1的base64",
@@ -596,7 +617,7 @@ Task PostAsync([RawFormContent] string form);
 }
 ```
 
-#### 客户端期望的业务模型
+**客户端期望的业务模型**
 ```
 class FaceModel
 {
@@ -712,11 +733,14 @@ public interface IProtobufApi
 例如服务器要求一个Query参数的名字为`field-Name`，这个是c#关键字或变量命名不允许的，我们可以使用`[AliasAsAttribute]`来达到这个要求：
 
 ```
-[HttpGet("api/users/{account}")]
-ITask<HttpResponseMessage> GetAsync([Required]string account, [AliasAs("field-Name")] string fieldName);
+public interface IDeformedApi
+{
+    [HttpGet("api/users")]
+    ITask<string> GetAsync([AliasAs("field-Name")] string fieldName);  
+}
 ```
 
-然后最终请求uri变为api/users/`account1`?field-name=`fileName1`
+然后最终请求uri变为api/users/?field-name=`fileNameValue`
 
 #### Form的某个字段为json文本
 
@@ -727,12 +751,6 @@ field2 | {"name":"sb","age":18}
 
 对应强类型模型是
 ```
-class Model
-{
-    public string Filed1 {get; set;}
-    public string Field2 {get; set;}
-}
-
 class Field2
 {
     public string Name {get; set;}
@@ -740,11 +758,11 @@ class Field2
     public int Age {get; set;}
 }
 ```
-我们在构建这个Model的实例时，不得不使用json序列化将field2的实例得到json文本，然后赋值给field2这个string属性。使用[JsonFormField]特性可以轻松帮我们自动完成Field2类型的json序列化并将结果字符串作为表单的一个字段。
+常规下我们得把field2的实例json序列化得到json文本，然后赋值给field2这个string属性，使用[JsonFormField]特性可以轻松帮我们自动完成Field2类型的json序列化并将结果字符串作为表单的一个字段。
  
 
 ```
-public interface IMyApi
+public interface IDeformedApi
 {
     Task PostAsync([FormField] string field1, [JsonFormField] Field2 field2)
 }
@@ -771,8 +789,7 @@ public interface IMyApi
 合理情况下，对于复杂嵌套结构的数据模型，应当使用applicaiton/json，但接口要求必须使用Form提交，我可以配置KeyValueSerializeOptions来达到这个格式要求：
 
 ```
-// 注册userApi
-services.AddHttpApi<IUserApi>(o =>
+services.AddHttpApi<IDeformedApi>(o =>
 {
     o.KeyValueSerializeOptions.KeyNamingStyle = KeyNamingStyle.FullName;
 });
@@ -785,10 +802,11 @@ services.AddHttpApi<IUserApi>(o =>
 
 ```
 [JsonReturn(EnsureMatchAcceptContentType = false)] 
-public interface IJsonResponseApi : IHttpApi
+public interface IDeformedApi 
 {
 }
 ```
+
 #### 类签名参数或apikey参数
 例如每个请求的url额外的动态添加一个叫sign的参数，这个sign可能和请求参数值有关联，每次都需要计算。
 
@@ -807,7 +825,7 @@ class SignFilterAttribute : ApiFilterAttribute
 }
 
 [SignFilter]
-public interface ISignedApi 
+public interface IDeformedApi 
 {
     ...
 }
@@ -820,7 +838,7 @@ public interface ISignedApi
 
 ```
 services
-    .AddHttpApi<IMyApi>(o =>
+    .AddHttpApi<IUserApi>(o =>
     {
         o.HttpHost = new Uri("http://localhost:6000/");
     })
@@ -844,7 +862,7 @@ services
 有些服务器为了限制客户端的连接，开启了https双向验证，只允许它执有它颁发的证书的客户端进行连接
 ```
 services
-    .AddHttpApi<IMyApi>(o =>
+    .AddHttpApi<IUserApi>(o =>
     {
         o.HttpHost = new Uri("http://localhost:6000/");
     })
@@ -863,7 +881,7 @@ services
 ```
 var cookieContainer = new CookieContainer();
 services
-    .AddHttpApi<IMyApi>(o =>
+    .AddHttpApi<IUserApi>(o =>
     {
         o.HttpHost = new Uri("http://localhost:6000/");
     })
@@ -882,7 +900,7 @@ services
 
 ```
 // 为接口注册与配置token提者选项
-services.AddClientCredentialsTokenProvider<IMyApi>(o =>
+services.AddClientCredentialsTokenProvider<IUserApi>(o =>
 {
     o.Endpoint = new Uri("http://localhost:6000/api/tokens");
     o.Credentials.Client_id = "clientId";
@@ -897,7 +915,7 @@ services.AddClientCredentialsTokenProvider<IMyApi>(o =>
 /// 用户操作接口
 /// </summary>
 [ClientCredentialsToken]
-public interface IMyApi
+public interface IUserApi
 {
     ...
 }
@@ -919,7 +937,7 @@ class MyTokenAttribute : ClientCredentialsTokenAttribute
 /// 用户操作接口
 /// </summary>
 [MyToken]
-public interface IMyApi
+public interface IUserApi
 {
     ...
 }
@@ -951,20 +969,106 @@ services.AddHttpApi<IUserApi>().ConfigureNewtonsoftJson(o =>
 /// 用户操作接口
 /// </summary>
 [JsonNetReturn]
-public interface IUserApi : IHttpApi
+public interface IUserApi
 {
     [HttpPost("/users")]
     Task PostAsync([JsonNetContent] User user);
 }
+```抽象类
+LoggingFilterAttribute | 请求和响应内容的输出为日志的过滤器
+
+#### 自解释参数类型
+
+类型名称 | 功能描述 | 备注
+---|---|---|
+FormDataFile | form-data的一个文件项 | 无需特性修饰
+JsonPatchDocument | 表示将JsonPatch请求文档 | 无需特性修饰
+
+
+### Uri拼接规则
+所有的Uri拼接都是通过Uri(Uri baseUri, Uri relativeUri)这个构造器生成。
+
+#### 带`/`结尾的baseUri
+
+* `http://a.com/` + `b/c/d` = `http://a.com/b/c/d`
+* `http://a.com/path1/` + `b/c/d` = `http://a.com/path1/b/c/d`
+* `http://a.com/path1/path2/` + `b/c/d` = `http://a.com/path1/path2/b/c/d`
+
+#### 不带`/`结尾的baseUri
+
+* `http://a.com` + `b/c/d` = `http://a.com/b/c/d`
+* `http://a.com/path1` + `b/c/d` = `http://a.com/b/c/d`
+* `http://a.com/path1/path2` + `b/c/d` = `http://a.com/path1/b/c/d`
+
+事实上`http://a.com`与`http://a.com/`是完全一样的，他们的path都是`/`，所以才会表现一样。为了避免低级错误的出现，请使用的标准baseUri书写方式，即使用`/`作为baseUri的结尾的第一种方式。
+
+
+### 表单集合处理
+按照OpenApi，一个集合在Uri的Query或表单中支持5种表述方式，分别是：
+* Csv // 逗号分隔
+* Ssv // 空格分隔
+* Tsv // 反斜杠分隔
+* Pipes // 竖线分隔
+* Multi // 多个同名键的键值对
+
+对于 id = new string []{"001","002"} 这样的值，在PathQueryAttribute与FormContentAttribute处理后分别是：
+
+CollectionFormat | Data
+---|---
+[PathQuery(CollectionFormat = CollectionFormat.Csv)] | `id=001,002`
+[PathQuery(CollectionFormat = CollectionFormat.Ssv)] | `id=001 002`
+[PathQuery(CollectionFormat = CollectionFormat.Tsv)] | `id=001\002`
+[PathQuery(CollectionFormat = CollectionFormat.Pipes)] | `id=001|002`
+[PathQuery(CollectionFormat = CollectionFormat.Multi)] | `id=001&id=002`
+ 
+
+
+
+### CancellationToken参数
+每个接口都支持声明一个CancellationToken类型的参数，用于支持取消请求操作。CancellationToken.None表示永不取消，创建一个CancellationTokenSource，可以提供一个CancellationToken。
+
+```
+[HttpGet("api/users/{id}")]
+ITask<User> GetAsync([Required]string id, CancellationToken token = default);
 ```
 
+### ContentType CharSet
+对于非表单的body内容，默认或缺省时的charset值，对应的是UTF8编码，可以根据服务器要求调整编码。
 
-### 生态融合
-Microsoft.Extensions.Http支持收入各种第三方的HttpMessageHandler来build出一种安全的HttpClient，同时支持将此HttpClient实例包装为强类型服务的目标服务类型注册功能。
 
-#### Polly
-Microsoft.Extensions.Http.Polly项目依托于Polly，将Polly策略实现到System.Net.Http.DelegatingHandler，其handler可以为HttpClient提供重试、降级和断路等功能。
+Attribute | ContentType
+---|---
+[JsonContent] | Content-Type: application/json; charset=utf-8
+[JsonContent(CharSet ="utf-8")] | Content-Type: application/json; charset=utf-8
+[JsonContent(CharSet ="unicode")] | Content-Type: application/json; charset=utf-16
 
-#### WebApiClientCore
-WebApiClientCore可以将Microsoft.Extensions.Http创建出来的HttpClient实例包装为声明式接口的代理实例，使开发者从面向命令式的编程模式直达声明式的AOP编程。
 
+
+### Accpet ContentType
+这个用于控制客户端希望服务器返回什么样的内容格式，比如json或xml。
+
+#### 缺省配置值
+
+缺省配置是[JsonReturn(0.01),XmlReturn(0.01)]，对应的请求accept值是
+`Accept: application/json; q=0.01, application/xml; q=0.01`
+
+#### Json优先
+
+在Interface或Method上显式地声明`[JsonReturn]`，请求accept变为`Accept: application/json, application/xml; q=0.01`
+
+#### 禁用json
+
+在Interface或Method上声明`[JsonReturn(Enable = false)]`，请求变为`Accept: application/xml; q=0.01`
+
+
+### 请求和响应日志
+在整个Interface或某个Method上声明`[LoggingFilter]`，即可把请求和响应的内容输出到LoggingFactory中。如果要排除某个Method不打印日志，在该Method上声明`[LoggingFilter(Enable = false)]`，即可将本Method排除。
+
+#### 默认日志
+
+```
+[LoggingFilter]   
+public interface IUserApi
+{
+    [HttpGet("api/users/{account}")]
+    ITask<HttpResponseMessage> GetAsync([Required]string 
