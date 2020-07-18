@@ -186,7 +186,7 @@ LoggingFilterAttribute | 请求和响应内容的输出为日志的过滤器 |
 
 类型名称 | 功能描述 | 备注
 ---|---|---|
-FormDataFile | form-data的一个文件项 | 无需特性修饰
+FormDataFile | form-data的一个文件项 | 无需特性修饰，等效于FileInfo类型
 JsonPatchDocument | 表示将JsonPatch请求文档 | 无需特性修饰
 
 
@@ -230,7 +230,7 @@ CollectionFormat | Data
 
 
 ### CancellationToken参数
-每个接口都支持声明一个CancellationToken类型的参数，用于支持取消请求操作。CancellationToken.None表示永不取消，创建一个CancellationTokenSource，可以提供一个CancellationToken。
+每个接口都支持声明一个或多个CancellationToken类型的参数，用于支持取消请求操作。CancellationToken.None表示永不取消，创建一个CancellationTokenSource，可以提供一个CancellationToken。
 
 ```
 [HttpGet("api/users/{id}")]
@@ -974,101 +974,4 @@ public interface IUserApi
     [HttpPost("/users")]
     Task PostAsync([JsonNetContent] User user);
 }
-```抽象类
-LoggingFilterAttribute | 请求和响应内容的输出为日志的过滤器
-
-#### 自解释参数类型
-
-类型名称 | 功能描述 | 备注
----|---|---|
-FormDataFile | form-data的一个文件项 | 无需特性修饰
-JsonPatchDocument | 表示将JsonPatch请求文档 | 无需特性修饰
-
-
-### Uri拼接规则
-所有的Uri拼接都是通过Uri(Uri baseUri, Uri relativeUri)这个构造器生成。
-
-#### 带`/`结尾的baseUri
-
-* `http://a.com/` + `b/c/d` = `http://a.com/b/c/d`
-* `http://a.com/path1/` + `b/c/d` = `http://a.com/path1/b/c/d`
-* `http://a.com/path1/path2/` + `b/c/d` = `http://a.com/path1/path2/b/c/d`
-
-#### 不带`/`结尾的baseUri
-
-* `http://a.com` + `b/c/d` = `http://a.com/b/c/d`
-* `http://a.com/path1` + `b/c/d` = `http://a.com/b/c/d`
-* `http://a.com/path1/path2` + `b/c/d` = `http://a.com/path1/b/c/d`
-
-事实上`http://a.com`与`http://a.com/`是完全一样的，他们的path都是`/`，所以才会表现一样。为了避免低级错误的出现，请使用的标准baseUri书写方式，即使用`/`作为baseUri的结尾的第一种方式。
-
-
-### 表单集合处理
-按照OpenApi，一个集合在Uri的Query或表单中支持5种表述方式，分别是：
-* Csv // 逗号分隔
-* Ssv // 空格分隔
-* Tsv // 反斜杠分隔
-* Pipes // 竖线分隔
-* Multi // 多个同名键的键值对
-
-对于 id = new string []{"001","002"} 这样的值，在PathQueryAttribute与FormContentAttribute处理后分别是：
-
-CollectionFormat | Data
----|---
-[PathQuery(CollectionFormat = CollectionFormat.Csv)] | `id=001,002`
-[PathQuery(CollectionFormat = CollectionFormat.Ssv)] | `id=001 002`
-[PathQuery(CollectionFormat = CollectionFormat.Tsv)] | `id=001\002`
-[PathQuery(CollectionFormat = CollectionFormat.Pipes)] | `id=001|002`
-[PathQuery(CollectionFormat = CollectionFormat.Multi)] | `id=001&id=002`
- 
-
-
-
-### CancellationToken参数
-每个接口都支持声明一个CancellationToken类型的参数，用于支持取消请求操作。CancellationToken.None表示永不取消，创建一个CancellationTokenSource，可以提供一个CancellationToken。
-
 ```
-[HttpGet("api/users/{id}")]
-ITask<User> GetAsync([Required]string id, CancellationToken token = default);
-```
-
-### ContentType CharSet
-对于非表单的body内容，默认或缺省时的charset值，对应的是UTF8编码，可以根据服务器要求调整编码。
-
-
-Attribute | ContentType
----|---
-[JsonContent] | Content-Type: application/json; charset=utf-8
-[JsonContent(CharSet ="utf-8")] | Content-Type: application/json; charset=utf-8
-[JsonContent(CharSet ="unicode")] | Content-Type: application/json; charset=utf-16
-
-
-
-### Accpet ContentType
-这个用于控制客户端希望服务器返回什么样的内容格式，比如json或xml。
-
-#### 缺省配置值
-
-缺省配置是[JsonReturn(0.01),XmlReturn(0.01)]，对应的请求accept值是
-`Accept: application/json; q=0.01, application/xml; q=0.01`
-
-#### Json优先
-
-在Interface或Method上显式地声明`[JsonReturn]`，请求accept变为`Accept: application/json, application/xml; q=0.01`
-
-#### 禁用json
-
-在Interface或Method上声明`[JsonReturn(Enable = false)]`，请求变为`Accept: application/xml; q=0.01`
-
-
-### 请求和响应日志
-在整个Interface或某个Method上声明`[LoggingFilter]`，即可把请求和响应的内容输出到LoggingFactory中。如果要排除某个Method不打印日志，在该Method上声明`[LoggingFilter(Enable = false)]`，即可将本Method排除。
-
-#### 默认日志
-
-```
-[LoggingFilter]   
-public interface IUserApi
-{
-    [HttpGet("api/users/{account}")]
-    ITask<HttpResponseMessage> GetAsync([Required]string 
