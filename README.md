@@ -302,6 +302,18 @@ public interface IUserApi
 }
 ```
 
+### 原始类型返回值
+
+当接口返回值声明为如下类型时，我们称之为原始类型，会被RawReturnAttribute处理。
+
+返回类型 | 说明
+---|---
+Task | 不关注响应消息
+Task<HttpResponseMessage> | 原始响应消息类型
+Task<Stream> | 原始响应流
+Task<byte[]> | 原始响应二进制数据
+Task<string> | 原始响应消息文本
+
 ### 接口声明示例
 #### Petstore接口
 这个OpenApi文档在[petstore.swagger.io](https://petstore.swagger.io/)，代码为使用WebApiClientCore.OpenApi.SourceGenerator工具将其OpenApi文档反向生成得到
