@@ -1,5 +1,4 @@
-﻿using System.Net.Http.Headers;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using WebApiClientCore.Extensions.JsonRpc;
 
 namespace WebApiClientCore.Attributes
@@ -7,18 +6,12 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示Json-Rpc请求方法
     /// </summary>
-    public class JsonRpcMethodAttribute : JsonReturnAttribute, IApiActionAttribute, IApiFilterAttribute
+    public class JsonRpcMethodAttribute : HttpPostAttribute, IApiFilterAttribute
     {
         /// <summary>
-        /// Post请求特性
+        /// JsonRpc的方法名称
         /// </summary>
-        private HttpPostAttribute postAttribute = new HttpPostAttribute();
-
-        /// <summary>
-        /// 获取JsonRpc的方法名称
-        /// 为null则使用声明的方法名
-        /// </summary>
-        public string? Method { get; set; }
+        private readonly string? method;
 
         /// <summary>
         /// 获取或设置JsonRpc的参数风格
@@ -33,25 +26,15 @@ namespace WebApiClientCore.Attributes
         public string ContentType { get; set; } = JsonRpcContent.MediaType;
 
         /// <summary>
-        /// 获取或设置JsonRpc的路径
-        /// 可以为空、相对路径或绝对路径
+        /// 获取过滤器是否启用
         /// </summary>
-        public string? Path
-        {
-            get => this.postAttribute.Path;
-            set => this.postAttribute = new HttpPostAttribute(value);
-        }
-
-        /// <summary>
-        /// 获取顺序排序的索引
-        /// </summary>
-        public override int OrderIndex => this.postAttribute.OrderIndex;
+        bool IAttributeEnable.Enable => true;
 
         /// <summary>
         /// Json-Rpc请求方法
         /// </summary>
         public JsonRpcMethodAttribute()
-            : this(null)
+            : this(method: null, path: null)
         {
         }
 
@@ -60,28 +43,37 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="method">JsonRpc的方法名称</param>
         public JsonRpcMethodAttribute(string? method)
-            : base()
+            : this(method, path: null)
         {
-            this.Method = method;
         }
 
+        /// <summary>
+        /// Json-Rpc请求方法
+        /// </summary>
+        /// <param name="method">JsonRpc的方法名称</param>
+        /// <param name="path">JsonRpc路径</param>
+        public JsonRpcMethodAttribute(string? method, string? path)
+            : base(path)
+        {
+            this.method = method;
+        }
 
         /// <summary>
         /// Action请求前
         /// </summary>
-        /// <param name="context">上下文</param> 
+        /// <param name="context"></param>
         /// <returns></returns>
-        Task IApiActionAttribute.OnRequestAsync(ApiRequestContext context)
+        public override Task OnRequestAsync(ApiRequestContext context)
         {
             var jsonRpcContext = new JsonRpcContext
             {
                 MediaType = this.ContentType,
-                Method = this.Method ?? context.ApiAction.Name,
+                Method = this.method ?? context.ApiAction.Name,
                 ParamsStyle = this.ParamsStyle
             };
 
             context.Properties.Set(typeof(JsonRpcContext), jsonRpcContext);
-            return this.postAttribute.OnRequestAsync(context);
+            return base.OnRequestAsync(context);
         }
 
         /// <summary>
@@ -103,16 +95,6 @@ namespace WebApiClientCore.Attributes
         Task IApiFilterAttribute.OnResponseAsync(ApiResponseContext context)
         {
             return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// 不验证响应的ContentType
-        /// </summary>
-        /// <param name="responseContentType"></param>
-        /// <returns></returns>
-        protected override bool IsMatchAcceptContentType(MediaTypeHeaderValue? responseContentType)
-        {
-            return true;
         }
     }
 }
