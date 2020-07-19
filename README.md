@@ -308,11 +308,11 @@ public interface IUserApi
 
 返回类型 | 说明
 ---|---
-Task | 不关注响应消息
-Task<HttpResponseMessage> | 原始响应消息类型
-Task<Stream> | 原始响应流
-Task<byte[]> | 原始响应二进制数据
-Task<string> | 原始响应消息文本
+`Task` | 不关注响应消息
+`Task<HttpResponseMessage>` | 原始响应消息类型
+`Task<Stream>` | 原始响应流
+`Task<byte[]>` | 原始响应二进制数据
+`Task<string>` | 原始响应消息文本
 
 ### 接口声明示例
 #### Petstore接口
