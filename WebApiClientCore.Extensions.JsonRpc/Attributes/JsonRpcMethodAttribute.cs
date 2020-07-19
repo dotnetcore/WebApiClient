@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClientCore.Extensions.JsonRpc;
 
@@ -8,7 +7,6 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示Json-Rpc请求方法
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class JsonRpcMethodAttribute : JsonReturnAttribute, IApiActionAttribute, IApiFilterAttribute
     {
         /// <summary>
