@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net451</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Authors>laojiu</Authors>
     <Company>laojiu</Company>
     <Copyright>Copyright © laojiu 2017-2020</Copyright>
@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="1.9.71" />
-    <PackageReference Include="RazorEngine" Version="3.10.0" />
+    <PackageReference Include="RazorEngineCore" Version="2020.6.1" />
     <PackageReference Include="NSwag.CodeGeneration.CSharp" Version="13.5.0" />
   </ItemGroup>
 

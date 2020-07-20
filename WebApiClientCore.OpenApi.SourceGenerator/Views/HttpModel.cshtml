@@ -1,12 +1,9 @@
-﻿@inherits HtmlTemplateBase<HttpModel>
-
-@using WebApiClientCore.OpenApi.SourceGenerator
-@using RazorEngine.Templating
+﻿@inherits WebApiClientCore.OpenApi.SourceGenerator.HtmlTempate<WebApiClientCore.OpenApi.SourceGenerator.HttpModel>
 
 <HttpModel>
     <usings>
         <div>using System;</div>
-        <div>using System.Collections.Generic;</div>       
+        <div>using System.Collections.Generic;</div>
         <div>using System.Text.Json.Serialization;</div>
         <div>using System.Runtime.Serialization;</div>
         <div>using System.Collections.ObjectModel;</div>
