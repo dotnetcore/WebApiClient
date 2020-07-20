@@ -2,7 +2,7 @@
 WebApiClientCore的JsonRpc调用扩展
 
 ### 使用方式
-使用[JsonRpcMethod]修饰JsonRpc方法方法，使用[JsonRpcParam]修饰JsonRpc参数
+使用[JsonRpcMethod]修饰Rpc方法，使用[JsonRpcParam]修饰Rpc参数
 
 ```c#
 [HttpHost("http://localhost:5000/jsonrpc")]
