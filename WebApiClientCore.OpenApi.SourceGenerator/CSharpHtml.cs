@@ -79,6 +79,7 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
                 path = Path.ChangeExtension(path, ".cshtml");
             }
 
+            path = Path.Combine(AppContext.BaseDirectory, path);
             if (File.Exists(path) == false)
             {
                 throw new FileNotFoundException(path);
@@ -189,9 +190,10 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
                     builder.Inherits(typeof(HtmlTempate));
                     builder.AddAssemblyReference(typeof(NSwag.OpenApiSchema).Assembly);
                     builder.AddAssemblyReference(typeof(NJsonSchema.JsonSchema).Assembly);
-                    builder.AddAssemblyReference(typeof(Newtonsoft.Json.Schema.JsonSchema).Assembly);
 
+                    builder.AddUsing("NSwag");
                     builder.AddUsing("System");
+                    builder.AddUsing("WebApiClientCore.OpenApi.SourceGenerator");
                 }));
             }
         }

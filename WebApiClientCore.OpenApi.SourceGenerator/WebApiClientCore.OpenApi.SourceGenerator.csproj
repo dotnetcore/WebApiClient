@@ -10,7 +10,7 @@
     <Summary>将本地或远程OpenApi文档解析生成WebApiClientCore的接口定义代码文件的工具</Summary>
 
 
-    <Version>1.0.6</Version>
+    <Version>1.0.6-beta2</Version>
     <Authors>laojiu</Authors>
     <Company>laojiu</Company>
     <Copyright>Copyright © laojiu 2017-2020</Copyright>
@@ -27,16 +27,13 @@
 
 
   <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="1.9.71" />
+    <PackageReference Include="CommandLineParser" Version="2.8.0" />
     <PackageReference Include="RazorEngineCore" Version="2020.6.1" />
-    <PackageReference Include="NSwag.CodeGeneration.CSharp" Version="13.5.0" />
+    <PackageReference Include="NSwag.CodeGeneration.CSharp" Version="13.6.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="petstore.openApi.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="petstore.openApi.bat">
+    <None Update="petstore.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Views\HttpApi.cshtml">

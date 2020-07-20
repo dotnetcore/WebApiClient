@@ -1,4 +1,6 @@
-﻿@inherits WebApiClientCore.OpenApi.SourceGenerator.HtmlTempate<WebApiClientCore.OpenApi.SourceGenerator.HttpApi>
+﻿@inherits HtmlTempate<HttpApi>
+@using NSwag;
+@using WebApiClientCore.OpenApi.SourceGenerator;
 
 <HttpApi>
     <usings>
@@ -80,21 +82,21 @@
                                 <span>[Required]</span>
                             }
 
-                            if (parameter.VariableName != parameter.Name && parameter.Kind != NSwag.OpenApiParameterKind.Header)
+                            if (parameter.VariableName != parameter.Name && parameter.Kind != OpenApiParameterKind.Header)
                             {
                                 <span>[AliasAs("@(parameter.Name)")]</span>
                             }
 
-                            if (parameter.Kind == NSwag.OpenApiParameterKind.Path || parameter.Kind == NSwag.OpenApiParameterKind.Query)
+                            if (parameter.Kind == OpenApiParameterKind.Path || parameter.Kind == OpenApiParameterKind.Query)
                             {
-                                var schema = parameter.Schema as NSwag.OpenApiParameter;
-                                if (schema != null && schema.CollectionFormat != NSwag.OpenApiParameterCollectionFormat.Undefined
-                                    && schema.CollectionFormat != NSwag.OpenApiParameterCollectionFormat.Multi)
+                                var schema = parameter.Schema as OpenApiParameter;
+                                if (schema != null && schema.CollectionFormat != OpenApiParameterCollectionFormat.Undefined
+                                    && schema.CollectionFormat != OpenApiParameterCollectionFormat.Multi)
                                 {
                                     <span>[PathQuery(CollectionFormat = CollectionFormat.@(schema.CollectionFormat))]</span>
                                 }
                             }
-                            else if (parameter.Kind == NSwag.OpenApiParameterKind.Header)
+                            else if (parameter.Kind == OpenApiParameterKind.Header)
                             {
                                 <span>[Header("@(parameter.Name)")]</span>
                             }
@@ -102,7 +104,7 @@
                             {
                                 <span>[XmlContent]</span>
                             }
-                            else if (parameter.Kind == NSwag.OpenApiParameterKind.FormData)
+                            else if (parameter.Kind == OpenApiParameterKind.FormData)
                             {
                                 if (parameter.IsFile == false)
                                 {
@@ -116,7 +118,7 @@
                                     }
                                 }
                             }
-                            else if (parameter.Kind == NSwag.OpenApiParameterKind.Body)
+                            else if (parameter.Kind == OpenApiParameterKind.Body)
                             {
                                 if (parameter.IsBinaryBody == false)
                                 {
