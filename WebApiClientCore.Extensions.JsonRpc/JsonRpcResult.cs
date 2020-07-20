@@ -12,7 +12,7 @@ namespace WebApiClientCore.Extensions.JsonRpc
         /// 请求id
         /// </summary>
         [JsonPropertyName("id")]
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         /// <summary>
         /// jsonrpc版本号
@@ -32,7 +32,7 @@ namespace WebApiClientCore.Extensions.JsonRpc
         /// 错误内容
         /// </summary>
         [JsonPropertyName("error")]
-        public JsonRpcError? Error { get; set; } 
+        public JsonRpcError? Error { get; set; }
     }
 }
 
