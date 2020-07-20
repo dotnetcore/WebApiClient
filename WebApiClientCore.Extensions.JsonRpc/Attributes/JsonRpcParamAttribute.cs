@@ -16,13 +16,13 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public override Task OnRequestAsync(ApiParameterContext context)
         {
-            var jsonRpcContext = context.Properties.Get<JsonRpcContext>(typeof(JsonRpcContext));
-            if (jsonRpcContext == null)
+            var parameters = context.Properties.Get<JsonRpcParameters>(typeof(JsonRpcParameters));
+            if (parameters == null)
             {
                 throw new ApiInvalidConfigException($"请为接口方法{context.ApiAction.Name}修饰{nameof(JsonRpcMethodAttribute)}");
             }
 
-            jsonRpcContext.Parameters.Add(context);
+            parameters.Add(context);
             return Task.CompletedTask;
         }
     }
