@@ -79,20 +79,21 @@ namespace WebApiClientCore
                 throw new ArgumentNullException(nameof(method));
             }
 
+            if (interfaceType == null)
+            {
+                interfaceType = method.DeclaringType;
+            }
+             
             var methodAttributes = method.GetAttributes<IApiActionAttribute>(false);
-
-            var interfaceAttributes = interfaceType == null
-                ? Enumerable.Empty<IApiActionAttribute>()
-                : interfaceType.GetAttributes<IApiActionAttribute>(false);
-
-            var decalringAttributes = method.DeclaringType == null
+            var interfaceAttributes = interfaceType.GetAttributes<IApiActionAttribute>(false);
+            var declaringInterfaceAttributes = interfaceType == method.DeclaringType
                 ? Enumerable.Empty<IApiActionAttribute>()
                 : method.DeclaringType.GetAttributes<IApiActionAttribute>(false);
 
             // 接口特性优先于方法所在类型的特性
             var actionAttributes = methodAttributes
                 .Concat(interfaceAttributes)
-                .Concat(decalringAttributes)
+                .Concat(declaringInterfaceAttributes)
                 .Distinct(MultiplableComparer<IApiActionAttribute>.Default)
                 .OrderBy(item => item.OrderIndex)
                 .ToReadOnlyList();
@@ -105,7 +106,7 @@ namespace WebApiClientCore
                 .ToReadOnlyList();
 
             this.Id = Guid.NewGuid().ToString();
-            this.InterfaceType = interfaceType ?? (method.DeclaringType ?? throw new ArgumentException(nameof(method)));
+            this.InterfaceType = interfaceType;
 
             this.Member = method;
             this.Name = method.Name;
