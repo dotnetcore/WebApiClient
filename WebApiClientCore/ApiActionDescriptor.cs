@@ -83,23 +83,18 @@ namespace WebApiClientCore
             {
                 interfaceType = method.DeclaringType;
             }
-             
-            var methodAttributes = method.GetAttributes<IApiActionAttribute>(false);
-            var interfaceAttributes = interfaceType.GetAttributes<IApiActionAttribute>(false);
-            var declaringInterfaceAttributes = interfaceType == method.DeclaringType
-                ? Enumerable.Empty<IApiActionAttribute>()
-                : method.DeclaringType.GetAttributes<IApiActionAttribute>(false);
 
             // 接口特性优先于方法所在类型的特性
-            var actionAttributes = methodAttributes
-                .Concat(interfaceAttributes)
-                .Concat(declaringInterfaceAttributes)
+            var actionAttributes = method
+                .GetAttributes<IApiActionAttribute>()
+                .Concat(interfaceType.GetAttributes<IApiActionAttribute>())
                 .Distinct(MultiplableComparer<IApiActionAttribute>.Default)
                 .OrderBy(item => item.OrderIndex)
                 .ToReadOnlyList();
 
             var filterAttributes = method
-                .GetAttributes<IApiFilterAttribute>(true)
+                .GetAttributes<IApiFilterAttribute>()
+                .Concat(interfaceType.GetAttributes<IApiFilterAttribute>())
                 .Distinct(MultiplableComparer<IApiFilterAttribute>.Default)
                 .OrderBy(item => item.OrderIndex)
                 .Where(item => item.Enable)
@@ -114,7 +109,7 @@ namespace WebApiClientCore
             this.CacheAttribute = method.GetAttribute<IApiCacheAttribute>();
             this.FilterAttributes = filterAttributes;
 
-            this.Return = new ApiReturnDescriptor(method);
+            this.Return = new ApiReturnDescriptor(method, interfaceType);
             this.Parameters = method.GetParameters().Select(p => new ApiParameterDescriptor(p)).ToReadOnlyList();
             this.Properties = new ConcurrentDictionary<object, object>();
         }

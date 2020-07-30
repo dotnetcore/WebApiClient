@@ -50,8 +50,8 @@ namespace WebApiClientCore.Test.BuildinExtensions
             var m1 = typeof(D1).GetMethod("M1");
             var m2 = typeof(D1).GetMethod("M2");
 
-            Assert.True(m1.GetAttributes<MyAttribute>(true).Count() == 0);
-            Assert.True(m2.GetAttributes<MyAttribute>(true).Count() == 1);
+            Assert.True(m1.GetAttributes<MyAttribute>().Count() == 0);
+            Assert.True(m2.GetAttributes<MyAttribute>().Count() == 1);
         }
     }
 }
