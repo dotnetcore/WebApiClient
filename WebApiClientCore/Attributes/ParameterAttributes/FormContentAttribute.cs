@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace WebApiClientCore.Attributes
 {
@@ -18,8 +19,18 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         protected override async Task SetHttpContentAsync(ApiParameterContext context)
         {
-            var keyValues = context.SerializeToKeyValues().CollectAs(this.CollectionFormat);
+            var keyValues = this.SerializeToKeyValues(context);
             await context.HttpContext.RequestMessage.AddFormFieldAsync(keyValues).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// 序列化参数为keyValue
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        protected virtual IEnumerable<KeyValue> SerializeToKeyValues(ApiParameterContext context)
+        {
+            return context.SerializeToKeyValues().CollectAs(this.CollectionFormat);
         }
     }
 }
