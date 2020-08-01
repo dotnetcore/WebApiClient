@@ -28,7 +28,7 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 序列化参数为keyValue
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">上下文</param>
         /// <returns></returns>
         protected virtual IEnumerable<KeyValue> SerializeToKeyValues(ApiParameterContext context)
         {
