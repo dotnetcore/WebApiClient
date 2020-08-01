@@ -87,14 +87,14 @@ namespace WebApiClientCore
             // 接口特性优先于方法所在类型的特性
             var actionAttributes = method
                 .GetAttributes<IApiActionAttribute>()
-                .Concat(interfaceType.GetAttributes<IApiActionAttribute>())
+                .Concat(interfaceType.GetAttributes<IApiActionAttribute>(inclueBases: true))
                 .Distinct(MultiplableComparer<IApiActionAttribute>.Default)
                 .OrderBy(item => item.OrderIndex)
                 .ToReadOnlyList();
 
             var filterAttributes = method
                 .GetAttributes<IApiFilterAttribute>()
-                .Concat(interfaceType.GetAttributes<IApiFilterAttribute>())
+                .Concat(interfaceType.GetAttributes<IApiFilterAttribute>(inclueBases: true))
                 .Distinct(MultiplableComparer<IApiFilterAttribute>.Default)
                 .OrderBy(item => item.OrderIndex)
                 .Where(item => item.Enable)

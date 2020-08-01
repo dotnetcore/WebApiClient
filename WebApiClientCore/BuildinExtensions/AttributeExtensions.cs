@@ -44,17 +44,20 @@ namespace WebApiClientCore
         }
 
         /// <summary>
-        /// 获取接口以及其基础接口定义的特性
+        /// 获取接口定义的特性
         /// </summary>
         /// <typeparam name="TAttribute"></typeparam>
-        /// <param name="interfaceType">接口类型</param> 
+        /// <param name="interfaceType">接口类型</param>
+        /// <param name="inclueBases">是否包括基础接口定义的特性</param> 
         /// <returns></returns>
-        public static IEnumerable<TAttribute> GetAttributes<TAttribute>(this Type interfaceType) where TAttribute : class
+        public static IEnumerable<TAttribute> GetAttributes<TAttribute>(this Type interfaceType, bool inclueBases) where TAttribute : class
         {
-            return new[] { interfaceType }
-                .Concat(interfaceType.GetInterfaces())
-                .SelectMany(item => item.GetCustomAttributes()
-                .OfType<TAttribute>());
+            var types = Enumerable.Repeat(interfaceType, 1);
+            if (inclueBases == true)
+            {
+                types = types.Concat(interfaceType.GetInterfaces());
+            }
+            return types.SelectMany(item => item.GetCustomAttributes().OfType<TAttribute>());
         }
     }
 }

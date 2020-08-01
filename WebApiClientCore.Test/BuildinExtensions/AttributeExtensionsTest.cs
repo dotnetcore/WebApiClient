@@ -6,32 +6,16 @@ namespace WebApiClientCore.Test.BuildinExtensions
 {
     public class AttributeExtensionsTest
     {
-        interface IAttribute
+
+        class MyAttribute : Attribute
         {
         }
 
-        class MyAttribute : Attribute, IAttribute
+        class YourAttribute : Attribute
         {
         }
 
-        class YourAttribute : Attribute, IAttribute
-        {
-        }
-
-        class MyClass
-        {
-            [My]
-            public int Age { get; set; }
-
-            [My, Your]
-            public string Name { get; set; }
-
-            public void Set(int age, [My, Your] string name)
-            {
-            }
-        }
-
-        class D1
+        class Class1
         {
             public void M1()
             {
@@ -42,16 +26,36 @@ namespace WebApiClientCore.Test.BuildinExtensions
             {
             }
         }
-         
+
+        [My]
+        interface Inteface1
+        {
+        }
+
+        [My]
+        interface Interface2 : Inteface1
+        {
+        }
+
+        [Your]
+        [My]
+        interface Interface3 : Interface2
+        {
+        }
+
+
 
         [Fact]
         public void GetAttributesTest()
         {
-            var m1 = typeof(D1).GetMethod("M1");
-            var m2 = typeof(D1).GetMethod("M2");
+            var m1 = typeof(Class1).GetMethod("M1");
+            var m2 = typeof(Class1).GetMethod("M2");
 
             Assert.True(m1.GetAttributes<MyAttribute>().Count() == 0);
             Assert.True(m2.GetAttributes<MyAttribute>().Count() == 1);
+
+            Assert.Equal(2, typeof(Interface2).GetAttributes<Attribute>(inclueBases: true).Count());
+            Assert.Equal(4, typeof(Interface3).GetAttributes<Attribute>(inclueBases: true).Count());
         }
     }
 }

@@ -62,7 +62,7 @@ namespace WebApiClientCore
             this.DataType = dataType;
             this.Attributes = method
                 .GetAttributes<IApiReturnAttribute>()
-                .Concat(interfaceType.GetAttributes<IApiReturnAttribute>())
+                .Concat(interfaceType.GetAttributes<IApiReturnAttribute>(inclueBases: true))
                 .Concat(GetDefaultAttributes(dataType))
                 .Distinct(MultiplableComparer<IApiReturnAttribute>.Default)
                 .OrderBy(item => item.OrderIndex)
