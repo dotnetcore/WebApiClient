@@ -560,6 +560,24 @@ public interface IUserApi
     ITask<HttpResponseMessage> GetAsync([Required]string account);
 }
 ```
+默认缓存条件：URL(如`http://abc.com/a`)和全部请求Header一致。
+如果需要类似`[CacheByPath]`这样的功能，可直接继承`ApiCacheAttribute`来实现:
+
+```
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+    public class CacheByPathAttribute : ApiCacheAttribute
+    {
+        public CacheByPathAttribute(double expiration) : base(expiration)
+        {
+        }
+
+        public override Task<string> GetCacheKeyAsync(ApiRequestContext context)
+        {
+            return Task.FromResult(context.HttpContext.RequestMessage.RequestUri.AbsolutePath);
+        }
+    }
+```
+
 
 #### 自定义缓存提供者
 默认的缓存提供者为内存缓存，如果希望将缓存保存到其它存储位置，则需要自定义 缓存提者，并注册替换默认的缓存提供者。
