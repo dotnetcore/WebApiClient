@@ -4,6 +4,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Xml;
 using WebApiClientCore.Serialization;
+using WebApiClientCore.Serialization.JsonConverters;
 
 namespace WebApiClientCore
 {
@@ -69,6 +70,9 @@ namespace WebApiClientCore
                 if (this.jsonDeserializeOptions == null)
                 {
                     this.jsonDeserializeOptions = CreateDefaultJsonOptions();
+                    this.jsonDeserializeOptions.Converters.Add(JsonCompatibleConverter.EnumReader);
+                    this.jsonDeserializeOptions.Converters.Add(JsonCompatibleConverter.DateTimeReader);
+                    this.jsonDeserializeOptions.Converters.Add(JsonCompatibleConverter.DateTimeOffsetReader);
                 }
                 return this.jsonDeserializeOptions;
             }

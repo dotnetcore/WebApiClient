@@ -1,5 +1,4 @@
 ﻿using CommandLine;
-using System;
 
 namespace WebApiClientCore.OpenApi.SourceGenerator
 {
@@ -7,16 +6,16 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
     {
         static void Main(string[] args)
         {
-            var options = new OpenApiDocOptions();
-            if (Parser.Default.ParseArguments(args, options))
-            {
-                var doc = new OpenApiDoc(options);
-                doc.GenerateFiles();
-            }
-            else
-            {
-                Console.Read();
-            }
+            Parser.Default.ParseArguments<OpenApiDocOptions>(args)
+                .WithParsed(options =>
+                {
+                    var doc = new OpenApiDoc(options);
+                    doc.GenerateFiles();
+                })
+                .WithNotParsed(errors =>
+                {
+                    errors.Output();
+                });
         }
     }
 }

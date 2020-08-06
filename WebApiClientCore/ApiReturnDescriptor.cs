@@ -32,9 +32,20 @@ namespace WebApiClientCore
         /// <summary>
         /// 请求Api的返回描述
         /// </summary>
-        /// <param name="method">方法信息</param>
+        /// <param name="method">方法信息</param> 
         /// <exception cref="ArgumentNullException"></exception>
         public ApiReturnDescriptor(MethodInfo method)
+            : this(method, method.DeclaringType)
+        {
+        }
+
+        /// <summary>
+        /// 请求Api的返回描述
+        /// </summary>
+        /// <param name="method">方法信息</param>
+        /// <param name="interfaceType">接口类型</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public ApiReturnDescriptor(MethodInfo method, Type interfaceType)
         {
             if (method == null)
             {
@@ -50,7 +61,8 @@ namespace WebApiClientCore
             this.ReturnType = method.ReturnType;
             this.DataType = dataType;
             this.Attributes = method
-                .GetAttributes<IApiReturnAttribute>(true)
+                .GetAttributes<IApiReturnAttribute>()
+                .Concat(interfaceType.GetAttributes<IApiReturnAttribute>(inclueBases: true))
                 .Concat(GetDefaultAttributes(dataType))
                 .Distinct(MultiplableComparer<IApiReturnAttribute>.Default)
                 .OrderBy(item => item.OrderIndex)

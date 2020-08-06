@@ -79,33 +79,29 @@ namespace WebApiClientCore
                 throw new ArgumentNullException(nameof(method));
             }
 
-            var methodAttributes = method.GetAttributes<IApiActionAttribute>(false);
-
-            var interfaceAttributes = interfaceType == null
-                ? Enumerable.Empty<IApiActionAttribute>()
-                : interfaceType.GetAttributes<IApiActionAttribute>(false);
-
-            var decalringAttributes = method.DeclaringType == null
-                ? Enumerable.Empty<IApiActionAttribute>()
-                : method.DeclaringType.GetAttributes<IApiActionAttribute>(false);
+            if (interfaceType == null)
+            {
+                interfaceType = method.DeclaringType;
+            }
 
             // 接口特性优先于方法所在类型的特性
-            var actionAttributes = methodAttributes
-                .Concat(interfaceAttributes)
-                .Concat(decalringAttributes)
+            var actionAttributes = method
+                .GetAttributes<IApiActionAttribute>()
+                .Concat(interfaceType.GetAttributes<IApiActionAttribute>(inclueBases: true))
                 .Distinct(MultiplableComparer<IApiActionAttribute>.Default)
                 .OrderBy(item => item.OrderIndex)
                 .ToReadOnlyList();
 
             var filterAttributes = method
-                .GetAttributes<IApiFilterAttribute>(true)
+                .GetAttributes<IApiFilterAttribute>()
+                .Concat(interfaceType.GetAttributes<IApiFilterAttribute>(inclueBases: true))
                 .Distinct(MultiplableComparer<IApiFilterAttribute>.Default)
                 .OrderBy(item => item.OrderIndex)
                 .Where(item => item.Enable)
                 .ToReadOnlyList();
 
             this.Id = Guid.NewGuid().ToString();
-            this.InterfaceType = interfaceType ?? (method.DeclaringType ?? throw new ArgumentException(nameof(method)));
+            this.InterfaceType = interfaceType;
 
             this.Member = method;
             this.Name = method.Name;
@@ -113,7 +109,7 @@ namespace WebApiClientCore
             this.CacheAttribute = method.GetAttribute<IApiCacheAttribute>();
             this.FilterAttributes = filterAttributes;
 
-            this.Return = new ApiReturnDescriptor(method);
+            this.Return = new ApiReturnDescriptor(method, interfaceType);
             this.Parameters = method.GetParameters().Select(p => new ApiParameterDescriptor(p)).ToReadOnlyList();
             this.Properties = new ConcurrentDictionary<object, object>();
         }

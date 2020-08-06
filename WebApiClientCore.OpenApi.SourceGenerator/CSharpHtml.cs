@@ -1,6 +1,6 @@
-﻿using RazorEngine.Configuration;
-using RazorEngine.Templating;
+﻿using RazorEngineCore;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -47,28 +47,19 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
     /// <summary>
     /// 表示视图模板
     /// </summary>
-    [DebuggerDisplay("{TemplateFile}")]
-    class CSharpHtml<T> : ITemplateSource
+    [DebuggerDisplay("{FilePath}")]
+    class CSharpHtml<T>
     {
-        /// <summary>
-        /// 模板内容
-        /// </summary>
-        private readonly Lazy<string> template;
-
-        /// <summary>
-        /// 获取模板内容
-        /// </summary>
-        public string Template => this.template.Value;
-
         /// <summary>
         /// 获取模板文件路径
         /// </summary>
-        public string TemplateFile { get; private set; }
+        public string FilePath { get; }
 
         /// <summary>
         /// 块元素
         /// </summary>
-        public HashSet<string> BlockElements { get; private set; }
+        public HashSet<string> BlockElements { get; }
+
 
         /// <summary>
         /// 视图模板
@@ -88,39 +79,16 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
                 path = Path.ChangeExtension(path, ".cshtml");
             }
 
+            path = Path.Combine(AppContext.BaseDirectory, path);
             if (File.Exists(path) == false)
             {
                 throw new FileNotFoundException(path);
             }
 
-            this.template = new Lazy<string>(this.ReadTemplate);
-            this.TemplateFile = Path.GetFullPath(path);
+            this.FilePath = Path.GetFullPath(path);
             this.BlockElements = new HashSet<string>(new[] { "p", "div" }, StringComparer.OrdinalIgnoreCase);
         }
 
-        /// <summary>
-        /// 读取模板资源
-        /// </summary>
-        /// <returns></returns>
-        private string ReadTemplate()
-        {
-            using (var stream = new FileStream(this.TemplateFile, FileMode.Open))
-            {
-                using (var reader = new StreamReader(stream))
-                {
-                    return reader.ReadToEnd();
-                }
-            }
-        }
-
-        /// <summary>
-        /// 返回模板内容读取器
-        /// </summary>
-        /// <returns></returns>
-        TextReader ITemplateSource.GetTemplateReader()
-        {
-            return new StringReader(this.Template);
-        }
 
         /// <summary>
         /// 返回视图Html
@@ -134,7 +102,9 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
             {
                 throw new ArgumentNullException(nameof(model));
             }
-            return Razor.RunCompile(this.TemplateFile, this, model);
+
+            var content = File.ReadAllText(this.FilePath);
+            return Razor.Compile(content).Run(model);
         }
 
         /// <summary>
@@ -204,57 +174,27 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
         static class Razor
         {
             /// <summary>
-            /// razor引擎
+            /// 模板缓存
             /// </summary>
-            private static readonly IRazorEngineService razor;
-
-            /// <summary>
-            /// 同步锁
-            /// </summary>
-            private static readonly object syncRoot = new object();
-
-            /// <summary>
-            /// 视图名称集合
-            /// </summary>
-            private static readonly HashSet<string> templateNames = new HashSet<string>();
-
-            /// <summary>
-            /// 视图模板
-            /// </summary>
-            static Razor()
-            {
-                var config = new TemplateServiceConfiguration
-                {
-                    Debug = true,
-                    CachingProvider = new DefaultCachingProvider(t => { })
-                };
-                razor = RazorEngineService.Create(config);
-            }
+            private static readonly ConcurrentDictionary<string, IRazorEngineCompiledTemplate> templateCache = new ConcurrentDictionary<string, IRazorEngineCompiledTemplate>();
 
             /// <summary>
             /// 编译并执行
             /// </summary>
-            /// <param name="name">模板名称</param>
-            /// <param name="source">模板提供者</param>
-            /// <param name="model">模型</param>
+            /// <param name="content">模板名称</param> 
             /// <returns></returns>
-            public static string RunCompile(string name, ITemplateSource source, object model)
+            public static IRazorEngineCompiledTemplate Compile(string content)
             {
-                if (model == null)
+                return templateCache.GetOrAdd(content, c => new RazorEngine().Compile(content, builder =>
                 {
-                    throw new ArgumentNullException(nameof(model));
-                }
+                    builder.Inherits(typeof(HtmlTempate));
+                    builder.AddAssemblyReference(typeof(NSwag.OpenApiSchema).Assembly);
+                    builder.AddAssemblyReference(typeof(NJsonSchema.JsonSchema).Assembly);
 
-                lock (syncRoot)
-                {
-                    if (templateNames.Add(name) == true)
-                    {
-                        razor.AddTemplate(name, source);
-                        razor.Compile(name);
-                    }
-                }
-
-                return razor.RunCompile(name, model.GetType(), model);
+                    builder.AddUsing("NSwag");
+                    builder.AddUsing("System");
+                    builder.AddUsing("WebApiClientCore.OpenApi.SourceGenerator");
+                }));
             }
         }
     }

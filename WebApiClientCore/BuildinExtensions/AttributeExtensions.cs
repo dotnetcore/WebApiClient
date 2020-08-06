@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -10,37 +11,29 @@ namespace WebApiClientCore
     static class AttributeExtensions
     {
         /// <summary>
-        /// 获取成员的特性
+        /// 获取方法的特性
         /// </summary>
         /// <typeparam name="TAttribute"></typeparam>
-        /// <param name="member">成员</param> 
+        /// <param name="method">方法</param> 
         /// <returns></returns>
-        public static TAttribute? GetAttribute<TAttribute>(this MemberInfo member) where TAttribute : class
+        public static TAttribute? GetAttribute<TAttribute>(this MethodInfo method) where TAttribute : class
         {
-            return member.GetCustomAttributes().OfType<TAttribute>().FirstOrDefault();
+            return method.GetAttributes<TAttribute>().FirstOrDefault();
         }
 
         /// <summary>
-        /// 获取成员的特性
+        /// 获取方法的特性
         /// </summary>
         /// <typeparam name="TAttribute"></typeparam>
-        /// <param name="member">成员</param>
-        /// <param name="includeDeclaringType">是否也包括声明类型</param>
+        /// <param name="method">方法</param> 
         /// <returns></returns>
-        public static IEnumerable<TAttribute> GetAttributes<TAttribute>(this MemberInfo member, bool includeDeclaringType) where TAttribute : class
+        public static IEnumerable<TAttribute> GetAttributes<TAttribute>(this MethodInfo method) where TAttribute : class
         {
-            var self = member.GetCustomAttributes().OfType<TAttribute>();
-            if (includeDeclaringType == false || member.DeclaringType == null)
-            {
-                return self;
-            }
-
-            var decalring = member.DeclaringType.GetCustomAttributes().OfType<TAttribute>();
-            return self.Concat(decalring);
+            return method.GetCustomAttributes().OfType<TAttribute>();
         }
 
         /// <summary>
-        /// 获取成员的特性
+        /// 获取参数的特性
         /// </summary>
         /// <typeparam name="TAttribute"></typeparam>
         /// <param name="parameter">参数</param> 
@@ -48,6 +41,23 @@ namespace WebApiClientCore
         public static IEnumerable<TAttribute> GetAttributes<TAttribute>(this ParameterInfo parameter) where TAttribute : class
         {
             return parameter.GetCustomAttributes().OfType<TAttribute>();
+        }
+
+        /// <summary>
+        /// 获取接口定义的特性
+        /// </summary>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <param name="interfaceType">接口类型</param>
+        /// <param name="inclueBases">是否包括基础接口定义的特性</param> 
+        /// <returns></returns>
+        public static IEnumerable<TAttribute> GetAttributes<TAttribute>(this Type interfaceType, bool inclueBases) where TAttribute : class
+        {
+            var types = Enumerable.Repeat(interfaceType, 1);
+            if (inclueBases == true)
+            {
+                types = types.Concat(interfaceType.GetInterfaces());
+            }
+            return types.SelectMany(item => item.GetCustomAttributes().OfType<TAttribute>());
         }
     }
 }

@@ -19,15 +19,5 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
         /// </summary>
         [Option('n', "namespace", MetaValue = "Namespace", Required = false, HelpText = "代码的命名空间，如WebApiClientCore")]
         public string Namespace { get; set; }
-
-        /// <summary>
-        /// 返回使用帮助
-        /// </summary>
-        /// <returns></returns>
-        [HelpOption]
-        public string GetUsage()
-        {
-            return HelpText.AutoBuild(this, current => HelpText.DefaultParsingErrorsHandler(this, current));
-        }
     }
 }

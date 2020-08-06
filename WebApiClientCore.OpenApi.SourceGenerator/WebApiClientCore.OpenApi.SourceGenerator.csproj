@@ -2,26 +2,37 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net451</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Authors>laojiu</Authors>
     <Company>laojiu</Company>
     <Copyright>Copyright © laojiu 2017-2020</Copyright>
     <Description>WebApiClientCore声明接口的代码生成器</Description>
     <Summary>将本地或远程OpenApi文档解析生成WebApiClientCore的接口定义代码文件的工具</Summary>
+    <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
+
+    <Version>1.0.6</Version>
+    <Authors>laojiu</Authors>
+    <Company>laojiu</Company>
+    <Copyright>Copyright © laojiu 2017-2020</Copyright>
+    <Description>将OpenApi的本地或远程文档解析生成WebApiClientCore的接口定义代码文件</Description>
+    <Summary>将OpenApi的本地或远程文档解析生成WebApiClientCore的接口定义代码文件</Summary>
+
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/dotnetcore/WebApiClient</PackageProjectUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackAsTool>true</PackAsTool>
   </PropertyGroup>
- 
 
   <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="1.9.71" />
-    <PackageReference Include="RazorEngine" Version="3.10.0" />
-    <PackageReference Include="NSwag.CodeGeneration.CSharp" Version="13.5.0" />
+    <PackageReference Include="CommandLineParser" Version="2.8.0" />
+    <PackageReference Include="RazorEngineCore" Version="2020.6.1" />
+    <PackageReference Include="NSwag.CodeGeneration.CSharp" Version="13.6.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="petstore.openApi.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="petstore.openApi.bat">
+    <None Update="petstore.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Views\HttpApi.cshtml">
@@ -33,6 +44,14 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <Pack>$(IncludeRazorContentInPack)</Pack>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="..\icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
     </None>
   </ItemGroup>
 

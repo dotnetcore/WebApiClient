@@ -1,8 +1,6 @@
-﻿@inherits HtmlTemplateBase<HttpApi>
-
-@using WebApiClientCore.OpenApi.SourceGenerator
-@using RazorEngine.Templating
-@using NSwag
+﻿@inherits HtmlTempate<HttpApi>
+@using NSwag;
+@using WebApiClientCore.OpenApi.SourceGenerator;
 
 <HttpApi>
     <usings>
@@ -91,7 +89,7 @@
 
                             if (parameter.Kind == OpenApiParameterKind.Path || parameter.Kind == OpenApiParameterKind.Query)
                             {
-                                var schema = parameter.Schema as NSwag.OpenApiParameter;
+                                var schema = parameter.Schema as OpenApiParameter;
                                 if (schema != null && schema.CollectionFormat != OpenApiParameterCollectionFormat.Undefined
                                     && schema.CollectionFormat != OpenApiParameterCollectionFormat.Multi)
                                 {
