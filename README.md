@@ -565,7 +565,7 @@ public interface IUserApi
 
 ```
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class CacheByPathAttribute : ApiCacheAttribute
+    public class CacheByAbsolutePathAttribute : ApiCacheAttribute
     {
         public CacheByPathAttribute(double expiration) : base(expiration)
         {
