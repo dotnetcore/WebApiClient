@@ -149,6 +149,11 @@ namespace WebApiClientCore
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void CheckAndResizeBuffer(int sizeHint)
         {
+            if (this.IsDisposed == true)
+            {
+                throw new ObjectDisposedException(this.GetType().Name);
+            }
+
             if (sizeHint < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(sizeHint));
