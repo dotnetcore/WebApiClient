@@ -123,6 +123,9 @@
   <data name="failure_StatusCode" xml:space="preserve">
     <value>服务器响应了错误的http状态码：{0} {1}</value>
   </data>
+  <data name="httpContent_isBuffered" xml:space="preserve">
+    <value>数据内容已经被缓存和固化</value>
+  </data>
   <data name="invalid_UriAttribute" xml:space="preserve">
     <value>UriAttribute必须修饰于第一个参数</value>
   </data>

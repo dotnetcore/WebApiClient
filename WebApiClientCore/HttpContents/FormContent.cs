@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -10,7 +11,7 @@ namespace WebApiClientCore.HttpContents
     /// <summary>
     /// 表示键值对表单内容
     /// </summary>
-    public class FormContent : HystereticContent
+    public class FormContent : HttpContent
     {
         /// <summary>
         /// buffer写入器
@@ -49,7 +50,7 @@ namespace WebApiClientCore.HttpContents
                 return new FormContent();
             }
 
-            if (httpContent is FormContent formContent && formContent.CanWrite)
+            if (httpContent is FormContent formContent && formContent.IsBuffered() == false)
             {
                 return formContent;
             }
@@ -71,7 +72,7 @@ namespace WebApiClientCore.HttpContents
         /// <param name="keyValues">键值对</param>
         public void AddFormField(IEnumerable<KeyValue> keyValues)
         {
-            this.CheckForWrite();
+            this.ValidateBuffered();
 
             if (keyValues == null)
             {
@@ -112,7 +113,7 @@ namespace WebApiClientCore.HttpContents
         /// <param name="encodedForm">数据内容</param>
         private void AddForm(byte[] encodedForm)
         {
-            this.CheckForWrite();
+            this.ValidateBuffered();
 
             if (encodedForm == null || encodedForm.Length == 0)
             {
@@ -151,9 +152,10 @@ namespace WebApiClientCore.HttpContents
         /// <summary>
         /// 序列化到目标流中
         /// </summary>
-        /// <param name="stream">目标流</param>
+        /// <param name="stream"></param>
+        /// <param name="context"></param>
         /// <returns></returns>
-        protected override Task SerializeToStreamAsync(Stream stream)
+        protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
             var memory = this.bufferWriter.GetWrittenMemory();
             return stream.WriteAsync(memory).AsTask();

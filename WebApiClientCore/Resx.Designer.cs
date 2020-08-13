@@ -79,6 +79,15 @@ namespace WebApiClientCore {
         }
         
         /// <summary>
+        ///   查找类似 数据内容已经被缓存和固化 的本地化字符串。
+        /// </summary>
+        internal static string httpContent_isBuffered {
+            get {
+                return ResourceManager.GetString("httpContent_isBuffered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 UriAttribute必须修饰于第一个参数 的本地化字符串。
         /// </summary>
         internal static string invalid_UriAttribute {

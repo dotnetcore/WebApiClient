@@ -41,6 +41,16 @@ namespace WebApiClientCore.HttpContents
         }
 
         /// <summary>
+        /// 添加httpContent
+        /// </summary>
+        /// <param name="content"></param>
+        public override void Add(HttpContent content)
+        {
+            this.ValidateBuffered();
+            base.Add(content);
+        }
+
+        /// <summary>
         /// 转换为自定义HttpConent的HttpContent
         /// </summary>
         /// <returns></returns>

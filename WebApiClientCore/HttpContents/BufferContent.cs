@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Buffers;
 using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
@@ -9,7 +11,7 @@ namespace WebApiClientCore.HttpContents
     /// <summary>
     /// 表示utf8的BufferContent
     /// </summary>
-    public class BufferContent : HystereticContent, IBufferWriter<byte>
+    public class BufferContent : HttpContent, IBufferWriter<byte>
     {
         /// <summary>
         /// buffer
@@ -40,7 +42,7 @@ namespace WebApiClientCore.HttpContents
         /// <returns></returns>
         public Memory<byte> GetMemory(int sizeHint)
         {
-            this.CheckForWrite();
+            this.ValidateBuffered();
             return this.bufferWriter.GetMemory(sizeHint);
         }
 
@@ -51,7 +53,7 @@ namespace WebApiClientCore.HttpContents
         /// <returns></returns>
         public Span<byte> GetSpan(int sizeHint)
         {
-            this.CheckForWrite();
+            this.ValidateBuffered();
             return this.bufferWriter.GetSpan(sizeHint);
         }
 
@@ -61,7 +63,7 @@ namespace WebApiClientCore.HttpContents
         /// <param name="buffer">数据</param>
         public void Write(byte buffer)
         {
-            this.CheckForWrite();
+            this.ValidateBuffered();
             this.bufferWriter.Write(buffer);
         }
 
@@ -71,7 +73,7 @@ namespace WebApiClientCore.HttpContents
         /// <param name="buffer">数据</param>
         public void Write(Span<byte> buffer)
         {
-            this.CheckForWrite();
+            this.ValidateBuffered();
             this.bufferWriter.Write(buffer);
         }
 
@@ -90,8 +92,9 @@ namespace WebApiClientCore.HttpContents
         /// 序列化到目标流中
         /// </summary>
         /// <param name="stream"></param>
+        /// <param name="context"></param>
         /// <returns></returns>
-        protected override Task SerializeToStreamAsync(Stream stream)
+        protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         { 
             var memory = this.bufferWriter.GetWrittenMemory();
             return stream.WriteAsync(memory).AsTask();
