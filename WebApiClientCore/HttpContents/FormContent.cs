@@ -72,7 +72,7 @@ namespace WebApiClientCore.HttpContents
         /// <param name="keyValues">键值对</param>
         public void AddFormField(IEnumerable<KeyValue> keyValues)
         {
-            this.ValidateBuffered();
+            this.EnsureNotBuffered();
 
             if (keyValues == null)
             {
@@ -113,7 +113,7 @@ namespace WebApiClientCore.HttpContents
         /// <param name="encodedForm">数据内容</param>
         private void AddForm(byte[] encodedForm)
         {
-            this.ValidateBuffered();
+            this.EnsureNotBuffered();
 
             if (encodedForm == null || encodedForm.Length == 0)
             {

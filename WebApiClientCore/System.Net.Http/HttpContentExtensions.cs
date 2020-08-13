@@ -33,22 +33,18 @@ namespace System.Net.Http
         /// </summary>
         /// <param name="httpContent"></param>
         /// <returns></returns>
-        public static bool IsBuffered(this HttpContent httpContent)
+        public static bool? IsBuffered(this HttpContent httpContent)
         {
-            if (isBuffered == null)
-            {
-                return false;
-            }
-            return isBuffered(httpContent);
+            return isBuffered?.Invoke(httpContent);
         }
 
         /// <summary>
-        /// 验证httpContent的内容是否已经被缓存
-        /// 已缓存则抛出HttpContentBufferedException
+        /// 确保httpContent的内容未被缓存
+        /// 已被缓存则抛出HttpContentBufferedException
         /// </summary>
         /// <param name="httpContent"></param>
         /// <exception cref="HttpContentBufferedException"></exception>
-        public static void ValidateBuffered(this HttpContent httpContent)
+        public static void EnsureNotBuffered(this HttpContent httpContent)
         {
             if (httpContent.IsBuffered() == true)
             {

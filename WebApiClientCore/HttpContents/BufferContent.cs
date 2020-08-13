@@ -42,7 +42,7 @@ namespace WebApiClientCore.HttpContents
         /// <returns></returns>
         public Memory<byte> GetMemory(int sizeHint)
         {
-            this.ValidateBuffered();
+            this.EnsureNotBuffered();
             return this.bufferWriter.GetMemory(sizeHint);
         }
 
@@ -53,7 +53,7 @@ namespace WebApiClientCore.HttpContents
         /// <returns></returns>
         public Span<byte> GetSpan(int sizeHint)
         {
-            this.ValidateBuffered();
+            this.EnsureNotBuffered();
             return this.bufferWriter.GetSpan(sizeHint);
         }
 
@@ -63,7 +63,7 @@ namespace WebApiClientCore.HttpContents
         /// <param name="buffer">数据</param>
         public void Write(byte buffer)
         {
-            this.ValidateBuffered();
+            this.EnsureNotBuffered();
             this.bufferWriter.Write(buffer);
         }
 
@@ -73,7 +73,7 @@ namespace WebApiClientCore.HttpContents
         /// <param name="buffer">数据</param>
         public void Write(Span<byte> buffer)
         {
-            this.ValidateBuffered();
+            this.EnsureNotBuffered();
             this.bufferWriter.Write(buffer);
         }
 

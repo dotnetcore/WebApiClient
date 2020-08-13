@@ -46,7 +46,7 @@ namespace WebApiClientCore.HttpContents
         /// <param name="content"></param>
         public override void Add(HttpContent content)
         {
-            this.ValidateBuffered();
+            this.EnsureNotBuffered();
             base.Add(content);
         }
 
