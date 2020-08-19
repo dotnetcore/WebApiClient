@@ -36,6 +36,16 @@ namespace WebApiClientCore
         public Uri? HttpHost { get; set; }
 
         /// <summary>
+        /// 获取或设置是否使用的日志功能
+        /// </summary>
+        public bool UseLogging { get; set; } = true;
+
+        /// <summary>
+        /// 获取或设置请求头是否包含默认的UserAgent
+        /// </summary>
+        public bool UseDefaultUserAgent { get; set; } = true;
+
+        /// <summary>
         /// 获取或设置是否对参数的属性值进行输入有效性验证
         /// </summary>
         public bool UseParameterPropertyValidate { get; set; } = true;

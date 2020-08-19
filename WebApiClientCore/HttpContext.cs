@@ -45,8 +45,9 @@ namespace WebApiClientCore
         public HttpContext(HttpClient httpClient, IServiceProvider serviceProvider, HttpApiOptions httpApiOptions)
             : base(httpClient, serviceProvider, httpApiOptions)
         {
+            var requiredUri = httpApiOptions.HttpHost ?? httpClient.BaseAddress;
+            this.RequestMessage = new HttpApiRequestMessage(requiredUri, httpApiOptions.UseDefaultUserAgent);
             this.CancellationTokens = new List<CancellationToken>();
-            this.RequestMessage = new HttpApiRequestMessage(httpApiOptions.HttpHost ?? httpClient.BaseAddress);
         }
 
         /// <summary>

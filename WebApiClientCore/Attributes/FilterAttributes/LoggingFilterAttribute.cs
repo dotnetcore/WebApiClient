@@ -36,6 +36,11 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public sealed async override Task OnRequestAsync(ApiRequestContext context)
         {
+            if (context.HttpContext.HttpApiOptions.UseLogging == false)
+            {
+                return;
+            }
+
             var logMessage = new LogMessage
             {
                 RequestTime = DateTime.Now,
@@ -61,8 +66,17 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public sealed async override Task OnResponseAsync(ApiResponseContext context)
         {
+            if (context.HttpContext.HttpApiOptions.UseLogging == false)
+            {
+                return;
+            }
+
             var response = context.HttpContext.ResponseMessage;
             var logMessage = context.Properties.Get<LogMessage>(typeof(LoggingFilterAttribute));
+            if (logMessage == null)
+            {
+                return;
+            }
 
             logMessage.ResponseTime = DateTime.Now;
             logMessage.Exception = context.Exception;

@@ -23,9 +23,10 @@ namespace WebApiClientCore
         private static readonly AssemblyName assemblyName = typeof(HttpApiRequestMessage).Assembly.GetName();
 
         /// <summary>
-        /// 默认的UserAgent
+        /// 请求头的默认UserAgent
         /// </summary>
-        private static readonly ProductInfoHeaderValue defaultUserAgent = new ProductInfoHeaderValue(assemblyName.Name, assemblyName.Version?.ToString());
+        private readonly static ProductInfoHeaderValue defaultUserAgent = new ProductInfoHeaderValue(assemblyName.Name, assemblyName.Version?.ToString());
+
 
         /// <summary>
         /// httpApi的请求消息
@@ -40,9 +41,22 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="requestUri">请求uri</param>
         public HttpApiRequestMessage(Uri? requestUri)
+            : this(requestUri, useDefaultUserAgent: false)
+        {
+        }
+
+        /// <summary>
+        /// httpApi的请求消息
+        /// </summary>
+        /// <param name="requestUri">请求uri</param>
+        /// <param name="useDefaultUserAgent">请求头是否包含默认的UserAgent</param>
+        public HttpApiRequestMessage(Uri? requestUri, bool useDefaultUserAgent)
         {
             this.RequestUri = requestUri;
-            this.Headers.UserAgent.Add(defaultUserAgent);
+            if (useDefaultUserAgent == true)
+            {
+                this.Headers.UserAgent.Add(defaultUserAgent);
+            }
         }
 
         /// <summary>
