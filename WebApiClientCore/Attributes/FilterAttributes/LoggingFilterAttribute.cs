@@ -126,20 +126,23 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected virtual Task WriteLogAsync(ApiResponseContext context, LogMessage logMessage)
         {
-            var method = context.ApiAction.Member;
-            var categoryName = $"{method.DeclaringType?.Namespace}.{method.DeclaringType?.Name}.{method.Name}";
-
             var loggerFactory = context.HttpContext.ServiceProvider.GetService<ILoggerFactory>();
             if (loggerFactory == null)
             {
                 return Task.CompletedTask;
             }
 
+            var method = context.ApiAction.Member;
+            var categoryName = $"{method.DeclaringType?.Namespace}.{method.DeclaringType?.Name}.{method.Name}";
             var logger = loggerFactory.CreateLogger(categoryName);
-            logger.LogInformation(logMessage.ToExcludeException().ToString());
-            if (logMessage.Exception != null)
+
+            if (logMessage.Exception == null)
             {
-                logger.LogError(logMessage.Exception, logMessage.Exception.Message);
+                logger.LogInformation(logMessage.ToString());
+            }
+            else
+            {
+                logger.LogError(logMessage.ToString());
             }
 
             return Task.CompletedTask;
