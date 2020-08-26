@@ -53,7 +53,7 @@ namespace WebApiClientCore
             }
 
             var type = method.ReturnType.IsGenericType ?
-                method.ReturnType.GetGenericArguments().FirstOrDefault() :
+                method.ReturnType.GetGenericArguments().First() :
                 typeof(HttpResponseMessage);
 
             var dataType = new ApiDataTypeDescriptor(type);
@@ -132,11 +132,12 @@ namespace WebApiClientCore
             /// <returns></returns> 
             public int GetHashCode(IApiReturnAttribute obj)
             {
-                if (obj.AcceptContentType == null)
+                var mediaType = obj.AcceptContentType?.MediaType;
+                if (mediaType == null)
                 {
                     return 0;
                 }
-                return obj.AcceptContentType.MediaType.GetHashCode();
+                return mediaType.GetHashCode();
             }
         }
     }

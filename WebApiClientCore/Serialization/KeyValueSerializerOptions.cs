@@ -29,7 +29,7 @@ namespace WebApiClientCore.Serialization
         /// <summary>
         /// 获取或设置字典键的命名策略
         /// </summary>
-        public JsonNamingPolicy DictionaryKeyPolicy
+        public JsonNamingPolicy? DictionaryKeyPolicy
         {
             get => jsonOptions.DictionaryKeyPolicy;
             set => jsonOptions.DictionaryKeyPolicy = value;
@@ -66,7 +66,7 @@ namespace WebApiClientCore.Serialization
         /// <summary>
         /// 获取或设置属性的命名策略
         /// </summary>
-        public JsonNamingPolicy PropertyNamingPolicy
+        public JsonNamingPolicy? PropertyNamingPolicy
         {
             get => jsonOptions.PropertyNamingPolicy;
             set => jsonOptions.PropertyNamingPolicy = value;
