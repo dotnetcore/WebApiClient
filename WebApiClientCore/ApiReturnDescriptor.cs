@@ -137,7 +137,7 @@ namespace WebApiClientCore
                 {
                     return 0;
                 }
-                return mediaType.GetHashCode();
+                return mediaType.GetHashCode(StringComparison.OrdinalIgnoreCase);
             }
         }
     }
