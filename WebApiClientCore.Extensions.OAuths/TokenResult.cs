@@ -68,7 +68,7 @@ namespace WebApiClientCore.Extensions.OAuths
         /// 返回是否成功
         /// </summary>
         /// <returns></returns>
-        public bool IsSuccess()
+        public virtual bool IsSuccess()
         {
             return string.IsNullOrEmpty(this.Error);
         }
@@ -77,7 +77,7 @@ namespace WebApiClientCore.Extensions.OAuths
         /// 返回是否已过期 
         /// </summary>
         /// <returns></returns>
-        public bool IsExpired()
+        public virtual bool IsExpired()
         {
             return DateTime.Now.Subtract(this.createTime) > TimeSpan.FromSeconds(this.Expires_in);
         }
@@ -86,7 +86,7 @@ namespace WebApiClientCore.Extensions.OAuths
         /// 返回token是否支持刷新
         /// </summary>
         /// <returns></returns>
-        public bool CanRefresh()
+        public virtual bool CanRefresh()
         {
             return string.IsNullOrEmpty(this.Refresh_token) == false;
         }

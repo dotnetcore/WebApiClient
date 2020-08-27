@@ -52,9 +52,9 @@ namespace WebApiClientCore
                 throw new ArgumentNullException(nameof(method));
             }
 
-            var type = method.ReturnType.IsGenericType ?
-                method.ReturnType.GetGenericArguments().First() :
-                typeof(HttpResponseMessage);
+            var type = method.ReturnType.IsGenericType
+                ? method.ReturnType.GetGenericArguments().First()
+                : typeof(HttpResponseMessage);
 
             var dataType = new ApiDataTypeDescriptor(type);
 
