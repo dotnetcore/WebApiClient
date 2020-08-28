@@ -86,15 +86,21 @@ namespace WebApiClientCore
             var options = this.HttpContext.HttpApiOptions.JsonDeserializeOptions;
             var serializer = this.HttpContext.ServiceProvider.GetJsonSerializer();
 
-            if (Encoding.UTF8.Equals(encoding) == true)
+            if (Encoding.UTF8.Equals(encoding) == false)
+            {
+                var byteArray = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                var utf8Json = Encoding.Convert(encoding, Encoding.UTF8, byteArray);
+                return serializer.Deserialize(utf8Json, objType, options);
+            }
+
+            if (content.IsBuffered() == false)
             {
                 var utf8Json = await content.ReadAsStreamAsync().ConfigureAwait(false);
                 return await serializer.DeserializeAsync(utf8Json, objType, options).ConfigureAwait(false);
             }
             else
             {
-                var byteArray = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                var utf8Json = Encoding.Convert(encoding, Encoding.UTF8, byteArray);
+                var utf8Json = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
                 return serializer.Deserialize(utf8Json, objType, options);
             }
         }
