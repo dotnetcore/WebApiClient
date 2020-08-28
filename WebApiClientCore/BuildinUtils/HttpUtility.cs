@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace WebApiClientCore
@@ -132,6 +133,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="ch"></param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool IsUrlSafeChar(char ch)
         {
             if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9'))
@@ -160,6 +162,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="n"></param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static char ToCharLower(int n)
         {
             n &= 0xF;
