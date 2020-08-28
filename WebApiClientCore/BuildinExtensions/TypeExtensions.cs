@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
 
@@ -89,10 +88,9 @@ namespace WebApiClientCore
                 throw new ArgumentException(Resx.required_InterfaceType.Format(interfaceType.Name));
             }
 
-            var apiMethods = new[] { interfaceType }.Concat(interfaceType.GetInterfaces())
+            var apiMethods = interfaceType.GetInterfaces().Append(interfaceType)
                 .SelectMany(item => item.GetMethods())
                 .Select(item => item.EnsureApiMethod())
-                .OrderBy(item => item.GetFullName())
                 .ToArray();
 
             return apiMethods;
@@ -152,52 +150,6 @@ namespace WebApiClientCore
 
             var taskType = method.ReturnType.GetGenericTypeDefinition();
             return taskType == typeof(ITask<>);
-        }
-
-        /// <summary>
-        /// 返回方法的完整名称
-        /// </summary>
-        /// <param name="method">方法</param>
-        /// <returns></returns>
-        private static string GetFullName(this MethodInfo method)
-        {
-            var builder = new StringBuilder();
-            foreach (var p in method.GetParameters())
-            {
-                if (builder.Length > 0)
-                {
-                    builder.Append(",");
-                }
-                builder.Append(p.ParameterType.GetName());
-            }
-
-            var insert = $"{method.ReturnType.GetName()} {method.Name}(";
-            return builder.Insert(0, insert).Append(")").ToString();
-        }
-
-        /// <summary>
-        /// 返回类型不含namespace的名称
-        /// </summary>
-        /// <param name="type">类型</param>
-        /// <returns></returns>
-        private static string GetName(this Type type)
-        {
-            if (type.IsGenericType == false)
-            {
-                return type.Name;
-            }
-
-            var builder = new StringBuilder();
-            foreach (var argType in type.GetGenericArguments())
-            {
-                if (builder.Length > 0)
-                {
-                    builder.Append(",");
-                }
-                builder.Append(argType.GetName());
-            }
-
-            return builder.Insert(0, $"{type.Name}<").Append(">").ToString();
         }
     }
 }
