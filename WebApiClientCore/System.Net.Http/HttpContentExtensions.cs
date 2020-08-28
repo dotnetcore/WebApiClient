@@ -88,11 +88,18 @@ namespace System.Net.Http
         public static Encoding GetEncoding(this HttpContent httpContent)
         {
             var charSet = httpContent.Headers.ContentType?.CharSet;
-            if (string.IsNullOrEmpty(charSet) || charSet == Encoding.UTF8.WebName)
+            if (string.IsNullOrEmpty(charSet) == true)
             {
                 return Encoding.UTF8;
             }
-            return Encoding.GetEncoding(charSet);
+
+            var span = charSet.AsSpan().TrimStart('"').TrimEnd('"');
+            if (span.Equals(Encoding.UTF8.WebName, StringComparison.OrdinalIgnoreCase))
+            {
+                return Encoding.UTF8;
+            }
+
+            return Encoding.GetEncoding(span.ToString());
         }
     }
 }
