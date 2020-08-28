@@ -25,8 +25,9 @@ namespace WebApiClientCore
                 return str;
             }
 
+            var destLength = 0;
             var source = encoding.GetBytes(str).AsSpan();
-            if (UrlEncodeTest(source, out var destLength) == false)
+            if (UrlEncodeTest(source, ref destLength) == false)
             {
                 return str;
             }
@@ -49,8 +50,9 @@ namespace WebApiClientCore
                 return;
             }
 
+            var destLength = 0;
             var source = Encoding.UTF8.GetBytes(str).AsSpan();
-            if (UrlEncodeTest(source, out var destLength) == false)
+            if (UrlEncodeTest(source, ref destLength) == false)
             {
                 var destination = bufferWriter.GetSpan(destLength);
                 source.CopyTo(destination);
@@ -70,7 +72,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="source">源</param>
         /// <param name="destLength">编码后的长度</param> 
-        private static bool UrlEncodeTest(ReadOnlySpan<byte> source, out int destLength)
+        private static bool UrlEncodeTest(ReadOnlySpan<byte> source, ref int destLength)
         {
             destLength = 0;
             if (source.IsEmpty == true)
