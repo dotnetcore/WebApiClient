@@ -47,6 +47,7 @@ namespace App
             // ×¢²áuserApi
             services.AddHttpApi<IUserApi>(o =>
             {
+                o.UseLogging = Environment.IsDevelopment();
                 o.HttpHost = new Uri("http://localhost:5000/");
             });
 
