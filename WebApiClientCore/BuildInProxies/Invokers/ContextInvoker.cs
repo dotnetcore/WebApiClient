@@ -11,7 +11,25 @@ namespace WebApiClientCore
         /// <summary>
         /// 上下文处理委托
         /// </summary>
-        private static readonly Func<ApiRequestContext, Task<ApiResponseContext>> handler = BuildHandler();
+        private static readonly Func<ApiRequestContext, Task<ApiResponseContext>> handler;
+
+        /// <summary>
+        /// 上下文执行器
+        /// </summary>
+        static ContextInvoker()
+        {
+            var requestHandler = BuildRequestHandler();
+            var responseHandler = BuildResponseHandler();
+
+            handler = async request =>
+            {
+                await requestHandler(request).ConfigureAwait(false);
+                var response = await HttpRequest.SendAsync(request).ConfigureAwait(false);
+                await responseHandler(response).ConfigureAwait(false);
+                return response;
+            };
+        }
+
 
         /// <summary>
         /// 执行上下文
@@ -21,24 +39,6 @@ namespace WebApiClientCore
         public static Task<ApiResponseContext> InvokeAsync(ApiRequestContext request)
         {
             return handler(request);
-        }
-
-        /// <summary>
-        /// 创建上下文执行委托
-        /// </summary>
-        /// <returns></returns>
-        private static Func<ApiRequestContext, Task<ApiResponseContext>> BuildHandler()
-        {
-            var requestHandler = BuildRequestHandler();
-            var responseHandler = BuildResponseHandler();
-
-            return async request =>
-            {
-                await requestHandler(request).ConfigureAwait(false);
-                var response = await HttpRequest.SendAsync(request).ConfigureAwait(false);
-                await responseHandler(response).ConfigureAwait(false);
-                return response;
-            };
         }
 
         /// <summary>
