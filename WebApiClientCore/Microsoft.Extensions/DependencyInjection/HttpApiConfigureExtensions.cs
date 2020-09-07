@@ -30,7 +30,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection ConfigureHttpApi(this IServiceCollection services, Type httpApiType, Action<HttpApiOptions> configureOptions)
         {
-            return services.Configure(httpApiType.FullName, configureOptions);
+            var name = httpApiType.FullName;
+            return services.Configure(name, configureOptions);
         }
 
         /// <summary>
@@ -54,7 +55,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection ConfigureHttpApi(this IServiceCollection services, Type httpApiType, IConfiguration configureOptions)
         {
-            return services.Configure<HttpApiOptions>(httpApiType.FullName, configureOptions);
+            var name = httpApiType.FullName;
+            return services.Configure<HttpApiOptions>(name, configureOptions);
         }
     }
 }

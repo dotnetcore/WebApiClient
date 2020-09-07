@@ -27,11 +27,11 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddSingleton<IKeyValueSerializer, KeyValueSerializer>();
             services.TryAddSingleton<IResponseCacheProvider, ResponseCacheProvider>();
 
+            var name = typeof(THttpApi).FullName;
             return services
-                .AddHttpClient(typeof(THttpApi).FullName)
+                .AddHttpClient(name)
                 .AddTypedClient((httpClient, serviceProvider) =>
                 {
-                    var name = typeof(THttpApi).FullName;
                     var httpApiOptions = serviceProvider.GetRequiredService<IOptionsMonitor<HttpApiOptions>>().Get(name);
                     return HttpApi.Create<THttpApi>(httpClient, serviceProvider, httpApiOptions);
                 });
@@ -46,9 +46,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi<THttpApi>(this IServiceCollection services, Action<HttpApiOptions> configureOptions) where THttpApi : class
         {
-            var name = typeof(THttpApi).FullName;
-            services.AddOptions<HttpApiOptions>(name).Configure(configureOptions);
-            return services.AddHttpApi<THttpApi>();
+            var builder = services.AddHttpApi<THttpApi>();
+            services.AddOptions<HttpApiOptions>(builder.Name).Configure(configureOptions);
+            return builder;
         }
 
         /// <summary>
@@ -60,9 +60,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi<THttpApi>(this IServiceCollection services, Action<HttpApiOptions, IServiceProvider> configureOptions) where THttpApi : class
         {
-            var name = typeof(THttpApi).FullName;
-            services.AddOptions<HttpApiOptions>(name).Configure(configureOptions);
-            return services.AddHttpApi<THttpApi>();
+            var builder = services.AddHttpApi<THttpApi>();
+            services.AddOptions<HttpApiOptions>(builder.Name).Configure(configureOptions);
+            return builder;
         }
 
 
@@ -94,9 +94,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi(this IServiceCollection services, Type httpApiType, Action<HttpApiOptions> configureOptions)
         {
-            var name = httpApiType.FullName;
-            services.AddOptions<HttpApiOptions>(name).Configure(configureOptions);
-            return services.AddHttpApi(httpApiType);
+            var builder = services.AddHttpApi(httpApiType);
+            services.AddOptions<HttpApiOptions>(builder.Name).Configure(configureOptions);
+            return builder;
         }
 
         /// <summary>
@@ -109,9 +109,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi(this IServiceCollection services, Type httpApiType, Action<HttpApiOptions, IServiceProvider> configureOptions)
         {
-            var name = httpApiType.FullName;
-            services.AddOptions<HttpApiOptions>(name).Configure(configureOptions);
-            return services.AddHttpApi(httpApiType);
+            var builder = services.AddHttpApi(httpApiType);
+            services.AddOptions<HttpApiOptions>(builder.Name).Configure(configureOptions);
+            return builder;
         }
 
         /// <summary>
