@@ -10,7 +10,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class HttpApiConfigureExtensions
     {
         /// <summary>
-        /// 配置HttpApi
+        /// 配置HttpApi的选项
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
         /// <param name="services"></param>
@@ -22,7 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// 配置HttpApi
+        /// 配置HttpApi的选项
         /// </summary> 
         /// <param name="services"></param>
         /// <param name="httpApiType">接口类型</param> 
@@ -35,7 +35,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// 配置HttpApi
+        /// 配置HttpApi的选项
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
         /// <param name="services"></param>
@@ -47,7 +47,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// 配置HttpApi
+        /// 配置HttpApi的选项
         /// </summary> 
         /// <param name="services"></param>
         /// <param name="httpApiType">接口类型</param> 

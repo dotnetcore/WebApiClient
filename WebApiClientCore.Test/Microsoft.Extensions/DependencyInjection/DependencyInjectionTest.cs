@@ -44,6 +44,20 @@ namespace WebApiClientCore.Test.Microsoft.Extensions.DependencyInjection
 
 
         [Fact]
+        public static void AddHttpApiConfigureHttpApiTest()
+        {
+            var di = new ServiceCollection();
+            var host = new Uri("http://www.x.com");
+            di.AddHttpApi<IDiApi>().ConfigureHttpApi(o => o.HttpHost = host);
+            var services = di.BuildServiceProvider();
+
+            var options = services.GetService<IOptionsMonitor<HttpApiOptions>>().Get(typeof(IDiApi).FullName);
+            Assert.True(options.HttpHost == host);
+
+            Assert.Null(services.GetService<IOptions<HttpApiOptions>>().Value.HttpHost);
+        }
+
+        [Fact]
         public static void ConfigureHttpApiNoGenericTest()
         {
             var di = new ServiceCollection();
@@ -54,9 +68,10 @@ namespace WebApiClientCore.Test.Microsoft.Extensions.DependencyInjection
 
             var options = services.GetService<IOptionsMonitor<HttpApiOptions>>().Get(typeof(IDiApi).FullName);
             Assert.True(options.HttpHost == host);
-             
-            Assert.Null(services.GetService<IOptions<HttpApiOptions>>().Value.HttpHost); 
+
+            Assert.Null(services.GetService<IOptions<HttpApiOptions>>().Value.HttpHost);
         }
+
 
         public interface IDiApi
         {
