@@ -17,10 +17,11 @@ namespace WebApiClientCore.Parameters
         /// <summary>
         /// 命名策略
         /// </summary>
-        private readonly JsonNamingPolicy namingPolicy;
+        private readonly JsonNamingPolicy? namingPolicy;
 
         /// <summary>
         /// 将自身作为JsonPatch请求内容
+        /// 使用CamelCase命名
         /// </summary> 
         public JsonPatchDocument()
             : this(JsonNamingPolicy.CamelCase)
@@ -31,7 +32,7 @@ namespace WebApiClientCore.Parameters
         ///  将自身作为JsonPatch请求内容
         /// </summary>
         /// <param name="namingPolicy">命名策略</param>
-        public JsonPatchDocument(JsonNamingPolicy namingPolicy)
+        public JsonPatchDocument(JsonNamingPolicy? namingPolicy)
         {
             this.namingPolicy = namingPolicy;
         }
@@ -79,13 +80,18 @@ namespace WebApiClientCore.Parameters
         /// <returns></returns>
         protected virtual string GetMemberName(MemberInfo member)
         {
-            var name = member.Name;
             var jsonProperty = member.GetCustomAttribute<JsonPropertyNameAttribute>();
             if (jsonProperty != null && string.IsNullOrEmpty(jsonProperty.Name) == false)
             {
-                name = jsonProperty.Name;
+                return jsonProperty.Name;
             }
-            return this.namingPolicy.ConvertName(name);
+
+            if (this.namingPolicy == null)
+            {
+                return member.Name;
+            }
+
+            return this.namingPolicy.ConvertName(member.Name);
         }
 
         /// <summary>
