@@ -77,7 +77,7 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             var builderType = typeof(HttpApiBuilder<>).MakeGenericType(httpApiType);
-            return builderType.CreateInstance<IHttpApiBuilder>(services).AddHttpApi();
+            return builderType.CreateInstance<IHttpApiBuilder>().AddHttpApi(services);
         }
 
         /// <summary>
@@ -114,8 +114,9 @@ namespace Microsoft.Extensions.DependencyInjection
             /// <summary>
             /// 添加HttpApi代理类到服务
             /// </summary>
+            /// <param name="services"></param>
             /// <returns></returns>
-            IHttpClientBuilder AddHttpApi();
+            IHttpClientBuilder AddHttpApi(IServiceCollection services);
         }
 
         /// <summary>
@@ -124,24 +125,13 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="THttpApi"></typeparam>
         private class HttpApiBuilder<THttpApi> : IHttpApiBuilder where THttpApi : class
         {
-            private readonly IServiceCollection services;
-
-            /// <summary>
-            /// httpApi的Builder
-            /// </summary>
-            /// <param name="services"></param>
-            public HttpApiBuilder(IServiceCollection services)
-            {
-                this.services = services;
-            }
-
             /// <summary>
             /// 添加HttpApi代理类到服务
             /// </summary> 
             /// <returns></returns>
-            public IHttpClientBuilder AddHttpApi()
+            public IHttpClientBuilder AddHttpApi(IServiceCollection services)
             {
-                return this.services.AddHttpApi<THttpApi>();
+                return services.AddHttpApi<THttpApi>();
             }
         }
     }
