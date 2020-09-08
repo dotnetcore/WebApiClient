@@ -6,12 +6,12 @@ using WebApiClientCore;
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// HttpApi配置控制
+    /// 提供HttpApiOptions配置扩展
     /// </summary>
     public static class HttpApiConfigureExtensions
     {
         /// <summary>
-        /// 配置HttpApi的选项
+        /// 为接口配置HttpApiOptions
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
         /// <param name="services"></param>
@@ -22,14 +22,14 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// 配置HttpApi的选项
+        /// 为接口配置HttpApiOptions
         /// </summary> 
         /// <param name="services"></param>
         /// <param name="httpApiType">接口类型</param>  
         /// <returns></returns>
         public static OptionsBuilder<HttpApiOptions> AddHttpApiOptions(this IServiceCollection services, Type httpApiType)
         {
-            var name = httpApiType.FullName;
+            var name = HttpApi.GetName(httpApiType);
             return services.AddOptions<HttpApiOptions>(name);
         }
 
@@ -37,7 +37,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
 
         /// <summary>
-        /// 配置HttpApi的选项
+        /// 为接口配置HttpApiOptions
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
         /// <param name="services"></param>
@@ -49,7 +49,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// 配置HttpApi的选项
+        /// 为接口配置HttpApiOptions
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
         /// <param name="services"></param>
@@ -61,7 +61,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// 配置HttpApi的选项
+        /// 为接口配置HttpApiOptions
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
         /// <param name="services"></param>
@@ -75,7 +75,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
 
         /// <summary>
-        /// 配置HttpApi的选项
+        /// 为接口配置HttpApiOptions
         /// </summary> 
         /// <param name="services"></param>
         /// <param name="httpApiType">接口类型</param> 
@@ -87,7 +87,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// 配置HttpApi的选项
+        /// 为接口配置HttpApiOptions
         /// </summary> 
         /// <param name="services"></param>
         /// <param name="httpApiType">接口类型</param> 
@@ -99,7 +99,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// 配置HttpApi的选项
+        /// 为接口配置HttpApiOptions
         /// </summary> 
         /// <param name="services"></param>
         /// <param name="httpApiType">接口类型</param> 

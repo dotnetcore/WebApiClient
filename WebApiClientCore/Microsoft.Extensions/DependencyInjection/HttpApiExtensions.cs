@@ -8,7 +8,7 @@ using WebApiClientCore.Serialization;
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// 提供HttpApi相关扩展
+    /// 提供HttpApi注册的扩展
     /// </summary>
     public static class HttpApiExtensions
     {
@@ -27,7 +27,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddSingleton<IKeyValueSerializer, KeyValueSerializer>();
             services.TryAddSingleton<IResponseCacheProvider, ResponseCacheProvider>();
 
-            var name = typeof(THttpApi).FullName;
+            var name = HttpApi.GetName<THttpApi>();
             return services
                 .AddHttpClient(name)
                 .AddTypedClient((httpClient, serviceProvider) =>

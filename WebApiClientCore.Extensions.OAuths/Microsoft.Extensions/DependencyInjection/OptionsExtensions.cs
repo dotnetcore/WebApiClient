@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
+using WebApiClientCore;
 using WebApiClientCore.Extensions.OAuths;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -28,7 +29,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static OptionsBuilder<ClientCredentialsOptions> AddClientCredentialsOptions(this IServiceCollection services, Type httpApiType)
         {
-            var name = httpApiType.GetOptionsName();
+            var name = HttpApi.GetName(httpApiType);
             return services.AddOptions<ClientCredentialsOptions>(name);
         }
 
@@ -51,18 +52,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static OptionsBuilder<PasswordCredentialsOptions> AddPasswordCredentialsOptions(this IServiceCollection services, Type httpApiType)
         {
-            var name = httpApiType.GetOptionsName();
+            var name = HttpApi.GetName(httpApiType);
             return services.AddOptions<PasswordCredentialsOptions>(name);
-        }
-
-        /// <summary>
-        /// 获取选项的名称
-        /// </summary>
-        /// <param name="httpApiType">接口类型</param>
-        /// <returns></returns>
-        private static string GetOptionsName(this Type httpApiType)
-        {
-            return httpApiType.FullName;
         }
     }
 }

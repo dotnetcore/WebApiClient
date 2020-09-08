@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
+using WebApiClientCore;
 using WebApiClientCore.Extensions.NewtonsoftJson;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// HttpApi配置控制
+    /// 提供JsonNetSerializerOptions的配置扩展
     /// </summary>
     public static class ServiceCollectionExtensions
     {
@@ -17,9 +18,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static OptionsBuilder<JsonNetSerializerOptions> AddNewtonsoftJsonOptions<THttpApi>(this IServiceCollection services)
         {
-            var name = services.AddHttpApiOptions<THttpApi>().Name;
-            return services.AddOptions<JsonNetSerializerOptions>(name);
-        } 
+            return services.AddNewtonsoftJsonOptions(typeof(THttpApi));
+        }
 
         /// <summary>
         /// 为接口配置JsonNetSerializerOptions
@@ -29,7 +29,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static OptionsBuilder<JsonNetSerializerOptions> AddNewtonsoftJsonOptions(this IServiceCollection services, Type httpApiType)
         {
-            var name = services.AddHttpApiOptions(httpApiType).Name;
+            var name = HttpApi.GetName(httpApiType);
             return services.AddOptions<JsonNetSerializerOptions>(name);
         }
     }

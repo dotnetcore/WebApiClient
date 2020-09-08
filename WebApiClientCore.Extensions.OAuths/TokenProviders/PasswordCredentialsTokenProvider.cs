@@ -76,7 +76,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <returns></returns>
         private PasswordCredentialsOptions GetCredentialsOptions(IServiceProvider serviceProvider)
         {
-            var name = typeof(THttpApi).FullName;
+            var name = HttpApi.GetName<THttpApi>();
             return serviceProvider.GetService<IOptionsMonitor<PasswordCredentialsOptions>>().Get(name);
         }
     }
