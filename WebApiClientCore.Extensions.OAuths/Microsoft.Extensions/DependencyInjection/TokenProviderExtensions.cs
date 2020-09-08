@@ -11,6 +11,17 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class TokenProviderExtensions
     {
         /// <summary>
+        /// 添加TokenProvider依赖项
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddTokenProvider(this IServiceCollection services)
+        {
+            services.AddHttpApi<IOAuthClient>(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
+            return services;
+        }
+
+        /// <summary>
         /// 添加接口的Client身份读取token提供者
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
@@ -31,8 +42,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services, Action<ClientCredentialsOptions> configureOptions)
         {
-            services.AddOptions<ClientCredentialsOptions>(typeof(THttpApi).FullName).Configure(configureOptions);
-            return services.AddClientCredentialsTokenProvider<THttpApi>();
+            return services
+                .AddClientCredentialsTokenProvider<THttpApi>()
+                .AddClientCredentialsOptions<THttpApi>().Configure(configureOptions)
+                .Services;
         }
 
         /// <summary>
@@ -44,8 +57,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services, Action<ClientCredentialsOptions, IServiceProvider> configureOptions)
         {
-            services.AddOptions<ClientCredentialsOptions>(typeof(THttpApi).FullName).Configure(configureOptions);
-            return services.AddClientCredentialsTokenProvider<THttpApi>();
+            return services
+                .AddClientCredentialsTokenProvider<THttpApi>()
+                .AddClientCredentialsOptions<THttpApi>().Configure(configureOptions)
+                .Services;
         }
 
         /// <summary>
@@ -69,8 +84,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddPasswordCredentialsTokenProvider<THttpApi>(this IServiceCollection services, Action<PasswordCredentialsOptions> configureOptions)
         {
-            services.AddOptions<PasswordCredentialsOptions>(typeof(THttpApi).FullName).Configure(configureOptions);
-            return services.AddPasswordCredentialsTokenProvider<THttpApi>();
+            return services
+                .AddPasswordCredentialsTokenProvider<THttpApi>()
+                .AddPasswordCredentialsOptions<THttpApi>().Configure(configureOptions)
+                .Services;
         }
 
         /// <summary>
@@ -82,20 +99,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddPasswordCredentialsTokenProvider<THttpApi>(this IServiceCollection services, Action<PasswordCredentialsOptions, IServiceProvider> configureOptions)
         {
-            services.AddOptions<PasswordCredentialsOptions>(typeof(THttpApi).FullName).Configure(configureOptions);
-            return services.AddPasswordCredentialsTokenProvider<THttpApi>();
-        }
-
-        /// <summary>
-        /// 添加TokenProvider依赖项
-        /// </summary>
-        /// <param name="services"></param>
-        /// <returns></returns>
-        public static IServiceCollection AddTokenProvider(this IServiceCollection services)
-        {
-            services.AddOptions();
-            services.AddHttpApi<IOAuthClient>(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
-            return services;
+            return services
+                .AddPasswordCredentialsTokenProvider<THttpApi>()
+                .AddPasswordCredentialsOptions<THttpApi>().Configure(configureOptions)
+                .Services;
         }
     }
 }
