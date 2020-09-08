@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using System;
 using WebApiClientCore;
 
@@ -32,7 +31,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection ConfigureHttpApi(this IServiceCollection services, Type httpApiType, Action<HttpApiOptions, IServiceProvider> configureOptions)
         {
             var name = httpApiType.FullName;
-            return services.AddTransient<IConfigureOptions<HttpApiOptions>>(s => new ConfigureNamedOptions<HttpApiOptions, IServiceProvider>(name, s, configureOptions));
+            return services.AddOptions<HttpApiOptions>(name).Configure(configureOptions).Services;
         }
 
 
@@ -59,7 +58,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection ConfigureHttpApi(this IServiceCollection services, Type httpApiType, Action<HttpApiOptions> configureOptions)
         {
             var name = httpApiType.FullName;
-            return services.Configure(name, configureOptions);
+            return services.AddOptions<HttpApiOptions>(name).Configure(configureOptions).Services;
         }
 
 
@@ -86,7 +85,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection ConfigureHttpApi(this IServiceCollection services, Type httpApiType, IConfiguration configureOptions)
         {
             var name = httpApiType.FullName;
-            return services.Configure<HttpApiOptions>(name, configureOptions);
+            return services.AddOptions<HttpApiOptions>(name).Bind(configureOptions).Services;
         }
 
 
@@ -99,7 +98,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="configureOptions">配置选项</param>
         public static IHttpClientBuilder ConfigureHttpApi(this IHttpClientBuilder builder, Action<HttpApiOptions, IServiceProvider> configureOptions)
         {
-            builder.Services.AddTransient<IConfigureOptions<HttpApiOptions>>(s => new ConfigureNamedOptions<HttpApiOptions, IServiceProvider>(builder.Name, s, configureOptions));
+            builder.Services.AddOptions<HttpApiOptions>(builder.Name).Configure(configureOptions);
             return builder;
         }
 
@@ -110,7 +109,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="configureOptions">配置选项</param>
         public static IHttpClientBuilder ConfigureHttpApi(this IHttpClientBuilder builder, Action<HttpApiOptions> configureOptions)
         {
-            builder.Services.Configure(builder.Name, configureOptions);
+            builder.Services.AddOptions<HttpApiOptions>(builder.Name).Configure(configureOptions);
             return builder;
         }
 
@@ -122,7 +121,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder ConfigureHttpApi(this IHttpClientBuilder builder, IConfiguration configureOptions)
         {
-            builder.Services.Configure<HttpApiOptions>(builder.Name, configureOptions);
+            builder.Services.AddOptions<HttpApiOptions>(builder.Name).Bind(configureOptions);
             return builder;
         }
     }
