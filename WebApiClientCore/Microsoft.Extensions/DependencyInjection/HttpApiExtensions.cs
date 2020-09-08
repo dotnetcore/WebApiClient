@@ -46,9 +46,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi<THttpApi>(this IServiceCollection services, Action<HttpApiOptions> configureOptions) where THttpApi : class
         {
-            var builder = services.AddHttpApi<THttpApi>();
-            builder.AddHttpApiOptions().Configure(configureOptions);
-            return builder;
+            return services.AddHttpApi<THttpApi>().ConfigureHttpApi(configureOptions);
         }
 
         /// <summary>
@@ -60,9 +58,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi<THttpApi>(this IServiceCollection services, Action<HttpApiOptions, IServiceProvider> configureOptions) where THttpApi : class
         {
-            var builder = services.AddHttpApi<THttpApi>();
-            builder.AddHttpApiOptions().Configure(configureOptions);
-            return builder;
+            return services.AddHttpApi<THttpApi>().ConfigureHttpApi(configureOptions);
         }
 
 
@@ -94,9 +90,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi(this IServiceCollection services, Type httpApiType, Action<HttpApiOptions> configureOptions)
         {
-            var builder = services.AddHttpApi(httpApiType);
-            builder.AddHttpApiOptions().Configure(configureOptions);
-            return builder;
+            return services.AddHttpApi(httpApiType).ConfigureHttpApi(configureOptions);
         }
 
         /// <summary>
@@ -109,19 +103,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi(this IServiceCollection services, Type httpApiType, Action<HttpApiOptions, IServiceProvider> configureOptions)
         {
-            var builder = services.AddHttpApi(httpApiType);
-            builder.AddHttpApiOptions().Configure(configureOptions);
-            return builder;
-        }
-
-        /// <summary>
-        /// 添加httpApiOptions
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <returns></returns>
-        private static OptionsBuilder<HttpApiOptions> AddHttpApiOptions(this IHttpClientBuilder builder)
-        {
-            return builder.Services.AddOptions<HttpApiOptions>(builder.Name);
+            return services.AddHttpApi(httpApiType).ConfigureHttpApi(configureOptions);
         }
 
         /// <summary>

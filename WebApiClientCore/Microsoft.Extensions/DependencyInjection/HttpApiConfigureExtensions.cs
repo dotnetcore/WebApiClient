@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System;
 using WebApiClientCore;
 
@@ -9,6 +10,33 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class HttpApiConfigureExtensions
     {
+        /// <summary>
+        /// 配置HttpApi的选项
+        /// </summary>
+        /// <typeparam name="THttpApi"></typeparam>
+        /// <param name="services"></param>
+        /// <param name="configureOptions">配置选项</param>
+        /// <returns></returns>
+        public static IServiceCollection ConfigureHttpApi<THttpApi>(this IServiceCollection services, Action<HttpApiOptions, IServiceProvider> configureOptions)
+        {
+            return services.ConfigureHttpApi(typeof(THttpApi), configureOptions);
+        }
+
+        /// <summary>
+        /// 配置HttpApi的选项
+        /// </summary> 
+        /// <param name="services"></param>
+        /// <param name="httpApiType">接口类型</param> 
+        /// <param name="configureOptions">配置选项</param>
+        /// <returns></returns>
+        public static IServiceCollection ConfigureHttpApi(this IServiceCollection services, Type httpApiType, Action<HttpApiOptions, IServiceProvider> configureOptions)
+        {
+            var name = httpApiType.FullName;
+            return services.AddTransient<IConfigureOptions<HttpApiOptions>>(s => new ConfigureNamedOptions<HttpApiOptions, IServiceProvider>(name, s, configureOptions));
+        }
+
+
+
         /// <summary>
         /// 配置HttpApi的选项
         /// </summary>
@@ -34,6 +62,8 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.Configure(name, configureOptions);
         }
 
+
+
         /// <summary>
         /// 配置HttpApi的选项
         /// </summary>
@@ -57,6 +87,20 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var name = httpApiType.FullName;
             return services.Configure<HttpApiOptions>(name, configureOptions);
+        }
+
+
+
+
+        /// <summary>
+        /// 配置HttpApi的选项
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="configureOptions">配置选项</param>
+        public static IHttpClientBuilder ConfigureHttpApi(this IHttpClientBuilder builder, Action<HttpApiOptions, IServiceProvider> configureOptions)
+        {
+            builder.Services.AddTransient<IConfigureOptions<HttpApiOptions>>(s => new ConfigureNamedOptions<HttpApiOptions, IServiceProvider>(builder.Name, s, configureOptions));
+            return builder;
         }
 
         /// <summary>
