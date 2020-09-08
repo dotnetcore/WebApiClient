@@ -109,40 +109,5 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             return services.AddHttpApiOptions(httpApiType).Bind(configureOptions).Services;
         }
-
-
-        /// <summary>
-        /// 配置HttpApi的选项
-        /// </summary> 
-        /// <param name="builder"></param>
-        /// <param name="configureOptions">配置选项</param>
-        /// <returns></returns>
-        public static IHttpClientBuilder ConfigureHttpApi(this IHttpClientBuilder builder, Action<HttpApiOptions> configureOptions)
-        {
-            builder.AddHttpApiOptions().Configure(configureOptions);
-            return builder;
-        }
-
-        /// <summary>
-        /// 配置HttpApi的选项
-        /// </summary> 
-        /// <param name="builder"></param>
-        /// <param name="configureOptions">配置选项</param>
-        /// <returns></returns>
-        public static IHttpClientBuilder ConfigureHttpApi(this IHttpClientBuilder builder, Action<HttpApiOptions, IServiceProvider> configureOptions)
-        {
-            builder.AddHttpApiOptions().Configure(configureOptions);
-            return builder;
-        }
-
-        /// <summary>
-        /// 配置HttpApi的选项
-        /// </summary>
-        /// <param name="builder"></param> 
-        /// <returns></returns>
-        private static OptionsBuilder<HttpApiOptions> AddHttpApiOptions(this IHttpClientBuilder builder)
-        {
-            return builder.Services.AddOptions<HttpApiOptions>(builder.Name);
-        }
     }
 }

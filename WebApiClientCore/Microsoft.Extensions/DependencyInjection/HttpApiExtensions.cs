@@ -46,7 +46,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi<THttpApi>(this IServiceCollection services, Action<HttpApiOptions> configureOptions) where THttpApi : class
         {
-            return services.AddHttpApi<THttpApi>().ConfigureHttpApi(configureOptions);
+            return services
+                .ConfigureHttpApi<THttpApi>(configureOptions)
+                .AddHttpApi<THttpApi>();
         }
 
         /// <summary>
@@ -58,7 +60,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi<THttpApi>(this IServiceCollection services, Action<HttpApiOptions, IServiceProvider> configureOptions) where THttpApi : class
         {
-            return services.AddHttpApi<THttpApi>().ConfigureHttpApi(configureOptions);
+            return services
+                .ConfigureHttpApi<THttpApi>(configureOptions)
+                .AddHttpApi<THttpApi>();
         }
 
 
@@ -90,7 +94,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi(this IServiceCollection services, Type httpApiType, Action<HttpApiOptions> configureOptions)
         {
-            return services.AddHttpApi(httpApiType).ConfigureHttpApi(configureOptions);
+            return services
+                .ConfigureHttpApi(httpApiType, configureOptions)
+                .AddHttpApi(httpApiType);
         }
 
         /// <summary>
@@ -103,7 +109,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi(this IServiceCollection services, Type httpApiType, Action<HttpApiOptions, IServiceProvider> configureOptions)
         {
-            return services.AddHttpApi(httpApiType).ConfigureHttpApi(configureOptions);
+            return services
+                .ConfigureHttpApi(httpApiType, configureOptions)
+                .AddHttpApi(httpApiType);
         }
 
         /// <summary>
