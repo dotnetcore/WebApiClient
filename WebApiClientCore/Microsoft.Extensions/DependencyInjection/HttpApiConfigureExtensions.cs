@@ -16,6 +16,33 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="configureOptions">配置选项</param>
         /// <returns></returns>
+        public static IServiceCollection PostConfigureHttpApi<THttpApi>(this IServiceCollection services, Action<HttpApiOptions, IServiceProvider> configureOptions)
+        {
+            return services.PostConfigureHttpApi(typeof(THttpApi), configureOptions);
+        }
+
+        /// <summary>
+        /// 配置HttpApi的选项
+        /// </summary> 
+        /// <param name="services"></param>
+        /// <param name="httpApiType">接口类型</param> 
+        /// <param name="configureOptions">配置选项</param>
+        /// <returns></returns>
+        public static IServiceCollection PostConfigureHttpApi(this IServiceCollection services, Type httpApiType, Action<HttpApiOptions, IServiceProvider> configureOptions)
+        {
+            var name = httpApiType.FullName;
+            return services.AddOptions<HttpApiOptions>(name).PostConfigure(configureOptions).Services;
+        }
+
+
+
+        /// <summary>
+        /// 配置HttpApi的选项
+        /// </summary>
+        /// <typeparam name="THttpApi"></typeparam>
+        /// <param name="services"></param>
+        /// <param name="configureOptions">配置选项</param>
+        /// <returns></returns>
         public static IServiceCollection ConfigureHttpApi<THttpApi>(this IServiceCollection services, Action<HttpApiOptions, IServiceProvider> configureOptions)
         {
             return services.ConfigureHttpApi(typeof(THttpApi), configureOptions);
