@@ -32,7 +32,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddHttpClient(name)
                 .AddTypedClient((httpClient, serviceProvider) =>
                 {
-                    var httpApiOptions = serviceProvider.GetRequiredService<IOptionsMonitor<HttpApiOptions>>().Get(name);
+                    var httpApiOptions = serviceProvider.GetRequiredService<IOptionsFactory<HttpApiOptions>>().Create(name);
                     return HttpApi.Create<THttpApi>(httpClient, serviceProvider, httpApiOptions);
                 });
         }
