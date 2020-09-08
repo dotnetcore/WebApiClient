@@ -104,6 +104,17 @@ services.ConfigureHttpApi<IpetApi>(Configuration.GetSection(nameof(IpetApi)))
   }
 }
 ```
+#### 使用OptionsBuilder
+```
+services
+    .AddHttpApiOptions<IpetApi>()
+    .Bind(configuration.GetSection(nameof(IpetApi)))
+    .Configure(o =>
+    {
+        o.UseLogging = environment.IsDevelopment();
+    });
+```
+
 
 ### 数据验证
 #### 参数值验证
@@ -560,7 +571,7 @@ public interface IUserApi
     ITask<HttpResponseMessage> GetAsync([Required]string account);
 }
 ```
-默认缓存条件：URL(如`http://abc.com/a`)和全部请求Header一致。
+默认缓存条件：URL(如`http://abc.com/a`)和指定的请求Header一致。
 如果需要类似`[CacheByPath]`这样的功能，可直接继承`ApiCacheAttribute`来实现:
 
 ```
