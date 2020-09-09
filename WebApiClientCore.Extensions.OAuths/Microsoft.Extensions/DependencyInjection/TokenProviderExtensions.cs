@@ -17,7 +17,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddTokenProvider(this IServiceCollection services)
         {
-            services.AddHttpApi<IOAuthClient>(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
+            services.AddHttpApi<IOAuthClient>();
+            services.AddHttpApiOptions<IOAuthClient>().PostConfigure(o =>
+            {
+                o.KeyValueSerializeOptions.IgnoreNullValues = true;
+            });
             return services;
         }
 
