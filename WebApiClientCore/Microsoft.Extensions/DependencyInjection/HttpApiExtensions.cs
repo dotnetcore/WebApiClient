@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using System;
+using System.Net.Http;
 using WebApiClientCore;
 using WebApiClientCore.ResponseCaches;
 using WebApiClientCore.Serialization;
@@ -12,6 +13,18 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class HttpApiExtensions
     {
+        private static IHttpClientBuilder AddTypedClientCore<TClient>(this IHttpClientBuilder builder, Func<HttpClient, IServiceProvider, TClient> factory) where TClient : class
+        {
+            builder.Services.AddTransient(serviceProvider =>
+            {
+                var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
+                var httpClient = httpClientFactory.CreateClient(builder.Name);
+                return factory.Invoke(httpClient, serviceProvider);
+            });
+
+            return builder;
+        }
+
         /// <summary>
         /// 添加HttpApi代理类到服务
         /// </summary>
@@ -30,12 +43,13 @@ namespace Microsoft.Extensions.DependencyInjection
             var name = HttpApi.GetName<THttpApi>();
             return services
                 .RemoveAll<THttpApi>()
-                .AddHttpClient(name)
-                .AddTypedClient((httpClient, serviceProvider) =>
+                .AddTransient(serviceProvider =>
                 {
+                    var httpClient = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(name);
                     var httpApiOptions = serviceProvider.GetRequiredService<IOptionsMonitor<HttpApiOptions>>().Get(name);
                     return HttpApi.Create<THttpApi>(httpClient, serviceProvider, httpApiOptions);
-                });
+                })
+                .AddHttpClient(name);
         }
 
         /// <summary>
