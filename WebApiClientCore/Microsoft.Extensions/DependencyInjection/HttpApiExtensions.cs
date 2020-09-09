@@ -13,18 +13,6 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class HttpApiExtensions
     {
-        private static IHttpClientBuilder AddTypedClientCore<TClient>(this IHttpClientBuilder builder, Func<HttpClient, IServiceProvider, TClient> factory) where TClient : class
-        {
-            builder.Services.AddTransient(serviceProvider =>
-            {
-                var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
-                var httpClient = httpClientFactory.CreateClient(builder.Name);
-                return factory.Invoke(httpClient, serviceProvider);
-            });
-
-            return builder;
-        }
-
         /// <summary>
         /// 添加HttpApi代理类到服务
         /// </summary>
