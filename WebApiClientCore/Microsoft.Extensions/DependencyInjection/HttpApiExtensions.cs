@@ -29,15 +29,13 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddSingleton<IResponseCacheProvider, ResponseCacheProvider>();
 
             var name = HttpApi.GetName<THttpApi>();
-            return services
-                .RemoveAll<THttpApi>()
-                .AddTransient(serviceProvider =>
-                {
-                    var httpClient = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(name);
-                    var httpApiOptions = serviceProvider.GetRequiredService<IOptionsMonitor<HttpApiOptions>>().Get(name);
-                    return HttpApi.Create<THttpApi>(httpClient, serviceProvider, httpApiOptions);
-                })
-                .AddHttpClient(name);
+            services.TryAddTransient(serviceProvider =>
+            {
+                var httpClient = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(name);
+                var httpApiOptions = serviceProvider.GetRequiredService<IOptionsMonitor<HttpApiOptions>>().Get(name);
+                return HttpApi.Create<THttpApi>(httpClient, serviceProvider, httpApiOptions);
+            });
+            return services.AddHttpClient(name);
         }
 
         /// <summary>
