@@ -29,10 +29,11 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var name = HttpApi.GetName<THttpApi>();
             return services
+                .RemoveAll<THttpApi>()
                 .AddHttpClient(name)
                 .AddTypedClient((httpClient, serviceProvider) =>
                 {
-                    var httpApiOptions = serviceProvider.GetRequiredService<IOptionsFactory<HttpApiOptions>>().Create(name);
+                    var httpApiOptions = serviceProvider.GetRequiredService<IOptionsMonitor<HttpApiOptions>>().Get(name);
                     return HttpApi.Create<THttpApi>(httpClient, serviceProvider, httpApiOptions);
                 });
         }

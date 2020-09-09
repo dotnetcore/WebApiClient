@@ -11,7 +11,7 @@ namespace WebApiClientCore
     {
         /// <summary>
         /// 获取接口的命名
-        /// 该命名用于接口对应的HttpApiOptions
+        /// 该命名用于接口对应的Options名称 
         /// </summary>
         /// <typeparam name="THttpApi">接口类型</typeparam>
         /// <returns></returns>
@@ -22,7 +22,7 @@ namespace WebApiClientCore
 
         /// <summary>
         /// 获取接口的命名
-        /// 该命名用于接口对应的HttpApiOptions
+        /// 该命名用于接口对应的Options名称
         /// </summary>
         /// <param name="httpApiType">接口类型</param>
         /// <returns></returns>
