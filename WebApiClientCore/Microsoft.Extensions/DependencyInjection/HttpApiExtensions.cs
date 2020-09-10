@@ -81,6 +81,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(httpApiType));
             }
 
+            if (httpApiType.IsGenericTypeDefinition == true)
+            {
+                throw new NotSupportedException(Resx.unsupported_GenericTypeDefinitionType.Format(httpApiType));
+            }
+
             var builderType = typeof(HttpApiBuilder<>).MakeGenericType(httpApiType);
             return builderType.CreateInstance<IHttpApiBuilder>().AddHttpApi(services);
         }

@@ -268,6 +268,15 @@ namespace WebApiClientCore {
         }
         
         /// <summary>
+        ///   查找类似 不支持注册泛型定义类型{0} 的本地化字符串。
+        /// </summary>
+        internal static string unsupported_GenericTypeDefinitionType {
+            get {
+                return ResourceManager.GetString("unsupported_GenericTypeDefinitionType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 {0}方法不支持使用{1} 的本地化字符串。
         /// </summary>
         internal static string unsupported_HttpContent {
