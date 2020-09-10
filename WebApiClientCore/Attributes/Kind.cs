@@ -1,4 +1,6 @@
-﻿namespace WebApiClientCore.Attributes
+﻿using System.ComponentModel;
+
+namespace WebApiClientCore.Attributes
 {
     /// <summary>
     /// 表示参数类型
@@ -39,12 +41,25 @@
         /// application/json
         /// 等效JsonContentAttribute
         /// </summary>
-        JsonBody = 4,
+        Json = 4,
+
+        /// <summary>
+        /// application/json
+        /// 等效JsonContentAttribute
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        JsonBody = Json,
 
         /// <summary>
         /// application/xml
         /// 等效XmlContentAttribute
         /// </summary>
-        XmlBody = 5
+        Xml = 5,
+
+        /// <summary>
+        /// application/xml
+        /// 等效XmlContentAttribute
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        XmlBody = Xml,
     }
 }
