@@ -28,6 +28,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddSingleton<IKeyValueSerializer, KeyValueSerializer>();
             services.TryAddSingleton<IResponseCacheProvider, ResponseCacheProvider>();
 
+            services.TryAddSingleton(typeof(IHttpApiOptionsNotifer<>), typeof(HttpApiOptionsNotifer<>));
+            services.TryAddSingleton<IOptionsChangeTokenSource<HttpApiOptions>, HttpApiOptionsChangeTokenSource<THttpApi>>();
+
             var name = HttpApi.GetName<THttpApi>();
             services.TryAddTransient(serviceProvider =>
             {
