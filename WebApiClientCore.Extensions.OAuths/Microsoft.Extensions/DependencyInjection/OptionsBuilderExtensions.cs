@@ -6,54 +6,55 @@ using WebApiClientCore.Extensions.OAuths;
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// Options扩展
+    /// 提供OptionsBuilder扩展
     /// </summary>
-    public static class OptionsExtensions
+    public static class OptionsBuilderExtensions
     {
         /// <summary>
         /// 为接口配置ClientCredentialsOptions
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
-        /// <param name="services"></param>
+        /// <param name="builder"></param>
         /// <returns></returns>
-        public static OptionsBuilder<ClientCredentialsOptions> AddClientCredentialsOptions<THttpApi>(this IServiceCollection services)
+        public static OptionsBuilder<ClientCredentialsOptions> AddOptions<THttpApi>(this IClientCredentialsOptionsBuilder builder)
         {
-            return services.AddClientCredentialsOptions(typeof(THttpApi));
+            return builder.AddOptions(typeof(THttpApi));
         }
 
         /// <summary>
         /// 为接口配置ClientCredentialsOptions
-        /// </summary>
-        /// <param name="services"></param>
+        /// </summary> 
+        /// <param name="builder"></param>
         /// <param name="httpApiType">接口类型</param>
         /// <returns></returns>
-        public static OptionsBuilder<ClientCredentialsOptions> AddClientCredentialsOptions(this IServiceCollection services, Type httpApiType)
+        public static OptionsBuilder<ClientCredentialsOptions> AddOptions(this IClientCredentialsOptionsBuilder builder, Type httpApiType)
         {
             var name = HttpApi.GetName(httpApiType);
-            return services.AddOptions<ClientCredentialsOptions>(name);
+            return builder.Services.AddOptions<ClientCredentialsOptions>(name);
         }
+
 
         /// <summary>
         /// 为接口配置PasswordCredentialsOptions
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
-        /// <param name="services"></param>
+        /// <param name="builder"></param>
         /// <returns></returns>
-        public static OptionsBuilder<PasswordCredentialsOptions> AddPasswordCredentialsOptions<THttpApi>(this IServiceCollection services)
+        public static OptionsBuilder<PasswordCredentialsOptions> AddOptions<THttpApi>(this IPasswordCredentialsOptionsBuilder builder)
         {
-            return services.AddPasswordCredentialsOptions(typeof(THttpApi));
+            return builder.AddOptions(typeof(THttpApi));
         }
 
         /// <summary>
         /// 为接口配置PasswordCredentialsOptions
         /// </summary>
-        /// <param name="services"></param>
+        /// <param name="builder"></param>
         /// <param name="httpApiType">接口类型</param>
         /// <returns></returns>
-        public static OptionsBuilder<PasswordCredentialsOptions> AddPasswordCredentialsOptions(this IServiceCollection services, Type httpApiType)
+        public static OptionsBuilder<PasswordCredentialsOptions> AddOptions(this IPasswordCredentialsOptionsBuilder builder, Type httpApiType)
         {
             var name = HttpApi.GetName(httpApiType);
-            return services.AddOptions<PasswordCredentialsOptions>(name);
+            return builder.Services.AddOptions<PasswordCredentialsOptions>(name);
         }
     }
 }
