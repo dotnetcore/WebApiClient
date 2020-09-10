@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using System;
+using System.Linq;
 using System.Net.Http;
 using WebApiClientCore;
 using WebApiClientCore.ResponseCaches;
@@ -23,13 +24,11 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddOptions();
             services.AddMemoryCache();
+            services.AddHttpApiOptionsChangeNotifier<THttpApi>();
             services.TryAddSingleton<IXmlSerializer, XmlSerializer>();
             services.TryAddSingleton<IJsonSerializer, JsonSerializer>();
             services.TryAddSingleton<IKeyValueSerializer, KeyValueSerializer>();
             services.TryAddSingleton<IResponseCacheProvider, ResponseCacheProvider>();
-
-            services.TryAddSingleton(typeof(IHttpApiOptionsNotifer<>), typeof(HttpApiOptionsNotifer<>));
-            services.TryAddSingleton<IOptionsChangeTokenSource<HttpApiOptions>, HttpApiOptionsChangeTokenSource<THttpApi>>();
 
             var name = HttpApi.GetName<THttpApi>();
             services.TryAddTransient(serviceProvider =>
@@ -121,6 +120,24 @@ namespace Microsoft.Extensions.DependencyInjection
             return services
                 .ConfigureHttpApi(httpApiType, configureOptions)
                 .AddHttpApi(httpApiType);
+        }
+
+        /// <summary>
+        /// 添加HttpApiOptions变化通知者
+        /// </summary>
+        /// <typeparam name="THttpApi"></typeparam>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        private static IServiceCollection AddHttpApiOptionsChangeNotifier<THttpApi>(this IServiceCollection services)
+        {
+            var serviceType = typeof(IOptionsChangeTokenSource<HttpApiOptions>);
+            var implementationType = typeof(HttpApiOptionsChangeTokenSource<THttpApi>);
+            if (services.Any(item => item.ServiceType == serviceType && item.ImplementationType == implementationType) == false)
+            {
+                services.AddSingleton(serviceType, implementationType);
+            }
+            services.TryAddSingleton<IHttpApiOptionsChangeNotifier, HttpApiOptionsChangeNotifier>();
+            return services;
         }
 
         /// <summary>
