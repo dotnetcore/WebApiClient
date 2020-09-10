@@ -3,23 +3,23 @@
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 定义HttpApiOptions变化通知的接口
+    /// 定义HttpApiOptions的Action配置触发器
     /// </summary> 
-    public interface IHttpApiOptionsChangeNotifier
+    public interface IHttpApiOptionsConfigureTrigger
     {
         /// <summary>
-        /// 通知HttpApiOptions变化
+        /// 触发HttpApiOptions的Action配置
         /// </summary>
         /// <param name="httpApiType">接口类型</param>
-        void NotifyChanged(Type httpApiType);
+        void Raise(Type httpApiType);
 
         /// <summary>
-        /// 通知HttpApiOptions变化
+        /// 触发HttpApiOptions的Action配置
         /// </summary>
         /// <typeparam name="THttpApi">接口类型</typeparam>
-        void NotifyChanged<THttpApi>()
+        void Raise<THttpApi>()
         {
-            this.NotifyChanged(typeof(THttpApi));
+            this.Raise(typeof(THttpApi));
         }
     }
 }

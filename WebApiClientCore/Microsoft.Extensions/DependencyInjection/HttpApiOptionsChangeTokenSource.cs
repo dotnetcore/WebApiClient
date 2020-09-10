@@ -10,7 +10,7 @@ namespace Microsoft.Extensions.DependencyInjection
     ///  表示HttpApiOptions变化令牌源
     /// </summary>
     /// <typeparam name="THttpApi">接口类型</typeparam>
-    class HttpApiOptionsChangeTokenSource<THttpApi> : IOptionsChangeTokenSource<HttpApiOptions>, IHttpApiOptionsChangeNotifier
+    class HttpApiOptionsChangeTokenSource<THttpApi> : IOptionsChangeTokenSource<HttpApiOptions>, IHttpApiOptionsConfigureTrigger
     {
         /// <summary>
         /// 变化令牌
@@ -32,14 +32,14 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// 通知HttpApiOptions变化
+        /// 触发HttpApiOptions的Action配置变化
         /// </summary>
         /// <param name="httpApiType">接口类型</param>
-        public void NotifyChanged(Type httpApiType)
+        public void Raise(Type httpApiType)
         {
             if (this.Name == HttpApi.GetName(httpApiType))
             {
-                Interlocked.Exchange(ref this.changeToken, new ChangeToken()).NotifyChanged();
+                Interlocked.Exchange(ref this.changeToken, new ChangeToken()).RaiseChange();
             }
         }
 
@@ -75,10 +75,9 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             /// <summary>
-            /// 通知已经变化
-            /// 调用后触发注册的回调
+            /// 触发变化，调用所有注册的回调
             /// </summary>
-            public void NotifyChanged()
+            public void RaiseChange()
             {
                 this.cts.Cancel();
             }

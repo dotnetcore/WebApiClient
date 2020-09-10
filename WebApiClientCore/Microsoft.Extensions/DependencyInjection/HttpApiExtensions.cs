@@ -24,7 +24,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddOptions();
             services.AddMemoryCache();
-            services.AddHttpApiOptionsChangeNotifier<THttpApi>();
+            services.AddHttpApiOptionsConfigureTrigger<THttpApi>();
             services.TryAddSingleton<IXmlSerializer, XmlSerializer>();
             services.TryAddSingleton<IJsonSerializer, JsonSerializer>();
             services.TryAddSingleton<IKeyValueSerializer, KeyValueSerializer>();
@@ -123,12 +123,12 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// 添加HttpApiOptions变化通知者
+        /// 添加HttpApiOptions的Action配置触发器
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
         /// <param name="services"></param>
         /// <returns></returns>
-        private static IServiceCollection AddHttpApiOptionsChangeNotifier<THttpApi>(this IServiceCollection services)
+        private static IServiceCollection AddHttpApiOptionsConfigureTrigger<THttpApi>(this IServiceCollection services)
         {
             var serviceType = typeof(IOptionsChangeTokenSource<HttpApiOptions>);
             var implementationType = typeof(HttpApiOptionsChangeTokenSource<THttpApi>);
@@ -136,7 +136,7 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 services.AddSingleton(serviceType, implementationType);
             }
-            services.TryAddSingleton<IHttpApiOptionsChangeNotifier, HttpApiOptionsChangeNotifier>();
+            services.TryAddSingleton<IHttpApiOptionsConfigureTrigger, HttpApiOptionsConfigureTrigger>();
             return services;
         }
 
