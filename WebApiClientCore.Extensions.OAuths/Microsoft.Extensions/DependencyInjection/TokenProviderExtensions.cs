@@ -140,17 +140,19 @@ namespace Microsoft.Extensions.DependencyInjection
 
         /// <summary>
         /// 添加TokenProvider依赖项
+        /// 包括注册IOAuthClient服务的默认实现
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static IServiceCollection AddTokenProvider(this IServiceCollection services)
         {
-            services.AddHttpApi<IOAuthClient>();
-            services.AddHttpApiOptions<IOAuthClient>().PostConfigure(o =>
+            services.AddHttpApi<IOAuthClientApi>();
+            services.AddHttpApiOptions<IOAuthClientApi>().PostConfigure(o =>
             {
                 o.KeyValueSerializeOptions.IgnoreNullValues = true;
             });
+            services.TryAddTransient<IOAuthClient, DefaultOAuthClient>();
             return services;
         }
     }
