@@ -8,7 +8,7 @@ namespace WebApiClientCore.Extensions.OAuths
     /// <summary>
     /// 表示默认的password授权模式的Token客户端
     /// </summary>
-    class DefaultPasswordCredentialsTokenClient : IPasswordCredentialsTokenClient
+    public class DefaultPasswordCredentialsTokenClient : IPasswordCredentialsTokenClient
     {
         /// <summary>
         /// OAuth客户端接口
@@ -38,7 +38,7 @@ namespace WebApiClientCore.Extensions.OAuths
         /// </summary>
         /// <param name="httpApiType">http接口类型</param> 
         /// <returns></returns>
-        public Task<TokenResult?> RequestTokenAsync(Type? httpApiType)
+        public virtual Task<TokenResult?> RequestTokenAsync(Type? httpApiType)
         {
             var name = HttpApi.GetName(httpApiType);
             var options = this.optionsMonitor.Get(name);
@@ -56,7 +56,7 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <param name="refresh_token">刷新令牌</param>
         /// <param name="httpApiType">http接口类型</param>
         /// <returns></returns>
-        public Task<TokenResult?> RefreshTokenAsync(string refresh_token, Type? httpApiType)
+        public virtual Task<TokenResult?> RefreshTokenAsync(string refresh_token, Type? httpApiType)
         {
             var name = HttpApi.GetName(httpApiType);
             var options = this.optionsMonitor.Get(name);
