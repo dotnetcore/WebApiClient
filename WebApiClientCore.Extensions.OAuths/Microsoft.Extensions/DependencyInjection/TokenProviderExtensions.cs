@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.ComponentModel;
 using WebApiClientCore.Extensions.OAuths;
+using WebApiClientCore.Extensions.OAuths.TokenClients;
 using WebApiClientCore.Extensions.OAuths.TokenProviders;
 
 namespace Microsoft.Extensions.DependencyInjection

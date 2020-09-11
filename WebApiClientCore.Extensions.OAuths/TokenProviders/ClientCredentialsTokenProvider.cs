@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
+using WebApiClientCore.Extensions.OAuths.TokenClients;
 
 namespace WebApiClientCore.Extensions.OAuths.TokenProviders
 {
@@ -26,6 +27,12 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <returns></returns>
         protected override Task<TokenResult?> RequestTokenAsync(IServiceProvider serviceProvider)
         {
+            var custom = serviceProvider.GetService<ICustomTokenClient<THttpApi>>();
+            if (custom != null)
+            {
+                return custom.RequestTokenAsync();
+            }
+
             return serviceProvider
                 .GetRequiredService<IClientCredentialsTokenClient>()
                 .RequestTokenAsync(typeof(THttpApi));
@@ -39,6 +46,12 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <returns></returns>
         protected override Task<TokenResult?> RefreshTokenAsync(IServiceProvider serviceProvider, string refresh_token)
         {
+            var custom = serviceProvider.GetService<ICustomTokenClient<THttpApi>>();
+            if (custom != null)
+            {
+                return custom.RefreshTokenAsync(refresh_token);
+            }
+
             return serviceProvider
                .GetRequiredService<IClientCredentialsTokenClient>()
                .RefreshTokenAsync(refresh_token, typeof(THttpApi));

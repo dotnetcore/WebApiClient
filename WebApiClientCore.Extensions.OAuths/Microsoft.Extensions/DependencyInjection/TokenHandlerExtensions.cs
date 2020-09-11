@@ -7,7 +7,7 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <summary>
     /// 提供OAuth授权token应用的http消息处理程序扩展
     /// </summary>
-    public static class OAuthTokenHandlerExtensions
+    public static class TokenHandlerExtensions
     {
         /// <summary>
         /// 添加client_credentials授权方式token应用的http消息处理程序

@@ -1,12 +1,14 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
-namespace WebApiClientCore.Extensions.OAuths
+namespace WebApiClientCore.Extensions.OAuths.TokenClients
 {
     /// <summary>
-    /// 定义client模式的Token客户端接口
+    /// 定义Token客户端接口
     /// </summary>
-    public interface IClientCredentialsTokenClient
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public interface ITokenClient
     {
         /// <summary>
         /// 请求获取token
