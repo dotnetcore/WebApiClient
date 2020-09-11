@@ -5,7 +5,7 @@ namespace WebApiClientCore.Attributes
 {
     /// <summary>
     /// 表示client_credentials授权方式的token应用特性
-    /// 需要先注册services.AddClientCredentialsTokenProvider
+    /// 需要注册services.AddClientCredentialsTokenProvider
     /// </summary> 
     public class ClientCredentialsTokenAttribute : OAuthTokenAttribute
     {

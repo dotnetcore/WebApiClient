@@ -5,6 +5,7 @@ namespace App.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [TokenFilter]
     public class UsersController : ControllerBase
     {
         [HttpGet("{account}")]

@@ -24,13 +24,18 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddOptions();
             services.AddMemoryCache();
-            services.AddHttpApiOptionsConfigureTrigger<THttpApi>();
             services.TryAddSingleton<IXmlSerializer, XmlSerializer>();
             services.TryAddSingleton<IJsonSerializer, JsonSerializer>();
             services.TryAddSingleton<IKeyValueSerializer, KeyValueSerializer>();
             services.TryAddSingleton<IResponseCacheProvider, ResponseCacheProvider>();
 
+            services.TryAddSingleton(new HttpApiMappingRegistry());
+            services.AddHttpApiOptionsConfigureTrigger<THttpApi>();
+
             var name = HttpApi.GetName<THttpApi>();
+            var registry = (HttpApiMappingRegistry)services.Single(item => item.ServiceType == typeof(HttpApiMappingRegistry)).ImplementationInstance;
+            registry.NamedHttpApiRegistrations[name] = typeof(THttpApi);
+
             services.TryAddTransient(serviceProvider =>
             {
                 var httpClient = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(name);

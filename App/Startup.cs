@@ -49,7 +49,7 @@ namespace App
             {
                 o.UseLogging = Environment.IsDevelopment();
                 o.HttpHost = new Uri("http://localhost:5000/");
-            });
+            }).AddClientCredentialsTokenHandler();
 
             // 注册与配置clientId模式的token提者选项
             services.AddClientCredentialsTokenProvider<IUserApi>(o =>

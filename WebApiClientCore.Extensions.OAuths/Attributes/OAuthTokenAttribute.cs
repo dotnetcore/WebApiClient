@@ -6,7 +6,7 @@ using WebApiClientCore.Extensions.OAuths;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 表示OAuth授权的token的token应用抽象特性
+    /// 表示OAuth授权token应用抽象特性
     /// </summary> 
     public abstract class OAuthTokenAttribute : ApiFilterAttribute
     {
