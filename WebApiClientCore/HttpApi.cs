@@ -15,7 +15,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <typeparam name="THttpApi">接口类型</typeparam>
         /// <returns></returns>
-        public static string GetName<THttpApi>( )
+        public static string GetName<THttpApi>()
         {
             return GetName(typeof(THttpApi));
         }
@@ -26,8 +26,12 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="httpApiType">接口类型</param>
         /// <returns></returns>
-        public static string GetName(Type httpApiType)
+        public static string GetName(Type? httpApiType)
         {
+            if (httpApiType == null)
+            {
+                return string.Empty;
+            }
             return httpApiType.FullName;
         }
 
