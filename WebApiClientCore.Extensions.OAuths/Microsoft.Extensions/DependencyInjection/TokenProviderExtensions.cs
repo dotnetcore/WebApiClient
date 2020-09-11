@@ -147,12 +147,8 @@ namespace Microsoft.Extensions.DependencyInjection
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static IServiceCollection AddTokenProvider(this IServiceCollection services)
         {
-            services.AddHttpApi<IOAuthClientApi>();
-            services.AddHttpApiOptions<IOAuthClientApi>().PostConfigure(o =>
-            {
-                o.KeyValueSerializeOptions.IgnoreNullValues = true;
-            });
             services.TryAddTransient<IOAuthClient, DefaultOAuthClient>();
+            services.AddHttpApi<IOAuthClientApi>(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
             return services;
         }
     }
