@@ -64,11 +64,11 @@ namespace WebApiClientCore.Attributes
                     await formDataContent.OnRequestAsync(context).ConfigureAwait(false);
                     break;
 
-                case Kind.JsonBody:
+                case Kind.Json:
                     await jsonContent.OnRequestAsync(context).ConfigureAwait(false);
                     break;
 
-                case Kind.XmlBody:
+                case Kind.Xml:
                     await xmlContent.OnRequestAsync(context).ConfigureAwait(false);
                     break;
             }

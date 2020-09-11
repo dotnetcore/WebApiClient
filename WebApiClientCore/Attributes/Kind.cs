@@ -46,6 +46,7 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// application/json
         /// 等效JsonContentAttribute
+        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         JsonBody = Json,
 
