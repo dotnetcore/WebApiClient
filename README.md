@@ -115,6 +115,13 @@ services
     });
 ```
 
+####  Configure触发器
+使用委托配置HttpApiOptions，委托并不是每次都被执行，相反，首次执行委托后得到的HttpApiOptions值是被缓存起来的，IHttpApiOptionsConfigureTrigger可以用于主动地显式触发配置委托执行。
+```
+var trigger = serviceProvider.GetService<IHttpApiOptionsConfigureTrigger>();
+trigger.Raise<IpetApi>();
+```
+
 
 ### 数据验证
 #### 参数值验证
