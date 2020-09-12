@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using WebApiClientCore.Exceptions;
 using WebApiClientCore.Extensions.OAuths;
 
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 表示client_credentials授权方式的token应用特性
+    /// 表示由client模式token提供者提供的token应用特性
     /// 需要注册services.AddClientCredentialsTokenProvider
     /// </summary> 
     public class ClientCredentialsTokenAttribute : OAuthTokenAttribute
@@ -12,12 +13,16 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 获取token提供者
         /// </summary>
-        /// <param name="context">上下文</param>
+        /// <param name="context"></param>
         /// <returns></returns>
         protected override ITokenProvider GetTokenProvider(ApiRequestContext context)
         {
-            var providerType = typeof(IClientCredentialsTokenProvider<>).MakeGenericType(context.ApiAction.InterfaceType);
-            return (ITokenProvider)context.HttpContext.ServiceProvider.GetRequiredService(providerType);
+            var provider = base.GetTokenProvider(context);
+            if (provider.ProviderType != ProviderType.ClientCredentials)
+            {
+                throw new ApiInvalidConfigException($"未注册{nameof(TokenProviderExtensions.AddClientCredentialsTokenProvider)}");
+            }
+            return provider;
         }
     }
 }

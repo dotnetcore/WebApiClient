@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -8,9 +9,9 @@ using System.Threading.Tasks;
 namespace WebApiClientCore.Extensions.OAuths.HttpMessageHandlers
 {
     /// <summary>
-    /// 表示OAuth授权token应用的http消息处理程序抽象
+    /// 表示token应用的http消息处理程序
     /// </summary>
-    public abstract class OAuthTokenHandler : DelegatingHandler
+    public class OAuthTokenHandler : DelegatingHandler
     {
         /// <summary>
         /// token提供者
@@ -18,7 +19,7 @@ namespace WebApiClientCore.Extensions.OAuths.HttpMessageHandlers
         private readonly ITokenProvider tokenProvider;
 
         /// <summary>
-        /// OAuth授权token应用的http消息处理程序抽象
+        /// token应用的http消息处理程序
         /// </summary>
         /// <param name="serviceProvider">服务提供者</param>
         /// <param name="httpApiType">接口类型</param>
@@ -33,7 +34,11 @@ namespace WebApiClientCore.Extensions.OAuths.HttpMessageHandlers
         /// <param name="serviceProvider">服务提供者</param>
         /// <param name="httpApiType">接口类型</param>
         /// <returns></returns>
-        protected abstract ITokenProvider GetTokenProvider(IServiceProvider serviceProvider, Type httpApiType);
+        protected virtual ITokenProvider GetTokenProvider(IServiceProvider serviceProvider, Type httpApiType)
+        {
+            var providerType = typeof(ITokenProvider<>).MakeGenericType(httpApiType);
+            return (ITokenProvider)serviceProvider.GetRequiredService(providerType);
+        }
 
         /// <summary>
         /// 检测响应是否未授权

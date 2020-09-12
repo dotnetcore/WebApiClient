@@ -10,25 +10,13 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class TokenHandlerExtensions
     {
         /// <summary>
-        /// 添加client_credentials授权方式token应用的http消息处理程序
-        /// 该功能等效于接口的[ClientCredentialsTokenAttribute]
+        /// 添加token应用的http消息处理程序
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public static IHttpClientBuilder AddClientCredentialsTokenHandler(this IHttpClientBuilder builder)
+        public static IHttpClientBuilder AddOAuthTokenHandler(this IHttpClientBuilder builder)
         {
-            return builder.AddTokenHandler((s, t) => new ClientCredentialsTokenHandler(s, t));
-        }
-
-        /// <summary>
-        /// 添加password授权方式token应用的http消息处理程序
-        /// 该功能等效于接口的[PasswordCredentialsTokenAttribute]
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <returns></returns>
-        public static IHttpClientBuilder AddPasswordCredentialsTokenHandler(this IHttpClientBuilder builder)
-        {
-            return builder.AddTokenHandler((s, t) => new PasswordCredentialsTokenHandler(s, t));
+            return builder.AddOAuthTokenHandler((s, t) => new OAuthTokenHandler(s, t));
         }
 
         /// <summary>
@@ -38,7 +26,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="builder"></param>
         /// <param name="handlerFactory">hanlder的创建委托</param> 
         /// <returns></returns>
-        public static IHttpClientBuilder AddTokenHandler<TOAuthTokenHandler>(this IHttpClientBuilder builder, Func<IServiceProvider, Type, TOAuthTokenHandler> handlerFactory)
+        public static IHttpClientBuilder AddOAuthTokenHandler<TOAuthTokenHandler>(this IHttpClientBuilder builder, Func<IServiceProvider, Type, TOAuthTokenHandler> handlerFactory)
             where TOAuthTokenHandler : OAuthTokenHandler
         {
             var httpApiType = builder.GetHttpApiType();

@@ -7,13 +7,13 @@ using WebApiClientCore.Attributes;
 namespace WebApiClientCore.Extensions.OAuths.TokenClients
 {
     /// <summary>
-    /// 定义Token客户端的接口
+    /// 定义OAuth2的Token客户端的接口
     /// </summary>    
     [LoggingFilter]
     [XmlReturn(Enable = false)]
     [EditorBrowsable(EditorBrowsableState.Never)]
     [JsonReturn(EnsureMatchAcceptContentType = false, EnsureSuccessStatusCode = false)]
-    public interface ITokenClientApi
+    public interface IOAuthTokenClientApi
     {
         /// <summary>
         /// 以client_credentials授权方式获取token
