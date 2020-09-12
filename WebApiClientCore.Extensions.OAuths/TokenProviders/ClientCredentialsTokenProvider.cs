@@ -3,7 +3,6 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 using WebApiClientCore.Extensions.OAuths.Exceptions;
-using WebApiClientCore.Extensions.OAuths.TokenClients;
 
 namespace WebApiClientCore.Extensions.OAuths.TokenProviders
 {
@@ -11,13 +10,8 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
     /// 表示Client身份信息token提供者
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
-    public class ClientCredentialsTokenProvider<THttpApi> : TokenProvider<THttpApi>
+    public class ClientCredentialsTokenProvider<THttpApi> : TokenProvider
     {
-        /// <summary>
-        /// 获取提供者类型
-        /// </summary>
-        public override ProviderType ProviderType => ProviderType.ClientCredentials;
-
         /// <summary>
         /// Client身份信息token提供者
         /// </summary>

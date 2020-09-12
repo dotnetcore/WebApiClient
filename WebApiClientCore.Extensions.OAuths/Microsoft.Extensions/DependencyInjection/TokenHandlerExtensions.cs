@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
+using WebApiClientCore.Extensions.OAuths;
 using WebApiClientCore.Extensions.OAuths.HttpMessageHandlers;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -16,7 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder AddOAuthTokenHandler(this IHttpClientBuilder builder)
         {
-            return builder.AddOAuthTokenHandler((s, t) => new OAuthTokenHandler(s, t));
+            return builder.AddOAuthTokenHandler((s, t) => new OAuthTokenHandler(t));
         }
 
         /// <summary>
@@ -26,18 +27,13 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="builder"></param>
         /// <param name="handlerFactory">hanlder的创建委托</param> 
         /// <returns></returns>
-        public static IHttpClientBuilder AddOAuthTokenHandler<TOAuthTokenHandler>(this IHttpClientBuilder builder, Func<IServiceProvider, Type, TOAuthTokenHandler> handlerFactory)
+        public static IHttpClientBuilder AddOAuthTokenHandler<TOAuthTokenHandler>(this IHttpClientBuilder builder, Func<IServiceProvider, ITokenProvider, TOAuthTokenHandler> handlerFactory)
             where TOAuthTokenHandler : OAuthTokenHandler
         {
-            var httpApiType = builder.GetHttpApiType();
-            if (httpApiType == null)
-            {
-                return builder;
-            }
-
             builder.Services.TryAddTransient(serviceProvider =>
             {
-                return handlerFactory(serviceProvider, httpApiType);
+                var tokenProvider = serviceProvider.GetRequiredService<ITokenProviderFactory>().Create(builder.Name);
+                return handlerFactory(serviceProvider, tokenProvider);
             });
 
             return builder.AddHttpMessageHandler<TOAuthTokenHandler>();

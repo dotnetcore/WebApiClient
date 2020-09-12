@@ -45,8 +45,8 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected virtual ITokenProvider GetTokenProvider(ApiRequestContext context)
         {
-            var providerType = typeof(ITokenProvider<>).MakeGenericType(context.ApiAction.InterfaceType);
-            return (ITokenProvider)context.HttpContext.ServiceProvider.GetRequiredService(providerType);
+            var name = HttpApi.GetName(context.ApiAction.InterfaceType);
+            return context.HttpContext.ServiceProvider.GetRequiredService<ITokenProviderFactory>().Create(name);
         }
 
         /// <summary>

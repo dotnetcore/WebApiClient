@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using WebApiClientCore.Attributes;
 
-namespace WebApiClientCore.Extensions.OAuths.TokenClients
+namespace WebApiClientCore.Extensions.OAuths.TokenProviders
 {
     /// <summary>
     /// 定义OAuth2的Token客户端的接口

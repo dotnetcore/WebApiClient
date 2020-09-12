@@ -8,11 +8,6 @@ namespace WebApiClientCore.Extensions.OAuths
     public interface ITokenProvider
     {
         /// <summary>
-        /// 获取提供者类型
-        /// </summary>
-        ProviderType ProviderType { get; }
-
-        /// <summary>
         /// 强制清除token以支持下次获取到新的token
         /// </summary>
         void ClearToken();

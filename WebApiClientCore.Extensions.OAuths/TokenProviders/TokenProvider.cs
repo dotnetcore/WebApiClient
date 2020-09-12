@@ -6,10 +6,9 @@ using WebApiClientCore.Extensions.OAuths.Exceptions;
 namespace WebApiClientCore.Extensions.OAuths.TokenProviders
 {
     /// <summary>
-    /// 表示指定接口的Token提供者抽象类
+    /// 表示Token提供者抽象类
     /// </summary>
-    /// <typeparam name="THttpApi">接口类型</typeparam>
-    public abstract class TokenProvider<THttpApi> : Disposable, ITokenProvider<THttpApi>, ITokenProvider
+    public abstract class TokenProvider : Disposable, ITokenProvider
     {
         /// <summary>
         /// 最近请求到的token
@@ -27,12 +26,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         private readonly AsyncRoot asyncRoot = new AsyncRoot();
 
         /// <summary>
-        /// 获取提供者类型
-        /// </summary>
-        public abstract ProviderType ProviderType { get; }
-
-        /// <summary>
-        /// 指定接口的Token提供者
+        /// Token提供者抽象类
         /// </summary>
         /// <param name="services"></param>
         public TokenProvider(IServiceProvider services)

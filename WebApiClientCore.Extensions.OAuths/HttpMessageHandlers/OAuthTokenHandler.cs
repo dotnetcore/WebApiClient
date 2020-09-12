@@ -16,28 +16,15 @@ namespace WebApiClientCore.Extensions.OAuths.HttpMessageHandlers
         /// <summary>
         /// token提供者
         /// </summary>
-        private readonly ITokenProvider tokenProvider;
+        private readonly ITokenProvider tokenProvider;         
 
         /// <summary>
         /// token应用的http消息处理程序
         /// </summary>
-        /// <param name="serviceProvider">服务提供者</param>
-        /// <param name="httpApiType">接口类型</param>
-        public OAuthTokenHandler(IServiceProvider serviceProvider, Type httpApiType)
+        /// <param name="tokenProvider">token提供者</param> 
+        public OAuthTokenHandler(ITokenProvider tokenProvider)
         {
-            this.tokenProvider = this.GetTokenProvider(serviceProvider, httpApiType);
-        }
-
-        /// <summary>
-        /// 获取token提供者
-        /// </summary>
-        /// <param name="serviceProvider">服务提供者</param>
-        /// <param name="httpApiType">接口类型</param>
-        /// <returns></returns>
-        protected virtual ITokenProvider GetTokenProvider(IServiceProvider serviceProvider, Type httpApiType)
-        {
-            var providerType = typeof(ITokenProvider<>).MakeGenericType(httpApiType);
-            return (ITokenProvider)serviceProvider.GetRequiredService(providerType);
+            this.tokenProvider = tokenProvider;
         }
 
         /// <summary>

@@ -23,6 +23,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="TokenClients\**" />
+    <EmbeddedResource Remove="TokenClients\**" />
+    <None Remove="TokenClients\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\WebApiClientCore\WebApiClientCore.csproj" />
   </ItemGroup>
   <ItemGroup>

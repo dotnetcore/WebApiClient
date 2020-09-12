@@ -70,7 +70,7 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <returns></returns>
         public virtual bool IsSuccess()
         {
-            return string.IsNullOrEmpty(this.Error);
+            return string.IsNullOrEmpty(this.Access_token) == false;
         }
 
         /// <summary>
