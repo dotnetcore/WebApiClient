@@ -23,7 +23,7 @@ namespace WebApiClientCore.Extensions.OAuths.HttpMessageHandlers
         /// </summary>
         /// <param name="tokenProvider">token提供者</param> 
         public OAuthTokenHandler(ITokenProvider tokenProvider)
-        {
+        {            
             this.tokenProvider = tokenProvider;
         }
 

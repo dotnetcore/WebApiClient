@@ -96,13 +96,13 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <typeparam name="THttpApi">接口类型</typeparam>
         /// <param name="services"></param>
-        /// <param name="tokenRequest">token请求者</param>
+        /// <param name="tokenRequest">token请求委托</param>
         /// <returns></returns>
         public static ITokenProviderBuilder AddTokeProvider<THttpApi>(this IServiceCollection services, Func<IServiceProvider, Task<TokenResult?>> tokenRequest)
         {
-            return services.AddTokeProvider<THttpApi, DefaultCustomTokenProvider<THttpApi>>(s =>
+            return services.AddTokeProvider<THttpApi, DelegateTokenProvider<THttpApi>>(s =>
             {
-                return new DefaultCustomTokenProvider<THttpApi>(s, tokenRequest);
+                return new DelegateTokenProvider<THttpApi>(s, tokenRequest);
             });
         }
 
