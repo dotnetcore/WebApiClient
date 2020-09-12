@@ -49,7 +49,6 @@ namespace Microsoft.Extensions.DependencyInjection
             var provider = ServiceDescriptor.Singleton<ITokenProvider<THttpApi>, ClientCredentialsTokenProvider<THttpApi>>();
             services.Replace(provider);
 
-            services.TryAddSingleton<ITokenProvider<THttpApi>, ClientCredentialsTokenProvider<THttpApi>>();
             services.AddHttpApi<IOAuthTokenClientApi>(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
             return services.AddOptions<ClientCredentialsOptions>(HttpApi.GetName<THttpApi>());
         }
@@ -154,6 +153,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         private static IServiceCollection AddCustomTokenProviderCore<THttpApi, TCustomTokenClient>(this IServiceCollection services)
         {
+            // 检测实现类型
             var serviceType = typeof(ICustomTokenClient<THttpApi>);
             var implementationType = typeof(TCustomTokenClient);
             if (serviceType.IsAssignableFrom(implementationType) == false)
