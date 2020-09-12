@@ -9,7 +9,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
     /// 表示指定接口的自定义Token提供者
     /// </summary>
     /// <typeparam name="THttpApi">接口类型</typeparam>
-    public class CustomTokenProvider<THttpApi> : TokenProvider<THttpApi>
+    class CustomTokenProvider<THttpApi> : TokenProvider<THttpApi>
     {
         /// <summary>
         /// 获取提供者类型
