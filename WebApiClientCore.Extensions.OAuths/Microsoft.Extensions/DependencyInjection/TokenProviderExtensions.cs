@@ -148,10 +148,10 @@ namespace Microsoft.Extensions.DependencyInjection
             where TTokenProvider : class, ITokenProvider
         {
             services
-                .AddOptions<TokenProviderFactoryOptions>()
-                .Configure(x => x.AddTokenProvider<THttpApi, TTokenProvider>())
-                .Services.TryAddSingleton<ITokenProviderFactory, TokenProviderFactory>();
+               .AddOptions<TokenProviderFactoryOptions>()
+               .Configure(o => o.Register<THttpApi, TTokenProvider>());
 
+            services.TryAddSingleton<ITokenProviderFactory, TokenProviderFactory>();
             return new DefaultTokenProviderBuilder<THttpApi>(services);
         }
     }

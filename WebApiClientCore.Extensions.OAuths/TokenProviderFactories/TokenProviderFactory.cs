@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 
 namespace WebApiClientCore.Extensions.OAuths
 {
@@ -11,7 +10,7 @@ namespace WebApiClientCore.Extensions.OAuths
     class TokenProviderFactory : ITokenProviderFactory
     {
         private readonly IServiceProvider serviceProvider;
-        private readonly Dictionary<string, Type> registrations;
+        private readonly TokenProviderFactoryOptions options;
 
         /// <summary>
         /// 默认的token提供者工厂
@@ -21,7 +20,19 @@ namespace WebApiClientCore.Extensions.OAuths
         public TokenProviderFactory(IServiceProvider serviceProvider, IOptions<TokenProviderFactoryOptions> options)
         {
             this.serviceProvider = serviceProvider;
-            this.registrations = options.Value.Registrations;
+            this.options = options.Value;
+        }
+
+        /// <summary>
+        /// 创建token提供者
+        /// </summary>
+        /// <param name="httpApiType">接口名称</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public ITokenProvider Create(Type httpApiType)
+        {
+            var name = HttpApi.GetName(httpApiType);
+            return this.Create(name);
         }
 
         /// <summary>
@@ -32,7 +43,7 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <returns></returns>
         public ITokenProvider Create(string name)
         {
-            if (this.registrations.TryGetValue(name, out var tokenProviderType))
+            if (this.options.TryGetValue(name, out var tokenProviderType))
             {
                 return (ITokenProvider)this.serviceProvider.GetRequiredService(tokenProviderType);
             }
