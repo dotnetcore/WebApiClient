@@ -42,7 +42,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>     
         public static OptionsBuilder<ClientCredentialsOptions> AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services)
         {
-            var builder = services.AddTokeProvider<THttpApi, ClientCredentialsTokenProvider>();
+            var builder = services.AddTokenProvider<THttpApi, ClientCredentialsTokenProvider>();
             return builder.AddClientCredentialsOptions();
         }
     }

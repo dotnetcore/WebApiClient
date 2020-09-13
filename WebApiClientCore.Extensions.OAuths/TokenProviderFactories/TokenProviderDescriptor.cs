@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace WebApiClientCore.Extensions.OAuths
@@ -7,7 +8,7 @@ namespace WebApiClientCore.Extensions.OAuths
     /// <summary>
     /// 表示token提供者的描述器
     /// </summary>
-    class TokenProviderDescriptor : IEquatable<TokenProviderDescriptor>
+    class TokenProviderDescriptor : IEqualityComparer<TokenProviderDescriptor>, IEquatable<TokenProviderDescriptor>
     {
         /// <summary>
         /// 提供者实例
@@ -65,6 +66,36 @@ namespace WebApiClientCore.Extensions.OAuths
                 return false;
             }
             return this.Name == other.Name && this.Type == other.Type;
+        }
+
+        /// <summary>
+        /// 比较是否相等
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public bool Equals(TokenProviderDescriptor x, TokenProviderDescriptor y)
+        {
+            return x.Equals(y);
+        }
+
+        /// <summary>
+        /// 获取哈希值
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public int GetHashCode(TokenProviderDescriptor obj)
+        {
+            return obj.GetHashCode();
+        }
+
+        /// <summary>
+        /// 获取哈希值
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.Name, this.Type);
         }
     }
 }

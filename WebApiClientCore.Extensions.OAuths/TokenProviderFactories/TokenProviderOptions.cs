@@ -9,6 +9,11 @@ namespace WebApiClientCore.Extensions.OAuths
     class TokenProviderOptions : Dictionary<Type, TokenProviderDescriptor>
     {
         /// <summary>
+        /// 实例化过的所有描述器
+        /// </summary>
+        private readonly HashSet<TokenProviderDescriptor> descriptorHashSet = new HashSet<TokenProviderDescriptor>();
+
+        /// <summary>
         /// 登录映射
         /// </summary>
         /// <typeparam name="THttpApi">接口类型</typeparam>
@@ -17,16 +22,38 @@ namespace WebApiClientCore.Extensions.OAuths
         public void Register<THttpApi, TTokenPrivder>(string tokenProviderName) where TTokenPrivder : ITokenProvider
         {
             var httpApiType = typeof(THttpApi);
-            if (this.TryGetValue(httpApiType, out var instance) == true)
+            var descriptor = this.CreateDescriptor(tokenProviderName, typeof(TTokenPrivder), out var old);
+            this[httpApiType] = descriptor;
+
+            if (old != null)
             {
-                this[httpApiType] = instance;
+                foreach (var key in this.Keys)
+                {
+                    if (ReferenceEquals(this[key], old))
+                    {
+                        this[key] = descriptor;
+                    }
+                }
             }
-            else
+        }
+
+        /// <summary>
+        /// 创建描述器
+        /// </summary>
+        /// <param name="tokenProviderName"></param>
+        /// <param name="tokenProviderType"></param>
+        /// <param name="old"></param>
+        /// <returns></returns>
+        private TokenProviderDescriptor CreateDescriptor(string tokenProviderName, Type tokenProviderType, out TokenProviderDescriptor? old)
+        {
+            var descriptor = new TokenProviderDescriptor(tokenProviderName, tokenProviderType);
+            if (this.descriptorHashSet.TryGetValue(descriptor, out old) == true)
             {
-                var tokenProviderType = typeof(TTokenPrivder);
-                var descriptor = new TokenProviderDescriptor(tokenProviderName, tokenProviderType);
-                this[httpApiType] = descriptor;
+                this.descriptorHashSet.Remove(descriptor);
             }
+
+            this.descriptorHashSet.Add(descriptor);
+            return descriptor;
         }
     }
 }
