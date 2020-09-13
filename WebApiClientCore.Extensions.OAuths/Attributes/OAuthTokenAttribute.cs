@@ -12,6 +12,11 @@ namespace WebApiClientCore.Attributes
     public class OAuthTokenAttribute : ApiFilterAttribute
     {
         /// <summary>
+        /// 获取或设置token提供者的查找模式
+        /// </summary>
+        public TypeMatchMode TokenProviderSearchMode { get; set; } = TypeMatchMode.TypeOrBaseTypes;
+
+        /// <summary>
         /// 请求之前
         /// </summary>
         /// <param name="context">上下文</param>
@@ -46,7 +51,7 @@ namespace WebApiClientCore.Attributes
         protected virtual ITokenProvider GetTokenProvider(ApiRequestContext context)
         {
             var factory = context.HttpContext.ServiceProvider.GetRequiredService<ITokenProviderFactory>();
-            return factory.Create(context.ApiAction.InterfaceType);
+            return factory.Create(context.ApiAction.InterfaceType, this.TokenProviderSearchMode);
         }
 
         /// <summary>

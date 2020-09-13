@@ -14,10 +14,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// 添加token应用的http消息处理程序
         /// </summary>
         /// <param name="builder"></param>
+        /// <param name="tokenProviderSearchMode">token提供者的查找模式</param>
         /// <returns></returns>
-        public static IHttpClientBuilder AddOAuthTokenHandler(this IHttpClientBuilder builder)
+        public static IHttpClientBuilder AddOAuthTokenHandler(this IHttpClientBuilder builder, TypeMatchMode tokenProviderSearchMode = TypeMatchMode.TypeOrBaseTypes)
         {
-            return builder.AddOAuthTokenHandler((s, t) => new OAuthTokenHandler(t));
+            return builder.AddOAuthTokenHandler((s, t) => new OAuthTokenHandler(t), tokenProviderSearchMode);
         }
 
         /// <summary>
@@ -25,9 +26,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <typeparam name="TOAuthTokenHandler"></typeparam>
         /// <param name="builder"></param>
-        /// <param name="handlerFactory">hanlder的创建委托</param> 
+        /// <param name="handlerFactory">hanlder的创建委托</param>
+        /// <param name="tokenProviderSearchMode">token提供者的查找模式</param> 
         /// <returns></returns>
-        public static IHttpClientBuilder AddOAuthTokenHandler<TOAuthTokenHandler>(this IHttpClientBuilder builder, Func<IServiceProvider, ITokenProvider, TOAuthTokenHandler> handlerFactory)
+        public static IHttpClientBuilder AddOAuthTokenHandler<TOAuthTokenHandler>(this IHttpClientBuilder builder, Func<IServiceProvider, ITokenProvider, TOAuthTokenHandler> handlerFactory, TypeMatchMode tokenProviderSearchMode = TypeMatchMode.TypeOrBaseTypes)
             where TOAuthTokenHandler : OAuthTokenHandler
         {
             var httpApiType = builder.GetHttpApiType();
@@ -38,7 +40,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
             builder.Services.TryAddTransient(serviceProvider =>
             {
-                var tokenProvider = serviceProvider.GetRequiredService<ITokenProviderFactory>().Create(httpApiType);
+                var factory = serviceProvider.GetRequiredService<ITokenProviderFactory>();
+                var tokenProvider = factory.Create(httpApiType, tokenProviderSearchMode);
                 return handlerFactory(serviceProvider, tokenProvider);
             });
 

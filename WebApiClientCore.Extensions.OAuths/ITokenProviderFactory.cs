@@ -8,11 +8,19 @@ namespace WebApiClientCore.Extensions.OAuths
     public interface ITokenProviderFactory
     {
         /// <summary>
+        /// 返回是否可以创建token提供者
+        /// </summary>
+        /// <param name="httpApiType">接口类型</param>
+        /// <returns></returns>
+        public bool CanCreate(Type httpApiType);
+
+        /// <summary>
         /// 创建token提供者
         /// </summary>
-        /// <param name="httpApiType">接口</param>
+        /// <param name="httpApiType">接口类型</param>
+        /// <param name="typeMatchMode">类型匹配模式</param>     
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        ITokenProvider Create(Type httpApiType);
+        ITokenProvider Create(Type httpApiType, TypeMatchMode typeMatchMode = TypeMatchMode.TypeOnly);
     }
 }

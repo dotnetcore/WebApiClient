@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
+using System.Linq;
 
 namespace WebApiClientCore.Extensions.OAuths
 {
@@ -23,12 +24,53 @@ namespace WebApiClientCore.Extensions.OAuths
         }
 
         /// <summary>
+        /// 返回是否可以创建token提供者
+        /// </summary>
+        /// <param name="httpApiType">接口类型</param>
+        /// <returns></returns>
+        public bool CanCreate(Type httpApiType)
+        {
+            if (httpApiType == null)
+            {
+                return false;
+            }
+            return this.options.ContainsKey(httpApiType);
+        }
+
+        /// <summary>
+        /// 创建token提供者
+        /// </summary>
+        /// <param name="httpApiType">接口类型</param>
+        /// <param name="typeMatchMode">类型匹配模式</param>     
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public ITokenProvider Create(Type httpApiType, TypeMatchMode typeMatchMode)
+        {
+            if (typeMatchMode == TypeMatchMode.TypeOnly)
+            {
+                return this.Create(httpApiType);
+            }
+
+            if (this.CanCreate(httpApiType) == false)
+            {
+                var baseType = httpApiType.GetInterfaces().FirstOrDefault(i => this.CanCreate(i));
+                if (baseType != null)
+                {
+                    httpApiType = baseType;
+                }
+            }
+
+            return this.Create(httpApiType);
+        }
+
+
+        /// <summary>
         /// 创建token提供者
         /// </summary>
         /// <param name="httpApiType">接口类型</param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public ITokenProvider Create(Type httpApiType)
+        private ITokenProvider Create(Type httpApiType)
         {
             if (this.options.TryGetValue(httpApiType, out var descriptor))
             {
