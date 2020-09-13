@@ -30,7 +30,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <summary>
         /// 获取或设置别名
         /// </summary>
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; set; } = Options.DefaultName;
 
         /// <summary>
         /// Token提供者抽象类
