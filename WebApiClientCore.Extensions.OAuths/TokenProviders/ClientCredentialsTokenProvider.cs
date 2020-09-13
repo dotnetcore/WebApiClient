@@ -8,8 +8,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
     /// <summary>
     /// 表示Client模式的token提供者泛型类
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class ClientCredentialsTokenProvider<T> : TokenProvider
+    public class ClientCredentialsTokenProvider : TokenProvider
     {
         /// <summary>
         /// Client模式的token提供者

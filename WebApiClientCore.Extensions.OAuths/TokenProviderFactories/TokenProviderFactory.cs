@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using System;
 
 namespace WebApiClientCore.Extensions.OAuths
@@ -10,17 +9,17 @@ namespace WebApiClientCore.Extensions.OAuths
     class TokenProviderFactory : ITokenProviderFactory
     {
         private readonly IServiceProvider serviceProvider;
-        private readonly HttpApiTokenProviderMap httpApiTokenProviderMap;
+        private readonly TokenProviderOptions options;
 
         /// <summary>
         /// 默认的token提供者工厂
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <param name="options"></param>
-        public TokenProviderFactory(IServiceProvider serviceProvider, IOptions<HttpApiTokenProviderMap> options)
+        public TokenProviderFactory(IServiceProvider serviceProvider, IOptions<TokenProviderOptions> options)
         {
             this.serviceProvider = serviceProvider;
-            this.httpApiTokenProviderMap = options.Value;
+            this.options = options.Value;
         }
 
         /// <summary>
@@ -31,11 +30,11 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <exception cref="InvalidOperationException"></exception>
         public ITokenProvider Create(Type httpApiType)
         {
-            if (this.httpApiTokenProviderMap.TryGetValue(httpApiType, out var tokenProviderType))
+            if (this.options.TryGetValue(httpApiType, out var domain))
             {
-                return (ITokenProvider)this.serviceProvider.GetRequiredService(tokenProviderType);
+                return domain.CreateTokenProvider(this.serviceProvider);
             }
-            throw new InvalidOperationException($"未注册{httpApiType}的token提供者");
+            throw new InvalidOperationException($"尚未注册{httpApiType}的token提供者");
         }
     }
 }

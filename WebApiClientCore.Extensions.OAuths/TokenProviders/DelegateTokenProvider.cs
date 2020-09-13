@@ -6,8 +6,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
     /// <summary>
     /// 表示指定委托请求Token提供者
     /// </summary>
-    /// <typeparam name="T">分组类型</typeparam>
-    class DelegateTokenProvider<T> : TokenProvider
+    class DelegateTokenProvider : TokenProvider
     {
         /// <summary>
         /// token请求委托

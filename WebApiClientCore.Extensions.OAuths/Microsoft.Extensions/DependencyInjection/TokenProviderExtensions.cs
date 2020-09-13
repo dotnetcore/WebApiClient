@@ -44,7 +44,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>     
         public static OptionsBuilder<ClientCredentialsOptions> AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services)
         {
-            var builder = services.AddTokeProvider<THttpApi, ClientCredentialsTokenProvider<THttpApi>>();
+            var builder = services.AddTokeProvider<THttpApi, ClientCredentialsTokenProvider>();
             return builder.AddOptions<ClientCredentialsOptions>();
         }
 
@@ -83,7 +83,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static OptionsBuilder<PasswordCredentialsOptions> AddPasswordCredentialsTokenProvider<THttpApi>(this IServiceCollection services)
         {
-            var builder = services.AddTokeProvider<THttpApi, PasswordCredentialsTokenProvider<THttpApi>>();
+            var builder = services.AddTokeProvider<THttpApi, PasswordCredentialsTokenProvider>();
             return builder.AddOptions<PasswordCredentialsOptions>();
         }
 
@@ -98,9 +98,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static ITokenProviderBuilder AddTokeProvider<THttpApi>(this IServiceCollection services, Func<IServiceProvider, Task<TokenResult?>> tokenRequest)
         {
-            return services.AddTokeProvider<THttpApi, DelegateTokenProvider<THttpApi>>(s =>
+            return services.AddTokeProvider<THttpApi, DelegateTokenProvider>(s =>
             {
-                return new DelegateTokenProvider<THttpApi>(s, tokenRequest);
+                return new DelegateTokenProvider(s, tokenRequest);
             });
         }
 
@@ -116,7 +116,7 @@ namespace Microsoft.Extensions.DependencyInjection
             where TTokenProvider : class, ITokenProvider
         {
             return services
-                .AddSingleton(tokenProviderFactory)
+                .AddTransient(tokenProviderFactory)
                 .AddTokenProviderCore<THttpApi, TTokenProvider>();
         }
 
@@ -131,7 +131,7 @@ namespace Microsoft.Extensions.DependencyInjection
             where TTokenProvider : class, ITokenProvider
         {
             return services
-                .AddSingleton<TTokenProvider>()
+                .AddTransient<TTokenProvider>()
                 .AddTokenProviderCore<THttpApi, TTokenProvider>();
         }
 
@@ -145,13 +145,14 @@ namespace Microsoft.Extensions.DependencyInjection
         private static ITokenProviderBuilder AddTokenProviderCore<THttpApi, TTokenProvider>(this IServiceCollection services)
             where TTokenProvider : class, ITokenProvider
         {
+            var domain = typeof(THttpApi).FullName;
             services
-               .AddOptions<HttpApiTokenProviderMap>()
-               .Configure(o => o.Register<THttpApi, TTokenProvider>());
+               .AddOptions<TokenProviderOptions>()
+               .Configure(o => o.Register<THttpApi, TTokenProvider>(domain));
 
             services.TryAddSingleton<ITokenProviderFactory, TokenProviderFactory>();
             services.AddHttpApi<IOAuthTokenClientApi>(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
-            return new DefaultTokenProviderBuilder<TTokenProvider>(services);
+            return new DefaultTokenProviderBuilder(domain, services);
         }
     }
 }

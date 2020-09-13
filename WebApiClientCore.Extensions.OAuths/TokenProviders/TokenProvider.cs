@@ -8,7 +8,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
 {
     /// <summary>
     /// 表示Token提供者抽象类
-    /// 该类型必须注册为Singleton
+    /// 该类型必须注册为Transient
     /// </summary>
     public abstract class TokenProvider : Disposable, ITokenProvider
     {
@@ -28,6 +28,11 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         private readonly AsyncRoot asyncRoot = new AsyncRoot();
 
         /// <summary>
+        /// 获取或设置所在的域
+        /// </summary>
+        public string Domain { get; set; } = string.Empty;
+
+        /// <summary>
         /// Token提供者抽象类
         /// </summary>
         /// <param name="services"></param>
@@ -38,14 +43,13 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
 
         /// <summary>
         /// 获取选项值
-        /// Options名称为本类型的FullName
+        /// Options名称为本类型对应的Domain
         /// </summary>
         /// <typeparam name="TOptions"></typeparam>
         /// <returns></returns>
         public TOptions GetOptions<TOptions>()
         {
-            var name = this.GetType().FullName;
-            return this.services.GetRequiredService<IOptionsMonitor<TOptions>>().Get(name);
+            return this.services.GetRequiredService<IOptionsMonitor<TOptions>>().Get(this.Domain);
         }
 
         /// <summary>

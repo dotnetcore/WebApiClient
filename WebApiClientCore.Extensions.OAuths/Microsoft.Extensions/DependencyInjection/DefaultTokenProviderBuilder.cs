@@ -1,17 +1,14 @@
-﻿using WebApiClientCore.Extensions.OAuths;
-
-namespace Microsoft.Extensions.DependencyInjection
+﻿namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
     /// token提供者创建器
     /// </summary>
-    /// <typeparam name="TTokenProvider"></typeparam>
-    class DefaultTokenProviderBuilder<TTokenProvider> : ITokenProviderBuilder where TTokenProvider : ITokenProvider
+    class DefaultTokenProviderBuilder : ITokenProviderBuilder
     {
         /// <summary>
-        /// 获取token提供者名称
+        /// 获取token提供者所在的域
         /// </summary>
-        public string Name { get; } = typeof(TTokenProvider).FullName;
+        public string Domain { get; }
 
         /// <summary>
         /// 获取服务描述集合
@@ -21,9 +18,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// token提供者创建器
         /// </summary>
+        /// <param name="domain">所在的域</param>
         /// <param name="services">服务描述集合</param>
-        public DefaultTokenProviderBuilder(IServiceCollection services)
+        public DefaultTokenProviderBuilder(string domain, IServiceCollection services)
         {
+            this.Domain = domain;
             this.Services = services;
         }
     }

@@ -8,6 +8,11 @@ namespace WebApiClientCore.Extensions.OAuths
     public interface ITokenProvider
     {
         /// <summary>
+        /// 设置所在的域
+        /// </summary>
+        string Domain { set; }
+
+        /// <summary>
         /// 强制清除token以支持下次获取到新的token
         /// </summary>
         void ClearToken();
