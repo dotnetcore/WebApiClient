@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 using WebApiClientCore.Extensions.OAuths.Exceptions;
@@ -7,6 +8,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
 {
     /// <summary>
     /// 表示Token提供者抽象类
+    /// 该类型必须注册为Singleton
     /// </summary>
     public abstract class TokenProvider : Disposable, ITokenProvider
     {
@@ -32,6 +34,18 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         public TokenProvider(IServiceProvider services)
         {
             this.services = services;
+        }
+
+        /// <summary>
+        /// 获取选项值
+        /// Options名称为本类型的FullName
+        /// </summary>
+        /// <typeparam name="TOptions"></typeparam>
+        /// <returns></returns>
+        public TOptions GetOptions<TOptions>()
+        {
+            var name = this.GetType().FullName;
+            return this.services.GetRequiredService<IOptionsMonitor<TOptions>>().Get(name);
         }
 
         /// <summary>

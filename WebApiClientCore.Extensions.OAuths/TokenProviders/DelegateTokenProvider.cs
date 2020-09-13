@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 namespace WebApiClientCore.Extensions.OAuths.TokenProviders
 {
     /// <summary>
-    /// 指定接口的委托请求Token提供者
+    /// 表示指定委托请求Token提供者
     /// </summary>
-    /// <typeparam name="THttpApi">接口类型</typeparam>
-    class DelegateTokenProvider<THttpApi> : TokenProvider
+    /// <typeparam name="T">分组类型</typeparam>
+    class DelegateTokenProvider<T> : TokenProvider
     {
         /// <summary>
         /// token请求委托
@@ -15,7 +15,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         private readonly Func<IServiceProvider, Task<TokenResult?>> tokenRequest;
 
         /// <summary>
-        /// 指定接口的委托请求Token提供者
+        /// 指定委托请求Token提供者
         /// </summary>
         /// <param name="services"></param>
         /// <param name="tokenRequest">token请求委托</param>

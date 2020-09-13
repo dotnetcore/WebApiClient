@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 using WebApiClientCore.Extensions.OAuths.Exceptions;
@@ -7,13 +6,13 @@ using WebApiClientCore.Extensions.OAuths.Exceptions;
 namespace WebApiClientCore.Extensions.OAuths.TokenProviders
 {
     /// <summary>
-    /// 表示指定接口的用户名密码身份信息token提供者
+    /// 表示Password模式的token提供者泛型类
     /// </summary>
-    /// <typeparam name="THttpApi">接口类型</typeparam>
-    public class PasswordCredentialsTokenProvider<THttpApi> : TokenProvider
+    /// <typeparam name="T"></typeparam>
+    public class PasswordCredentialsTokenProvider<T> : TokenProvider
     {
-       /// <summary>
-        /// 用户名密码身份信息token提供者
+        /// <summary>
+        /// Password模式的token提供者
         /// </summary>
         /// <param name="services"></param>
         public PasswordCredentialsTokenProvider(IServiceProvider services)
@@ -28,10 +27,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <returns></returns>
         protected override Task<TokenResult?> RequestTokenAsync(IServiceProvider serviceProvider)
         {
-            var name = HttpApi.GetName<THttpApi>();
-            var optionsMonitor = serviceProvider.GetRequiredService<IOptionsMonitor<PasswordCredentialsOptions>>();
-
-            var options = optionsMonitor.Get(name);
+            var options = this.GetOptions<PasswordCredentialsOptions>();
             if (options.Endpoint == null)
             {
                 throw new TokenEndPointNullException();
@@ -49,10 +45,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <returns></returns>
         protected override Task<TokenResult?> RefreshTokenAsync(IServiceProvider serviceProvider, string refresh_token)
         {
-            var name = HttpApi.GetName<THttpApi>();
-            var optionsMonitor = serviceProvider.GetRequiredService<IOptionsMonitor<PasswordCredentialsOptions>>();
-
-            var options = optionsMonitor.Get(name);
+            var options = this.GetOptions<PasswordCredentialsOptions>();
             if (options.Endpoint == null)
             {
                 throw new TokenEndPointNullException();

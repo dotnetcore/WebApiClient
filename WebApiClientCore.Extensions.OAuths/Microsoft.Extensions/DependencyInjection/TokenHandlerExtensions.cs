@@ -30,9 +30,15 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IHttpClientBuilder AddOAuthTokenHandler<TOAuthTokenHandler>(this IHttpClientBuilder builder, Func<IServiceProvider, ITokenProvider, TOAuthTokenHandler> handlerFactory)
             where TOAuthTokenHandler : OAuthTokenHandler
         {
+            var httpApiType = builder.GetHttpApiType();
+            if (httpApiType == null)
+            {
+                throw new InvalidOperationException($"无效的{nameof(IHttpClientBuilder)}");
+            }
+
             builder.Services.TryAddTransient(serviceProvider =>
             {
-                var tokenProvider = serviceProvider.GetRequiredService<ITokenProviderFactory>().Create(builder.Name);
+                var tokenProvider = serviceProvider.GetRequiredService<ITokenProviderFactory>().Create(httpApiType);
                 return handlerFactory(serviceProvider, tokenProvider);
             });
 

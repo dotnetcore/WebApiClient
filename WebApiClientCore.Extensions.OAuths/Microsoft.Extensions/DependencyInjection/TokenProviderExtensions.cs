@@ -44,9 +44,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>     
         public static OptionsBuilder<ClientCredentialsOptions> AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services)
         {
-            services.AddHttpApi<IOAuthTokenClientApi>(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
             var builder = services.AddTokeProvider<THttpApi, ClientCredentialsTokenProvider<THttpApi>>();
-            return services.AddOptions<ClientCredentialsOptions>(builder.Name);
+            return builder.AddOptions<ClientCredentialsOptions>();
         }
 
 
@@ -84,9 +83,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static OptionsBuilder<PasswordCredentialsOptions> AddPasswordCredentialsTokenProvider<THttpApi>(this IServiceCollection services)
         {
-            services.AddHttpApi<IOAuthTokenClientApi>(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
             var builder = services.AddTokeProvider<THttpApi, PasswordCredentialsTokenProvider<THttpApi>>();
-            return services.AddOptions<PasswordCredentialsOptions>(builder.Name);
+            return builder.AddOptions<PasswordCredentialsOptions>();
         }
 
 
@@ -148,11 +146,12 @@ namespace Microsoft.Extensions.DependencyInjection
             where TTokenProvider : class, ITokenProvider
         {
             services
-               .AddOptions<TokenProviderFactoryOptions>()
+               .AddOptions<HttpApiTokenProviderMap>()
                .Configure(o => o.Register<THttpApi, TTokenProvider>());
 
             services.TryAddSingleton<ITokenProviderFactory, TokenProviderFactory>();
-            return new DefaultTokenProviderBuilder<THttpApi>(services);
+            services.AddHttpApi<IOAuthTokenClientApi>(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
+            return new DefaultTokenProviderBuilder<TTokenProvider>(services);
         }
     }
 }

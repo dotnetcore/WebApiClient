@@ -1,23 +1,17 @@
-﻿using System;
-using WebApiClientCore;
+﻿using WebApiClientCore.Extensions.OAuths;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
     /// token提供者创建器
     /// </summary>
-    /// <typeparam name="THttpApi"></typeparam>
-    class DefaultTokenProviderBuilder<THttpApi> : ITokenProviderBuilder
+    /// <typeparam name="TTokenProvider"></typeparam>
+    class DefaultTokenProviderBuilder<TTokenProvider> : ITokenProviderBuilder where TTokenProvider : ITokenProvider
     {
         /// <summary>
-        /// 获取别名
+        /// 获取token提供者名称
         /// </summary>
-        public string Name { get; } = HttpApi.GetName<THttpApi>();
-
-        /// <summary>
-        /// 获取接口类型
-        /// </summary>
-        public Type HttpApiType { get; } = typeof(THttpApi);
+        public string Name { get; } = typeof(TTokenProvider).FullName;
 
         /// <summary>
         /// 获取服务描述集合

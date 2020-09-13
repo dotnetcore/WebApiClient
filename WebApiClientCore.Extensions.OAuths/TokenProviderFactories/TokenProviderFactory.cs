@@ -10,44 +10,32 @@ namespace WebApiClientCore.Extensions.OAuths
     class TokenProviderFactory : ITokenProviderFactory
     {
         private readonly IServiceProvider serviceProvider;
-        private readonly TokenProviderFactoryOptions options;
+        private readonly HttpApiTokenProviderMap httpApiTokenProviderMap;
 
         /// <summary>
         /// 默认的token提供者工厂
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <param name="options"></param>
-        public TokenProviderFactory(IServiceProvider serviceProvider, IOptions<TokenProviderFactoryOptions> options)
+        public TokenProviderFactory(IServiceProvider serviceProvider, IOptions<HttpApiTokenProviderMap> options)
         {
             this.serviceProvider = serviceProvider;
-            this.options = options.Value;
+            this.httpApiTokenProviderMap = options.Value;
         }
 
         /// <summary>
         /// 创建token提供者
         /// </summary>
-        /// <param name="httpApiType">接口名称</param>
+        /// <param name="httpApiType">接口类型</param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         public ITokenProvider Create(Type httpApiType)
         {
-            var name = HttpApi.GetName(httpApiType);
-            return this.Create(name);
-        }
-
-        /// <summary>
-        /// 创建token提供者
-        /// </summary>
-        /// <param name="name">提供者的别名</param>
-        /// <exception cref="InvalidOperationException"></exception>
-        /// <returns></returns>
-        public ITokenProvider Create(string name)
-        {
-            if (this.options.TryGetValue(name, out var tokenProviderType))
+            if (this.httpApiTokenProviderMap.TryGetValue(httpApiType, out var tokenProviderType))
             {
                 return (ITokenProvider)this.serviceProvider.GetRequiredService(tokenProviderType);
             }
-            throw new InvalidOperationException($"未注册别名为{name}的token提供者");
+            throw new InvalidOperationException($"未注册{httpApiType}的token提供者");
         }
     }
 }

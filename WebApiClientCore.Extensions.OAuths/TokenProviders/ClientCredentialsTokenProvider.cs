@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 using WebApiClientCore.Extensions.OAuths.Exceptions;
@@ -7,13 +6,13 @@ using WebApiClientCore.Extensions.OAuths.Exceptions;
 namespace WebApiClientCore.Extensions.OAuths.TokenProviders
 {
     /// <summary>
-    /// 表示Client身份信息token提供者
+    /// 表示Client模式的token提供者泛型类
     /// </summary>
-    /// <typeparam name="THttpApi"></typeparam>
-    public class ClientCredentialsTokenProvider<THttpApi> : TokenProvider
+    /// <typeparam name="T"></typeparam>
+    public class ClientCredentialsTokenProvider<T> : TokenProvider
     {
         /// <summary>
-        /// Client身份信息token提供者
+        /// Client模式的token提供者
         /// </summary>
         /// <param name="services"></param> 
         public ClientCredentialsTokenProvider(IServiceProvider services)
@@ -28,10 +27,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <returns></returns>
         protected override Task<TokenResult?> RequestTokenAsync(IServiceProvider serviceProvider)
         {
-            var name = HttpApi.GetName<THttpApi>();
-            var optionsMonitor = serviceProvider.GetRequiredService<IOptionsMonitor<ClientCredentialsOptions>>();
-
-            var options = optionsMonitor.Get(name);
+            var options = this.GetOptions<ClientCredentialsOptions>();
             if (options.Endpoint == null)
             {
                 throw new TokenEndPointNullException();
@@ -49,10 +45,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <returns></returns>
         protected override Task<TokenResult?> RefreshTokenAsync(IServiceProvider serviceProvider, string refresh_token)
         {
-            var name = HttpApi.GetName<THttpApi>();
-            var optionsMonitor = serviceProvider.GetRequiredService<IOptionsMonitor<ClientCredentialsOptions>>();
-
-            var options = optionsMonitor.Get(name);
+            var options = this.GetOptions<ClientCredentialsOptions>();
             if (options.Endpoint == null)
             {
                 throw new TokenEndPointNullException();

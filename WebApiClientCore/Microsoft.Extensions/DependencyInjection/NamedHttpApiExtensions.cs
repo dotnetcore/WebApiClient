@@ -1,0 +1,53 @@
+﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Microsoft.Extensions.DependencyInjection
+{
+    /// <summary>
+    /// 提供接口类型命名记录扩展
+    /// </summary>
+    public static class NamedHttpApiExtensions
+    {
+        /// <summary>
+        /// 添加到命名记录
+        /// </summary>
+        /// <typeparam name="THttpApi"></typeparam>
+        /// <param name="services"></param>
+        /// <param name="name">别名</param>
+        internal static void AddRegistration<THttpApi>(this IServiceCollection services,string name)
+        {
+            services.TryAddSingleton(new NameTypeRegistration());
+            var descriptor = services.Single(item => item.ServiceType == typeof(NameTypeRegistration));
+
+            var registration = (NameTypeRegistration)descriptor.ImplementationInstance;
+            registration[name] = typeof(THttpApi);
+        }
+
+        /// <summary>
+        /// 获取builder关联的HttpApi类型
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static Type? GetHttpApiType(this IHttpClientBuilder builder)
+        {
+            var descriptor = builder.Services.FirstOrDefault(item => item.ServiceType == typeof(NameTypeRegistration));
+            if (descriptor == null)
+            {
+                return null;
+            }
+
+            var registration = (NameTypeRegistration)descriptor.ImplementationInstance;
+            registration.TryGetValue(builder.Name, out var type);
+            return type;
+        }
+
+        /// <summary>
+        /// 命名记录
+        /// </summary>
+        private class NameTypeRegistration : Dictionary<string, Type>
+        {
+        }
+    }
+}
