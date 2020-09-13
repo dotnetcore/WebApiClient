@@ -16,7 +16,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="THttpApi"></typeparam>
         /// <param name="services"></param>
         /// <param name="name">别名</param>
-        internal static void AddRegistration<THttpApi>(this IServiceCollection services,string name)
+        internal static void AddNamedRegistration<THttpApi>(this IServiceCollection services,string name)
         {
             services.TryAddSingleton(new NameTypeRegistration());
             var descriptor = services.Single(item => item.ServiceType == typeof(NameTypeRegistration));

@@ -20,23 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static ITokenProviderBuilder AddTokenProvider<THttpApi>(this IServiceCollection services, Func<IServiceProvider, Task<TokenResult?>> tokenRequest)
         {
-            return services.AddTokenProvider<THttpApi>(string.Empty, tokenRequest);
-        }
-
-        /// <summary>
-        /// 为指定接口添加token提供者
-        /// </summary>
-        /// <typeparam name="THttpApi">接口类型</typeparam>
-        /// <param name="services"></param>
-        /// <param name="tokenProviderName">token提供者的名称</param>
-        /// <param name="tokenRequest">token请求委托</param>
-        /// <returns></returns>
-        public static ITokenProviderBuilder AddTokenProvider<THttpApi>(this IServiceCollection services, string tokenProviderName, Func<IServiceProvider, Task<TokenResult?>> tokenRequest)
-        {
-            return services.AddTokenProvider<THttpApi, DelegateTokenProvider>(tokenProviderName, s =>
-            {
-                return new DelegateTokenProvider(s, tokenRequest);
-            });
+            return services.AddTokenProvider<THttpApi, DelegateTokenProvider>(s => new DelegateTokenProvider(s, tokenRequest));
         }
 
         /// <summary>
@@ -50,25 +34,9 @@ namespace Microsoft.Extensions.DependencyInjection
         public static ITokenProviderBuilder AddTokenProvider<THttpApi, TTokenProvider>(this IServiceCollection services, Func<IServiceProvider, TTokenProvider> tokenProviderFactory)
             where TTokenProvider : class, ITokenProvider
         {
-            return services.AddTokenProvider<THttpApi, TTokenProvider>(string.Empty, tokenProviderFactory);
-        }
-
-
-        /// <summary>
-        /// 为指定接口添加token提供者
-        /// </summary>
-        /// <typeparam name="THttpApi">接口类型</typeparam>
-        /// <typeparam name="TTokenProvider">token提供者类型</typeparam>
-        /// <param name="services"></param>
-        /// <param name="tokenProviderName">token提供者的名称</param>
-        /// <param name="tokenProviderFactory">token提供者创建工厂</param>
-        /// <returns></returns>
-        public static ITokenProviderBuilder AddTokenProvider<THttpApi, TTokenProvider>(this IServiceCollection services, string tokenProviderName, Func<IServiceProvider, TTokenProvider> tokenProviderFactory)
-            where TTokenProvider : class, ITokenProvider
-        {
             return services
                 .AddTransient(tokenProviderFactory)
-                .AddTokenProviderCore<THttpApi, TTokenProvider>(tokenProviderName);
+                .AddTokenProviderCore<THttpApi, TTokenProvider>();
         }
 
 
@@ -82,23 +50,9 @@ namespace Microsoft.Extensions.DependencyInjection
         public static ITokenProviderBuilder AddTokenProvider<THttpApi, TTokenProvider>(this IServiceCollection services)
             where TTokenProvider : class, ITokenProvider
         {
-            return services.AddTokenProvider<THttpApi, TTokenProvider>(string.Empty);
-        }
-
-        /// <summary>
-        /// 为指定接口添加token提供者
-        /// </summary>
-        /// <typeparam name="THttpApi">接口类型</typeparam>
-        /// <typeparam name="TTokenProvider">token提供者类型</typeparam>
-        /// <param name="services"></param>
-        /// <param name="tokenProviderName">token提供者的名称</param>
-        /// <returns></returns>
-        public static ITokenProviderBuilder AddTokenProvider<THttpApi, TTokenProvider>(this IServiceCollection services, string tokenProviderName)
-            where TTokenProvider : class, ITokenProvider
-        {
             return services
                 .AddTransient<TTokenProvider>()
-                .AddTokenProviderCore<THttpApi, TTokenProvider>(tokenProviderName);
+                .AddTokenProviderCore<THttpApi, TTokenProvider>();
         }
 
 
@@ -108,23 +62,19 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="THttpApi">接口类型</typeparam>
         /// <typeparam name="TTokenProvider">token提供者类型</typeparam>
         /// <param name="services"></param>
-        /// <param name="tokenProviderName">名称</param>
         /// <returns></returns>
-        private static ITokenProviderBuilder AddTokenProviderCore<THttpApi, TTokenProvider>(this IServiceCollection services, string? tokenProviderName)
+        private static ITokenProviderBuilder AddTokenProviderCore<THttpApi, TTokenProvider>(this IServiceCollection services)
             where TTokenProvider : class, ITokenProvider
         {
-            if (string.IsNullOrEmpty(tokenProviderName) == true)
-            {
-                tokenProviderName = typeof(THttpApi).FullName;
-            }
+            var name = $"{typeof(TTokenProvider).Name}+{typeof(THttpApi).Name}";
 
             services
                .AddOptions<TokenProviderFactoryOptions>()
-               .Configure(o => o.Register<THttpApi, TTokenProvider>(tokenProviderName));
+               .Configure(o => o.Register<THttpApi, TTokenProvider>(name));
 
             services.TryAddSingleton<ITokenProviderFactory, TokenProviderFactory>();
             services.AddHttpApi<IOAuthTokenClientApi>(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
-            return new TokenProviderBuilder(tokenProviderName, services);
+            return new TokenProviderBuilder(name, services);
         }
 
 

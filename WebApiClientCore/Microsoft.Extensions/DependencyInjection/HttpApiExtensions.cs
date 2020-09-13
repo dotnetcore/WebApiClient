@@ -30,7 +30,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddSingleton<IResponseCacheProvider, ResponseCacheProvider>();
 
             var name = HttpApi.GetName<THttpApi>();
-            services.AddRegistration<THttpApi>(name);
+            services.AddNamedRegistration<THttpApi>(name);
             services.AddHttpApiOptionsConfigureTrigger<THttpApi>();
 
             services.TryAddTransient(serviceProvider =>
