@@ -73,7 +73,9 @@ namespace Microsoft.Extensions.DependencyInjection
                .Configure(o => o.Register<THttpApi, TTokenProvider>(name));
 
             services.TryAddSingleton<ITokenProviderFactory, TokenProviderFactory>();
+            services.TryAddSingleton(typeof(ITokenProvider<>), typeof(TypeTokenProvider<>));
             services.AddHttpApi<IOAuthTokenClientApi>(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
+
             return new TokenProviderBuilder(name, services);
         }
 

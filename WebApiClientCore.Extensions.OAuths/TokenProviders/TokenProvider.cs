@@ -117,5 +117,14 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         {
             this.asyncRoot.Dispose();
         }
+
+        /// <summary>
+        /// 转换为string
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return this.Name;
+        }
     }
 }
