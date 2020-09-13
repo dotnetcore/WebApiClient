@@ -17,19 +17,14 @@ namespace WebApiClientCore.Extensions.OAuths
         public void Register<THttpApi, TTokenPrivder>(string tokenProviderName) where TTokenPrivder : ITokenProvider
         {
             var httpApiType = typeof(THttpApi);
-            var tokenProviderType = typeof(TTokenPrivder);
-            var descriptor = new TokenProviderDescriptor(tokenProviderName, tokenProviderType);
-
             if (this.TryGetValue(httpApiType, out var instance) == true)
             {
-                if (instance.Equals(descriptor) == false)
-                {
-                    throw new InvalidOperationException($"不能添加多种tokenProvider：{tokenProviderName}");
-                }
                 this[httpApiType] = instance;
             }
             else
             {
+                var tokenProviderType = typeof(TTokenPrivder);
+                var descriptor = new TokenProviderDescriptor(tokenProviderName, tokenProviderType);
                 this[httpApiType] = descriptor;
             }
         }

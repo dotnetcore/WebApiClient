@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using System;
+﻿using Microsoft.Extensions.Options;
 using WebApiClientCore.Extensions.OAuths;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -14,77 +12,22 @@ namespace Microsoft.Extensions.DependencyInjection
         /// 配置Client模式的授权信息
         /// </summary>
         /// <param name="builder"></param>
-        /// <param name="configuration">配置</param>
         /// <returns></returns>
-        public static ITokenProviderBuilder ConfigureClientCredentials(this ITokenProviderBuilder builder, IConfiguration configuration)
+        public static OptionsBuilder<ClientCredentialsOptions> AddClientCredentialsOptions(this ITokenProviderBuilder builder)
         {
-            builder.AddOptions<ClientCredentialsOptions>().Bind(configuration);
-            return builder;
+            return builder.AddOptions<ClientCredentialsOptions>();
         }
-
-        /// <summary>
-        /// 配置Client模式的授权信息
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="configureOptions">配置</param>
-        /// <returns></returns>
-        public static ITokenProviderBuilder ConfigureClientCredentials(this ITokenProviderBuilder builder, Action<ClientCredentialsOptions> configureOptions)
-        {
-            builder.AddOptions<ClientCredentialsOptions>().Configure(configureOptions);
-            return builder;
-        }
-
-        /// <summary>
-        /// 配置Client模式的授权信息
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="configureOptions">配置</param>
-        /// <returns></returns>
-        public static ITokenProviderBuilder ConfigureClientCredentials(this ITokenProviderBuilder builder, Action<ClientCredentialsOptions, IServiceProvider> configureOptions)
-        {
-            builder.AddOptions<ClientCredentialsOptions>().Configure(configureOptions);
-            return builder;
-        }
-
-
 
 
         /// <summary>
         /// 配置Password模式的授权信息
         /// </summary>
         /// <param name="builder"></param>
-        /// <param name="configuration">配置</param>
         /// <returns></returns>
-        public static ITokenProviderBuilder ConfigurePasswordCredentials(this ITokenProviderBuilder builder, IConfiguration configuration)
+        public static OptionsBuilder<PasswordCredentialsOptions> AddPasswordCredentialsOptions(this ITokenProviderBuilder builder)
         {
-            builder.AddOptions<PasswordCredentialsOptions>().Bind(configuration);
-            return builder;
+            return builder.AddOptions<PasswordCredentialsOptions>();
         }
-
-        /// <summary>
-        /// 配置Password模式的授权信息
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="configureOptions">配置</param>
-        /// <returns></returns>
-        public static ITokenProviderBuilder ConfigurePasswordCredentials(this ITokenProviderBuilder builder, Action<PasswordCredentialsOptions> configureOptions)
-        {
-            builder.AddOptions<PasswordCredentialsOptions>().Configure(configureOptions);
-            return builder;
-        }
-
-        /// <summary>
-        /// 配置Password模式的授权信息
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="configureOptions">配置</param>
-        /// <returns></returns>
-        public static ITokenProviderBuilder ConfigurePasswordCredentials(this ITokenProviderBuilder builder, Action<PasswordCredentialsOptions, IServiceProvider> configureOptions)
-        {
-            builder.AddOptions<PasswordCredentialsOptions>().Configure(configureOptions);
-            return builder;
-        }
-
 
 
         /// <summary>

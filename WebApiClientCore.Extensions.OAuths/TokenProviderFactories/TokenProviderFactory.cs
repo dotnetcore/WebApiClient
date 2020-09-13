@@ -30,9 +30,9 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <exception cref="InvalidOperationException"></exception>
         public ITokenProvider Create(Type httpApiType)
         {
-            if (this.options.TryGetValue(httpApiType, out var domain))
+            if (this.options.TryGetValue(httpApiType, out var descriptor))
             {
-                return domain.CreateTokenProvider(this.serviceProvider);
+                return descriptor.CreateTokenProvider(this.serviceProvider);
             }
             throw new InvalidOperationException($"尚未注册{httpApiType}的token提供者");
         }

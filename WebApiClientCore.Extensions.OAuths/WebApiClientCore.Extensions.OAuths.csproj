@@ -20,13 +20,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/dotnetcore/WebApiClient</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="TokenClients\**" />
-    <EmbeddedResource Remove="TokenClients\**" />
-    <None Remove="TokenClients\**" />
-  </ItemGroup>
+  </PropertyGroup> 
 
   <ItemGroup>
     <ProjectReference Include="..\WebApiClientCore\WebApiClientCore.csproj" />
