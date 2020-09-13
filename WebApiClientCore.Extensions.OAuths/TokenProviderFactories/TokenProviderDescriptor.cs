@@ -5,10 +5,9 @@ using System.Threading;
 namespace WebApiClientCore.Extensions.OAuths
 {
     /// <summary>
-    /// 表示token提供者的域
-    /// 一个域对应多个接口类型
+    /// 表示token提供者的描述器
     /// </summary>
-    class TokenProviderDomain : IEquatable<TokenProviderDomain>
+    class TokenProviderDescriptor : IEquatable<TokenProviderDescriptor>
     {
         /// <summary>
         /// 提供者实例
@@ -16,24 +15,24 @@ namespace WebApiClientCore.Extensions.OAuths
         private ITokenProvider? tokenProvider;
 
         /// <summary>
-        /// 获取所在域
+        /// 获取token提供者名称
         /// </summary>
-        public string Domain { get; }
+        public string Name { get; }
 
         /// <summary>
-        /// token提供者类型
+        ///  获取token提供者类型
         /// </summary>
-        public Type TokenProviderType { get; }
+        public Type Type { get; }
 
         /// <summary>
-        /// token提供者的域
+        /// token提供者的描述器
         /// </summary>
-        /// <param name="domain"></param>
-        /// <param name="tokenProviderType"></param>
-        public TokenProviderDomain(string domain, Type tokenProviderType)
+        /// <param name="name">名称</param>
+        /// <param name="type">token提供者类型</param>
+        public TokenProviderDescriptor(string name, Type type)
         {
-            this.Domain = domain;
-            this.TokenProviderType = tokenProviderType;
+            this.Name = name;
+            this.Type = type;
         }
 
         /// <summary>
@@ -46,8 +45,8 @@ namespace WebApiClientCore.Extensions.OAuths
             var instance = Volatile.Read(ref this.tokenProvider);
             if (instance == null)
             {
-                var value = (ITokenProvider)serviceProvider.GetRequiredService(this.TokenProviderType);
-                value.Domain = this.Domain;
+                var value = (ITokenProvider)serviceProvider.GetRequiredService(this.Type);
+                value.Name = this.Name;
                 Interlocked.CompareExchange(ref this.tokenProvider, value, null);
                 instance = this.tokenProvider;
             }
@@ -59,13 +58,13 @@ namespace WebApiClientCore.Extensions.OAuths
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public bool Equals(TokenProviderDomain other)
+        public bool Equals(TokenProviderDescriptor other)
         {
             if (other == null)
             {
                 return false;
             }
-            return this.Domain == other.Domain && this.TokenProviderType == other.TokenProviderType;
+            return this.Name == other.Name && this.Type == other.Type;
         }
     }
 }

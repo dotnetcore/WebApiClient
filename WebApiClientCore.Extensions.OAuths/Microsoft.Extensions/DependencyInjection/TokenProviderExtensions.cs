@@ -145,14 +145,15 @@ namespace Microsoft.Extensions.DependencyInjection
         private static ITokenProviderBuilder AddTokenProviderCore<THttpApi, TTokenProvider>(this IServiceCollection services)
             where TTokenProvider : class, ITokenProvider
         {
-            var domain = typeof(THttpApi).FullName;
+            var tokenProviderName = typeof(THttpApi).FullName;
+
             services
                .AddOptions<TokenProviderOptions>()
-               .Configure(o => o.Register<THttpApi, TTokenProvider>(domain));
+               .Configure(o => o.Register<THttpApi, TTokenProvider>(tokenProviderName));
 
             services.TryAddSingleton<ITokenProviderFactory, TokenProviderFactory>();
             services.AddHttpApi<IOAuthTokenClientApi>(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
-            return new DefaultTokenProviderBuilder(domain, services);
+            return new DefaultTokenProviderBuilder(tokenProviderName, services);
         }
     }
 }
