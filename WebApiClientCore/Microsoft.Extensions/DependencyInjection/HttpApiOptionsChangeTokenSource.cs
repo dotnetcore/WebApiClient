@@ -37,7 +37,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="httpApiType">接口类型</param>
         public void Raise(Type httpApiType)
         {
-            if (this.Name == HttpApi.GetName(httpApiType))
+            if (httpApiType == typeof(THttpApi))
             {
                 Interlocked.Exchange(ref this.changeToken, new ChangeToken()).RaiseChange();
             }
