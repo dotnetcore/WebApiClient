@@ -95,7 +95,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static OptionsBuilder<TOptions> AddOptions<TOptions>(this ITokenProviderBuilder builder) where TOptions : class
         {
-            return builder.Services.AddOptions<TOptions>(builder.Domain);
+            return builder.Services.AddOptions<TOptions>(builder.Name);
         }
     }
 }

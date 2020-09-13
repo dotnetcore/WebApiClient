@@ -6,9 +6,9 @@
     class DefaultTokenProviderBuilder : ITokenProviderBuilder
     {
         /// <summary>
-        /// 获取token提供者所在的域
+        /// 获取token提供者的别名
         /// </summary>
-        public string Domain { get; }
+        public string Name { get; }
 
         /// <summary>
         /// 获取服务描述集合
@@ -22,7 +22,7 @@
         /// <param name="services">服务描述集合</param>
         public DefaultTokenProviderBuilder(string domain, IServiceCollection services)
         {
-            this.Domain = domain;
+            this.Name = domain;
             this.Services = services;
         }
     }

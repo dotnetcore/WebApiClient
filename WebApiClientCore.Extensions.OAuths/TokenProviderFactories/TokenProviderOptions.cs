@@ -26,9 +26,12 @@ namespace WebApiClientCore.Extensions.OAuths
                 {
                     throw new InvalidOperationException($"每个接口或domain只能使用一种tokenProvider：{domain}");
                 }
+                this[httpApiType] = buildinDomain;
             }
-
-            this[httpApiType] = tokenProviderDomain;
+            else
+            {
+                this[httpApiType] = tokenProviderDomain;
+            }
         }
     }
 }

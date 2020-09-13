@@ -6,9 +6,9 @@
     public interface ITokenProviderBuilder
     {
         /// <summary>
-        /// 获取token提供者所在的域
+        /// 获取token提供者的别名
         /// </summary>
-        string Domain { get; }
+        string Name { get; }
 
         /// <summary>
         /// 获取服务提供者
