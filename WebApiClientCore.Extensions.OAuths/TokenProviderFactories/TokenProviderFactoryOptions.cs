@@ -7,7 +7,7 @@ namespace WebApiClientCore.Extensions.OAuths
     /// <summary>
     /// 用于记录接口类型与接口提供者域的映射
     /// </summary>
-    class TokenProviderOptions : Dictionary<Type, TokenProviderDescriptor>
+    class TokenProviderFactoryOptions : Dictionary<Type, TokenProviderDescriptor>
     {
         /// <summary>
         /// 登录映射

@@ -43,11 +43,11 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
 
         /// <summary>
         /// 获取选项值
-        /// Options名称为本类型对应的Domain
+        /// Options名称为本类型的Name属性
         /// </summary>
         /// <typeparam name="TOptions"></typeparam>
         /// <returns></returns>
-        public TOptions GetOptions<TOptions>()
+        public TOptions GetOptionsValue<TOptions>()
         {
             return this.services.GetRequiredService<IOptionsMonitor<TOptions>>().Get(this.Name);
         }

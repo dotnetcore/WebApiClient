@@ -119,7 +119,7 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             services
-               .AddOptions<TokenProviderOptions>()
+               .AddOptions<TokenProviderFactoryOptions>()
                .Configure(o => o.Register<THttpApi, TTokenProvider>(tokenProviderName));
 
             services.TryAddSingleton<ITokenProviderFactory, TokenProviderFactory>();

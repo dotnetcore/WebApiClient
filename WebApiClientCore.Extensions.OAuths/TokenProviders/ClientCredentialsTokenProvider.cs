@@ -26,7 +26,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <returns></returns>
         protected override Task<TokenResult?> RequestTokenAsync(IServiceProvider serviceProvider)
         {
-            var options = this.GetOptions<ClientCredentialsOptions>();
+            var options = this.GetOptionsValue<ClientCredentialsOptions>();
             if (options.Endpoint == null)
             {
                 throw new TokenEndPointNullException();
@@ -44,7 +44,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <returns></returns>
         protected override Task<TokenResult?> RefreshTokenAsync(IServiceProvider serviceProvider, string refresh_token)
         {
-            var options = this.GetOptions<ClientCredentialsOptions>();
+            var options = this.GetOptionsValue<ClientCredentialsOptions>();
             if (options.Endpoint == null)
             {
                 throw new TokenEndPointNullException();

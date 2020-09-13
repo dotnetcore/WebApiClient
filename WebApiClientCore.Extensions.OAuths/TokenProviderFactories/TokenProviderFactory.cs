@@ -9,14 +9,14 @@ namespace WebApiClientCore.Extensions.OAuths
     class TokenProviderFactory : ITokenProviderFactory
     {
         private readonly IServiceProvider serviceProvider;
-        private readonly TokenProviderOptions options;
+        private readonly TokenProviderFactoryOptions options;
 
         /// <summary>
         /// 默认的token提供者工厂
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <param name="options"></param>
-        public TokenProviderFactory(IServiceProvider serviceProvider, IOptions<TokenProviderOptions> options)
+        public TokenProviderFactory(IServiceProvider serviceProvider, IOptions<TokenProviderFactoryOptions> options)
         {
             this.serviceProvider = serviceProvider;
             this.options = options.Value;
