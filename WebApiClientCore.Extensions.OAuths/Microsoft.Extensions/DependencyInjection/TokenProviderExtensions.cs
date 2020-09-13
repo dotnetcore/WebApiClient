@@ -35,6 +35,7 @@ namespace Microsoft.Extensions.DependencyInjection
             where TTokenProvider : class, ITokenProvider
         {
             return services
+                .RemoveAll<TTokenProvider>()
                 .AddTransient(tokenProviderFactory)
                 .AddTokenProviderCore<THttpApi, TTokenProvider>();
         }
@@ -51,6 +52,7 @@ namespace Microsoft.Extensions.DependencyInjection
             where TTokenProvider : class, ITokenProvider
         {
             return services
+                .RemoveAll<TTokenProvider>()
                 .AddTransient<TTokenProvider>()
                 .AddTokenProviderCore<THttpApi, TTokenProvider>();
         }
