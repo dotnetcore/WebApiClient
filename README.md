@@ -1887,10 +1887,10 @@ services
 
 对象 | 用途
 ---|---
-ITokenProviderFactory | tokenProvider者的创建工厂，提供接口的别名创建tokenProvider
+ITokenProviderFactory | tokenProvider的创建工厂，提供通过接口类型创建tokenProvider
 ITokenProvider | token提供者，用于获取token，在token的过期后的头一次请求里触发重新请求或刷新token
-OAuthTokenAttribute | 接口的特性，使用ITokenProviderFactory创建ITokenProvider，然后ITokenProvider获取token，最后将token应用到请求消息中
-OAuthTokenHandler | 属性http消息处理器，功能与OAuthTokenAttribute一样，除此之外，如果因为意外的原因导致服务器仍然返回未授权(401状态码)，处理器还会丢弃旧token，申请新token来重试一次请求。
+OAuthTokenAttribute | token的应用特性，使用ITokenProviderFactory创建ITokenProvider，然后使用ITokenProvider获取token，最后将token应用到请求消息中
+OAuthTokenHandler | 属于http消息处理器，功能与OAuthTokenAttribute一样，除此之外，如果因为意外的原因导致服务器仍然返回未授权(401状态码)，其还会丢弃旧token，申请新token来重试一次请求。
 
 #### OAuth的Client模式
 
@@ -1908,7 +1908,7 @@ services.AddClientCredentialsTokenProvider<IUserApi>().Configure(o =>
 ##### 2 token的应用
 
 ###### 2.1 使用OAuthToken特性
-OAuthTokenAttribute属于WebApiClientCore框架层，很容易操控请求内容和响应模型，比如将token作为表单内容的额外项添加到既有请求表单中，或者读取响应消息反序列化之后对应的业务模型都非常方便，但它不能控制请求流程来实现重试请求的效果。如果服务器颁发token之后，服务器的token丢失了，使用OAuthTokenAttribute会得到一次失败的请求，本次失败的请求无法避免，因为它不能在一个请求内部里进行重试。
+OAuthTokenAttribute属于WebApiClientCore框架层，很容易操控请求内容和响应模型，比如将token作为表单字段添加到既有请求表单中，或者读取响应消息反序列化之后对应的业务模型都非常方便，但它不能在请求内部实现重试请求的效果。在服务器颁发token之后，如果服务器的token丢失了，使用OAuthTokenAttribute会得到一次失败的请求，本次失败的请求无法避免。
 
 ```
 /// <summary>
@@ -1921,7 +1921,7 @@ public interface IUserApi
 }
 ```
 
-OAuthTokenAttribute实现是将token放到Authorization请求头，如果你的接口需要请token放到其它地方比如uri的query，需要重写OAuthTokenAttribute：
+OAuthTokenAttribute默认实现将token放到Authorization请求头，如果你的接口需要请token放到其它地方比如uri的query，需要重写OAuthTokenAttribute：
 
 ```
 class UriQueryTokenAttribute : OAuthTokenAttribute
@@ -1940,7 +1940,7 @@ public interface IUserApi
 ```
 
 ###### 2.1 使用OAuthTokenHandler
-OAuthTokenHandler强项是支持一个请求内部里进行多次尝试，如果服务器颁发token之后，服务器的token丢失了，OAuthTokenHandler在收到401状态码之后，会在本请求内部里丢弃和重新请求token拿来重试请求，从而表现为一次正常的请求。但OAuthTokenHandler不属于WebApiClientCore框架层的对象，它属于HttpClient框架，在里面只能访问原始的HttpRequestMessage与HttpResponseMessage，如果需要将token追加到HttpRequestMessage的Content里，这是非常困难的，同理，如果不是根据http状态码(401等)作为token无效的依据，而是使用HttpResponseMessage的Content对应的业务模型的某个标记字段，也是棘手的活。
+OAuthTokenHandler的强项是支持在一个请求内部里进行多次尝试，在服务器颁发token之后，如果服务器的token丢失了，OAuthTokenHandler在收到401状态码之后，会在本请求内部丢弃和重新请求token，并使用新token重试请求，从而表现为一次正常的请求。但OAuthTokenHandler不属于WebApiClientCore框架层的对象，在里面只能访问原始的HttpRequestMessage与HttpResponseMessage，如果需要将token追加到HttpRequestMessage的Content里，这是非常困难的，同理，如果不是根据http状态码(401等)作为token无效的依据，而是使用HttpResponseMessage的Content对应的业务模型的某个标记字段，也是非常棘手的活。
 
 ```
 // 注册时添加OAuthTokenHandler
@@ -1950,7 +1950,7 @@ services.AddHttpApi<IUserApi>(o =>
 }).AddOAuthTokenHandler();
 ```
 
-OAuthTokenHandler实现是将token放到Authorization请求头，如果你的接口需要请token放到其它地方比如uri的query，需要重写OAuthTokenHandler：
+OAuthTokenHandler默认实现将token放到Authorization请求头，如果你的接口需要请token放到其它地方比如uri的query，需要重写OAuthTokenHandler：
 
 ```
 class UriQueryOAuthTokenHandler : OAuthTokenHandler
@@ -1986,9 +1986,7 @@ services.AddHttpApi<IUserApi>(o =>
 ```
 
 #### 自定义TokenProvider
-内置了OAuth的Client和Password模式两种标准token请求，但是任然有很多接口提供方在实现上仅仅体现了它的精神，这时候就需要自定义TokenProvider。
-
-假设接口提供方的获取token的接口如下：
+扩展包已经内置了OAuth的Client和Password模式两种标准token请求，但是仍然还有很多接口提供方在实现上仅仅体现了它的精神，这时候就需要自定义TokenProvider，假设接口提供方的获取token的接口如下：
 ```
 public interface ITokenApi
 {
@@ -2035,65 +2033,10 @@ class CustomTokenProvider : TokenProvider
 }
 ```
 
-
-### NewtonsoftJson处理json
-不可否认，System.Text.Json由于性能的优势，会越来越得到广泛使用，但NewtonsoftJson也不会因此而退出舞台。
-
-System.Text.Json在默认情况下十分严格，避免代表调用方进行任何猜测或解释，强调确定性行为，该库是为了实现性能和安全性而特意这样设计的。Newtonsoft.Json默认情况下十分灵活，默认的配置下，你几乎不会遇到反序列化的种种问题，虽然这些问题很多情况下是由于不严谨的json结构或类型声明造成的。
-
-  
-#### 扩展包
-
-默认的基础包是不包含NewtonsoftJson功能的，需要额外引用WebApiClientCore.Extensions.NewtonsoftJson这个扩展包。
-
-#### 配置[可选]
-```
-// ConfigureNewtonsoftJson
-services.AddHttpApi<IUserApi>().ConfigureNewtonsoftJson(o =>
-{
-    o.JsonSerializeOptions.NullValueHandling = NullValueHandling.Ignore;
-});
-```
- 
-#### 声明特性
-使用[JsonNetReturn]替换内置的[JsonReturn]，[JsonNetContent]替换内置[JsonContent]
-```
-/// <summary>
-/// 用户操作接口
-/// </summary>
-[JsonNetReturn]
-public interface IUserApi
-{
-    [HttpPost("/users")]
-    Task PostAsync([JsonNetContent] User user);
-}
-```
+##### 自定义TokenProvider的选项
+每个TokenProvider都有一个Name属性，与service.AddTokeProvider()返回的ITokenProviderBuilder的Name是同一个值。读取Options值可以使用TokenProvider的GetOptionsValue()方法，配置Options则通过ITokenProviderBuilder.AddOptions<TOptions>()来配置。
 
 
-### JsonRpc调用
-在极少数场景中，开发者可能遇到JsonRpc调用的接口，由于该协议不是很流行，WebApiClientCore将该功能的支持作为WebApiClientCore.Extensions.JsonRpc扩展包提供。使用[JsonRpcMethod]修饰Rpc方法，使用[JsonRpcParam]修饰Rpc参数
-即可。
-
-#### JsonRpc声明
-```c#
-[HttpHost("http://localhost:5000/jsonrpc")]
-public interface IUserApi 
-{
-    [JsonRpcMethod("add")]
-    ITask<JsonRpcResult<User>> AddAsync([JsonRpcParam] string name, [JsonRpcParam] int age, CancellationToken token = default);
-}
-```
-
-#### JsonRpc数据包
-```
-POST /jsonrpc HTTP/1.1
-Host: localhost:5000
-User-Agent: WebApiClientCore/1.0.6.0
-Accept: application/json; q=0.01, application/xml; q=0.01
-Content-Type: application/json-rpc
-
-{"jsonrpc":"2.0","method":"add","params":["laojiu",18],"id":1}
-```
 ### NewtonsoftJson处理json
 不可否认，System.Text.Json由于性能的优势，会越来越得到广泛使用，但NewtonsoftJson也不会因此而退出舞台。
 
