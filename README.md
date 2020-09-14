@@ -1041,6 +1041,40 @@ services.AddHttpApi<IUserApi>(o =>
 }).AddOAuthTokenHandler((s, tp) => new UriQueryOAuthTokenHandler(tp));
 ```
 
+#### 多接口共享的TokenProvider
+可以给http接口设置基础接口，然后为基础接口配置TokenProvider，例如下面的xxx和yyy接口，都属于IBaidu，只需要给IBaidu配置TokenProvider。
+```
+public interface IBaidu
+{
+}
+
+[OAuthToken]
+public interface IBaidu_XXX_Api : IBaidu
+{
+    [HttpGet]
+    Task xxxAsync();
+}
+
+[OAuthToken]
+public interface IBaidu_YYY_Api : IBaidu
+{
+    [HttpGet]
+    Task yyyAsync();
+}
+```
+
+```
+// 注册与配置password模式的token提者选项
+services.AddPasswordCredentialsTokenProvider<IBaidu>(o =>
+{
+    o.Endpoint = new Uri("http://localhost:5000/api/tokens");
+    o.Credentials.Client_id = "clientId";
+    o.Credentials.Client_secret = "xxyyzz";
+    o.Credentials.Username = "username";
+    o.Credentials.Password = "password";
+});
+```
+
 #### 自定义TokenProvider
 扩展包已经内置了OAuth的Client和Password模式两种标准token请求，但是仍然还有很多接口提供方在实现上仅仅体现了它的精神，这时候就需要自定义TokenProvider，假设接口提供方的获取token的接口如下：
 ```
