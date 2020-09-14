@@ -69,13 +69,14 @@ namespace Microsoft.Extensions.DependencyInjection
             where TTokenProvider : class, ITokenProvider
         {
             var name = $"{typeof(TTokenProvider).Name}+{typeof(THttpApi).Name}";
+            var hashCode = HashCode.Combine(typeof(THttpApi), typeof(TTokenProvider));
+            name = hashCode < 0 ? $"{name}{hashCode}" : $"{name}+{hashCode}";
 
             services
                .AddOptions<TokenProviderFactoryOptions>()
                .Configure(o => o.Register<THttpApi, TTokenProvider>(name));
 
             services.TryAddSingleton<ITokenProviderFactory, TokenProviderFactory>();
-            services.TryAddSingleton(typeof(ITokenProvider<>), typeof(TypeTokenProvider<>));
             services.AddHttpApi<IOAuthTokenClientApi>(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
 
             return new TokenProviderBuilder(name, services);

@@ -35,7 +35,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var httpApiType = builder.GetHttpApiType();
             if (httpApiType == null)
             {
-                throw new InvalidOperationException($"无效的{nameof(IHttpClientBuilder)}");
+                throw new InvalidOperationException($"无效的{nameof(IHttpClientBuilder)}，找不到其关联的http接口类型");
             }
 
             builder.Services.TryAddTransient(serviceProvider =>

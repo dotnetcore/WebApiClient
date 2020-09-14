@@ -97,5 +97,14 @@ namespace WebApiClientCore.Extensions.OAuths
         {
             return HashCode.Combine(this.Name, this.Type);
         }
+
+        /// <summary>
+        /// 转换为string
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return this.Name;
+        }
     }
 }

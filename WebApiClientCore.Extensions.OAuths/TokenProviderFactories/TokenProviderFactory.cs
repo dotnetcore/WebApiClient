@@ -23,19 +23,7 @@ namespace WebApiClientCore.Extensions.OAuths
             this.options = options.Value;
         }
 
-        /// <summary>
-        /// 返回是否可以创建token提供者
-        /// </summary>
-        /// <param name="httpApiType">接口类型</param>
-        /// <returns></returns>
-        public bool CanCreate(Type httpApiType)
-        {
-            if (httpApiType == null)
-            {
-                return false;
-            }
-            return this.options.ContainsKey(httpApiType);
-        }
+
 
         /// <summary>
         /// 创建token提供者
@@ -43,9 +31,15 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <param name="httpApiType">接口类型</param>
         /// <param name="typeMatchMode">类型匹配模式</param>     
         /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         public ITokenProvider Create(Type httpApiType, TypeMatchMode typeMatchMode)
         {
+            if (httpApiType == null)
+            {
+                throw new ArgumentNullException(nameof(httpApiType));
+            }
+
             if (typeMatchMode == TypeMatchMode.TypeOnly)
             {
                 return this.Create(httpApiType);
@@ -61,6 +55,17 @@ namespace WebApiClientCore.Extensions.OAuths
             }
 
             return this.Create(httpApiType);
+        }
+
+
+        /// <summary>
+        /// 返回是否可以创建token提供者
+        /// </summary>
+        /// <param name="httpApiType">接口类型</param>
+        /// <returns></returns>
+        private bool CanCreate(Type httpApiType)
+        {
+            return this.options.ContainsKey(httpApiType);
         }
 
 

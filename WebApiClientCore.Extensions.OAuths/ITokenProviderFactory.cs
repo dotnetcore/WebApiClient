@@ -8,13 +8,6 @@ namespace WebApiClientCore.Extensions.OAuths
     public interface ITokenProviderFactory
     {
         /// <summary>
-        /// 返回是否可以创建token提供者
-        /// </summary>
-        /// <param name="httpApiType">接口类型</param>
-        /// <returns></returns>
-        public bool CanCreate(Type httpApiType);
-
-        /// <summary>
         /// 创建token提供者
         /// </summary>
         /// <param name="httpApiType">接口类型</param>
