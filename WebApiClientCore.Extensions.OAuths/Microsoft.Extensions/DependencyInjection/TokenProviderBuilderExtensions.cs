@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using WebApiClientCore.Extensions.OAuths;
+using WebApiClientCore.Extensions.OAuths.TokenProviders;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

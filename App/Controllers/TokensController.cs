@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApiClientCore.Extensions.OAuths;
+using WebApiClientCore.Extensions.OAuths.TokenProviders;
 
 namespace App.Controllers
 {
