@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Xml;
@@ -13,21 +13,6 @@ namespace WebApiClientCore
     /// </summary>
     public class HttpApiOptions
     {
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private JsonSerializerOptions? jsonSerializeOptions;
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private JsonSerializerOptions? jsonDeserializeOptions;
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private XmlWriterSettings? xmlSerializeOptions;
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private XmlReaderSettings? xmlDeserializeOptions;
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private KeyValueSerializerOptions? keyValueSerializeOptions;
-
         /// <summary>
         /// 获取或设置Http服务完整主机域名
         /// 例如http://www.abc.com/或http://www.abc.com/path/
@@ -55,89 +40,44 @@ namespace WebApiClientCore
         /// </summary>
         public bool UseReturnValuePropertyValidate { get; set; } = true;
 
+
+
         /// <summary>
         /// 获取json序列化选项
         /// </summary>
-        public JsonSerializerOptions JsonSerializeOptions
-        {
-            get
-            {
-                if (this.jsonSerializeOptions == null)
-                {
-                    this.jsonSerializeOptions = CreateDefaultJsonOptions();
-                }
-                return this.jsonSerializeOptions;
-            }
-        }
+        public JsonSerializerOptions JsonSerializeOptions { get; } = CreateJsonSerializeOptions();
 
         /// <summary>
         /// 获取json反序列化选项
         /// </summary>
-        public JsonSerializerOptions JsonDeserializeOptions
-        {
-            get
-            {
-                if (this.jsonDeserializeOptions == null)
-                {
-                    this.jsonDeserializeOptions = CreateDefaultJsonOptions();
-                    this.jsonDeserializeOptions.Converters.Add(JsonCompatibleConverter.EnumReader);
-                    this.jsonDeserializeOptions.Converters.Add(JsonCompatibleConverter.DateTimeReader);
-                    this.jsonDeserializeOptions.Converters.Add(JsonCompatibleConverter.DateTimeOffsetReader);
-                }
-                return this.jsonDeserializeOptions;
-            }
-        }
+        public JsonSerializerOptions JsonDeserializeOptions { get; } = CreateJsonDeserializeOptions();
 
         /// <summary>
         /// xml序列化选项
         /// </summary>
-        public XmlWriterSettings XmlSerializeOptions
-        {
-            get
-            {
-                if (this.xmlSerializeOptions == null)
-                {
-                    this.xmlSerializeOptions = new XmlWriterSettings();
-                }
-                return this.xmlSerializeOptions;
-            }
-        }
+        public XmlWriterSettings XmlSerializeOptions { get; } = new XmlWriterSettings();
 
         /// <summary>
         /// xml反序列化选项
         /// </summary>
-        public XmlReaderSettings XmlDeserializeOptions
-        {
-            get
-            {
-                if (this.xmlDeserializeOptions == null)
-                {
-                    this.xmlDeserializeOptions = new XmlReaderSettings();
-                }
-                return this.xmlDeserializeOptions;
-            }
-        }
+        public XmlReaderSettings XmlDeserializeOptions { get; } = new XmlReaderSettings();
 
         /// <summary>
         /// 获取keyValue序列化选项
         /// </summary>
-        public KeyValueSerializerOptions KeyValueSerializeOptions
-        {
-            get
-            {
-                if (this.keyValueSerializeOptions == null)
-                {
-                    this.keyValueSerializeOptions = new KeyValueSerializerOptions();
-                }
-                return this.keyValueSerializeOptions;
-            }
-        }
+        public KeyValueSerializerOptions KeyValueSerializeOptions { get; } = new KeyValueSerializerOptions();
 
 
         /// <summary>
-        /// 创建默认JsonSerializerOptions
+        /// 获取自定义数据存储的字典
+        /// </summary>
+        public Dictionary<object, object> Properties { get; } = new Dictionary<object, object>();
+
+
+        /// <summary>
+        /// 创建序列化JsonSerializerOptions
         /// </summary> 
-        private static JsonSerializerOptions CreateDefaultJsonOptions()
+        private static JsonSerializerOptions CreateJsonSerializeOptions()
         {
             return new JsonSerializerOptions
             {
@@ -146,6 +86,19 @@ namespace WebApiClientCore
                 DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             };
+        }
+
+        /// <summary>
+        /// 创建反序列化JsonSerializerOptions
+        /// </summary>
+        /// <returns></returns>
+        private static JsonSerializerOptions CreateJsonDeserializeOptions()
+        {
+            var options = CreateJsonSerializeOptions();
+            options.Converters.Add(JsonCompatibleConverter.EnumReader);
+            options.Converters.Add(JsonCompatibleConverter.DateTimeReader);
+            options.Converters.Add(JsonCompatibleConverter.DateTimeOffsetReader);
+            return options;
         }
     }
 }
