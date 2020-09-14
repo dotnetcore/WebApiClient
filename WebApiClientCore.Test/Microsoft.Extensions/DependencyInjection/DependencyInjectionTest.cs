@@ -38,7 +38,7 @@ namespace WebApiClientCore.Test.Microsoft.Extensions.DependencyInjection
             di.ConfigureHttpApi<IDiApi>(o => o.HttpHost = host);
             var services = di.BuildServiceProvider();
 
-            var name = HttpApi.GetName<IDiApi>();
+            var name = HttpApi.GetName(typeof(IDiApi));
             var options = services.GetService<IOptionsMonitor<HttpApiOptions>>().Get(name);
             Assert.True(options.HttpHost == host);
         } 
@@ -52,7 +52,7 @@ namespace WebApiClientCore.Test.Microsoft.Extensions.DependencyInjection
             di.ConfigureHttpApi(typeof(IDiApi), o => o.HttpHost = host);
             var services = di.BuildServiceProvider();
 
-            var name = HttpApi.GetName<IDiApi>();
+            var name = HttpApi.GetName(typeof(IDiApi));
             var options = services.GetService<IOptionsMonitor<HttpApiOptions>>().Get(name);
             Assert.True(options.HttpHost == host);
 

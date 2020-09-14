@@ -8,18 +8,7 @@ namespace WebApiClientCore
     /// 提供创建THttpApi的代理实例
     /// </summary>
     public static class HttpApi
-    {
-        /// <summary>
-        /// 获取接口的命名
-        /// 该命名用于接口对应的Options名称 
-        /// </summary>
-        /// <typeparam name="THttpApi">接口类型</typeparam>
-        /// <returns></returns>
-        public static string GetName<THttpApi>()
-        {
-            return GetName(typeof(THttpApi));
-        }
-
+    {      
         /// <summary>
         /// 获取接口的命名
         /// 该命名用于接口对应的Options名称

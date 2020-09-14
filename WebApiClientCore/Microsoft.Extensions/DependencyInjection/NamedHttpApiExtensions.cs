@@ -11,18 +11,18 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class NamedHttpApiExtensions
     {
         /// <summary>
-        /// 添加到命名记录
+        /// 注册http接口类型的别名
         /// </summary>
-        /// <typeparam name="THttpApi"></typeparam>
         /// <param name="services"></param>
-        /// <param name="name">别名</param>
-        internal static void AddNamedRegistration<THttpApi>(this IServiceCollection services,string name)
+        /// <param name="name">接口别名</param>
+        /// <param name="httpApiType">接口类型</param>
+        internal static void NamedHttpApiType(this IServiceCollection services, string name, Type httpApiType)
         {
             services.TryAddSingleton(new NameTypeRegistration());
             var descriptor = services.Single(item => item.ServiceType == typeof(NameTypeRegistration));
 
             var registration = (NameTypeRegistration)descriptor.ImplementationInstance;
-            registration[name] = typeof(THttpApi);
+            registration[name] = httpApiType;
         }
 
         /// <summary>

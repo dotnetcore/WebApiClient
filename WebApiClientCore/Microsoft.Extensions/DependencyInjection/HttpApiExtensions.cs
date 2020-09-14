@@ -28,8 +28,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddSingleton<IKeyValueSerializer, KeyValueSerializer>();
             services.TryAddSingleton<IResponseCacheProvider, ResponseCacheProvider>();
 
-            var name = HttpApi.GetName<THttpApi>();
-            services.AddNamedRegistration<THttpApi>(name);
+            var name = HttpApi.GetName(typeof(THttpApi));
+            services.NamedHttpApiType(name, typeof(THttpApi));
 
             services.TryAddTransient(serviceProvider =>
             {
