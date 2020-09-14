@@ -8,7 +8,6 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
 {
     /// <summary>
     /// 表示Token提供者抽象类
-    /// 该类型必须注册为Transient
     /// </summary>
     public abstract class TokenProvider : Disposable, ITokenProvider
     {

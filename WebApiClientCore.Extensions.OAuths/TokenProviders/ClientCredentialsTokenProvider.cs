@@ -6,7 +6,7 @@ using WebApiClientCore.Extensions.OAuths.Exceptions;
 namespace WebApiClientCore.Extensions.OAuths.TokenProviders
 {
     /// <summary>
-    /// 表示Client模式的token提供者泛型类
+    /// 表示Client模式的token提供者
     /// </summary>
     public class ClientCredentialsTokenProvider : TokenProvider
     {
