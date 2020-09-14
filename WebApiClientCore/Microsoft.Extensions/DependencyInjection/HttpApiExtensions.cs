@@ -50,8 +50,8 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IHttpClientBuilder AddHttpApi<THttpApi>(this IServiceCollection services, Action<HttpApiOptions> configureOptions) where THttpApi : class
         {
             return services
-                .ConfigureHttpApi<THttpApi>(configureOptions)
-                .AddHttpApi<THttpApi>();
+                .AddHttpApi<THttpApi>()
+                .ConfigureHttpApi(configureOptions);
         }
 
         /// <summary>
@@ -64,8 +64,8 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IHttpClientBuilder AddHttpApi<THttpApi>(this IServiceCollection services, Action<HttpApiOptions, IServiceProvider> configureOptions) where THttpApi : class
         {
             return services
-                .ConfigureHttpApi<THttpApi>(configureOptions)
-                .AddHttpApi<THttpApi>();
+                .AddHttpApi<THttpApi>()
+                .ConfigureHttpApi(configureOptions);
         }
 
 
@@ -103,8 +103,8 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IHttpClientBuilder AddHttpApi(this IServiceCollection services, Type httpApiType, Action<HttpApiOptions> configureOptions)
         {
             return services
-                .ConfigureHttpApi(httpApiType, configureOptions)
-                .AddHttpApi(httpApiType);
+                .AddHttpApi(httpApiType)
+                .ConfigureHttpApi(configureOptions);
         }
 
         /// <summary>
@@ -118,8 +118,8 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IHttpClientBuilder AddHttpApi(this IServiceCollection services, Type httpApiType, Action<HttpApiOptions, IServiceProvider> configureOptions)
         {
             return services
-                .ConfigureHttpApi(httpApiType, configureOptions)
-                .AddHttpApi(httpApiType);
+                .AddHttpApi(httpApiType)
+                .ConfigureHttpApi(configureOptions);
         }
 
 
