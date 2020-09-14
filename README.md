@@ -66,7 +66,7 @@ public interface IUserApi : IHttpApi
 ### 接口配置与选项
 每个接口的选项对应为`HttpApiOptions`，选项名称为接口的完整名称，也可以通过HttpApi.GetName()方法获取得到。
 
-#### 从IHttpClientBuilder配置
+#### 在IHttpClientBuilder配置
 ```
 services
     .AddHttpApi<IUserApi>()
@@ -93,20 +93,7 @@ services
 }
 ```
 
-#### 从IServiceCollection配置
-##### 使用OptionsBuilder
-```
-services
-    .AddHttpApiOptions<IUserApi>()
-    .Bind(Configuration.GetSection(nameof(IUserApi)))
-    .Configure(o =>
-    {
-        // 符合国情的不标准时间格式，有些接口就是这么要求必须不标准
-        o.JsonSerializeOptions.Converters.Add(new JsonLocalDateTimeConverter("yyyy-MM-dd HH:mm:ss"));
-    });
-```
-
-##### 使用ConfigureHttpApi
+#### 在IServiceCollection配置
 ```
 services
     .ConfigureHttpApi<IUserApi>(Configuration.GetSection(nameof(IUserApi)))
@@ -954,7 +941,7 @@ OAuthTokenHandler | 属于http消息处理器，功能与OAuthTokenAttribute一�
 ##### 1 为接口注册tokenProvider
 ```
 // 为接口注册与配置Client模式的tokenProvider
-services.AddClientCredentialsTokenProvider<IUserApi>().Configure(o =>
+services.AddClientCredentialsTokenProvider<IUserApi>(o =>
 {
     o.Endpoint = new Uri("http://localhost:6000/api/tokens");
     o.Credentials.Client_id = "clientId";
@@ -1000,11 +987,10 @@ public interface IUserApi
 OAuthTokenHandler的强项是支持在一个请求内部里进行多次尝试，在服务器颁发token之后，如果服务器的token丢失了，OAuthTokenHandler在收到401状态码之后，会在本请求内部丢弃和重新请求token，并使用新token重试请求，从而表现为一次正常的请求。但OAuthTokenHandler不属于WebApiClientCore框架层的对象，在里面只能访问原始的HttpRequestMessage与HttpResponseMessage，如果需要将token追加到HttpRequestMessage的Content里，这是非常困难的，同理，如果不是根据http状态码(401等)作为token无效的依据，而是使用HttpResponseMessage的Content对应的业务模型的某个标记字段，也是非常棘手的活。
 
 ```
-// 注册时添加OAuthTokenHandler
-services.AddHttpApi<IUserApi>(o =>
-{
-    ...
-}).AddOAuthTokenHandler();
+// 注册接口时添加OAuthTokenHandler
+services
+    .AddHttpApi<IUserApi>()
+    .AddOAuthTokenHandler();
 ```
 
 OAuthTokenHandler默认实现将token放到Authorization请求头，如果你的接口需要请token放到其它地方比如uri的query，需要重写OAuthTokenHandler：
@@ -1035,11 +1021,10 @@ class UriQueryOAuthTokenHandler : OAuthTokenHandler
 }
 
 
-// 注册时添加UriQueryOAuthTokenHandler
-services.AddHttpApi<IUserApi>(o =>
-{
-    ...
-}).AddOAuthTokenHandler((s, tp) => new UriQueryOAuthTokenHandler(tp));
+// 注册接口时添加UriQueryOAuthTokenHandler
+services
+    .AddHttpApi<IUserApi>()
+    .AddOAuthTokenHandler((s, tp) => new UriQueryOAuthTokenHandler(tp));
 ```
 
 #### 多接口共享的TokenProvider
