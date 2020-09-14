@@ -64,36 +64,24 @@ public interface IUserApi : IHttpApi
 ```
 
 ### 接口配置与选项
-每个接口的选项对应为`HttpApiOptions`，选项名称为接口的完整名称。
+每个接口的选项对应为`HttpApiOptions`，选项名称为接口的完整名称，也可以通过HttpApi.GetName()方法获取得到。
 
-#### 注册时配置
+#### 从IHttpClientBuilder配置
 ```
-services.AddHttpApi<IUserApi >(o =>
-{
-    o.UseParameterPropertyValidate = true;
-    o.UseReturnValuePropertyValidate = false;
-    o.KeyValueSerializeOptions.IgnoreNullValues = true;
-    o.HttpHost = new Uri("http://localhost:5000/");
-});
-```
-
-#### Action配置
-
-```
-services.ConfigureHttpApi<IUserApi >(o =>
-{
-    // 符合国情的不标准时间格式，有些接口就是这么要求必须不标准
-    o.JsonSerializeOptions.Converters.Add(new JsonLocalDateTimeConverter("yyyy-MM-dd HH:mm:ss"));
-});
+services
+    .AddHttpApi<IUserApi>()
+    .ConfigureHttpApi(Configuration.GetSection(nameof(IUserApi)))
+    .ConfigureHttpApi(o =>
+    {
+        // 符合国情的不标准时间格式，有些接口就是这么要求必须不标准
+        o.JsonSerializeOptions.Converters.Add(new JsonLocalDateTimeConverter("yyyy-MM-dd HH:mm:ss"));
+    });
 ```
 
-#### Configuration配置
-```
-services.ConfigureHttpApi<IpetApi>(Configuration.GetSection(nameof(IpetApi)))
-```
+配置文件的json
 ```
 {
-  "IpetApi": {
+  "IUserApi": {
     "HttpHost": "http://www.webappiclient.com/",
     "UseParameterPropertyValidate": false,
     "UseReturnValuePropertyValidate": false,
@@ -104,17 +92,30 @@ services.ConfigureHttpApi<IpetApi>(Configuration.GetSection(nameof(IpetApi)))
   }
 }
 ```
-#### 使用OptionsBuilder
+
+#### 从IServiceCollection配置
+##### 使用OptionsBuilder
 ```
 services
-    .AddHttpApiOptions<IpetApi>()
-    .Bind(configuration.GetSection(nameof(IpetApi)))
+    .AddHttpApiOptions<IUserApi>()
+    .Bind(Configuration.GetSection(nameof(IUserApi)))
     .Configure(o =>
     {
-        o.UseLogging = environment.IsDevelopment();
+        // 符合国情的不标准时间格式，有些接口就是这么要求必须不标准
+        o.JsonSerializeOptions.Converters.Add(new JsonLocalDateTimeConverter("yyyy-MM-dd HH:mm:ss"));
     });
 ```
 
+##### 使用ConfigureHttpApi
+```
+services
+    .ConfigureHttpApi<IUserApi>(Configuration.GetSection(nameof(IUserApi)))
+    .ConfigureHttpApi<IUserApi>(o =>
+    {
+        // 符合国情的不标准时间格式，有些接口就是这么要求必须不标准
+        o.JsonSerializeOptions.Converters.Add(new JsonLocalDateTimeConverter("yyyy-MM-dd HH:mm:ss"));
+    });
+```
 
 ### 数据验证
 #### 参数值验证
