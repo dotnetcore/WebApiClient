@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using System;
-using System.Linq;
 using System.Net.Http;
 using WebApiClientCore;
 using WebApiClientCore.ResponseCaches;
@@ -31,7 +30,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var name = HttpApi.GetName<THttpApi>();
             services.AddNamedRegistration<THttpApi>(name);
-            services.AddHttpApiOptionsConfigureTrigger<THttpApi>();
 
             services.TryAddTransient(serviceProvider =>
             {
@@ -124,23 +122,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddHttpApi(httpApiType);
         }
 
-        /// <summary>
-        /// 添加HttpApiOptions的Action配置触发器
-        /// </summary>
-        /// <typeparam name="THttpApi"></typeparam>
-        /// <param name="services"></param>
-        /// <returns></returns>
-        private static IServiceCollection AddHttpApiOptionsConfigureTrigger<THttpApi>(this IServiceCollection services)
-        {
-            var serviceType = typeof(IOptionsChangeTokenSource<HttpApiOptions>);
-            var implementationType = typeof(HttpApiOptionsChangeTokenSource<THttpApi>);
-            if (services.Any(item => item.ServiceType == serviceType && item.ImplementationType == implementationType) == false)
-            {
-                services.AddSingleton(serviceType, implementationType);
-            }
-            services.TryAddSingleton<IHttpApiOptionsConfigureTrigger, HttpApiOptionsConfigureTrigger>();
-            return services;
-        }
 
         /// <summary>
         /// 定义httpApi的Builder的行为
