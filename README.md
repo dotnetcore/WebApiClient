@@ -1110,7 +1110,7 @@ class CustomTokenProvider : TokenProvider
 ```
 
 ##### 自定义TokenProvider的选项
-每个TokenProvider都有一个Name属性，与service.AddTokeProvider()返回的ITokenProviderBuilder的Name是同一个值。读取Options值可以使用TokenProvider的GetOptionsValue()方法，配置Options则通过ITokenProviderBuilder.AddOptions<TOptions>()来配置。
+每个TokenProvider都有一个Name属性，与service.AddTokeProvider()返回的ITokenProviderBuilder的Name是同一个值。读取Options值可以使用TokenProvider的GetOptionsValue()方法，配置Options则通过ITokenProviderBuilder的Name来配置。
 
 
 ### NewtonsoftJson处理json
