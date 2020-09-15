@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using System;
 using WebApiClientCore.Extensions.OAuths.TokenProviders;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -14,9 +15,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="THttpApi">接口类型</typeparam>
         /// <param name="services"></param>
         /// <returns></returns>     
-        public static ITokenProviderBuilder AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services)
+        public static OptionsBuilder<ClientCredentialsOptions> AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services)
         {
-            return services.AddTokenProvider<THttpApi, ClientCredentialsTokenProvider>();
+            var builder = services.AddTokenProvider<THttpApi, ClientCredentialsTokenProvider>();
+            return new OptionsBuilder<ClientCredentialsOptions>(builder.Services, builder.Name);
         }
 
         /// <summary>
@@ -26,11 +28,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="configureOptions">配置</param>
         /// <returns></returns>
-        public static ITokenProviderBuilder AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services, Action<ClientCredentialsOptions> configureOptions)
+        public static OptionsBuilder<ClientCredentialsOptions> AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services, Action<ClientCredentialsOptions> configureOptions)
         {
-            return services
-                .AddClientCredentialsTokenProvider<THttpApi>()
-                .ConfigureClientCredentials(configureOptions);
+            return services.AddClientCredentialsTokenProvider<THttpApi>().Configure(configureOptions);
         }
     }
 }
