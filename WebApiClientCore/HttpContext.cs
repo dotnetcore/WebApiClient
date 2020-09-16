@@ -31,22 +31,10 @@ namespace WebApiClientCore
         /// <param name="context">服务上下文</param>
         /// <exception cref="ArgumentNullException"></exception>
         public HttpContext(HttpClientContext context)
-            : this(context.HttpClient, context.ServiceProvider, context.HttpApiOptions)
+            : base(context.HttpClient, context.ServiceProvider, context.HttpApiOptions, context.OptionsName)
         {
-        }
-
-        /// <summary>
-        /// http上下文
-        /// </summary>
-        /// <param name="httpClient">httpClient实例</param>
-        /// <param name="serviceProvider">服务提供者</param>
-        /// <param name="httpApiOptions">Api配置选项</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public HttpContext(HttpClient httpClient, IServiceProvider serviceProvider, HttpApiOptions httpApiOptions)
-            : base(httpClient, serviceProvider, httpApiOptions)
-        {
-            var requiredUri = httpApiOptions.HttpHost ?? httpClient.BaseAddress;
-            this.RequestMessage = new HttpApiRequestMessage(requiredUri, httpApiOptions.UseDefaultUserAgent);
+            var requiredUri = context.HttpApiOptions.HttpHost ?? context.HttpClient.BaseAddress;
+            this.RequestMessage = new HttpApiRequestMessage(requiredUri, context.HttpApiOptions.UseDefaultUserAgent);
             this.CancellationTokens = new List<CancellationToken>();
         }
 
