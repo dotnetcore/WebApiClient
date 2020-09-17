@@ -6,7 +6,7 @@ namespace WebApiClientCore.Extensions.JsonRpc
     /// 表示JsonRpc请求内容
     /// </summary>
     class JsonRpcContent : BufferContent
-    { 
+    {
         /// <summary>
         /// 获取对应的ContentType
         /// </summary>
@@ -16,9 +16,9 @@ namespace WebApiClientCore.Extensions.JsonRpc
         /// JsonRpc请求内容
         /// </summary> 
         /// <param name="mediaType">媒体类型</param>
-        public JsonRpcContent( string? mediaType)
+        public JsonRpcContent(string? mediaType)
             : base(mediaType ?? MediaType)
-        { 
-        } 
+        {
+        }
     }
 }
