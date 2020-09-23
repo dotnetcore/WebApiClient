@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WebApiClientCore.Attributes
@@ -18,6 +19,13 @@ namespace WebApiClientCore.Attributes
             if (context.ParameterValue is CancellationToken token)
             {
                 context.HttpContext.CancellationTokens.Add(token);
+            }
+            else if (context.ParameterValue is IEnumerable<CancellationToken> tokens)
+            {
+                foreach (var item in tokens)
+                {
+                    context.HttpContext.CancellationTokens.Add(item);
+                }
             }
             return Task.CompletedTask;
         }
