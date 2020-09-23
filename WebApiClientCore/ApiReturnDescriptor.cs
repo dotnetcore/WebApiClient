@@ -90,7 +90,7 @@ namespace WebApiClientCore
             {
                 yield return new JsonReturnAttribute(acceptQuality);
                 yield return new XmlReturnAttribute(acceptQuality);
-                yield return new RawReturnAttribute(acceptQuality);
+                yield return new NoContentReturnAttribute(acceptQuality);
             }
         }
 

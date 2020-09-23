@@ -1,29 +1,27 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Net;
 using System.Threading.Tasks;
+using WebApiClientCore.Exceptions;
 
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
     /// 表示原始类型的结果特性
     /// 支持结果类型为string、byte[]、Stream和HttpResponseMessage
-    /// </summary>
-    public sealed class RawReturnAttribute : ApiReturnAttribute
+    /// </summary> 
+    public sealed class RawReturnAttribute : SpecialReturnAttribute
     {
         /// <summary>
-        /// accept quality
+        /// 获取或设置是否确保响应的http状态码通过IsSuccessStatusCode验证
+        /// 当值为true时，请求可能会引发HttpStatusFailureException
+        /// 默认为true
         /// </summary>
-        private readonly int orderIndex;
-
-        /// <summary>
-        /// 获取执行排序索引
-        /// </summary>
-        public override int OrderIndex => this.orderIndex;
+        public bool EnsureSuccessStatusCode { get; set; } = true;
 
         /// <summary>
         /// 原始类型的结果特性
         /// </summary>
         public RawReturnAttribute()
-            : this(1d)
+            : base()
         {
         }
 
@@ -32,29 +30,16 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="acceptQuality">accept的质比</param>
         public RawReturnAttribute(double acceptQuality)
-            : base(null)
+            : base(acceptQuality)
         {
-            this.orderIndex = (int)((1d - acceptQuality) * int.MaxValue);
-            this.EnsureMatchAcceptContentType = false;
         }
 
         /// <summary>
-        /// 指示响应的ContentType与Accept-ContentType是否匹配
-        /// 返回false则调用下一个ApiReturnAttribute来处理响应结果
+        /// 响应时
         /// </summary>
-        /// <param name="responseContentType"></param>
+        /// <param name="context"></param>
         /// <returns></returns>
-        protected override bool IsMatchAcceptContentType(MediaTypeHeaderValue? responseContentType)
-        {
-            return true;
-        }
-
-        /// <summary>
-        /// 设置结果值
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <returns></returns>
-        public override async Task SetResultAsync(ApiResponseContext context)
+        public override async Task OnResponseAsync(ApiResponseContext context)
         {
             var dataType = context.ApiAction.Return.DataType;
             var response = context.HttpContext.ResponseMessage;
@@ -62,6 +47,14 @@ namespace WebApiClientCore.Attributes
             if (dataType.IsRawType == false || response == null)
             {
                 return;
+            }
+
+            if (this.EnsureSuccessStatusCode == true)
+            {
+                if (this.IsSuccessStatusCode(response.StatusCode) == false)
+                {
+                    throw new ApiResponseStatusException(response);
+                }
             }
 
             if (dataType.IsRawHttpResponseMessage == true)
@@ -80,6 +73,17 @@ namespace WebApiClientCore.Attributes
             {
                 context.Result = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
             }
+        }
+
+        /// <summary>
+        /// 指示http状态码是否为成功的状态码
+        /// </summary>
+        /// <param name="statusCode">http状态码</param>
+        /// <returns></returns>
+        private bool IsSuccessStatusCode(HttpStatusCode statusCode)
+        {
+            var status = (int)statusCode;
+            return status >= 200 && status <= 299;
         }
     }
 }

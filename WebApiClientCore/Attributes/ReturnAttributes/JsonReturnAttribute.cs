@@ -49,11 +49,8 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public override async Task SetResultAsync(ApiResponseContext context)
         {
-            if (context.ApiAction.Return.DataType.IsRawType == false)
-            {
-                var resultType = context.ApiAction.Return.DataType.Type;
-                context.Result = await context.JsonDeserializeAsync(resultType).ConfigureAwait(false);
-            }
+            var resultType = context.ApiAction.Return.DataType.Type;
+            context.Result = await context.JsonDeserializeAsync(resultType).ConfigureAwait(false);
         }
     }
 }
