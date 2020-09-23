@@ -49,12 +49,9 @@ namespace WebApiClientCore.Attributes
                 return;
             }
 
-            if (this.EnsureSuccessStatusCode == true)
+            if (this.EnsureSuccessStatusCode && IsSuccessStatusCode(response.StatusCode) == false)
             {
-                if (this.IsSuccessStatusCode(response.StatusCode) == false)
-                {
-                    throw new ApiResponseStatusException(response);
-                }
+                throw new ApiResponseStatusException(response);
             }
 
             if (dataType.IsRawHttpResponseMessage == true)
@@ -80,7 +77,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="statusCode">http状态码</param>
         /// <returns></returns>
-        private bool IsSuccessStatusCode(HttpStatusCode statusCode)
+        private static bool IsSuccessStatusCode(HttpStatusCode statusCode)
         {
             var status = (int)statusCode;
             return status >= 200 && status <= 299;
