@@ -8,12 +8,12 @@ namespace WebApiClientCore.Attributes
     /// 表示无内容的结果特性
     /// 将结果设置为类型的默认值
     /// </summary> 
-    public sealed class NoContentReturnAttribute : SpecialReturnAttribute
+    public sealed class NoneReturnAttribute : SpecialReturnAttribute
     {
         /// <summary>
         /// 无内容的结果特性
         /// </summary>
-        public NoContentReturnAttribute()
+        public NoneReturnAttribute()
             : base()
         {
         }
@@ -22,7 +22,7 @@ namespace WebApiClientCore.Attributes
         /// 无内容的结果特性
         /// </summary>
         /// <param name="acceptQuality">accept的质比</param>
-        public NoContentReturnAttribute(double acceptQuality)
+        public NoneReturnAttribute(double acceptQuality)
             : base(acceptQuality)
         {
         }
