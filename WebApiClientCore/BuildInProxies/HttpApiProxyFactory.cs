@@ -6,10 +6,10 @@ using WebApiClientCore.Exceptions;
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 表示THttpApi的代理类的实例创建者
+    /// 表示THttpApi的代理类的创建工厂
     /// </summary>
     /// <typeparam name="THttpApi">接口类型</typeparam>
-    class HttpApiProxyBuilder<THttpApi>
+    class HttpApiProxyFactory<THttpApi>
     {
         /// <summary>
         /// 接口包含的所有action执行器 
@@ -22,11 +22,11 @@ namespace WebApiClientCore
         private readonly Func<IActionInterceptor, IActionInvoker[], THttpApi> proxyTypeCtor;
 
         /// <summary>
-        /// IHttpApi的代理类的实例创建者
+        /// 表示THttpApi的代理类的创建工厂
         /// </summary> 
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ProxyTypeCreateException"></exception>
-        private HttpApiProxyBuilder()
+        private HttpApiProxyFactory()
         {
             var interfaceType = typeof(THttpApi);
 
@@ -48,38 +48,38 @@ namespace WebApiClientCore
         }
 
         /// <summary>
-        /// 创建IHttpApi的代理类的实例
+        /// 创建代理类的实例
         /// </summary>
         /// <param name="actionInterceptor">拦截器</param>
         /// <returns></returns>
-        private THttpApi BuildCore(IActionInterceptor actionInterceptor)
+        private THttpApi CreateProxy(IActionInterceptor actionInterceptor)
         {
             return this.proxyTypeCtor.Invoke(actionInterceptor, this.actionInvokers);
         }
 
 
         /// <summary>
-        /// 代理生成器的实例
+        /// 代理创建工厂的实例
         /// </summary>
-        private static HttpApiProxyBuilder<THttpApi>? instance;
+        private static HttpApiProxyFactory<THttpApi>? instance;
 
         /// <summary>
-        /// 创建IHttpApi的代理类的实例
+        /// 创建代理类的实例
         /// </summary>
         /// <param name="actionInterceptor">拦截器</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
-        public static THttpApi Build(IActionInterceptor actionInterceptor)
+        public static THttpApi Create(IActionInterceptor actionInterceptor)
         {
-            var builder = Volatile.Read(ref instance);
-            if (builder == null)
+            var fatory = Volatile.Read(ref instance);
+            if (fatory == null)
             {
-                Interlocked.CompareExchange(ref instance, new HttpApiProxyBuilder<THttpApi>(), null);
-                builder = instance;
+                Interlocked.CompareExchange(ref instance, new HttpApiProxyFactory<THttpApi>(), null);
+                fatory = instance;
             }
 
-            return builder.BuildCore(actionInterceptor);
+            return fatory.CreateProxy(actionInterceptor);
         }
     }
 }
