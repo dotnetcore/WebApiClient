@@ -5,18 +5,18 @@ using WebApiClientCore.Exceptions;
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 表示THttpApi的代理类的创建工厂
+    /// 表示THttpApi的创建工厂
     /// </summary>
     /// <typeparam name="THttpApi">接口类型</typeparam>
-    class HttpApiProxyFactory<THttpApi>
+    static class HttpApiFactory<THttpApi>
     {
         /// <summary>
-        /// 代理实例创建者
+        /// 实例创建者
         /// </summary>
-        private static HttpApiProxyActivator<THttpApi>? _activator;
+        private static HttpApiActivator<THttpApi>? _activator;
 
         /// <summary>
-        /// 创建代理类的实例
+        /// 创建接口的实例
         /// </summary>
         /// <param name="actionInterceptor">拦截器</param>
         /// <exception cref="NotSupportedException"></exception>
@@ -27,7 +27,7 @@ namespace WebApiClientCore
             var activator = Volatile.Read(ref _activator);
             if (activator == null)
             {
-                Interlocked.CompareExchange(ref _activator, new HttpApiProxyEmitActivator<THttpApi>(), null);
+                Interlocked.CompareExchange(ref _activator, new HttpApiEmitActivator<THttpApi>(), null);
                 activator = _activator;
             }
 

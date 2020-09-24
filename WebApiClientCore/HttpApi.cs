@@ -64,7 +64,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static THttpApi Create<THttpApi>(IActionInterceptor actionInterceptor)
         {
-            return HttpApiProxyFactory<THttpApi>.Create(actionInterceptor);
+            return HttpApiFactory<THttpApi>.Create(actionInterceptor);
         }
 
 

@@ -4,10 +4,10 @@ using System.Linq;
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 表示THttpApi的代理类的实例创建器抽象
+    /// 表示THttpApi的实例创建器抽象
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
-    abstract class HttpApiProxyActivator<THttpApi>
+    abstract class HttpApiActivator<THttpApi>
     {
         /// <summary>
         /// 实例工厂
@@ -15,21 +15,21 @@ namespace WebApiClientCore
         private readonly Func<IActionInterceptor, THttpApi> factory;
 
         /// <summary>
-        /// THttpApi的代理类的实例创建器
+        /// THttpApi的实例创建器抽象
         /// </summary>
-        public HttpApiProxyActivator()
+        public HttpApiActivator()
         {
             this.factory = this.CreateFactory();
         }
 
         /// <summary>
-        /// 创建代理类的实例工厂
+        /// 创建实例工厂
         /// </summary>
         /// <returns></returns>
         protected abstract Func<IActionInterceptor, THttpApi> CreateFactory();
 
         /// <summary>
-        /// 实例代理类的实例
+        /// 创建接口的实例
         /// </summary>
         /// <param name="interceptor">拦截器</param>
         /// <returns></returns>

@@ -7,13 +7,13 @@ using WebApiClientCore.Exceptions;
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 表示Emit方式的THttpApi的代理类的实例创建器
+    /// 表示THttpApi的实例创建器
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
-    class HttpApiProxyEmitActivator<THttpApi> : HttpApiProxyActivator<THttpApi>
+    class HttpApiEmitActivator<THttpApi> : HttpApiActivator<THttpApi>
     {
         /// <summary>
-        /// 创建代理类的实例工厂
+        /// 创建实例工厂
         /// </summary>
         /// <returns></returns>
         protected override Func<IActionInterceptor, THttpApi> CreateFactory()
@@ -27,7 +27,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 提供IHttpApi代理类的类型创建
         /// </summary>
-        private static class ProxyTypeBuilder
+        static class ProxyTypeBuilder
         {
             /// <summary>
             /// IActionInterceptor的Intercept方法
