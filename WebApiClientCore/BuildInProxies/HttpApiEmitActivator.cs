@@ -15,6 +15,8 @@ namespace WebApiClientCore
         /// <summary>
         /// 创建实例工厂
         /// </summary>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
         protected override Func<IActionInterceptor, THttpApi> CreateFactory()
         {
@@ -27,7 +29,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 提供IHttpApi代理类的类型创建
         /// </summary>
-        static class ProxyTypeBuilder
+        private static class ProxyTypeBuilder
         {
             /// <summary>
             /// IActionInterceptor的Intercept方法

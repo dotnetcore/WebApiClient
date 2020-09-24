@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 
 namespace WebApiClientCore
 {
@@ -12,21 +13,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 实例工厂
         /// </summary>
-        private readonly Func<IActionInterceptor, THttpApi> factory;
-
-        /// <summary>
-        /// THttpApi的实例创建器抽象
-        /// </summary>
-        public HttpApiActivator()
-        {
-            this.factory = this.CreateFactory();
-        }
-
-        /// <summary>
-        /// 创建实例工厂
-        /// </summary>
-        /// <returns></returns>
-        protected abstract Func<IActionInterceptor, THttpApi> CreateFactory();
+        private static Func<IActionInterceptor, THttpApi>? _factory;
 
         /// <summary>
         /// 创建接口的实例
@@ -35,8 +22,20 @@ namespace WebApiClientCore
         /// <returns></returns>
         public THttpApi CreateInstance(IActionInterceptor interceptor)
         {
-            return this.factory(interceptor);
+            var factory = Volatile.Read(ref _factory);
+            if (factory == null)
+            {
+                Interlocked.CompareExchange(ref _factory, this.CreateFactory(), null);
+                factory = _factory;
+            }
+            return factory(interceptor);
         }
+
+        /// <summary>
+        /// 创建实例工厂
+        /// </summary>
+        /// <returns></returns>
+        protected abstract Func<IActionInterceptor, THttpApi> CreateFactory();
 
         /// <summary>
         /// 返回接口的action执行器
