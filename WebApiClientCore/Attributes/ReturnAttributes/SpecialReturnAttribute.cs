@@ -62,6 +62,16 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param> 
         /// <returns></returns>
-        public abstract Task OnResponseAsync(ApiResponseContext context);
+        public Task OnResponseAsync(ApiResponseContext context)
+        {
+            return this.SetResultAsync(context);
+        }
+
+        /// <summary>
+        /// 设置结果值
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <returns></returns>
+        public abstract Task SetResultAsync(ApiResponseContext context);
     }
 }

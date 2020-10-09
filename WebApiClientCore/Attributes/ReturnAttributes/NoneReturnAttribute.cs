@@ -28,11 +28,11 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 响应后
+        /// 设置结果值
         /// </summary>
-        /// <param name="context">上下文</param> 
+        /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override Task OnResponseAsync(ApiResponseContext context)
+        public override Task SetResultAsync(ApiResponseContext context)
         {
             if (context.ApiAction.Return.DataType.IsRawType == true)
             {

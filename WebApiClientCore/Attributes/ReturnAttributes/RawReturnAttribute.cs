@@ -35,11 +35,11 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 响应时
+        /// 设置结果值
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override async Task OnResponseAsync(ApiResponseContext context)
+        public async override Task SetResultAsync(ApiResponseContext context)
         {
             var dataType = context.ApiAction.Return.DataType;
             var response = context.HttpContext.ResponseMessage;
