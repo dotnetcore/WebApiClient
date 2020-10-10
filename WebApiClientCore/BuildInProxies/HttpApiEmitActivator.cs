@@ -34,7 +34,7 @@ namespace WebApiClientCore
             var actionInvokers = this.GetActionInvokers();
             var proxyType = BuildProxyType(typeof(THttpApi), actionInvokers);
             var proxyTypeCtor = Lambda.CreateCtorFunc<IActionInterceptor, IActionInvoker[], THttpApi>(proxyType);
-            return (interceptor) => proxyTypeCtor(interceptor, actionInvokers);
+            return interceptor => proxyTypeCtor(interceptor, actionInvokers);
         }
 
 
@@ -46,7 +46,7 @@ namespace WebApiClientCore
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
-        public static Type BuildProxyType(Type interfaceType, IActionInvoker[] actionInvokers)
+        private static Type BuildProxyType(Type interfaceType, IActionInvoker[] actionInvokers)
         {
             // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口            
             if (interfaceType.IsVisible == false)
