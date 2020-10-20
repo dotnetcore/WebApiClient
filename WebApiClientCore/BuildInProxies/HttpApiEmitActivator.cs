@@ -55,7 +55,7 @@ namespace WebApiClientCore
                 throw new NotSupportedException(message);
             }
 
-            var moduleName = interfaceType.Module.Name;
+            var moduleName = Guid.NewGuid().ToString();
             var assemblyName = new AssemblyName(Guid.NewGuid().ToString());
 
             var module = AssemblyBuilder
