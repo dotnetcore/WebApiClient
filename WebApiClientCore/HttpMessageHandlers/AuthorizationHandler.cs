@@ -56,7 +56,7 @@ namespace WebApiClientCore.HttpMessageHandlers
         /// 反回true则触发重试请求
         /// </summary>
         /// <param name="response">响应消息</param> 
-        protected virtual Task<bool> IsUnauthorizedAsync(HttpResponseMessage? response)
+        protected virtual Task<bool> IsUnauthorizedAsync(HttpResponseMessage response)
         {
             var state = response != null && response.StatusCode == HttpStatusCode.Unauthorized;
             return Task.FromResult(state);
