@@ -21,31 +21,41 @@ namespace WebApiClientCore.HttpMessageHandlers
         [EditorBrowsable(EditorBrowsableState.Never)]
         protected sealed override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            await this.SetAuthorizationAsync(AuthorizationReason.SetForSend, request, cancellationToken).ConfigureAwait(false);
-            var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
+            var response = await this.SendAsync(SetReason.ForSend, request, cancellationToken).ConfigureAwait(false);
             if (await this.IsUnauthorizedAsync(response).ConfigureAwait(false) == true)
             {
-                await this.SetAuthorizationAsync(AuthorizationReason.SetForResend, request, cancellationToken).ConfigureAwait(false);
-                response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+                response = await this.SendAsync(SetReason.ForResend, request, cancellationToken).ConfigureAwait(false);
             }
             return response;
+        }
+
+        /// <summary>
+        /// 发送请求
+        /// </summary>
+        /// <param name="reason">原因</param>
+        /// <param name="request">请求消息</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns></returns>
+        private async Task<HttpResponseMessage> SendAsync(SetReason reason, HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            await this.SetAuthorizationAsync(reason, request, cancellationToken).ConfigureAwait(false);
+            return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// 设置请求的授权信息
         /// </summary>
         /// <param name="reason">授权原因</param> 
-        /// <param name="request">请求</param>
+        /// <param name="request">请求消息</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns></returns>
-        protected abstract Task SetAuthorizationAsync(AuthorizationReason reason, HttpRequestMessage request, CancellationToken cancellationToken);
+        protected abstract Task SetAuthorizationAsync(SetReason reason, HttpRequestMessage request, CancellationToken cancellationToken);
 
         /// <summary>
         /// 返回响应是否为未授权状态
-        /// 反回true则强制清除token以支持下次获取到新的token
+        /// 反回true则触发重试请求
         /// </summary>
-        /// <param name="response"></param> 
+        /// <param name="response">响应消息</param> 
         protected virtual Task<bool> IsUnauthorizedAsync(HttpResponseMessage? response)
         {
             var state = response != null && response.StatusCode == HttpStatusCode.Unauthorized;

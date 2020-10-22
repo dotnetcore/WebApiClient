@@ -3,16 +3,16 @@
     /// <summary>
     /// 设置授权原因
     /// </summary>
-    public enum AuthorizationReason
+    public enum SetReason
     {
         /// <summary>
-        /// 用于发送
+        /// 用于发送请求
         /// </summary>
-        SetForSend,
+        ForSend,
 
         /// <summary>
-        /// 用于重试发送
+        /// 用于重试发送请求
         /// </summary>
-        SetForResend
+        ForResend
     }
 }

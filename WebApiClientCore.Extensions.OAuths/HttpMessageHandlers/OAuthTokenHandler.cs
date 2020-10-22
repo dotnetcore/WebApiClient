@@ -32,9 +32,9 @@ namespace WebApiClientCore.Extensions.OAuths.HttpMessageHandlers
         /// <param name="request">请求</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns></returns>
-        protected sealed override async Task SetAuthorizationAsync(AuthorizationReason reason, HttpRequestMessage request, CancellationToken cancellationToken)
+        protected sealed override async Task SetAuthorizationAsync(SetReason reason, HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            if (reason == AuthorizationReason.SetForResend)
+            if (reason == SetReason.ForResend)
             {
                 this.tokenProvider.ClearToken();
             }
