@@ -139,15 +139,14 @@ public class User
 内置特性指框架内提供的一些特性，拿来即用就能满足一般情况下的各种应用。当然，开发者也可以在实际应用中，编写满足特定场景需求的特性，然后将自定义特性修饰到接口、方法或参数即可。
 
 #### Return特性
-
 特性名称 | 功能描述 | 备注
 ---|---|---|
 RawReturnAttribute | 处理原始类型返回值 | 缺省也生效
 JsonReturnAttribute | 处理Json模型返回值 | 缺省也生效
 XmlReturnAttribute | 处理Xml模型返回值 | 缺省也生效
+NoneReturnAttribute | 处理空返回值 | 缺省也生效
 
 #### 常用Action特性
-
 特性名称 | 功能描述 | 备注
 ---|---|---|
 HttpHostAttribute | 请求服务http绝对完整主机域名| 优先级比Options配置低
@@ -161,7 +160,6 @@ HttpDeleteAttribute | 声明Delete请求方法与路径| 支持null、绝对或�
 *FormDataTextAttribute* | 声明FormData表单字段与值 | 常量键和值
 
 #### 常用Parameter特性
-
 特性名称 | 功能描述 | 备注
 ---|---|---|
 PathQueryAttribute | 参数值的键值对作为url路径参数或query参数的特性 | 缺省特性的参数默认为该特性
@@ -177,14 +175,12 @@ ParameterAttribute | 聚合性的请求参数声明 | 不支持细颗粒配置
 *FormDataTextAttribute* | 参数值作为FormData表单字段与值 | 只支持简单类型参数
 
 #### Filter特性
-
 特性名称 | 功能描述| 备注
 ---|---|---|
 ApiFilterAttribute | Filter特性抽象类 | 
 LoggingFilterAttribute | 请求和响应内容的输出为日志的过滤器 |
 
 #### 自解释参数类型
-
 类型名称 | 功能描述 | 备注
 ---|---|---|
 FormDataFile | form-data的一个文件项 | 无需特性修饰，等效于FileInfo类型
@@ -923,6 +919,57 @@ services
         return handler;
     });
 ```
+
+#### Cookie过期自动刷新
+对于使用Cookie机制的接口，只有在接口请求之后，才知道Cookie是否已失效。通过自定义CookieAuthorizationHandler，可以做在请求某个接口过程中，遇到Cookie失效时自动刷新Cookie再重试请求接口。
+
+首先，我们需要把登录接口与某它业务接口拆分在不同的接口定义，例如IUserApi和IUserLoginApi
+```
+[HttpHost("http://localhost:5000/")]
+public interface IUserLoginApi
+{
+    [HttpPost("/users")]
+    Task<HttpResponseMessage> LoginAsync([JsonContent] Account account);
+}
+```
+
+然后实现自动登录的CookieAuthorizationHandler
+```
+public class AutoRefreshCookieHandler : CookieAuthorizationHandler
+{
+    private readonly IUserLoginApi api;
+
+    public AutoRefreshCookieHandler(IUserLoginApi api)
+    {
+        this.api = api;
+    }
+
+    /// <summary>
+    /// 登录并刷新Cookie
+    /// </summary>
+    /// <returns>返回登录响应消息</returns>
+    protected override Task<HttpResponseMessage> RefreshCookieAsync()
+    {
+        return this.api.LoginAsync(new Account
+        {
+            account = "admin",
+            password = "123456"
+        });
+    }
+}
+```
+
+最后，注册IUserApi、IUserLoginApi，并为IUserApi配置AutoRefreshCookieHandler
+```
+services
+    .AddHttpApi<IUserLoginApi>();
+
+services
+    .AddHttpApi<IUserApi>()
+    .AddHttpMessageHandler(s => new AutoRefreshCookieHandler(s.GetService<IUserLoginApi>()));
+```
+
+现在，调用IUserApi的任意接口，只要响应的状态码为401，就触发IUserLoginApi登录，然后将登录得到的cookie来重试请求接口，最终响应为正确的结果。你也可以重写CookieAuthorizationHandler的IsUnauthorizedAsync(HttpResponseMessage)方法来指示响应是未授权状态。
 
 ### OAuths&Token
 使用WebApiClientCore.Extensions.OAuths扩展，轻松支持token的获取、刷新与应用。
