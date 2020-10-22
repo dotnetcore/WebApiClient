@@ -9,7 +9,7 @@ namespace WebApiClientCore.Attributes
     /// 例如http://www.abc.com/或http://www.abc.com/path/
     /// </summary>
     [DebuggerDisplay("Host = {Host}")]
-    public class HttpHostAttribute : ApiActionAttribute
+    public class HttpHostAttribute : HttpHostBaseAttribute
     {
         /// <summary>
         /// 获取完整主机域名
@@ -25,7 +25,6 @@ namespace WebApiClientCore.Attributes
         public HttpHostAttribute(string host)
         {
             this.Host = new Uri(host, UriKind.Absolute);
-            this.OrderIndex = int.MinValue;
         }
 
         /// <summary>
