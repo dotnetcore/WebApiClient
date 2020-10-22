@@ -192,6 +192,12 @@
   <data name="unsupported_HttpContent" xml:space="preserve">
     <value>{0}方法不支持使用{1}</value>
   </data>
+  <data name="unsupported_HttpMessageHandler" xml:space="preserve">
+    <value>HttpMessageHandler必须是DelegatingHandler或者HttpClientHandler</value>
+  </data>
+  <data name="unsupported_NoUseCookies" xml:space="preserve">
+    <value>HttpClientHandler必须开启UseCookies</value>
+  </data>
   <data name="unsupported_Property" xml:space="preserve">
     <value>不支持属性访问器: {0}</value>
   </data>

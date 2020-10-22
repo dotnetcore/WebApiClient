@@ -47,8 +47,8 @@ namespace WebApiClientCore {
         }
         
         /// <summary>
-        ///   重写当前线程的 CurrentUICulture 属性
-        ///   重写当前线程的 CurrentUICulture 属性。
+        ///   重写当前线程的 CurrentUICulture 属性，对
+        ///   使用此强类型资源类的所有资源查找执行重写。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
         internal static global::System.Globalization.CultureInfo Culture {
@@ -282,6 +282,24 @@ namespace WebApiClientCore {
         internal static string unsupported_HttpContent {
             get {
                 return ResourceManager.GetString("unsupported_HttpContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 HttpMessageHandler必须是DelegatingHandler或者HttpClientHandler 的本地化字符串。
+        /// </summary>
+        internal static string unsupported_HttpMessageHandler {
+            get {
+                return ResourceManager.GetString("unsupported_HttpMessageHandler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 HttpClientHandler必须开启UseCookies 的本地化字符串。
+        /// </summary>
+        internal static string unsupported_NoUseCookies {
+            get {
+                return ResourceManager.GetString("unsupported_NoUseCookies", resourceCulture);
             }
         }
         

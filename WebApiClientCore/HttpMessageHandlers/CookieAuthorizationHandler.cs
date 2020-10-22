@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,15 +21,47 @@ namespace WebApiClientCore.HttpMessageHandlers
         {
             if (reason == SetReason.ForResend)
             {
-                await this.RefreshCookieAsync().ConfigureAwait(false);
+                var handler = this.GetHttpClientHandler(this.InnerHandler);
+                if (handler.UseCookies == false)
+                {
+                    throw new NotSupportedException(Resx.unsupported_NoUseCookies);
+                }
+
+                var response = await this.RefreshCookieAsync().ConfigureAwait(false);
+                if (response.Headers.TryGetValues("Set-Cookie", out var cookies) == true)
+                {
+                    foreach (var cookie in cookies)
+                    {
+                        handler.CookieContainer.SetCookies(request.RequestUri, cookie);
+                    }
+                }
             }
         }
 
         /// <summary>
-        /// 刷新CookieContainer的cookie
-        /// 一般情况下，登录操作就得到最新的cookie，且自动覆盖到CookieContainer
+        /// 获取内部的HttpClientHandler
         /// </summary>
+        /// <param name="handler"></param>
         /// <returns></returns>
-        protected abstract Task RefreshCookieAsync();
+        private HttpClientHandler GetHttpClientHandler(HttpMessageHandler handler)
+        {
+            if (handler is DelegatingHandler delegatingHandler)
+            {
+                return this.GetHttpClientHandler(delegatingHandler.InnerHandler);
+            }
+
+            if (handler is HttpClientHandler clientHandler)
+            {
+                return clientHandler;
+            }
+
+            throw new NotSupportedException(Resx.unsupported_HttpMessageHandler);
+        }
+
+        /// <summary>
+        /// 登录并刷新Cookie
+        /// </summary>
+        /// <returns>返回登录响应消息</returns>
+        protected abstract Task<HttpResponseMessage> RefreshCookieAsync();
     }
 }
