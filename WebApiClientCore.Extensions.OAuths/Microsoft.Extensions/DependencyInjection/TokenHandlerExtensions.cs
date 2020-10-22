@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection.Extensions;
-using System;
+﻿using System;
 using WebApiClientCore.Extensions.OAuths;
 using WebApiClientCore.Extensions.OAuths.HttpMessageHandlers;
 
@@ -38,14 +37,12 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new InvalidOperationException($"无效的{nameof(IHttpClientBuilder)}，找不到其关联的http接口类型");
             }
 
-            builder.Services.TryAddTransient(serviceProvider =>
+            return builder.AddHttpMessageHandler(serviceProvider =>
             {
                 var factory = serviceProvider.GetRequiredService<ITokenProviderFactory>();
                 var tokenProvider = factory.Create(httpApiType, tokenProviderSearchMode);
                 return handlerFactory(serviceProvider, tokenProvider);
             });
-
-            return builder.AddHttpMessageHandler<TOAuthTokenHandler>();
         }
     }
 }
