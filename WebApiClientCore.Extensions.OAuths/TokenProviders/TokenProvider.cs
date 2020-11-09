@@ -9,7 +9,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
     /// <summary>
     /// 表示Token提供者抽象类
     /// </summary>
-    public abstract class TokenProvider : Disposable, ITokenProvider
+    public abstract class TokenProvider : ITokenProvider
     {
         /// <summary>
         /// 最近请求到的token
@@ -56,7 +56,6 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// </summary>
         public void ClearToken()
         {
-            this.CheckDisposed();
             using (this.asyncRoot.Lock())
             {
                 this.token = null;
@@ -69,7 +68,6 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <returns></returns>
         public async Task<TokenResult> GetTokenAsync()
         {
-            this.CheckDisposed();
             using (await this.asyncRoot.LockAsync().ConfigureAwait(false))
             {
                 if (this.token == null)
@@ -111,32 +109,12 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         protected abstract Task<TokenResult?> RefreshTokenAsync(IServiceProvider serviceProvider, string refresh_token);
 
         /// <summary>
-        /// 释放资源
-        /// </summary>
-        /// <param name="disposing"></param>
-        protected override void Dispose(bool disposing)
-        {
-            this.asyncRoot.Dispose();
-        }
-
-        /// <summary>
         /// 转换为string
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
             return this.Name;
-        }
-
-        /// <summary>
-        /// 检查释放
-        /// </summary>
-        private void CheckDisposed()
-        {
-            if (this.IsDisposed == true)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
         }
     }
 }
