@@ -56,6 +56,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// </summary>
         public void ClearToken()
         {
+            this.CheckDisposed();
             using (this.asyncRoot.Lock())
             {
                 this.token = null;
@@ -68,6 +69,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <returns></returns>
         public async Task<TokenResult> GetTokenAsync()
         {
+            this.CheckDisposed();
             using (await this.asyncRoot.LockAsync().ConfigureAwait(false))
             {
                 if (this.token == null)
@@ -124,6 +126,17 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         public override string ToString()
         {
             return this.Name;
+        }
+
+        /// <summary>
+        /// 检查释放
+        /// </summary>
+        private void CheckDisposed()
+        {
+            if (this.IsDisposed == true)
+            {
+                throw new ObjectDisposedException(this.GetType().Name);
+            }
         }
     }
 }
