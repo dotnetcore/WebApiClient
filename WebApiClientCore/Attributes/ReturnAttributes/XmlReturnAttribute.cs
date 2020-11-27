@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClientCore.HttpContents;
 
@@ -12,7 +13,7 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// text/xml
         /// </summary>
-        private static readonly MediaTypeHeaderValue textXml = new MediaTypeHeaderValue("text/xml");
+        private static readonly string textXml = "text/xml";
 
         /// <summary>
         /// xml内容的结果特性
@@ -39,7 +40,8 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected override bool IsMatchAcceptContentType(MediaTypeHeaderValue? responseContentType)
         {
-            return base.IsMatchAcceptContentType(responseContentType) || base.IsMatchAcceptContentType(textXml);
+            return base.IsMatchAcceptContentType(responseContentType) || 
+                string.Equals(textXml, responseContentType?.MediaType, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>

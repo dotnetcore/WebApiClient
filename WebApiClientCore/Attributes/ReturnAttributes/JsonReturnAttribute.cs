@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClientCore.HttpContents;
 
@@ -12,7 +13,7 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// text/json
         /// </summary>
-        private static readonly MediaTypeHeaderValue textJson = new MediaTypeHeaderValue("text/json");
+        private static readonly string  textJson ="text/json";
 
         /// <summary>
         /// json内容的结果特性
@@ -39,7 +40,8 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected override bool IsMatchAcceptContentType(MediaTypeHeaderValue? responseContentType)
         {
-            return base.IsMatchAcceptContentType(responseContentType) || base.IsMatchAcceptContentType(textJson);
+            return base.IsMatchAcceptContentType(responseContentType) ||
+                 string.Equals(textJson, responseContentType?.MediaType, StringComparison.OrdinalIgnoreCase); 
         }
 
         /// <summary>
