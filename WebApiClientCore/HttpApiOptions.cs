@@ -97,7 +97,6 @@ namespace WebApiClientCore
             var options = CreateJsonSerializeOptions();
             options.Converters.Add(JsonCompatibleConverter.EnumReader);
             options.Converters.Add(JsonCompatibleConverter.DateTimeReader);
-            options.Converters.Add(JsonCompatibleConverter.DateTimeOffsetReader);
             return options;
         }
     }

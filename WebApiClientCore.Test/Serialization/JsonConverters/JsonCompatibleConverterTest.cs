@@ -40,7 +40,7 @@ namespace WebApiClientCore.Test.Serialization.JsonConverters
         public void DateTimeOffsetReaderTest()
         {
             var options = new JsonSerializerOptions();
-            options.Converters.Add(JsonCompatibleConverter.DateTimeOffsetReader);
+            options.Converters.Add(JsonCompatibleConverter.DateTimeReader);
 
             var json = "\"2010-10-10 10:10\"";
             var dateTime = JsonSerializer.Deserialize<DateTimeOffset>(json, options);
