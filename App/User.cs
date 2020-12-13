@@ -20,7 +20,7 @@ namespace App
 
         public string NickName { get; set; }
 
-        [JsonDateTime("yyyy-MM-dd")]
+        [JsonDateTime("yyyy年MM月dd日")]
         public DateTime? BirthDay { get; set; }
 
         public Gender Gender { get; set; }

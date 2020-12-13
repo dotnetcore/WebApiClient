@@ -10,17 +10,7 @@ namespace WebApiClientCore.Serialization.JsonConverters
     /// 支持DateTime和DateTimeOffset
     /// </summary>
     public class JsonDateTimeConverter : JsonConverterFactory
-    {
-        /// <summary>
-        /// 获取ISO8601格式的实例
-        /// </summary>
-        public static JsonDateTimeConverter Default { get; } = new JsonDateTimeConverter("O");
-
-        /// <summary>
-        /// 获取本设备的时间格式的实例
-        /// </summary>
-        public static JsonDateTimeConverter LocalMachine { get; } = new JsonDateTimeConverter($"{DateTimeFormatInfo.CurrentInfo.ShortDatePattern} {DateTimeFormatInfo.CurrentInfo.LongTimePattern}");
-
+    {        
         /// <summary>
         /// 获取日期时间格式
         /// </summary>
@@ -44,7 +34,7 @@ namespace WebApiClientCore.Serialization.JsonConverters
         public override bool CanConvert(Type typeToConvert)
         {
             // .net5以前，JsonConverterAttribute不支持处理有值的可空类型属性
-            // 所以需要编写日期时间的可空类型
+            // 所以需要编写可空类型日期时间的转换器
             return typeToConvert == typeof(DateTime) ||
                 typeToConvert == typeof(DateTime?) ||
                 typeToConvert == typeof(DateTimeOffset) ||
