@@ -79,6 +79,15 @@ namespace WebApiClientCore {
         }
         
         /// <summary>
+        ///   查找类似 使用了{0}请求方法，但仍然设置了请求体内容，远程接口可能无法兼容 的本地化字符串。
+        /// </summary>
+        internal static string gethead_Content_Warning {
+            get {
+                return ResourceManager.GetString("gethead_Content_Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 数据内容已经被缓存和固化 的本地化字符串。
         /// </summary>
         internal static string httpContent_isBuffered {
@@ -318,15 +327,6 @@ namespace WebApiClientCore {
         internal static string unsupported_SerializeApiParametern {
             get {
                 return ResourceManager.GetString("unsupported_SerializeApiParametern", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 由于使用了{0}的请求方法，不支持设置RequestMessage.Content 的本地化字符串。
-        /// </summary>
-        internal static string unsupported_SetContent {
-            get {
-                return ResourceManager.GetString("unsupported_SetContent", resourceCulture);
             }
         }
     }

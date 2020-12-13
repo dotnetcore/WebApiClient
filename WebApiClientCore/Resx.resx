@@ -123,6 +123,9 @@
   <data name="failure_StatusCode" xml:space="preserve">
     <value>服务器响应了错误的http状态码：{0} {1}</value>
   </data>
+  <data name="gethead_Content_Warning" xml:space="preserve">
+    <value>使用了{0}请求方法，但仍然设置了请求体内容，远程接口可能无法兼容</value>
+  </data>
   <data name="httpContent_isBuffered" xml:space="preserve">
     <value>数据内容已经被缓存和固化</value>
   </data>
@@ -203,8 +206,5 @@
   </data>
   <data name="unsupported_SerializeApiParametern" xml:space="preserve">
     <value>不支持序列化类型{0}，该类型只能做为方法的参数值</value>
-  </data>
-  <data name="unsupported_SetContent" xml:space="preserve">
-    <value>由于使用了{0}的请求方法，不支持设置RequestMessage.Content</value>
   </data>
 </root>
