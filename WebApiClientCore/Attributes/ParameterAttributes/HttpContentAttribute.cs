@@ -10,6 +10,11 @@ namespace WebApiClientCore.Attributes
     public abstract class HttpContentAttribute : ApiParameterAttribute
     {
         /// <summary>
+        /// 获取或设置是否允许Get或Head请求
+        /// </summary>
+        public bool AllowGetOrHead { get; set; }
+
+        /// <summary>
         /// http请求之前
         /// </summary>
         /// <param name="context">上下文</param> 
@@ -17,12 +22,16 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public sealed override async Task OnRequestAsync(ApiParameterContext context)
         {
-            var method = context.HttpContext.RequestMessage.Method;
-            if (method == HttpMethod.Get || method == HttpMethod.Head)
+            if (this.AllowGetOrHead == false)
             {
-                var message = Resx.unsupported_SetContent.Format(method);
-                throw new ApiInvalidConfigException(message);
+                var method = context.HttpContext.RequestMessage.Method;
+                if (method == HttpMethod.Get || method == HttpMethod.Head)
+                {
+                    var message = Resx.unsupported_SetContent.Format(method);
+                    throw new ApiInvalidConfigException(message);
+                }
             }
+
             await this.SetHttpContentAsync(context).ConfigureAwait(false);
         }
 

@@ -10,6 +10,14 @@ namespace WebApiClientCore.Attributes
     class HttpContentTypeAttribute : HttpContentAttribute
     {
         /// <summary>
+        /// 参数内容为HttpContent类型的处理特性
+        /// </summary>
+        public HttpContentTypeAttribute()
+        {
+            this.AllowGetOrHead = true;
+        }
+
+        /// <summary>
         /// 设置参数到http请求内容
         /// </summary>
         /// <param name="context">上下文</param>

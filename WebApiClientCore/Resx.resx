@@ -189,9 +189,6 @@
   <data name="unsupported_GenericTypeDefinitionType" xml:space="preserve">
     <value>不支持注册泛型定义类型{0}</value>
   </data>
-  <data name="unsupported_HttpContent" xml:space="preserve">
-    <value>{0}方法不支持使用{1}</value>
-  </data>
   <data name="unsupported_HttpMessageHandler" xml:space="preserve">
     <value>HttpMessageHandler必须是DelegatingHandler或者HttpClientHandler</value>
   </data>
