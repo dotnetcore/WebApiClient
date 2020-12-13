@@ -38,7 +38,14 @@ namespace WebApiClientCore.Serialization
             }
 
             var objType = obj.GetType();
-            if (objType == typeof(string))
+            var typeCode = Type.GetTypeCode(objType);
+
+            // 时间类型要经进json序列化，因为很有可能有转换器
+            if (typeCode == TypeCode.String ||
+                typeCode == TypeCode.Int32 ||
+                typeCode == TypeCode.Decimal ||
+                typeCode == TypeCode.Double ||
+                typeCode == TypeCode.Single)
             {
                 var keyValue = new KeyValue(key, obj.ToString());
                 return new List<KeyValue>(1) { keyValue };
@@ -46,8 +53,10 @@ namespace WebApiClientCore.Serialization
 
             if (obj is IEnumerable<KeyValuePair<string, string>> keyValues)
             {
+                // 排队字典类型，字典类型要经过json序列化
                 if (objType.IsInheritFrom<IDictionary>() == false)
                 {
+                    // key的值不经过PropertyNamingPolicy转换，保持原始值
                     return keyValues.Select(item => (KeyValue)item).ToList();
                 }
             }
