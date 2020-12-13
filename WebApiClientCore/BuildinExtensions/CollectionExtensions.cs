@@ -15,8 +15,13 @@ namespace WebApiClientCore
         /// <param name="collection">集合</param>
         /// <param name="format">格式</param>
         /// <returns></returns>
-        public static IEnumerable<KeyValue> CollectAs(this IEnumerable<KeyValue> collection, CollectionFormat format)
+        public static IEnumerable<KeyValue> CollectAs(this IList<KeyValue> collection, CollectionFormat format)
         {
+            if (collection.Count < 2)
+            {
+                return collection;
+            }
+
             return format switch
             {
                 CollectionFormat.Multi => collection,
@@ -34,7 +39,7 @@ namespace WebApiClientCore
         /// <param name="collection">集合</param>
         /// <param name="separator">分隔符</param>
         /// <returns></returns>
-        private static IEnumerable<KeyValue> CollectAs(this IEnumerable<KeyValue> collection, string separator)
+        private static IEnumerable<KeyValue> CollectAs(this IList<KeyValue> collection, string separator)
         {
             return collection.GroupBy(item => item.Key).Select(item =>
             {
