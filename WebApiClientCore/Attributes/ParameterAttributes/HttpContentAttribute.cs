@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using Microsoft.Extensions.Logging;
+using System.Net.Http;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
 
@@ -10,11 +11,6 @@ namespace WebApiClientCore.Attributes
     public abstract class HttpContentAttribute : ApiParameterAttribute
     {
         /// <summary>
-        /// 获取或设置是否允许Get或Head请求
-        /// </summary>
-        public bool AllowGetOrHead { get; set; }
-
-        /// <summary>
         /// http请求之前
         /// </summary>
         /// <param name="context">上下文</param> 
@@ -22,13 +18,16 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public sealed override async Task OnRequestAsync(ApiParameterContext context)
         {
-            if (this.AllowGetOrHead == false)
+            var method = context.HttpContext.RequestMessage.Method;
+            if (method == HttpMethod.Get || method == HttpMethod.Head)
             {
-                var method = context.HttpContext.RequestMessage.Method;
-                if (method == HttpMethod.Get || method == HttpMethod.Head)
+                var loggerFactory = context.HttpContext.ServiceProvider.GetService<ILoggerFactory>();
+                if (loggerFactory != null)
                 {
-                    var message = Resx.unsupported_SetContent.Format(method);
-                    throw new ApiInvalidConfigException(message);
+                    var action = context.ApiAction.Member;
+                    var categoryName = $"{action.DeclaringType?.Namespace}.{action.DeclaringType?.Name}.{action.Name}";
+                    var logger = loggerFactory.CreateLogger(categoryName);
+                    logger.LogWarning(Resx.gethead_Content_Warning.Format(method));
                 }
             }
 
