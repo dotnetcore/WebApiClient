@@ -34,7 +34,9 @@ namespace WebApiClientCore.Test
         public async Task AddFormFiledAsyncTest()
         {
             var reqeust = new HttpApiRequestMessage();
-            await Assert.ThrowsAsync<NotSupportedException>(() => reqeust.AddFormFieldAsync("name", "value"));
+
+            // 已经移除Get或Head限制
+            // await Assert.ThrowsAsync<NotSupportedException>(() => reqeust.AddFormFieldAsync("name", "value"));
 
             reqeust.Method = System.Net.Http.HttpMethod.Post;
             reqeust.RequestUri = new Uri("http://webapiclient.com");
