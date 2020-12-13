@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace WebApiClientCore
@@ -33,6 +34,15 @@ namespace WebApiClientCore
             }
             this.Key = key;
             this.Value = value;
+        }
+
+        /// <summary>
+        /// 从 KeyValuePair 显式转换
+        /// </summary>
+        /// <param name="keyValue"></param>
+        public static explicit operator KeyValue(KeyValuePair<string, string> keyValue)
+        {
+            return new KeyValue(keyValue.Key, keyValue.Value);
         }
     }
 }

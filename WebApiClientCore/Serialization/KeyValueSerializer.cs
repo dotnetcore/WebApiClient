@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 
@@ -41,7 +44,28 @@ namespace WebApiClientCore.Serialization
                 return new List<KeyValue>(1) { keyValue };
             }
 
-            var jsonOptions = kvOptions.GetJsonSerializerOptions();
+            if (obj is IEnumerable<KeyValuePair<string, string>> keyValues)
+            {
+                if (objType.IsInheritFrom<IDictionary>() == false)
+                {
+                    return keyValues.Select(item => (KeyValue)item).ToList();
+                }
+            }
+
+            return this.GetKeyValueList(key, obj, objType, kvOptions);
+        }
+
+        /// <summary>
+        /// 获取键值对
+        /// </summary>
+        /// <param name="key">对象名称</param>
+        /// <param name="obj">对象实例</param>
+        /// <param name="objType">对象类型</param>
+        /// <param name="options">选项</param>
+        /// <returns></returns>
+        private IList<KeyValue> GetKeyValueList(string key, object obj, Type objType, KeyValueSerializerOptions options)
+        {
+            var jsonOptions = options.GetJsonSerializerOptions();
             using var bufferWriter = new BufferWriter<byte>();
             using var utf8JsonWriter = new Utf8JsonWriter(bufferWriter, new JsonWriterOptions
             {
@@ -58,7 +82,7 @@ namespace WebApiClientCore.Serialization
                 AllowTrailingCommas = jsonOptions.AllowTrailingCommas,
             });
 
-            return this.GetKeyValueList(key, ref utf8JsonReader, kvOptions);
+            return this.GetKeyValueList(key, ref utf8JsonReader, options);
         }
 
         /// <summary>
