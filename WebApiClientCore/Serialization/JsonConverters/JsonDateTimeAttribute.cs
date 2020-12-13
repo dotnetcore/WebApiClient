@@ -31,7 +31,12 @@ namespace WebApiClientCore.Serialization.JsonConverters
         /// <returns></returns>
         public override JsonConverter CreateConverter(Type typeToConvert)
         {
-            return new JsonDateTimeConverter(this.dateTimeFormat);
+            var converter = new JsonDateTimeConverter(this.dateTimeFormat);
+            if (converter.CanConvert(typeToConvert) == false)
+            {
+                throw new NotSupportedException($"JsonDateTimeAttribute不支持转换{typeToConvert}");
+            }
+            return converter;
         }
     }
 }

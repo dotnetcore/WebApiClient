@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using WebApiClientCore.Serialization.JsonConverters;
 
 namespace App
 {
@@ -19,6 +20,7 @@ namespace App
 
         public string NickName { get; set; }
 
+        [JsonDateTime("yyyy年MM月dd日")]
         public DateTime? BirthDay { get; set; }
 
         public Gender Gender { get; set; }
