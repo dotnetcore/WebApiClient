@@ -107,7 +107,6 @@ namespace WebApiClientCore
         /// <returns></returns>
         public async Task AddFormFieldAsync(IEnumerable<KeyValue> keyValues)
         {
-            this.EnsureNotGetOrHead();
             this.EnsureMediaTypeEqual(FormContent.MediaType);
 
             var formContent = await FormContent.ParseAsync(this.Content).ConfigureAwait(false);
@@ -139,7 +138,6 @@ namespace WebApiClientCore
         /// <exception cref="ArgumentNullException"></exception>
         public void AddFormDataText(IEnumerable<KeyValue> keyValues)
         {
-            this.EnsureNotGetOrHead();
             this.EnsureMediaTypeEqual(FormDataContent.MediaType);
 
             if (!(this.Content is MultipartContent httpContent))
@@ -167,7 +165,6 @@ namespace WebApiClientCore
         /// <exception cref="NotSupportedException"></exception>
         public void AddFormDataFile(Stream stream, string name, string? fileName, string? contentType)
         {
-            this.EnsureNotGetOrHead();
             this.EnsureMediaTypeEqual(FormDataContent.MediaType);
 
             if (!(this.Content is MultipartContent httpContent))
@@ -178,21 +175,6 @@ namespace WebApiClientCore
             var fileContent = new FormDataFileContent(stream, name, fileName, contentType);
             httpContent.Add(fileContent);
             this.Content = httpContent;
-        }
-
-        /// <summary>
-        /// 确保不是Get或Head请求
-        /// 返回关联的HttpContent对象
-        /// </summary>
-        /// <exception cref="NotSupportedException"></exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void EnsureNotGetOrHead()
-        {
-            if (this.Method == HttpMethod.Get || this.Method == HttpMethod.Head)
-            {
-                var message = Resx.unsupported_HttpContent.Format(this.Method, this.GetType().Name);
-                throw new NotSupportedException(message);
-            }
         }
 
         /// <summary>

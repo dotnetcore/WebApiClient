@@ -277,15 +277,6 @@ namespace WebApiClientCore {
         }
         
         /// <summary>
-        ///   查找类似 {0}方法不支持使用{1} 的本地化字符串。
-        /// </summary>
-        internal static string unsupported_HttpContent {
-            get {
-                return ResourceManager.GetString("unsupported_HttpContent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   查找类似 HttpMessageHandler必须是DelegatingHandler或者HttpClientHandler 的本地化字符串。
         /// </summary>
         internal static string unsupported_HttpMessageHandler {
