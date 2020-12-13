@@ -21,7 +21,6 @@ namespace WebApiClientCore.Serialization.JsonConverters
         /// </summary>
         public static JsonDateTimeConverter LocalMachine { get; } = new JsonDateTimeConverter($"{DateTimeFormatInfo.CurrentInfo.ShortDatePattern} {DateTimeFormatInfo.CurrentInfo.LongTimePattern}");
 
-
         /// <summary>
         /// 获取日期时间格式
         /// </summary>
@@ -44,7 +43,12 @@ namespace WebApiClientCore.Serialization.JsonConverters
         /// <returns></returns>
         public override bool CanConvert(Type typeToConvert)
         {
-            return typeToConvert == typeof(DateTime) || typeToConvert == typeof(DateTimeOffset);
+            // .net5以前，JsonConverterAttribute不支持处理有值的可空类型属性
+            // 所以需要编写日期时间的可空类型
+            return typeToConvert == typeof(DateTime) ||
+                typeToConvert == typeof(DateTime?) ||
+                typeToConvert == typeof(DateTimeOffset) ||
+                typeToConvert == typeof(DateTimeOffset?);
         }
 
         /// <summary>
@@ -59,10 +63,18 @@ namespace WebApiClientCore.Serialization.JsonConverters
             {
                 return new DateTimeConverter(this.DateTimeFormat);
             }
-            else
+
+            if (typeToConvert == typeof(DateTime?))
+            {
+                return new NullableDateTimeConverter(this.DateTimeFormat);
+            }
+
+            if (typeToConvert == typeof(DateTimeOffset))
             {
                 return new DateTimeOffsetConverter(this.DateTimeFormat);
             }
+
+            return new NullableDateTimeOffsetConverter(this.DateTimeFormat);
         }
 
         /// <summary>
@@ -79,17 +91,54 @@ namespace WebApiClientCore.Serialization.JsonConverters
 
             public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
-                if (reader.TokenType == JsonTokenType.String)
+                if (reader.TryGetDateTime(out var value))
                 {
-                    return DateTime.Parse(reader.GetString());
+                    return value;
                 }
-                return reader.GetDateTime();
+                return DateTime.Parse(reader.GetString());
             }
 
             public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
             {
                 var dateTimeString = value.ToString(this.format, CultureInfo.InvariantCulture);
                 writer.WriteStringValue(dateTimeString);
+            }
+        }
+
+
+        /// <summary>
+        /// DateTime?转换器
+        /// </summary>
+        private class NullableDateTimeConverter : JsonConverter<DateTime?>
+        {
+            private readonly string format;
+
+            public NullableDateTimeConverter(string format)
+            {
+                this.format = format;
+            }
+
+            public override DateTime? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TryGetDateTime(out var value))
+                {
+                    return value;
+                }
+
+                return DateTime.Parse(reader.GetString());
+            }
+
+            public override void Write(Utf8JsonWriter writer, DateTime? value, JsonSerializerOptions options)
+            {
+                if (value == null)
+                {
+                    writer.WriteNullValue();
+                }
+                else
+                {
+                    var dateTimeString = value.Value.ToString(this.format, CultureInfo.InvariantCulture);
+                    writer.WriteStringValue(dateTimeString);
+                }
             }
         }
 
@@ -107,17 +156,53 @@ namespace WebApiClientCore.Serialization.JsonConverters
 
             public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
-                if (reader.TokenType == JsonTokenType.String)
+                if (reader.TryGetDateTimeOffset(out var value))
                 {
-                    return DateTimeOffset.Parse(reader.GetString());
+                    return value;
                 }
-                return reader.GetDateTimeOffset();
+                return DateTimeOffset.Parse(reader.GetString());
             }
 
             public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options)
             {
                 var dateTimeString = value.ToString(this.format, CultureInfo.InvariantCulture);
                 writer.WriteStringValue(dateTimeString);
+            }
+        }
+
+
+        /// <summary>
+        /// DateTimeOffset?转换器
+        /// </summary>
+        private class NullableDateTimeOffsetConverter : JsonConverter<DateTimeOffset?>
+        {
+            private readonly string format;
+
+            public NullableDateTimeOffsetConverter(string format)
+            {
+                this.format = format;
+            }
+
+            public override DateTimeOffset? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TryGetDateTimeOffset(out var value))
+                {
+                    return value;
+                }
+                return DateTimeOffset.Parse(reader.GetString());
+            }
+
+            public override void Write(Utf8JsonWriter writer, DateTimeOffset? value, JsonSerializerOptions options)
+            {
+                if (value == null)
+                {
+                    writer.WriteNullValue();
+                }
+                else
+                {
+                    var dateTimeString = value.Value.ToString(this.format, CultureInfo.InvariantCulture);
+                    writer.WriteStringValue(dateTimeString);
+                }
             }
         }
     }
