@@ -20,7 +20,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected override Task SetHttpContentAsync(ApiParameterContext context)
         {
-            var keyValues = this.SerializeToKeyValues(context);
+            var keyValues = this.SerializeToKeyValues(context).CollectAs(this.CollectionFormat);
             context.HttpContext.RequestMessage.AddFormDataText(keyValues);
             return Task.CompletedTask;
         }
@@ -32,7 +32,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected virtual IEnumerable<KeyValue> SerializeToKeyValues(ApiParameterContext context)
         {
-            return context.SerializeToKeyValues().CollectAs(this.CollectionFormat);
+            return context.SerializeToKeyValues();
         }
     }
 }

@@ -30,7 +30,7 @@ namespace WebApiClientCore.Attributes
                 throw new ApiInvalidConfigException(Resx.required_HttpHost);
             }
 
-            var keyValues = this.SerializeToKeyValues(context);
+            var keyValues = this.SerializeToKeyValues(context).CollectAs(this.CollectionFormat);
             context.HttpContext.RequestMessage.RequestUri = this.CreateUri(uri, keyValues);
             return Task.CompletedTask;
         }
@@ -42,7 +42,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected virtual IEnumerable<KeyValue> SerializeToKeyValues(ApiParameterContext context)
         {
-            return context.SerializeToKeyValues().CollectAs(this.CollectionFormat);
+            return context.SerializeToKeyValues();
         }
 
         /// <summary>
