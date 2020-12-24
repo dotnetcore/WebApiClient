@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace WebApiClientCore.Attributes
@@ -6,6 +7,7 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 指示请求完成选项的特性
     /// </summary>
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class HttpCompletionOptionAttribute : ApiActionAttribute
     {
         /// <summary>

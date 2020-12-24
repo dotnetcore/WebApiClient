@@ -39,6 +39,7 @@ namespace App.Clients
         ITask<byte[]> GetAsByteArrayAsync([Required] string account, CancellationToken token = default);
 
         [HttpGet("api/users/{account}")]
+        [HttpCompletionOption(HttpCompletionOption.ResponseHeadersRead)]
         ITask<Stream> GetAsStreamAsync([Required] string account, CancellationToken token = default);
 
         [HttpGet("api/users/{account}")]
