@@ -15,6 +15,7 @@ namespace App.Clients
     [LoggingFilter]
     [OAuthToken]
     [HttpHost("http://localhost:6000/")]
+    [JsonNetReturn]
     public interface IUserApi : IHttpApi
     {
         [HttpGet("api/users/{account}")]
