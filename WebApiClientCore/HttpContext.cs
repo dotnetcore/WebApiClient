@@ -11,6 +11,11 @@ namespace WebApiClientCore
     public class HttpContext : HttpClientContext, IDisposable
     {
         /// <summary>
+        /// 获取或设置指示请求完成选项
+        /// </summary>
+        public HttpCompletionOption CompletionOption { get; set; }
+
+        /// <summary>
         /// 获取请求取消令牌集合
         /// </summary>
         public IList<CancellationToken> CancellationTokens { get; }
