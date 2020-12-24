@@ -85,7 +85,7 @@ namespace WebApiClientCore.Attributes
             {
                 logMessage.HasResponse = true;
                 logMessage.ResponseHeaders = response.GetHeadersString();
-                logMessage.ResponseContent = await this.ReadResponseContentAsync(response).ConfigureAwait(false);
+                logMessage.ResponseContent = await this.ReadResponseContentAsync(context).ConfigureAwait(false);
             }
 
             await this.WriteLogAsync(context, logMessage).ConfigureAwait(false);
@@ -111,11 +111,23 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 读取响应内容
         /// </summary>
-        /// <param name="response"></param>
+        /// <param name="context"></param>
         /// <returns></returns>
-        private async Task<string?> ReadResponseContentAsync(HttpResponseMessage response)
+        private async Task<string?> ReadResponseContentAsync(ApiResponseContext context)
         {
-            return response.Content == null ? null : await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var content = context.HttpContext.ResponseMessage?.Content;
+            if (content == null)
+            {
+                return null;
+            }
+
+            if (content.IsBuffered() == true ||
+                context.HttpContext.CompletionOption == HttpCompletionOption.ResponseContentRead)
+            {
+                return await content.ReadAsStringAsync().ConfigureAwait(false);
+            }
+
+            return "...";
         }
 
         /// <summary>

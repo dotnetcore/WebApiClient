@@ -15,6 +15,7 @@ namespace App.Clients
     [LoggingFilter]
     [OAuthToken]
     [HttpHost("http://localhost:6000/")]
+    [JsonNetReturn]
     public interface IUserApi : IHttpApi
     {
         [HttpGet("api/users/{account}")]
@@ -39,6 +40,7 @@ namespace App.Clients
         ITask<byte[]> GetAsByteArrayAsync([Required] string account, CancellationToken token = default);
 
         [HttpGet("api/users/{account}")]
+        [HttpCompletionOption(HttpCompletionOption.ResponseHeadersRead)]
         ITask<Stream> GetAsStreamAsync([Required] string account, CancellationToken token = default);
 
         [HttpGet("api/users/{account}")]
