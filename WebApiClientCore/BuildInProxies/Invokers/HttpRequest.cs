@@ -37,7 +37,8 @@ namespace WebApiClientCore
             {
                 var client = context.HttpContext.HttpClient;
                 var request = context.HttpContext.RequestMessage;
-                var completionOption = context.HttpContext.CompletionOption;
+                var completionOption = context.GetCompletionOption();
+
                 using var tokenLinker = new CancellationTokenLinker(context.HttpContext.CancellationTokens);
                 var response = await client.SendAsync(request, completionOption, tokenLinker.Token).ConfigureAwait(false);
 

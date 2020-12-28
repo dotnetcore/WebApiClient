@@ -1,4 +1,6 @@
-﻿namespace WebApiClientCore
+﻿using System.Net.Http;
+
+namespace WebApiClientCore
 {
     /// <summary>
     /// 表示Api请求的上下文
@@ -49,6 +51,23 @@
             this.ApiAction = apiAction;
             this.Arguments = arguments;
             this.Properties = properties;
+        }
+
+        /// <summary>
+        /// 返回请求使用的HttpCompletionOption
+        /// </summary> 
+        /// <returns></returns>
+        public HttpCompletionOption GetCompletionOption()
+        {
+            if (this.HttpContext.CompletionOption != null)
+            {
+                return this.HttpContext.CompletionOption.Value;
+            }
+
+            var dataType = this.ApiAction.Return.DataType;
+            return dataType.IsRawHttpResponseMessage || dataType.IsRawStream
+                ? HttpCompletionOption.ResponseHeadersRead
+                : HttpCompletionOption.ResponseContentRead;
         }
     }
 }

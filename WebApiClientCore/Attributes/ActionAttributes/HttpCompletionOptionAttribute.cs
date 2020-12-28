@@ -6,6 +6,7 @@ namespace WebApiClientCore.Attributes
 {
     /// <summary>
     /// 指示请求完成选项的特性
+    /// 缺省的情况下，当声明返回类型为Stream或HttpResponseMessage时使用ResponseHeadersRead
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class HttpCompletionOptionAttribute : ApiActionAttribute
