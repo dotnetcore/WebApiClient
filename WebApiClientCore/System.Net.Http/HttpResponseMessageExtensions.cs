@@ -115,7 +115,7 @@ namespace System.Net.Http
                 {
                     recvSize += length;
                     await destination.WriteAsync(buffer, 0, length, cancellationToken).ConfigureAwait(false);
-                    await destination.FlushAsync(cancellationToken);
+                    await destination.FlushAsync(cancellationToken).ConfigureAwait(false);
                 }
 
                 progressChanged.Invoke(new HttpProgress(fileSize, recvSize, isCompleted));

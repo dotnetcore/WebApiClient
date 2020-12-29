@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 
 namespace WebApiClientCore
@@ -64,6 +65,39 @@ namespace WebApiClientCore
         {
             return this.TryGetArgument(parameterName, StringComparer.Ordinal, out value);
         }
+
+        /// <summary>
+        /// 尝试根据参数名获取参数值
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="parameterName">参数名</param> 
+        /// <param name="value">值</param>
+        /// <returns></returns>
+        public bool TryGetArgument<TValue>(string parameterName, [MaybeNull] out TValue value)
+        {
+            return this.TryGetArgument(parameterName, StringComparer.Ordinal, out value);
+        }
+
+        /// <summary>
+        /// 尝试根据参数名获取参数值
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="parameterName">参数名</param>
+        /// <param name="comparer">比较器</param>
+        /// <param name="value">值</param>
+        /// <returns></returns>
+        public bool TryGetArgument<TValue>(string parameterName, StringComparer comparer, [MaybeNull] out TValue value)
+        {
+            if (this.TryGetArgument(parameterName, comparer, out var objValue) && objValue is TValue tValue)
+            {
+                value = tValue;
+                return true;
+            }
+
+            value = default;
+            return false;
+        }
+
 
         /// <summary>
         /// 尝试根据参数名获取参数值
