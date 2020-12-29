@@ -94,7 +94,7 @@ namespace WebApiClientCore.Parameters
         public Task OnRequestAsync(ApiParameterContext context)
         {
             var stream = this.streamFactory();
-            context.HttpContext.RequestMessage.AddFormDataFile(stream, context.Parameter.Name, this.EncodedFileName, this.ContentType);
+            context.HttpContext.RequestMessage.AddFormDataFile(stream, context.ParameterName, this.EncodedFileName, this.ContentType);
             return Task.CompletedTask;
         }
 

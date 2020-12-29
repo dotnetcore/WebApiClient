@@ -76,7 +76,7 @@ namespace WebApiClientCore
             {
                 foreach (var parameter in context.ApiAction.Parameters)
                 {
-                    var ctx = new ApiParameterContext(context, parameter.Index);
+                    var ctx = new ApiParameterContext(context, parameter);
                     foreach (var attr in parameter.Attributes)
                     {
                         await attr.OnRequestAsync(ctx).ConfigureAwait(false);

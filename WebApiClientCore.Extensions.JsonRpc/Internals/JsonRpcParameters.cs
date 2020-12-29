@@ -22,7 +22,7 @@ namespace WebApiClientCore.Extensions.JsonRpc
             }
             else
             {
-                return this.ToDictionary(item => item.Parameter.Name, item => item.ParameterValue);
+                return this.ToDictionary(item => item.ParameterName, item => item.ParameterValue);
             }
         } 
     }

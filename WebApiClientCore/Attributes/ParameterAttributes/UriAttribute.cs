@@ -21,7 +21,7 @@ namespace WebApiClientCore.Attributes
         {
             if (context.ParameterValue == null)
             {
-                throw new ArgumentNullException(context.Parameter.Name);
+                throw new ArgumentNullException(context.ParameterName);
             }
 
             if (context.Parameter.Index > 0)

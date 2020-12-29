@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 
 namespace WebApiClientCore
 {
@@ -51,6 +52,39 @@ namespace WebApiClientCore
             this.ApiAction = apiAction;
             this.Arguments = arguments;
             this.Properties = properties;
+        }
+
+        /// <summary>
+        /// 尝试根据参数名获取参数值
+        /// </summary>
+        /// <param name="parameterName">参数名</param> 
+        /// <param name="value">值</param>
+        /// <returns></returns>
+        public bool TryGetArgument(string parameterName, out object? value)
+        {
+            return this.TryGetArgument(parameterName, StringComparer.Ordinal, out value);
+        }
+
+        /// <summary>
+        /// 尝试根据参数名获取参数值
+        /// </summary>
+        /// <param name="parameterName">参数名</param>
+        /// <param name="comparer">比较器</param>
+        /// <param name="value">值</param>
+        /// <returns></returns>
+        public bool TryGetArgument(string parameterName, StringComparer comparer, out object? value)
+        {
+            for (var i = 0; i < this.ApiAction.Parameters.Count; i++)
+            {
+                if (comparer.Equals(parameterName, this.ApiAction.Parameters[i].Name))
+                {
+                    value = this.Arguments[i];
+                    return true;
+                }
+            }
+
+            value = null;
+            return false;
         }
 
         /// <summary>
