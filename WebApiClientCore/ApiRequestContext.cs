@@ -83,12 +83,12 @@ namespace WebApiClientCore
         /// </summary>
         /// <typeparam name="TValue"></typeparam>
         /// <param name="parameterName">参数名</param>
-        /// <param name="comparer">比较器</param>
+        /// <param name="nameComparer">比较器</param>
         /// <param name="value">值</param>
         /// <returns></returns>
-        public bool TryGetArgument<TValue>(string parameterName, StringComparer comparer, [MaybeNull] out TValue value)
+        public bool TryGetArgument<TValue>(string parameterName, StringComparer nameComparer, [MaybeNull] out TValue value)
         {
-            if (this.TryGetArgument(parameterName, comparer, out var objValue) && objValue is TValue tValue)
+            if (this.TryGetArgument(parameterName, nameComparer, out var objValue) && objValue is TValue tValue)
             {
                 value = tValue;
                 return true;
@@ -103,14 +103,14 @@ namespace WebApiClientCore
         /// 尝试根据参数名获取参数值
         /// </summary>
         /// <param name="parameterName">参数名</param>
-        /// <param name="comparer">比较器</param>
+        /// <param name="nameComparer">比较器</param>
         /// <param name="value">值</param>
         /// <returns></returns>
-        public bool TryGetArgument(string parameterName, StringComparer comparer, out object? value)
+        public bool TryGetArgument(string parameterName, StringComparer nameComparer, out object? value)
         {
             foreach (var parameter in this.ApiAction.Parameters)
             {
-                if (comparer.Equals(parameter.Name, parameterName))
+                if (nameComparer.Equals(parameter.Name, parameterName))
                 {
                     value = this.Arguments[parameter.Index];
                     return true;
