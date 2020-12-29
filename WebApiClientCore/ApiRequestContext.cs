@@ -74,11 +74,11 @@ namespace WebApiClientCore
         /// <returns></returns>
         public bool TryGetArgument(string parameterName, StringComparer comparer, out object? value)
         {
-            for (var i = 0; i < this.ApiAction.Parameters.Count; i++)
+            foreach (var parameter in this.ApiAction.Parameters)
             {
-                if (comparer.Equals(parameterName, this.ApiAction.Parameters[i].Name))
+                if (comparer.Equals(parameter.Name, parameterName))
                 {
-                    value = this.Arguments[i];
+                    value = this.Arguments[parameter.Index];
                     return true;
                 }
             }
