@@ -18,6 +18,12 @@ namespace WebApiClientCore.Test
             var state = datas.TryGetValue(typeof(DataCollectionTest), out var value);
             Assert.True(state && value is DataCollectionTest);
 
+            state = datas.TryGetValue<DataCollectionTest>(typeof(DataCollectionTest), out var tValue);
+            Assert.True(state && tValue != null);
+
+            state = datas.TryGetValue<DataCollectionTest>(typeof(string), out _);
+            Assert.False(state);
+
             datas.TryRemove("string", out _);
             Assert.True(datas.Get<string>("string") == default);
         }
