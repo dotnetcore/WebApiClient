@@ -54,26 +54,72 @@ namespace System.Net.Http
             await httpResponse.SaveAsAsync(fileStream, cancellationToken).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// 保存到目标流
+        /// </summary>
+        /// <param name="httpResponse"></param>
+        /// <param name="destination">目标流</param>
+        /// <param name="cancellationToken">取消令牌</param> 
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="OperationCanceledException"></exception>
+        /// <returns></returns>
+        public static async Task SaveAsAsync(this HttpResponseMessage httpResponse, Stream destination, CancellationToken cancellationToken = default)
+        {
+            if (destination == null)
+            {
+                throw new ArgumentNullException(nameof(destination));
+            }
+
+            var source = await httpResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            await source.CopyToAsync(destination, cancellationToken).ConfigureAwait(false);
+        }
 
         /// <summary>
         /// 保存到目标流
         /// </summary>
         /// <param name="httpResponse"></param>
-        /// <param name="stream">流</param>
+        /// <param name="destination">目标流</param>
+        /// <param name="progressChanged">进度变化</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="OperationCanceledException"></exception>
         /// <returns></returns>
-        public static async Task SaveAsAsync(this HttpResponseMessage httpResponse, Stream stream, CancellationToken cancellationToken = default)
+        public static async Task SaveAsAsync(this HttpResponseMessage httpResponse, Stream destination, Action<HttpProgress> progressChanged, CancellationToken cancellationToken = default)
         {
-            if (stream == null)
+            if (destination == null)
             {
-                throw new ArgumentNullException(nameof(stream));
+                throw new ArgumentNullException(nameof(destination));
             }
 
+            var recvSize = 0L;
+            var isCompleted = false;
+            var fileSize = httpResponse.Content.Headers.ContentLength;
+
+            var buffer = new byte[8 * 1024];
             var source = await httpResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
-            await source.CopyToAsync(stream, cancellationToken).ConfigureAwait(false);
+
+            while (isCompleted == false && cancellationToken.IsCancellationRequested == false)
+            {
+                var length = await source.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
+                if (length == 0)
+                {
+                    if (fileSize == null)
+                    {
+                        fileSize = recvSize;
+                    }
+                    isCompleted = true;
+                }
+                else
+                {
+                    recvSize += length;
+                    await destination.WriteAsync(buffer, 0, length, cancellationToken).ConfigureAwait(false);
+                    await destination.FlushAsync(cancellationToken);
+                }
+
+                progressChanged.Invoke(new HttpProgress(fileSize, recvSize, isCompleted));
+            }
         }
     }
 }
