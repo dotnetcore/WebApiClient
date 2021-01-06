@@ -311,6 +311,23 @@ public interface IUserApi
 `Task<byte[]>` | 原始响应二进制数据
 `Task<string>` | 原始响应消息文本
 
+### 文件下载
+```
+public interface IUserApi
+{
+    [HttpGet("/files/{fileName}"]
+    Task<HttpResponseMessage> DownloadAsync(string fileName);
+}
+```
+
+```
+using System.Net.Http
+
+var response = await userApi.DownloadAsync('123.zip');
+using var fileStream = File.OpenWrite("123.zip");
+await response.SaveAsAsync(fileStream);
+```
+
 ### 接口声明示例
 #### Petstore接口
 这个OpenApi文档在[petstore.swagger.io](https://petstore.swagger.io/)，代码为使用WebApiClientCore.OpenApi.SourceGenerator工具将其OpenApi文档反向生成得到
