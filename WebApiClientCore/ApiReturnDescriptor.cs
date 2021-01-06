@@ -79,15 +79,13 @@ namespace WebApiClientCore
         /// <returns></returns>
         private static IEnumerable<IApiReturnAttribute> GetDefaultAttributes(ApiDataTypeDescriptor dataType)
         {
-            const double acceptQuality = 0.01d;
+            const double acceptQuality = 0.001;
             if (dataType.IsRawType == true)
             {
                 yield return new RawReturnAttribute(acceptQuality);
-                yield return new JsonReturnAttribute(acceptQuality);
-                yield return new XmlReturnAttribute(acceptQuality);
             }
             else
-            {
+            { 
                 yield return new JsonReturnAttribute(acceptQuality);
                 yield return new XmlReturnAttribute(acceptQuality);
                 yield return new NoneReturnAttribute(acceptQuality);

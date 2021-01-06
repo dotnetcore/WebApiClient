@@ -21,7 +21,11 @@ namespace WebApiClientCore
         public bool Equals(TAttributeMultiplable x, TAttributeMultiplable y)
         {
             // 如果其中一个不允许重复，返回true将y过滤
-            return x.AllowMultiple == false || y.AllowMultiple == false;
+            if (x.GetType() == y.GetType())
+            {
+                return x.AllowMultiple == false || y.AllowMultiple == false;
+            }
+            return false;
         }
 
         /// <summary>

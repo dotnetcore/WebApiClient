@@ -15,7 +15,6 @@ namespace App.Clients
     [LoggingFilter]
     [OAuthToken]
     [HttpHost("http://localhost:6000/")]
-    [JsonNetReturn]
     public interface IUserApi : IHttpApi
     {
         [HttpGet("api/users/{account}")]
@@ -31,7 +30,7 @@ namespace App.Clients
 
 
         [HttpGet("api/users/{account}")]
-        [XmlReturn]
+        [XmlReturn] 
         ITask<string> GetExpectXmlAsync([Required] string account, CancellationToken token = default);
 
 

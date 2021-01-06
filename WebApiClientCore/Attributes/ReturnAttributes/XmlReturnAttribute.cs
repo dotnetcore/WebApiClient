@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClientCore.HttpContents;
 
@@ -40,8 +39,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected override bool IsMatchAcceptContentType(MediaTypeHeaderValue? responseContentType)
         {
-            return base.IsMatchAcceptContentType(responseContentType) || 
-                string.Equals(textXml, responseContentType?.MediaType, StringComparison.OrdinalIgnoreCase);
+            return base.IsMatchAcceptContentType(responseContentType) || MediaType.IsMatch(textXml, responseContentType?.MediaType);
         }
 
         /// <summary>

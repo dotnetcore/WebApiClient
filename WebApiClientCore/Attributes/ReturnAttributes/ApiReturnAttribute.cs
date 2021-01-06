@@ -105,7 +105,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected virtual bool IsMatchAcceptContentType(MediaTypeHeaderValue? responseContentType)
         {
-            return string.Equals(this.AcceptContentType.MediaType, responseContentType?.MediaType, StringComparison.OrdinalIgnoreCase);
+            return MediaType.IsMatch(this.AcceptContentType.MediaType, responseContentType?.MediaType);
         }
 
         /// <summary>
