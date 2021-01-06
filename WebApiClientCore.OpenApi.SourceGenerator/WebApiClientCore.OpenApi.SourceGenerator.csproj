@@ -10,7 +10,7 @@
     <Summary>将本地或远程OpenApi文档解析生成WebApiClientCore的接口定义代码文件的工具</Summary>
     <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
 
-    <Version>1.0.6</Version>
+    <Version>1.1.5</Version>
     <Authors>laojiu</Authors>
     <Company>laojiu</Company>
     <Copyright>Copyright © laojiu 2017-2020</Copyright>
