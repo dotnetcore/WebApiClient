@@ -71,7 +71,10 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public Task OnRequestAsync(ApiRequestContext context)
         {
-            context.HttpContext.RequestMessage.Headers.Accept.Add(this.AcceptContentType);
+            if (context.ApiAction.Return.DataType.IsRawType == false)
+            {
+                context.HttpContext.RequestMessage.Headers.Accept.Add(this.AcceptContentType);
+            }
             return Task.CompletedTask;
         }
 
