@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using WebApiClientCore.Exceptions;
 using Xunit;
 
@@ -9,6 +8,18 @@ namespace WebApiClientCore.Test
 {
     public class HttpApiRequestMessageTest
     {
+        [Fact]
+        public void ReplaceHttpHostTest()
+        {
+            var request = new HttpApiRequestMessage();
+            Assert.Throws<ApiInvalidConfigException>(() => request.ReplaceHttpHost(new Uri("/", UriKind.Relative)));
+
+            request.RequestUri = new Uri("http://webapiclient.com/a/b");
+            request.ReplaceHttpHost(new Uri("https://a.com"));
+
+            Assert.Equal(request.RequestUri, new Uri("https://a.com/a/b"));
+        }
+
         [Fact]
         public void AddUrlQueryTest()
         {
