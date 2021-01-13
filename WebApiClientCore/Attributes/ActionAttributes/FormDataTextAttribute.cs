@@ -7,8 +7,7 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示参数值作为multipart/form-data表单的一个文本项
     /// </summary>
-    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method | AttributeTargets.Parameter, AllowMultiple = true, Inherited = true)]
-    public class FormDataTextAttribute : ApiActionAttribute, IApiParameterAttribute
+    public partial class FormDataTextAttribute : ApiActionAttribute
     {
         /// <summary>
         /// 字段名称
@@ -19,14 +18,6 @@ namespace WebApiClientCore.Attributes
         /// 字段的值
         /// </summary>
         private readonly string? value;
-
-        /// <summary>
-        /// 表示参数值作为multipart/form-data表单的一个文本项
-        /// </summary>
-        [AttributeCtorUsage(AttributeTargets.Parameter)]
-        public FormDataTextAttribute()
-        {
-        }
 
         /// <summary>
         /// 表示name和value写入multipart/form-data表单
@@ -59,17 +50,6 @@ namespace WebApiClientCore.Attributes
             }
 
             context.HttpContext.RequestMessage.AddFormDataText(this.name, this.value);
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// http请求之前
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <returns></returns>
-        public Task OnRequestAsync(ApiParameterContext context)
-        {
-            context.HttpContext.RequestMessage.AddFormDataText(context.ParameterName, context.ParameterValue?.ToString());
             return Task.CompletedTask;
         }
     }

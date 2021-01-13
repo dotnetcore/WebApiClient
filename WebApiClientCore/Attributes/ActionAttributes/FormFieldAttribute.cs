@@ -7,8 +7,7 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示参数值作为x-www-form-urlencoded的字段
     /// </summary>
-    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method | AttributeTargets.Parameter, AllowMultiple = true, Inherited = true)]
-    public class FormFieldAttribute : ApiActionAttribute, IApiParameterAttribute
+    public partial class FormFieldAttribute : ApiActionAttribute
     {
         /// <summary>
         /// 字段名称
@@ -19,14 +18,6 @@ namespace WebApiClientCore.Attributes
         /// 字段的值
         /// </summary>
         private readonly string? value;
-
-        /// <summary>
-        /// 表示参数值作为x-www-form-urlencoded的字段
-        /// </summary>
-        [AttributeCtorUsage(AttributeTargets.Parameter)]
-        public FormFieldAttribute()
-        {
-        }
 
         /// <summary>
         /// 表示name和value写入x-www-form-urlencoded表单
@@ -59,16 +50,6 @@ namespace WebApiClientCore.Attributes
             }
 
             await context.HttpContext.RequestMessage.AddFormFieldAsync(this.name, this.value).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// http请求之前
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <returns></returns>
-        public async Task OnRequestAsync(ApiParameterContext context)
-        {
-            await context.HttpContext.RequestMessage.AddFormFieldAsync(context.ParameterName, context.ParameterValue?.ToString()).ConfigureAwait(false);
         }
     }
 }
