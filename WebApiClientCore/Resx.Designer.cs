@@ -124,11 +124,20 @@ namespace WebApiClientCore {
         }
         
         /// <summary>
-        ///   查找类似 无法将参数{0}转换为Timeout 的本地化字符串。
+        ///   查找类似 无法将参数值{0}转换为Timeout 的本地化字符串。
         /// </summary>
         internal static string parameter_CannotCvtTimeout {
             get {
                 return ResourceManager.GetString("parameter_CannotCvtTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 无法将参数值{0}转换为Uri 的本地化字符串。
+        /// </summary>
+        internal static string parameter_CannotCvtUri {
+            get {
+                return ResourceManager.GetString("parameter_CannotCvtUri", resourceCulture);
             }
         }
         

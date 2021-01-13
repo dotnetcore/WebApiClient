@@ -139,7 +139,10 @@
     <value>重试已经达到了最大次数限制：{0}</value>
   </data>
   <data name="parameter_CannotCvtTimeout" xml:space="preserve">
-    <value>无法将参数{0}转换为Timeout</value>
+    <value>无法将参数值{0}转换为Timeout</value>
+  </data>
+  <data name="parameter_CannotCvtUri" xml:space="preserve">
+    <value>无法将参数值{0}转换为Uri</value>
   </data>
   <data name="parameter_CannotMissing" xml:space="preserve">
     <value>请传入{0}参数</value>

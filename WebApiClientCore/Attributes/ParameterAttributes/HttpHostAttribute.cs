@@ -26,41 +26,37 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public Task OnRequestAsync(ApiParameterContext context)
         {
-            var uri = context.HttpContext.RequestMessage.RequestUri;
-            if (uri == null)
+            var hostValue = context.ParameterValue;
+            if (hostValue == null)
             {
-                throw new ApiInvalidConfigException(Resx.required_HttpHost);
+                return Task.CompletedTask;
             }
 
-            var host = GetHttpHost(context.ParameterValue, uri.Scheme); 
-            context.HttpContext.RequestMessage.ReplaceHttpHost(host);
+            var httpHost = ConvertToUri(hostValue);
+            context.HttpContext.RequestMessage.ReplaceHttpHost(httpHost);
             return Task.CompletedTask;
         }
 
         /// <summary>
-        /// 获取httphost
+        /// 转换为Uri
         /// </summary>
-        /// <param name="value">参数值</param>
-        /// <param name="defaultScheme"></param>
+        /// <param name="hostValue">参数值</param>
+        /// <exception cref="ApiInvalidConfigException"></exception>
         /// <returns></returns>
-        private static Uri GetHttpHost(object? value, string defaultScheme)
+        private static Uri ConvertToUri(object hostValue)
         {
-            if (value is Uri host)
+            if (hostValue is Uri httpHost)
             {
-                if (host.IsAbsoluteUri == true)
-                {
-                    return host;
-                }
-                throw new UriFormatException(Resx.required_AbsoluteUri.Format(nameof(HttpHostAttribute)));
+                return httpHost;
             }
 
-            var uri = value?.ToString();
-            if (Uri.TryCreate(uri, UriKind.Absolute, out host))
+            var uriString = hostValue.ToString();
+            if (Uri.TryCreate(uriString, UriKind.Absolute, out httpHost))
             {
-                return host;
+                return httpHost;
             }
 
-            return new Uri($"{defaultScheme}://{uri}");
+            throw new ApiInvalidConfigException(Resx.parameter_CannotCvtUri.Format(uriString));
         }
     }
 }

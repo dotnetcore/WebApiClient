@@ -66,16 +66,15 @@ namespace WebApiClientCore
         /// <exception cref="ApiInvalidConfigException"></exception>
         public void ReplaceHttpHost(Uri httpHost)
         {
-            var uri = this.RequestUri;
-            if (uri == null)
+            if (this.RequestUri == null)
             {
                 throw new ApiInvalidConfigException(Resx.required_RequestUri);
             }
 
-            var path = uri.OriginalString.AsSpan();
-            if (uri.IsAbsoluteUri == true)
+            var path = this.RequestUri.OriginalString.AsSpan();
+            if (this.RequestUri.IsAbsoluteUri == true)
             {
-                path = path.Slice(uri.Scheme.Length + 3);
+                path = path.Slice(this.RequestUri.Scheme.Length + 3);
                 var index = path.IndexOf('/');
                 path = index < 0 ? "/" : path.Slice(index);
             }
