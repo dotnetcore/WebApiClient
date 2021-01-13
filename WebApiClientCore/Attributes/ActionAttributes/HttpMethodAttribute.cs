@@ -21,7 +21,7 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 获取请求相对路径
         /// </summary>
-        public string? Path { get; }
+        public Uri? Path { get; }
 
         /// <summary>
         /// http请求方法描述特性
@@ -50,7 +50,7 @@ namespace WebApiClientCore.Attributes
         protected HttpMethodAttribute(HttpMethod method, string? path)
         {
             this.Method = method;
-            this.Path = path;
+            this.Path = string.IsNullOrEmpty(path) ? null : new Uri(path, UriKind.RelativeOrAbsolute);
             this.OrderIndex = int.MinValue + 1;
         }
 
@@ -63,8 +63,7 @@ namespace WebApiClientCore.Attributes
         public override Task OnRequestAsync(ApiRequestContext context)
         {
             var baseUri = context.HttpContext.RequestMessage.RequestUri;
-            var relative = string.IsNullOrEmpty(this.Path) ? null : new Uri(this.Path, UriKind.RelativeOrAbsolute);
-            var requestUri = GetRequestUri(baseUri, relative);
+            var requestUri = CreateRequestUri(baseUri, this.Path);
 
             context.HttpContext.RequestMessage.Method = this.Method;
             context.HttpContext.RequestMessage.RequestUri = requestUri;
@@ -72,34 +71,29 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 获取请求URL
+        /// 创建请求URL
         /// </summary>
         /// <param name="baseUri"></param>
-        /// <param name="relative"></param>
+        /// <param name="path"></param>
         /// <exception cref="ApiInvalidConfigException"></exception>
         /// <returns></returns>
-        private static Uri? GetRequestUri(Uri? baseUri, Uri? relative)
+        private static Uri? CreateRequestUri(Uri? baseUri, Uri? path)
         {
-            if (baseUri == null)
-            {
-                if (relative != null && relative.IsAbsoluteUri == false)
-                {
-                    throw new ApiInvalidConfigException(Resx.required_HttpHost);
-                }
-                return relative;
-            }
-
-            if (relative == null)
+            if (path == null)
             {
                 return baseUri;
             }
 
-            if (relative.IsAbsoluteUri == true)
+            if (baseUri == null)
             {
-                return relative;
+                if (path.IsAbsoluteUri == false)
+                {
+                    throw new ApiInvalidConfigException(Resx.required_HttpHost);
+                }
+                return path;
             }
 
-            return new Uri(baseUri, relative);
+            return path.IsAbsoluteUri ? path : new Uri(baseUri, path);
         }
     }
 }
