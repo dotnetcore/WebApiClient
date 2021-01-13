@@ -60,6 +60,29 @@ namespace WebApiClientCore
         }
 
         /// <summary>
+        /// 替换请求域名
+        /// </summary>
+        /// <param name="httpHost">请求域名</param>
+        /// <exception cref="ApiInvalidConfigException"></exception>
+        public void ReplaceHttpHost(Uri httpHost)
+        {
+            var uri = this.RequestUri;
+            if (uri == null)
+            {
+                throw new ApiInvalidConfigException(Resx.required_RequestUri);
+            }
+
+            var path = uri.OriginalString.AsSpan();
+            if (uri.IsAbsoluteUri == true)
+            {
+                path = path.Slice(uri.Scheme.Length + 3);
+                var index = path.IndexOf('/');
+                path = index < 0 ? "/" : path.Slice(index);
+            }
+            this.RequestUri = new Uri(httpHost, path.ToString());
+        }
+
+        /// <summary>
         /// 追加Query参数到请求路径
         /// </summary>
         /// <param name="key">参数名</param>

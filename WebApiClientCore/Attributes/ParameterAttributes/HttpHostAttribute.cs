@@ -32,16 +32,8 @@ namespace WebApiClientCore.Attributes
                 throw new ApiInvalidConfigException(Resx.required_HttpHost);
             }
 
-            var host = GetHttpHost(context.ParameterValue, uri.Scheme);
-            var path = uri.OriginalString.AsSpan();
-            if (uri.IsAbsoluteUri == true)
-            {
-                path = path.Slice(uri.Scheme.Length + 3);
-                var index = path.IndexOf('/');
-                path = index < 0 ? "/" : path.Slice(index);
-            }
-
-            context.HttpContext.RequestMessage.RequestUri = new Uri(host, path.ToString());
+            var host = GetHttpHost(context.ParameterValue, uri.Scheme); 
+            context.HttpContext.RequestMessage.ReplaceHttpHost(host);
             return Task.CompletedTask;
         }
 
