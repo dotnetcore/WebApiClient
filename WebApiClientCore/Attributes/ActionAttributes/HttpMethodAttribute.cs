@@ -84,16 +84,17 @@ namespace WebApiClientCore.Attributes
                 return baseUri;
             }
 
-            if (baseUri == null)
+            if (path.IsAbsoluteUri == true)
             {
-                if (path.IsAbsoluteUri == false)
-                {
-                    throw new ApiInvalidConfigException(Resx.required_HttpHost);
-                }
                 return path;
             }
 
-            return path.IsAbsoluteUri ? path : new Uri(baseUri, path);
+            if (baseUri == null)
+            {
+                throw new ApiInvalidConfigException(Resx.required_HttpHost);
+            }
+
+            return new Uri(baseUri, path);
         }
     }
 }
