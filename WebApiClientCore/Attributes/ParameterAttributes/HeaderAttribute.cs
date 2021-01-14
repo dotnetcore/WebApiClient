@@ -29,7 +29,7 @@ namespace WebApiClientCore.Attributes
         {
             this.name = name ?? throw new ArgumentNullException(nameof(name));
         }
-         
+
         /// <summary>
         /// http请求之前
         /// 值从参数过来
