@@ -32,8 +32,10 @@ namespace WebApiClientCore
                 return str;
             }
 
-            using var owner = ArrayPool.Rent<byte>(destLength);
-            var destination = owner.Array.AsSpan(0, destLength);
+            var destination = destLength > 1024
+                ? new byte[destLength]
+                : stackalloc byte[destLength];
+
             UrlEncodeCore(source, destination);
             return Encoding.ASCII.GetString(destination);
         }
