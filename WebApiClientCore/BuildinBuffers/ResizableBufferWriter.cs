@@ -4,10 +4,10 @@ using System.Buffers;
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 表示动态内存BufferWriter
+    /// 表示自动扩容的BufferWriter
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    sealed class ArrayBufferWriter<T> : IBufferWriter<T>
+    sealed class ResizableBufferWriter<T> : IBufferWriter<T>
     {
         private const int maxArrayLength = 0X7FEFFFFF;
         private const int defaultSizeHint = 256;
@@ -16,11 +16,11 @@ namespace WebApiClientCore
         private T[] buffer;
 
         /// <summary>
-        /// 动态内存BufferWriter
+        /// 自动扩容的BufferWriter
         /// </summary>
         /// <param name="initialCapacity">初始容量</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public ArrayBufferWriter(int initialCapacity)
+        public ResizableBufferWriter(int initialCapacity)
         {
             if (initialCapacity <= 0)
             {

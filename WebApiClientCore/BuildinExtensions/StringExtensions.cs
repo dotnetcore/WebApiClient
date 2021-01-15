@@ -46,7 +46,7 @@ namespace WebApiClientCore
             var newValueSpan = newValue.AsSpan();
 
             var replaced = false;
-            var writer = new ArrayBufferWriter<char>(strSpan.Length);
+            var writer = new ResizableBufferWriter<char>(strSpan.Length);
 
             while (strLowerSpan.Length > 0)
             {
