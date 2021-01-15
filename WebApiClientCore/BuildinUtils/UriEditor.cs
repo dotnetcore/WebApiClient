@@ -73,7 +73,7 @@ namespace WebApiClientCore
             uriSpan = uriSpan.Slice(0, uriSpan.Length - fragmentSpan.Length).TrimEnd('?').TrimEnd('&');
             var concat = uriSpan.IndexOf('?') < 0 ? '?' : '&';
 
-            using var writer = new BufferWriter<char>(256);
+            var writer = new ArrayBufferWriter<char>(256);
             writer.Write(uriSpan);
             writer.Write(concat);
             writer.Write(name);
@@ -81,7 +81,7 @@ namespace WebApiClientCore
             writer.Write(value);
             writer.Write(fragmentSpan);
 
-            var uri = writer.GetWrittenSpan().ToString();
+            var uri = writer.WrittenSpan.ToString();
             this.Uri = new Uri(uri);
         }
 

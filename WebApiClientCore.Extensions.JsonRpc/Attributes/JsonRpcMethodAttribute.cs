@@ -85,7 +85,7 @@ namespace WebApiClientCore.Attributes
             var jsonRpcRequest = new JsonRpcRequest
             {
                 Method = this.method ?? context.ApiAction.Name,
-                Params = parameters.ToJsonRpcParams(this.ParamsStyle),
+                Params = parameters!.ToJsonRpcParams(this.ParamsStyle),
             };
 
             var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;

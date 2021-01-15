@@ -63,16 +63,16 @@ namespace WebApiClientCore
         /// <returns></returns>
         public byte[] SerializeToJson(Encoding encoding)
         {
-            using var bufferWriter = new BufferWriter<byte>();
+            using var bufferWriter = new RecyclableBufferWriter<byte>();
             this.SerializeToJson(bufferWriter);
 
             if (Encoding.UTF8.Equals(encoding) == true)
             {
-                return bufferWriter.GetWrittenSpan().ToArray();
+                return bufferWriter.WrittenSpan.ToArray();
             }
             else
             {
-                var utf8Json = bufferWriter.GetWrittenSegment();
+                var utf8Json = bufferWriter.WrittenSegment;
                 return Encoding.Convert(Encoding.UTF8, encoding, utf8Json.Array, utf8Json.Offset, utf8Json.Count);
             }
         }

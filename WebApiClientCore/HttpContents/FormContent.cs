@@ -16,7 +16,7 @@ namespace WebApiClientCore.HttpContents
         /// <summary>
         /// buffer写入器
         /// </summary>
-        private readonly BufferWriter<byte> bufferWriter = new BufferWriter<byte>();
+        private readonly RecyclableBufferWriter<byte> bufferWriter = new RecyclableBufferWriter<byte>();
 
         /// <summary>
         /// 默认的http编码
@@ -144,7 +144,7 @@ namespace WebApiClientCore.HttpContents
         /// <returns></returns>
         protected override Task<Stream> CreateContentReadStreamAsync()
         {
-            var buffer = this.bufferWriter.GetWrittenSpan().ToArray();
+            var buffer = this.bufferWriter.WrittenSpan.ToArray();
             var readStream = new MemoryStream(buffer, 0, buffer.Length, writable: false);
             return Task.FromResult<Stream>(readStream);
         }
@@ -157,7 +157,7 @@ namespace WebApiClientCore.HttpContents
         /// <returns></returns>
         protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
-            var memory = this.bufferWriter.GetWrittenMemory();
+            var memory = this.bufferWriter.WrittenMemory;
             return stream.WriteAsync(memory).AsTask();
         }
 

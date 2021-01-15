@@ -16,7 +16,7 @@ namespace WebApiClientCore.HttpContents
         /// <summary>
         /// buffer
         /// </summary>
-        private readonly BufferWriter<byte> bufferWriter = new BufferWriter<byte>();
+        private readonly RecyclableBufferWriter<byte> bufferWriter = new RecyclableBufferWriter<byte>();
 
         /// <summary>
         /// utf8的BufferContent
@@ -83,8 +83,8 @@ namespace WebApiClientCore.HttpContents
         /// <returns></returns>
         protected override Task<Stream> CreateContentReadStreamAsync()
         {
-            var buffer = this.bufferWriter.GetWrittenSpan().ToArray();
-            var readStream = new MemoryStream(buffer, 0, buffer.Length, writable: false);
+            var segment = this.bufferWriter.WrittenSegment;
+            var readStream = new MemoryStream(segment.Array, segment.Offset, segment.Count, writable: false);
             return Task.FromResult<Stream>(readStream);
         }
 
@@ -95,8 +95,8 @@ namespace WebApiClientCore.HttpContents
         /// <param name="context"></param>
         /// <returns></returns>
         protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
-        { 
-            var memory = this.bufferWriter.GetWrittenMemory();
+        {
+            var memory = this.bufferWriter.WrittenMemory;
             return stream.WriteAsync(memory).AsTask();
         }
 

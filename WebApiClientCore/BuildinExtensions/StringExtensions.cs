@@ -41,16 +41,12 @@ namespace WebApiClientCore
             }
 
             var strSpan = str.AsSpan();
-            using var owner = ArrayPool.Rent<char>(strSpan.Length);
-            var strLowerSpan = owner.Array.AsSpan();
-            var length = strSpan.ToLowerInvariant(strLowerSpan);
-            strLowerSpan = strLowerSpan.Slice(0, length);
-
+            var strLowerSpan = str.ToLowerInvariant().AsSpan();
             var oldValueLowerSpan = oldValue.ToLowerInvariant().AsSpan();
             var newValueSpan = newValue.AsSpan();
 
             var replaced = false;
-            using var writer = new BufferWriter<char>(strSpan.Length);
+            var writer = new ArrayBufferWriter<char>(strSpan.Length);
 
             while (strLowerSpan.Length > 0)
             {
@@ -86,7 +82,7 @@ namespace WebApiClientCore
                 }
             }
 
-            replacedString = replaced ? writer.GetWrittenSpan().ToString() : str;
+            replacedString = replaced ? writer.WrittenSpan.ToString() : str;
             return replaced;
         }
     }

@@ -75,7 +75,7 @@ namespace WebApiClientCore.Serialization
         private IList<KeyValue> GetKeyValueList(string key, object obj, Type objType, KeyValueSerializerOptions options)
         {
             var jsonOptions = options.GetJsonSerializerOptions();
-            using var bufferWriter = new BufferWriter<byte>();
+            using var bufferWriter = new RecyclableBufferWriter<byte>();
             using var utf8JsonWriter = new Utf8JsonWriter(bufferWriter, new JsonWriterOptions
             {
                 Indented = false,
@@ -84,7 +84,7 @@ namespace WebApiClientCore.Serialization
             });
 
             System.Text.Json.JsonSerializer.Serialize(utf8JsonWriter, obj, objType, jsonOptions);
-            var utf8JsonReader = new Utf8JsonReader(bufferWriter.GetWrittenSpan(), new JsonReaderOptions
+            var utf8JsonReader = new Utf8JsonReader(bufferWriter.WrittenSpan, new JsonReaderOptions
             {
                 MaxDepth = jsonOptions.MaxDepth,
                 CommentHandling = jsonOptions.ReadCommentHandling,

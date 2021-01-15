@@ -29,9 +29,9 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
             var body = await context.HttpContext.RequestMessage.Content.ReadAsUtf8ByteArrayAsync();
 
             var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
-            using var buffer = new BufferWriter<byte>();
+            using var buffer = new RecyclableBufferWriter<byte>();
             context.HttpContext.ServiceProvider.GetService<IJsonSerializer>().Serialize(buffer, context.Arguments[0], options);
-            var target = buffer.GetWrittenSpan().ToArray();
+            var target = buffer.WrittenSpan.ToArray();
             Assert.True(body.SequenceEqual(target));
         }
     }
