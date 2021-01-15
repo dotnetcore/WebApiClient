@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Diagnostics;
 
 namespace WebApiClientCore
 {
@@ -7,7 +8,8 @@ namespace WebApiClientCore
     /// 表示自动扩容的BufferWriter
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    sealed class ResizableBufferWriter<T> : IBufferWriter<T>
+    [DebuggerDisplay("WrittenCount = {index}")]
+    sealed class ResizableBufferWriter<T> : IBufferWriter<T>, IBufferWritten<T>
     {
         private const int maxArrayLength = 0X7FEFFFFF;
         private const int defaultSizeHint = 256;
@@ -32,9 +34,9 @@ namespace WebApiClientCore
         }
 
         /// <summary>
-        /// 获取已数入的数据
+        /// 获取已数入的数据长度
         /// </summary>
-        public ReadOnlyMemory<T> WrittenMemory => this.buffer.AsMemory(0, index);
+        public int WrittenCount => this.index;
 
         /// <summary>
         /// 获取已数入的数据
@@ -44,7 +46,13 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取已数入的数据
         /// </summary>
-        public int WrittenCount => this.index;
+        public ReadOnlyMemory<T> WrittenMemory => this.buffer.AsMemory(0, index);
+
+        /// <summary>
+        /// 获取已数入的数据
+        /// </summary>
+        /// <returns></returns>
+        public ArraySegment<T> WrittenSegment => new ArraySegment<T>(this.buffer, 0, this.index);
 
         /// <summary>
         /// 获取容量

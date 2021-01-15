@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Buffers;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 表示可回收的BufferWriter
+    /// 表示可回收的自动扩容BufferWriter
     /// </summary>
-    sealed class RecyclableBufferWriter<T> : Disposable, IBufferWriter<T>
+    [DebuggerDisplay("WrittenCount = {index}")]
+    sealed class RecyclableBufferWriter<T> : Disposable, IBufferWriter<T>, IBufferWritten<T>
     {
         private int index = 0;
         private IArrayOwner<T> buffer;
         private const int defaultSizeHint = 256;
 
         /// <summary>
-        /// 获取已写入的字节数
+        /// 获取已数入的数据长度
         /// </summary>
         public int WrittenCount => this.index;
 
@@ -46,7 +48,7 @@ namespace WebApiClientCore
 
 
         /// <summary>
-        /// 可回收的BufferWriter
+        /// 可回收的自动扩容BufferWriter
         /// </summary>
         /// <param name="initialCapacity">初始容量</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
