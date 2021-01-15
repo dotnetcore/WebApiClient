@@ -27,27 +27,36 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public Task OnRequestAsync(ApiParameterContext context)
         {
-            if (context.ParameterValue == null)
+            var timeout = context.ParameterValue;
+            if (timeout != null)
             {
-                return Task.CompletedTask;
-            }
-
-            if (context.ParameterValue is TimeSpan timespan)
-            {
+                var timespan = ConvertToTimeSpan(timeout);
                 SetTimeout(context, timespan);
-            }
-            else if (context.ParameterValue is IConvertible convertible)
-            {
-                var milliseconds = convertible.ToDouble(null);
-                var timeout = System.TimeSpan.FromMilliseconds(milliseconds);
-                SetTimeout(context, timeout);
-            }
-            else
-            {
-                throw new ApiInvalidConfigException(Resx.parameter_CannotCvtTimeout.Format(context.Parameter.Member));
             }
 
             return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// 将参数值转换为TimeSpan
+        /// </summary>
+        /// <param name="timeout"></param>
+        /// <exception cref="ApiInvalidConfigException"></exception>
+        /// <returns></returns>
+        private static TimeSpan ConvertToTimeSpan(object timeout)
+        {
+            if (timeout is TimeSpan timespan)
+            {
+                return timespan;
+            }
+
+            if (timeout is IConvertible convertible)
+            {
+                var milliseconds = convertible.ToDouble(null);
+                return System.TimeSpan.FromMilliseconds(milliseconds);
+            }
+
+            throw new ApiInvalidConfigException(Resx.parameter_CannotCvtTimeout.Format(timeout));
         }
     }
 }
