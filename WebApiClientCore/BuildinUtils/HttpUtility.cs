@@ -25,17 +25,17 @@ namespace WebApiClientCore
                 return str;
             }
 
+            var byteCount = encoding.GetByteCount(str);
+            var source = str.Length > 1024 ? new byte[byteCount] : stackalloc byte[byteCount];
+            encoding.GetBytes(str, source);
+
             var destLength = 0;
-            var source = encoding.GetBytes(str).AsSpan();
             if (UrlEncodeTest(source, ref destLength) == false)
             {
                 return str;
             }
 
-            var destination = destLength > 1024
-                ? new byte[destLength]
-                : stackalloc byte[destLength];
-
+            var destination = destLength > 1024 ? new byte[destLength] : stackalloc byte[destLength];
             UrlEncodeCore(source, destination);
             return Encoding.ASCII.GetString(destination);
         }
@@ -43,22 +43,23 @@ namespace WebApiClientCore
         /// <summary>
         /// Uri编码
         /// </summary>
-        /// <param name="str"></param>
+        /// <param name="chars"></param>
         /// <param name="bufferWriter"></param>
-        public static void UrlEncode(string? str, IBufferWriter<byte> bufferWriter)
+        public static void UrlEncode(ReadOnlySpan<char> chars, IBufferWriter<byte> bufferWriter)
         {
-            if (string.IsNullOrEmpty(str))
+            if (chars.IsEmpty)
             {
                 return;
             }
 
+            var byteCount = Encoding.UTF8.GetByteCount(chars);
+            var source = chars.Length > 1024 ? new byte[byteCount] : stackalloc byte[byteCount];
+            Encoding.UTF8.GetBytes(chars, source);
+
             var destLength = 0;
-            var source = Encoding.UTF8.GetBytes(str).AsSpan();
             if (UrlEncodeTest(source, ref destLength) == false)
             {
-                var destination = bufferWriter.GetSpan(destLength);
-                source.CopyTo(destination);
-                bufferWriter.Advance(destLength);
+                bufferWriter.Write(source);
             }
             else
             {
