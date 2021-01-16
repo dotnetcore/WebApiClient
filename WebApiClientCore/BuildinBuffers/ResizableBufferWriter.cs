@@ -14,7 +14,7 @@ namespace WebApiClientCore
         private const int maxArrayLength = 0X7FEFFFFF;
         private const int defaultSizeHint = 256;
 
-        private int index;
+        private int index = 0;
         private T[] buffer;
 
         /// <summary>
@@ -61,7 +61,6 @@ namespace WebApiClientCore
             }
 
             this.buffer = new T[initialCapacity];
-            this.index = 0;
         }
 
         /// <summary>
@@ -77,14 +76,8 @@ namespace WebApiClientCore
         /// 设置向前推进
         /// </summary>
         /// <param name="count"></param>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void Advance(int count)
         {
-            if (count < 0 || this.index > this.buffer.Length - count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(count));
-            }
-
             this.index += count;
         }
 
@@ -97,7 +90,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         public Memory<T> GetMemory(int sizeHint = 0)
         {
-            CheckAndResizeBuffer(sizeHint);
+            this.CheckAndResizeBuffer(sizeHint);
             return this.buffer.AsMemory(this.index);
         }
 
@@ -110,7 +103,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         public Span<T> GetSpan(int sizeHint = 0)
         {
-            CheckAndResizeBuffer(sizeHint);
+            this.CheckAndResizeBuffer(sizeHint);
             return this.buffer.AsSpan(this.index);
         }
 

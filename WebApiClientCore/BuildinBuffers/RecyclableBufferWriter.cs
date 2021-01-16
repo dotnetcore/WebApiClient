@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -11,7 +12,7 @@ namespace WebApiClientCore
     sealed class RecyclableBufferWriter<T> : Disposable, IWrittenBufferWriter<T>
     {
         private int index = 0;
-        private IArrayOwner<T> buffer;
+        private T[] buffer;
         private const int defaultSizeHint = 256;
 
         /// <summary>
@@ -22,28 +23,28 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取已数入的数据
         /// </summary>
-        public ReadOnlySpan<T> WrittenSpan => this.buffer.Array.AsSpan(0, this.index);
+        public ReadOnlySpan<T> WrittenSpan => this.buffer.AsSpan(0, this.index);
 
         /// <summary>
         /// 获取已数入的数据
         /// </summary>
-        public ReadOnlyMemory<T> WrittenMemory => this.buffer.Array.AsMemory(0, this.index);
+        public ReadOnlyMemory<T> WrittenMemory => this.buffer.AsMemory(0, this.index);
 
         /// <summary>
         /// 获取已数入的数据
         /// </summary>
         /// <returns></returns>
-        public ArraySegment<T> WrittenSegment => new ArraySegment<T>(this.buffer.Array, 0, this.index);
+        public ArraySegment<T> WrittenSegment => new ArraySegment<T>(this.buffer, 0, this.index);
 
         /// <summary>
         /// 获取容量
         /// </summary>
-        public int Capacity => this.buffer.Array.Length;
+        public int Capacity => this.buffer.Length;
 
         /// <summary>
         /// 获取剩余容量
         /// </summary>
-        public int FreeCapacity => this.buffer.Array.Length - this.index;
+        public int FreeCapacity => this.buffer.Length - this.index;
 
 
         /// <summary>
@@ -57,7 +58,7 @@ namespace WebApiClientCore
             {
                 throw new ArgumentOutOfRangeException(nameof(initialCapacity));
             }
-            this.buffer = ArrayPool.Rent<T>(initialCapacity);
+            this.buffer = ArrayPool<T>.Shared.Rent(initialCapacity);
         }
 
         /// <summary>
@@ -65,7 +66,7 @@ namespace WebApiClientCore
         /// </summary>
         public void Clear()
         {
-            this.buffer.Array.AsSpan(0, this.index).Clear();
+            this.buffer.AsSpan(0, this.index).Clear();
             this.index = 0;
         }
 
@@ -73,14 +74,8 @@ namespace WebApiClientCore
         /// 设置向前推进
         /// </summary>
         /// <param name="count"></param>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void Advance(int count)
         {
-            if (count < 0 || this.index > this.buffer.Array.Length - count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(count));
-            }
-
             this.index += count;
         }
 
@@ -93,7 +88,7 @@ namespace WebApiClientCore
         public Memory<T> GetMemory(int sizeHint = 0)
         {
             this.CheckAndResizeBuffer(sizeHint);
-            return this.buffer.Array.AsMemory(this.index);
+            return this.buffer.AsMemory(this.index);
         }
 
         /// <summary>
@@ -105,7 +100,7 @@ namespace WebApiClientCore
         public Span<T> GetSpan(int sizeHint = 0)
         {
             this.CheckAndResizeBuffer(sizeHint);
-            return buffer.Array.AsSpan(this.index);
+            return buffer.AsSpan(this.index);
         }
 
         /// <summary>
@@ -137,7 +132,7 @@ namespace WebApiClientCore
         /// <param name="disposing"></param>
         protected sealed override void Dispose(bool disposing)
         {
-            this.buffer?.Dispose();
+            ArrayPool<T>.Shared.Return(this.buffer);
         }
 
         /// <summary>
@@ -160,14 +155,14 @@ namespace WebApiClientCore
 
             if (sizeHint > this.FreeCapacity)
             {
-                int currentLength = this.buffer.Array.Length;
+                int currentLength = this.buffer.Length;
                 var growBy = Math.Max(sizeHint, currentLength);
                 var newSize = checked(currentLength + growBy);
 
-                var newBuffer = ArrayPool.Rent<T>(newSize);
-                Array.Copy(this.buffer.Array, newBuffer.Array, this.index);
+                var newBuffer = ArrayPool<T>.Shared.Rent(newSize);
+                Array.Copy(this.buffer, newBuffer, this.index);
 
-                this.buffer.Dispose();
+                ArrayPool<T>.Shared.Return(this.buffer);
                 this.buffer = newBuffer;
             }
         }
