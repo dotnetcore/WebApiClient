@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Buffers;
 
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 定义获取BufferWriter的数据
+    /// 定义支持获取已写入数据的BufferWriter
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    interface IBufferWritten<T>
+    interface IWrittenBufferWriter<T> : IBufferWriter<T>
     {
         /// <summary>
         /// 获取已数入的数据长度
@@ -27,6 +28,6 @@ namespace WebApiClientCore
         /// 获取已数入的数据
         /// </summary>
         /// <returns></returns>
-        ArraySegment<T> WrittenSegment { get; }
+        ArraySegment<T> WrittenSegment { get; } 
     }
 }

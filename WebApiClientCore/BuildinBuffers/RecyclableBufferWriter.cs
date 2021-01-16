@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -9,7 +8,7 @@ namespace WebApiClientCore
     /// 表示可回收的自动扩容BufferWriter
     /// </summary>
     [DebuggerDisplay("WrittenCount = {index}")]
-    sealed class RecyclableBufferWriter<T> : Disposable, IBufferWriter<T>, IBufferWritten<T>
+    sealed class RecyclableBufferWriter<T> : Disposable, IWrittenBufferWriter<T>
     {
         private int index = 0;
         private IArrayOwner<T> buffer;
