@@ -9,7 +9,7 @@ namespace WebApiClientCore.Benchmarks.Requests
     /// <summary> 
     /// 跳过真实的http请求环节的模拟Post json请求
     /// </summary>
-    public class PostJsonBenchmark : BenChmark
+    public class PostJsonBenchmark : Benchmark
     {
         /// <summary>
         /// 使用原生HttpClient请求

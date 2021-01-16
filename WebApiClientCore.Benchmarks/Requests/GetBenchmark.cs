@@ -9,7 +9,7 @@ namespace WebApiClientCore.Benchmarks.Requests
     /// <summary> 
     /// 跳过真实的http请求环节的模拟Get请求
     /// </summary>
-    public class GetBenchmark : BenChmark
+    public class GetBenchmark : Benchmark
     { 
         /// <summary>
         /// 使用原生HttpClient请求

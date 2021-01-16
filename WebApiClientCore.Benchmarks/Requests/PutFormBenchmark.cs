@@ -7,7 +7,7 @@ namespace WebApiClientCore.Benchmarks.Requests
     /// <summary> 
     /// 跳过真实的http请求环节的模拟Post表单请求
     /// </summary>
-    public class PutFormBenchmark : BenChmark
+    public class PutFormBenchmark : Benchmark
     {
         /// <summary>
         /// 使用WebApiClientCore请求

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using BenchmarkDotNet.Attributes;
+using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using System;
 using System.Net.Http;
@@ -6,11 +7,14 @@ using System.Threading.Tasks;
 
 namespace WebApiClientCore.Benchmarks.Requests
 {
-    public abstract class BenChmark : IBenchmark
+    [MemoryDiagnoser]
+    public abstract class Benchmark : IBenchmark
     {
-        protected IServiceProvider ServiceProvider { get; }
+        protected IServiceProvider ServiceProvider { get; set; }
 
-        public BenChmark()
+
+        [GlobalSetup]
+        public async Task SetupAsync()
         {
             var services = new ServiceCollection();
 
@@ -36,11 +40,7 @@ namespace WebApiClientCore.Benchmarks.Requests
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://webapiclient.com/"));
 
             this.ServiceProvider = services.BuildServiceProvider();
-            this.PreheatAsync().Wait();
-        }
 
-        private async Task PreheatAsync()
-        {
             using var scope = this.ServiceProvider.CreateScope();
 
             var core = scope.ServiceProvider.GetService<IWebApiClientCoreApi>();

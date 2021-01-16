@@ -1,10 +1,9 @@
 ﻿using BenchmarkDotNet.Attributes;
-using System;
-using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 
 namespace WebApiClientCore.Benchmarks.StringReplaces
 {
+    [MemoryDiagnoser]
     public class Benchmark : IBenchmark
     {
         private readonly string str = "WebApiClientCore.Benchmarks.StringReplaces.WebApiClientCore";
