@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace WebApiClientCore
 {
@@ -62,27 +63,25 @@ namespace WebApiClientCore
         /// <param name="value">参数的值</param>
         public void AddQuery(string name, string? value)
         {
-            name = Uri.EscapeDataString(name);
-            if (!string.IsNullOrEmpty(value))
-            {
-                value = Uri.EscapeDataString(value);
-            }
-
             var uriSpan = this.Uri.OriginalString.AsSpan();
             var fragmentSpan = this.Uri.Fragment.AsSpan();
-            uriSpan = uriSpan.Slice(0, uriSpan.Length - fragmentSpan.Length).TrimEnd('?').TrimEnd('&');
+            var baseSpan = uriSpan.Slice(0, uriSpan.Length - fragmentSpan.Length).TrimEnd('?').TrimEnd('&');
             var concat = uriSpan.IndexOf('?') < 0 ? '?' : '&';
+            var nameSpan = Uri.EscapeDataString(name);
+            var valueSpan = string.IsNullOrEmpty(value) ? ReadOnlySpan<char>.Empty : Uri.EscapeDataString(value).AsSpan();
 
-            var writer = new ResizableBufferWriter<char>(256);
-            writer.Write(uriSpan);
+            var length = baseSpan.Length + 1 + nameSpan.Length + 1 + valueSpan.Length + fragmentSpan.Length;
+            var array = new char[length];
+            var writer = new MemoryBufferWriter<char>(array);
+            writer.Write(baseSpan);
             writer.Write(concat);
-            writer.Write(name);
+            writer.Write(nameSpan);
             writer.Write('=');
-            writer.Write(value);
+            writer.Write(valueSpan);
             writer.Write(fragmentSpan);
 
-            var uri = writer.WrittenSpan.ToString();
-            this.Uri = new Uri(uri);
+            Debug.Assert(writer.WrittenCount == array.Length);
+            this.Uri = new Uri(new string(array));
         }
 
         /// <summary>
