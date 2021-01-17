@@ -41,49 +41,95 @@ namespace WebApiClientCore
             }
 
             var strSpan = str.AsSpan();
-            var strLowerSpan = str.ToLowerInvariant().AsSpan();
-            var oldValueLowerSpan = oldValue.ToLowerInvariant().AsSpan();
+            var oldValueSpan = oldValue.AsSpan();
             var newValueSpan = newValue.AsSpan();
 
             var replaced = false;
-            var writer = new ResizableBufferWriter<char>(strSpan.Length);
+            var builder = new ValueStringBuilder(stackalloc char[256]);
 
-            while (strLowerSpan.Length > 0)
+            while (strSpan.Length > 0)
             {
-                var index = strLowerSpan.IndexOf(oldValueLowerSpan);
+                var index = FindIndexIgnoreCase(strSpan, oldValue);
                 if (index > -1)
                 {
-                    // 左边未替换的
-                    var left = strSpan.Slice(0, index);
-                    writer.Write(left);
-
-                    // 替换的值
-                    writer.Write(newValueSpan);
-
-                    // 切割长度
-                    var sliceLength = index + oldValueLowerSpan.Length;
-
-                    // 原始值与小写值同步切割
-                    strSpan = strSpan.Slice(sliceLength);
-                    strLowerSpan = strLowerSpan.Slice(sliceLength);
-
+                    builder.Append(strSpan.Slice(0, index));
+                    builder.Append(newValueSpan);
+                    strSpan = strSpan.Slice(index + oldValueSpan.Length);
                     replaced = true;
                 }
                 else
                 {
-                    // 替换过剩下的原始值
                     if (replaced == true)
                     {
-                        writer.Write(strSpan);
+                        builder.Append(strSpan);
                     }
-
-                    // 再也无匹配替换值，退出
                     break;
                 }
             }
 
-            replacedString = replaced ? writer.WrittenSpan.ToString() : str;
+            replacedString = replaced ? builder.ToString() : str;
             return replaced;
+        }
+
+        /// <summary>
+        /// 查找索引
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private static int FindIndexIgnoreCase(ReadOnlySpan<char> source, ReadOnlySpan<char> value)
+        {
+            int ctrSource;  // index value into source
+            int ctrValue;   // index value into value
+            char sourceChar;    // Character for case lookup in source
+            char valueChar;     // Character for case lookup in value
+
+            var sourceCount = source.Length;
+            var valueCount = value.Length;
+
+            if (valueCount == 0)
+            {
+                return 0;
+            }
+
+            if (sourceCount < valueCount)
+            {
+                return -1;
+            }
+
+            var lastSourceStart = sourceCount - valueCount;
+            var firstValueChar = InvariantCaseFold(value[0]);
+            for (ctrSource = 0; ctrSource <= lastSourceStart; ctrSource++)
+            {
+                sourceChar = InvariantCaseFold(source[ctrSource]);
+                if (sourceChar != firstValueChar)
+                {
+                    continue;
+                }
+
+                for (ctrValue = 1; ctrValue < valueCount; ctrValue++)
+                {
+                    sourceChar = InvariantCaseFold(source[ctrSource + ctrValue]);
+                    valueChar = InvariantCaseFold(value[ctrValue]);
+
+                    if (sourceChar != valueChar)
+                    {
+                        break;
+                    }
+                }
+
+                if (ctrValue == valueCount)
+                {
+                    return ctrSource;
+                }
+            }
+
+            return -1;
+
+            static char InvariantCaseFold(char c)
+            {
+                return (uint)(c - 'a') <= 'z' - 'a' ? (char)(c - 0x20) : c;
+            }
         }
     }
 }

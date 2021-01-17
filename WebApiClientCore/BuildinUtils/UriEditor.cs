@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace WebApiClientCore
 {
@@ -70,18 +69,15 @@ namespace WebApiClientCore
             var nameSpan = Uri.EscapeDataString(name);
             var valueSpan = string.IsNullOrEmpty(value) ? ReadOnlySpan<char>.Empty : Uri.EscapeDataString(value).AsSpan();
 
-            var length = baseSpan.Length + 1 + nameSpan.Length + 1 + valueSpan.Length + fragmentSpan.Length;
-            var array = new char[length];
-            var writer = new MemoryBufferWriter<char>(array);
-            writer.Write(baseSpan);
-            writer.Write(concat);
-            writer.Write(nameSpan);
-            writer.Write('=');
-            writer.Write(valueSpan);
-            writer.Write(fragmentSpan);
+            var builder = new ValueStringBuilder(stackalloc char[256]);
+            builder.Append(baseSpan);
+            builder.Append(concat);
+            builder.Append(nameSpan);
+            builder.Append('=');
+            builder.Append(valueSpan);
+            builder.Append(fragmentSpan);
 
-            Debug.Assert(writer.WrittenCount == array.Length);
-            this.Uri = new Uri(new string(array));
+            this.Uri = new Uri(builder.ToString());
         }
 
         /// <summary>
