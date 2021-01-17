@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using WebApiClientCore.Exceptions;
 using WebApiClientCore.Extensions.JsonRpc;
 
 namespace WebApiClientCore.Attributes
@@ -65,9 +66,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public override Task OnRequestAsync(ApiRequestContext context)
         {
-            var parametrs = new JsonRpcParameters();
-            context.Properties.Set(typeof(JsonRpcParameters), parametrs);
-
+            context.Properties.Set(typeof(JsonRpcParameters), new JsonRpcParameters());
             return base.OnRequestAsync(context);
         }
 
@@ -78,16 +77,20 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         Task IApiFilterAttribute.OnRequestAsync(ApiRequestContext context)
         {
-            var jsonRpcContent = new JsonRpcContent(this.ContentType);
-            context.HttpContext.RequestMessage.Content = jsonRpcContent;
-
             var parameters = context.Properties.Get<JsonRpcParameters>(typeof(JsonRpcParameters));
+            if (parameters == null)
+            {
+                throw new ApiInvalidConfigException($"无法获取{nameof(JsonRpcParameters)}属性");
+            }
+
             var jsonRpcRequest = new JsonRpcRequest
             {
                 Method = this.method ?? context.ApiAction.Name,
-                Params = parameters!.ToJsonRpcParams(this.ParamsStyle),
+                Params = parameters.ToJsonRpcParams(this.ParamsStyle),
             };
 
+            var jsonRpcContent = new JsonRpcContent(this.ContentType);
+            context.HttpContext.RequestMessage.Content = jsonRpcContent;
             var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
             var jsonSerializer = context.HttpContext.ServiceProvider.GetJsonSerializer();
             jsonSerializer.Serialize(jsonRpcContent, jsonRpcRequest, options);
