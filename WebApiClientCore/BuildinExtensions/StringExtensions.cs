@@ -21,53 +21,41 @@ namespace WebApiClientCore
         /// <summary>
         /// 不区分大小写替换字符串
         /// </summary>
-        /// <param name="str"></param>
-        /// <param name="oldValue">原始值</param>
-        /// <param name="newValue">新值</param>
-        /// <param name="replacedString">替换后的字符中</param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="source"></param>
+        /// <param name="oldValue">要替换的值</param>
+        /// <param name="newValue">替换的新值</param>
+        /// <param name="replacedString">替换后的字符串</param> 
         /// <returns></returns>
-        public static bool RepaceIgnoreCase(this string str, string oldValue, string? newValue, out string replacedString)
+        public static bool RepaceIgnoreCase(this string source, ReadOnlySpan<char> oldValue, ReadOnlySpan<char> newValue, out string replacedString)
         {
-            if (string.IsNullOrEmpty(str) == true)
+            if (string.IsNullOrEmpty(source) || oldValue.IsEmpty)
             {
-                replacedString = str;
+                replacedString = source;
                 return false;
             }
 
-            if (string.IsNullOrEmpty(oldValue) == true)
-            {
-                throw new ArgumentNullException(nameof(oldValue));
-            }
-
-            var strSpan = str.AsSpan();
-            var oldValueSpan = oldValue.AsSpan();
-            var newValueSpan = newValue.AsSpan();
-
+            var index = 0;
             var replaced = false;
+            var sourceSpan = source.AsSpan();
             var builder = new ValueStringBuilder(stackalloc char[256]);
 
-            while (strSpan.Length > 0)
+            while ((index = FindIndexIgnoreCase(sourceSpan, oldValue)) > -1)
             {
-                var index = FindIndexIgnoreCase(strSpan, oldValue);
-                if (index > -1)
-                {
-                    builder.Append(strSpan.Slice(0, index));
-                    builder.Append(newValueSpan);
-                    strSpan = strSpan.Slice(index + oldValueSpan.Length);
-                    replaced = true;
-                }
-                else
-                {
-                    if (replaced == true)
-                    {
-                        builder.Append(strSpan);
-                    }
-                    break;
-                }
+                builder.Append(sourceSpan.Slice(0, index));
+                builder.Append(newValue);
+                sourceSpan = sourceSpan.Slice(index + oldValue.Length);
+                replaced = true;
             }
 
-            replacedString = replaced ? builder.ToString() : str;
+            if (replaced == true)
+            {
+                builder.Append(sourceSpan);
+                replacedString = builder.ToString();
+            }
+            else
+            {
+                replacedString = source;
+            }
             return replaced;
         }
 

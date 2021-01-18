@@ -28,8 +28,6 @@ namespace WebApiClientCore.Test.BuildinExtensions
 
             Assert.True(str.RepaceIgnoreCase("a", null, out var newStr5));
             Assert.Equal("", newStr5);
-
-            Assert.Throws<ArgumentNullException>(() => "22".RepaceIgnoreCase(null, null, out _));
         }
     }
 }
