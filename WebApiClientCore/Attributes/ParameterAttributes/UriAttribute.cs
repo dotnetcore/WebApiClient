@@ -66,22 +66,71 @@ namespace WebApiClientCore.Attributes
         /// 创建请求URL
         /// </summary>
         /// <param name="baseUri"></param>
-        /// <param name="uri"></param>
+        /// <param name="uriValue"></param>
         /// <exception cref="ApiInvalidConfigException"></exception>
         /// <returns></returns>
-        private static Uri? CreateRequestUri(Uri? baseUri, Uri uri)
+        private static Uri? CreateRequestUri(Uri? baseUri, Uri uriValue)
         {
-            if (uri.IsAbsoluteUri == true)
+            if (uriValue.IsAbsoluteUri == false)
             {
-                return uri;
+                return CreateUriByRelative(baseUri, uriValue);
             }
 
+            if (uriValue.AbsolutePath == "/")
+            {
+                return CreateUriByAbsolute(uriValue, baseUri);
+            }
+
+            return uriValue;
+        }
+
+        /// <summary>
+        /// 创建uri
+        /// </summary>
+        /// <param name="baseUri"></param>
+        /// <param name="relative"></param>
+        /// <returns></returns>
+        private static Uri CreateUriByRelative(Uri? baseUri, Uri relative)
+        {
             if (baseUri == null)
             {
-                throw new ApiInvalidConfigException(Resx.required_HttpHost);
+                return relative;
             }
 
-            return new Uri(baseUri, uri);
+            if (baseUri.IsAbsoluteUri == true)
+            {
+                return new Uri(baseUri, relative);
+            }
+
+            return relative;
+        }
+
+        /// <summary>
+        /// 创建uri
+        /// 参数值的uri是绝对uir，且只有根路径
+        /// </summary>
+        /// <param name="absolute"></param>
+        /// <param name="uri"></param>
+        /// <returns></returns>
+        private static Uri CreateUriByAbsolute(Uri absolute, Uri? uri)
+        {
+            if (uri == null)
+            {
+                return absolute;
+            }
+
+            if (uri.IsAbsoluteUri == false)
+            {
+                return new Uri(absolute, uri);
+            }
+
+            if (uri.AbsolutePath == "/")
+            {
+                return absolute;
+            }
+
+            var relative = uri.ToRelativeUri();
+            return new Uri(absolute, relative);
         }
     }
 }

@@ -53,15 +53,15 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected virtual Uri CreateUri(Uri uri, IEnumerable<KeyValue> keyValues)
         {
-            var editor = new UriEditor(uri);
             foreach (var keyValue in keyValues)
             {
-                if (editor.Replace(keyValue.Key, keyValue.Value) == false)
+                uri = uri.Replace(keyValue.Key, keyValue.Value, out var replaced);
+                if (replaced == false)
                 {
-                    editor.AddQuery(keyValue.Key, keyValue.Value);
+                    uri = uri.AddQuery(keyValue.Key, keyValue.Value);
                 }
             }
-            return editor.Uri;
+            return uri;
         }
     }
 }

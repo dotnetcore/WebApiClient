@@ -9,12 +9,12 @@ namespace WebApiClientCore.Attributes
     /// 例如http://www.abc.com/
     /// </summary>
     [DebuggerDisplay("Host = {Host}")]
-    public partial class HttpHostAttribute : HttpHostBaseAttribute
+    public class HttpHostAttribute : HttpHostBaseAttribute
     {
         /// <summary>
         /// 获取完整主机域名
         /// </summary>
-        public Uri? Host { get; }
+        public Uri Host { get; }
 
         /// <summary>
         /// 请求服务http绝对完整主机域名      
@@ -22,7 +22,6 @@ namespace WebApiClientCore.Attributes
         /// <param name="host">例如http://www.abc.com</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="UriFormatException"></exception>
-        [AttributeCtorUsage(AttributeTargets.Interface | AttributeTargets.Method)]
         public HttpHostAttribute(string host)
         {
             this.Host = new Uri(host, UriKind.Absolute);

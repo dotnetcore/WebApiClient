@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
-using WebApiClientCore.Exceptions;
 
 namespace WebApiClientCore.Attributes
 {
@@ -58,7 +57,6 @@ namespace WebApiClientCore.Attributes
         /// 执行前
         /// </summary>
         /// <param name="context">上下文</param>
-        /// <exception cref="ApiInvalidConfigException"></exception>
         /// <returns></returns>
         public override Task OnRequestAsync(ApiRequestContext context)
         {
@@ -74,27 +72,31 @@ namespace WebApiClientCore.Attributes
         /// 创建请求URL
         /// </summary>
         /// <param name="baseUri"></param>
-        /// <param name="path"></param>
-        /// <exception cref="ApiInvalidConfigException"></exception>
+        /// <param name="uri"></param>
         /// <returns></returns>
-        private static Uri? CreateRequestUri(Uri? baseUri, Uri? path)
+        private static Uri? CreateRequestUri(Uri? baseUri, Uri? uri)
         {
-            if (path == null)
+            if (uri == null)
             {
                 return baseUri;
             }
 
-            if (path.IsAbsoluteUri == true)
-            {
-                return path;
-            }
-
             if (baseUri == null)
             {
-                throw new ApiInvalidConfigException(Resx.required_HttpHost);
+                return uri;
             }
 
-            return new Uri(baseUri, path);
+            if (uri.IsAbsoluteUri == true)
+            {
+                return uri;
+            }
+
+            if (baseUri.IsAbsoluteUri == true)
+            {
+                return new Uri(baseUri, uri);
+            }
+
+            return uri;
         }
     }
 }

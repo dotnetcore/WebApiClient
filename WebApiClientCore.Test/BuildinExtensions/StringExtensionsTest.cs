@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Xunit;
+﻿using Xunit;
 
 namespace WebApiClientCore.Test.BuildinExtensions
 {
@@ -11,22 +8,27 @@ namespace WebApiClientCore.Test.BuildinExtensions
         public void RepaceIgnoreCaseTest()
         {
             var str = "WebApiClientCore.Benchmarks.StringReplaces.WebApiClientCore";
-            Assert.True(str.RepaceIgnoreCase("core", "CORE", out var newStr));
+            var newStr = str.RepaceIgnoreCase("core", "CORE", out var replaced);
+            Assert.True(replaced);
             Assert.Equal("WebApiClientCORE.Benchmarks.StringReplaces.WebApiClientCORE", newStr);
 
             str = "AbccBAd";
-            Assert.True(str.RepaceIgnoreCase("A", "x", out var newStr2));
+            var newStr2 = str.RepaceIgnoreCase("A", "x", out replaced);
+            Assert.True(replaced);
             Assert.Equal("xbccBxd", newStr2);
 
             str = "abc";
-            Assert.False(str.RepaceIgnoreCase("x", "x", out var newStr3));
+            var newStr3 = str.RepaceIgnoreCase("x", "x", out replaced);
+            Assert.False(replaced);
             Assert.Equal(str, newStr3);
 
             str = "aaa";
-            Assert.True(str.RepaceIgnoreCase("A", "x", out var newStr4));
+            var newStr4 = str.RepaceIgnoreCase("A", "x", out replaced);
+            Assert.True(replaced);
             Assert.Equal("xxx", newStr4);
 
-            Assert.True(str.RepaceIgnoreCase("a", null, out var newStr5));
+            var newStr5 = str.RepaceIgnoreCase("a", null, out replaced);
+            Assert.True(replaced);
             Assert.Equal("", newStr5);
         }
     }

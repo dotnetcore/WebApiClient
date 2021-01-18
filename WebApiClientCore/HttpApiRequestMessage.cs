@@ -60,28 +60,6 @@ namespace WebApiClientCore
         }
 
         /// <summary>
-        /// 替换请求域名
-        /// </summary>
-        /// <param name="httpHost">请求域名</param>
-        /// <exception cref="ApiInvalidConfigException"></exception>
-        public void ReplaceHttpHost(Uri httpHost)
-        {
-            if (this.RequestUri == null)
-            {
-                throw new ApiInvalidConfigException(Resx.required_RequestUri);
-            }
-
-            var path = this.RequestUri.OriginalString.AsSpan();
-            if (this.RequestUri.IsAbsoluteUri == true)
-            {
-                path = path.Slice(this.RequestUri.Scheme.Length + 3);
-                var index = path.IndexOf('/');
-                path = index < 0 ? "/" : path.Slice(index);
-            }
-            this.RequestUri = new Uri(httpHost, path.ToString());
-        }
-
-        /// <summary>
         /// 追加Query参数到请求路径
         /// </summary>
         /// <param name="key">参数名</param>
@@ -90,7 +68,8 @@ namespace WebApiClientCore
         /// <exception cref="ArgumentNullException"></exception>
         public void AddUrlQuery(string key, string? value)
         {
-            if (this.RequestUri == null)
+            var uri = this.RequestUri;
+            if (uri == null)
             {
                 throw new ApiInvalidConfigException(Resx.required_RequestUri);
             }
@@ -100,9 +79,7 @@ namespace WebApiClientCore
                 throw new ArgumentNullException(nameof(key));
             }
 
-            var editor = new UriEditor(this.RequestUri);
-            editor.AddQuery(key, value);
-            this.RequestUri = editor.Uri;
+            this.RequestUri = uri.AddQuery(key, value);
         }
 
         /// <summary>

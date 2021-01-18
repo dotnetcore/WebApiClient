@@ -24,18 +24,17 @@ namespace WebApiClientCore
         /// <param name="source"></param>
         /// <param name="oldValue">要替换的值</param>
         /// <param name="newValue">替换的新值</param>
-        /// <param name="replacedString">替换后的字符串</param> 
+        /// <param name="replaced">是否替换成功</param> 
         /// <returns></returns>
-        public static bool RepaceIgnoreCase(this string source, ReadOnlySpan<char> oldValue, ReadOnlySpan<char> newValue, out string replacedString)
+        public static string RepaceIgnoreCase(this string source, ReadOnlySpan<char> oldValue, ReadOnlySpan<char> newValue, out bool replaced)
         {
+            replaced = false;
             if (string.IsNullOrEmpty(source) || oldValue.IsEmpty)
             {
-                replacedString = source;
-                return false;
+                return source;
             }
 
             var index = 0;
-            var replaced = false;
             var sourceSpan = source.AsSpan();
             var builder = new ValueStringBuilder(stackalloc char[256]);
 
@@ -50,13 +49,9 @@ namespace WebApiClientCore
             if (replaced == true)
             {
                 builder.Append(sourceSpan);
-                replacedString = builder.ToString();
+                return builder.ToString();
             }
-            else
-            {
-                replacedString = source;
-            }
-            return replaced;
+            return source;
         }
 
         /// <summary>
