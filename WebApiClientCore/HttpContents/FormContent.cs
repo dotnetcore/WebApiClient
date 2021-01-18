@@ -144,8 +144,8 @@ namespace WebApiClientCore.HttpContents
         /// <returns></returns>
         protected override Task<Stream> CreateContentReadStreamAsync()
         {
-            var buffer = this.bufferWriter.WrittenSpan.ToArray();
-            var readStream = new MemoryStream(buffer, 0, buffer.Length, writable: false);
+            var segment = this.bufferWriter.WrittenSegment;
+            var readStream = new MemoryStream(segment.Array, segment.Offset, segment.Count, writable: false);
             return Task.FromResult<Stream>(readStream);
         }
 

@@ -18,7 +18,7 @@ namespace App.Clients
     public interface IUserApi : IHttpApi
     {
         [HttpGet("api/users/{account}")]
-        ITask<HttpResponseMessage> GetAsync([Required] string account, string a = "我");
+        ITask<HttpResponseMessage> GetAsync([Required] string account);
 
         [HttpGet("api/users/{account}")]
         ITask<string> GetAsStringAsync([Required] string account, CancellationToken token = default);

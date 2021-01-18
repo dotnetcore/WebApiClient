@@ -8,10 +8,10 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Sign.snk</AssemblyOriginatorKeyFile>
 
-    <Version>1.1.5</Version>
+    <Version>1.1.6</Version>
     <Authors>laojiu</Authors>
     <Company>laojiu</Company>
-    <Copyright>Copyright © laojiu 2017-2020</Copyright>
+    <Copyright>Copyright © laojiu 2017-2021</Copyright>
     <Description>WebApiClientCore的NewtonsoftJson序列化扩展</Description>
     <Summary>WebApiClientCore的NewtonsoftJson序列化扩展</Summary>
 

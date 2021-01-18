@@ -5,10 +5,10 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 
-    <Version>1.1.5</Version>
+    <Version>1.1.6</Version>
     <Authors>laojiu</Authors>
     <Company>laojiu</Company>
-    <Copyright>Copyright © laojiu 2017-2020</Copyright>
+    <Copyright>Copyright © laojiu 2017-2021</Copyright>
     <Description>.NetCore声明式的Http客户端库</Description>
     <Summary>一款基于HttpClient封装，只需要定义c#接口并修饰相关特性，即可异步调用远程http接口的客户端库</Summary>
 

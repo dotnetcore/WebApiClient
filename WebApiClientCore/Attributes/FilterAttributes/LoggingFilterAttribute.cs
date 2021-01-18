@@ -57,8 +57,6 @@ namespace WebApiClientCore.Attributes
             context.Properties.Set(typeof(LoggingFilterAttribute), logMessage);
         }
 
-
-
         /// <summary>
         /// 响应后
         /// </summary>
@@ -70,8 +68,7 @@ namespace WebApiClientCore.Attributes
             {
                 return;
             }
-
-            var response = context.HttpContext.ResponseMessage;
+                        
             var logMessage = context.Properties.Get<LogMessage>(typeof(LoggingFilterAttribute));
             if (logMessage == null)
             {
@@ -81,6 +78,7 @@ namespace WebApiClientCore.Attributes
             logMessage.ResponseTime = DateTime.Now;
             logMessage.Exception = context.Exception;
 
+            var response = context.HttpContext.ResponseMessage;
             if (this.LogResponse && response != null)
             {
                 logMessage.HasResponse = true;
