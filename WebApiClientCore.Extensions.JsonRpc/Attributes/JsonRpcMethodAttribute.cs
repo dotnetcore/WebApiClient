@@ -75,7 +75,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        Task IApiFilterAttribute.OnRequestAsync(ApiRequestContext context)
+        Task IApiFilter.OnRequestAsync(ApiRequestContext context)
         {
             var parameters = context.Properties.Get<JsonRpcParameters>(typeof(JsonRpcParameters));
             if (parameters == null)
@@ -103,7 +103,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        Task IApiFilterAttribute.OnResponseAsync(ApiResponseContext context)
+        Task IApiFilter.OnResponseAsync(ApiResponseContext context)
         {
             return Task.CompletedTask;
         }

@@ -67,11 +67,15 @@ namespace WebApiClientCore
         /// </summary>
         public KeyValueSerializerOptions KeyValueSerializeOptions { get; } = new KeyValueSerializerOptions();
 
-
         /// <summary>
         /// 获取自定义数据存储的字典
         /// </summary>
         public Dictionary<object, object> Properties { get; } = new Dictionary<object, object>();
+
+        /// <summary>
+        /// 获取接口的全局过滤器集合
+        /// </summary>
+        public IList<IApiFilter> GlobalFilters { get; } = new List<IApiFilter>();
 
 
         /// <summary>

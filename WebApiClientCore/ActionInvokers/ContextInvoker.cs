@@ -57,6 +57,12 @@ namespace WebApiClientCore
                 await @return.OnRequestAsync(context).ConfigureAwait(false);
             }
 
+            // GlobalFilter请求前执行 
+            foreach (var filter in context.HttpContext.HttpApiOptions.GlobalFilters)
+            {
+                await filter.OnRequestAsync(context).ConfigureAwait(false);
+            }
+
             // Filter请求前执行 
             foreach (var filter in context.ApiAction.FilterAttributes)
             {
@@ -90,6 +96,12 @@ namespace WebApiClientCore
 
             // 结果验证
             DataValidator.ValidateReturnValue(context);
+
+            // GlobalFilter请求后执行 
+            foreach (var filter in context.HttpContext.HttpApiOptions.GlobalFilters)
+            {
+                await filter.OnResponseAsync(context).ConfigureAwait(false);
+            }
 
             // Filter请求后执行
             foreach (var filter in context.ApiAction.FilterAttributes)
