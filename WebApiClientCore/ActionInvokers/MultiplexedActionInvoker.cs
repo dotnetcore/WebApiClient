@@ -15,55 +15,55 @@ namespace WebApiClientCore
         public static IActionInvoker Create(ApiActionDescriptor apiAction)
         {
             var resultType = apiAction.Return.DataType.Type;
-            var invokerType = typeof(MultiplexedActionInvoker<>).MakeGenericType(resultType);
+            var invokerType = typeof(MultiplexedActionInvokerOf<>).MakeGenericType(resultType);
             return invokerType.CreateInstance<IActionInvoker>(apiAction);
         }
-    }
-
-    /// <summary>
-    /// 表示复合的ApiAction执行器
-    /// 支持Task和ITask返回声明
-    /// </summary>
-    /// <typeparam name="TResult"></typeparam>
-    class MultiplexedActionInvoker<TResult> : IActionInvoker
-    {
-        /// <summary>
-        /// 是否为task结果声明
-        /// </summary>
-        private readonly bool isTaskResult;
 
         /// <summary>
-        /// Api执行器
-        /// </summary>
-        private readonly ActionInvoker<TResult> actionInvoker;
-
-        /// <summary>
-        /// 获取Action描述
-        /// </summary>
-        public ApiActionDescriptor ApiAction => this.actionInvoker.ApiAction;
-
-        /// <summary>
-        /// 复合的ApiAction执行器
+        /// 表示复合的ApiAction执行器
         /// 支持Task和ITask返回声明
         /// </summary>
-        /// <param name="apiAction">Api描述</param>
-        public MultiplexedActionInvoker(ApiActionDescriptor apiAction)
+        /// <typeparam name="TResult"></typeparam>
+        private class MultiplexedActionInvokerOf<TResult> : IActionInvoker
         {
-            this.isTaskResult = apiAction.Return.ReturnType.IsInheritFrom<Task>();
-            this.actionInvoker = new ActionInvoker<TResult>(apiAction);
-        }
+            /// <summary>
+            /// 是否为task结果声明
+            /// </summary>
+            private readonly bool isTaskResult;
 
-        /// <summary>
-        /// 执行Action
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <param name="arguments">参数值</param>
-        /// <returns></returns>
-        public object Invoke(HttpClientContext context, object?[] arguments)
-        {
-            return this.isTaskResult == true
-                ? this.actionInvoker.Invoke(context, arguments)
-                : new ActionTask<TResult>(this.actionInvoker, context, arguments);
+            /// <summary>
+            /// Api执行器
+            /// </summary>
+            private readonly ActionInvoker<TResult> actionInvoker;
+
+            /// <summary>
+            /// 获取Action描述
+            /// </summary>
+            public ApiActionDescriptor ApiAction => this.actionInvoker.ApiAction;
+
+            /// <summary>
+            /// 复合的ApiAction执行器
+            /// 支持Task和ITask返回声明
+            /// </summary>
+            /// <param name="apiAction">Api描述</param>
+            public MultiplexedActionInvokerOf(ApiActionDescriptor apiAction)
+            {
+                this.isTaskResult = apiAction.Return.ReturnType.IsInheritFrom<Task>();
+                this.actionInvoker = new ActionInvoker<TResult>(apiAction);
+            }
+
+            /// <summary>
+            /// 执行Action
+            /// </summary>
+            /// <param name="context">上下文</param>
+            /// <param name="arguments">参数值</param>
+            /// <returns></returns>
+            public object Invoke(HttpClientContext context, object?[] arguments)
+            {
+                return this.isTaskResult == true
+                    ? this.actionInvoker.Invoke(context, arguments)
+                    : new ActionTask<TResult>(this.actionInvoker, context, arguments);
+            }
         }
     }
 }
