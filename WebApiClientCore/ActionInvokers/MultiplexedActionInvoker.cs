@@ -4,6 +4,24 @@ namespace WebApiClientCore
 {
     /// <summary>
     /// 表示复合的ApiAction执行器
+    /// </summary>
+    static class MultiplexedActionInvoker
+    {
+        /// <summary>
+        /// 创建Action执行器
+        /// </summary>
+        /// <param name="apiAction">action描述</param>
+        /// <returns></returns>
+        public static IActionInvoker Create(ApiActionDescriptor apiAction)
+        {
+            var resultType = apiAction.Return.DataType.Type;
+            var invokerType = typeof(MultiplexedActionInvoker<>).MakeGenericType(resultType);
+            return invokerType.CreateInstance<IActionInvoker>(apiAction);
+        }
+    }
+
+    /// <summary>
+    /// 表示复合的ApiAction执行器
     /// 支持Task和ITask返回声明
     /// </summary>
     /// <typeparam name="TResult"></typeparam>

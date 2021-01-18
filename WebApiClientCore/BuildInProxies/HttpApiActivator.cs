@@ -48,20 +48,8 @@ namespace WebApiClientCore
             return interfaceType
                 .GetAllApiMethods()
                 .Select(item => new ApiActionDescriptor(item, interfaceType))
-                .Select(item => CreateActionInvoker(item))
+                .Select(item => MultiplexedActionInvoker.Create(item))
                 .ToArray();
-        }
-
-        /// <summary>
-        /// 创建Action执行器
-        /// </summary>
-        /// <param name="apiAction">action描述</param>
-        /// <returns></returns>
-        private static IActionInvoker CreateActionInvoker(ApiActionDescriptor apiAction)
-        {
-            var resultType = apiAction.Return.DataType.Type;
-            var invokerType = typeof(MultiplexedActionInvoker<>).MakeGenericType(resultType);
-            return invokerType.CreateInstance<IActionInvoker>(apiAction);
         }
     }
 }
