@@ -52,7 +52,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="initialCapacity">初始容量</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public RecyclableBufferWriter(int initialCapacity = 1024)
+        public RecyclableBufferWriter(int initialCapacity = 1024 * 16)
         {
             if (initialCapacity <= 0)
             {
