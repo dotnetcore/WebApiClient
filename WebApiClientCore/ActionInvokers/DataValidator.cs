@@ -42,6 +42,38 @@ namespace WebApiClientCore
         /// <summary>
         /// 验证参返回的结果
         /// </summary>
+        /// <param name="context">上下文</param>  
+        public static void ValidateReturnValue(ApiResponseContext context)
+        {
+            if (context.ApiAction.Return.DataType.IsRawType == true)
+            {
+                return;
+            }
+
+            if (context.ResultStatus != ResultStatus.HasResult)
+            {
+                return;
+            }
+
+            if (context.HttpContext.HttpApiOptions.UseReturnValuePropertyValidate == false)
+            {
+                return;
+            }
+
+            try
+            {
+                ValidateReturnValue(context.Result);
+            }
+            catch (Exception ex)
+            {
+                context.Exception = ex;
+            }
+        }
+
+
+        /// <summary>
+        /// 验证参返回的结果
+        /// </summary>
         /// <param name="value">结果值</param> 
         /// <exception cref="ValidationException"></exception>
         public static void ValidateReturnValue(object? value)

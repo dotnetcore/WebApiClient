@@ -65,7 +65,7 @@ namespace WebApiClientCore
             var uriSpan = this.Uri.OriginalString.AsSpan();
             var fragmentSpan = this.Uri.Fragment.AsSpan();
             var baseSpan = uriSpan.Slice(0, uriSpan.Length - fragmentSpan.Length).TrimEnd('?').TrimEnd('&');
-            var concat = uriSpan.LastIndexOf('?') < 0 ? '?' : '&';
+            var concat = baseSpan.LastIndexOf('?') < 0 ? '?' : '&';
             var nameSpan = Uri.EscapeDataString(name);
             var valueSpan = string.IsNullOrEmpty(value) ? ReadOnlySpan<char>.Empty : Uri.EscapeDataString(value).AsSpan();
 
