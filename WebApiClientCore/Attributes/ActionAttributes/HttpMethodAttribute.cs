@@ -20,7 +20,7 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 获取请求相对路径
         /// </summary>
-        public Uri? Path { get; }
+        public HttpPath Path { get; }
 
         /// <summary>
         /// http请求方法描述特性
@@ -49,7 +49,7 @@ namespace WebApiClientCore.Attributes
         protected HttpMethodAttribute(HttpMethod method, string? path)
         {
             this.Method = method;
-            this.Path = string.IsNullOrEmpty(path) ? null : new Uri(path, UriKind.RelativeOrAbsolute);
+            this.Path = HttpPath.Create(path);
             this.OrderIndex = int.MinValue + 1;
         }
 
@@ -61,42 +61,11 @@ namespace WebApiClientCore.Attributes
         public override Task OnRequestAsync(ApiRequestContext context)
         {
             var baseUri = context.HttpContext.RequestMessage.RequestUri;
-            var requestUri = CreateRequestUri(baseUri, this.Path);
+            var requestUri = this.Path.MakeUri(baseUri);
 
             context.HttpContext.RequestMessage.Method = this.Method;
             context.HttpContext.RequestMessage.RequestUri = requestUri;
             return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// 创建请求URL
-        /// </summary>
-        /// <param name="baseUri"></param>
-        /// <param name="uri"></param>
-        /// <returns></returns>
-        private static Uri? CreateRequestUri(Uri? baseUri, Uri? uri)
-        {
-            if (uri == null)
-            {
-                return baseUri;
-            }
-
-            if (baseUri == null)
-            {
-                return uri;
-            }
-
-            if (uri.IsAbsoluteUri == true)
-            {
-                return uri;
-            }
-
-            if (baseUri.IsAbsoluteUri == true)
-            {
-                return new Uri(baseUri, uri);
-            }
-
-            return uri;
         }
     }
 }
