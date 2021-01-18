@@ -203,13 +203,18 @@ namespace WebApiClientCore
         /// <returns></returns>
         public string GetHeadersString()
         {
-            const string host = "Host";
-            var builder = new StringBuilder()
-               .AppendLine($"{this.Method} {this.RequestUri.PathAndQuery} HTTP/{this.Version}");
+            var uri = this.RequestUri;
+            var builder = new StringBuilder();
 
-            if (this.Headers.Contains(host) == false)
+            if (uri != null && uri.IsAbsoluteUri)
             {
-                builder.AppendLine($"{host}: {this.RequestUri.Authority}");
+                const string host = "Host";
+                builder.AppendLine($"{this.Method} {uri.PathAndQuery} HTTP/{this.Version}");
+
+                if (this.Headers.Contains(host) == false)
+                {
+                    builder.AppendLine($"{host}: {uri.Authority}");
+                }
             }
 
             builder.Append(this.Headers.ToString());
