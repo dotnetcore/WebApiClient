@@ -69,7 +69,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="uriValue"></param>
         /// <exception cref="ApiInvalidConfigException"></exception>
         /// <returns></returns>
-        private static Uri? CreateRequestUri(Uri? baseUri, Uri uriValue)
+        public static Uri? CreateRequestUri(Uri? baseUri, Uri uriValue)
         {
             if (uriValue.IsAbsoluteUri == false)
             {
