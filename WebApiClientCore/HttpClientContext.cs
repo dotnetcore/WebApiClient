@@ -34,18 +34,6 @@ namespace WebApiClientCore
         /// <param name="httpClient">httpClient实例</param>
         /// <param name="serviceProvider">服务提供者</param>
         /// <param name="httpApiOptions">Api配置选项</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public HttpClientContext(HttpClient httpClient, IServiceProvider serviceProvider, HttpApiOptions httpApiOptions)
-            : this(httpClient, serviceProvider, httpApiOptions, string.Empty)
-        {
-        }
-
-        /// <summary>
-        /// HttpClient上下文
-        /// </summary>
-        /// <param name="httpClient">httpClient实例</param>
-        /// <param name="serviceProvider">服务提供者</param>
-        /// <param name="httpApiOptions">Api配置选项</param>
         /// <param name="optionsName">选项名称</param>
         /// <exception cref="ArgumentNullException"></exception>
         public HttpClientContext(HttpClient httpClient, IServiceProvider serviceProvider, HttpApiOptions httpApiOptions, string optionsName)

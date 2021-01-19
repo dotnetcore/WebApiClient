@@ -30,7 +30,7 @@ namespace WebApiClientCore.Test
             var requestServices = services.BuildServiceProvider();
             var options = new HttpApiOptions() { HttpHost = new Uri("http://www.webapi.com/") };
 
-            var httpClientContext = new HttpClientContext(new HttpClient(), requestServices, options);
+            var httpClientContext = new HttpClientContext(new HttpClient(), requestServices, options, string.Empty);
             return new HttpContext(httpClientContext);
         }
     }
