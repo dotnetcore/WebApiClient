@@ -34,37 +34,23 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static THttpApi Create<THttpApi>(HttpClientContext httpClientContext)
         {
-            return Create<THttpApi>(httpClientContext, ActionInvokerProvider.Default);
-        }
-
-        /// <summary>
-        /// 创建THttpApi的代理实例
-        /// </summary>
-        /// <typeparam name="THttpApi"></typeparam>
-        /// <param name="httpClientContext">httpClient上下文</param>
-        /// <param name="actionInvokerProvider">Action执行器提供者</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="NotSupportedException"></exception>
-        /// <exception cref="ProxyTypeCreateException"></exception>
-        /// <returns></returns>
-        public static THttpApi Create<THttpApi>(HttpClientContext httpClientContext, IActionInvokerProvider actionInvokerProvider)
-        {
             var interceptor = new ActionInterceptor(httpClientContext);
-            return Create<THttpApi>(interceptor, actionInvokerProvider);
+            return Create<THttpApi>(ActionInvokerProvider.Default, interceptor);
         }
 
         /// <summary>
         /// 创建THttpApi的代理实例
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
-        /// <param name="actionInterceptor">Action拦截器</param>
         /// <param name="actionInvokerProvider">Action执行器提供者</param>  
+        /// <param name="actionInterceptor">Action拦截器</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
-        public static THttpApi Create<THttpApi>(IActionInterceptor actionInterceptor, IActionInvokerProvider actionInvokerProvider)
+        public static THttpApi Create<THttpApi>(IActionInvokerProvider actionInvokerProvider, IActionInterceptor actionInterceptor)
         {
-            return new HttpApiEmitActivator<THttpApi>(actionInvokerProvider).CreateInstance(actionInterceptor);
+            var activator = new HttpApiEmitActivator<THttpApi>(actionInvokerProvider);
+            return activator.CreateInstance(actionInterceptor);
         }
     }
 }

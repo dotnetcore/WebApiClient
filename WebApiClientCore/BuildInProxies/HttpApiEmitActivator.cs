@@ -12,8 +12,6 @@ namespace WebApiClientCore
     /// <typeparam name="THttpApi"></typeparam>
     class HttpApiEmitActivator<THttpApi> : HttpApiActivator<THttpApi>
     {
-        private readonly IActionInvokerProvider actionInvokerProvider;
-
         /// <summary>
         /// IActionInterceptor的Intercept方法
         /// </summary>
@@ -31,8 +29,8 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="actionInvokerProvider">Action执行器提供者</param>
         public HttpApiEmitActivator(IActionInvokerProvider actionInvokerProvider)
+            : base(actionInvokerProvider)
         {
-            this.actionInvokerProvider = actionInvokerProvider;
         }
 
         /// <summary>
@@ -43,7 +41,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         protected override Func<IActionInterceptor, THttpApi> CreateFactory()
         {
-            var actionInvokers = this.CreateActionInvokers(this.actionInvokerProvider);
+            var actionInvokers = this.CreateActionInvokers();
             var proxyType = BuildProxyType(typeof(THttpApi), actionInvokers);
             var proxyTypeCtor = Lambda.CreateCtorFunc<IActionInterceptor, IActionInvoker[], THttpApi>(proxyType);
             return interceptor => proxyTypeCtor(interceptor, actionInvokers);

@@ -16,6 +16,20 @@ namespace WebApiClientCore
         private static Func<IActionInterceptor, THttpApi>? _factory;
 
         /// <summary>
+        /// Action执行器提供者
+        /// </summary>
+        private readonly IActionInvokerProvider actionInvokerProvider;
+
+        /// <summary>
+        /// THttpApi的实例创建器抽象
+        /// </summary>
+        /// <param name="actionInvokerProvider">Action执行器提供者</param>
+        public HttpApiActivator(IActionInvokerProvider actionInvokerProvider)
+        {
+            this.actionInvokerProvider = actionInvokerProvider;
+        }
+
+        /// <summary>
         /// 创建接口的实例
         /// </summary>
         /// <param name="interceptor">拦截器</param>
@@ -40,16 +54,15 @@ namespace WebApiClientCore
         /// <summary>
         /// 创建接口的action执行器
         /// </summary>
-        /// <param name="actionInvokerProvider">Action执行器提供者</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        protected IActionInvoker[] CreateActionInvokers(IActionInvokerProvider actionInvokerProvider)
+        protected IActionInvoker[] CreateActionInvokers()
         {
             var interfaceType = typeof(THttpApi);
             return interfaceType
                 .GetAllApiMethods()
                 .Select(item => new ApiActionDescriptor(item, interfaceType))
-                .Select(item => actionInvokerProvider.CreateActionInvoker(item))
+                .Select(item => this.actionInvokerProvider.CreateActionInvoker(item))
                 .ToArray();
         }
     }

@@ -6,7 +6,7 @@ namespace WebApiClientCore
     /// <summary>
     /// 请求上下文执行器
     /// </summary>
-    static class ApiRequestContextExecutor
+    static class ApiRequestContextExecuter
     {
         /// <summary>
         /// 执行上下文
