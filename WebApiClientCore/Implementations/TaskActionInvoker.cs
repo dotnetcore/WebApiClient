@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Implementations
 {
     /// <summary>
     /// 表示Task返回声明的Action执行器

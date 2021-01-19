@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Implementations
 {
     /// <summary>
     /// 数据验证器

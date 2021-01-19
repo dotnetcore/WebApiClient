@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Implementations
 {
     /// <summary>
     /// Action执行器提供者

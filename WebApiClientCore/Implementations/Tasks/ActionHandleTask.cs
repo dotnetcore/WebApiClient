@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Implementations
 {
     /// <summary>
     /// 提供异常处理的请求任务

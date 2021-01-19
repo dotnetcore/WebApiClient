@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
 using WebApiClientCore.ResponseCaches;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Implementations
 {
     /// <summary>
     /// 提供http请求

@@ -1,4 +1,4 @@
-﻿namespace WebApiClientCore
+﻿namespace WebApiClientCore.Implementations
 {
     /// <summary>
     /// 表示httpApi方法调用的拦截器

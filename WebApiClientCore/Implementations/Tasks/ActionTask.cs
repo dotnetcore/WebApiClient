@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Implementations
 {
     /// <summary>
     /// 表示Api请求的任务

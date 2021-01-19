@@ -1,5 +1,6 @@
 ﻿using System;
 using WebApiClientCore.Exceptions;
+using WebApiClientCore.Implementations;
 
 namespace WebApiClientCore
 {
