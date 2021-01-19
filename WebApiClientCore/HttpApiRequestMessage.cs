@@ -60,6 +60,66 @@ namespace WebApiClientCore
         }
 
         /// <summary>
+        /// 返回使用uri值合成的请求URL
+        /// </summary> 
+        /// <param name="uri">uri值</param> 
+        /// <returns></returns>
+        public Uri MakeRequestUri(Uri uri)
+        {
+            var baseUri = this.RequestUri;
+            if (uri.IsAbsoluteUri == false)
+            {
+                return CreateUriByRelative(baseUri, uri);
+            }
+
+            if (uri.AbsolutePath == "/")
+            {
+                return CreateUriByAbsolute(uri, baseUri);
+            }
+
+            return uri;
+        }
+
+        /// <summary>
+        /// 创建uri
+        /// </summary>
+        /// <param name="baseUri"></param>
+        /// <param name="relative"></param>
+        /// <returns></returns>
+        private static Uri CreateUriByRelative(Uri? baseUri, Uri relative)
+        {
+            if (baseUri == null)
+            {
+                return relative;
+            }
+
+            if (baseUri.IsAbsoluteUri == true)
+            {
+                return new Uri(baseUri, relative);
+            }
+
+            return relative;
+        }
+
+        /// <summary>
+        /// 创建uri
+        /// 参数值的uri是绝对uir，且只有根路径
+        /// </summary>
+        /// <param name="absolute"></param>
+        /// <param name="uri"></param>
+        /// <returns></returns>
+        private static Uri CreateUriByAbsolute(Uri absolute, Uri? uri)
+        {
+            if (uri == null)
+            {
+                return absolute;
+            }
+
+            var relative = uri.ToRelativeUri();
+            return relative == "/" ? absolute : new Uri(absolute, relative);
+        }
+
+        /// <summary>
         /// 追加Query参数到请求路径
         /// </summary>
         /// <param name="key">参数名</param>

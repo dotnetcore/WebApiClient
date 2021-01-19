@@ -9,6 +9,65 @@ namespace WebApiClientCore.Test
     public class HttpApiRequestMessageTest
     {
         [Fact]
+        public void MakeRequestUriTest()
+        {
+            var request = new HttpApiRequestMessage();
+            var uri = request.MakeRequestUri(new Uri("a", UriKind.RelativeOrAbsolute));
+            Assert.Equal("a", uri.OriginalString);
+
+            request = new HttpApiRequestMessage();
+            uri = request.MakeRequestUri(new Uri("http://a.com", UriKind.RelativeOrAbsolute));
+            Assert.Equal("http://a.com", uri.OriginalString);
+
+            request = new HttpApiRequestMessage();
+            uri = request.MakeRequestUri(new Uri("http://a.com/a", UriKind.RelativeOrAbsolute));
+            Assert.Equal("http://a.com/a", uri.OriginalString);
+        }
+
+        [Fact]
+        public void MakeRequestUri2Test()
+        {
+            var request = new HttpApiRequestMessage();
+            request.RequestUri = new Uri("http://b.com/", UriKind.RelativeOrAbsolute);
+            var uri = request.MakeRequestUri(new Uri("a", UriKind.RelativeOrAbsolute));
+            Assert.Equal("http://b.com/a", uri.OriginalString);
+
+            request = new HttpApiRequestMessage();
+            request.RequestUri = new Uri("http://b.com/", UriKind.RelativeOrAbsolute);
+            uri = request.MakeRequestUri(new Uri("http://a.com", UriKind.RelativeOrAbsolute));
+            Assert.Equal("http://a.com", uri.OriginalString);
+
+            request = new HttpApiRequestMessage();
+            request.RequestUri = new Uri("http://b.com/", UriKind.RelativeOrAbsolute);
+            uri = request.MakeRequestUri(new Uri("http://a.com/a", UriKind.RelativeOrAbsolute));
+            Assert.Equal("http://a.com/a", uri.OriginalString);
+        }
+
+        [Fact]
+        public void MakeRequestUri3Test()
+        {
+            var request = new HttpApiRequestMessage();
+            request.RequestUri = new Uri("http://b.com/x", UriKind.RelativeOrAbsolute);
+            var uri = request.MakeRequestUri(new Uri("a", UriKind.RelativeOrAbsolute));
+            Assert.Equal("http://b.com/a", uri.OriginalString);
+
+            request = new HttpApiRequestMessage();
+            request.RequestUri = new Uri("http://b.com/x", UriKind.RelativeOrAbsolute);
+            uri = request.MakeRequestUri(new Uri("http://a.com", UriKind.RelativeOrAbsolute));
+            Assert.Equal("http://a.com/x", uri.OriginalString);
+
+            request = new HttpApiRequestMessage();
+            request.RequestUri = new Uri("http://b.com/x", UriKind.RelativeOrAbsolute);
+            uri = request.MakeRequestUri(new Uri("http://a.com/", UriKind.RelativeOrAbsolute));
+            Assert.Equal("http://a.com/x", uri.OriginalString);
+
+            request = new HttpApiRequestMessage();
+            request.RequestUri = new Uri("http://b.com/x", UriKind.RelativeOrAbsolute);
+            uri = request.MakeRequestUri(new Uri("http://a.com/a", UriKind.RelativeOrAbsolute));
+            Assert.Equal("http://a.com/a", uri.OriginalString);
+        }
+
+        [Fact]
         public void AddUrlQueryTest()
         {
             var request = new HttpApiRequestMessage();
