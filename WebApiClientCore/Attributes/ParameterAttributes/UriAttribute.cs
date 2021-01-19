@@ -119,11 +119,6 @@ namespace WebApiClientCore.Attributes
                 return absolute;
             }
 
-            if (uri.IsAbsoluteUri == false)
-            {
-                return new Uri(absolute, uri);
-            }
-
             var relative = uri.ToRelativeUri();
             return relative == "/" ? absolute : new Uri(absolute, relative);
         }
