@@ -8,7 +8,7 @@
         /// <summary>
         /// 获取静态实例
         /// </summary>
-        public static IActionInvokerProvider Instance { get; } = new ActionInvokerProvider();
+        public static IActionInvokerProvider Default { get; } = new ActionInvokerProvider();
 
         /// <summary>
         /// 创建Action执行器

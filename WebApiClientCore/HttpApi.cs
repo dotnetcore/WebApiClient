@@ -34,8 +34,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static THttpApi Create<THttpApi>(HttpClientContext httpClientContext)
         {
-            var interceptor = new ActionInterceptor(httpClientContext);
-            return Create<THttpApi>(interceptor, ActionInvokerProvider.Instance);
+            return Create<THttpApi>(httpClientContext, ActionInvokerProvider.Default);
         }
 
         /// <summary>
