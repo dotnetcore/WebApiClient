@@ -115,8 +115,30 @@ namespace WebApiClientCore
                 return absolute;
             }
 
-            var relative = uri.ToRelativeUri();
+            var relative = GetRelativeUri(uri);
             return relative == "/" ? absolute : new Uri(absolute, relative);
+        }
+
+        /// <summary>
+        /// 返回相对uri
+        /// </summary>
+        /// <param name="uri">uri</param> 
+        /// <returns></returns>
+        private static string GetRelativeUri(Uri uri)
+        {
+            if (uri.IsAbsoluteUri == false)
+            {
+                return uri.OriginalString;
+            }
+
+            var path = uri.OriginalString.AsSpan().Slice(uri.Scheme.Length + 3);
+            var index = path.IndexOf('/');
+            if (index < 0)
+            {
+                return "/";
+            }
+
+            return path.Slice(index).ToString();
         }
 
         /// <summary>
@@ -139,7 +161,7 @@ namespace WebApiClientCore
                 throw new ArgumentNullException(nameof(key));
             }
 
-            this.RequestUri = uri.AddQuery(key, value);
+            this.RequestUri = new UriString(uri).AddQuery(key, value).ToUri();
         }
 
         /// <summary>
