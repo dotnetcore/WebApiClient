@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Abstractions
 {
     /// <summary>
     /// 定义Api参数修饰特性的行为

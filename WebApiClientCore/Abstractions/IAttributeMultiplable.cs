@@ -1,4 +1,4 @@
-﻿namespace WebApiClientCore
+﻿namespace WebApiClientCore.Abstractions
 {
     /// <summary>
     /// 定义特性是否允许在接口与方法上重复声明

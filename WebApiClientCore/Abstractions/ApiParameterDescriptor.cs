@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading;
 using WebApiClientCore.Attributes;
-using WebApiClientCore.BuildinAttributes;
+using WebApiClientCore.Internals.Attributes;
 
 namespace WebApiClientCore.Abstractions
 {

@@ -1,4 +1,4 @@
-﻿namespace WebApiClientCore
+﻿namespace WebApiClientCore.Abstractions
 {
     /// <summary>
     /// 定义特性是否启用的接口

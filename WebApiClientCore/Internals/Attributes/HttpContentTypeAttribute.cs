@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 using WebApiClientCore.Attributes;
 using WebApiClientCore.Exceptions;
 
-namespace WebApiClientCore.BuildinAttributes
+namespace WebApiClientCore.Internals.Attributes
 {
     /// <summary>
     /// 表示参数内容为HttpContent类型的处理特性
     /// </summary>
-    class HttpContentTypeAttribute : HttpContentAttribute
+    sealed class HttpContentTypeAttribute : HttpContentAttribute
     {
         /// <summary>
         /// 设置参数到http请求内容

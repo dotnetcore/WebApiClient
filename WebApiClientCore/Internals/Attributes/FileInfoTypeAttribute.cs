@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 using WebApiClientCore.Attributes;
 using WebApiClientCore.Parameters;
 
-namespace WebApiClientCore.BuildinAttributes
+namespace WebApiClientCore.Internals.Attributes
 {
     /// <summary>
     /// 表示参数内容为FileInfo类型的处理特性
     /// </summary>
-    class FileInfoTypeAttribute : ApiParameterAttribute
+    sealed class FileInfoTypeAttribute : ApiParameterAttribute
     {
         /// <summary>
         /// http请求之前

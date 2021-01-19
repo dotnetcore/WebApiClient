@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using WebApiClientCore.ResponseCaches;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Abstractions
 {
     /// <summary>
     /// 定义ApiAction缓存修饰特性的行为

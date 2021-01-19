@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using WebApiClientCore.Abstractions;
 using WebApiClientCore.Attributes;
 
-namespace WebApiClientCore.BuildinAttributes
+namespace WebApiClientCore.Internals.Attributes
 {
     /// <summary>
     /// 表示参数类型为IApiParameter的处理特性
     /// </summary>
-    class ApiParameterTypeAttribute : ApiParameterAttribute
+    sealed class ApiParameterTypeAttribute : ApiParameterAttribute
     {
         /// <summary>
         /// http请求之前

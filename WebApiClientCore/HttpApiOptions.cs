@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Xml;
+using WebApiClientCore.Abstractions;
 using WebApiClientCore.Serialization;
 using WebApiClientCore.Serialization.JsonConverters;
 

@@ -3,12 +3,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using WebApiClientCore.Attributes;
 
-namespace WebApiClientCore.BuildinAttributes
+namespace WebApiClientCore.Internals.Attributes
 {
     /// <summary>
     /// 表示参数类型为CancellationToken处理特性
     /// </summary>
-    class CancellationTokenTypeAttribute : ApiParameterAttribute
+    sealed class CancellationTokenTypeAttribute : ApiParameterAttribute
     {
         /// <summary>
         /// http请求之前
