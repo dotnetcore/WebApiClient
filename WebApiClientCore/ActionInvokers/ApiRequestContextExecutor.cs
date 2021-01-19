@@ -4,16 +4,16 @@ using System.Threading.Tasks;
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 上下文执行器
+    /// 请求上下文执行器
     /// </summary>
-    static class ContextInvoker
+    static class ApiRequestContextExecutor
     {
         /// <summary>
         /// 执行上下文
         /// </summary>
         /// <param name="request">请求上下文</param>
         /// <returns></returns>
-        public static async Task<ApiResponseContext> InvokeAsync(ApiRequestContext request)
+        public static async Task<ApiResponseContext> ExecuteAsync(ApiRequestContext request)
         {
             await HandleRequestAsync(request).ConfigureAwait(false);
             var response = await HttpRequest.SendAsync(request).ConfigureAwait(false);
