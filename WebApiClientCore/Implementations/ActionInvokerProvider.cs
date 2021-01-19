@@ -1,4 +1,6 @@
-﻿namespace WebApiClientCore
+﻿using System.Threading.Tasks;
+
+namespace WebApiClientCore
 {
     /// <summary>
     /// Action执行器提供者
@@ -18,7 +20,10 @@
         public IActionInvoker CreateActionInvoker(ApiActionDescriptor apiAction)
         {
             var resultType = apiAction.Return.DataType.Type;
-            var invokerType = typeof(MultiplexedActionInvoker<>).MakeGenericType(resultType);
+            var invokerType = apiAction.Return.ReturnType.IsInheritFrom<Task>()
+                ? typeof(TaskActionInvoker<>).MakeGenericType(resultType)
+                : typeof(ITaskActionInvoker<>).MakeGenericType(resultType);
+
             return invokerType.CreateInstance<IActionInvoker>(apiAction);
         }
     }

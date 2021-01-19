@@ -6,10 +6,10 @@ using WebApiClientCore.Exceptions;
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 表示ApiAction执行器
+    /// 表示Task返回声明的Action执行器
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
-    class ActionInvoker<TResult> : IActionInvoker
+    class TaskActionInvoker<TResult> : IActionInvoker
     {
         /// <summary>
         /// 获取Action描述
@@ -17,10 +17,10 @@ namespace WebApiClientCore
         public ApiActionDescriptor ApiAction { get; }
 
         /// <summary>
-        /// 上下文执行器
+        /// Task返回声明的Action执行器
         /// </summary>
         /// <param name="apiAction"></param>
-        public ActionInvoker(ApiActionDescriptor apiAction)
+        public TaskActionInvoker(ApiActionDescriptor apiAction)
         {
             this.ApiAction = apiAction;
         }
