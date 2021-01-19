@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using WebApiClientCore.Attributes;
+using WebApiClientCore.Abstractions;
 using WebApiClientCore.Parameters;
 
 namespace WebApiClientCore.Internals.Attributes
@@ -9,14 +9,14 @@ namespace WebApiClientCore.Internals.Attributes
     /// <summary>
     /// 表示参数内容为FileInfo类型的处理特性
     /// </summary>
-    sealed class FileInfoTypeAttribute : ApiParameterAttribute
+    sealed class FileInfoTypeAttribute : IApiParameterAttribute
     {
         /// <summary>
         /// http请求之前
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override async Task OnRequestAsync(ApiParameterContext context)
+        public async Task OnRequestAsync(ApiParameterContext context)
         {
             if (context.ParameterValue is FileInfo fileInfo)
             {

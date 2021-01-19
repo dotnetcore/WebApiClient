@@ -1,31 +1,37 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using WebApiClientCore.Attributes;
+using WebApiClientCore.Abstractions;
 
 namespace WebApiClientCore.Internals.Attributes
 {
     /// <summary>
     /// 表示参数类型为CancellationToken处理特性
     /// </summary>
-    sealed class CancellationTokenTypeAttribute : ApiParameterAttribute
+    sealed class CancellationTokenTypeAttribute : IApiParameterAttribute
     {
         /// <summary>
         /// http请求之前
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public override Task OnRequestAsync(ApiParameterContext context)
+        public Task OnRequestAsync(ApiParameterContext context)
         {
             if (context.ParameterValue is CancellationToken token)
             {
-                context.HttpContext.CancellationTokens.Add(token);
+                if (token.Equals(CancellationToken.None) == false)
+                {
+                    context.HttpContext.CancellationTokens.Add(token);
+                }
             }
             else if (context.ParameterValue is IEnumerable<CancellationToken> tokens)
             {
                 foreach (var item in tokens)
                 {
-                    context.HttpContext.CancellationTokens.Add(item);
+                    if (token.Equals(CancellationToken.None) == false)
+                    {
+                        context.HttpContext.CancellationTokens.Add(item);
+                    }
                 }
             }
             return Task.CompletedTask;
