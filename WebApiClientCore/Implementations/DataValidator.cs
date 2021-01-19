@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using WebApiClientCore.Abstractions;
 
 namespace WebApiClientCore.Implementations
 {

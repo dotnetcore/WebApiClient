@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Abstractions
 {
     /// <summary>
     /// 表示Action描述

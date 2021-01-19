@@ -1,4 +1,5 @@
 ﻿using System;
+using WebApiClientCore.Abstractions;
 using WebApiClientCore.Exceptions;
 using WebApiClientCore.Implementations;
 

@@ -9,6 +9,19 @@ using WebApiClientCore.Parameters;
 
 namespace App.Clients
 {
+    class MyFilter : ApiFilterAttribute
+    {
+        public override Task OnRequestAsync(ApiRequestContext context)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override Task OnResponseAsync(ApiResponseContext context)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
+
     /// <summary>
     /// 用户操作接口
     /// </summary>    

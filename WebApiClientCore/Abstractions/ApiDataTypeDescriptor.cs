@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Abstractions
 {
     /// <summary>
     /// 表示返回的Task(Of T)的T类型描述

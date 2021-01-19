@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiClientCore.Abstractions;
 using WebApiClientCore.Attributes;
 using WebApiClientCore.Exceptions;
 using WebApiClientCore.HttpContents;

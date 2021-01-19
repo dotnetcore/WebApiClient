@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
+using WebApiClientCore.Implementations;
 using Xunit;
 
-namespace WebApiClientCore.Test.BuildInProxies.Tasks
+namespace WebApiClientCore.Test.Implementations
 {
     public class ActionHandleTaskTest
     {

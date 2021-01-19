@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Net.Http;
+using WebApiClientCore.Abstractions;
 using WebApiClientCore.ResponseCaches;
 using WebApiClientCore.Serialization;
 

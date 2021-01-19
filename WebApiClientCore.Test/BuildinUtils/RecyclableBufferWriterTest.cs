@@ -1,7 +1,7 @@
 ﻿using System;
 using Xunit;
 
-namespace WebApiClientCore.Test.BuildinBuffers
+namespace WebApiClientCore.Test.BuildinUtils
 {
     public class RecyclableBufferWriterTest
     {

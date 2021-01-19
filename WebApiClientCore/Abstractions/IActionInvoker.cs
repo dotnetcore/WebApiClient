@@ -1,4 +1,4 @@
-﻿namespace WebApiClientCore
+﻿namespace WebApiClientCore.Abstractions
 {
     /// <summary>
     /// 定义Action执行器的接口

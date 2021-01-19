@@ -1,4 +1,4 @@
-﻿namespace WebApiClientCore
+﻿namespace WebApiClientCore.Abstractions
 {
     /// <summary>
     /// 定义方法接口拦截器的行为

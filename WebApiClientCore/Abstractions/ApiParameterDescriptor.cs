@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Threading;
 using WebApiClientCore.Attributes;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Abstractions
 {
     /// <summary>
     /// 表示请求Api的参数描述

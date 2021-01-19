@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace WebApiClientCore.Test.ResponseCaches
+namespace WebApiClientCore.Test.BuildinUtils
 {
     public class MediaTypeTest
     {

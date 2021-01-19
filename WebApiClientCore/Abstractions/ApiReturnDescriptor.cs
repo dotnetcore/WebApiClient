@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Reflection;
 using WebApiClientCore.Attributes;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Abstractions
 {
     /// <summary>
     /// 表示请求Api的返回描述

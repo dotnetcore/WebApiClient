@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiClientCore.Abstractions;
 using WebApiClientCore.Attributes;
 using Xunit;
 

@@ -1,6 +1,7 @@
-﻿using Xunit;
+﻿using WebApiClientCore.Abstractions;
+using Xunit;
 
-namespace WebApiClientCore.Test
+namespace WebApiClientCore.Test.Abstractions
 {
     public class ApiDataTypeDescriptorTest
     {
