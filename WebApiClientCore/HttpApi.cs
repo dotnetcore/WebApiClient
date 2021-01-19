@@ -22,64 +22,50 @@ namespace WebApiClientCore
             }
             return httpApiType.FullName;
         }
-         
+
         /// <summary>
         /// 创建THttpApi的代理实例
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
-        /// <param name="httpClientContext">httpClient上下文</param>
+        /// <param name="httpClientContext">httpClient上下文</param> 
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
         public static THttpApi Create<THttpApi>(HttpClientContext httpClientContext)
         {
-            return Create<THttpApi>(new ActionInterceptor(httpClientContext));
+            var interceptor = new ActionInterceptor(httpClientContext);
+            return Create<THttpApi>(interceptor, ActionInvokerProvider.Instance);
         }
 
         /// <summary>
         /// 创建THttpApi的代理实例
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
-        /// <param name="actionInterceptor">Action拦截器</param>  
+        /// <param name="httpClientContext">httpClient上下文</param>
+        /// <param name="actionInvokerProvider">Action执行器提供者</param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
-        public static THttpApi Create<THttpApi>(IActionInterceptor actionInterceptor)
+        public static THttpApi Create<THttpApi>(HttpClientContext httpClientContext, IActionInvokerProvider actionInvokerProvider)
         {
-            return new HttpApiEmitActivator<THttpApi>().CreateInstance(actionInterceptor);
+            var interceptor = new ActionInterceptor(httpClientContext);
+            return Create<THttpApi>(interceptor, actionInvokerProvider);
         }
 
-
         /// <summary>
-        /// 表示httpApi方法调用的拦截器
+        /// 创建THttpApi的代理实例
         /// </summary>
-        private class ActionInterceptor : IActionInterceptor
+        /// <typeparam name="THttpApi"></typeparam>
+        /// <param name="actionInterceptor">Action拦截器</param>
+        /// <param name="actionInvokerProvider">Action执行器提供者</param>  
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="ProxyTypeCreateException"></exception>
+        /// <returns></returns>
+        public static THttpApi Create<THttpApi>(IActionInterceptor actionInterceptor, IActionInvokerProvider actionInvokerProvider)
         {
-            /// <summary>
-            /// 服务上下文
-            /// </summary>
-            private readonly HttpClientContext context;
-
-            /// <summary>
-            /// httpApi方法调用的拦截器
-            /// </summary>
-            /// <param name="context">服务上下文</param> 
-            public ActionInterceptor(HttpClientContext context)
-            {
-                this.context = context;
-            }
-
-            /// <summary>
-            /// 拦截方法的调用
-            /// </summary>
-            /// <param name="actionInvoker">action执行器</param> 
-            /// <param name="arguments">方法的参数集合</param>
-            /// <returns></returns>
-            public object Intercept(IActionInvoker actionInvoker, object?[] arguments)
-            {
-                return actionInvoker.Invoke(this.context, arguments);
-            }
+            return new HttpApiEmitActivator<THttpApi>(actionInvokerProvider).CreateInstance(actionInterceptor);
         }
     }
 }

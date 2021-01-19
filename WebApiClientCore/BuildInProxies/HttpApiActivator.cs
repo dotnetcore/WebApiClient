@@ -38,17 +38,18 @@ namespace WebApiClientCore
         protected abstract Func<IActionInterceptor, THttpApi> CreateFactory();
 
         /// <summary>
-        /// 返回接口的action执行器
+        /// 创建接口的action执行器
         /// </summary>
+        /// <param name="actionInvokerProvider">Action执行器提供者</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        protected IActionInvoker[] GetActionInvokers()
+        protected IActionInvoker[] CreateActionInvokers(IActionInvokerProvider actionInvokerProvider)
         {
             var interfaceType = typeof(THttpApi);
             return interfaceType
                 .GetAllApiMethods()
                 .Select(item => new ApiActionDescriptor(item, interfaceType))
-                .Select(item => MultiplexedActionInvoker.Create(item))
+                .Select(item => actionInvokerProvider.CreateActionInvoker(item))
                 .ToArray();
         }
     }
