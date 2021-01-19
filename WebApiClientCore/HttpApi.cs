@@ -2,6 +2,7 @@
 using WebApiClientCore.Abstractions;
 using WebApiClientCore.Exceptions;
 using WebApiClientCore.Implementations;
+using WebApiClientCore.Internals.TypeProxies;
 
 namespace WebApiClientCore
 {

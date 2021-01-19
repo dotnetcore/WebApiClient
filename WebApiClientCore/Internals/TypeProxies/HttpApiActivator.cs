@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using WebApiClientCore.Abstractions;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Internals.TypeProxies
 {
     /// <summary>
     /// 表示THttpApi的实例创建器抽象

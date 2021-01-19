@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Internals.Utilities
 {
     /// <summary>
     /// 提供媒体类型比较

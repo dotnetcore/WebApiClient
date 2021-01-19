@@ -1,4 +1,5 @@
 ﻿using System;
+using WebApiClientCore.Internals;
 
 namespace WebApiClientCore
 {

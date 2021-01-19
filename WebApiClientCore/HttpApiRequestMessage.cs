@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
 using WebApiClientCore.HttpContents;
+using WebApiClientCore.Internals;
 
 namespace WebApiClientCore
 {

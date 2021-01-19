@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using WebApiClientCore.Attributes;
+using WebApiClientCore.Internals;
 
 namespace WebApiClientCore.Abstractions
 {

@@ -3,7 +3,7 @@ using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Internals
 {
     /// <summary>
     /// 表示可回收的自动扩容BufferWriter

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Internals.Utilities
 {
     /// <summary>
     /// 表示式委托

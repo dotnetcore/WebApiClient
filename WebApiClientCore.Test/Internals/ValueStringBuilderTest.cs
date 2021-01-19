@@ -1,6 +1,7 @@
-﻿using Xunit;
+﻿using WebApiClientCore.Internals;
+using Xunit;
 
-namespace WebApiClientCore.Test.BuildinUtils
+namespace WebApiClientCore.Test.Internals
 {
     public class ValueStringBuilderTest
     {

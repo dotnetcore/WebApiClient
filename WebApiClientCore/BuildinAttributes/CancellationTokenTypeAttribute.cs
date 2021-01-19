@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using WebApiClientCore.Attributes;
 
-namespace WebApiClientCore.Attributes
+namespace WebApiClientCore.BuildinAttributes
 {
     /// <summary>
     /// 表示参数类型为CancellationToken处理特性

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Internals
 {
     /// <summary>
     /// 表示Uri值

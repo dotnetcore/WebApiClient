@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Internals.Utilities
 {
     /// <summary>
     /// http工具类

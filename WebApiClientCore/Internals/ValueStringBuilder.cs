@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Internals
 {
     /// <summary>
     /// StringBuilder

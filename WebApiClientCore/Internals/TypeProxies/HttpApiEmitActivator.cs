@@ -4,8 +4,9 @@ using System.Reflection;
 using System.Reflection.Emit;
 using WebApiClientCore.Abstractions;
 using WebApiClientCore.Exceptions;
+using WebApiClientCore.Internals.Utilities;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Internals.TypeProxies
 {
     /// <summary>
     /// 表示THttpApi的实例Emit创建器

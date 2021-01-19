@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using WebApiClientCore;
 using WebApiClientCore.Exceptions;
+using WebApiClientCore.Internals.Utilities;
 
 namespace System.Net.Http
 {

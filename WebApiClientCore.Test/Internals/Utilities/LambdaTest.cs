@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using WebApiClientCore.Internals.Utilities;
 using Xunit;
 
-namespace WebApiClientCore.Test.BuildinUtils
+namespace WebApiClientCore.Test.Internals.Utilities
 {
     public class LambdaTest
     {

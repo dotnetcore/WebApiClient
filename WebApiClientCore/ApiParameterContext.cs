@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using WebApiClientCore.Abstractions;
+using WebApiClientCore.Internals;
 using WebApiClientCore.Serialization;
 
 namespace WebApiClientCore
