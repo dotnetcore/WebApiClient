@@ -9,7 +9,7 @@ namespace WebApiClientCore
     /// <summary>
     /// 提供请求头枚举到名称的转换
     /// </summary>
-    static class RequestHeader
+    static class HttpRequestHeaderExtensions
     {
         /// <summary>
         /// HttpRequestHeader的类型
@@ -19,17 +19,16 @@ namespace WebApiClientCore
         /// <summary>
         /// 请求头枚举和名称的缓存
         /// </summary>
-        private static readonly Dictionary<HttpRequestHeader, string> staticCache = new Dictionary<HttpRequestHeader, string>();
+        private static readonly Dictionary<HttpRequestHeader, string> cache = new Dictionary<HttpRequestHeader, string>();
 
         /// <summary>
         /// 请求头枚举到名称的转换
         /// </summary>
-        static RequestHeader()
+        static HttpRequestHeaderExtensions()
         {
-            var enums = Enum.GetValues(httpRequestHeaderType).Cast<HttpRequestHeader>();
-            foreach (var item in enums)
+            foreach (var header in Enum.GetValues(httpRequestHeaderType).Cast<HttpRequestHeader>())
             {
-                staticCache.Add(item, item.GetDisplayName());
+                cache.Add(header, header.GetHeaderName());
             }
         }
 
@@ -38,7 +37,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="header">请求头枚举</param>
         /// <returns></returns>
-        private static string GetDisplayName(this HttpRequestHeader header)
+        private static string GetHeaderName(this HttpRequestHeader header)
         {
             return httpRequestHeaderType
                 .GetField(header.ToString())?
@@ -47,13 +46,13 @@ namespace WebApiClientCore
         }
 
         /// <summary>
-        /// 获取请求头名称
+        /// 转换为header名
         /// </summary>
         /// <param name="header">请求头枚举</param>
         /// <returns></returns>
-        public static string GetName(HttpRequestHeader header)
+        public static string ToHeaderName(this HttpRequestHeader header)
         {
-            if (staticCache.TryGetValue(header, out var name))
+            if (cache.TryGetValue(header, out var name))
             {
                 return name;
             }

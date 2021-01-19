@@ -15,7 +15,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="name">header名称</param>
         [AttributeCtorUsage(AttributeTargets.Parameter)]
         public HeaderAttribute(HttpRequestHeader name)
-            : this(RequestHeader.GetName(name))
+            : this(name.ToHeaderName())
         {
         }
 

@@ -18,7 +18,7 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// Header值 
         /// </summary>
-        private readonly string? value; 
+        private readonly string? value;
 
         /// <summary>
         /// 将指定值设置到Header       
@@ -27,7 +27,7 @@ namespace WebApiClientCore.Attributes
         /// <param name="value">header值</param>
         [AttributeCtorUsage(AttributeTargets.Interface | AttributeTargets.Method)]
         public HeaderAttribute(HttpRequestHeader name, string value)
-            : this(RequestHeader.GetName(name), value)
+            : this(name.ToHeaderName(), value)
         {
         }
 
@@ -56,6 +56,6 @@ namespace WebApiClientCore.Attributes
                 context.HttpContext.RequestMessage.Headers.TryAddWithoutValidation(this.name, this.value);
             }
             return Task.CompletedTask;
-        } 
+        }
     }
 }
