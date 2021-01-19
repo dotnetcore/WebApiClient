@@ -45,6 +45,11 @@ namespace WebApiClientCore
         /// <param name="value"></param>
         public void Append(ReadOnlySpan<char> value)
         {
+            if (value.IsEmpty)
+            {
+                return;
+            }
+
             var newSize = this.index + value.Length;
             if (newSize > this.chars.Length)
             {

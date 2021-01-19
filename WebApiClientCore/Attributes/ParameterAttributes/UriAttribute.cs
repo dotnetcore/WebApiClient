@@ -124,13 +124,8 @@ namespace WebApiClientCore.Attributes
                 return new Uri(absolute, uri);
             }
 
-            if (uri.AbsolutePath == "/")
-            {
-                return absolute;
-            }
-
             var relative = uri.ToRelativeUri();
-            return new Uri(absolute, relative);
+            return relative == "/" ? absolute : new Uri(absolute, relative);
         }
     }
 }

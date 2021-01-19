@@ -62,7 +62,7 @@ namespace WebApiClientCore
         /// </summary>
         private sealed class AbsolutePath : HttpPath
         {
-            private Uri path;
+            private readonly Uri path;
 
             public AbsolutePath(Uri path)
             {
@@ -85,7 +85,7 @@ namespace WebApiClientCore
         /// </summary>
         private sealed class RelativePath : HttpPath
         {
-            private Uri path;
+            private readonly Uri path;
 
             public RelativePath(Uri path)
             {

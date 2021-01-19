@@ -6,6 +6,29 @@ namespace WebApiClientCore.Test.BuildinExtensions
     public class UriExtensionsTest
     {
         [Fact]
+        public void ToRelativeUriTest()
+        {
+            var uri = new Uri("http://www.webapiclient.com").ToRelativeUri();
+            Assert.Equal("/", uri);
+
+            uri = new Uri("http://www.webapiclient.com/").ToRelativeUri();
+            Assert.Equal("/", uri);
+
+            uri = new Uri("http://www.webapiclient.com/我").ToRelativeUri();
+            Assert.Equal("/我", uri);
+
+            uri = new Uri("/12", UriKind.Relative).ToRelativeUri();
+            Assert.Equal("/12", uri);
+
+            uri = new Uri("12", UriKind.Relative).ToRelativeUri();
+            Assert.Equal("12", uri);
+
+            uri = new Uri("我", UriKind.Relative).ToRelativeUri();
+            Assert.Equal("我", uri);
+        }
+
+
+        [Fact]
         public void AddQueryTest()
         {
             var uri = new Uri("http://www.webapiclient.com");

@@ -6,7 +6,7 @@ namespace WebApiClientCore
     /// 提供Uri扩展
     /// </summary>
     static class UriExtensions
-    { 
+    {
         /// <summary>
         /// 转换为相对uri
         /// </summary>
@@ -69,7 +69,9 @@ namespace WebApiClientCore
             var baseSpan = uriSpan.Slice(0, uriSpan.Length - fragmentSpan.Length).TrimEnd('?').TrimEnd('&');
             var concat = baseSpan.LastIndexOf('?') < 0 ? '?' : '&';
             var nameSpan = Uri.EscapeDataString(name);
-            var valueSpan = string.IsNullOrEmpty(value) ? ReadOnlySpan<char>.Empty : Uri.EscapeDataString(value).AsSpan();
+            var valueSpan = string.IsNullOrEmpty(value)
+                ? ReadOnlySpan<char>.Empty
+                : Uri.EscapeDataString(value).AsSpan();
 
             var builder = new ValueStringBuilder(stackalloc char[256]);
             builder.Append(baseSpan);
