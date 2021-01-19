@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using System;
+using WebApiClientCore.Internals.Utilities;
 
 namespace WebApiClientCore.Benchmarks.CreateInstances
 {

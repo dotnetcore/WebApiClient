@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
+using WebApiClientCore.Internals;
 
 namespace WebApiClientCore.Benchmarks.Buffers
 {

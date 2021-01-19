@@ -2,6 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
+using WebApiClientCore.Internals.Utilities;
 using Xunit;
 
 namespace WebApiClientCore.Test
