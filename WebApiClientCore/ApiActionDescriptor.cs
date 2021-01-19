@@ -83,17 +83,20 @@ namespace WebApiClientCore
                 interfaceType = method.DeclaringType;
             }
 
+            var methodAttributes = method.GetCustomAttributes();
+            var interfaceAttributes = interfaceType.GetInterfaceCustomAttributes();
+
             // 接口特性优先于方法所在类型的特性
-            var actionAttributes = method
-                .GetAttributes<IApiActionAttribute>()
-                .Concat(interfaceType.GetAttributes<IApiActionAttribute>(inclueBases: true))
+            var actionAttributes = methodAttributes
+                .OfType<IApiActionAttribute>()
+                .Concat(interfaceAttributes.OfType<IApiActionAttribute>())
                 .Distinct(MultiplableComparer<IApiActionAttribute>.Default)
                 .OrderBy(item => item.OrderIndex)
                 .ToReadOnlyList();
 
-            var filterAttributes = method
-                .GetAttributes<IApiFilterAttribute>()
-                .Concat(interfaceType.GetAttributes<IApiFilterAttribute>(inclueBases: true))
+            var filterAttributes = methodAttributes
+                .OfType<IApiFilterAttribute>()
+                .Concat(interfaceAttributes.OfType<IApiFilterAttribute>())
                 .Distinct(MultiplableComparer<IApiFilterAttribute>.Default)
                 .OrderBy(item => item.OrderIndex)
                 .Where(item => item.Enable)
@@ -105,10 +108,10 @@ namespace WebApiClientCore
             this.Member = method;
             this.Name = method.Name;
             this.Attributes = actionAttributes;
-            this.CacheAttribute = method.GetAttribute<IApiCacheAttribute>();
+            this.CacheAttribute = methodAttributes.OfType<IApiCacheAttribute>().FirstOrDefault();
             this.FilterAttributes = filterAttributes;
 
-            this.Return = new ApiReturnDescriptor(method, interfaceType);
+            this.Return = new ApiReturnDescriptor(method.ReturnType, methodAttributes, interfaceAttributes);
             this.Parameters = method.GetParameters().Select(p => new ApiParameterDescriptor(p)).ToReadOnlyList();
             this.Properties = new ConcurrentDictionary<object, object>();
         }

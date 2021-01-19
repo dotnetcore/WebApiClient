@@ -32,8 +32,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 请求Api的返回描述
         /// </summary>
-        /// <param name="method">方法信息</param> 
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="method">方法信息</param>  
         public ApiReturnDescriptor(MethodInfo method)
             : this(method, method.DeclaringType)
         {
@@ -43,26 +42,31 @@ namespace WebApiClientCore
         /// 请求Api的返回描述
         /// </summary>
         /// <param name="method">方法信息</param>
-        /// <param name="interfaceType">接口类型</param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="interfaceType">接口类型</param> 
         public ApiReturnDescriptor(MethodInfo method, Type interfaceType)
+            : this(method.ReturnType, method.GetCustomAttributes(), interfaceType.GetInterfaceCustomAttributes())
         {
-            if (method == null)
-            {
-                throw new ArgumentNullException(nameof(method));
-            }
+        }
 
-            var type = method.ReturnType.IsGenericType
-                ? method.ReturnType.GetGenericArguments().First()
+        /// <summary>
+        /// 请求Api的返回描述
+        /// </summary>
+        /// <param name="returnType">方法返回类型</param> 
+        /// <param name="methodAttributes">方法的特性</param>
+        /// <param name="interfaceAttributes">接口的特性</param> 
+        public ApiReturnDescriptor(Type returnType, IEnumerable<Attribute> methodAttributes, IEnumerable<Attribute> interfaceAttributes)
+        {
+            var type = returnType.IsGenericType
+                ? returnType.GetGenericArguments().First()
                 : typeof(HttpResponseMessage);
 
             var dataType = new ApiDataTypeDescriptor(type);
 
-            this.ReturnType = method.ReturnType;
+            this.ReturnType = returnType;
             this.DataType = dataType;
-            this.Attributes = method
-                .GetAttributes<IApiReturnAttribute>()
-                .Concat(interfaceType.GetAttributes<IApiReturnAttribute>(inclueBases: true))
+            this.Attributes = methodAttributes
+                .OfType<IApiReturnAttribute>()
+                .Concat(interfaceAttributes.OfType<IApiReturnAttribute>())
                 .Concat(GetDefaultAttributes(dataType))
                 .Distinct(MultiplableComparer<IApiReturnAttribute>.Default)
                 .OrderBy(item => item.OrderIndex)
@@ -85,7 +89,7 @@ namespace WebApiClientCore
                 yield return new RawReturnAttribute(acceptQuality);
             }
             else
-            { 
+            {
                 yield return new JsonReturnAttribute(acceptQuality);
                 yield return new XmlReturnAttribute(acceptQuality);
                 yield return new NoneReturnAttribute(acceptQuality);

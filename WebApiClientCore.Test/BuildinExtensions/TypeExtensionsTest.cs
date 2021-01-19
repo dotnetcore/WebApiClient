@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.Json.Serialization;
 using Xunit;
 
@@ -73,6 +74,40 @@ namespace WebApiClientCore.Test.BuildinExtensions
 
             Assert.False(object.ReferenceEquals(m1, m2));
             Assert.True(m1.Length == 3);
+        }
+
+
+        class MyAttribute : Attribute
+        {
+        }
+
+        class YourAttribute : Attribute
+        {
+        }
+
+
+        [My]
+        interface Inteface1
+        {
+        }
+
+        [My]
+        interface Interface2 : Inteface1
+        {
+        }
+
+        [Your]
+        [My]
+        interface Interface3 : Interface2
+        {
+        }
+
+
+        [Fact]
+        public void GetInterfaceCustomAttributesTest()
+        {
+            Assert.Equal(2, typeof(Interface2).GetInterfaceCustomAttributes().Count());
+            Assert.Equal(4, typeof(Interface3).GetInterfaceCustomAttributes().Count());
         }
     }
 }

@@ -63,7 +63,7 @@ namespace WebApiClientCore
             var parameterAlias = parameter.GetCustomAttribute<AliasAsAttribute>();
             var parameterName = parameterAlias == null ? parameter.Name : parameterAlias.Name;
 
-            var defined = parameter.GetAttributes<IApiParameterAttribute>();
+            var defined = parameter.GetCustomAttributes().OfType<IApiParameterAttribute>();
             var attributes = GetAttributes(parameterType, defined).ToReadOnlyList();
 
             var validationAttributes = parameter

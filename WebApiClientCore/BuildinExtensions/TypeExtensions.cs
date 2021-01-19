@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -72,6 +73,21 @@ namespace WebApiClientCore
             return (T)instance;
         }
 
+        /// <summary>
+        /// 获取自定义特性
+        /// </summary> 
+        /// <param name="interfaceType">接口类型</param>
+        /// <param name="inclueBases">是否包括基础接口定义的特性</param> 
+        /// <returns></returns>
+        public static IEnumerable<Attribute> GetInterfaceCustomAttributes(this Type interfaceType, bool inclueBases = true)
+        {
+            var types = Enumerable.Repeat(interfaceType, 1);
+            if (inclueBases == true)
+            {
+                types = types.Concat(interfaceType.GetInterfaces());
+            }
+            return types.SelectMany(item => item.GetCustomAttributes()).ToArray();
+        }
 
         /// <summary>
         /// 获取接口类型及其继承的接口的所有方法
