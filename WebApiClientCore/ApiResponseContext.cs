@@ -3,7 +3,9 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using WebApiClientCore.Serialization;
 
 namespace WebApiClientCore
 {
@@ -84,24 +86,23 @@ namespace WebApiClientCore
 
             var encoding = content.GetEncoding();
             var options = this.HttpContext.HttpApiOptions.JsonDeserializeOptions;
-            var serializer = this.HttpContext.ServiceProvider.GetJsonSerializer();
 
             if (Encoding.UTF8.Equals(encoding) == false)
             {
                 var byteArray = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
                 var utf8Json = Encoding.Convert(encoding, Encoding.UTF8, byteArray);
-                return serializer.Deserialize(utf8Json, objType, options);
+                return JsonSerializer.Deserialize(utf8Json, objType, options);
             }
 
             if (content.IsBuffered() == false)
             {
                 var utf8Json = await content.ReadAsStreamAsync().ConfigureAwait(false);
-                return await serializer.DeserializeAsync(utf8Json, objType, options).ConfigureAwait(false);
+                return await JsonSerializer.DeserializeAsync(utf8Json, objType, options).ConfigureAwait(false);
             }
             else
             {
                 var utf8Json = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                return serializer.Deserialize(utf8Json, objType, options);
+                return JsonSerializer.Deserialize(utf8Json, objType, options);
             }
         }
 
@@ -117,10 +118,9 @@ namespace WebApiClientCore
                 return objType.DefaultValue();
             }
 
-            var options = this.HttpContext.HttpApiOptions.XmlDeserializeOptions;
-            var serializer = this.HttpContext.ServiceProvider.GetXmlSerializer();
+            var options = this.HttpContext.HttpApiOptions.XmlDeserializeOptions; 
             var xml = await this.HttpContext.ResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return serializer.Deserialize(xml, objType, options);
+            return XmlSerializer.Deserialize(xml, objType, options);
         }
     }
 }

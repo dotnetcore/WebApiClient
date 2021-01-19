@@ -30,7 +30,7 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
 
             var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
             using var buffer = new RecyclableBufferWriter<byte>();
-            context.HttpContext.ServiceProvider.GetService<IJsonSerializer>().Serialize(buffer, context.Arguments[0], options);
+            JsonBufferSerializer.Serialize(buffer, context.Arguments[0], options);
             var target = buffer.WrittenSpan.ToArray();
             Assert.True(body.SequenceEqual(target));
         }

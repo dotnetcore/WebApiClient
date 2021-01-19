@@ -4,7 +4,6 @@ using System;
 using System.Net.Http;
 using WebApiClientCore;
 using WebApiClientCore.ResponseCaches;
-using WebApiClientCore.Serialization;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -23,9 +22,6 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddOptions();
             services.AddMemoryCache();
-            services.TryAddSingleton<IXmlSerializer, XmlSerializer>();
-            services.TryAddSingleton<IJsonSerializer, JsonSerializer>();
-            services.TryAddSingleton<IKeyValueSerializer, KeyValueSerializer>();
             services.TryAddSingleton<IResponseCacheProvider, ResponseCacheProvider>();
 
             var name = HttpApi.GetName(typeof(THttpApi));

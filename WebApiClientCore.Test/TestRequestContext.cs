@@ -25,9 +25,6 @@ namespace WebApiClientCore.Test
         private static HttpContext GetHttpContext()
         {
             var services = new ServiceCollection();
-            services.TryAddSingleton<IXmlSerializer, XmlSerializer>();
-            services.TryAddSingleton<IJsonSerializer, JsonSerializer>();
-            services.TryAddSingleton<IKeyValueSerializer, KeyValueSerializer>();
             services.TryAddSingleton<IResponseCacheProvider, ResponseCacheProvider>();
 
             var requestServices = services.BuildServiceProvider();

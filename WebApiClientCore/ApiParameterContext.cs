@@ -1,6 +1,7 @@
 ﻿using System.Buffers;
 using System.Collections.Generic;
 using System.Text;
+using WebApiClientCore.Serialization;
 
 namespace WebApiClientCore
 {
@@ -84,10 +85,7 @@ namespace WebApiClientCore
         public void SerializeToJson(IBufferWriter<byte> bufferWriter)
         {
             var options = this.HttpContext.HttpApiOptions.JsonSerializeOptions;
-            this.HttpContext
-                .ServiceProvider
-                .GetJsonSerializer()
-                .Serialize(bufferWriter, this.ParameterValue, options);
+            JsonBufferSerializer.Serialize(bufferWriter, this.ParameterValue, options);
         }
 
         /// <summary>
@@ -104,10 +102,7 @@ namespace WebApiClientCore
                 options.Encoding = encoding;
             }
 
-            return this.HttpContext
-                .ServiceProvider
-                .GetXmlSerializer()
-                .Serialize(this.ParameterValue, options);
+            return XmlSerializer.Serialize(this.ParameterValue, options);
         }
 
         /// <summary>
@@ -117,10 +112,7 @@ namespace WebApiClientCore
         public IList<KeyValue> SerializeToKeyValues()
         {
             var options = this.HttpContext.HttpApiOptions.KeyValueSerializeOptions;
-            return this.HttpContext
-                .ServiceProvider
-                .GetKeyValueSerializer()
-                .Serialize(this.ParameterName, this.ParameterValue, options);
+            return KeyValueSerializer.Serialize(this.ParameterName, this.ParameterValue, options);
         }
     }
 }

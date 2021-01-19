@@ -6,9 +6,9 @@ using System.Xml;
 namespace WebApiClientCore.Serialization
 {
     /// <summary>
-    /// 默认的Xml序列化工具
+    /// Xml序列化工具
     /// </summary>
-    public class XmlSerializer : IXmlSerializer
+    public static class XmlSerializer
     {
         private static readonly XmlReaderSettings readerSettings = new XmlReaderSettings();
         private static readonly XmlWriterSettings writerSettings = new XmlWriterSettings();
@@ -19,7 +19,7 @@ namespace WebApiClientCore.Serialization
         /// <param name="obj">对象</param>
         /// <param name="options">配置选项</param> 
         /// <returns></returns>
-        public string? Serialize(object? obj, XmlWriterSettings? options)
+        public static string? Serialize(object? obj, XmlWriterSettings? options)
         {
             if (obj == null)
             {
@@ -41,7 +41,7 @@ namespace WebApiClientCore.Serialization
         /// <param name="objType">对象类型</param>
         /// <param name="options">配置选项</param>
         /// <returns></returns>
-        public object? Deserialize(string? xml, Type objType, XmlReaderSettings? options)
+        public static object? Deserialize(string? xml, Type objType, XmlReaderSettings? options)
         {
             if (objType == null)
             {
