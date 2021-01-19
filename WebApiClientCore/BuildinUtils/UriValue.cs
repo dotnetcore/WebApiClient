@@ -3,9 +3,9 @@
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 表示Uri文本
+    /// 表示Uri值
     /// </summary>
-    ref struct UriString
+    ref struct UriValue
     {
         /// <summary>
         /// uri
@@ -18,10 +18,10 @@ namespace WebApiClientCore
         private readonly string uriString;
 
         /// <summary>
-        /// Uri文本
+        /// Uri值
         /// </summary>
         /// <param name="uri"></param>
-        public UriString(Uri uri)
+        public UriValue(Uri uri)
         {
             this.uri = uri;
             this.uriString = uri.OriginalString;
@@ -31,7 +31,7 @@ namespace WebApiClientCore
         /// Uri文本
         /// </summary>
         /// <param name="uriString"></param>
-        public UriString(string uriString)
+        public UriValue(string uriString)
         {
             this.uri = null;
             this.uriString = uriString;
@@ -44,7 +44,7 @@ namespace WebApiClientCore
         /// <param name="value">参数的值</param>
         /// <param name="replaced">是否替换成功</param>
         /// <returns></returns>
-        public UriString Replace(string name, string? value, out bool replaced)
+        public UriValue Replace(string name, string? value, out bool replaced)
         {
             replaced = false;
             if (this.uriString.Contains('{') == false)
@@ -58,7 +58,7 @@ namespace WebApiClientCore
             }
 
             var newUri = uriString.RepaceIgnoreCase($"{{{name}}}", value, out replaced);
-            return replaced ? new UriString(newUri) : this;
+            return replaced ? new UriValue(newUri) : this;
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace WebApiClientCore
         /// <param name="name">参数名称</param>
         /// <param name="value">参数的值</param>
         /// <returns></returns>
-        public UriString AddQuery(string name, string? value)
+        public UriValue AddQuery(string name, string? value)
         {
             var uriSpan = this.uriString.AsSpan();
             var fragmentSpan = GetFragment(uriSpan);
@@ -90,7 +90,7 @@ namespace WebApiClientCore
             builder.Append(valueSpan);
             builder.Append(fragmentSpan);
 
-            return new UriString(builder.ToString());
+            return new UriValue(builder.ToString());
         }
 
         /// <summary>

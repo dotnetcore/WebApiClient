@@ -161,7 +161,7 @@ namespace WebApiClientCore
                 throw new ArgumentNullException(nameof(key));
             }
 
-            this.RequestUri = new UriString(uri).AddQuery(key, value).ToUri();
+            this.RequestUri = new UriValue(uri).AddQuery(key, value).ToUri();
         }
 
         /// <summary>
