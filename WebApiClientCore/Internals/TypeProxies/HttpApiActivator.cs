@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
-using WebApiClientCore.Implementations;
 
 namespace WebApiClientCore.Internals.TypeProxies
 {
@@ -19,15 +18,15 @@ namespace WebApiClientCore.Internals.TypeProxies
         /// <summary>
         /// Action执行器提供者
         /// </summary>
-        private readonly IActionInvokerProvider actionInvokerProvider;
+        private readonly IApiActionProvider actionProvider;
 
         /// <summary>
         /// THttpApi的实例创建器抽象
         /// </summary>
-        /// <param name="actionInvokerProvider">Action执行器提供者</param>
-        public HttpApiActivator(IActionInvokerProvider actionInvokerProvider)
+        /// <param name="actionProvider">Action提供者</param>
+        public HttpApiActivator(IApiActionProvider actionProvider)
         {
-            this.actionInvokerProvider = actionInvokerProvider;
+            this.actionProvider = actionProvider;
         }
 
         /// <summary>
@@ -62,8 +61,8 @@ namespace WebApiClientCore.Internals.TypeProxies
             var interfaceType = typeof(THttpApi);
             return interfaceType
                 .GetAllApiMethods()
-                .Select(item => new ApiActionDescriptorImpl(item, interfaceType))
-                .Select(item => this.actionInvokerProvider.CreateActionInvoker(item))
+                .Select(item => this.actionProvider.CreateDescriptor(item, interfaceType))
+                .Select(item => this.actionProvider.CreateInvoker(item))
                 .ToArray();
         }
     }

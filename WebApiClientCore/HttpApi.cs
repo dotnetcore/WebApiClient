@@ -37,21 +37,21 @@ namespace WebApiClientCore
         public static THttpApi Create<THttpApi>(HttpClientContext httpClientContext)
         {
             var interceptor = new ActionInterceptor(httpClientContext);
-            return Create<THttpApi>(ActionInvokerProvider.Default, interceptor);
+            return Create<THttpApi>(ApiActionProvider.Default, interceptor);
         }
 
         /// <summary>
         /// 创建THttpApi的代理实例
         /// </summary>
         /// <typeparam name="THttpApi"></typeparam>
-        /// <param name="actionInvokerProvider">Action执行器提供者</param>  
+        /// <param name="actionProvider">Action提供者</param>  
         /// <param name="actionInterceptor">Action拦截器</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
-        public static THttpApi Create<THttpApi>(IActionInvokerProvider actionInvokerProvider, IActionInterceptor actionInterceptor)
+        public static THttpApi Create<THttpApi>(IApiActionProvider actionProvider, IActionInterceptor actionInterceptor)
         {
-            var activator = new HttpApiEmitActivator<THttpApi>(actionInvokerProvider);
+            var activator = new HttpApiEmitActivator<THttpApi>(actionProvider);
             return activator.CreateInstance(actionInterceptor);
         }
     }

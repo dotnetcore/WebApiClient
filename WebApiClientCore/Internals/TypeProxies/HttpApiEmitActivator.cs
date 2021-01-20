@@ -28,9 +28,9 @@ namespace WebApiClientCore.Internals.TypeProxies
         /// <summary>
         /// THttpApi的实例Emit创建器
         /// </summary>
-        /// <param name="actionInvokerProvider">Action执行器提供者</param>
-        public HttpApiEmitActivator(IActionInvokerProvider actionInvokerProvider)
-            : base(actionInvokerProvider)
+        /// <param name="actionProvider">Action提供者</param>
+        public HttpApiEmitActivator(IApiActionProvider actionProvider)
+            : base(actionProvider)
         {
         }
 
