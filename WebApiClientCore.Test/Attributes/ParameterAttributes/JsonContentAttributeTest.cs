@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using WebApiClientCore.Abstractions;
 using WebApiClientCore.Attributes;
+using WebApiClientCore.Implementations;
 using WebApiClientCore.Internals;
 using WebApiClientCore.Serialization;
 using Xunit;
@@ -15,7 +15,7 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
         [Fact]
         public async Task BeforeRequestAsyncTest()
         {
-            var apiAction = new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"));
+            var apiAction = new ApiActionDescriptorImpl(typeof(IMyApi).GetMethod("PostAsync"));
             var context = new TestRequestContext(apiAction, new
             {
                 name = "laojiu",

@@ -2,9 +2,7 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Net.Http;
-using WebApiClientCore.Abstractions;
-using WebApiClientCore.ResponseCaches;
-using WebApiClientCore.Serialization;
+using WebApiClientCore.Implementations;
 
 namespace WebApiClientCore.Test
 {
@@ -32,7 +30,7 @@ namespace WebApiClientCore.Test
             var options = new HttpApiOptions() { HttpHost = new Uri("http://www.webapi.com/") };
 
             var httpClientContext = new HttpClientContext(new HttpClient(), requestServices, options, string.Empty);
-            return new HttpContext(httpClientContext);
+            return new HttpContext(httpClientContext, new HttpApiRequestMessageImpl());
         }
     }
 }

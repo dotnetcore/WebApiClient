@@ -45,6 +45,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WebApiClientCore.Abstractions\WebApiClientCore.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Resx.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

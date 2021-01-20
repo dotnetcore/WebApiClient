@@ -1,12 +1,10 @@
-﻿using WebApiClientCore.Abstractions;
-
-namespace WebApiClientCore.Implementations
+﻿namespace WebApiClientCore.Implementations
 {
     /// <summary>
     /// 表示ITask返回声明的Action执行器
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
-    class ITaskActionInvoker<TResult> : IActionInvoker
+    sealed class ITaskActionInvoker<TResult> : IActionInvoker
     {
         /// <summary>
         /// Api执行器

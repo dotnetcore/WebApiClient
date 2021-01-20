@@ -1,8 +1,8 @@
 ﻿using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using WebApiClientCore.Abstractions;
 using WebApiClientCore.Attributes;
+using WebApiClientCore.Implementations;
 using Xunit;
 
 namespace WebApiClientCore.Test.Attributes.ReturnAttributes
@@ -12,7 +12,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
         [Fact]
         public async Task HttpResponseMessageResultTest()
         {
-            var apiAction = new ApiActionDescriptor(typeof(ITestApi).GetMethod("HttpResponseMessageAsync"));
+            var apiAction = new ApiActionDescriptorImpl(typeof(ITestApi).GetMethod("HttpResponseMessageAsync"));
             var context = new TestRequestContext(apiAction, "laojiu");
             var responseContext = new ApiResponseContext(context);
 
@@ -27,7 +27,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
         [Fact]
         public async Task StringResultTest()
         {
-            var apiAction = new ApiActionDescriptor(typeof(ITestApi).GetMethod("StringAsync"));
+            var apiAction = new ApiActionDescriptorImpl(typeof(ITestApi).GetMethod("StringAsync"));
             var context = new TestRequestContext(apiAction, "laojiu");
             var responseContext = new ApiResponseContext(context);
 
@@ -43,7 +43,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
         [Fact]
         public async Task ByteArrayResultTest()
         {
-            var apiAction = new ApiActionDescriptor(typeof(ITestApi).GetMethod("ByteArrayAsync"));
+            var apiAction = new ApiActionDescriptorImpl(typeof(ITestApi).GetMethod("ByteArrayAsync"));
             var context = new TestRequestContext(apiAction, "laojiu");
             var responseContext = new ApiResponseContext(context);
 

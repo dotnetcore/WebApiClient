@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using WebApiClientCore.Abstractions;
 using WebApiClientCore.Exceptions;
 using WebApiClientCore.Internals.Utilities;
 

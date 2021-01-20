@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using WebApiClientCore.Abstractions;
 using WebApiClientCore.Parameters;
 
 namespace WebApiClientCore.Internals.Attributes

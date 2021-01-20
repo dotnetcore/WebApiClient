@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using WebApiClientCore.Abstractions;
 using WebApiClientCore.Implementations;
 using Xunit;
 
@@ -55,7 +54,7 @@ namespace WebApiClientCore.Test.Implementations
             public static ApiParameterDescriptor Create()
             {
                 var p = typeof(TestParameter).GetMethod("Test").GetParameters()[0];
-                return new ApiParameterDescriptor(p);
+                return new ApiParameterDescriptorImpl(p);
             }
         }
     }

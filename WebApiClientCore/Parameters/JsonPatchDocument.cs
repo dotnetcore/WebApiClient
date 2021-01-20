@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
-using WebApiClientCore.Abstractions;
 using WebApiClientCore.Exceptions;
 using WebApiClientCore.HttpContents;
 using WebApiClientCore.Serialization;

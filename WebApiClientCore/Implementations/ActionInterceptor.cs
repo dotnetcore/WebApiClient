@@ -1,11 +1,9 @@
-﻿using WebApiClientCore.Abstractions;
-
-namespace WebApiClientCore.Implementations
+﻿namespace WebApiClientCore.Implementations
 {
     /// <summary>
     /// 表示httpApi方法调用的拦截器
     /// </summary>
-    class ActionInterceptor : IActionInterceptor
+    sealed class ActionInterceptor : IActionInterceptor
     {
         /// <summary>
         /// 服务上下文

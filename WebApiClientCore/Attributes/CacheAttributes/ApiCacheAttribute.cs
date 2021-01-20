@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using WebApiClientCore.Abstractions;
-using WebApiClientCore.ResponseCaches;
 
 namespace WebApiClientCore.Attributes
 {

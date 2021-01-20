@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using WebApiClientCore.Abstractions;
 
 namespace WebApiClientCore.Internals
 {

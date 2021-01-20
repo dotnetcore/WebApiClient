@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using WebApiClientCore.Abstractions;
 using WebApiClientCore.Exceptions;
 
 namespace WebApiClientCore.Implementations
@@ -10,7 +9,7 @@ namespace WebApiClientCore.Implementations
     /// 表示Task返回声明的Action执行器
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
-    class TaskActionInvoker<TResult> : IActionInvoker
+    sealed class TaskActionInvoker<TResult> : IActionInvoker
     {
         /// <summary>
         /// 获取Action描述
@@ -47,7 +46,9 @@ namespace WebApiClientCore.Implementations
         {
             try
             {
-                using var httpContext = new HttpContext(context);
+                var requiredUri = context.HttpApiOptions.HttpHost ?? context.HttpClient.BaseAddress;
+                using var message = new HttpApiRequestMessageImpl(requiredUri, context.HttpApiOptions.UseDefaultUserAgent);
+                var httpContext = new HttpContext(context, message);
                 var requestContext = new ApiRequestContext(httpContext, this.ApiAction, arguments);
                 return await this.InvokeAsync(requestContext).ConfigureAwait(false);
             }

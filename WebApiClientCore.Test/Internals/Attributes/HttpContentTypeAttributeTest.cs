@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using WebApiClientCore.Abstractions;
+using WebApiClientCore.Implementations;
 using WebApiClientCore.Internals.Attributes;
 using Xunit;
 
@@ -17,7 +17,7 @@ namespace WebApiClientCore.Test.Internals.Attributes
         [Fact]
         public async Task OnRequestAsyncTest()
         {
-            var apiAction = new ApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"));
+            var apiAction = new ApiActionDescriptorImpl(typeof(IMyApi).GetMethod("PostAsync"));
             var context = new TestRequestContext(apiAction, new StringContent("laojiu"));
 
             context.HttpContext.RequestMessage.RequestUri = new Uri("http://www.mywebapi.com");

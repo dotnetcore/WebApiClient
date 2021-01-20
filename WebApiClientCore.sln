@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore.Extensions
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore.Extensions.JsonRpc", "WebApiClientCore.Extensions.JsonRpc\WebApiClientCore.Extensions.JsonRpc.csproj", "{32DC2A56-469A-4514-A6C0-5718B5DB8294}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiClientCore.Abstractions", "WebApiClientCore.Abstractions\WebApiClientCore.Abstractions.csproj", "{BB0EFCA6-6AD2-45A2-B62D-62426F5015D2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{32DC2A56-469A-4514-A6C0-5718B5DB8294}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32DC2A56-469A-4514-A6C0-5718B5DB8294}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32DC2A56-469A-4514-A6C0-5718B5DB8294}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB0EFCA6-6AD2-45A2-B62D-62426F5015D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB0EFCA6-6AD2-45A2-B62D-62426F5015D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB0EFCA6-6AD2-45A2-B62D-62426F5015D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB0EFCA6-6AD2-45A2-B62D-62426F5015D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

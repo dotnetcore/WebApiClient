@@ -94,7 +94,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        private async Task<string?> ReadRequestContentAsync(HttpRequestMessage request)
+        private async Task<string?> ReadRequestContentAsync(HttpApiRequestMessage request)
         {
             if (request.Content == null)
             {

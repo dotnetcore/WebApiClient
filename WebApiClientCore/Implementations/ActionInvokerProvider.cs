@@ -1,12 +1,11 @@
 ﻿using System.Threading.Tasks;
-using WebApiClientCore.Abstractions;
 
 namespace WebApiClientCore.Implementations
 {
     /// <summary>
     /// Action执行器提供者
     /// </summary>
-    class ActionInvokerProvider : IActionInvokerProvider
+    sealed class ActionInvokerProvider : IActionInvokerProvider
     {
         /// <summary>
         /// 获取静态实例

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Net.Http;
 using WebApiClientCore;
-using WebApiClientCore.ResponseCaches;
+using WebApiClientCore.Implementations;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

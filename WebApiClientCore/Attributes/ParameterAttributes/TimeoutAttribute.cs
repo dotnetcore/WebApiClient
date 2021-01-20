@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using WebApiClientCore.Abstractions;
 using WebApiClientCore.Exceptions;
 
 namespace WebApiClientCore.Attributes

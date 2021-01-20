@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
-using WebApiClientCore.ResponseCaches;
 
 namespace WebApiClientCore.Implementations
 {

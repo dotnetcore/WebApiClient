@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
-using WebApiClientCore.Abstractions;
+using WebApiClientCore.Implementations;
 
 namespace WebApiClientCore.Internals.TypeProxies
 {
@@ -62,7 +62,7 @@ namespace WebApiClientCore.Internals.TypeProxies
             var interfaceType = typeof(THttpApi);
             return interfaceType
                 .GetAllApiMethods()
-                .Select(item => new ApiActionDescriptor(item, interfaceType))
+                .Select(item => new ApiActionDescriptorImpl(item, interfaceType))
                 .Select(item => this.actionInvokerProvider.CreateActionInvoker(item))
                 .ToArray();
         }
