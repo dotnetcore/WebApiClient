@@ -9,7 +9,7 @@ namespace WebApiClientCore.Test.Implementations
         public void CtorTest()
         {
             var m = typeof(IDescriptorApi).GetMethod("Get1");
-            var d = new ApiActionDescriptorImpl(m);
+            var d = new DefaultApiActionDescriptor(m);
 
             Assert.True(d.Attributes.Count == 3);
             Assert.True(d.FilterAttributes.Count == 1);

@@ -12,7 +12,7 @@ namespace WebApiClientCore.Implementations
     /// 表示请求Api的返回描述
     /// </summary>
     [DebuggerDisplay("ReturnType = {ReturnType}")]
-    public class ApiReturnDescriptorImpl : ApiReturnDescriptor
+    public class DefaultApiReturnDescriptor : ApiReturnDescriptor
     {
         /// <summary>
         /// 获取返回类型
@@ -33,7 +33,7 @@ namespace WebApiClientCore.Implementations
         /// 请求Api的返回描述
         /// </summary>
         /// <param name="method">方法信息</param>  
-        public ApiReturnDescriptorImpl(MethodInfo method)
+        public DefaultApiReturnDescriptor(MethodInfo method)
             : this(method, method.DeclaringType)
         {
         }
@@ -43,7 +43,7 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="method">方法信息</param>
         /// <param name="interfaceType">接口类型</param> 
-        public ApiReturnDescriptorImpl(MethodInfo method, Type interfaceType)
+        public DefaultApiReturnDescriptor(MethodInfo method, Type interfaceType)
             : this(method.ReturnType, method.GetCustomAttributes(), interfaceType.GetInterfaceCustomAttributes())
         {
         }
@@ -54,13 +54,13 @@ namespace WebApiClientCore.Implementations
         /// <param name="returnType">方法返回类型</param> 
         /// <param name="methodAttributes">方法的特性</param>
         /// <param name="interfaceAttributes">接口的特性</param> 
-        public ApiReturnDescriptorImpl(Type returnType, IEnumerable<Attribute> methodAttributes, IEnumerable<Attribute> interfaceAttributes)
+        public DefaultApiReturnDescriptor(Type returnType, IEnumerable<Attribute> methodAttributes, IEnumerable<Attribute> interfaceAttributes)
         {
             var type = returnType.IsGenericType
                 ? returnType.GetGenericArguments().First()
                 : typeof(HttpResponseMessage);
 
-            var dataType = new ApiDataTypeDescriptorImpl(type);
+            var dataType = new DefaultApiDataTypeDescriptor(type);
 
             this.ReturnType = returnType;
             this.DataType = dataType;

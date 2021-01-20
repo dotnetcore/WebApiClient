@@ -14,7 +14,7 @@ namespace WebApiClientCore.Test.Parameters
             doc.Replace(item => item.Name, "33");
             doc.Replace(item => item.Age, 10);
 
-            var apiAction = new ApiActionDescriptorImpl(typeof(ITestApi).GetMethod("PostAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(ITestApi).GetMethod("PostAsync"));
             var context = new TestRequestContext(apiAction, string.Empty);
 
             context.HttpContext.RequestMessage.Method = new System.Net.Http.HttpMethod("Patch");

@@ -15,7 +15,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
         [Fact]
         public async Task JsonResultTest()
         {
-            var apiAction = new ApiActionDescriptorImpl(typeof(ITestApi).GetMethod("JsonXmlAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(ITestApi).GetMethod("JsonXmlAsync"));
             var context = new TestRequestContext(apiAction, "laojiu");
             var responseContext = new ApiResponseContext(context);
 
@@ -35,7 +35,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
         [Fact]
         public async Task XmlResultTest()
         {
-            var apiAction = new ApiActionDescriptorImpl(typeof(ITestApi).GetMethod("JsonXmlAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(ITestApi).GetMethod("JsonXmlAsync"));
             var context = new TestRequestContext(apiAction, "laojiu");
             var responseContext = new ApiResponseContext(context);
 
@@ -55,7 +55,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
         [Fact]
         public async Task EnsureSuccessStatusCodeTest()
         {
-            var apiAction = new ApiActionDescriptorImpl(typeof(ITestApi).GetMethod("JsonXmlAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(ITestApi).GetMethod("JsonXmlAsync"));
             var context = new TestRequestContext(apiAction, "laojiu");
             var responseContext = new ApiResponseContext(context);
 

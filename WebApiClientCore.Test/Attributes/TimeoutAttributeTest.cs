@@ -13,7 +13,7 @@ namespace WebApiClientCore.Test.Attributes
         [Fact]
         public async Task OnRequestAsync()
         {
-            var apiAction = new ApiActionDescriptorImpl(typeof(ITestApi).GetMethod("PostAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(ITestApi).GetMethod("PostAsync"));
             var context = new TestRequestContext(apiAction, 10);
 
             var attr = new TimeoutAttribute(50);
@@ -27,7 +27,7 @@ namespace WebApiClientCore.Test.Attributes
         [Fact]
         public async Task OnRequestAsync_Parameter_Double_Test()
         {
-            var apiAction = new ApiActionDescriptorImpl(typeof(ITestApi).GetMethod("PostAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(ITestApi).GetMethod("PostAsync"));
             var context = new TestRequestContext(apiAction, 1);
 
             var attr = new TimeoutAttribute();
@@ -42,7 +42,7 @@ namespace WebApiClientCore.Test.Attributes
         [Fact]
         public async Task OnRequestAsync_Parameter_Timespan_Test()
         {
-            var apiAction = new ApiActionDescriptorImpl(typeof(ITestApi).GetMethod("PostAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(ITestApi).GetMethod("PostAsync"));
             var context = new TestRequestContext(apiAction, 5);
 
             var attr = new TimeoutAttribute();

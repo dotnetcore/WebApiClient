@@ -11,7 +11,7 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
         [Fact]
         public async Task OnRequestAsyncRelativeTest()
         {
-            var apiAction = new ApiActionDescriptorImpl(typeof(IMyApi).GetMethod("PostAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"));
             var context = new TestRequestContext(apiAction, "http://www.baidu.com");
 
             var attr = new UriAttribute();
@@ -35,7 +35,7 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
         [Fact]
         public async Task OnRequestAsyncAbsoluteTest()
         {
-            var apiAction = new ApiActionDescriptorImpl(typeof(IMyApi).GetMethod("PostAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"));
             var context = new TestRequestContext(apiAction, "/login");
 
             var attr = new UriAttribute();
@@ -51,7 +51,7 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
         [Fact]
         public async Task OnRequestAsyncAbsolute2Test()
         {
-            var apiAction = new ApiActionDescriptorImpl(typeof(IMyApi).GetMethod("PostAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"));
             var context = new TestRequestContext(apiAction, "/login");
            
             var attr = new UriAttribute();

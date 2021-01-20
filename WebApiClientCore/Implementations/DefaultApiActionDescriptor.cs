@@ -11,7 +11,7 @@ namespace WebApiClientCore.Implementations
     /// 表示Action描述
     /// </summary>
     [DebuggerDisplay("Name = {Name}")]
-    public class ApiActionDescriptorImpl : ApiActionDescriptor
+    public class DefaultApiActionDescriptor : ApiActionDescriptor
     {
         /// <summary>
         /// 获取所在接口类型
@@ -66,7 +66,7 @@ namespace WebApiClientCore.Implementations
         /// <param name="method">接口的方法</param>
         /// <param name="interfaceType">接口类型</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ApiActionDescriptorImpl(MethodInfo method, Type? interfaceType = default)
+        public DefaultApiActionDescriptor(MethodInfo method, Type? interfaceType = default)
         {
             if (method == null)
             {
@@ -105,8 +105,8 @@ namespace WebApiClientCore.Implementations
             this.CacheAttribute = methodAttributes.OfType<IApiCacheAttribute>().FirstOrDefault();
             this.FilterAttributes = filterAttributes;
 
-            this.Return = new ApiReturnDescriptorImpl(method.ReturnType, methodAttributes, interfaceAttributes);
-            this.Parameters = method.GetParameters().Select(p => new ApiParameterDescriptorImpl(p)).ToReadOnlyList();
+            this.Return = new DefaultApiReturnDescriptor(method.ReturnType, methodAttributes, interfaceAttributes);
+            this.Parameters = method.GetParameters().Select(p => new DefaultApiParameterDescriptor(p)).ToReadOnlyList();
             this.Properties = new ConcurrentDictionary<object, object>();
         }
     }

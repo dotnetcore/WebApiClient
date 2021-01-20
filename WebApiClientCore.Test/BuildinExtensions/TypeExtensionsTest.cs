@@ -66,17 +66,6 @@ namespace WebApiClientCore.Test.BuildinExtensions
         }
 
 
-        [Fact]
-        public void GetAllApiMethodsTest()
-        {
-            var m1 = typeof(IMyApi).GetAllApiMethods();
-            var m2 = typeof(IMyApi).GetAllApiMethods();
-
-            Assert.False(object.ReferenceEquals(m1, m2));
-            Assert.True(m1.Length == 3);
-        }
-
-
         class MyAttribute : Attribute
         {
         }

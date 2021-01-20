@@ -15,7 +15,7 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
         [Fact]
         public async Task OnRequestAsyncTest()
         {
-            var apiAction = new ApiActionDescriptorImpl(typeof(IMyApi).GetMethod("PostAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"));
             var context = new TestRequestContext(apiAction, new
             {
                 name = "老 九",

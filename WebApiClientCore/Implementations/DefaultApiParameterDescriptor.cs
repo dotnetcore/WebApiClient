@@ -16,7 +16,7 @@ namespace WebApiClientCore.Implementations
     /// 表示请求Api的参数描述
     /// </summary>
     [DebuggerDisplay("Name = {Name}")]
-    public class ApiParameterDescriptorImpl : ApiParameterDescriptor
+    public class DefaultApiParameterDescriptor : ApiParameterDescriptor
     {
         /// <summary>
         /// 获取参数名称
@@ -53,7 +53,7 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="parameter">参数信息</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ApiParameterDescriptorImpl(ParameterInfo parameter)
+        public DefaultApiParameterDescriptor(ParameterInfo parameter)
         {
             if (parameter == null)
             {

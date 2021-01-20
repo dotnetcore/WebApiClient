@@ -5,13 +5,13 @@ using System.Reflection.Emit;
 using WebApiClientCore.Exceptions;
 using WebApiClientCore.Internals.Utilities;
 
-namespace WebApiClientCore.Internals.TypeProxies
+namespace WebApiClientCore.Implementations
 {
     /// <summary>
     /// 表示THttpApi的实例Emit创建器
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
-    class HttpApiEmitActivator<THttpApi> : HttpApiActivator<THttpApi>
+    sealed class HttpApiEmitActivator<THttpApi> : HttpApiActivator<THttpApi>
     {
         /// <summary>
         /// IActionInterceptor的Intercept方法
@@ -28,9 +28,10 @@ namespace WebApiClientCore.Internals.TypeProxies
         /// <summary>
         /// THttpApi的实例Emit创建器
         /// </summary>
-        /// <param name="actionProvider">Action提供者</param>
-        public HttpApiEmitActivator(IApiActionProvider actionProvider)
-            : base(actionProvider)
+        /// <param name="apiActionDescriptorProvider"></param>
+        /// <param name="actionInvokerProvider"></param>
+        public HttpApiEmitActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IActionInvokerProvider actionInvokerProvider)
+            : base(apiActionDescriptorProvider, actionInvokerProvider)
         {
         }
 
@@ -40,14 +41,11 @@ namespace WebApiClientCore.Internals.TypeProxies
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
-        protected override Func<IActionInterceptor, THttpApi> CreateFactory()
+        protected override Func<IActionInterceptor, IActionInvoker[], THttpApi> CreateFactory(IActionInvoker[] actionInvokers)
         {
-            var actionInvokers = this.CreateActionInvokers();
             var proxyType = BuildProxyType(typeof(THttpApi), actionInvokers);
-            var proxyTypeCtor = Lambda.CreateCtorFunc<IActionInterceptor, IActionInvoker[], THttpApi>(proxyType);
-            return interceptor => proxyTypeCtor(interceptor, actionInvokers);
+            return Lambda.CreateCtorFunc<IActionInterceptor, IActionInvoker[], THttpApi>(proxyType);
         }
-
 
         /// <summary>
         /// 创建IHttpApi代理类的类型

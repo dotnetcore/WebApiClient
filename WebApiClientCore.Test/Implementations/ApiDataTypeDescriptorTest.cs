@@ -8,7 +8,7 @@ namespace WebApiClientCore.Test.Implementations
         private ApiDataTypeDescriptor Create(string methodName)
         {
             var method = typeof(IDescriptorApi).GetMethod(methodName);
-            return new ApiReturnDescriptorImpl(method).DataType;
+            return new DefaultApiReturnDescriptor(method).DataType;
         }
 
         [Fact]

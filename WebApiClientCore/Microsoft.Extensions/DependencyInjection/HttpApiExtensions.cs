@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Net.Http;
 using WebApiClientCore;
+using WebApiClientCore.Implementations;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -21,6 +22,13 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddOptions();
 
+            services.AddMemoryCache();
+            services.TryAddSingleton<IResponseCacheProvider, DefaultResponseCacheProvider>();
+
+            services.TryAddSingleton<IApiActionDescriptorProvider, DefaultApiActionDescriptorProvider>();
+            services.TryAddSingleton<IActionInvokerProvider, DefaultActionInvokerProvider>();
+            services.TryAddSingleton(typeof(IHttpApiActivator<>), typeof(HttpApiEmitActivator<>));
+
             var name = HttpApi.GetName(typeof(THttpApi));
             services.NamedHttpApiType(name, typeof(THttpApi));
 
@@ -29,7 +37,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 var httpClient = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(name);
                 var httpApiOptions = serviceProvider.GetRequiredService<IOptionsMonitor<HttpApiOptions>>().Get(name);
                 var httpClientContext = new HttpClientContext(httpClient, serviceProvider, httpApiOptions, name);
-                return HttpApi.Create<THttpApi>(httpClientContext);
+                var interceptor = new ActionInterceptor(httpClientContext);
+                var httpApiActivator = serviceProvider.GetRequiredService<IHttpApiActivator<THttpApi>>();
+                return httpApiActivator.CreateInstance(interceptor);
             });
 
             return services.AddHttpClient(name);

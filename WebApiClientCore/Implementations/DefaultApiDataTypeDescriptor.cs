@@ -9,7 +9,7 @@ namespace WebApiClientCore.Implementations
     /// 表示返回的Task(Of T)的T类型描述
     /// </summary>
     [DebuggerDisplay("Type = {Type.Name}")]
-    public class ApiDataTypeDescriptorImpl : ApiDataTypeDescriptor
+    public class DefaultApiDataTypeDescriptor : ApiDataTypeDescriptor
     {
         /// <summary>
         /// 获取类型
@@ -46,7 +46,7 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="dataType">数据类型</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ApiDataTypeDescriptorImpl(Type dataType)
+        public DefaultApiDataTypeDescriptor(Type dataType)
         {
             this.Type = dataType ?? throw new ArgumentNullException(nameof(dataType));
 

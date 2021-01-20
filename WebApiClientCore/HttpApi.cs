@@ -1,20 +1,15 @@
 ﻿using System;
-using WebApiClientCore.Exceptions;
-using WebApiClientCore.Implementations;
-using WebApiClientCore.Internals.TypeProxies;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 提供创建THttpApi的代理实例
+    /// 提供HttpApi命名获取和方法获取等功能
     /// </summary>
     public static class HttpApi
     {
-        /// <summary>
-        /// 默认Action提供者
-        /// </summary>
-        private static readonly IApiActionProvider defaultApiActionProvider = new DefaultApiActionProvider();
-
         /// <summary>
         /// 获取接口的别名
         /// 该别名可用于接口对应的OptionsName
@@ -31,38 +26,81 @@ namespace WebApiClientCore
         }
 
         /// <summary>
-        /// 创建THttpApi的代理实例
+        /// 查找接口类型及其继承的接口的所有方法
         /// </summary>
-        /// <typeparam name="THttpApi"></typeparam>
-        /// <param name="httpClientContext">httpClient上下文</param> 
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="httpApiType">接口类型</param> 
+        /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
-        /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
-        public static THttpApi Create<THttpApi>(HttpClientContext httpClientContext)
+        public static MethodInfo[] FindApiMethods(Type httpApiType)
         {
-            var actionProvider = httpClientContext.ServiceProvider.GetService<IApiActionProvider>();
-            if (actionProvider == null)
+            if (httpApiType.IsInterface == false)
             {
-                actionProvider = defaultApiActionProvider;
+                throw new ArgumentException(Resx.required_InterfaceType.Format(httpApiType.Name));
             }
-            var interceptor = new ActionInterceptor(httpClientContext);
-            return Create<THttpApi>(actionProvider, interceptor);
+
+            return httpApiType
+                .GetInterfaces()
+                .Append(httpApiType)
+                .SelectMany(item => item.GetMethods())
+                .Select(item => item.EnsureApiMethod())
+                .ToArray();
         }
 
         /// <summary>
-        /// 创建THttpApi的代理实例
+        /// 确保方法是支持的Api接口
         /// </summary>
-        /// <typeparam name="THttpApi"></typeparam>
-        /// <param name="actionProvider">Action提供者</param>  
-        /// <param name="actionInterceptor">Action拦截器</param>
         /// <exception cref="NotSupportedException"></exception>
-        /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
-        public static THttpApi Create<THttpApi>(IApiActionProvider actionProvider, IActionInterceptor actionInterceptor)
+        private static MethodInfo EnsureApiMethod(this MethodInfo method)
         {
-            var activator = new HttpApiEmitActivator<THttpApi>(actionProvider);
-            return activator.CreateInstance(actionInterceptor);
+            if (method.IsGenericMethod == true)
+            {
+                throw new NotSupportedException(Resx.unsupported_GenericMethod.Format(method));
+            }
+
+            if (method.IsSpecialName == true)
+            {
+                throw new NotSupportedException(Resx.unsupported_Property.Format(method));
+            }
+
+            if (method.IsTaskReturn() == false)
+            {
+                var message = Resx.unsupported_ReturnType.Format(method);
+                throw new NotSupportedException(message);
+            }
+
+            foreach (var parameter in method.GetParameters())
+            {
+                if (parameter.ParameterType.IsByRef == true)
+                {
+                    var message = Resx.unsupported_ByRef.Format(parameter);
+                    throw new NotSupportedException(message);
+                }
+            }
+
+            return method;
+        }
+
+        /// <summary>
+        /// 检测方法是否为Task或ITask返回值
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        private static bool IsTaskReturn(this MethodInfo method)
+        {
+            if (method.ReturnType.IsInheritFrom<Task>())
+            {
+                return true;
+            }
+
+            if (method.ReturnType.IsGenericType == false)
+            {
+                return false;
+            }
+
+            var taskType = method.ReturnType.GetGenericTypeDefinition();
+            return taskType == typeof(ITask<>);
         }
     }
 }
