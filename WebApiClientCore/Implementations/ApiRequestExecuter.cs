@@ -16,7 +16,7 @@ namespace WebApiClientCore.Implementations
         public static async Task<ApiResponseContext> ExecuteAsync(ApiRequestContext request)
         {
             await HandleRequestAsync(request).ConfigureAwait(false);
-            var response = await HttpRequest.SendAsync(request).ConfigureAwait(false);
+            var response = await ApiRequestSender.SendAsync(request).ConfigureAwait(false);
             await HandleResponseAsync(response).ConfigureAwait(false);
             return response;
         }

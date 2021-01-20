@@ -84,7 +84,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static HttpCompletionOption GetCompletionOption(this ApiRequestContext context)
+        internal static HttpCompletionOption GetCompletionOption(this ApiRequestContext context)
         {
             if (context.HttpContext.CompletionOption != null)
             {

@@ -11,7 +11,7 @@ namespace WebApiClientCore.Implementations
     /// <summary>
     /// 提供http请求
     /// </summary>
-    static class HttpRequest
+    static class ApiRequestSender
     {
         /// <summary>
         /// 发送http请求
@@ -27,7 +27,7 @@ namespace WebApiClientCore.Implementations
                 throw new ApiInvalidConfigException(Resx.required_HttpHost);
             }
 
-            var actionCache = await GetCaheAsync(context).ConfigureAwait(false);
+            var actionCache = await context.GetCaheAsync().ConfigureAwait(false);
             if (actionCache != null && actionCache.Value != null)
             {
                 context.HttpContext.ResponseMessage = actionCache.Value;
@@ -42,7 +42,7 @@ namespace WebApiClientCore.Implementations
                 var response = await client.SendAsync(request, completionOption, tokenLinker.Token).ConfigureAwait(false);
 
                 context.HttpContext.ResponseMessage = response;
-                await SetCacheAsync(context, actionCache?.Key, response).ConfigureAwait(false);
+                await context.SetCacheAsync(actionCache?.Key, response).ConfigureAwait(false);
             }
             return new ApiResponseContext(context);
         }
@@ -52,7 +52,7 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        private static async Task<ActionCache?> GetCaheAsync(ApiRequestContext context)
+        private static async Task<ActionCache?> GetCaheAsync(this ApiRequestContext context)
         {
             var attribute = context.ApiAction.CacheAttribute;
             if (attribute == null)
@@ -95,7 +95,7 @@ namespace WebApiClientCore.Implementations
         /// <param name="cacheKey">缓存键</param>
         /// <param name="response">响应消息</param>
         /// <returns></returns>
-        private static async Task SetCacheAsync(ApiRequestContext context, string? cacheKey, HttpResponseMessage? response)
+        private static async Task SetCacheAsync(this ApiRequestContext context, string? cacheKey, HttpResponseMessage? response)
         {
             var attribute = context.ApiAction.CacheAttribute;
             if (attribute == null)

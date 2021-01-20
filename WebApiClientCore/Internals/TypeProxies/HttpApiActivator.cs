@@ -30,6 +30,21 @@ namespace WebApiClientCore.Internals.TypeProxies
         }
 
         /// <summary>
+        /// 创建接口的action执行器
+        /// </summary>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <returns></returns>
+        protected IActionInvoker[] CreateActionInvokers()
+        {
+            var interfaceType = typeof(THttpApi);
+            return HttpApiMethodFinder
+                .FindApiMethods(interfaceType)
+                .Select(item => this.actionProvider.CreateDescriptor(item, interfaceType))
+                .Select(item => this.actionProvider.CreateInvoker(item))
+                .ToArray();
+        }
+
+        /// <summary>
         /// 创建接口的实例
         /// </summary>
         /// <param name="interceptor">拦截器</param>
@@ -50,20 +65,5 @@ namespace WebApiClientCore.Internals.TypeProxies
         /// </summary>
         /// <returns></returns>
         protected abstract Func<IActionInterceptor, THttpApi> CreateFactory();
-
-        /// <summary>
-        /// 创建接口的action执行器
-        /// </summary>
-        /// <exception cref="NotSupportedException"></exception>
-        /// <returns></returns>
-        protected IActionInvoker[] CreateActionInvokers()
-        {
-            var interfaceType = typeof(THttpApi);
-            return interfaceType
-                .GetAllApiMethods()
-                .Select(item => this.actionProvider.CreateDescriptor(item, interfaceType))
-                .Select(item => this.actionProvider.CreateInvoker(item))
-                .ToArray();
-        }
     }
 }
