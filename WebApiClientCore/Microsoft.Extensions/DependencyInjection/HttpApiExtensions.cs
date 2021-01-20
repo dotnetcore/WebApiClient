@@ -3,7 +3,6 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Net.Http;
 using WebApiClientCore;
-using WebApiClientCore.Implementations;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -21,8 +20,6 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IHttpClientBuilder AddHttpApi<THttpApi>(this IServiceCollection services) where THttpApi : class
         {
             services.AddOptions();
-            services.AddMemoryCache();
-            services.TryAddSingleton<IResponseCacheProvider, ResponseCacheProvider>();
 
             var name = HttpApi.GetName(typeof(THttpApi));
             services.NamedHttpApiType(name, typeof(THttpApi));

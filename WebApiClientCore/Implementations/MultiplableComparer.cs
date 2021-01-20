@@ -10,7 +10,7 @@ namespace WebApiClientCore.Implementations
         /// <summary>
         /// 获取默认实例
         /// </summary>
-        public static MultiplableComparer<TAttributeMultiplable> Default { get; } = new MultiplableComparer<TAttributeMultiplable>();
+        public static MultiplableComparer<TAttributeMultiplable> Instance { get; } = new MultiplableComparer<TAttributeMultiplable>();
 
         /// <summary>
         /// 是否相等

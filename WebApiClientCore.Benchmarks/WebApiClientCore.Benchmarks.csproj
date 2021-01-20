@@ -8,6 +8,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Buffers\**" />
+    <Compile Remove="CreateInstances\**" />
+    <Compile Remove="StringReplaces\**" />
+    <EmbeddedResource Remove="Buffers\**" />
+    <EmbeddedResource Remove="CreateInstances\**" />
+    <EmbeddedResource Remove="StringReplaces\**" />
+    <None Remove="Buffers\**" />
+    <None Remove="CreateInstances\**" />
+    <None Remove="StringReplaces\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Requests\PostJsonBenchmark.cs" />
+    <Compile Remove="Requests\PutFormBenchmark.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
     <PackageReference Include="Refit.HttpClientFactory" Version="5.1.67" />
   </ItemGroup>

@@ -11,54 +11,54 @@ namespace WebApiClientCore.Implementations
     /// 表示Action描述
     /// </summary>
     [DebuggerDisplay("Name = {Name}")]
-    sealed class ApiActionDescriptorImpl : ApiActionDescriptor
+    public class ApiActionDescriptorImpl : ApiActionDescriptor
     {
         /// <summary>
         /// 获取所在接口类型
         /// 这个值不一定是声明方法的接口类型
         /// </summary>
-        public override Type InterfaceType { get; }
+        public override Type InterfaceType { get; protected set; }
 
         /// <summary>
         /// 获取Api名称
         /// </summary>
-        public override string Name { get; }
+        public override string Name { get; protected set; }
 
         /// <summary>
         /// 获取关联的方法信息
         /// </summary>
-        public override MethodInfo Member { get; }
+        public override MethodInfo Member { get; protected set; }
 
         /// <summary>
         /// 获取Api关联的缓存特性
         /// </summary>
-        public override IApiCacheAttribute? CacheAttribute { get; }
+        public override IApiCacheAttribute? CacheAttribute { get; protected set; }
 
         /// <summary>
         /// 获取Api关联的特性
         /// </summary>
-        public override IReadOnlyList<IApiActionAttribute> Attributes { get; }
+        public override IReadOnlyList<IApiActionAttribute> Attributes { get; protected set; }
 
         /// <summary>
         /// 获取Api关联的过滤器特性
         /// </summary>
-        public override IReadOnlyList<IApiFilterAttribute> FilterAttributes { get; }
+        public override IReadOnlyList<IApiFilterAttribute> FilterAttributes { get; protected set; }
 
 
         /// <summary>
         /// 获取Api的参数描述
         /// </summary>
-        public override IReadOnlyList<ApiParameterDescriptor> Parameters { get; }
+        public override IReadOnlyList<ApiParameterDescriptor> Parameters { get; protected set; }
 
         /// <summary>
         /// 获取Api的返回描述
         /// </summary>
-        public override ApiReturnDescriptor Return { get; }
+        public override ApiReturnDescriptor Return { get; protected set; }
 
         /// <summary>
         /// 获取自定义数据存储的字典
         /// </summary>
-        public override ConcurrentDictionary<object, object> Properties { get; }
+        public override ConcurrentDictionary<object, object> Properties { get; protected set; }
 
         /// <summary>
         /// 请求Api描述
@@ -85,14 +85,14 @@ namespace WebApiClientCore.Implementations
             var actionAttributes = methodAttributes
                 .OfType<IApiActionAttribute>()
                 .Concat(interfaceAttributes.OfType<IApiActionAttribute>())
-                .Distinct(MultiplableComparer<IApiActionAttribute>.Default)
+                .Distinct(MultiplableComparer<IApiActionAttribute>.Instance)
                 .OrderBy(item => item.OrderIndex)
                 .ToReadOnlyList();
 
             var filterAttributes = methodAttributes
                 .OfType<IApiFilterAttribute>()
                 .Concat(interfaceAttributes.OfType<IApiFilterAttribute>())
-                .Distinct(MultiplableComparer<IApiFilterAttribute>.Default)
+                .Distinct(MultiplableComparer<IApiFilterAttribute>.Instance)
                 .OrderBy(item => item.OrderIndex)
                 .Where(item => item.Enable)
                 .ToReadOnlyList();

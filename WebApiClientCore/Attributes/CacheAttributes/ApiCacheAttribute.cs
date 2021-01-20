@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using WebApiClientCore.Implementations;
 
 namespace WebApiClientCore.Attributes
 {
@@ -11,6 +14,11 @@ namespace WebApiClientCore.Attributes
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public abstract class ApiCacheAttribute : Attribute, IApiCacheAttribute
     {
+        /// <summary>
+        /// 默认cache提供者
+        /// </summary>
+        private static readonly IResponseCacheProvider defaultResponseCacheProvider = new DefaultResponseCacheProvider(new MemoryCache(Options.Create(new MemoryCacheOptions())));
+
         /// <summary>
         /// 获取缓存的时间戳
         /// </summary>
@@ -62,7 +70,8 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public virtual IResponseCacheProvider? GetCacheProvider(ApiRequestContext context)
         {
-            return context.HttpContext.ServiceProvider.GetService<IResponseCacheProvider>();
+            var provider = context.HttpContext.ServiceProvider.GetService<IResponseCacheProvider>();
+            return provider ?? defaultResponseCacheProvider;
         }
 
         /// <summary>

@@ -7,7 +7,7 @@ namespace WebApiClientCore.Implementations
     /// <summary>
     /// 表示Api响应结果缓存提供者的接口
     /// </summary>
-    sealed class ResponseCacheProvider : Disposable, IResponseCacheProvider
+    sealed class DefaultResponseCacheProvider : Disposable, IResponseCacheProvider
     {
         /// <summary>
         /// 内存缓存
@@ -23,7 +23,7 @@ namespace WebApiClientCore.Implementations
         /// Api响应结果缓存提供者的接口
         /// </summary>
         /// <param name="cache"></param>
-        public ResponseCacheProvider(IMemoryCache cache)
+        public DefaultResponseCacheProvider(IMemoryCache cache)
         {
             this.cache = cache;
         }

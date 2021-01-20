@@ -14,7 +14,7 @@ namespace WebApiClientCore.Test.Implementations
         {
             var options = Options.Create(new MemoryCacheOptions());
             var memCache = new MemoryCache(options);
-            var provider = new ResponseCacheProvider(memCache);
+            var provider = new DefaultResponseCacheProvider(memCache);
             var cache = await provider.GetAsync("key");
             Assert.False(cache.HasValue);
 

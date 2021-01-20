@@ -16,37 +16,37 @@ namespace WebApiClientCore.Implementations
     /// 表示请求Api的参数描述
     /// </summary>
     [DebuggerDisplay("Name = {Name}")]
-    sealed class ApiParameterDescriptorImpl : ApiParameterDescriptor
+    public class ApiParameterDescriptorImpl : ApiParameterDescriptor
     {
         /// <summary>
         /// 获取参数名称
         /// </summary>
-        public override string Name { get; }
+        public override string Name { get; protected set; }
 
         /// <summary>
         /// 获取关联的参数信息
         /// </summary>
-        public override ParameterInfo Member { get; }
+        public override ParameterInfo Member { get; protected set; }
 
         /// <summary>
         /// 获取参数索引
         /// </summary>
-        public override int Index { get; }
+        public override int Index { get; protected set; }
 
         /// <summary>
         /// 获取参数类型
         /// </summary>
-        public override Type ParameterType { get; }
+        public override Type ParameterType { get; protected set; }
 
         /// <summary>
         /// 获取关联的参数特性
         /// </summary>
-        public override IReadOnlyList<IApiParameterAttribute> Attributes { get; }
+        public override IReadOnlyList<IApiParameterAttribute> Attributes { get; protected set; }
 
         /// <summary>
         /// 获取关联的ValidationAttribute特性
         /// </summary>
-        public override IReadOnlyList<ValidationAttribute> ValidationAttributes { get; }
+        public override IReadOnlyList<ValidationAttribute> ValidationAttributes { get; protected set; }
 
         /// <summary>
         /// 请求Api的参数描述

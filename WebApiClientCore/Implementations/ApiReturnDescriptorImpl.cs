@@ -12,22 +12,22 @@ namespace WebApiClientCore.Implementations
     /// 表示请求Api的返回描述
     /// </summary>
     [DebuggerDisplay("ReturnType = {ReturnType}")]
-    sealed class ApiReturnDescriptorImpl : ApiReturnDescriptor
+    public class ApiReturnDescriptorImpl : ApiReturnDescriptor
     {
         /// <summary>
         /// 获取返回类型
         /// </summary>
-        public override Type ReturnType { get; }
+        public override Type ReturnType { get; protected set; }
 
         /// <summary>
         /// 获取ITask(Of T)或Task(Of T)的T类型描述
         /// </summary>
-        public override ApiDataTypeDescriptor DataType { get; }
+        public override ApiDataTypeDescriptor DataType { get; protected set; }
 
         /// <summary>
         /// 获取关联的IApiReturnAttribute
         /// </summary>
-        public override IReadOnlyList<IApiReturnAttribute> Attributes { get; }
+        public override IReadOnlyList<IApiReturnAttribute> Attributes { get; protected set; }
 
         /// <summary>
         /// 请求Api的返回描述
@@ -68,7 +68,7 @@ namespace WebApiClientCore.Implementations
                 .OfType<IApiReturnAttribute>()
                 .Concat(interfaceAttributes.OfType<IApiReturnAttribute>())
                 .Concat(GetDefaultAttributes(dataType))
-                .Distinct(MultiplableComparer<IApiReturnAttribute>.Default)
+                .Distinct(MultiplableComparer<IApiReturnAttribute>.Instance)
                 .OrderBy(item => item.OrderIndex)
                 .Where(item => item.Enable)
                 // 最后步骤为比较媒体类型

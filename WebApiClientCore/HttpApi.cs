@@ -11,6 +11,11 @@ namespace WebApiClientCore
     public static class HttpApi
     {
         /// <summary>
+        /// 默认Action提供者
+        /// </summary>
+        private static readonly IApiActionProvider defaultApiActionProvider = new DefaultApiActionProvider();
+
+        /// <summary>
         /// 获取接口的别名
         /// 该别名可用于接口对应的OptionsName
         /// </summary>
@@ -36,8 +41,13 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static THttpApi Create<THttpApi>(HttpClientContext httpClientContext)
         {
+            var actionProvider = httpClientContext.ServiceProvider.GetService<IApiActionProvider>();
+            if (actionProvider == null)
+            {
+                actionProvider = defaultApiActionProvider;
+            }
             var interceptor = new ActionInterceptor(httpClientContext);
-            return Create<THttpApi>(ApiActionProvider.Default, interceptor);
+            return Create<THttpApi>(actionProvider, interceptor);
         }
 
         /// <summary>

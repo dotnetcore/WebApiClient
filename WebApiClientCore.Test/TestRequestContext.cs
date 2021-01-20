@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Net.Http;
 using WebApiClientCore.Implementations;
@@ -24,7 +23,6 @@ namespace WebApiClientCore.Test
         private static HttpContext GetHttpContext()
         {
             var services = new ServiceCollection();
-            services.TryAddSingleton<IResponseCacheProvider, ResponseCacheProvider>();
 
             var requestServices = services.BuildServiceProvider();
             var options = new HttpApiOptions() { HttpHost = new Uri("http://www.webapi.com/") };

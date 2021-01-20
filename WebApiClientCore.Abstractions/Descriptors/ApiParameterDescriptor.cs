@@ -13,31 +13,31 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取参数名称
         /// </summary>
-        public abstract string Name { get; }
+        public abstract string Name { get; protected set; }
 
         /// <summary>
         /// 获取关联的参数信息
         /// </summary>
-        public abstract ParameterInfo Member { get; }
+        public abstract ParameterInfo Member { get; protected set; }
 
         /// <summary>
         /// 获取参数索引
         /// </summary>
-        public abstract int Index { get; }
+        public abstract int Index { get; protected set; }
 
         /// <summary>
         /// 获取参数类型
         /// </summary>
-        public abstract Type ParameterType { get; }
+        public abstract Type ParameterType { get; protected set; }
 
         /// <summary>
         /// 获取关联的参数特性
         /// </summary>
-        public abstract IReadOnlyList<IApiParameterAttribute> Attributes { get; }
+        public abstract IReadOnlyList<IApiParameterAttribute> Attributes { get; protected set; }
 
         /// <summary>
         /// 获取关联的ValidationAttribute特性
         /// </summary>
-        public abstract IReadOnlyList<ValidationAttribute> ValidationAttributes { get; }
+        public abstract IReadOnlyList<ValidationAttribute> ValidationAttributes { get; protected set; }
     }
 }
