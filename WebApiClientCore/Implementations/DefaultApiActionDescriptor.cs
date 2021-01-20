@@ -14,6 +14,16 @@ namespace WebApiClientCore.Implementations
     public class DefaultApiActionDescriptor : ApiActionDescriptor
     {
         /// <summary>
+        /// 获取方法声明的所有特性
+        /// </summary>
+        protected Attribute[] MethodAttributes { get; }
+
+        /// <summary>
+        /// 获取接口声明的所有特性
+        /// </summary>
+        protected Attribute[] InterfaceAttributes { get; }
+
+        /// <summary>
         /// 获取所在接口类型
         /// 这个值不一定是声明方法的接口类型
         /// </summary>
@@ -62,23 +72,22 @@ namespace WebApiClientCore.Implementations
 
         /// <summary>
         /// 请求Api描述
+        /// for test only
         /// </summary>
         /// <param name="method">接口的方法</param>
-        /// <param name="interfaceType">接口类型</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public DefaultApiActionDescriptor(MethodInfo method, Type? interfaceType = default)
+        internal DefaultApiActionDescriptor(MethodInfo method)
+            : this(method, method.DeclaringType)
         {
-            if (method == null)
-            {
-                throw new ArgumentNullException(nameof(method));
-            }
+        }
 
-            if (interfaceType == null)
-            {
-                interfaceType = method.DeclaringType;
-            }
-
-            var methodAttributes = method.GetCustomAttributes();
+        /// <summary>
+        /// 请求Api描述
+        /// </summary>
+        /// <param name="method">接口的方法</param>
+        /// <param name="interfaceType">接口类型</param> 
+        public DefaultApiActionDescriptor(MethodInfo method, Type interfaceType)
+        {
+            var methodAttributes = method.GetCustomAttributes().ToArray();
             var interfaceAttributes = interfaceType.GetInterfaceCustomAttributes();
 
             // 接口特性优先于方法所在类型的特性
@@ -108,6 +117,9 @@ namespace WebApiClientCore.Implementations
             this.Return = new DefaultApiReturnDescriptor(method.ReturnType, methodAttributes, interfaceAttributes);
             this.Parameters = method.GetParameters().Select(p => new DefaultApiParameterDescriptor(p)).ToReadOnlyList();
             this.Properties = new ConcurrentDictionary<object, object>();
+
+            this.MethodAttributes = methodAttributes;
+            this.InterfaceAttributes = interfaceAttributes;
         }
     }
 }

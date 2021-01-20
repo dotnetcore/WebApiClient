@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -78,7 +77,7 @@ namespace WebApiClientCore
         /// <param name="interfaceType">接口类型</param>
         /// <param name="inclueBases">是否包括基础接口定义的特性</param> 
         /// <returns></returns>
-        public static IEnumerable<Attribute> GetInterfaceCustomAttributes(this Type interfaceType, bool inclueBases = true)
+        public static Attribute[] GetInterfaceCustomAttributes(this Type interfaceType, bool inclueBases = true)
         {
             var types = Enumerable.Repeat(interfaceType, 1);
             if (inclueBases == true)

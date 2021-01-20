@@ -31,9 +31,10 @@ namespace WebApiClientCore.Implementations
 
         /// <summary>
         /// 请求Api的返回描述
+        /// for test only
         /// </summary>
         /// <param name="method">方法信息</param>  
-        public DefaultApiReturnDescriptor(MethodInfo method)
+        internal DefaultApiReturnDescriptor(MethodInfo method)
             : this(method, method.DeclaringType)
         {
         }
