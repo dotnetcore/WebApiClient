@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WebApiClientCore.Internals
+namespace WebApiClientCore.Implementations
 {
     /// <summary>
     /// 是否允许重复的特性比较器
