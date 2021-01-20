@@ -3,7 +3,7 @@
     /// <summary>
     /// 表示httpApi方法调用的拦截器
     /// </summary>
-    sealed class ActionInterceptor : IActionInterceptor
+    sealed class ApiActionInterceptor : IApiActionInterceptor
     {
         /// <summary>
         /// 服务上下文
@@ -14,7 +14,7 @@
         /// httpApi方法调用的拦截器
         /// </summary>
         /// <param name="context">服务上下文</param> 
-        public ActionInterceptor(HttpClientContext context)
+        public ApiActionInterceptor(HttpClientContext context)
         {
             this.context = context;
         }

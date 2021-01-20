@@ -3,7 +3,7 @@
 namespace WebApiClientCore.Implementations
 {
     /// <summary>
-    /// ActionInvoker提供者的接口
+    /// 表示ApiActionInvoker提供者
     /// </summary>
     public class DefaultApiActionInvokerProvider : IApiActionInvokerProvider
     {

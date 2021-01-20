@@ -16,13 +16,13 @@ namespace WebApiClientCore.Implementations
         /// <summary>
         /// IActionInterceptor的Intercept方法
         /// </summary>
-        private static readonly MethodInfo interceptMethod = typeof(IActionInterceptor).GetMethod(nameof(IActionInterceptor.Intercept)) ?? throw new MissingMethodException(nameof(IActionInterceptor.Intercept));
+        private static readonly MethodInfo interceptMethod = typeof(IApiActionInterceptor).GetMethod(nameof(IApiActionInterceptor.Intercept)) ?? throw new MissingMethodException(nameof(IApiActionInterceptor.Intercept));
 
         /// <summary>
         /// 代理类型的构造器的参数类型
         /// (IApiInterceptor interceptor,IActionInvoker[] actionInvokers)
         /// </summary>
-        private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IActionInterceptor), typeof(ApiActionInvoker[]) };
+        private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IApiActionInterceptor), typeof(ApiActionInvoker[]) };
 
 
         /// <summary>
@@ -41,10 +41,10 @@ namespace WebApiClientCore.Implementations
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
-        protected override Func<IActionInterceptor, ApiActionInvoker[], THttpApi> CreateFactory()
+        protected override Func<IApiActionInterceptor, ApiActionInvoker[], THttpApi> CreateFactory()
         {
             var proxyType = BuildProxyType(typeof(THttpApi), this.ApiMethods);
-            return Lambda.CreateCtorFunc<IActionInterceptor, ApiActionInvoker[], THttpApi>(proxyType);
+            return Lambda.CreateCtorFunc<IApiActionInterceptor, ApiActionInvoker[], THttpApi>(proxyType);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace WebApiClientCore.Implementations
             var builder = module.DefineType(typeName, TypeAttributes.Class);
             builder.AddInterfaceImplementation(interfaceType);
 
-            var fieldActionInterceptor = BuildField(builder, "<>actionInterceptor", typeof(IActionInterceptor));
+            var fieldActionInterceptor = BuildField(builder, "<>actionInterceptor", typeof(IApiActionInterceptor));
             var fieldActionInvokers = BuildField(builder, "<>actionInvokers", typeof(ApiActionInvoker[]));
 
             BuildCtor(builder, fieldActionInterceptor, fieldActionInvokers);
