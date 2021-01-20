@@ -41,9 +41,9 @@ namespace WebApiClientCore.Implementations
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
-        protected override Func<IActionInterceptor, IActionInvoker[], THttpApi> CreateFactory(IActionInvoker[] actionInvokers)
+        protected override Func<IActionInterceptor, IActionInvoker[], THttpApi> CreateFactory()
         {
-            var proxyType = BuildProxyType(typeof(THttpApi), actionInvokers);
+            var proxyType = BuildProxyType(typeof(THttpApi), this.ApiMethods);
             return Lambda.CreateCtorFunc<IActionInterceptor, IActionInvoker[], THttpApi>(proxyType);
         }
 
@@ -51,11 +51,11 @@ namespace WebApiClientCore.Implementations
         /// 创建IHttpApi代理类的类型
         /// </summary>
         /// <param name="interfaceType">接口类型</param>
-        /// <param name="actionInvokers">action执行器</param>
+        /// <param name="apiMethods">接口的方法</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
-        private static Type BuildProxyType(Type interfaceType, IActionInvoker[] actionInvokers)
+        private static Type BuildProxyType(Type interfaceType, MethodInfo[] apiMethods)
         {
             // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口            
             if (interfaceType.IsVisible == false)
@@ -79,7 +79,7 @@ namespace WebApiClientCore.Implementations
             var fieldActionInvokers = BuildField(builder, "<>actionInvokers", typeof(IActionInvoker[]));
 
             BuildCtor(builder, fieldActionInterceptor, fieldActionInvokers);
-            BuildMethods(builder, actionInvokers, fieldActionInterceptor, fieldActionInvokers);
+            BuildMethods(builder, apiMethods, fieldActionInterceptor, fieldActionInvokers);
 
             var proxyType = builder.CreateType();
             return proxyType ?? throw new ProxyTypeCreateException(interfaceType);
@@ -129,16 +129,16 @@ namespace WebApiClientCore.Implementations
         /// 生成代理类型的接口实现方法
         /// </summary>
         /// <param name="builder">类型生成器</param>
-        /// <param name="actionInvokers">action执行器</param>
+        /// <param name="actionMethods">接口的方法</param>
         /// <param name="fieldActionInterceptor">拦截器字段</param>
         /// <param name="fieldActionInvokers">action执行器字段</param> 
-        private static void BuildMethods(TypeBuilder builder, IActionInvoker[] actionInvokers, FieldBuilder fieldActionInterceptor, FieldBuilder fieldActionInvokers)
+        private static void BuildMethods(TypeBuilder builder, MethodInfo[] actionMethods, FieldBuilder fieldActionInterceptor, FieldBuilder fieldActionInvokers)
         {
             const MethodAttributes implementAttribute = MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot | MethodAttributes.HideBySig;
 
-            for (var i = 0; i < actionInvokers.Length; i++)
+            for (var i = 0; i < actionMethods.Length; i++)
             {
-                var actionMethod = actionInvokers[i].ApiAction.Member;
+                var actionMethod = actionMethods[i];
                 var actionParameters = actionMethod.GetParameters();
                 var parameterTypes = actionParameters.Select(p => p.ParameterType).ToArray();
 

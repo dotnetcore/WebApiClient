@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 
 namespace WebApiClientCore.Implementations
 {
@@ -20,6 +21,11 @@ namespace WebApiClientCore.Implementations
         private readonly Func<IActionInterceptor, IActionInvoker[], THttpApi> factory;
 
         /// <summary>
+        /// 获取接口的所有方法
+        /// </summary>
+        protected MethodInfo[] ApiMethods { get; }
+
+        /// <summary>
         /// THttpApi的实例创建器抽象
         /// </summary>
         /// <param name="apiActionDescriptorProvider"></param>
@@ -27,19 +33,21 @@ namespace WebApiClientCore.Implementations
         public HttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IActionInvokerProvider actionInvokerProvider)
         {
             var interfaceType = typeof(THttpApi);
-            this.actionInvokers = HttpApi.FindApiMethods(interfaceType)
+            this.ApiMethods = HttpApi.FindApiMethods(interfaceType);
+            this.actionInvokers = this.ApiMethods
                  .Select(item => apiActionDescriptorProvider.CreateApiActionDescriptor(item, interfaceType))
                  .Select(item => actionInvokerProvider.CreateActionInvoker(item))
                  .ToArray();
 
-            this.factory = this.CreateFactory(this.actionInvokers);
+            // 最后一步创建工厂
+            this.factory = this.CreateFactory();
         }
 
         /// <summary>
         /// 创建实例工厂
         /// </summary>
         /// <returns></returns>
-        protected abstract Func<IActionInterceptor, IActionInvoker[], THttpApi> CreateFactory(IActionInvoker[] actionInvokers);
+        protected abstract Func<IActionInterceptor, IActionInvoker[], THttpApi> CreateFactory();
 
         /// <summary>
         /// 创建接口的实例
