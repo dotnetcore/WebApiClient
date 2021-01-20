@@ -1,4 +1,6 @@
-﻿namespace WebApiClientCore.Implementations
+﻿using WebApiClientCore.Implementations.Tasks;
+
+namespace WebApiClientCore.Implementations
 {
     /// <summary>
     /// 表示ITask返回声明的Action执行器

@@ -2,10 +2,10 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using WebApiClientCore.Implementations;
-using WebApiClientCore.Internals.Attributes;
+using WebApiClientCore.Implementations.Attributes;
 using Xunit;
 
-namespace WebApiClientCore.Test.Internals.Attributes
+namespace WebApiClientCore.Test.Implementations.Attributes
 {
     public class HttpContentTypeAttributeTest
     {

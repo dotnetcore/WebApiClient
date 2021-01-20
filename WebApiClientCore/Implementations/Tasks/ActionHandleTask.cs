@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace WebApiClientCore.Implementations
+namespace WebApiClientCore.Implementations.Tasks
 {
     /// <summary>
     /// 提供异常处理的请求任务
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
-    class ActionHandleTask<TResult> : TaskBase<TResult>, IHandleTask<TResult>
+    sealed class ActionHandleTask<TResult> : TaskBase<TResult>, IHandleTask<TResult>
     {
         /// <summary>
         /// 请求任务创建的委托

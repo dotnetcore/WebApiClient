@@ -2,13 +2,13 @@
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
 
-namespace WebApiClientCore.Implementations
+namespace WebApiClientCore.Implementations.Tasks
 {
     /// <summary>
     /// 表示支持重试的Api请求任务
     /// </summary>
     /// <typeparam name="TResult">结果类型</typeparam>
-    class AcitonRetryTask<TResult> : TaskBase<TResult>, IRetryTask<TResult>
+    sealed class AcitonRetryTask<TResult> : TaskBase<TResult>, IRetryTask<TResult>
     {
         /// <summary>
         /// 请求任务创建的委托

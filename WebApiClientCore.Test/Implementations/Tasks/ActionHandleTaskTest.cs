@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using WebApiClientCore.Implementations;
+using WebApiClientCore.Implementations.Tasks;
 using Xunit;
 
-namespace WebApiClientCore.Test.Implementations
+namespace WebApiClientCore.Test.Implementations.Tasks
 {
     public class ActionHandleTaskTest
     {

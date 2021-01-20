@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using WebApiClientCore.Parameters;
 
-namespace WebApiClientCore.Internals.Attributes
+namespace WebApiClientCore.Implementations.Attributes
 {
     /// <summary>
     /// 表示参数内容为FileInfo类型的处理特性

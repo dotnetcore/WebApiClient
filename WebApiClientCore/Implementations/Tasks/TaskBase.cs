@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace WebApiClientCore.Implementations
+namespace WebApiClientCore.Implementations.Tasks
 {
     /// <summary>
     /// 表示Task抽象类

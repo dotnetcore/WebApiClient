@@ -1,5 +1,5 @@
 ﻿using System;
-using WebApiClientCore.Implementations;
+using WebApiClientCore.Implementations.Tasks;
 
 namespace WebApiClientCore
 {

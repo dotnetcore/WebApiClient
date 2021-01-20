@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
 
-namespace WebApiClientCore.Implementations
+namespace WebApiClientCore.Implementations.Tasks
 {
     /// <summary>
     /// 表示Api请求的任务
     /// </summary>
     /// <typeparam name="TResult">结果类型</typeparam>
-    class ActionTask<TResult> : TaskBase<TResult>
+    sealed class ActionTask<TResult> : TaskBase<TResult>
     {
         private readonly TaskActionInvoker<TResult> invoker;
         private readonly HttpClientContext context;
