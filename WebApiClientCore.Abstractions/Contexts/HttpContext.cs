@@ -11,9 +11,14 @@ namespace WebApiClientCore
     public class HttpContext : HttpClientContext
     {
         /// <summary>
-        /// 获取或设置指示请求完成选项
+        /// 获取请求消息
         /// </summary>
-        public HttpCompletionOption? CompletionOption { get; set; }
+        public HttpApiRequestMessage RequestMessage { get; }
+
+        /// <summary>
+        /// 获取或设置响应消息
+        /// </summary>
+        public HttpResponseMessage? ResponseMessage { get; set; }
 
         /// <summary>
         /// 获取请求取消令牌集合
@@ -21,21 +26,15 @@ namespace WebApiClientCore
         public IList<CancellationToken> CancellationTokens { get; }
 
         /// <summary>
-        /// 获取请求消息
+        /// 获取或设置指示请求完成选项
         /// </summary>
-        public HttpApiRequestMessage RequestMessage { get; }
-
-        /// <summary>
-        /// 获取响应消息
-        /// </summary>
-        public HttpResponseMessage? ResponseMessage { get; set; }
-
+        public HttpCompletionOption? CompletionOption { get; set; }
 
         /// <summary>
         /// http上下文
         /// </summary>
         /// <param name="context">服务上下文</param>
-        /// <param name="requestMessage"></param>
+        /// <param name="requestMessage">请求消息</param>
         /// <exception cref="ArgumentNullException"></exception>
         public HttpContext(HttpClientContext context, HttpApiRequestMessage requestMessage)
             : base(context.HttpClient, context.ServiceProvider, context.HttpApiOptions, context.OptionsName)

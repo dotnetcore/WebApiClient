@@ -16,6 +16,11 @@ namespace WebApiClientCore
         private Exception? exception;
 
         /// <summary>
+        /// 获取结果状态
+        /// </summary>
+        public ResultStatus ResultStatus { get; private set; }
+
+        /// <summary>
         /// 获取或设置结果值
         /// 在IApiReturnAttribute设置该值之后会中断下一个IApiReturnAttribute的执行
         /// </summary>
@@ -46,11 +51,6 @@ namespace WebApiClientCore
                 this.result = null;
             }
         }
-
-        /// <summary>
-        /// 获取结果状态
-        /// </summary>
-        public ResultStatus ResultStatus { get; private set; }
 
         /// <summary>
         /// Api响应的上下文

@@ -54,7 +54,7 @@ namespace WebApiClientCore.Serialization.JsonConverters
             {
                 var json = reader.GetString();
                 var valueType = typeToConvert.GenericTypeArguments.First();
-                var value = System.Text.Json.JsonSerializer.Deserialize(json, valueType, options);
+                var value = JsonSerializer.Deserialize(json, valueType, options);
                 return typeToConvert.CreateInstance<TJsonString>(value);
             }
 
@@ -72,7 +72,7 @@ namespace WebApiClientCore.Serialization.JsonConverters
                 }
                 else
                 {
-                    var json = System.Text.Json.JsonSerializer.Serialize(value.Value, value.ValueType, options);
+                    var json = JsonSerializer.Serialize(value.Value, value.ValueType, options);
                     writer.WriteStringValue(json);
                 }
             }
