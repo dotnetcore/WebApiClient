@@ -18,7 +18,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取请求取消令牌集合
         /// </summary>
-        public IList<CancellationToken> CancellationTokens { get; } = new List<CancellationToken>();
+        public IList<CancellationToken> CancellationTokens { get; }
 
         /// <summary>
         /// 获取请求消息
@@ -41,6 +41,7 @@ namespace WebApiClientCore
             : base(context.HttpClient, context.ServiceProvider, context.HttpApiOptions, context.OptionsName)
         {
             this.RequestMessage = requestMessage;
+            this.CancellationTokens = new List<CancellationToken>();
         }
     }
 }
