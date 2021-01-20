@@ -13,6 +13,6 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="method">接口的方法</param>
         /// <param name="interfaceType">接口类型</param> 
-        ApiActionDescriptor CreateApiActionDescriptor(MethodInfo method, Type interfaceType);
+        ApiActionDescriptor CreateActionDescriptor(MethodInfo method, Type interfaceType);
     }
 }

@@ -28,14 +28,14 @@ namespace WebApiClientCore.Implementations
         /// <summary>
         /// THttpApi的实例创建器抽象
         /// </summary>
-        /// <param name="apiActionDescriptorProvider"></param>
+        /// <param name="actionDescriptorProvider"></param>
         /// <param name="actionInvokerProvider"></param>
-        public HttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
+        public HttpApiActivator(IApiActionDescriptorProvider actionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
         {
             var interfaceType = typeof(THttpApi);
             this.ApiMethods = HttpApi.FindApiMethods(interfaceType);
             this.actionInvokers = this.ApiMethods
-                 .Select(item => apiActionDescriptorProvider.CreateApiActionDescriptor(item, interfaceType))
+                 .Select(item => actionDescriptorProvider.CreateActionDescriptor(item, interfaceType))
                  .Select(item => actionInvokerProvider.CreateActionInvoker(item))
                  .ToArray();
 

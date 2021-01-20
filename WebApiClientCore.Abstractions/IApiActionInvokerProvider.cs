@@ -8,8 +8,8 @@
         /// <summary>
         /// 创建Action执行器
         /// </summary>
-        /// <param name="apiAction">Action描述</param>
+        /// <param name="actionDescriptor">Action描述</param>
         /// <returns></returns>
-        ApiActionInvoker CreateActionInvoker(ApiActionDescriptor apiAction);
+        ApiActionInvoker CreateActionInvoker(ApiActionDescriptor actionDescriptor);
     }
 }

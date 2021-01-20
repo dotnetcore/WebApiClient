@@ -10,16 +10,16 @@ namespace WebApiClientCore.Implementations
         /// <summary>
         /// 创建Action执行器
         /// </summary>
-        /// <param name="apiAction">Action描述</param>
+        /// <param name="actionDescriptor">Action描述</param>
         /// <returns></returns>
-        public virtual ApiActionInvoker CreateActionInvoker(ApiActionDescriptor apiAction)
+        public virtual ApiActionInvoker CreateActionInvoker(ApiActionDescriptor actionDescriptor)
         {
-            var resultType = apiAction.Return.DataType.Type;
-            var invokerType = apiAction.Return.ReturnType.IsInheritFrom<Task>()
+            var resultType = actionDescriptor.Return.DataType.Type;
+            var invokerType = actionDescriptor.Return.ReturnType.IsInheritFrom<Task>()
                 ? typeof(TaskApiActionInvoker<>).MakeGenericType(resultType)
                 : typeof(ITaskApiActionInvoker<>).MakeGenericType(resultType);
 
-            return invokerType.CreateInstance<ApiActionInvoker>(apiAction);
+            return invokerType.CreateInstance<ApiActionInvoker>(actionDescriptor);
         }
     }
 }
