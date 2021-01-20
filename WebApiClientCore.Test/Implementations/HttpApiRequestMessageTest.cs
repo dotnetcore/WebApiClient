@@ -13,15 +13,15 @@ namespace WebApiClientCore.Test.Implementations
         [Fact]
         public void MakeRequestUriTest()
         {
-            var request = new DefaultHttpApiRequestMessage();
+            var request = new HttpApiRequestMessageImpl();
             var uri = request.MakeRequestUri(new Uri("a", UriKind.RelativeOrAbsolute));
             Assert.Equal("a", uri.OriginalString);
 
-            request = new DefaultHttpApiRequestMessage();
+            request = new HttpApiRequestMessageImpl();
             uri = request.MakeRequestUri(new Uri("http://a.com", UriKind.RelativeOrAbsolute));
             Assert.Equal("http://a.com", uri.OriginalString);
 
-            request = new DefaultHttpApiRequestMessage();
+            request = new HttpApiRequestMessageImpl();
             uri = request.MakeRequestUri(new Uri("http://a.com/a", UriKind.RelativeOrAbsolute));
             Assert.Equal("http://a.com/a", uri.OriginalString);
         }
@@ -29,17 +29,17 @@ namespace WebApiClientCore.Test.Implementations
         [Fact]
         public void MakeRequestUri2Test()
         {
-            var request = new DefaultHttpApiRequestMessage();
+            var request = new HttpApiRequestMessageImpl();
             request.RequestUri = new Uri("http://b.com/", UriKind.RelativeOrAbsolute);
             var uri = request.MakeRequestUri(new Uri("a", UriKind.RelativeOrAbsolute));
             Assert.Equal("http://b.com/a", uri.OriginalString);
 
-            request = new DefaultHttpApiRequestMessage();
+            request = new HttpApiRequestMessageImpl();
             request.RequestUri = new Uri("http://b.com/", UriKind.RelativeOrAbsolute);
             uri = request.MakeRequestUri(new Uri("http://a.com", UriKind.RelativeOrAbsolute));
             Assert.Equal("http://a.com", uri.OriginalString);
 
-            request = new DefaultHttpApiRequestMessage();
+            request = new HttpApiRequestMessageImpl();
             request.RequestUri = new Uri("http://b.com/", UriKind.RelativeOrAbsolute);
             uri = request.MakeRequestUri(new Uri("http://a.com/a", UriKind.RelativeOrAbsolute));
             Assert.Equal("http://a.com/a", uri.OriginalString);
@@ -48,22 +48,22 @@ namespace WebApiClientCore.Test.Implementations
         [Fact]
         public void MakeRequestUri3Test()
         {
-            var request = new DefaultHttpApiRequestMessage();
+            var request = new HttpApiRequestMessageImpl();
             request.RequestUri = new Uri("http://b.com/x", UriKind.RelativeOrAbsolute);
             var uri = request.MakeRequestUri(new Uri("a", UriKind.RelativeOrAbsolute));
             Assert.Equal("http://b.com/a", uri.OriginalString);
 
-            request = new DefaultHttpApiRequestMessage();
+            request = new HttpApiRequestMessageImpl();
             request.RequestUri = new Uri("http://b.com/x", UriKind.RelativeOrAbsolute);
             uri = request.MakeRequestUri(new Uri("http://a.com", UriKind.RelativeOrAbsolute));
             Assert.Equal("http://a.com/x", uri.OriginalString);
 
-            request = new DefaultHttpApiRequestMessage();
+            request = new HttpApiRequestMessageImpl();
             request.RequestUri = new Uri("http://b.com/x", UriKind.RelativeOrAbsolute);
             uri = request.MakeRequestUri(new Uri("http://a.com/", UriKind.RelativeOrAbsolute));
             Assert.Equal("http://a.com/x", uri.OriginalString);
 
-            request = new DefaultHttpApiRequestMessage();
+            request = new HttpApiRequestMessageImpl();
             request.RequestUri = new Uri("http://b.com/x", UriKind.RelativeOrAbsolute);
             uri = request.MakeRequestUri(new Uri("http://a.com/a", UriKind.RelativeOrAbsolute));
             Assert.Equal("http://a.com/a", uri.OriginalString);
@@ -72,7 +72,7 @@ namespace WebApiClientCore.Test.Implementations
         [Fact]
         public void AddUrlQueryTest()
         {
-            var request = new DefaultHttpApiRequestMessage();
+            var request = new HttpApiRequestMessageImpl();
             Assert.Throws<ApiInvalidConfigException>(() => request.AddUrlQuery("xKey", "xValue"));
 
             request.RequestUri = new Uri("http://webapiclient.com/");
@@ -93,7 +93,7 @@ namespace WebApiClientCore.Test.Implementations
         [Fact]
         public async Task AddFormFiledAsyncTest()
         {
-            var reqeust = new DefaultHttpApiRequestMessage();
+            var reqeust = new HttpApiRequestMessageImpl();
 
             // 已经移除Get或Head限制
             // await Assert.ThrowsAsync<NotSupportedException>(() => reqeust.AddFormFieldAsync("name", "value"));
@@ -119,7 +119,7 @@ namespace WebApiClientCore.Test.Implementations
 {HttpUtility.UrlEncode(value, Encoding.UTF8)}";
             }
 
-            var reqeust = new DefaultHttpApiRequestMessage();
+            var reqeust = new HttpApiRequestMessageImpl();
             reqeust.Method = System.Net.Http.HttpMethod.Post;
             reqeust.RequestUri = new Uri("http://webapiclient.com");
             reqeust.AddFormDataText("name", "laojiu");

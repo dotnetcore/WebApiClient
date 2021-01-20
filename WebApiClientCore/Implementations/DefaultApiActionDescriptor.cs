@@ -14,16 +14,6 @@ namespace WebApiClientCore.Implementations
     public class DefaultApiActionDescriptor : ApiActionDescriptor
     {
         /// <summary>
-        /// 获取方法声明的所有特性
-        /// </summary>
-        protected Attribute[] MethodAttributes { get; }
-
-        /// <summary>
-        /// 获取接口声明的所有特性
-        /// </summary>
-        protected Attribute[] InterfaceAttributes { get; }
-
-        /// <summary>
         /// 获取所在接口类型
         /// 这个值不一定是声明方法的接口类型
         /// </summary>
@@ -113,13 +103,10 @@ namespace WebApiClientCore.Implementations
             this.Attributes = actionAttributes;
             this.CacheAttribute = methodAttributes.OfType<IApiCacheAttribute>().FirstOrDefault();
             this.FilterAttributes = filterAttributes;
+            this.Properties = new ConcurrentDictionary<object, object>();
 
             this.Return = new DefaultApiReturnDescriptor(method.ReturnType, methodAttributes, interfaceAttributes);
             this.Parameters = method.GetParameters().Select(p => new DefaultApiParameterDescriptor(p)).ToReadOnlyList();
-            this.Properties = new ConcurrentDictionary<object, object>();
-
-            this.MethodAttributes = methodAttributes;
-            this.InterfaceAttributes = interfaceAttributes;
         }
     }
 }

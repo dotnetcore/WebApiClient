@@ -15,12 +15,12 @@ namespace WebApiClientCore.Implementations
     /// <summary>
     /// 表示httpApi的请求消息
     /// </summary>
-    sealed class DefaultHttpApiRequestMessage : HttpApiRequestMessage
+    sealed class HttpApiRequestMessageImpl : HttpApiRequestMessage
     {
         /// <summary>
         /// 程序集版本信息
         /// </summary>
-        private static readonly AssemblyName assemblyName = typeof(DefaultHttpApiRequestMessage).Assembly.GetName();
+        private static readonly AssemblyName assemblyName = typeof(HttpApiRequestMessageImpl).Assembly.GetName();
 
         /// <summary>
         /// 请求头的默认UserAgent
@@ -30,7 +30,7 @@ namespace WebApiClientCore.Implementations
         /// <summary>
         /// httpApi的请求消息
         /// </summary> 
-        public DefaultHttpApiRequestMessage()
+        public HttpApiRequestMessageImpl()
             : this(null, true)
         {
         }
@@ -40,7 +40,7 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="requestUri">请求uri</param>
         /// <param name="useDefaultUserAgent">请求头是否包含默认的UserAgent</param>
-        public DefaultHttpApiRequestMessage(Uri? requestUri, bool useDefaultUserAgent)
+        public HttpApiRequestMessageImpl(Uri? requestUri, bool useDefaultUserAgent)
         {
             this.RequestUri = requestUri;
             if (useDefaultUserAgent == true)

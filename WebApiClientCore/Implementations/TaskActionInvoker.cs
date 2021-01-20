@@ -48,7 +48,7 @@ namespace WebApiClientCore.Implementations
             {
                 var requiredUri = context.HttpApiOptions.HttpHost ?? context.HttpClient.BaseAddress;
                 var useDefaultUserAgent = context.HttpApiOptions.UseDefaultUserAgent;
-                using var message = new DefaultHttpApiRequestMessage(requiredUri, useDefaultUserAgent);
+                using var message = new HttpApiRequestMessageImpl(requiredUri, useDefaultUserAgent);
                 var httpContext = new HttpContext(context, message);
                 var requestContext = new ApiRequestContext(httpContext, this.ApiAction, arguments);
                 return await this.InvokeAsync(requestContext).ConfigureAwait(false);

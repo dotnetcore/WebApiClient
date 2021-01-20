@@ -19,6 +19,11 @@ namespace WebApiClientCore.Implementations
     public class DefaultApiParameterDescriptor : ApiParameterDescriptor
     {
         /// <summary>
+        /// 缺省参数特性时的默认特性
+        /// </summary>
+        private static readonly IApiParameterAttribute defaultAttribute = new PathQueryAttribute();
+
+        /// <summary>
         /// 获取参数名称
         /// </summary>
         public override string Name { get; protected set; }
@@ -54,39 +59,56 @@ namespace WebApiClientCore.Implementations
         /// <param name="parameter">参数信息</param>
         /// <exception cref="ArgumentNullException"></exception>
         public DefaultApiParameterDescriptor(ParameterInfo parameter)
+            : this(parameter, defaultAttribute)
+        {
+        }
+
+        /// <summary>
+        /// 请求Api的参数描述
+        /// </summary>
+        /// <param name="parameter">参数信息</param>
+        /// <param name="defaultAtribute">缺省特性时使用的默认特性</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public DefaultApiParameterDescriptor(ParameterInfo parameter, IApiParameterAttribute defaultAtribute)
         {
             if (parameter == null)
             {
                 throw new ArgumentNullException(nameof(parameter));
             }
 
+            var parameterAttributes = parameter.GetCustomAttributes().ToArray();
+
             var parameterType = parameter.ParameterType;
-            var parameterAlias = parameter.GetCustomAttribute<AliasAsAttribute>();
+            var parameterAlias = parameterAttributes.OfType<AliasAsAttribute>().FirstOrDefault();
             var parameterName = parameterAlias == null ? parameter.Name : parameterAlias.Name;
-
-            var defined = parameter.GetCustomAttributes().OfType<IApiParameterAttribute>();
-            var attributes = this.GetAttributes(parameterType, defined).ToReadOnlyList();
-
-            var validationAttributes = parameter
-                .GetCustomAttributes<ValidationAttribute>(true)
-                .ToReadOnlyList();
+            var validationAttributes = parameterAttributes.OfType<ValidationAttribute>().ToReadOnlyList();
 
             this.Member = parameter;
             this.Name = parameterName ?? string.Empty;
             this.Index = parameter.Position;
-            this.Attributes = attributes;
             this.ParameterType = parameterType;
             this.ValidationAttributes = validationAttributes;
+
+            var attributes = this.GetAttributes(parameter, parameterAttributes).ToArray();
+            if (attributes.Length == 0)
+            {
+                this.Attributes = new[] { defaultAtribute }.ToReadOnlyList();
+            }
+            else
+            {
+                this.Attributes = attributes.ToReadOnlyList();
+            }
         }
 
         /// <summary>
-        /// 合成参数的最终特性
+        /// 获取参数的特性
         /// </summary>
-        /// <param name="parameterType">参数类型</param>
-        /// <param name="defined">参数上声明的特性</param>
+        /// <param name="parameter">参数</param>
+        /// <param name="attributes">参数声明的所有特性</param> 
         /// <returns></returns>
-        protected virtual IEnumerable<IApiParameterAttribute> GetAttributes(Type parameterType, IEnumerable<IApiParameterAttribute> defined)
+        protected virtual IEnumerable<IApiParameterAttribute> GetAttributes(ParameterInfo parameter, Attribute[] attributes)
         {
+            var parameterType = parameter.ParameterType;
             if (parameterType.IsInheritFrom<HttpContent>() == true)
             {
                 return RepeatOne<HttpContentTypeAttribute>();
@@ -107,12 +129,7 @@ namespace WebApiClientCore.Implementations
                 return RepeatOne<FileInfoTypeAttribute>();
             }
 
-            if (defined.Any() == true)
-            {
-                return defined;
-            }
-
-            return RepeatOne<PathQueryAttribute>();
+            return attributes.OfType<IApiParameterAttribute>();
         }
 
         /// <summary>
