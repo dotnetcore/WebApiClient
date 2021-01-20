@@ -1,14 +1,14 @@
 ﻿namespace WebApiClientCore
 {
     /// <summary>
-    /// 定义Action执行器的接口
+    /// 表示Action执行器
     /// </summary>
-    public interface IActionInvoker
+    public abstract class ApiActionInvoker
     {
         /// <summary>
         /// 获取Action描述
         /// </summary>
-        ApiActionDescriptor ApiAction { get; }
+        public abstract ApiActionDescriptor ApiAction { get; }
 
         /// <summary>
         /// 执行Action
@@ -16,6 +16,6 @@
         /// <param name="context">服务上下文</param>
         /// <param name="arguments">action参数值</param>
         /// <returns></returns>
-        object Invoke(HttpClientContext context, object?[] arguments);
+        public abstract object Invoke(HttpClientContext context, object?[] arguments);
     }
 }

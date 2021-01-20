@@ -9,18 +9,18 @@ namespace WebApiClientCore.Implementations
     /// 表示Task返回声明的Action执行器
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
-    sealed class TaskActionInvoker<TResult> : IActionInvoker
+    sealed class TaskApiActionInvoker<TResult> : ApiActionInvoker
     {
         /// <summary>
         /// 获取Action描述
         /// </summary>
-        public ApiActionDescriptor ApiAction { get; }
+        public override ApiActionDescriptor ApiAction { get; }
 
         /// <summary>
         /// Task返回声明的Action执行器
         /// </summary>
         /// <param name="apiAction"></param>
-        public TaskActionInvoker(ApiActionDescriptor apiAction)
+        public TaskApiActionInvoker(ApiActionDescriptor apiAction)
         {
             this.ApiAction = apiAction;
         }
@@ -31,7 +31,7 @@ namespace WebApiClientCore.Implementations
         /// <param name="context">上下文</param>
         /// <param name="arguments">参数值</param>
         /// <returns></returns>
-        public object Invoke(HttpClientContext context, object?[] arguments)
+        public override object Invoke(HttpClientContext context, object?[] arguments)
         {
             return this.InvokeAsync(context, arguments);
         }

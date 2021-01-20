@@ -25,7 +25,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.TryAddSingleton(typeof(IHttpApiActivator<>), typeof(HttpApiEmitActivator<>));
             services.TryAddSingleton<IApiActionDescriptorProvider, DefaultApiActionDescriptorProvider>();
-            services.TryAddSingleton<IActionInvokerProvider, DefaultActionInvokerProvider>();
+            services.TryAddSingleton<IApiActionInvokerProvider, DefaultApiActionInvokerProvider>();
             services.TryAddSingleton<IResponseCacheProvider, DefaultResponseCacheProvider>();
 
             var name = HttpApi.GetName(typeof(THttpApi));

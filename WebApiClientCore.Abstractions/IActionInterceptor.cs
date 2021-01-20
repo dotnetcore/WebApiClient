@@ -11,6 +11,6 @@
         /// <param name="actionInvoker">action执行器</param> 
         /// <param name="arguments">action的参数集合</param>
         /// <returns></returns>
-        object Intercept(IActionInvoker actionInvoker, object?[] arguments);
+        object Intercept(ApiActionInvoker actionInvoker, object?[] arguments);
     }
 }

@@ -13,12 +13,12 @@ namespace WebApiClientCore.Implementations
         /// <summary>
         /// 接口的所有方法执行器
         /// </summary>
-        private readonly IActionInvoker[] actionInvokers;
+        private readonly ApiActionInvoker[] actionInvokers;
 
         /// <summary>
         /// 创建工厂
         /// </summary>
-        private readonly Func<IActionInterceptor, IActionInvoker[], THttpApi> factory;
+        private readonly Func<IActionInterceptor, ApiActionInvoker[], THttpApi> factory;
 
         /// <summary>
         /// 获取接口的所有方法
@@ -30,7 +30,7 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="apiActionDescriptorProvider"></param>
         /// <param name="actionInvokerProvider"></param>
-        public HttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IActionInvokerProvider actionInvokerProvider)
+        public HttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
         {
             var interfaceType = typeof(THttpApi);
             this.ApiMethods = HttpApi.FindApiMethods(interfaceType);
@@ -47,7 +47,7 @@ namespace WebApiClientCore.Implementations
         /// 创建实例工厂
         /// </summary>
         /// <returns></returns>
-        protected abstract Func<IActionInterceptor, IActionInvoker[], THttpApi> CreateFactory();
+        protected abstract Func<IActionInterceptor, ApiActionInvoker[], THttpApi> CreateFactory();
 
         /// <summary>
         /// 创建接口的实例

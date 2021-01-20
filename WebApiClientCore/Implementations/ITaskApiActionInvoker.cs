@@ -6,25 +6,25 @@ namespace WebApiClientCore.Implementations
     /// 表示ITask返回声明的Action执行器
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
-    sealed class ITaskActionInvoker<TResult> : IActionInvoker
+    sealed class ITaskApiActionInvoker<TResult> : ApiActionInvoker
     {
         /// <summary>
         /// Api执行器
         /// </summary>
-        private readonly TaskActionInvoker<TResult> actionInvoker;
+        private readonly TaskApiActionInvoker<TResult> actionInvoker;
 
         /// <summary>
         /// 获取Action描述
         /// </summary>
-        public ApiActionDescriptor ApiAction => this.actionInvoker.ApiAction;
+        public override ApiActionDescriptor ApiAction => this.actionInvoker.ApiAction;
 
         /// <summary>
         /// ITask返回声明的Action执行器
         /// </summary>
         /// <param name="apiAction">Api描述</param>
-        public ITaskActionInvoker(ApiActionDescriptor apiAction)
+        public ITaskApiActionInvoker(ApiActionDescriptor apiAction)
         {
-            this.actionInvoker = new TaskActionInvoker<TResult>(apiAction);
+            this.actionInvoker = new TaskApiActionInvoker<TResult>(apiAction);
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace WebApiClientCore.Implementations
         /// <param name="context">上下文</param>
         /// <param name="arguments">参数值</param>
         /// <returns></returns>
-        public object Invoke(HttpClientContext context, object?[] arguments)
+        public override object Invoke(HttpClientContext context, object?[] arguments)
         {
             return new ActionTask<TResult>(this.actionInvoker, context, arguments);
         }
