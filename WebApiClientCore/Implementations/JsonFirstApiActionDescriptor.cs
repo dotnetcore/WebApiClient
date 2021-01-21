@@ -26,7 +26,8 @@ namespace WebApiClientCore.Implementations
         public JsonFirstApiActionDescriptor(MethodInfo method, Type interfaceType)
             : base(method, interfaceType)
         {
-            if (this.Attributes.Any(a => this.IsGetHeadAttribute(a) == false))
+            var defineGetHead = this.Attributes.Any(a => this.IsGetHeadAttribute(a));
+            if (defineGetHead == false)
             {
                 this.Parameters = this.GetApiParameterDescriptors().ToReadOnlyList();
             }
