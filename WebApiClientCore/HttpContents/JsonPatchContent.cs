@@ -1,4 +1,8 @@
-﻿namespace WebApiClientCore.HttpContents
+﻿using System.Collections.Generic;
+using System.Text.Json;
+using WebApiClientCore.Serialization;
+
+namespace WebApiClientCore.HttpContents
 {
     /// <summary>
     /// 表示utf8的JsonPatch内容
@@ -16,6 +20,17 @@
         public JsonPatchContent()
             : base(MediaType)
         {
+        }
+
+        /// <summary>
+        /// utf8的JsonPatch内容
+        /// </summary>
+        /// <param name="oprations">patch操作项</param>
+        /// <param name="jsonSerializerOptions">json序列化选项</param> 
+        public JsonPatchContent(IEnumerable<object> oprations, JsonSerializerOptions? jsonSerializerOptions)
+            : base(MediaType)
+        {
+            JsonBufferSerializer.Serialize(this, oprations, jsonSerializerOptions);
         }
     }
 }

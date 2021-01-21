@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
 using WebApiClientCore.HttpContents;
-using WebApiClientCore.Serialization;
 
 namespace WebApiClientCore.Parameters
 {
@@ -76,11 +75,8 @@ namespace WebApiClientCore.Parameters
                 throw new ApiInvalidConfigException(Resx.required_PatchMethod);
             }
 
-            var jsonPatchContent = new JsonPatchContent();
-            context.HttpContext.RequestMessage.Content = jsonPatchContent;
-
             var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
-            JsonBufferSerializer.Serialize(jsonPatchContent, this.oprations, options);
+            context.HttpContext.RequestMessage.Content = new JsonPatchContent(this.oprations, options);
 
             return Task.CompletedTask;
         }
