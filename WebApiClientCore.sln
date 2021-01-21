@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore.Extensions
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore.Extensions.JsonRpc", "WebApiClientCore.Extensions.JsonRpc\WebApiClientCore.Extensions.JsonRpc.csproj", "{32DC2A56-469A-4514-A6C0-5718B5DB8294}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiClientCore.Abstractions", "WebApiClientCore.Abstractions\WebApiClientCore.Abstractions.csproj", "{BB0EFCA6-6AD2-45A2-B62D-62426F5015D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore.Abstractions", "WebApiClientCore.Abstractions\WebApiClientCore.Abstractions.csproj", "{BB0EFCA6-6AD2-45A2-B62D-62426F5015D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
