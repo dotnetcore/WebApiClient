@@ -12,18 +12,29 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="actionDescriptor">Action描述</param>
         /// <returns></returns>
-        public virtual ApiActionInvoker CreateActionInvoker(ApiActionDescriptor actionDescriptor)
+        public ApiActionInvoker CreateActionInvoker(ApiActionDescriptor actionDescriptor)
+        {
+            var actionInvoker = this.CreateDefaultActionInvoker(actionDescriptor);
+            if (actionDescriptor.Return.ReturnType.IsInheritFrom<Task>() == false)
+            {
+                if (actionInvoker is IITaskReturnConvertable convertable)
+                {
+                    actionInvoker = convertable.ToITaskReturnActionInvoker();
+                }
+            }
+            return actionInvoker;
+        }
+
+        /// <summary>
+        /// 创建DefaultApiActionInvoker类型或其子类型的实例
+        /// </summary>
+        /// <param name="actionDescriptor">Action描述</param>
+        /// <returns></returns>
+        protected virtual ApiActionInvoker CreateDefaultActionInvoker(ApiActionDescriptor actionDescriptor)
         {
             var resultType = actionDescriptor.Return.DataType.Type;
             var invokerType = typeof(DefaultApiActionInvoker<>).MakeGenericType(resultType);
-            var actionInvoker = invokerType.CreateInstance<ApiActionInvoker>(actionDescriptor);
-
-            if (actionDescriptor.Return.ReturnType.IsInheritFrom<Task>() == false)
-            {
-                var convertable = (IITaskReturnConvertable)actionInvoker;
-                actionInvoker = convertable.ToITaskReturnActionInvoker();
-            }
-            return actionInvoker;
+            return invokerType.CreateInstance<ApiActionInvoker>(actionDescriptor);
         }
     }
 }
