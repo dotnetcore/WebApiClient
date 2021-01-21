@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using WebApiClientCore.Attributes;
@@ -91,13 +92,16 @@ namespace WebApiClientCore.Implementations
             private static bool IsSimpleType(Type realType)
             {
                 return realType.IsPrimitive
+                    || realType.IsInheritFrom<Enum>()
                     || realType == typeof(string)
                     || realType == typeof(decimal)
                     || realType == typeof(DateTime)
                     || realType == typeof(DateTimeOffset)
                     || realType == typeof(Guid)
                     || realType == typeof(Uri)
-                    || realType == typeof(Version);
+                    || realType == typeof(Version)
+                    || realType == typeof(TimeSpan)
+                    || realType == typeof(IPAddress);
             }
         }
     }
