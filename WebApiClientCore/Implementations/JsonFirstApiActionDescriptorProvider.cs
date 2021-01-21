@@ -8,12 +8,10 @@ using WebApiClientCore.Attributes;
 namespace WebApiClientCore.Implementations
 {
     /// <summary>
-    /// 当参数空缺特性时
-    /// 根据请求方式自动填充合理的特性
-    /// GET或HEAD请求应用PathQueryAttribute
-    /// 其它请求时简单类型应用PathQueryAttribute复杂类型使用JsonContentAttribute
+    /// 当非GET或HEAD请求的缺省参数特性声明时
+    /// 为复杂参数类型的参数应用JsonContentAttribute
     /// </summary>
-    public class AutoAttributeApiActionDescriptorProvider : IApiActionDescriptorProvider
+    public class JsonFirstApiActionDescriptorProvider : IApiActionDescriptorProvider
     {
         /// <summary>
         /// 创建Action描述
@@ -22,24 +20,24 @@ namespace WebApiClientCore.Implementations
         /// <param name="interfaceType">接口类型</param> 
         public ApiActionDescriptor CreateActionDescriptor(MethodInfo method, Type interfaceType)
         {
-            return new AutoAttributeApiActionDescriptor(method, interfaceType);
+            return new JsonFirstApiActionDescriptor(method, interfaceType);
         }
 
         /// <summary>
-        /// 根据请求方式自动填充合理的特性的ApiActionDescriptor
+        /// 为复杂参数类型的参数应用JsonContentAttribute的ApiActionDescriptor
         /// </summary>
-        private class AutoAttributeApiActionDescriptor : DefaultApiActionDescriptor
+        private class JsonFirstApiActionDescriptor : DefaultApiActionDescriptor
         {
             private static readonly IApiParameterAttribute pathQueryAttribute = new PathQueryAttribute();
             private static readonly IApiParameterAttribute jsonContentAttribute = new JsonContentAttribute();
 
             /// <summary>
-            /// GET或HEAD请求应用PathQueryAttribute
-            /// 其它请求时简单类型应用PathQueryAttribute复杂类型使用JsonContentAttribute
+            /// 当非GET或HEAD请求的缺省参数特性声明时
+            /// 为复杂参数类型的参数应用JsonContentAttribute
             /// </summary>
             /// <param name="method"></param>
             /// <param name="interfaceType"></param>
-            public AutoAttributeApiActionDescriptor(MethodInfo method, Type interfaceType)
+            public JsonFirstApiActionDescriptor(MethodInfo method, Type interfaceType)
                 : base(method, interfaceType)
             {
                 var descriptors = new List<DefaultApiParameterDescriptor>();
