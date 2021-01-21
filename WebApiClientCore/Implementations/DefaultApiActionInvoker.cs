@@ -2,14 +2,15 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
+using WebApiClientCore.Implementations.Tasks;
 
 namespace WebApiClientCore.Implementations
 {
     /// <summary>
-    /// 表示Task返回声明的Action执行器
+    /// 表示Action执行器
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
-    sealed class TaskApiActionInvoker<TResult> : ApiActionInvoker
+    public class DefaultApiActionInvoker<TResult> : ApiActionInvoker, IITaskReturnConvertable
     {
         /// <summary>
         /// 获取Action描述
@@ -17,12 +18,21 @@ namespace WebApiClientCore.Implementations
         public override ApiActionDescriptor ActionDescriptor { get; }
 
         /// <summary>
-        /// Task返回声明的Action执行器
+        /// Action执行器
         /// </summary>
         /// <param name="actionDescriptor"></param>
-        public TaskApiActionInvoker(ApiActionDescriptor actionDescriptor)
+        public DefaultApiActionInvoker(ApiActionDescriptor actionDescriptor)
         {
             this.ActionDescriptor = actionDescriptor;
+        }
+
+        /// <summary>
+        /// 转换为ITask返回声明包装的Action执行器
+        /// </summary>
+        /// <returns></returns>
+        public ApiActionInvoker ToITaskReturnActionInvoker()
+        {
+            return new ITaskReturnActionInvoker(this);
         }
 
         /// <summary>
@@ -31,7 +41,7 @@ namespace WebApiClientCore.Implementations
         /// <param name="context">上下文</param>
         /// <param name="arguments">参数值</param>
         /// <returns></returns>
-        public override object Invoke(HttpClientContext context, object?[] arguments)
+        public sealed override object Invoke(HttpClientContext context, object?[] arguments)
         {
             return this.InvokeAsync(context, arguments);
         }
@@ -42,7 +52,7 @@ namespace WebApiClientCore.Implementations
         /// <param name="context">上下文</param>
         /// <param name="arguments">参数值</param>
         /// <returns></returns>
-        public async Task<TResult> InvokeAsync(HttpClientContext context, object?[] arguments)
+        public virtual async Task<TResult> InvokeAsync(HttpClientContext context, object?[] arguments)
         {
             try
             {
@@ -86,6 +96,43 @@ namespace WebApiClientCore.Implementations
 
             throw new ApiReturnNotSupportedExteption(response);
 #nullable enable
+        }
+
+
+        /// <summary>
+        /// 表示ITask返回声明的Action执行器
+        /// </summary> 
+        private class ITaskReturnActionInvoker : ApiActionInvoker
+        {
+            /// <summary>
+            /// Api执行器
+            /// </summary>
+            private readonly DefaultApiActionInvoker<TResult> actionInvoker;
+
+            /// <summary>
+            /// 获取Action描述
+            /// </summary>
+            public override ApiActionDescriptor ActionDescriptor => this.actionInvoker.ActionDescriptor;
+
+            /// <summary>
+            /// ITask返回声明的Action执行器
+            /// </summary>
+            /// <param name="actionInvoker">Action执行器 </param>
+            public ITaskReturnActionInvoker(DefaultApiActionInvoker<TResult> actionInvoker)
+            {
+                this.actionInvoker = actionInvoker;
+            }
+
+            /// <summary>
+            /// 执行Action
+            /// </summary>
+            /// <param name="context">上下文</param>
+            /// <param name="arguments">参数值</param>
+            /// <returns></returns>
+            public override object Invoke(HttpClientContext context, object?[] arguments)
+            {
+                return new ActionTask<TResult>(this.actionInvoker, context, arguments);
+            }
         }
     }
 }

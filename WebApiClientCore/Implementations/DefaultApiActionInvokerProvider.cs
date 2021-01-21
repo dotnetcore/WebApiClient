@@ -15,11 +15,15 @@ namespace WebApiClientCore.Implementations
         public virtual ApiActionInvoker CreateActionInvoker(ApiActionDescriptor actionDescriptor)
         {
             var resultType = actionDescriptor.Return.DataType.Type;
-            var invokerType = actionDescriptor.Return.ReturnType.IsInheritFrom<Task>()
-                ? typeof(TaskApiActionInvoker<>).MakeGenericType(resultType)
-                : typeof(ITaskApiActionInvoker<>).MakeGenericType(resultType);
+            var invokerType = typeof(DefaultApiActionInvoker<>).MakeGenericType(resultType);
+            var actionInvoker = invokerType.CreateInstance<ApiActionInvoker>(actionDescriptor);
 
-            return invokerType.CreateInstance<ApiActionInvoker>(actionDescriptor);
+            if (actionDescriptor.Return.ReturnType.IsInheritFrom<Task>() == false)
+            {
+                var convertable = (IITaskReturnConvertable)actionInvoker;
+                actionInvoker = convertable.ToITaskReturnActionInvoker();
+            }
+            return actionInvoker;
         }
     }
 }
