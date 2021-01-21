@@ -19,7 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// 使用Emit在运行时动态创建接口的代理类
+        /// 运行时使用Emit动态创建接口的代理类和代理类实例
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
