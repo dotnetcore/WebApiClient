@@ -8,7 +8,7 @@ namespace WebApiClientCore.Implementations
     /// 表示THttpApi的实例创建器抽象
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
-    abstract class HttpApiActivator<THttpApi> : IHttpApiActivator<THttpApi>
+    public abstract class HttpApiActivator<THttpApi> : IHttpApiActivator<THttpApi>
     {
         /// <summary>
         /// 接口的所有方法执行器

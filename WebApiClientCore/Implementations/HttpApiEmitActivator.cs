@@ -11,16 +11,16 @@ namespace WebApiClientCore.Implementations
     /// 表示THttpApi的实例Emit创建器
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
-    sealed class HttpApiEmitActivator<THttpApi> : HttpApiActivator<THttpApi>
+    public class HttpApiEmitActivator<THttpApi> : HttpApiActivator<THttpApi>
     {
         /// <summary>
-        /// IActionInterceptor的Intercept方法
+        /// IApiActionInterceptor的Intercept方法
         /// </summary>
         private static readonly MethodInfo interceptMethod = typeof(IApiActionInterceptor).GetMethod(nameof(IApiActionInterceptor.Intercept)) ?? throw new MissingMethodException(nameof(IApiActionInterceptor.Intercept));
 
         /// <summary>
         /// 代理类型的构造器的参数类型
-        /// (IApiInterceptor interceptor,IActionInvoker[] actionInvokers)
+        /// (IApiActionInterceptor interceptor,ApiActionInvoker[] actionInvokers)
         /// </summary>
         private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IApiActionInterceptor), typeof(ApiActionInvoker[]) };
 
@@ -107,7 +107,7 @@ namespace WebApiClientCore.Implementations
         /// <returns></returns>
         private static void BuildCtor(TypeBuilder builder, FieldBuilder fieldActionInterceptor, FieldBuilder fieldActionInvokers)
         {
-            // .ctor(IApiInterceptor actionInterceptor, IActionInvoker[] actionInvokers)
+            // .ctor(IApiActionInterceptor actionInterceptor, ApiActionInvoker[] actionInvokers)
             var ctor = builder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, proxyTypeCtorArgTypes);
 
             var il = ctor.GetILGenerator();
