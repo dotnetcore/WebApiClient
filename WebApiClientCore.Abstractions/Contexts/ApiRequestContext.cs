@@ -1,5 +1,5 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 
 namespace WebApiClientCore
 {
@@ -21,8 +21,8 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取关联的ApiAction描述 
         /// </summary>
-        [Obsolete("请使用ActionDescriptor属性")]
         [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public ApiActionDescriptor ApiAction => this.ActionDescriptor;
 
         /// <summary>
