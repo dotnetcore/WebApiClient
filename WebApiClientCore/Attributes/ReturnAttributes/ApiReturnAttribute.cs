@@ -109,7 +109,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected virtual bool IsMatchAcceptContentType(MediaTypeHeaderValue? responseContentType)
         {
-            return MediaType.IsMatch(this.AcceptContentType.MediaType, responseContentType?.MediaType);
+            return MediaTypeUtil.IsMatch(this.AcceptContentType.MediaType, responseContentType?.MediaType);
         }
 
         /// <summary>

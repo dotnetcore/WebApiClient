@@ -40,7 +40,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected override bool IsMatchAcceptContentType(MediaTypeHeaderValue? responseContentType)
         {
-            return base.IsMatchAcceptContentType(responseContentType) || MediaType.IsMatch(textXml, responseContentType?.MediaType);
+            return base.IsMatchAcceptContentType(responseContentType) || MediaTypeUtil.IsMatch(textXml, responseContentType?.MediaType);
         }
 
         /// <summary>

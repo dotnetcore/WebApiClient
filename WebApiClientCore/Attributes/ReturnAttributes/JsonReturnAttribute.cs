@@ -16,6 +16,11 @@ namespace WebApiClientCore.Attributes
         private static readonly string textJson = "text/json";
 
         /// <summary>
+        /// 问题描述json
+        /// </summary>
+        private static readonly string problemJson = "application/problem+json";
+
+        /// <summary>
         /// json内容的结果特性
         /// </summary>
         public JsonReturnAttribute()
@@ -40,7 +45,9 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected override bool IsMatchAcceptContentType(MediaTypeHeaderValue? responseContentType)
         {
-            return base.IsMatchAcceptContentType(responseContentType) || MediaType.IsMatch(textJson, responseContentType?.MediaType);
+            return base.IsMatchAcceptContentType(responseContentType)
+                || MediaTypeUtil.IsMatch(textJson, responseContentType?.MediaType)
+                || MediaTypeUtil.IsMatch(problemJson, responseContentType?.MediaType);
         }
 
         /// <summary>

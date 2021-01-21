@@ -5,7 +5,7 @@ namespace WebApiClientCore.Internals.Utilities
     /// <summary>
     /// 提供媒体类型比较
     /// </summary>
-    static class MediaType
+    static class MediaTypeUtil
     {
         /// <summary>
         /// 是否与目标匹配
