@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace WebApiClientCore.Implementations.Attributes
+namespace WebApiClientCore.Implementations.TypeAttributes
 {
     /// <summary>
     /// 表示参数类型为IApiParameter的处理特性

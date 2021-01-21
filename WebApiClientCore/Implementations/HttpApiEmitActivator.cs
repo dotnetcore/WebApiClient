@@ -72,7 +72,7 @@ namespace WebApiClientCore.Implementations
                 .DefineDynamicModule(moduleName);
 
             var typeName = interfaceType.FullName ?? Guid.NewGuid().ToString();
-            var builder = module.DefineType(typeName, TypeAttributes.Class);
+            var builder = module.DefineType(typeName, System.Reflection.TypeAttributes.Class);
             builder.AddInterfaceImplementation(interfaceType);
 
             var fieldActionInterceptor = BuildField(builder, "<>actionInterceptor", typeof(IApiActionInterceptor));

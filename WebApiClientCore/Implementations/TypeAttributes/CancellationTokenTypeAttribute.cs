@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WebApiClientCore.Implementations.Attributes
+namespace WebApiClientCore.Implementations.TypeAttributes
 {
     /// <summary>
     /// 表示参数类型为CancellationToken处理特性

@@ -45,7 +45,7 @@ namespace WebApiClientCore.Implementations
 
                 foreach (var parameter in this.Parameters)
                 {
-                    var defaultAttribute = this.GetDefaultAttribute(isGetHeadMethod, parameter.ParameterType);
+                    var defaultAttribute = GetDefaultAttribute(isGetHeadMethod, parameter.ParameterType);
                     descriptors.Add(new DefaultApiParameterDescriptor(parameter.Member, defaultAttribute));
                 }
                 this.Parameters = descriptors.ToReadOnlyList();
@@ -72,7 +72,7 @@ namespace WebApiClientCore.Implementations
             /// <param name="parameterType">参数类型</param>
             /// <param name="isGetHeadMethod">是否为Get或Head请求方式</param>
             /// <returns></returns>
-            private IApiParameterAttribute GetDefaultAttribute(bool isGetHeadMethod, Type parameterType)
+            private static IApiParameterAttribute GetDefaultAttribute(bool isGetHeadMethod, Type parameterType)
             {
                 if (isGetHeadMethod == true)
                 {

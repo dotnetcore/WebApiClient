@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading;
 using WebApiClientCore.Attributes;
-using WebApiClientCore.Implementations.Attributes;
+using WebApiClientCore.Implementations.TypeAttributes;
 
 namespace WebApiClientCore.Implementations
 {
