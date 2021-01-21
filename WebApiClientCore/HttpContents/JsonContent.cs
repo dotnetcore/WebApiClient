@@ -24,7 +24,7 @@ namespace WebApiClientCore.HttpContents
         /// <summary>
         /// uft8的json内容
         /// </summary>
-        /// <param name="value">patch操作项</param>
+        /// <param name="value">对象值</param>
         /// <param name="jsonSerializerOptions">json序列化选项</param> 
         public JsonContent(object value, JsonSerializerOptions? jsonSerializerOptions)
             : base(MediaType)
