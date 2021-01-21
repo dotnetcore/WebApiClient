@@ -32,8 +32,8 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
                 throw new TokenEndPointNullException();
             }
 
-            var clientApi = serviceProvider.GetRequiredService<IOAuthTokenClientApi>();
-            return clientApi.RequestTokenAsync(options.Endpoint, options.Credentials);
+            var tokenClient = serviceProvider.GetRequiredService<OAuthTokenClient>();
+            return tokenClient.RequestTokenAsync(options.Endpoint, options.Credentials);
         }
 
         /// <summary>
@@ -63,8 +63,8 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
                 Refresh_token = refresh_token
             };
 
-            var clientApi = serviceProvider.GetRequiredService<IOAuthTokenClientApi>();
-            return clientApi.RefreshTokenAsync(options.Endpoint, refreshCredentials);
+            var tokenClient = serviceProvider.GetRequiredService<OAuthTokenClient>();
+            return tokenClient.RefreshTokenAsync(options.Endpoint, refreshCredentials);
         }
     }
 }

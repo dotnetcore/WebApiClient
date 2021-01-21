@@ -3,7 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
 using WebApiClientCore.Implementations;
-using WebApiClientCore.Internals.Utilities;
+using WebApiClientCore.Internals;
 using Xunit;
 
 namespace WebApiClientCore.Test.Implementations
@@ -116,7 +116,7 @@ namespace WebApiClientCore.Test.Implementations
             {
                 return $@"Content-Disposition: form-data; name=""{name}""
 
-{HttpUtility.UrlEncode(value, Encoding.UTF8)}";
+{HttpUtil.UrlEncode(value, Encoding.UTF8)}";
             }
 
             var reqeust = new HttpApiRequestMessageImpl();

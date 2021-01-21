@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
-using WebApiClientCore.Internals.Utilities;
+using WebApiClientCore.Internals;
 
 namespace WebApiClientCore.Attributes
 {

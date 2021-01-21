@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<Nullable>enable</Nullable>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<RootNamespace>WebApiClientCore</RootNamespace>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>Sign.snk</AssemblyOriginatorKeyFile>
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+
+		<Version>2.0.0-beta1</Version>
+		<Authors>laojiu</Authors>
+		<Company>laojiu</Company>
+		<Copyright>Copyright © laojiu 2017-2021</Copyright>
+		<Description>WebApiClientCore的接口代理类代码生成扩展</Description>
+		<Summary>WebApiClientCore的接口代理类代码生成扩展</Summary>
+
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/dotnetcore/WebApiClient</PackageProjectUrl>
+		<PackageIcon>icon.png</PackageIcon>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\WebApiClientCore\WebApiClientCore.csproj" />
+	</ItemGroup>
+
+	<!--nuget analyzers和tools目录-->
+	<ItemGroup>
+		<None Include="..\icon.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+		<None Include="NugetPackage\tools\*.*" PackagePath="tools" Pack="true" />
+		<None Include="NugetPackage\analyzers\dotnet\cs\**" PackagePath="analyzers\dotnet\cs" Pack="true" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<None Include="..\.editorconfig" Link=".editorconfig" />		
+	</ItemGroup>
+</Project>

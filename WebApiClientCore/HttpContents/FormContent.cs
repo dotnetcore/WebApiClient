@@ -6,7 +6,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClientCore.Internals;
-using WebApiClientCore.Internals.Utilities;
 
 namespace WebApiClientCore.HttpContents
 {
@@ -88,9 +87,9 @@ namespace WebApiClientCore.HttpContents
                     this.bufferWriter.Write((byte)'&');
                 }
 
-                HttpUtility.UrlEncode(item.Key, this.bufferWriter);
+                HttpUtil.UrlEncode(item.Key, this.bufferWriter);
                 this.bufferWriter.Write((byte)'=');
-                HttpUtility.UrlEncode(item.Value, this.bufferWriter);
+                HttpUtil.UrlEncode(item.Value, this.bufferWriter);
             }
         }
 

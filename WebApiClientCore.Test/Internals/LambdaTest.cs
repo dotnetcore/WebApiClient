@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using WebApiClientCore.Internals.Utilities;
+using WebApiClientCore.Internals;
 using Xunit;
 
-namespace WebApiClientCore.Test.Internals.Utilities
+namespace WebApiClientCore.Test.Internals
 {
     public class LambdaTest
     {
@@ -12,28 +12,28 @@ namespace WebApiClientCore.Test.Internals.Utilities
             var model = new Model { name = "laojiu" };
             var p = model.GetType().GetProperty("name");
 
-            var getter = Lambda.CreateGetFunc<Model, string>(p);
+            var getter = LambdaUtil.CreateGetFunc<Model, string>(p);
             var name = getter.Invoke(model);
             Assert.True(name == model.name);
 
 
-            var getter2 = Lambda.CreateGetFunc<object, string>(p);
+            var getter2 = LambdaUtil.CreateGetFunc<object, string>(p);
             var name2 = getter2.Invoke(model);
             Assert.True(name2 == model.name);
 
-            var getter3 = Lambda.CreateGetFunc<object, object>(p.DeclaringType, p.Name);
+            var getter3 = LambdaUtil.CreateGetFunc<object, object>(p.DeclaringType, p.Name);
             var name3 = getter2.Invoke(model).ToString();
             Assert.True(name3 == model.name);
 
             var kv = new KeyValuePair<string, int>("k", 10);
-            var getter4 = Lambda.CreateGetFunc<object, object>(kv.GetType(), "Value");
+            var getter4 = LambdaUtil.CreateGetFunc<object, object>(kv.GetType(), "Value");
             var value = (int)getter4.Invoke(kv);
             Assert.True(value == kv.Value);
 
-            var getter5 = Lambda.CreateGetFunc<object, int>(kv.GetType(), "Value");
+            var getter5 = LambdaUtil.CreateGetFunc<object, int>(kv.GetType(), "Value");
             Assert.True(getter5.Invoke(kv) == kv.Value);
 
-            var getter6 = Lambda.CreateGetFunc<object, long>(kv.GetType(), "Value");
+            var getter6 = LambdaUtil.CreateGetFunc<object, long>(kv.GetType(), "Value");
             Assert.True(getter6.Invoke(kv) == kv.Value);
         }
 
@@ -41,7 +41,7 @@ namespace WebApiClientCore.Test.Internals.Utilities
         public void SetTest()
         {
             var model = new Model { name = "laojiu" };
-            var setter = Lambda.CreateSetAction<object, object>(model.GetType().GetProperty("name"));
+            var setter = LambdaUtil.CreateSetAction<object, object>(model.GetType().GetProperty("name"));
             setter.Invoke(model, "ee");
             Assert.True("ee" == model.name);
         }
@@ -50,10 +50,10 @@ namespace WebApiClientCore.Test.Internals.Utilities
         public void CtorTest()
         {
             var value = "name";
-            var name = Lambda.CreateCtorFunc<string, Model>(typeof(Model))(value).name;
+            var name = LambdaUtil.CreateCtorFunc<string, Model>(typeof(Model))(value).name;
             Assert.True(name == value);
 
-            var func = Lambda.CreateCtorFunc<string, object>(typeof(Model));
+            var func = LambdaUtil.CreateCtorFunc<string, object>(typeof(Model));
             var model = func.Invoke(value) as Model;
             Assert.True(model.name == value);
         }

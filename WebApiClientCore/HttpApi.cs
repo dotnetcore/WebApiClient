@@ -42,6 +42,7 @@ namespace WebApiClientCore
             return httpApiType
                 .GetInterfaces()
                 .Append(httpApiType)
+                .OrderBy(item => item.Name)
                 .SelectMany(item => item.GetMethods())
                 .Select(item => item.EnsureApiMethod())
                 .ToArray();

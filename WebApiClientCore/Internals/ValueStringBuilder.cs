@@ -6,7 +6,7 @@ namespace WebApiClientCore.Internals
     /// <summary>
     /// StringBuilder
     /// </summary>
-    ref struct ValueStringBuilder
+    public ref struct ValueStringBuilder
     {
         private int index;
         private char[]? array;

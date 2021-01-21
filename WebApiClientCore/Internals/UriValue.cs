@@ -5,7 +5,7 @@ namespace WebApiClientCore.Internals
     /// <summary>
     /// 表示Uri值
     /// </summary>
-    ref struct UriValue
+    public ref struct UriValue
     {
         /// <summary>
         /// uri

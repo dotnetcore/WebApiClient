@@ -4,12 +4,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace WebApiClientCore.Internals.Utilities
+namespace WebApiClientCore.Internals
 {
     /// <summary>
     /// http工具类
     /// </summary>
-    static class HttpUtility
+    public static class HttpUtil
     {
         /// <summary>
         /// Uri编码

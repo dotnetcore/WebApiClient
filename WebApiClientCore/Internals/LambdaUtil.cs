@@ -3,12 +3,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace WebApiClientCore.Internals.Utilities
+namespace WebApiClientCore.Internals
 {
     /// <summary>
-    /// 表示式委托
+    /// 表示式委托工具类
     /// </summary>
-    static class Lambda
+    public static class LambdaUtil
     {
         /// <summary>
         /// 创建属性的设置委托

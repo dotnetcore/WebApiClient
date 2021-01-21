@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using WebApiClientCore.Exceptions;
-using WebApiClientCore.Internals.Utilities;
+using WebApiClientCore.Internals;
 
 namespace WebApiClientCore.Implementations
 {
@@ -44,7 +44,7 @@ namespace WebApiClientCore.Implementations
         protected override Func<IApiActionInterceptor, ApiActionInvoker[], THttpApi> CreateFactory()
         {
             var proxyType = BuildProxyType(typeof(THttpApi), this.ApiMethods);
-            return Lambda.CreateCtorFunc<IApiActionInterceptor, ApiActionInvoker[], THttpApi>(proxyType);
+            return LambdaUtil.CreateCtorFunc<IApiActionInterceptor, ApiActionInvoker[], THttpApi>(proxyType);
         }
 
         /// <summary>

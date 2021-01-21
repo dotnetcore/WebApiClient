@@ -1,7 +1,7 @@
-﻿using WebApiClientCore.Internals.Utilities;
+﻿using WebApiClientCore.Internals;
 using Xunit;
 
-namespace WebApiClientCore.Test.Internals.Utilities
+namespace WebApiClientCore.Test.Internals
 {
     public class MediaTypeUtilTest
     {

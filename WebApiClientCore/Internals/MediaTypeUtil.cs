@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace WebApiClientCore.Internals.Utilities
+namespace WebApiClientCore.Internals
 {
     /// <summary>
     /// 提供媒体类型比较
     /// </summary>
-    static class MediaTypeUtil
+    public static class MediaTypeUtil
     {
         /// <summary>
         /// 是否与目标匹配
