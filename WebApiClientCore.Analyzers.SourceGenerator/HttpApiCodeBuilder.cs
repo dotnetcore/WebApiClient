@@ -115,7 +115,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             builder.AppendLine("\t\t}");
 
             var index = 0;
-            var interfaces = this.httpApi.AllInterfaces.Concat(new[] { this.httpApi }).OrderBy(item => item.Name);
+            var interfaces = this.httpApi.AllInterfaces.Append(this.httpApi).OrderBy(item => item.Name);
             foreach (var @interface in interfaces)
             {
                 foreach (var member in @interface.GetMembers())
