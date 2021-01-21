@@ -8,7 +8,7 @@
         /// <summary>
         /// 获取Action描述
         /// </summary>
-        public abstract ApiActionDescriptor ApiAction { get; }
+        public abstract ApiActionDescriptor ActionDescriptor { get; }
 
         /// <summary>
         /// 执行Action

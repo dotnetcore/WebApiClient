@@ -19,7 +19,7 @@ namespace WebApiClientCore.Attributes
             var parameters = context.Properties.Get<JsonRpcParameters>(typeof(JsonRpcParameters));
             if (parameters == null)
             {
-                throw new ApiInvalidConfigException($"请为接口方法{context.ApiAction.Name}修饰{nameof(JsonRpcMethodAttribute)}");
+                throw new ApiInvalidConfigException($"请为接口方法{context.ActionDescriptor.Name}修饰{nameof(JsonRpcMethodAttribute)}");
             }
 
             parameters.Add(context);

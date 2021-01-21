@@ -24,7 +24,7 @@ namespace WebApiClientCore.Attributes
                 var loggerFactory = context.HttpContext.ServiceProvider.GetService<ILoggerFactory>();
                 if (loggerFactory != null)
                 {
-                    var action = context.ApiAction.Member;
+                    var action = context.ActionDescriptor.Member;
                     var categoryName = $"{action.DeclaringType?.Namespace}.{action.DeclaringType?.Name}.{action.Name}";
                     var logger = loggerFactory.CreateLogger(categoryName);
                     logger.LogWarning(Resx.gethead_Content_Warning.Format(method));

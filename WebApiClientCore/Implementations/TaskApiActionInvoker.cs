@@ -14,15 +14,15 @@ namespace WebApiClientCore.Implementations
         /// <summary>
         /// 获取Action描述
         /// </summary>
-        public override ApiActionDescriptor ApiAction { get; }
+        public override ApiActionDescriptor ActionDescriptor { get; }
 
         /// <summary>
         /// Task返回声明的Action执行器
         /// </summary>
-        /// <param name="apiAction"></param>
-        public TaskApiActionInvoker(ApiActionDescriptor apiAction)
+        /// <param name="actionDescriptor"></param>
+        public TaskApiActionInvoker(ApiActionDescriptor actionDescriptor)
         {
-            this.ApiAction = apiAction;
+            this.ActionDescriptor = actionDescriptor;
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace WebApiClientCore.Implementations
                 var useDefaultUserAgent = context.HttpApiOptions.UseDefaultUserAgent;
                 using var message = new HttpApiRequestMessageImpl(requiredUri, useDefaultUserAgent);
                 var httpContext = new HttpContext(context, message);
-                var requestContext = new ApiRequestContext(httpContext, this.ApiAction, arguments);
+                var requestContext = new ApiRequestContext(httpContext, this.ActionDescriptor, arguments);
                 return await this.InvokeAsync(requestContext).ConfigureAwait(false);
             }
             catch (HttpRequestException)

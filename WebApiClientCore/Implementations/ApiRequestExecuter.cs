@@ -29,20 +29,20 @@ namespace WebApiClientCore.Implementations
         {
             // 参数验证
             var validateProperty = context.HttpContext.HttpApiOptions.UseParameterPropertyValidate;
-            foreach (var parameter in context.ApiAction.Parameters)
+            foreach (var parameter in context.ActionDescriptor.Parameters)
             {
                 var parameterValue = context.Arguments[parameter.Index];
                 DataValidator.ValidateParameter(parameter, parameterValue, validateProperty);
             }
 
             // action特性请求前执行
-            foreach (var attr in context.ApiAction.Attributes)
+            foreach (var attr in context.ActionDescriptor.Attributes)
             {
                 await attr.OnRequestAsync(context).ConfigureAwait(false);
             }
 
             // 参数特性请求前执行
-            foreach (var parameter in context.ApiAction.Parameters)
+            foreach (var parameter in context.ActionDescriptor.Parameters)
             {
                 var ctx = new ApiParameterContext(context, parameter);
                 foreach (var attr in parameter.Attributes)
@@ -52,7 +52,7 @@ namespace WebApiClientCore.Implementations
             }
 
             // Return特性请求前执行
-            foreach (var @return in context.ApiAction.Return.Attributes)
+            foreach (var @return in context.ActionDescriptor.Return.Attributes)
             {
                 await @return.OnRequestAsync(context).ConfigureAwait(false);
             }
@@ -64,7 +64,7 @@ namespace WebApiClientCore.Implementations
             }
 
             // Filter请求前执行 
-            foreach (var filter in context.ApiAction.FilterAttributes)
+            foreach (var filter in context.ActionDescriptor.FilterAttributes)
             {
                 await filter.OnRequestAsync(context).ConfigureAwait(false);
             }
@@ -77,7 +77,7 @@ namespace WebApiClientCore.Implementations
         private static async Task HandleResponseAsync(ApiResponseContext context)
         {
             // Return特性请求后执行
-            foreach (var @return in context.ApiAction.Return.Attributes)
+            foreach (var @return in context.ActionDescriptor.Return.Attributes)
             {
                 try
                 {
@@ -104,7 +104,7 @@ namespace WebApiClientCore.Implementations
             }
 
             // Filter请求后执行
-            foreach (var filter in context.ApiAction.FilterAttributes)
+            foreach (var filter in context.ActionDescriptor.FilterAttributes)
             {
                 await filter.OnResponseAsync(context).ConfigureAwait(false);
             }

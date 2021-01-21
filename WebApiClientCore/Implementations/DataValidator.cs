@@ -45,7 +45,7 @@ namespace WebApiClientCore.Implementations
         /// <param name="context">上下文</param>  
         public static void ValidateReturnValue(ApiResponseContext context)
         {
-            if (context.ApiAction.Return.DataType.IsRawType == true)
+            if (context.ActionDescriptor.Return.DataType.IsRawType == true)
             {
                 return;
             }

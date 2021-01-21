@@ -66,7 +66,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static bool TryGetArgument(this ApiRequestContext context, string parameterName, StringComparer nameComparer, out object? value)
         {
-            foreach (var parameter in context.ApiAction.Parameters)
+            foreach (var parameter in context.ActionDescriptor.Parameters)
             {
                 if (nameComparer.Equals(parameter.Name, parameterName))
                 {
@@ -91,7 +91,7 @@ namespace WebApiClientCore
                 return context.HttpContext.CompletionOption.Value;
             }
 
-            var dataType = context.ApiAction.Return.DataType;
+            var dataType = context.ActionDescriptor.Return.DataType;
             return dataType.IsRawHttpResponseMessage || dataType.IsRawStream
                 ? HttpCompletionOption.ResponseHeadersRead
                 : HttpCompletionOption.ResponseContentRead;

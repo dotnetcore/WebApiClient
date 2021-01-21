@@ -51,7 +51,7 @@ namespace WebApiClientCore.Attributes
         protected virtual ITokenProvider GetTokenProvider(ApiRequestContext context)
         {
             var factory = context.HttpContext.ServiceProvider.GetRequiredService<ITokenProviderFactory>();
-            return factory.Create(context.ApiAction.InterfaceType, this.TokenProviderSearchMode);
+            return factory.Create(context.ActionDescriptor.InterfaceType, this.TokenProviderSearchMode);
         }
 
         /// <summary>

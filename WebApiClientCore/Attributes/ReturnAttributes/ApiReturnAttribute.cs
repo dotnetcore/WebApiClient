@@ -72,7 +72,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public Task OnRequestAsync(ApiRequestContext context)
         {
-            if (context.ApiAction.Return.DataType.IsRawType == false)
+            if (context.ActionDescriptor.Return.DataType.IsRawType == false)
             {
                 context.HttpContext.RequestMessage.Headers.Accept.Add(this.AcceptContentType);
             }
@@ -86,7 +86,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public async Task OnResponseAsync(ApiResponseContext context)
         {
-            if (context.ApiAction.Return.DataType.IsRawType == true)
+            if (context.ActionDescriptor.Return.DataType.IsRawType == true)
             {
                 return;
             }

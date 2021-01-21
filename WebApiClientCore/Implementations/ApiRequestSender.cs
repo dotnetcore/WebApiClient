@@ -54,7 +54,7 @@ namespace WebApiClientCore.Implementations
         /// <returns></returns>
         private static async Task<ActionCache?> GetCaheAsync(this ApiRequestContext context)
         {
-            var attribute = context.ApiAction.CacheAttribute;
+            var attribute = context.ActionDescriptor.CacheAttribute;
             if (attribute == null)
             {
                 return default;
@@ -97,7 +97,7 @@ namespace WebApiClientCore.Implementations
         /// <returns></returns>
         private static async Task SetCacheAsync(this ApiRequestContext context, string? cacheKey, HttpResponseMessage? response)
         {
-            var attribute = context.ApiAction.CacheAttribute;
+            var attribute = context.ActionDescriptor.CacheAttribute;
             if (attribute == null)
             {
                 return;

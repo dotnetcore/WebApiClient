@@ -50,7 +50,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public override async Task SetResultAsync(ApiResponseContext context)
         {
-            var resultType = context.ApiAction.Return.DataType.Type;
+            var resultType = context.ActionDescriptor.Return.DataType.Type;
             context.Result = await context.XmlDeserializeAsync(resultType).ConfigureAwait(false);
         }
     }

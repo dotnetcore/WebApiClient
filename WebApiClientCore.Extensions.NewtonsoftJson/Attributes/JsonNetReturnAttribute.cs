@@ -42,7 +42,7 @@ namespace WebApiClientCore.Attributes
             }
 
             var json = await content.ReadAsStringAsync().ConfigureAwait(false);
-            var resultType = context.ApiAction.Return.DataType.Type;
+            var resultType = context.ActionDescriptor.Return.DataType.Type;
 
             var name = context.HttpContext.OptionsName;
             var options = context.HttpContext.ServiceProvider.GetService<IOptionsMonitor<JsonNetSerializerOptions>>().Get(name);

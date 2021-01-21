@@ -34,7 +34,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public override Task SetResultAsync(ApiResponseContext context)
         {
-            if (context.ApiAction.Return.DataType.IsRawType == true)
+            if (context.ActionDescriptor.Return.DataType.IsRawType == true)
             {
                 return Task.CompletedTask;
             }
@@ -42,7 +42,7 @@ namespace WebApiClientCore.Attributes
             var response = context.HttpContext.ResponseMessage;
             if (response != null && IsNoContent(response))
             {
-                context.Result = context.ApiAction.Return.DataType.Type.DefaultValue();
+                context.Result = context.ActionDescriptor.Return.DataType.Type.DefaultValue();
             }
 
             return Task.CompletedTask;

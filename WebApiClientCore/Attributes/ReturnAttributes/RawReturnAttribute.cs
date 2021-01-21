@@ -41,7 +41,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public async override Task SetResultAsync(ApiResponseContext context)
         {
-            var dataType = context.ApiAction.Return.DataType;
+            var dataType = context.ActionDescriptor.Return.DataType;
             var response = context.HttpContext.ResponseMessage;
 
             if (dataType.IsRawType == false || response == null)

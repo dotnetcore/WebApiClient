@@ -16,15 +16,15 @@ namespace WebApiClientCore.Implementations
         /// <summary>
         /// 获取Action描述
         /// </summary>
-        public override ApiActionDescriptor ApiAction => this.actionInvoker.ApiAction;
+        public override ApiActionDescriptor ActionDescriptor => this.actionInvoker.ActionDescriptor;
 
         /// <summary>
         /// ITask返回声明的Action执行器
         /// </summary>
-        /// <param name="apiAction">Api描述</param>
-        public ITaskApiActionInvoker(ApiActionDescriptor apiAction)
+        /// <param name="actionDescriptor">Api描述</param>
+        public ITaskApiActionInvoker(ApiActionDescriptor actionDescriptor)
         {
-            this.actionInvoker = new TaskApiActionInvoker<TResult>(apiAction);
+            this.actionInvoker = new TaskApiActionInvoker<TResult>(actionDescriptor);
         }
 
         /// <summary>

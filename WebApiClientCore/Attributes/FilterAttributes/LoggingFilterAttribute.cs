@@ -141,7 +141,7 @@ namespace WebApiClientCore.Attributes
                 return Task.CompletedTask;
             }
 
-            var method = context.ApiAction.Member;
+            var method = context.ActionDescriptor.Member;
             var categoryName = $"{method.DeclaringType?.Namespace}.{method.DeclaringType?.Name}.{method.Name}";
             var logger = loggerFactory.CreateLogger(categoryName);
 
