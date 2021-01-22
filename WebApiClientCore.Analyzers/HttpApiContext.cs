@@ -1,6 +1,8 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace WebApiClientCore.Analyzers
@@ -8,22 +10,22 @@ namespace WebApiClientCore.Analyzers
     /// <summary>
     /// 表示HttpApi上下文
     /// </summary>
-    class HttpApiContext
+    sealed class HttpApiContext
     {
         /// <summary>
         /// IHttpApi的类型名称
         /// </summary>
-        private const string ihttpApiTypeName = "WebApiClientCore.IHttpApi";
+        private const string IHttpApiTypeName = "WebApiClientCore.IHttpApi";
 
         /// <summary>
         /// UriAttribue的类型名称
         /// </summary>
-        private const string uriAttributeTypeName = "WebApiClientCore.Attributes.UriAttribute";
+        private const string UriAttributeTypeName = "WebApiClientCore.Attributes.UriAttribute";
 
         /// <summary>
         /// AttributeCtorUsageAttribute的类型名称
         /// </summary>
-        private const string attributeCtorUsageTypName = "WebApiClientCore.AttributeCtorUsageAttribute";
+        private const string AttributeCtorUsageTypName = "WebApiClientCore.AttributeCtorUsageAttribute";
 
 
 
@@ -35,7 +37,12 @@ namespace WebApiClientCore.Analyzers
         /// <summary>
         /// 获取接口声明语法
         /// </summary>
-        public InterfaceDeclarationSyntax HttpApiSyntax { get; }
+        public InterfaceDeclarationSyntax? InterfaceSyntax { get; }
+
+        /// <summary>
+        /// 获取接
+        /// </summary>
+        public INamedTypeSymbol? @Interface { get; }
 
         /// <summary>
         /// 获取是否为HttpApi
@@ -45,18 +52,22 @@ namespace WebApiClientCore.Analyzers
         /// <summary>
         /// 获取IHttpApi的类型
         /// </summary>
-        public INamedTypeSymbol IHttpApiType { get; }
+        public INamedTypeSymbol? IHttpApi { get; }
 
         /// <summary>
         /// 获取UriAttribute的类型
         /// </summary>
-        public INamedTypeSymbol UriAttributeType { get; }
+        public INamedTypeSymbol? UriAttribute { get; }
 
         /// <summary>
         /// 获取AttributeCtorUsageAttribute的类型
         /// </summary>
-        public INamedTypeSymbol AttributeCtorUsageAttributeType { get; }
+        public INamedTypeSymbol? AttributeCtorUsageAttribute { get; }
 
+        /// <summary>
+        /// 获取声明的Api方法
+        /// </summary>
+        public IReadOnlyList<IMethodSymbol> ApiMethods { get; }
 
         /// <summary>
         /// HttpApi上下文
@@ -65,42 +76,29 @@ namespace WebApiClientCore.Analyzers
         public HttpApiContext(SyntaxNodeAnalysisContext syntaxNodeContext)
         {
             this.SyntaxNodeContext = syntaxNodeContext;
-            this.HttpApiSyntax = syntaxNodeContext.Node as InterfaceDeclarationSyntax;
+            this.InterfaceSyntax = syntaxNodeContext.Node as InterfaceDeclarationSyntax;
 
-            this.IHttpApiType = syntaxNodeContext.Compilation.GetTypeByMetadataName(ihttpApiTypeName);
-            this.UriAttributeType = syntaxNodeContext.Compilation.GetTypeByMetadataName(uriAttributeTypeName);
-            this.AttributeCtorUsageAttributeType = syntaxNodeContext.Compilation.GetTypeByMetadataName(attributeCtorUsageTypName);
-
-            this.IsHtttApi = this.IsHttpApiInterface();
-        }
-
-
-        /// <summary>
-        /// 返回是否为HttpApi接口
-        /// </summary>
-        /// <returns></returns>
-        private bool IsHttpApiInterface()
-        {
-            if (HttpApiSyntax?.BaseList == null)
+            this.IHttpApi = syntaxNodeContext.Compilation.GetTypeByMetadataName(IHttpApiTypeName);
+            this.UriAttribute = syntaxNodeContext.Compilation.GetTypeByMetadataName(UriAttributeTypeName);
+            this.AttributeCtorUsageAttribute = syntaxNodeContext.Compilation.GetTypeByMetadataName(AttributeCtorUsageTypName);
+           
+            if (this.InterfaceSyntax != null)
             {
-                return false;
+                this.Interface = syntaxNodeContext.Compilation.GetSemanticModel(this.InterfaceSyntax.SyntaxTree).GetDeclaredSymbol(this.InterfaceSyntax);
             }
 
-            foreach (var baseType in this.HttpApiSyntax.BaseList.Types)
+            if (this.Interface != null)
             {
-                var type = this.SyntaxNodeContext.SemanticModel.GetTypeInfo(baseType.Type).Type;
-                if (type.Equals(this.IHttpApiType) == true)
+                if (this.IHttpApi != null)
                 {
-                    return true;
+                    this.IsHtttApi = this.Interface.AllInterfaces.Contains(this.IHttpApi);
                 }
-
-                if (type.AllInterfaces.Any(item => item.Equals(this.IHttpApiType)) == true)
-                {
-                    return true;
-                }
+                this.ApiMethods = this.Interface.GetMembers().OfType<IMethodSymbol>().ToList().AsReadOnly();
             }
-
-            return false;
+            else
+            {
+                this.ApiMethods = new List<IMethodSymbol>().AsReadOnly();
+            }
         }
     }
 }

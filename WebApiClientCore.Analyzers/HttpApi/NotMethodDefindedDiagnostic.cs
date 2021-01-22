@@ -7,7 +7,7 @@ namespace WebApiClientCore.Analyzers.HttpApi
     /// <summary>
     /// 表示非方法声明诊断器
     /// </summary>
-    class NotMethodDefindedDiagnostic : HttpApiDiagnostic
+    sealed class NotMethodDefindedDiagnostic : HttpApiDiagnostic
     {
         /// <summary>
         /// /// <summary>
@@ -29,9 +29,15 @@ namespace WebApiClientCore.Analyzers.HttpApi
         /// 返回所有的报告诊断
         /// </summary>
         /// <returns></returns>
-        protected override IEnumerable<Diagnostic> GetDiagnostics()
+        protected override IEnumerable<Diagnostic?> GetDiagnostics()
         {
-            foreach (var member in this.Context.HttpApiSyntax.Members)
+            var @interface = this.Context.InterfaceSyntax;
+            if (@interface == null)
+            {
+                yield break;
+            }
+
+            foreach (var member in @interface.Members)
             {
                 if (member.Kind() != SyntaxKind.MethodDeclaration)
                 {

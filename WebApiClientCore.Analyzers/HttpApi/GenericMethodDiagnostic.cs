@@ -7,7 +7,7 @@ namespace WebApiClientCore.Analyzers.HttpApi
     /// <summary>
     /// 表示泛型方法诊断器
     /// </summary>
-    class GenericMethodDiagnostic : HttpApiDiagnostic
+    sealed class GenericMethodDiagnostic : HttpApiDiagnostic
     {
         /// <summary>
         /// 获取诊断描述
@@ -27,9 +27,9 @@ namespace WebApiClientCore.Analyzers.HttpApi
         /// 返回所有的报告诊断
         /// </summary>
         /// <returns></returns>
-        protected override IEnumerable<Diagnostic> GetDiagnostics()
+        protected override IEnumerable<Diagnostic?> GetDiagnostics()
         {
-            foreach (var method in this.GetApiMethodSymbols())
+            foreach (var method in this.Context.ApiMethods)
             {
                 if (method.IsGenericMethod == true)
                 {

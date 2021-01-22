@@ -1,5 +1,4 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +8,7 @@ namespace WebApiClientCore.Analyzers.HttpApi
     /// <summary>
     /// 表示特性构造函数诊断器
     /// </summary>
-    class AttributeDiagnostic : HttpApiDiagnostic
+    sealed class AttributeDiagnostic : HttpApiDiagnostic
     {
         /// <summary>
         /// /// <summary>
@@ -31,16 +30,16 @@ namespace WebApiClientCore.Analyzers.HttpApi
         /// 返回所有的报告诊断
         /// </summary>
         /// <returns></returns>
-        protected override IEnumerable<Diagnostic> GetDiagnostics()
+        protected override IEnumerable<Diagnostic?> GetDiagnostics()
         {
-            var interfaceSymbol = this.Context.SyntaxNodeContext.SemanticModel.GetDeclaredSymbol(this.Context.HttpApiSyntax);
-            if (interfaceSymbol == null)
+            var @interface = this.Context.Interface;
+            if (@interface == null)
             {
                 yield break;
             }
 
-            var interfaceAttributes = this.GetInterfaceDiagnosticAttributes(interfaceSymbol);
-            var methodAttributes = this.GetApiMethodSymbols().SelectMany(item => this.GetMethodDiagnosticAttributes(item));
+            var interfaceAttributes = this.GetInterfaceDiagnosticAttributes(@interface);
+            var methodAttributes = this.Context.ApiMethods.SelectMany(item => this.GetMethodDiagnosticAttributes(item));
 
             foreach (var item in interfaceAttributes.Concat(methodAttributes))
             {
@@ -53,11 +52,11 @@ namespace WebApiClientCore.Analyzers.HttpApi
         /// <summary>
         /// 获取接口已诊断的特性
         /// </summary>
-        /// <param name="interfaceSymbol">类型</param>
+        /// <param name="interface">类型</param>
         /// <returns></returns>
-        private IEnumerable<AttributeData> GetInterfaceDiagnosticAttributes(ITypeSymbol interfaceSymbol)
+        private IEnumerable<AttributeData> GetInterfaceDiagnosticAttributes(INamedTypeSymbol @interface)
         {
-            foreach (var attribute in interfaceSymbol.GetAttributes())
+            foreach (var attribute in @interface.GetAttributes())
             {
                 if (this.CtorAttributeIsDefind(attribute, AttributeTargets.Interface) == false)
                 {
@@ -103,14 +102,21 @@ namespace WebApiClientCore.Analyzers.HttpApi
         /// <returns></returns>
         private bool CtorAttributeIsDefind(AttributeData attributeData, AttributeTargets targets)
         {
-            var ctorAttributes = attributeData.AttributeConstructor?.GetAttributes();
-            if (ctorAttributes.HasValue == false)
+            var ctorAttr = this.Context.AttributeCtorUsageAttribute;
+            if (ctorAttr == null)
             {
                 return true;
             }
 
-            var ctorUsageAttribute = ctorAttributes.Value
-                .FirstOrDefault(item => item.AttributeClass.Equals(this.Context.AttributeCtorUsageAttributeType));
+            if (attributeData.AttributeConstructor == null)
+            {
+                return true;
+            }
+
+            var ctorUsageAttribute = attributeData
+                .AttributeConstructor
+                .GetAttributes()
+                .FirstOrDefault(item => ctorAttr.Equals(item.AttributeClass));
 
             if (ctorUsageAttribute == null)
             {
@@ -123,8 +129,12 @@ namespace WebApiClientCore.Analyzers.HttpApi
                 return true;
             }
 
-            var ctorTargets = (AttributeTargets)arg.Value;
-            return ctorTargets.HasFlag(targets);
+            if (arg.Value is AttributeTargets ctorTargets)
+            {
+                return ctorTargets.HasFlag(targets);
+            }
+
+            return true;
         }
     }
 }

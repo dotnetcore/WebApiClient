@@ -8,7 +8,7 @@ namespace WebApiClientCore.Analyzers.HttpApi
     /// <summary>
     /// 表示返回类型诊断器
     /// </summary>
-    class ReturnTypeDiagnostic : HttpApiDiagnostic
+    sealed class ReturnTypeDiagnostic : HttpApiDiagnostic
     {
         /// <summary>   
         /// 获取诊断描述
@@ -30,9 +30,9 @@ namespace WebApiClientCore.Analyzers.HttpApi
         /// 返回所有的报告诊断
         /// </summary>
         /// <returns></returns>
-        protected override IEnumerable<Diagnostic> GetDiagnostics()
+        protected override IEnumerable<Diagnostic?> GetDiagnostics()
         {
-            foreach (var method in this.GetApiMethodSymbols())
+            foreach (var method in this.Context.ApiMethods)
             {
                 var name = method.ReturnType.MetadataName;
                 if (name == "ITask`1" || name == "Task`1" || name == "Task")
@@ -40,13 +40,11 @@ namespace WebApiClientCore.Analyzers.HttpApi
                     continue;
                 }
 
-                if (method.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as MethodDeclarationSyntax == null)
+                if (method.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() is MethodDeclarationSyntax methodDeclaration)
                 {
-                    continue;
+                    var location = methodDeclaration.ReturnType.GetLocation();
+                    yield return this.CreateDiagnostic(location);
                 }
-
-                var location = (method.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as MethodDeclarationSyntax).ReturnType?.GetLocation();
-                yield return this.CreateDiagnostic(location);
             }
         }
 

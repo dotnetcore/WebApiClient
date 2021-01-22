@@ -58,7 +58,7 @@ namespace WebApiClientCore.Analyzers
         /// <param name="message"></param>
         /// <param name="helpLinkUri"></param>
         /// <returns></returns>
-        private static DiagnosticDescriptor Create(string id, string title, string message, DiagnosticSeverity level = DiagnosticSeverity.Error, string helpLinkUri = null)
+        private static DiagnosticDescriptor Create(string id, string title, string message, DiagnosticSeverity level = DiagnosticSeverity.Error, string? helpLinkUri = null)
         {
             var category = level.ToString();
             if (string.IsNullOrEmpty(helpLinkUri) == true)

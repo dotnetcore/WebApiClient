@@ -1,5 +1,4 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using System.Collections.Generic;
 
 namespace WebApiClientCore.Analyzers
@@ -34,30 +33,10 @@ namespace WebApiClientCore.Analyzers
         /// <param name="location"></param>
         /// <param name="messageArgs"></param>
         /// <returns></returns>
-        protected Diagnostic CreateDiagnostic(Location location, params object[] messageArgs)
+        protected Diagnostic? CreateDiagnostic(Location? location, params object[] messageArgs)
         {
             return location == null ? null : Diagnostic.Create(this.Descriptor, location, messageArgs);
-        }
-
-        /// <summary>
-        /// 返回HttpApi的所有方法
-        /// </summary>
-        /// <returns></returns>
-        protected IEnumerable<IMethodSymbol> GetApiMethodSymbols()
-        {
-            foreach (var member in this.Context.HttpApiSyntax.Members)
-            {
-                if (member.Kind() != SyntaxKind.MethodDeclaration)
-                {
-                    continue;
-                }
-
-                if (this.Context.SyntaxNodeContext.SemanticModel.GetDeclaredSymbol(member) is IMethodSymbol symbol)
-                {
-                    yield return symbol;
-                }
-            }
-        }
+        } 
 
         /// <summary>
         /// 报告诊断结果
@@ -82,6 +61,6 @@ namespace WebApiClientCore.Analyzers
         /// 返回所有的报告诊断
         /// </summary>
         /// <returns></returns>
-        protected abstract IEnumerable<Diagnostic> GetDiagnostics();
+        protected abstract IEnumerable<Diagnostic?> GetDiagnostics();
     }
 }

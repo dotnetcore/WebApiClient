@@ -7,7 +7,7 @@ namespace WebApiClientCore.Analyzers.HttpApi
     /// <summary>
     /// 表示UriAttribute诊断器
     /// </summary>
-    class UriAttributeDiagnostic : HttpApiDiagnostic
+    sealed class UriAttributeDiagnostic : HttpApiDiagnostic
     {
         /// <summary>   
         /// 获取诊断描述
@@ -28,14 +28,20 @@ namespace WebApiClientCore.Analyzers.HttpApi
         /// 返回所有的报告诊断
         /// </summary>
         /// <returns></returns>
-        protected override IEnumerable<Diagnostic> GetDiagnostics()
+        protected override IEnumerable<Diagnostic?> GetDiagnostics()
         {
-            foreach (var method in this.GetApiMethodSymbols())
+            var attr = this.Context.UriAttribute;
+            if (attr == null)
+            {
+                yield break;
+            }
+
+            foreach (var method in this.Context.ApiMethods)
             {
                 for (var i = 1; i < method.Parameters.Length; i++)
                 {
                     var parameter = method.Parameters[i];
-                    var uriAttribute = parameter.GetAttributes().FirstOrDefault(item => item.AttributeClass.Equals(this.Context.UriAttributeType));
+                    var uriAttribute = parameter.GetAttributes().FirstOrDefault(item => attr.Equals(item.AttributeClass));
                     if (uriAttribute != null)
                     {
                         var location = uriAttribute.ApplicationSyntaxReference?.GetSyntax()?.GetLocation();

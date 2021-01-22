@@ -8,7 +8,7 @@ namespace WebApiClientCore.Analyzers.HttpApi
     /// <summary>
     /// 表示引用传递参数诊断器
     /// </summary>
-    class RefParameterDiagnostic : HttpApiDiagnostic
+    sealed class RefParameterDiagnostic : HttpApiDiagnostic
     {
         /// <summary>
         /// /// <summary>
@@ -30,9 +30,9 @@ namespace WebApiClientCore.Analyzers.HttpApi
         /// 返回所有的报告诊断
         /// </summary>
         /// <returns></returns>
-        protected override IEnumerable<Diagnostic> GetDiagnostics()
+        protected override IEnumerable<Diagnostic?> GetDiagnostics()
         {
-            foreach (var method in this.GetApiMethodSymbols())
+            foreach (var method in this.Context.ApiMethods)
             {
                 foreach (var parameter in method.Parameters)
                 {
@@ -47,6 +47,5 @@ namespace WebApiClientCore.Analyzers.HttpApi
                 }
             }
         }
-
     }
 }
