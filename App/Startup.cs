@@ -47,7 +47,8 @@ namespace App
             // 应用编译时生成接口的代理类型代码
             services
                 .AddWebApiClient()
-                .AddHttpApiSourceGeneratorActivator();
+                .UseJsonFirstApiActionDescriptor()
+                .UseHttpApiSourceGeneratorActivator();
 
             // 注册userApi
             services.AddHttpApi<IUserApi>(o =>

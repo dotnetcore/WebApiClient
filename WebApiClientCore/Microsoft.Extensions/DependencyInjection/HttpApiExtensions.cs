@@ -20,13 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi<THttpApi>(this IServiceCollection services) where THttpApi : class
         {
-            services.AddOptions();
-            services.AddMemoryCache();
-
-            services.TryAddSingleton(typeof(IHttpApiActivator<>), typeof(HttpApiEmitActivator<>));
-            services.TryAddSingleton<IApiActionDescriptorProvider, DefaultApiActionDescriptorProvider>();
-            services.TryAddSingleton<IApiActionInvokerProvider, DefaultApiActionInvokerProvider>();
-            services.TryAddSingleton<IResponseCacheProvider, DefaultResponseCacheProvider>();
+            services.AddWebApiClient();
 
             var name = HttpApi.GetName(typeof(THttpApi));
             services.NamedHttpApiType(name, typeof(THttpApi));

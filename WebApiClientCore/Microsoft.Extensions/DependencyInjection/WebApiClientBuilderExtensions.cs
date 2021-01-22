@@ -1,4 +1,5 @@
-﻿using WebApiClientCore;
+﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+using WebApiClientCore;
 using WebApiClientCore.Implementations;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -9,12 +10,20 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class WebApiClientBuilderExtensions
     {
         /// <summary>
-        /// 创建WebApiClient全局配置的Builder
+        /// 添加WebApiClient全局默认配置
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
         public static IWebApiClientBuilder AddWebApiClient(this IServiceCollection services)
         {
+            services.AddOptions();
+            services.AddMemoryCache();
+
+            services.TryAddSingleton(typeof(IHttpApiActivator<>), typeof(HttpApiEmitActivator<>));
+            services.TryAddSingleton<IApiActionDescriptorProvider, DefaultApiActionDescriptorProvider>();
+            services.TryAddSingleton<IApiActionInvokerProvider, DefaultApiActionInvokerProvider>();
+            services.TryAddSingleton<IResponseCacheProvider, DefaultResponseCacheProvider>();
+
             return new WebApiClientBuilder(services);
         }
 
@@ -23,7 +32,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public static IWebApiClientBuilder AddHttpApiEmitActivator(this IWebApiClientBuilder builder)
+        public static IWebApiClientBuilder UseHttpApiEmitActivator(this IWebApiClientBuilder builder)
         {
             builder.Services.AddSingleton(typeof(IHttpApiActivator<>), typeof(HttpApiEmitActivator<>));
             return builder;
@@ -35,7 +44,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public static IWebApiClientBuilder AddJsonFirstApiActionDescriptorProvider(this IWebApiClientBuilder builder)
+        public static IWebApiClientBuilder UseJsonFirstApiActionDescriptor(this IWebApiClientBuilder builder)
         {
             builder.Services.AddSingleton<IApiActionDescriptorProvider, JsonFirstApiActionDescriptorProvider>();
             return builder;

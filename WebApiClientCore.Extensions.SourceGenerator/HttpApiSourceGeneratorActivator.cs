@@ -17,6 +17,8 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="apiActionDescriptorProvider"></param>
         /// <param name="actionInvokerProvider"></param>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
         public HttpApiSourceGeneratorActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
             : base(apiActionDescriptorProvider, actionInvokerProvider)
         {
@@ -25,17 +27,18 @@ namespace WebApiClientCore.Implementations
         /// <summary>
         /// 创建实例工厂
         /// </summary>
-        /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
         protected override Func<IApiActionInterceptor, ApiActionInvoker[], THttpApi> CreateFactory()
         {
             var proxyType = FindProxyType(typeof(THttpApi));
-            if (proxyType == null)
+            if (proxyType != null)
             {
-                throw new ProxyTypeCreateException(typeof(THttpApi), $"找不到{typeof(THttpApi)}的代理类");
+                return LambdaUtil.CreateCtorFunc<IApiActionInterceptor, ApiActionInvoker[], THttpApi>(proxyType);
             }
-            return LambdaUtil.CreateCtorFunc<IApiActionInterceptor, ApiActionInvoker[], THttpApi>(proxyType);
+
+            var message = $"找不到{typeof(THttpApi)}的代理类";
+            throw new ProxyTypeCreateException(typeof(THttpApi), message);
         }
 
         /// <summary>

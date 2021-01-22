@@ -30,6 +30,8 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="apiActionDescriptorProvider"></param>
         /// <param name="actionInvokerProvider"></param>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
         public HttpApiEmitActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
             : base(apiActionDescriptorProvider, actionInvokerProvider)
         {

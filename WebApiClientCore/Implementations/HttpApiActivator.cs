@@ -30,6 +30,8 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="actionDescriptorProvider"></param>
         /// <param name="actionInvokerProvider"></param>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
         public HttpApiActivator(IApiActionDescriptorProvider actionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
         {
             var interfaceType = typeof(THttpApi);
