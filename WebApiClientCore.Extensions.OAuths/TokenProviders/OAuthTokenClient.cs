@@ -5,7 +5,6 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using WebApiClientCore.Attributes;
 using WebApiClientCore.HttpContents;
-using WebApiClientCore.Serialization;
 
 namespace WebApiClientCore.Extensions.OAuths.TokenProviders
 {
@@ -84,11 +83,8 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <returns></returns>
         private async Task<TokenResult?> PostFormAsync<TCredentials>(Uri endpoint, string grant_type, TCredentials credentials)
         {
-            var keyValues = KeyValueSerializer.Serialize(nameof(credentials), credentials, httpApiOptions.KeyValueSerializeOptions);
-            keyValues.Add(new KeyValue("grant_type", grant_type));
-
-            using var formContent = new FormContent();
-            formContent.AddFormField(keyValues);
+            using var formContent = new FormContent(credentials, httpApiOptions.KeyValueSerializeOptions);
+            formContent.AddFormField(new KeyValue("grant_type", grant_type));
 
             var response = await this.httpClientFactory.CreateClient().PostAsync(endpoint, formContent);
             var utf8Json = await response.Content.ReadAsUtf8ByteArrayAsync();

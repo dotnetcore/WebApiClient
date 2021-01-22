@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClientCore.Internals;
+using WebApiClientCore.Serialization;
 
 namespace WebApiClientCore.HttpContents
 {
@@ -39,32 +42,37 @@ namespace WebApiClientCore.HttpContents
         }
 
         /// <summary>
-        /// 从HttpContent转换得到
+        /// 键值对表单内容
         /// </summary>
-        /// <param name="httpContent">httpContent实例</param>
-        /// <param name="disposeHttpContent">是否释放httpContent</param>
-        /// <returns></returns>
-        public static async Task<FormContent> ParseAsync(HttpContent httpContent, bool disposeHttpContent = true)
+        /// <param name="keyValues">键值对</param> 
+        public FormContent(IEnumerable<KeyValue> keyValues)
         {
-            if (httpContent == null)
-            {
-                return new FormContent();
-            }
+            this.AddFormField(keyValues);
+            this.Headers.ContentType = new MediaTypeHeaderValue(MediaType);
+        }
 
-            if (httpContent is FormContent formContent && formContent.IsBuffered() == false)
+        /// <summary>
+        /// 键值对表单内容
+        /// </summary>
+        /// <param name="value">模型对象值</param>
+        /// <param name="options">序列化选项</param>
+        public FormContent(object? value, KeyValueSerializerOptions? options)
+        {
+            if (value != null)
             {
-                return formContent;
+                var keyValues = KeyValueSerializer.Serialize(nameof(value), value, options);
+                this.AddFormField(keyValues);
             }
+            this.Headers.ContentType = new MediaTypeHeaderValue(MediaType);
+        }
 
-            formContent = new FormContent();
-            var byteArray = await httpContent.ReadAsByteArrayAsync().ConfigureAwait(false);
-            formContent.AddForm(byteArray);
-
-            if (disposeHttpContent == true)
-            {
-                httpContent.Dispose();
-            }
-            return formContent;
+        /// <summary>
+        /// 添加键值对
+        /// </summary>
+        /// <param name="keyValues">键值对</param>
+        public void AddFormField(KeyValue keyValues)
+        {
+            this.AddFormField(Enumerable.Repeat(keyValues, 1));
         }
 
         /// <summary>
@@ -112,11 +120,11 @@ namespace WebApiClientCore.HttpContents
         /// 添加已编码的二进制数据内容
         /// </summary>
         /// <param name="encodedForm">数据内容</param>
-        private void AddForm(byte[] encodedForm)
+        public void AddForm(ReadOnlySpan<byte> encodedForm)
         {
             this.EnsureNotBuffered();
 
-            if (encodedForm == null || encodedForm.Length == 0)
+            if (encodedForm.IsEmpty == true)
             {
                 return;
             }
@@ -170,6 +178,35 @@ namespace WebApiClientCore.HttpContents
         {
             this.bufferWriter.Dispose();
             base.Dispose(disposing);
+        }
+
+        /// <summary>
+        /// 从HttpContent转换得到
+        /// </summary>
+        /// <param name="httpContent">httpContent实例</param>
+        /// <param name="disposeHttpContent">是否释放httpContent</param>
+        /// <returns></returns>
+        public static async Task<FormContent> ParseAsync(HttpContent httpContent, bool disposeHttpContent = true)
+        {
+            if (httpContent == null)
+            {
+                return new FormContent();
+            }
+
+            if (httpContent is FormContent formContent && formContent.IsBuffered() == false)
+            {
+                return formContent;
+            }
+
+            formContent = new FormContent();
+            var byteArray = await httpContent.ReadAsByteArrayAsync().ConfigureAwait(false);
+            formContent.AddForm(byteArray);
+
+            if (disposeHttpContent == true)
+            {
+                httpContent.Dispose();
+            }
+            return formContent;
         }
     }
 }

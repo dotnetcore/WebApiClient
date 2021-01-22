@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -36,7 +37,7 @@ namespace WebApiClientCore
         public async Task AddFormFieldAsync(string name, string? value)
         {
             var keyValue = new KeyValue(name, value);
-            await this.AddFormFieldAsync(new[] { keyValue }).ConfigureAwait(false);
+            await this.AddFormFieldAsync(Enumerable.Repeat(keyValue, 1)).ConfigureAwait(false);
         }
 
         /// <summary>
