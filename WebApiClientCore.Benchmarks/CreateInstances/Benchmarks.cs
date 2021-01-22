@@ -1,12 +1,12 @@
 ﻿using BenchmarkDotNet.Attributes;
 using System;
-using WebApiClientCore.Internals.Utilities;
+using WebApiClientCore.Internals;
 
 namespace WebApiClientCore.Benchmarks.CreateInstances
 {
     public class Benchmarks : IBenchmark
     {
-        private readonly Func<int, Model> ctor = Lambda.CreateCtorFunc<int, Model>(typeof(Model));
+        private readonly Func<int, Model> ctor = LambdaUtil.CreateCtorFunc<int, Model>(typeof(Model));
 
         [Benchmark]
         public void ActivatorCreate()

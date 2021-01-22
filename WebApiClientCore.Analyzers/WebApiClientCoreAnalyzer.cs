@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using WebApiClientCore.Analyzers.HttpApi;
+using WebApiClientCore.Analyzers.Diagnostics;
 
 namespace WebApiClientCore.Analyzers
 {

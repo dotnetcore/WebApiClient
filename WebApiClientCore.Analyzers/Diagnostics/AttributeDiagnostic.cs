@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace WebApiClientCore.Analyzers.HttpApi
+namespace WebApiClientCore.Analyzers.Diagnostics
 {
     /// <summary>
     /// 表示特性构造函数诊断器
