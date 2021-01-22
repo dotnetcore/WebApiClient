@@ -72,19 +72,17 @@ namespace WebApiClientCore
         }
 
         /// <summary>
-        /// 获取自定义特性
+        /// 获取接口和其基础接口的特性
         /// </summary> 
-        /// <param name="interfaceType">接口类型</param>
-        /// <param name="inclueBases">是否包括基础接口定义的特性</param> 
+        /// <param name="interfaceType">接口类型</param> 
         /// <returns></returns>
-        public static Attribute[] GetInterfaceCustomAttributes(this Type interfaceType, bool inclueBases = true)
+        public static Attribute[] GetInterfaceCustomAttributes(this Type interfaceType)
         {
-            var types = Enumerable.Repeat(interfaceType, 1);
-            if (inclueBases == true)
-            {
-                types = types.Concat(interfaceType.GetInterfaces());
-            }
-            return types.SelectMany(item => item.GetCustomAttributes()).ToArray();
+            return interfaceType
+                .GetInterfaces()
+                .Prepend(interfaceType)
+                .SelectMany(item => item.GetCustomAttributes())
+                .ToArray();
         }
     }
 }
