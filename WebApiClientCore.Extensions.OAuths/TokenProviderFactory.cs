@@ -1,13 +1,13 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System;
-using System.Linq;
 
 namespace WebApiClientCore.Extensions.OAuths
 {
     /// <summary>
     /// 表示默认的token提供者工厂
     /// </summary>
-    class TokenProviderFactory : ITokenProviderFactory
+    sealed class TokenProviderFactory : ITokenProviderFactory
     {
         private readonly IServiceProvider serviceProvider;
         private readonly TokenProviderFactoryOptions options;
@@ -23,10 +23,8 @@ namespace WebApiClientCore.Extensions.OAuths
             this.options = options.Value;
         }
 
-
-
         /// <summary>
-        /// 创建token提供者
+        /// 通过接口类型获取或创建其对应的token提供者
         /// </summary>
         /// <param name="httpApiType">接口类型</param>
         /// <param name="typeMatchMode">类型匹配模式</param>     
@@ -40,48 +38,34 @@ namespace WebApiClientCore.Extensions.OAuths
                 throw new ArgumentNullException(nameof(httpApiType));
             }
 
-            if (typeMatchMode == TypeMatchMode.TypeOnly)
+            if (this.options.TryGetValue(httpApiType, out var serviceType))
             {
-                return this.Create(httpApiType);
+                return this.GetTokenProvider(serviceType);
             }
 
-            if (this.CanCreate(httpApiType) == false)
+            if (typeMatchMode == TypeMatchMode.TypeOrBaseTypes)
             {
-                var baseType = httpApiType.GetInterfaces().FirstOrDefault(i => this.CanCreate(i));
-                if (baseType != null)
+                foreach (var baseType in httpApiType.GetInterfaces())
                 {
-                    httpApiType = baseType;
+                    if (this.options.TryGetValue(baseType, out serviceType))
+                    {
+                        return this.GetTokenProvider(serviceType);
+                    }
                 }
             }
 
-            return this.Create(httpApiType);
-        }
-
-
-        /// <summary>
-        /// 返回是否可以创建token提供者
-        /// </summary>
-        /// <param name="httpApiType">接口类型</param>
-        /// <returns></returns>
-        private bool CanCreate(Type httpApiType)
-        {
-            return this.options.ContainsKey(httpApiType);
-        }
-
-
-        /// <summary>
-        /// 创建token提供者
-        /// </summary>
-        /// <param name="httpApiType">接口类型</param>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException"></exception>
-        private ITokenProvider Create(Type httpApiType)
-        {
-            if (this.options.TryGetValue(httpApiType, out var descriptor))
-            {
-                return descriptor.CreateTokenProvider(this.serviceProvider);
-            }
             throw new InvalidOperationException($"尚未注册{httpApiType}的token提供者");
+        }
+
+        /// <summary>
+        /// 从HttpApiTokenProviderService类型获取服务提供者
+        /// </summary>
+        /// <param name="serviceType"></param>
+        /// <returns></returns>
+        private ITokenProvider GetTokenProvider(Type serviceType)
+        {
+            var service = (ITokenProviderService)this.serviceProvider.GetRequiredService(serviceType);
+            return service.TokenProvider;
         }
     }
 }

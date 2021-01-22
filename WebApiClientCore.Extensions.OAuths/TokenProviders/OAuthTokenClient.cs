@@ -11,7 +11,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
     /// <summary>
     /// 表示OAuth2的Token客户端
     /// </summary>
-    class OAuthTokenClient
+    sealed class OAuthTokenClient
     {
         private readonly IHttpClientFactory httpClientFactory;
 

@@ -1,35 +1,35 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <Nullable>enable</Nullable>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+	<PropertyGroup>
+		<Nullable>enable</Nullable>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>Sign.snk</AssemblyOriginatorKeyFile>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>Sign.snk</AssemblyOriginatorKeyFile>
 
-    <Version>2.0.0-beta2</Version>
-    <Authors>laojiu</Authors>
-    <Company>laojiu</Company>
-    <Copyright>Copyright © laojiu 2017-2021</Copyright>
-    <Description>基于WebApiClientCore的token提供者</Description>
-    <Summary>基于WebApiClientCore的token提供者</Summary>
+		<Version>2.0.0-beta2</Version>
+		<Authors>laojiu</Authors>
+		<Company>laojiu</Company>
+		<Copyright>Copyright © laojiu 2017-2021</Copyright>
+		<Description>基于WebApiClientCore的token提供者</Description>
+		<Summary>基于WebApiClientCore的token提供者</Summary>
 
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/dotnetcore/WebApiClient</PackageProjectUrl>
-    <PackageIcon>icon.png</PackageIcon>
-  </PropertyGroup> 
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/dotnetcore/WebApiClient</PackageProjectUrl>
+		<PackageIcon>icon.png</PackageIcon>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\WebApiClientCore\WebApiClientCore.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\.editorconfig" Link=".editorconfig" />
-    <None Include="..\icon.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\WebApiClientCore\WebApiClientCore.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="..\.editorconfig" Link=".editorconfig" />
+		<None Include="..\icon.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
 </Project>

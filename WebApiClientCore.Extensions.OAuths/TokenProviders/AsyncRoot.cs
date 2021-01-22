@@ -7,7 +7,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
     /// <summary>
     /// 提供异步锁
     /// </summary>
-    class AsyncRoot : Disposable
+    sealed class AsyncRoot : Disposable
     {
         /// <summary>
         /// 信号量

@@ -68,17 +68,15 @@ namespace Microsoft.Extensions.DependencyInjection
         private static ITokenProviderBuilder AddTokenProviderCore<THttpApi, TTokenProvider>(this IServiceCollection services)
             where TTokenProvider : class, ITokenProvider
         {
-            var name = $"{typeof(TTokenProvider).Name}+{typeof(THttpApi).Name}";
-            var hashCode = HashCode.Combine(typeof(THttpApi), typeof(TTokenProvider));
-            name = hashCode < 0 ? $"{name}{hashCode}" : $"{name}+{hashCode}";
-
             services
                .AddOptions<TokenProviderFactoryOptions>()
-               .Configure(o => o.Register<THttpApi, TTokenProvider>(name));
+               .Configure(o => o.Register<THttpApi, TTokenProvider>());
 
-            services.TryAddSingleton<ITokenProviderFactory, TokenProviderFactory>();
             services.TryAddTransient<OAuthTokenClient>();
+            services.TryAddSingleton(typeof(TokenProviderService<,>));
+            services.TryAddSingleton<ITokenProviderFactory, TokenProviderFactory>();
 
+            var name = TokenProviderService<THttpApi, TTokenProvider>.Name;
             return new TokenProviderBuilder(name, services);
         }
 
@@ -107,6 +105,11 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 this.Name = name;
                 this.Services = services;
+            }
+
+            public override string ToString()
+            {
+                return this.Name;
             }
         }
     }
