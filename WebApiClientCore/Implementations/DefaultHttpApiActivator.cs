@@ -8,10 +8,10 @@ using WebApiClientCore.Internals;
 namespace WebApiClientCore.Implementations
 {
     /// <summary>
-    /// 表示THttpApi的实例Emit创建器
+    /// 运行时使用Emit动态创建THttpApi的代理类和代理类实例
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
-    public class HttpApiEmitActivator<THttpApi> : HttpApiActivator<THttpApi>
+    public class DefaultHttpApiActivator<THttpApi> : HttpApiActivator<THttpApi>
     {
         /// <summary>
         /// IHttpApiInterceptor的Intercept方法
@@ -26,13 +26,13 @@ namespace WebApiClientCore.Implementations
 
 
         /// <summary>
-        /// THttpApi的实例Emit创建器
+        /// 运行时使用Emit动态创建THttpApi的代理类和代理类实例
         /// </summary>
         /// <param name="apiActionDescriptorProvider"></param>
         /// <param name="actionInvokerProvider"></param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
-        public HttpApiEmitActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
+        public DefaultHttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
             : base(apiActionDescriptorProvider, actionInvokerProvider)
         {
         }

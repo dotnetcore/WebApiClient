@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using WebApiClientCore;
 
 namespace App
 {
@@ -49,7 +48,7 @@ namespace App
             services
                 .AddWebApiClient()
                 .UseJsonFirstApiActionDescriptor()
-                .UseHttpApiSourceGeneratorActivator();
+                .UseSourceGeneratorHttpApiActivator();
 
             // ×¢²áuserApi
             services.AddHttpApi<IUserApi>(o =>

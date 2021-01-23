@@ -14,9 +14,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public static IWebApiClientBuilder UseHttpApiSourceGeneratorActivator(this IWebApiClientBuilder builder)
+        public static IWebApiClientBuilder UseSourceGeneratorHttpApiActivator(this IWebApiClientBuilder builder)
         {
-            builder.Services.AddSingleton(typeof(IHttpApiActivator<>), typeof(HttpApiSourceGeneratorActivator<>));
+            builder.Services.AddSingleton(typeof(IHttpApiActivator<>), typeof(SourceGeneratorHttpApiActivator<>));
             return builder;
         }
     }

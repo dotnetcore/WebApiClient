@@ -10,7 +10,7 @@ namespace WebApiClientCore.Implementations
     /// 通过查找类型代理类型创建实例
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
-    public class HttpApiSourceGeneratorActivator<THttpApi> : HttpApiActivator<THttpApi>
+    public class SourceGeneratorHttpApiActivator<THttpApi> : HttpApiActivator<THttpApi>
     {
         /// <summary>
         /// 通过查找类型代理类型创建实例
@@ -19,7 +19,7 @@ namespace WebApiClientCore.Implementations
         /// <param name="actionInvokerProvider"></param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
-        public HttpApiSourceGeneratorActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
+        public SourceGeneratorHttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
             : base(apiActionDescriptorProvider, actionInvokerProvider)
         {
         }

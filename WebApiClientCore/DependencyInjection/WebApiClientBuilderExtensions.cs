@@ -19,23 +19,12 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddOptions();
             services.AddMemoryCache();
 
-            services.TryAddSingleton(typeof(IHttpApiActivator<>), typeof(HttpApiEmitActivator<>));
+            services.TryAddSingleton(typeof(IHttpApiActivator<>), typeof(DefaultHttpApiActivator<>));
             services.TryAddSingleton<IApiActionDescriptorProvider, DefaultApiActionDescriptorProvider>();
             services.TryAddSingleton<IApiActionInvokerProvider, DefaultApiActionInvokerProvider>();
             services.TryAddSingleton<IResponseCacheProvider, DefaultResponseCacheProvider>();
 
             return new WebApiClientBuilder(services);
-        }
-
-        /// <summary>
-        /// 运行时使用Emit动态创建接口的代理类和代理类实例
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <returns></returns>
-        public static IWebApiClientBuilder UseHttpApiEmitActivator(this IWebApiClientBuilder builder)
-        {
-            builder.Services.AddSingleton(typeof(IHttpApiActivator<>), typeof(HttpApiEmitActivator<>));
-            return builder;
         }
 
         /// <summary>
