@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using WebApiClientCore;
 
 namespace App
 {
@@ -58,7 +59,7 @@ namespace App
             });
 
             // 注册与配置clientId模式的token提者选项
-            services.AddClientCredentialsTokenProvider<IUserApi>(o =>
+            services.AddClientCredentialsTokenProvider<IHttpApi>(o =>
             {
                 o.Endpoint = new Uri("http://localhost:5000/api/tokens");
                 o.Credentials.Client_id = "clientId";

@@ -40,32 +40,33 @@ namespace WebApiClientCore.Extensions.OAuths
 
             if (this.options.TryGetValue(httpApiType, out var serviceType))
             {
-                return this.GetTokenProvider(serviceType);
+                return ((ITokenProviderService)this.serviceProvider.GetRequiredService(serviceType)).TokenProvider;
             }
 
             if (typeMatchMode == TypeMatchMode.TypeOrBaseTypes)
             {
-                foreach (var baseType in httpApiType.GetInterfaces())
-                {
-                    if (this.options.TryGetValue(baseType, out serviceType))
-                    {
-                        return this.GetTokenProvider(serviceType);
-                    }
-                }
+                return this.GetTokenProviderFromBaseType(httpApiType);
             }
 
             throw new InvalidOperationException($"尚未注册{httpApiType}的token提供者");
         }
 
         /// <summary>
-        /// 从HttpApiTokenProviderService类型获取服务提供者
+        /// 从基础接口获取TokenProvider
         /// </summary>
-        /// <param name="serviceType"></param>
+        /// <param name="httpApiType"></param>
+        /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
-        private ITokenProvider GetTokenProvider(Type serviceType)
+        private ITokenProvider GetTokenProviderFromBaseType(Type httpApiType)
         {
-            var service = (ITokenProviderService)this.serviceProvider.GetRequiredService(serviceType);
-            return service.TokenProvider;
+            foreach (var baseType in httpApiType.GetInterfaces())
+            {
+                if (this.options.TryGetValue(baseType, out var serviceType))
+                {
+                    return ((ITokenProviderService)this.serviceProvider.GetRequiredService(serviceType)).TokenProvider;
+                }
+            }
+            throw new InvalidOperationException($"尚未注册{httpApiType}或其基础接口的token提供者");
         }
     }
 }
