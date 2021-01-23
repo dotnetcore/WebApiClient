@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using System.Collections.Generic;
 
-namespace WebApiClientCore.Analyzers.Diagnostics
+namespace WebApiClientCore.Analyzers.DiagnosticProviders
 {
     /// <summary>
     /// 表示非方法声明诊断器

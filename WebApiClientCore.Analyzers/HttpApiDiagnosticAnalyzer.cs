@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using WebApiClientCore.Analyzers.Diagnostics;
+using WebApiClientCore.Analyzers.DiagnosticProviders;
 
 namespace WebApiClientCore.Analyzers
 {
