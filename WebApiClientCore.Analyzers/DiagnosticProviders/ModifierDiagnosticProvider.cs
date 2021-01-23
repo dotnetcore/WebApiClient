@@ -22,12 +22,7 @@ namespace WebApiClientCore.Analyzers.DiagnosticProviders
 
         public override IEnumerable<Diagnostic> CreateDiagnostics()
         {
-            var syntax = this.Context.InterfaceSyntax;
-            if (syntax == null)
-            {
-                yield break;
-            }
-
+            var syntax = this.Context.Syntax;
             var isVisiable = syntax.Modifiers.Any(item => "public".Equals(item.ValueText));
             if (isVisiable == false)
             {

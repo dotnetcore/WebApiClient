@@ -32,7 +32,7 @@ namespace WebApiClientCore.Analyzers.DiagnosticProviders
         /// <returns></returns>
         public override IEnumerable<Diagnostic> CreateDiagnostics()
         {
-            foreach (var method in this.Context.ApiMethods)
+            foreach (var method in this.Context.Methods)
             {
                 foreach (var parameter in method.Parameters)
                 {

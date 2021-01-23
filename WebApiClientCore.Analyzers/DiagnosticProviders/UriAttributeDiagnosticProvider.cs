@@ -36,7 +36,7 @@ namespace WebApiClientCore.Analyzers.DiagnosticProviders
                 yield break;
             }
 
-            foreach (var method in this.Context.ApiMethods)
+            foreach (var method in this.Context.Methods)
             {
                 for (var i = 1; i < method.Parameters.Length; i++)
                 {

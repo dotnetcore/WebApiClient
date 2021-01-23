@@ -32,14 +32,9 @@ namespace WebApiClientCore.Analyzers.DiagnosticProviders
         /// <returns></returns>
         public override IEnumerable<Diagnostic> CreateDiagnostics()
         {
-            var @interface = this.Context.Interface;
-            if (@interface == null)
-            {
-                yield break;
-            }
-
+            var @interface = this.Context.Interface;      
             var interfaceAttributes = this.GetInterfaceDiagnosticAttributes(@interface);
-            var methodAttributes = this.Context.ApiMethods.SelectMany(item => this.GetMethodDiagnosticAttributes(item));
+            var methodAttributes = this.Context.Methods.SelectMany(item => this.GetMethodDiagnosticAttributes(item));
 
             foreach (var item in interfaceAttributes.Concat(methodAttributes))
             {

@@ -12,24 +12,12 @@ namespace WebApiClientCore
         /// <summary>
         /// 尝试根据参数名获取参数值
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="parameterName">参数名</param> 
-        /// <param name="value">值</param>
-        /// <returns></returns>
-        public static bool TryGetArgument(this ApiRequestContext context, string parameterName, out object? value)
-        {
-            return context.TryGetArgument(parameterName, StringComparer.Ordinal, out value);
-        }
-
-        /// <summary>
-        /// 尝试根据参数名获取参数值
-        /// </summary>
         /// <typeparam name="TValue"></typeparam>
         /// <param name="context"></param>
         /// <param name="parameterName">参数名</param> 
         /// <param name="value">值</param>
         /// <returns></returns>
-        public static bool TryGetArgument<TValue>(this ApiRequestContext context, string parameterName, [MaybeNull] out TValue value)
+        public static bool TryGetArgument<TValue>(this ApiRequestContext context, string parameterName, [MaybeNullWhen(false)] out TValue value)
         {
             return context.TryGetArgument(parameterName, StringComparer.Ordinal, out value);
         }
@@ -43,7 +31,7 @@ namespace WebApiClientCore
         /// <param name="nameComparer">比较器</param>
         /// <param name="value">值</param>
         /// <returns></returns>
-        public static bool TryGetArgument<TValue>(this ApiRequestContext context, string parameterName, StringComparer nameComparer, [MaybeNull] out TValue value)
+        public static bool TryGetArgument<TValue>(this ApiRequestContext context, string parameterName, StringComparer nameComparer, [MaybeNullWhen(false)] out TValue value)
         {
             if (context.TryGetArgument(parameterName, nameComparer, out var objValue) && objValue is TValue tValue)
             {
@@ -55,6 +43,17 @@ namespace WebApiClientCore
             return false;
         }
 
+        /// <summary>
+        /// 尝试根据参数名获取参数值
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="parameterName">参数名</param> 
+        /// <param name="value">值</param>
+        /// <returns></returns>
+        public static bool TryGetArgument(this ApiRequestContext context, string parameterName, out object? value)
+        {
+            return context.TryGetArgument(parameterName, StringComparer.Ordinal, out value);
+        }
 
         /// <summary>
         /// 尝试根据参数名获取参数值

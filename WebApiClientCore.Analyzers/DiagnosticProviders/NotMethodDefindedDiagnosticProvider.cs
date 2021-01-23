@@ -31,13 +31,8 @@ namespace WebApiClientCore.Analyzers.DiagnosticProviders
         /// <returns></returns>
         public override IEnumerable<Diagnostic> CreateDiagnostics()
         {
-            var @interface = this.Context.InterfaceSyntax;
-            if (@interface == null)
-            {
-                yield break;
-            }
-
-            foreach (var member in @interface.Members)
+            var syntax = this.Context.Syntax;   
+            foreach (var member in syntax.Members)
             {
                 if (member.Kind() != SyntaxKind.MethodDeclaration)
                 {

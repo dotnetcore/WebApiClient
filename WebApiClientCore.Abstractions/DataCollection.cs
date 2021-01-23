@@ -48,7 +48,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         public bool ContainsKey(object key)
         {
-            return this.lazy.IsValueCreated ? this.lazy.Value.ContainsKey(key) : false;
+            return this.lazy.IsValueCreated && this.lazy.Value.ContainsKey(key);
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace WebApiClientCore
         /// <param name="key">键</param>
         /// <param name="value">值</param>
         /// <returns></returns>
-        public bool TryGetValue<TValue>(object key, [MaybeNull] out TValue value)
+        public bool TryGetValue<TValue>(object key, [MaybeNullWhen(false)] out TValue value)
         {
             if (this.TryGetValue(key, out var objValue) && objValue is TValue tValue)
             {

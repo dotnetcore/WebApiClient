@@ -40,16 +40,18 @@ namespace WebApiClientCore.Analyzers
         {
             context.RegisterSyntaxNodeAction(syntaxNodeContext =>
             {
-                var httpApiContext = new HttpApiContext(syntaxNodeContext);
-                if (httpApiContext.IsHtttApi == true)
+                if (HttpApiContext.TryParse(syntaxNodeContext, out var httpApiContext))
                 {
-                    var diagnostics = this
-                        .GetDiagnosticProviders(httpApiContext)
-                        .SelectMany(d => d.CreateDiagnostics());
-
-                    foreach (var item in diagnostics)
+                    if (httpApiContext != null)
                     {
-                        syntaxNodeContext.ReportDiagnostic(item);
+                        var diagnostics = this
+                            .GetDiagnosticProviders(httpApiContext)
+                            .SelectMany(d => d.CreateDiagnostics());
+
+                        foreach (var item in diagnostics)
+                        {
+                            syntaxNodeContext.ReportDiagnostic(item);
+                        }
                     }
                 }
             }, SyntaxKind.InterfaceDeclaration);
