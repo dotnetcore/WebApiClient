@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using System.Text.Json;
@@ -15,23 +16,17 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
     {
         private readonly IHttpClientFactory httpClientFactory;
 
-        private static readonly HttpApiOptions httpApiOptions = new HttpApiOptions();
-
-        /// <summary>
-        /// 静态构造器
-        /// </summary>
-        static OAuth2TokenClient()
-        {
-            httpApiOptions.KeyValueSerializeOptions.IgnoreNullValues = true;
-        }
+        private readonly HttpApiOptions httpApiOptions;
 
         /// <summary>
         /// OAuth2的Token客户端
         /// </summary>
         /// <param name="httpClientFactory"></param>
-        public OAuth2TokenClient(IHttpClientFactory httpClientFactory)
+        /// <param name="httpApiOptionsMonitor"></param>
+        public OAuth2TokenClient(IHttpClientFactory httpClientFactory, IOptionsMonitor<HttpApiOptions> httpApiOptionsMonitor)
         {
             this.httpClientFactory = httpClientFactory;
+            this.httpApiOptions = httpApiOptionsMonitor.Get(nameof(OAuth2TokenClient));
         }
 
         /// <summary>
@@ -83,12 +78,12 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <returns></returns>
         private async Task<TokenResult?> PostFormAsync<TCredentials>(Uri endpoint, string grant_type, TCredentials credentials)
         {
-            using var formContent = new FormContent(credentials, httpApiOptions.KeyValueSerializeOptions);
+            using var formContent = new FormContent(credentials, this.httpApiOptions.KeyValueSerializeOptions);
             formContent.AddFormField(new KeyValue("grant_type", grant_type));
 
             var response = await this.httpClientFactory.CreateClient().PostAsync(endpoint, formContent);
             var utf8Json = await response.Content.ReadAsUtf8ByteArrayAsync();
-            return JsonSerializer.Deserialize<TokenResult>(utf8Json, httpApiOptions.JsonDeserializeOptions);
+            return JsonSerializer.Deserialize<TokenResult>(utf8Json, this.httpApiOptions.JsonDeserializeOptions);
         }
     }
 }

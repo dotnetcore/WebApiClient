@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Threading.Tasks;
+using WebApiClientCore;
 using WebApiClientCore.Extensions.OAuths;
 using WebApiClientCore.Extensions.OAuths.TokenProviders;
 
@@ -71,6 +72,10 @@ namespace Microsoft.Extensions.DependencyInjection
             services
                .AddOptions<TokenProviderFactoryOptions>()
                .Configure(o => o.Register<THttpApi, TTokenProvider>());
+
+            services
+                .AddOptions<HttpApiOptions>(nameof(OAuth2TokenClient))
+                .Configure(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
 
             services.TryAddSingleton<OAuth2TokenClient>();
             services.TryAddSingleton(typeof(TokenProviderService<,>));
