@@ -20,12 +20,12 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         /// <summary>
         /// 拦截器变量名
         /// </summary>
-        private readonly string apiInterceptorFieldName = $"apiInterceptor_{Environment.TickCount}";
+        private readonly string apiInterceptorFieldName = $"apiInterceptor_{(uint)Environment.TickCount}";
 
         /// <summary>
         /// action执行器变量名
         /// </summary>
-        private readonly string actionInvokersFieldName = $"actionInvokers_{Environment.TickCount}";
+        private readonly string actionInvokersFieldName = $"actionInvokers_{(uint)Environment.TickCount}";
 
         /// <summary>
         /// using
