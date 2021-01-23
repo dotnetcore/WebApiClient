@@ -20,19 +20,15 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IHttpClientBuilder AddHttpApi<THttpApi>(this IServiceCollection services) where THttpApi : class
         {
-            services.AddWebApiClient();
-
             var name = HttpApi.GetName(typeof(THttpApi));
-            services.NamedHttpApiType(name, typeof(THttpApi));
 
+            services.AddWebApiClient();
+            services.NamedHttpApiType(name, typeof(THttpApi));
+            services.TryAddSingleton(typeof(HttpApiProvider<>));
             services.TryAddTransient(serviceProvider =>
             {
-                var httpClient = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(name);
-                var httpApiOptions = serviceProvider.GetRequiredService<IOptionsMonitor<HttpApiOptions>>().Get(name);
-                var httpClientContext = new HttpClientContext(httpClient, serviceProvider, httpApiOptions, name);
-                var httpApiInterceptor = new HttpApiInterceptor(httpClientContext);
-                var httpApiActivator = serviceProvider.GetRequiredService<IHttpApiActivator<THttpApi>>();
-                return httpApiActivator.CreateInstance(httpApiInterceptor);
+                var httiApiProvider = serviceProvider.GetRequiredService<HttpApiProvider<THttpApi>>();
+                return httiApiProvider.CreateHttpApi(serviceProvider, name);
             });
 
             return services.AddHttpClient(name);
@@ -118,6 +114,49 @@ namespace Microsoft.Extensions.DependencyInjection
             return services
                 .AddHttpApi(httpApiType)
                 .ConfigureHttpApi(configureOptions);
+        }
+
+
+
+        /// <summary>
+        /// 表示THttpApi提供者
+        /// </summary>
+        /// <typeparam name="THttpApi"></typeparam>
+        private class HttpApiProvider<THttpApi>
+        {
+            private readonly IHttpClientFactory httpClientFactory;
+            private readonly IOptionsMonitor<HttpApiOptions> httpApiOptionsMonitor;
+            private readonly IHttpApiActivator<THttpApi> httpApiActivator;
+
+            /// <summary>
+            /// THttpApi提供者
+            /// </summary>
+            /// <param name="httpClientFactory"></param>
+            /// <param name="httpApiOptionsMonitor"></param>
+            /// <param name="httpApiActivator"></param>
+            public HttpApiProvider(IHttpClientFactory httpClientFactory, IOptionsMonitor<HttpApiOptions> httpApiOptionsMonitor, IHttpApiActivator<THttpApi> httpApiActivator)
+            {
+                this.httpClientFactory = httpClientFactory;
+                this.httpApiOptionsMonitor = httpApiOptionsMonitor;
+                this.httpApiActivator = httpApiActivator;
+            }
+
+            /// <summary>
+            /// 创建THttpApi的实例
+            /// </summary>
+            /// <param name="serviceProvider">服务提供者</param>
+            /// <param name="name">名称</param>
+            /// <returns></returns>
+            public THttpApi CreateHttpApi(IServiceProvider serviceProvider, string name)
+            {
+                var httpClient = this.httpClientFactory.CreateClient(name);
+                var httpApiOptions = this.httpApiOptionsMonitor.Get(name);
+
+                var httpClientContext = new HttpClientContext(httpClient, serviceProvider, httpApiOptions, name);
+                var httpApiInterceptor = new HttpApiInterceptor(httpClientContext);
+
+                return this.httpApiActivator.CreateInstance(httpApiInterceptor);
+            }
         }
 
 
