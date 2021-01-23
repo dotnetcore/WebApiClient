@@ -115,18 +115,11 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             builder.AppendLine("\t\t}");
 
             var index = 0;
-            var interfaces = this.httpApi.AllInterfaces.Append(this.httpApi).OrderBy(item => item.Name);
-            foreach (var @interface in interfaces)
+            foreach (var method in FindApiMethods(this.httpApi))
             {
-                foreach (var member in @interface.GetMembers())
-                {
-                    if (member is IMethodSymbol method)
-                    {
-                        var methodCode = this.BuildMethod(method, index);
-                        builder.AppendLine(methodCode);
-                        index += 1;
-                    }
-                }
+                var methodCode = this.BuildMethod(method, index);
+                builder.AppendLine(methodCode);
+                index += 1;
             }
 
             builder.AppendLine("\t}");
@@ -134,6 +127,21 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
 
             // System.Diagnostics.Debugger.Launch();
             return builder.ToString();
+        }
+
+        /// <summary>
+        /// 查找接口类型及其继承的接口的所有方法
+        /// </summary>
+        /// <param name="httpApi">接口</param>
+        /// <returns></returns>
+        private static IEnumerable<IMethodSymbol> FindApiMethods(INamedTypeSymbol httpApi)
+        {
+            return httpApi
+                .AllInterfaces
+                .Append(httpApi)
+                .OrderBy(item => item.Name)
+                .SelectMany(item => item.GetMembers())
+                .OfType<IMethodSymbol>();
         }
 
         /// <summary>
