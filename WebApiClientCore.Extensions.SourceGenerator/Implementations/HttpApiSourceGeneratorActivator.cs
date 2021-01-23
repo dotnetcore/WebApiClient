@@ -29,12 +29,12 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
-        protected override Func<IApiActionInterceptor, ApiActionInvoker[], THttpApi> CreateFactory()
+        protected override Func<IHttpApiInterceptor, ApiActionInvoker[], THttpApi> CreateFactory()
         {
             var proxyType = FindProxyType(typeof(THttpApi));
             if (proxyType != null)
             {
-                return LambdaUtil.CreateCtorFunc<IApiActionInterceptor, ApiActionInvoker[], THttpApi>(proxyType);
+                return LambdaUtil.CreateCtorFunc<IHttpApiInterceptor, ApiActionInvoker[], THttpApi>(proxyType);
             }
 
             var message = $"找不到{typeof(THttpApi)}的代理类";

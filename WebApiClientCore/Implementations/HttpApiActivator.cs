@@ -18,7 +18,7 @@ namespace WebApiClientCore.Implementations
         /// <summary>
         /// 创建工厂
         /// </summary>
-        private readonly Func<IApiActionInterceptor, ApiActionInvoker[], THttpApi> factory;
+        private readonly Func<IHttpApiInterceptor, ApiActionInvoker[], THttpApi> factory;
 
         /// <summary>
         /// 获取接口的所有方法
@@ -49,16 +49,16 @@ namespace WebApiClientCore.Implementations
         /// 创建实例工厂
         /// </summary>
         /// <returns></returns>
-        protected abstract Func<IApiActionInterceptor, ApiActionInvoker[], THttpApi> CreateFactory();
+        protected abstract Func<IHttpApiInterceptor, ApiActionInvoker[], THttpApi> CreateFactory();
 
         /// <summary>
         /// 创建接口的实例
         /// </summary>
-        /// <param name="actionInterceptor">拦截器</param>
+        /// <param name="apiInterceptor">接口拦截器</param>
         /// <returns></returns>
-        public THttpApi CreateInstance(IApiActionInterceptor actionInterceptor)
+        public THttpApi CreateInstance(IHttpApiInterceptor apiInterceptor)
         {
-            return this.factory(actionInterceptor, this.actionInvokers);
+            return this.factory(apiInterceptor, this.actionInvokers);
         }
     }
 }

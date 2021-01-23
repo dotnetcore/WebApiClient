@@ -30,9 +30,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 var httpClient = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(name);
                 var httpApiOptions = serviceProvider.GetRequiredService<IOptionsMonitor<HttpApiOptions>>().Get(name);
                 var httpClientContext = new HttpClientContext(httpClient, serviceProvider, httpApiOptions, name);
-                var actionInterceptor = new ApiActionInterceptor(httpClientContext);
+                var httpApiInterceptor = new HttpApiInterceptor(httpClientContext);
                 var httpApiActivator = serviceProvider.GetRequiredService<IHttpApiActivator<THttpApi>>();
-                return httpApiActivator.CreateInstance(actionInterceptor);
+                return httpApiActivator.CreateInstance(httpApiInterceptor);
             });
 
             return services.AddHttpClient(name);

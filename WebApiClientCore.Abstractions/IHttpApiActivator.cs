@@ -9,8 +9,8 @@
         /// <summary>
         /// 创建THttpApi的代理实例
         /// </summary>
-        /// <param name="actionInterceptor">接口方法拦截器</param>
+        /// <param name="apiInterceptor">接口拦截器</param>
         /// <returns></returns>
-        THttpApi CreateInstance(IApiActionInterceptor actionInterceptor);
+        THttpApi CreateInstance(IHttpApiInterceptor apiInterceptor);
     }
 }

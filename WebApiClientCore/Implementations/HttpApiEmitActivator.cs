@@ -14,15 +14,15 @@ namespace WebApiClientCore.Implementations
     public class HttpApiEmitActivator<THttpApi> : HttpApiActivator<THttpApi>
     {
         /// <summary>
-        /// IApiActionInterceptor的Intercept方法
+        /// IHttpApiInterceptor的Intercept方法
         /// </summary>
-        private static readonly MethodInfo interceptMethod = typeof(IApiActionInterceptor).GetMethod(nameof(IApiActionInterceptor.Intercept)) ?? throw new MissingMethodException(nameof(IApiActionInterceptor.Intercept));
+        private static readonly MethodInfo interceptMethod = typeof(IHttpApiInterceptor).GetMethod(nameof(IHttpApiInterceptor.Intercept)) ?? throw new MissingMethodException(nameof(IHttpApiInterceptor.Intercept));
 
         /// <summary>
         /// 代理类型的构造器的参数类型
-        /// (IApiActionInterceptor interceptor,ApiActionInvoker[] actionInvokers)
+        /// (IHttpApiInterceptor interceptor,ApiActionInvoker[] actionInvokers)
         /// </summary>
-        private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IApiActionInterceptor), typeof(ApiActionInvoker[]) };
+        private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IHttpApiInterceptor), typeof(ApiActionInvoker[]) };
 
 
         /// <summary>
@@ -43,10 +43,10 @@ namespace WebApiClientCore.Implementations
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
-        protected override Func<IApiActionInterceptor, ApiActionInvoker[], THttpApi> CreateFactory()
+        protected override Func<IHttpApiInterceptor, ApiActionInvoker[], THttpApi> CreateFactory()
         {
             var proxyType = BuildProxyType(typeof(THttpApi), this.ApiMethods);
-            return LambdaUtil.CreateCtorFunc<IApiActionInterceptor, ApiActionInvoker[], THttpApi>(proxyType);
+            return LambdaUtil.CreateCtorFunc<IHttpApiInterceptor, ApiActionInvoker[], THttpApi>(proxyType);
         }
 
         /// <summary>
@@ -77,11 +77,11 @@ namespace WebApiClientCore.Implementations
             var builder = module.DefineType(typeName, System.Reflection.TypeAttributes.Class);
             builder.AddInterfaceImplementation(interfaceType);
 
-            var fieldActionInterceptor = BuildField(builder, "<>actionInterceptor", typeof(IApiActionInterceptor));
+            var fieldApiInterceptor = BuildField(builder, "<>apiInterceptor", typeof(IHttpApiInterceptor));
             var fieldActionInvokers = BuildField(builder, "<>actionInvokers", typeof(ApiActionInvoker[]));
 
-            BuildCtor(builder, fieldActionInterceptor, fieldActionInvokers);
-            BuildMethods(builder, apiMethods, fieldActionInterceptor, fieldActionInvokers);
+            BuildCtor(builder, fieldApiInterceptor, fieldActionInvokers);
+            BuildMethods(builder, apiMethods, fieldApiInterceptor, fieldActionInvokers);
 
             var proxyType = builder.CreateType();
             return proxyType ?? throw new ProxyTypeCreateException(interfaceType);
@@ -104,20 +104,20 @@ namespace WebApiClientCore.Implementations
         /// 生成代理类型的构造器
         /// </summary>
         /// <param name="builder">类型生成器</param>
-        /// <param name="fieldActionInterceptor">拦截器字段</param>
+        /// <param name="fieldApiInterceptor">拦截器字段</param>
         /// <param name="fieldActionInvokers">action执行器字段</param> 
         /// <returns></returns>
-        private static void BuildCtor(TypeBuilder builder, FieldBuilder fieldActionInterceptor, FieldBuilder fieldActionInvokers)
+        private static void BuildCtor(TypeBuilder builder, FieldBuilder fieldApiInterceptor, FieldBuilder fieldActionInvokers)
         {
-            // .ctor(IApiActionInterceptor actionInterceptor, ApiActionInvoker[] actionInvokers)
+            // .ctor(IHttpApiInterceptor apiInterceptor, ApiActionInvoker[] actionInvokers)
             var ctor = builder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, proxyTypeCtorArgTypes);
 
             var il = ctor.GetILGenerator();
 
-            // this.actionInterceptor = 第一个参数
+            // this.apiInterceptor = 第一个参数
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
-            il.Emit(OpCodes.Stfld, fieldActionInterceptor);
+            il.Emit(OpCodes.Stfld, fieldApiInterceptor);
 
             // this.actionInvokers = 第二个参数
             il.Emit(OpCodes.Ldarg_0);
@@ -132,9 +132,9 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="builder">类型生成器</param>
         /// <param name="actionMethods">接口的方法</param>
-        /// <param name="fieldActionInterceptor">拦截器字段</param>
+        /// <param name="fieldApiInterceptor">拦截器字段</param>
         /// <param name="fieldActionInvokers">action执行器字段</param> 
-        private static void BuildMethods(TypeBuilder builder, MethodInfo[] actionMethods, FieldBuilder fieldActionInterceptor, FieldBuilder fieldActionInvokers)
+        private static void BuildMethods(TypeBuilder builder, MethodInfo[] actionMethods, FieldBuilder fieldApiInterceptor, FieldBuilder fieldActionInvokers)
         {
             const MethodAttributes implementAttribute = MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot | MethodAttributes.HideBySig;
 
@@ -148,9 +148,9 @@ namespace WebApiClientCore.Implementations
                     .DefineMethod(actionMethod.Name, implementAttribute, CallingConventions.Standard, actionMethod.ReturnType, parameterTypes)
                     .GetILGenerator();
 
-                // this.actionInterceptor
+                // this.apiInterceptor
                 iL.Emit(OpCodes.Ldarg_0);
-                iL.Emit(OpCodes.Ldfld, fieldActionInterceptor);
+                iL.Emit(OpCodes.Ldfld, fieldApiInterceptor);
 
                 // this.actionInvokers[i]
                 iL.Emit(OpCodes.Ldarg_0);

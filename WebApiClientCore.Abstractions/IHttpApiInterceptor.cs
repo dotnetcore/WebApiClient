@@ -3,7 +3,7 @@
     /// <summary>
     /// 定义方法接口拦截器的行为
     /// </summary>
-    public interface IApiActionInterceptor
+    public interface IHttpApiInterceptor
     {
         /// <summary>
         /// 拦截方法的调用
