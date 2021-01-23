@@ -12,6 +12,12 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// 添加WebApiClient全局默认配置
         /// </summary>
+        /// <remarks>
+        /// <para>• 尝试使用DefaultHttpApiActivator，运行时使用Emit动态创建THttpApi的代理类和代理类实例</para>
+        /// <para>• 尝试使用DefaultApiActionDescriptorProvider，缺省参数特性声明时为参数应用PathQueryAttribute</para>
+        /// <para>• 尝试使用DefaultResponseCacheProvider，在内存中缓存响应结果</para>
+        /// <para>• 尝试使用DefaultApiActionInvokerProvider</para>
+        /// </remarks> 
         /// <param name="services"></param>
         /// <returns></returns>
         public static IWebApiClientBuilder AddWebApiClient(this IServiceCollection services)
