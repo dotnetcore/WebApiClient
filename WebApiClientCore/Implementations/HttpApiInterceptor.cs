@@ -1,7 +1,7 @@
 ﻿namespace WebApiClientCore.Implementations
 {
     /// <summary>
-    /// 表示httpApi方法调用的拦截器
+    /// 表示接口方法的拦截器
     /// </summary>
     sealed class HttpApiInterceptor : IHttpApiInterceptor
     {
@@ -11,9 +11,9 @@
         private readonly HttpClientContext context;
 
         /// <summary>
-        /// httpApi方法调用的拦截器
+        /// 接口方法的拦截器
         /// </summary>
-        /// <param name="context">服务上下文</param> 
+        /// <param name="context">httpClient上下文</param> 
         public HttpApiInterceptor(HttpClientContext context)
         {
             this.context = context;

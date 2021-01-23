@@ -1,7 +1,7 @@
 ﻿namespace WebApiClientCore
 {
     /// <summary>
-    /// 定义方法接口拦截器的行为
+    /// 接口方法的拦截器
     /// </summary>
     public interface IHttpApiInterceptor
     {
