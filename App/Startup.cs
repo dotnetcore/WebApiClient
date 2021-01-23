@@ -59,7 +59,7 @@ namespace App
             });
 
             // 注册与配置clientId模式的token提者选项
-            services.AddClientCredentialsTokenProvider<IHttpApi>(o =>
+            services.AddClientCredentialsTokenProvider<IUserApi>(o =>
             {
                 o.Endpoint = new Uri("http://localhost:5000/api/tokens");
                 o.Credentials.Client_id = "clientId";

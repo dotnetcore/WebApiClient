@@ -40,7 +40,8 @@ namespace WebApiClientCore.Extensions.OAuths
 
             if (this.options.TryGetValue(httpApiType, out var serviceType))
             {
-                return ((ITokenProviderService)this.serviceProvider.GetRequiredService(serviceType)).TokenProvider;
+                var service = this.serviceProvider.GetRequiredService(serviceType);
+                return ((ITokenProviderService)service).TokenProvider;
             }
 
             if (typeMatchMode == TypeMatchMode.TypeOrBaseTypes)
@@ -63,7 +64,8 @@ namespace WebApiClientCore.Extensions.OAuths
             {
                 if (this.options.TryGetValue(baseType, out var serviceType))
                 {
-                    return ((ITokenProviderService)this.serviceProvider.GetRequiredService(serviceType)).TokenProvider;
+                    var service = this.serviceProvider.GetRequiredService(serviceType);
+                    return ((ITokenProviderService)service).TokenProvider;
                 }
             }
             throw new InvalidOperationException($"尚未注册{httpApiType}或其基础接口的token提供者");
