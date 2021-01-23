@@ -124,17 +124,13 @@ namespace WebApiClientCore.Analyzers.Diagnostics
             }
 
             var arg = ctorUsageAttribute.ConstructorArguments.FirstOrDefault();
-            if (arg.IsNull == true)
+            if (arg.IsNull == true || arg.Value == null)
             {
                 return true;
             }
 
-            if (arg.Value is AttributeTargets ctorTargets)
-            {
-                return ctorTargets.HasFlag(targets);
-            }
-
-            return true;
+            var ctorTargets = (AttributeTargets)(int)arg.Value;
+            return ctorTargets.HasFlag(targets);
         }
     }
 }
