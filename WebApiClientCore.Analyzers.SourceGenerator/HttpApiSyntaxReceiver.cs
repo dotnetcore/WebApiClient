@@ -9,7 +9,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
     /// <summary>
     /// httpApi语法接收器
     /// </summary>
-    class HttpApiSyntaxReceiver : ISyntaxReceiver
+    sealed class HttpApiSyntaxReceiver : ISyntaxReceiver
     {
         /// <summary>
         /// 接口标记名称

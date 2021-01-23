@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using System.Linq;
 
 namespace WebApiClientCore.Analyzers.SourceGenerator
 {
@@ -25,10 +26,14 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         {
             if (context.SyntaxReceiver is HttpApiSyntaxReceiver receiver)
             {
-                foreach (var httpApi in receiver.GetHttpApiTypes(context.Compilation))
+                var builders = receiver
+                    .GetHttpApiTypes(context.Compilation)
+                    .Select(i => new HttpApiCodeBuilder(i))
+                    .Distinct();
+
+                foreach (var builder in builders)
                 {
-                    var builder = new HttpApiCodeBuilder(httpApi);
-                    context.AddSource(builder.CtorName, builder.ToSourceText());
+                    context.AddSource(builder.HttpApiTypeName, builder.ToSourceText());
                 }
             }
         }

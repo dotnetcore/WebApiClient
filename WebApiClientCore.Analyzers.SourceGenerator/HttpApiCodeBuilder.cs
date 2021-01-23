@@ -10,7 +10,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
     /// <summary>
     /// HttpApi代码构建器
     /// </summary>
-    class HttpApiCodeBuilder
+    sealed class HttpApiCodeBuilder : IEquatable<HttpApiCodeBuilder>
     {
         /// <summary>
         /// 接口符号
@@ -161,6 +161,39 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             builder.AppendLine($"\t\t\treturn ({method.ReturnType})this.{this.apiInterceptorFieldName}.Intercept(this.{this.actionInvokersFieldName}[{index}], new object[] {{ {parameterNamesString} }});");
             builder.AppendLine("\t\t}");
             return builder.ToString();
+        }
+
+        /// <summary>
+        /// 是否与目标相等
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public bool Equals(HttpApiCodeBuilder other)
+        {
+            return this.HttpApiTypeName == other.HttpApiTypeName;
+        }
+
+        /// <summary>
+        /// 是否与目标相等
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            if (obj is HttpApiCodeBuilder builder)
+            {
+                return this.Equals(builder);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 获取哈希
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return this.HttpApiTypeName.GetHashCode();
         }
     }
 }
