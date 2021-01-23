@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace WebApiClientCore.Analyzers
 {
     /// <summary>
-    /// 表示HttpApi诊断器抽象类
+    /// 表示HttpApi诊断器提供者抽象类
     /// </summary>
-    abstract class HttpApiDiagnostic
+    abstract class HttpApiDiagnosticProvider
     {
         /// <summary>
         /// 获取上下文
@@ -22,7 +22,7 @@ namespace WebApiClientCore.Analyzers
         /// HttpApi诊断器
         /// </summary>
         /// <param name="context">上下文</param>
-        public HttpApiDiagnostic(HttpApiContext context)
+        public HttpApiDiagnosticProvider(HttpApiContext context)
         {
             this.Context = context;
         }
@@ -33,34 +33,15 @@ namespace WebApiClientCore.Analyzers
         /// <param name="location"></param>
         /// <param name="messageArgs"></param>
         /// <returns></returns>
-        protected Diagnostic? CreateDiagnostic(Location? location, params object[] messageArgs)
+        protected Diagnostic CreateDiagnostic(Location location, params object[] messageArgs)
         {
-            return location == null ? null : Diagnostic.Create(this.Descriptor, location, messageArgs);
-        } 
-
-        /// <summary>
-        /// 报告诊断结果
-        /// </summary>
-        public void Report()
-        {
-            if (this.Context.IsHtttApi == false)
-            {
-                return;
-            }
-
-            foreach (var item in this.GetDiagnostics())
-            {
-                if (item != null)
-                {
-                    this.Context.SyntaxNodeContext.ReportDiagnostic(item);
-                }
-            }
+            return Diagnostic.Create(this.Descriptor, location, messageArgs);
         }
 
         /// <summary>
-        /// 返回所有的报告诊断
+        /// 创建所有的诊断结果
         /// </summary>
         /// <returns></returns>
-        protected abstract IEnumerable<Diagnostic?> GetDiagnostics();
+        public abstract IEnumerable<Diagnostic> CreateDiagnostics();
     }
 }

@@ -8,7 +8,7 @@ namespace WebApiClientCore.Analyzers.Diagnostics
     /// <summary>
     /// 表示特性构造函数诊断器
     /// </summary>
-    sealed class AttributeDiagnostic : HttpApiDiagnostic
+    sealed class CtorAttributeDiagnosticProvider : HttpApiDiagnosticProvider
     {
         /// <summary>
         /// /// <summary>
@@ -21,7 +21,7 @@ namespace WebApiClientCore.Analyzers.Diagnostics
         /// 特性构造函数诊断器
         /// </summary>
         /// <param name="context">上下文</param>
-        public AttributeDiagnostic(HttpApiContext context)
+        public CtorAttributeDiagnosticProvider(HttpApiContext context)
             : base(context)
         {
         }
@@ -30,7 +30,7 @@ namespace WebApiClientCore.Analyzers.Diagnostics
         /// 返回所有的报告诊断
         /// </summary>
         /// <returns></returns>
-        protected override IEnumerable<Diagnostic?> GetDiagnostics()
+        public override IEnumerable<Diagnostic> CreateDiagnostics()
         {
             var @interface = this.Context.Interface;
             if (@interface == null)
@@ -43,7 +43,13 @@ namespace WebApiClientCore.Analyzers.Diagnostics
 
             foreach (var item in interfaceAttributes.Concat(methodAttributes))
             {
-                var location = item.ApplicationSyntaxReference?.GetSyntax()?.GetLocation();
+                var appSyntax = item.ApplicationSyntaxReference;
+                if (appSyntax == null)
+                {
+                    continue;
+                }
+
+                var location = appSyntax.GetSyntax().GetLocation();
                 yield return this.CreateDiagnostic(location);
             }
         }

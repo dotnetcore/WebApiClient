@@ -7,7 +7,7 @@ namespace WebApiClientCore.Analyzers.Diagnostics
     /// <summary>
     /// 表示泛型方法诊断器
     /// </summary>
-    sealed class GenericMethodDiagnostic : HttpApiDiagnostic
+    sealed class GenericMethodDiagnosticProvider : HttpApiDiagnosticProvider
     {
         /// <summary>
         /// 获取诊断描述
@@ -18,7 +18,7 @@ namespace WebApiClientCore.Analyzers.Diagnostics
         /// 泛型方法诊断器
         /// </summary>
         /// <param name="context">上下文</param>
-        public GenericMethodDiagnostic(HttpApiContext context)
+        public GenericMethodDiagnosticProvider(HttpApiContext context)
             : base(context)
         {
         }
@@ -27,13 +27,19 @@ namespace WebApiClientCore.Analyzers.Diagnostics
         /// 返回所有的报告诊断
         /// </summary>
         /// <returns></returns>
-        protected override IEnumerable<Diagnostic?> GetDiagnostics()
+        public override IEnumerable<Diagnostic> CreateDiagnostics()
         {
             foreach (var method in this.Context.ApiMethods)
             {
-                if (method.IsGenericMethod == true)
+                if (method.IsGenericMethod == false)
                 {
-                    var location = method.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax()?.GetLocation();
+                    continue;
+                }
+
+                var declaringSyntax = method.DeclaringSyntaxReferences.FirstOrDefault();
+                if (declaringSyntax != null)
+                {
+                    var location = declaringSyntax.GetSyntax().GetLocation();
                     yield return this.CreateDiagnostic(location);
                 }
             }

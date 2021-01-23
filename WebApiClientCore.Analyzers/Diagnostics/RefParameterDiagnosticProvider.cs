@@ -8,7 +8,7 @@ namespace WebApiClientCore.Analyzers.Diagnostics
     /// <summary>
     /// 表示引用传递参数诊断器
     /// </summary>
-    sealed class RefParameterDiagnostic : HttpApiDiagnostic
+    sealed class RefParameterDiagnosticProvider : HttpApiDiagnosticProvider
     {
         /// <summary>
         /// /// <summary>
@@ -21,7 +21,7 @@ namespace WebApiClientCore.Analyzers.Diagnostics
         /// 引用传递参数诊断器
         /// </summary>
         /// <param name="context">上下文</param>
-        public RefParameterDiagnostic(HttpApiContext context)
+        public RefParameterDiagnosticProvider(HttpApiContext context)
             : base(context)
         {
         }
@@ -30,17 +30,29 @@ namespace WebApiClientCore.Analyzers.Diagnostics
         /// 返回所有的报告诊断
         /// </summary>
         /// <returns></returns>
-        protected override IEnumerable<Diagnostic?> GetDiagnostics()
+        public override IEnumerable<Diagnostic> CreateDiagnostics()
         {
             foreach (var method in this.Context.ApiMethods)
             {
                 foreach (var parameter in method.Parameters)
                 {
-                    if (parameter.RefKind != RefKind.None)
+                    if (parameter.RefKind == RefKind.None)
                     {
-                        if (parameter.DeclaringSyntaxReferences.First().GetSyntax() is ParameterSyntax parameterSyntax)
+                        continue;
+                    }
+
+                    if (parameter.DeclaringSyntaxReferences.Length == 0)
+                    {
+                        continue;
+                    }
+
+                    var declaringSyntax = parameter.DeclaringSyntaxReferences.First().GetSyntax();
+                    if (declaringSyntax is ParameterSyntax parameterSyntax)
+                    {
+                        var modifier = parameterSyntax.Modifiers.FirstOrDefault();
+                        if (modifier != null)
                         {
-                            var location = parameterSyntax.Modifiers.FirstOrDefault().GetLocation();
+                            var location = modifier.GetLocation();
                             yield return this.CreateDiagnostic(location);
                         }
                     }

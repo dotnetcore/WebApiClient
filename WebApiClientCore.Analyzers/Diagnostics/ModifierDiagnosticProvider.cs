@@ -7,7 +7,7 @@ namespace WebApiClientCore.Analyzers.Diagnostics
     /// <summary>
     /// public修饰符号诊断
     /// </summary>
-    sealed class ModifierDiagnostic : HttpApiDiagnostic
+    sealed class ModifierDiagnosticProvider : HttpApiDiagnosticProvider
     {
         public override DiagnosticDescriptor Descriptor => Descriptors.ModifierDescriptor;
 
@@ -15,12 +15,12 @@ namespace WebApiClientCore.Analyzers.Diagnostics
         /// public修饰符号诊断
         /// </summary>
         /// <param name="context"></param>
-        public ModifierDiagnostic(HttpApiContext context)
+        public ModifierDiagnosticProvider(HttpApiContext context)
             : base(context)
         {
         }
 
-        protected override IEnumerable<Diagnostic?> GetDiagnostics()
+        public override IEnumerable<Diagnostic> CreateDiagnostics()
         {
             var syntax = this.Context.InterfaceSyntax;
             if (syntax == null)

@@ -7,7 +7,7 @@ namespace WebApiClientCore.Analyzers.Diagnostics
     /// <summary>
     /// 表示非方法声明诊断器
     /// </summary>
-    sealed class NotMethodDefindedDiagnostic : HttpApiDiagnostic
+    sealed class NotMethodDefindedDiagnosticProvider : HttpApiDiagnosticProvider
     {
         /// <summary>
         /// /// <summary>
@@ -20,7 +20,7 @@ namespace WebApiClientCore.Analyzers.Diagnostics
         /// 非方法声明诊断器
         /// </summary>
         /// <param name="context">上下文</param>
-        public NotMethodDefindedDiagnostic(HttpApiContext context)
+        public NotMethodDefindedDiagnosticProvider(HttpApiContext context)
             : base(context)
         {
         }
@@ -29,7 +29,7 @@ namespace WebApiClientCore.Analyzers.Diagnostics
         /// 返回所有的报告诊断
         /// </summary>
         /// <returns></returns>
-        protected override IEnumerable<Diagnostic?> GetDiagnostics()
+        public override IEnumerable<Diagnostic> CreateDiagnostics()
         {
             var @interface = this.Context.InterfaceSyntax;
             if (@interface == null)

@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using WebApiClientCore.Analyzers.Diagnostics;
 
 namespace WebApiClientCore.Analyzers
@@ -11,7 +12,7 @@ namespace WebApiClientCore.Analyzers
     /// 表示WebApiClient诊断分析器
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class WebApiClientCoreAnalyzer : DiagnosticAnalyzer
+    public class HttpApiDiagnosticAnalyzer : DiagnosticAnalyzer
     {
         /// <summary>
         /// 获取所支持的诊断
@@ -42,9 +43,13 @@ namespace WebApiClientCore.Analyzers
                 var httpApiContext = new HttpApiContext(syntaxNodeContext);
                 if (httpApiContext.IsHtttApi == true)
                 {
-                    foreach (var item in this.GetHttpApiDiagnostics(httpApiContext))
+                    var diagnostics = this
+                        .GetDiagnosticProviders(httpApiContext)
+                        .SelectMany(d => d.CreateDiagnostics());
+
+                    foreach (var item in diagnostics)
                     {
-                        item.Report();
+                        syntaxNodeContext.ReportDiagnostic(item);
                     }
                 }
             }, SyntaxKind.InterfaceDeclaration);
@@ -55,15 +60,15 @@ namespace WebApiClientCore.Analyzers
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        private IEnumerable<HttpApiDiagnostic> GetHttpApiDiagnostics(HttpApiContext context)
+        private IEnumerable<HttpApiDiagnosticProvider> GetDiagnosticProviders(HttpApiContext context)
         {
-            yield return new AttributeDiagnostic(context);
-            yield return new ReturnTypeDiagnostic(context);
-            yield return new RefParameterDiagnostic(context);
-            yield return new NotMethodDefindedDiagnostic(context);
-            yield return new GenericMethodDiagnostic(context);
-            yield return new UriAttributeDiagnostic(context);
-            yield return new ModifierDiagnostic(context);
+            yield return new CtorAttributeDiagnosticProvider(context);
+            yield return new ReturnTypeDiagnosticProvider(context);
+            yield return new RefParameterDiagnosticProvider(context);
+            yield return new NotMethodDefindedDiagnosticProvider(context);
+            yield return new GenericMethodDiagnosticProvider(context);
+            yield return new UriAttributeDiagnosticProvider(context);
+            yield return new ModifierDiagnosticProvider(context);
         }
     }
 }

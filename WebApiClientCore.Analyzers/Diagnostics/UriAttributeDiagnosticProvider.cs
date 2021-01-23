@@ -7,7 +7,7 @@ namespace WebApiClientCore.Analyzers.Diagnostics
     /// <summary>
     /// 表示UriAttribute诊断器
     /// </summary>
-    sealed class UriAttributeDiagnostic : HttpApiDiagnostic
+    sealed class UriAttributeDiagnosticProvider : HttpApiDiagnosticProvider
     {
         /// <summary>   
         /// 获取诊断描述
@@ -19,7 +19,7 @@ namespace WebApiClientCore.Analyzers.Diagnostics
         /// UriAttribute诊断器
         /// </summary>
         /// <param name="context">上下文</param>
-        public UriAttributeDiagnostic(HttpApiContext context)
+        public UriAttributeDiagnosticProvider(HttpApiContext context)
             : base(context)
         {
         }
@@ -28,7 +28,7 @@ namespace WebApiClientCore.Analyzers.Diagnostics
         /// 返回所有的报告诊断
         /// </summary>
         /// <returns></returns>
-        protected override IEnumerable<Diagnostic?> GetDiagnostics()
+        public override IEnumerable<Diagnostic> CreateDiagnostics()
         {
             var attr = this.Context.UriAttribute;
             if (attr == null)
@@ -42,11 +42,14 @@ namespace WebApiClientCore.Analyzers.Diagnostics
                 {
                     var parameter = method.Parameters[i];
                     var uriAttribute = parameter.GetAttributes().FirstOrDefault(item => attr.Equals(item.AttributeClass));
-                    if (uriAttribute != null)
+                    var appSyntax = uriAttribute?.ApplicationSyntaxReference;
+                    if (appSyntax == null)
                     {
-                        var location = uriAttribute.ApplicationSyntaxReference?.GetSyntax()?.GetLocation();
-                        yield return this.CreateDiagnostic(location);
+                        continue;
                     }
+
+                    var location = appSyntax.GetSyntax().GetLocation();
+                    yield return this.CreateDiagnostic(location);
                 }
             }
         }
