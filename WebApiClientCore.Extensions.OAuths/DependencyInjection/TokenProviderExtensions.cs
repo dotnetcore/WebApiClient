@@ -72,7 +72,7 @@ namespace Microsoft.Extensions.DependencyInjection
                .AddOptions<TokenProviderFactoryOptions>()
                .Configure(o => o.Register<THttpApi, TTokenProvider>());
 
-            services.TryAddTransient<OAuthTokenClient>();
+            services.TryAddSingleton<OAuth2TokenClient>();
             services.TryAddSingleton(typeof(TokenProviderService<,>));
             services.TryAddSingleton<ITokenProviderFactory, TokenProviderFactory>();
 

@@ -11,7 +11,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
     /// <summary>
     /// 表示OAuth2的Token客户端
     /// </summary>
-    sealed class OAuthTokenClient
+    sealed class OAuth2TokenClient
     {
         private readonly IHttpClientFactory httpClientFactory;
 
@@ -20,7 +20,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <summary>
         /// 静态构造器
         /// </summary>
-        static OAuthTokenClient()
+        static OAuth2TokenClient()
         {
             httpApiOptions.KeyValueSerializeOptions.IgnoreNullValues = true;
         }
@@ -29,7 +29,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// OAuth2的Token客户端
         /// </summary>
         /// <param name="httpClientFactory"></param>
-        public OAuthTokenClient(IHttpClientFactory httpClientFactory)
+        public OAuth2TokenClient(IHttpClientFactory httpClientFactory)
         {
             this.httpClientFactory = httpClientFactory;
         }
