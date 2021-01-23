@@ -82,8 +82,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new NotSupportedException(Resx.unsupported_GenericTypeDefinitionType.Format(httpApiType));
             }
 
-            var builderType = typeof(HttpApiBuilder<>).MakeGenericType(httpApiType);
-            return builderType.CreateInstance<IHttpApiBuilder>().AddHttpApi(services);
+            return HttpApiAdder.Create(httpApiType).AddHttpApi(services);
         }
 
         /// <summary>
@@ -159,33 +158,42 @@ namespace Microsoft.Extensions.DependencyInjection
             }
         }
 
-
         /// <summary>
-        /// 定义httpApi的Builder的行为
+        /// 表示HttpApi服务添加者
         /// </summary>
-        private interface IHttpApiBuilder
-        {
-            /// <summary>
-            /// 添加HttpApi代理类到服务
-            /// </summary>
-            /// <param name="services"></param>
-            /// <returns></returns>
-            IHttpClientBuilder AddHttpApi(IServiceCollection services);
-        }
-
-        /// <summary>
-        /// httpApi的Builder
-        /// </summary>
-        /// <typeparam name="THttpApi"></typeparam>
-        private class HttpApiBuilder<THttpApi> : IHttpApiBuilder where THttpApi : class
+        private abstract class HttpApiAdder
         {
             /// <summary>
             /// 添加HttpApi代理类到服务
             /// </summary> 
             /// <returns></returns>
-            public IHttpClientBuilder AddHttpApi(IServiceCollection services)
+            public abstract IHttpClientBuilder AddHttpApi(IServiceCollection services);
+
+            /// <summary>
+            /// 创建指定接口的HttpApiAdder
+            /// </summary>
+            /// <param name="httpApiType">接口类型</param>
+            /// <returns></returns>
+            public static HttpApiAdder Create(Type httpApiType)
             {
-                return services.AddHttpApi<THttpApi>();
+                var adderType = typeof(HttpApiAdderOf<>).MakeGenericType(httpApiType);
+                return adderType.CreateInstance<HttpApiAdder>();
+            }
+
+            /// <summary>
+            /// 表示HttpApi服务添加者
+            /// </summary>
+            /// <typeparam name="THttpApi"></typeparam>
+            private class HttpApiAdderOf<THttpApi> : HttpApiAdder where THttpApi : class
+            {
+                /// <summary>
+                /// 添加HttpApi代理类到服务
+                /// </summary> 
+                /// <returns></returns>
+                public override IHttpClientBuilder AddHttpApi(IServiceCollection services)
+                {
+                    return services.AddHttpApi<THttpApi>();
+                }
             }
         }
     }

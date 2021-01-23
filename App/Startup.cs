@@ -51,7 +51,7 @@ namespace App
                 .UseSourceGeneratorHttpApiActivator();
 
             // ×¢²áuserApi
-            services.AddHttpApi<IUserApi>(o =>
+            services.AddHttpApi(typeof(IUserApi), o =>
             {
                 o.UseLogging = Environment.IsDevelopment();
                 o.HttpHost = new Uri("http://localhost:5000/");
