@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace WebApiClientCore.Extensions.OAuths
+﻿namespace WebApiClientCore.Extensions.OAuths
 {
     /// <summary>
     /// 表示http接口的token提供者服务
@@ -35,17 +33,9 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <returns></returns>
         private static string GetTokenProviderName()
         {
-            var httpApiType = typeof(THttpApi);
-            var name = httpApiType.Name;
-            var providerName = typeof(TTokenProvider).Name;
-
-            if (httpApiType.IsGenericType == false)
-            {
-                return $"{providerName}Of({name})";
-            }
-
-            var argumentsName = string.Join(",", httpApiType.GetGenericArguments().Select(i => i.Name));
-            return $"{providerName}Of({name}<{argumentsName}>)";
+            var httpApiName = HttpApi.GetName(typeof(THttpApi), false);
+            var providerName = HttpApi.GetName(typeof(TTokenProvider), false);
+            return $"{providerName}+{httpApiName}";
         }
     }
 }

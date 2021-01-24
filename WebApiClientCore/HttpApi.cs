@@ -12,25 +12,39 @@ namespace WebApiClientCore
     public static class HttpApi
     {
         /// <summary>
-        /// 获取接口的别名
-        /// 该别名可用于接口对应的OptionsName
+        /// 获取接口的名称
+        /// 该名称可用于接口对应的OptionsName
         /// </summary>
         /// <param name="httpApiType">接口类型</param>
         /// <returns></returns>
         public static string GetName(Type? httpApiType)
+        {
+            return GetName(httpApiType, includeNamespace: true);
+        }
+
+        /// <summary>
+        /// 获取接口的名称 
+        /// </summary>
+        /// <param name="httpApiType">接口类型</param>
+        /// <param name="includeNamespace">是否包含命名空间</param>
+        /// <returns></returns>
+        public static string GetName(Type? httpApiType, bool includeNamespace)
         {
             if (httpApiType == null)
             {
                 return string.Empty;
             }
 
-            var builder = new ValueStringBuilder(stackalloc char[256])
-                .Append(httpApiType.Namespace)
-                .Append(".");
+            var builder = new ValueStringBuilder(stackalloc char[256]);
+            if (includeNamespace == true)
+            {
+                builder.Append(httpApiType.Namespace).Append(".");
+            }
 
             GetName(httpApiType, ref builder);
             return builder.ToString();
         }
+
 
         /// <summary>
         /// 获取类型的短名称
