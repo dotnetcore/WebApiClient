@@ -11,7 +11,12 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         /// <summary>
         /// 添加token应用的http消息处理程序
+        /// 需要为接口或接口的基础接口注册TokenProvider
         /// </summary>
+        /// <remarks>
+        /// <para>• Client模式：services.AddClientCredentialsTokenProvider</para>
+        /// <para>• Password模式：services.AddPasswordCredentialsTokenProvider</para>
+        /// </remarks>
         /// <param name="builder"></param>
         /// <param name="tokenProviderSearchMode">token提供者的查找模式</param>
         /// <returns></returns>
@@ -22,7 +27,12 @@ namespace Microsoft.Extensions.DependencyInjection
 
         /// <summary>
         /// 添加token应用的http消息处理程序
+        /// 需要为接口或接口的基础接口注册TokenProvider
         /// </summary>
+        /// <remarks>
+        /// <para>• Client模式：services.AddClientCredentialsTokenProvider</para>
+        /// <para>• Password模式：services.AddPasswordCredentialsTokenProvider</para>
+        /// </remarks>
         /// <typeparam name="TOAuthTokenHandler"></typeparam>
         /// <param name="builder"></param>
         /// <param name="handlerFactory">hanlder的创建委托</param>

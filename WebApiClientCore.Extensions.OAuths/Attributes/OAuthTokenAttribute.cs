@@ -8,7 +8,12 @@ namespace WebApiClientCore.Attributes
 {
     /// <summary>
     /// 表示token应用特性
+    /// 需要为接口或接口的基础接口注册TokenProvider
     /// </summary> 
+    /// <remarks>
+    /// <para>• Client模式：services.AddClientCredentialsTokenProvider</para>
+    /// <para>• Password模式：services.AddPasswordCredentialsTokenProvider</para>
+    /// </remarks>
     public class OAuthTokenAttribute : ApiFilterAttribute
     {
         /// <summary>
