@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using WebApiClientCore.Internals;
 
 namespace WebApiClientCore
 {
@@ -22,8 +23,51 @@ namespace WebApiClientCore
             {
                 return string.Empty;
             }
-            return httpApiType.FullName;
+
+            var builder = new ValueStringBuilder(stackalloc char[256])
+                .Append(httpApiType.Namespace)
+                .Append(".");
+
+            GetName(httpApiType, ref builder);
+            return builder.ToString();
         }
+
+        /// <summary>
+        /// 获取类型的短名称
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        private static void GetName(Type type, ref ValueStringBuilder builder)
+        {
+            if (type.IsGenericType == false)
+            {
+                builder.Append(type.Name);
+                return;
+            }
+
+            var name = type.Name.AsSpan();
+            var index = name.LastIndexOf('`');
+            if (index > -1)
+            {
+                name = name.Slice(0, index);
+            }
+            builder.Append(name);
+            builder.Append('<');
+
+            var i = 0;
+            var arguments = type.GetGenericArguments();
+            foreach (var argument in arguments)
+            {
+                GetName(argument, ref builder);
+                if (++i < arguments.Length)
+                {
+                    builder.Append(',');
+                }
+            }
+            builder.Append('>');
+        }
+
 
         /// <summary>
         /// 查找接口类型及其继承的接口的所有方法

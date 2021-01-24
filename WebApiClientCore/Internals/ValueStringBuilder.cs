@@ -27,7 +27,8 @@ namespace WebApiClientCore.Internals
         /// 添加char
         /// </summary>
         /// <param name="value"></param>
-        public void Append(char value)
+        /// <returns></returns>
+        public ValueStringBuilder Append(char value)
         {
             var newSize = this.index + 1;
             if (newSize > this.chars.Length)
@@ -37,17 +38,19 @@ namespace WebApiClientCore.Internals
 
             this.chars.Slice(this.index)[0] = value;
             this.index = newSize;
+            return this;
         }
 
         /// <summary>
         /// 添加chars
         /// </summary>
         /// <param name="value"></param>
-        public void Append(ReadOnlySpan<char> value)
+        /// <returns></returns>
+        public ValueStringBuilder Append(ReadOnlySpan<char> value)
         {
             if (value.IsEmpty)
             {
-                return;
+                return this;
             }
 
             var newSize = this.index + value.Length;
@@ -58,6 +61,7 @@ namespace WebApiClientCore.Internals
 
             value.CopyTo(this.chars.Slice(this.index));
             this.index = newSize;
+            return this;
         }
 
         /// <summary>
