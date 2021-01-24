@@ -7,7 +7,8 @@
 | 包名 | 描述 | Nuget |
 ---|---|--|
 | WebApiClientCore | 基础包 | [![NuGet](https://buildstats.info/nuget/WebApiClientCore)](https://www.nuget.org/packages/WebApiClientCore) |
-| WebApiClientCore.Extensions.OAuths | OAuth扩展包 | [![NuGet](https://buildstats.info/nuget/WebApiClientCore.Extensions.OAuths)](https://www.nuget.org/packages/WebApiClientCore.Extensions.OAuths) |
+| WebApiClientCore.Extensions.SourceGenerator | 编译时代理类生成包 | [![NuGet](https://buildstats.info/nuget/WebApiClientCore.Extensions.SourceGenerator)](https://www.nuget.org/packages/WebApiClientCore.Extensions.SourceGenerator) |
+| WebApiClientCore.Extensions.OAuths | OAuth2与token管理扩展包 | [![NuGet](https://buildstats.info/nuget/WebApiClientCore.Extensions.OAuths)](https://www.nuget.org/packages/WebApiClientCore.Extensions.OAuths) |
 | WebApiClientCore.Extensions.NewtonsoftJson | Json.Net扩展包 | [![NuGet](https://buildstats.info/nuget/WebApiClientCore.Extensions.NewtonsoftJson)](https://www.nuget.org/packages/WebApiClientCore.Extensions.NewtonsoftJson) |
 | WebApiClientCore.Extensions.JsonRpc | JsonRpc调用扩展包 | [![NuGet](https://buildstats.info/nuget/WebApiClientCore.Extensions.JsonRpc)](https://www.nuget.org/packages/WebApiClientCore.Extensions.JsonRpc) |
 | WebApiClientCore.OpenApi.SourceGenerator | 将本地或远程OpenApi文档解析生成WebApiClientCore接口代码的dotnet tool | [![NuGet](https://buildstats.info/nuget/WebApiClientCore.OpenApi.SourceGenerator)](https://www.nuget.org/packages/WebApiClientCore.OpenApi.SourceGenerator) |
@@ -49,22 +50,17 @@ public class MyService
 进群时请注明**WebApiClient**，在咨询问题之前，请先认真阅读以下剩余的文档，避免消耗作者不必要的重复解答时间。
  
 ### 编译时语法分析
-WebApiClientCore.Analyzers提供编码时语法分析与提示，声明的接口继承了空方法的IHttpApi接口，语法分析将生效，建议开发者开启这个功能。
+WebApiClientCore.Analyzers提供接口声明的语法分析与提示，帮助开发者声明接口时避免使用不当的语法。
 
-例如[Header]特性，可以声明在Interface、Method和Parameter三个地方，但是必须使用正确的构造器，否则运行时会抛出异常。有了语法分析功能，在声明接口时就不会使用不当的语法。
+* 1.x版本，接口继承IHttpApi才获得语法分析提示 
+* 2.0以后的版本，不继承IHttpApi也获得语法分析提示 
+ 
+### 全局配置
+2.0以后的版本，提供services.AddWebApiClient()的全局配置功能，支持提供自定义的IHttpApiActivator<>、IApiActionDescriptorProvider、IApiActionInvokerProvider和IResponseCacheProvider。
 
-```
-/// <summary>
-/// 记得要实现IHttpApi
-/// </summary>
-public interface IUserApi : IHttpApi
-{
-    ...
-}
-```
-
-### 接口配置与选项
-每个接口的选项对应为`HttpApiOptions`，选项名称为接口的完整名称，也可以通过HttpApi.GetName()方法获取得到。
+### 接口注册与选项
+调用services.AddHttpApi<IUserApi>()即可完成接口注册，
+每个接口的选项对应为`HttpApiOptions`，选项名称通过HttpApi.GetName()方法获取得到。
 
 #### 在IHttpClientBuilder配置
 ```
@@ -74,7 +70,7 @@ services
     .ConfigureHttpApi(o =>
     {
         // 符合国情的不标准时间格式，有些接口就是这么要求必须不标准
-        o.JsonSerializeOptions.Converters.Add(new JsonLocalDateTimeConverter("yyyy-MM-dd HH:mm:ss"));
+        o.JsonSerializeOptions.Converters.Add(new JsonDateTimeConverter("yyyy-MM-dd HH:mm:ss"));
     });
 ```
 
@@ -100,7 +96,7 @@ services
     .ConfigureHttpApi<IUserApi>(o =>
     {
         // 符合国情的不标准时间格式，有些接口就是这么要求必须不标准
-        o.JsonSerializeOptions.Converters.Add(new JsonLocalDateTimeConverter("yyyy-MM-dd HH:mm:ss"));
+        o.JsonSerializeOptions.Converters.Add(new JsonDateTimeConverter("yyyy-MM-dd HH:mm:ss"));
     });
 ```
 
@@ -337,7 +333,6 @@ await response.SaveAsAsync(fileStream);
 ```
 
 ### 接口声明示例
-#### Petstore接口
 这个OpenApi文档在[petstore.swagger.io](https://petstore.swagger.io/)，代码为使用WebApiClientCore.OpenApi.SourceGenerator工具将其OpenApi文档反向生成得到
 
 ```
@@ -426,59 +421,7 @@ public interface IPetApi : IHttpApi
     [HttpPost("pet/{petId}/uploadImage")]
     ITask<ApiResponse> UploadFileAsync([Required] long petId, [FormDataText] string additionalMetadata, FormDataFile file, CancellationToken cancellationToken = default);
 }
-```
-#### IOAuthClient接口
-这个接口是在WebApiClientCore.Extensions.OAuths.IOAuthClient.cs代码中声明
-
-```
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using WebApiClientCore.Attributes;
-
-namespace WebApiClientCore.Extensions.OAuths
-{
-    /// <summary>
-    /// 定义Token客户端的接口
-    /// </summary>
-    [LoggingFilter]
-    [XmlReturn(Enable = false)]
-    [JsonReturn(EnsureMatchAcceptContentType = false, EnsureSuccessStatusCode = false)]
-    public interface IOAuthClient
-    {
-        /// <summary>
-        /// 以client_credentials授权方式获取token
-        /// </summary>
-        /// <param name="endpoint">token请求地址</param>
-        /// <param name="credentials">身份信息</param>
-        /// <returns></returns>
-        [HttpPost]
-        [FormField("grant_type", "client_credentials")]
-        Task<TokenResult> RequestTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] ClientCredentials credentials);
-
-        /// <summary>
-        /// 以password授权方式获取token
-        /// </summary>
-        /// <param name="endpoint">token请求地址</param>
-        /// <param name="credentials">身份信息</param>
-        /// <returns></returns>
-        [HttpPost]
-        [FormField("grant_type", "password")]
-        Task<TokenResult> RequestTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] PasswordCredentials credentials);
-
-        /// <summary>
-        /// 刷新token
-        /// </summary>
-        /// <param name="endpoint">token请求地址</param>
-        /// <param name="credentials">身份信息</param>
-        /// <returns></returns>
-        [HttpPost]
-        [FormField("grant_type", "refresh_token")]
-        Task<TokenResult> RefreshTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] RefreshTokenCredentials credentials);
-    }
-}
-```
+``` 
 
 ### 请求条件性重试
 使用ITask<>异步声明，就有Retry的扩展，Retry的条件可以为捕获到某种Exception或响应模型符合某种条件。
@@ -616,11 +559,15 @@ public class RedisResponseCacheProvider : IResponseCacheProvider
     {
         throw new NotImplementedException();
     }
-}
+} 
+```
 
-// 注册RedisResponseCacheProvider
-var services = new ServiceCollection();
-services.AddSingleton<IResponseCacheProvider, RedisResponseCacheProvider>();
+```
+public static IWebApiClientBuilder UseRedisResponseCacheProvider(this IWebApiClientBuilder builder)
+{
+    builder.Services.AddSingleton<IResponseCacheProvider, RedisResponseCacheProvider>();
+    return builder;
+}
 ```
 
 ### 非模型请求
@@ -996,6 +943,17 @@ services
 
 现在，调用IUserApi的任意接口，只要响应的状态码为401，就触发IUserLoginApi登录，然后将登录得到的cookie来重试请求接口，最终响应为正确的结果。你也可以重写CookieAuthorizationHandler的IsUnauthorizedAsync(HttpResponseMessage)方法来指示响应是未授权状态。
 
+### SourceGenerator
+SourceGenerator是一种新的c#编译时代码补充生成技术，可以非常方便的为WebApiClient生成接口的代理实现类。使用WebApiClientCore.Extensions.SourceGenerator扩展包，可以替换默认的内置Emit生成代理类的方案，支持需要完全AOT编译的平台。
+
+要启用SourceGenerator功能，需要如下配置启用
+```
+// 应用编译时生成接口的代理类型代码
+services
+    .AddWebApiClient()
+    .UseSourceGeneratorHttpApiActivator();
+```
+
 ### OAuths&Token
 使用WebApiClientCore.Extensions.OAuths扩展，轻松支持token的获取、刷新与应用。
 
@@ -1003,7 +961,7 @@ services
 
 对象 | 用途
 ---|---
-ITokenProviderFactory | tokenProvider的创建工厂，提供通过HttpApi接口类型创建tokenProvider
+ITokenProviderFactory | tokenProvider的创建工厂，提供通过HttpApi接口类型获取或创建tokenProvider
 ITokenProvider | token提供者，用于获取token，在token的过期后的头一次请求里触发重新请求或刷新token
 OAuthTokenAttribute | token的应用特性，使用ITokenProviderFactory创建ITokenProvider，然后使用ITokenProvider获取token，最后将token应用到请求消息中
 OAuthTokenHandler | 属于http消息处理器，功能与OAuthTokenAttribute一样，除此之外，如果因为意外的原因导致服务器仍然返回未授权(401状态码)，其还会丢弃旧token，申请新token来重试一次请求。
@@ -1102,18 +1060,17 @@ services
 #### 多接口共享的TokenProvider
 可以给http接口设置基础接口，然后为基础接口配置TokenProvider，例如下面的xxx和yyy接口，都属于IBaidu，只需要给IBaidu配置TokenProvider。
 ```
+[OAuthToken]
 public interface IBaidu
 {
 }
 
-[OAuthToken]
 public interface IBaidu_XXX_Api : IBaidu
 {
     [HttpGet]
     Task xxxAsync();
 }
 
-[OAuthToken]
 public interface IBaidu_YYY_Api : IBaidu
 {
     [HttpGet]
