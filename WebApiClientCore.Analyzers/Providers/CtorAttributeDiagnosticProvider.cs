@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace WebApiClientCore.Analyzers.DiagnosticProviders
+namespace WebApiClientCore.Analyzers.Providers
 {
     /// <summary>
     /// 表示特性构造函数诊断器
@@ -32,13 +32,12 @@ namespace WebApiClientCore.Analyzers.DiagnosticProviders
         /// <returns></returns>
         public override IEnumerable<Diagnostic> CreateDiagnostics()
         {
-            var @interface = this.Context.Interface;      
-            var interfaceAttributes = this.GetInterfaceDiagnosticAttributes(@interface);
-            var methodAttributes = this.Context.Methods.SelectMany(item => this.GetMethodDiagnosticAttributes(item));
+            var interfaceAttributes = this.GetInterfaceCtorAttributes(this.Context.Interface);
+            var methodAttributes = this.Context.Methods.SelectMany(m => this.GetMethodCtorAttributes(m));
 
-            foreach (var item in interfaceAttributes.Concat(methodAttributes))
+            foreach (var attr in interfaceAttributes.Concat(methodAttributes))
             {
-                var appSyntax = item.ApplicationSyntaxReference;
+                var appSyntax = attr.ApplicationSyntaxReference;
                 if (appSyntax == null)
                 {
                     continue;
@@ -55,7 +54,7 @@ namespace WebApiClientCore.Analyzers.DiagnosticProviders
         /// </summary>
         /// <param name="interface">类型</param>
         /// <returns></returns>
-        private IEnumerable<AttributeData> GetInterfaceDiagnosticAttributes(INamedTypeSymbol @interface)
+        private IEnumerable<AttributeData> GetInterfaceCtorAttributes(INamedTypeSymbol @interface)
         {
             foreach (var attribute in @interface.GetAttributes())
             {
@@ -72,7 +71,7 @@ namespace WebApiClientCore.Analyzers.DiagnosticProviders
         /// </summary>
         /// <param name="methodSymbol">方法</param>
         /// <returns></returns>
-        private IEnumerable<AttributeData> GetMethodDiagnosticAttributes(IMethodSymbol methodSymbol)
+        private IEnumerable<AttributeData> GetMethodCtorAttributes(IMethodSymbol methodSymbol)
         {
             foreach (var methodAttribute in methodSymbol.GetAttributes())
             {

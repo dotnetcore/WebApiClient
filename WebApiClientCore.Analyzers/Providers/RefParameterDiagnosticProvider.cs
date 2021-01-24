@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace WebApiClientCore.Analyzers.DiagnosticProviders
+namespace WebApiClientCore.Analyzers.Providers
 {
     /// <summary>
     /// 表示引用传递参数诊断器

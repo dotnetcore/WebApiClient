@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace WebApiClientCore.Analyzers.DiagnosticProviders
+namespace WebApiClientCore.Analyzers.Providers
 {
     /// <summary>
     /// public修饰符号诊断

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using WebApiClientCore.Exceptions;
 using WebApiClientCore.Internals;
@@ -37,9 +38,9 @@ namespace WebApiClientCore.Implementations
                 return LambdaUtil.CreateCtorFunc<IHttpApiInterceptor, ApiActionInvoker[], THttpApi>(proxyType);
             }
 
-            var message = $"找不到{typeof(THttpApi)}的代理类";
+            var message = $"找不到{typeof(THttpApi)}的代理类：{GetErrorReason()}";
             throw new ProxyTypeCreateException(typeof(THttpApi), message);
-        }
+        }       
 
         /// <summary>
         /// 从接口所在程序集查找代理类
@@ -71,6 +72,24 @@ namespace WebApiClientCore.Implementations
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// 获取错误原因
+        /// </summary>
+        /// <returns></returns>
+        private static string GetErrorReason()
+        {
+            var assembly = typeof(THttpApi).Assembly;
+            const string SourceGenerator = "WebApiClientCore.Extensions.SourceGenerator";
+            if (assembly.GetReferencedAssemblies().Any(a => a.Name == SourceGenerator))
+            {
+                return "需要更新你的Visual Studio或msbuild工具到新版本";
+            }
+            else
+            {
+                return $"项目{assembly.GetName().Name}需要引用{SourceGenerator}";
+            }
         }
     }
 }

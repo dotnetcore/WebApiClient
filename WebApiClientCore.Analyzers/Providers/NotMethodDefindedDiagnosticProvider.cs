@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using System.Collections.Generic;
 
-namespace WebApiClientCore.Analyzers.DiagnosticProviders
+namespace WebApiClientCore.Analyzers.Providers
 {
     /// <summary>
     /// 表示非方法声明诊断器
@@ -30,9 +30,8 @@ namespace WebApiClientCore.Analyzers.DiagnosticProviders
         /// </summary>
         /// <returns></returns>
         public override IEnumerable<Diagnostic> CreateDiagnostics()
-        {
-            var syntax = this.Context.Syntax;   
-            foreach (var member in syntax.Members)
+        { 
+            foreach (var member in this.Context.Syntax.Members)
             {
                 if (member.Kind() != SyntaxKind.MethodDeclaration)
                 {
