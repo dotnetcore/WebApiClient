@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using WebApiClientCore.Exceptions;
 
 namespace WebApiClientCore.Attributes
 {
@@ -12,7 +11,7 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 字段名称
         /// </summary>
-        private readonly string? name;
+        private readonly string name = string.Empty;
 
         /// <summary>
         /// 字段的值
@@ -28,12 +27,7 @@ namespace WebApiClientCore.Attributes
         [AttributeCtorUsage(AttributeTargets.Interface | AttributeTargets.Method)]
         public FormDataTextAttribute(string name, object? value)
         {
-            if (string.IsNullOrEmpty(name))
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-
-            this.name = name;
+            this.name = name ?? throw new ArgumentNullException(nameof(name));
             this.value = value?.ToString();
         }
 
@@ -44,11 +38,6 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public override Task OnRequestAsync(ApiRequestContext context)
         {
-            if (string.IsNullOrEmpty(this.name))
-            {
-                throw new ApiInvalidConfigException(Resx.required_NameAndValue);
-            }
-
             context.HttpContext.RequestMessage.AddFormDataText(this.name, this.value);
             return Task.CompletedTask;
         }

@@ -35,7 +35,6 @@ namespace WebApiClientCore.Attributes
         {
             var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
             context.HttpContext.RequestMessage.Content = new JsonContent(context.ParameterValue, options, this.encoding);
-
             return Task.CompletedTask;
         }
     }

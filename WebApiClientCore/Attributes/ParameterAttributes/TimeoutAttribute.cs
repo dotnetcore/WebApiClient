@@ -53,7 +53,7 @@ namespace WebApiClientCore.Attributes
             if (timeout is IConvertible convertible)
             {
                 var milliseconds = convertible.ToDouble(null);
-                return System.TimeSpan.FromMilliseconds(milliseconds);
+                return TimeSpan.FromMilliseconds(milliseconds);
             }
 
             throw new ApiInvalidConfigException(Resx.parameter_CannotCvtTimeout.Format(timeout));

@@ -24,7 +24,9 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public Task OnRequestAsync(ApiParameterContext context)
         {
-            context.HttpContext.RequestMessage.AddFormDataText(context.ParameterName, context.ParameterValue?.ToString());
+            var fieldName = context.ParameterName;
+            var fieldValue = context.ParameterValue?.ToString();
+            context.HttpContext.RequestMessage.AddFormDataText(fieldName, fieldValue);
             return Task.CompletedTask;
         }
     }

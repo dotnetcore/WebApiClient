@@ -10,24 +10,36 @@ namespace WebApiClientCore.Attributes
     public partial class HeaderAttribute : IApiParameterAttribute
     {
         /// <summary>
+        /// Header别名
+        /// </summary>
+        private readonly string? aliasName;
+
+        /// <summary>
         /// 将参数值设置到Header        
         /// </summary>
-        /// <param name="name">header名称</param>
         [AttributeCtorUsage(AttributeTargets.Parameter)]
-        public HeaderAttribute(HttpRequestHeader name)
-            : this(name.ToHeaderName())
+        public HeaderAttribute()
+        {
+        }
+
+        /// <summary>
+        /// 将参数值设置到Header        
+        /// </summary>
+        /// <param name="aliasName">header别名</param>
+        [AttributeCtorUsage(AttributeTargets.Parameter)]
+        public HeaderAttribute(HttpRequestHeader aliasName)
+            : this(aliasName.ToHeaderName())
         {
         }
 
         /// <summary>
         /// 将参数值设置到Header      
         /// </summary>
-        /// <param name="name">header名称</param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="aliasName">header别名</param>
         [AttributeCtorUsage(AttributeTargets.Parameter)]
-        public HeaderAttribute(string name)
+        public HeaderAttribute(string aliasName)
         {
-            this.name = name ?? throw new ArgumentNullException(nameof(name));
+            this.aliasName = aliasName;
         }
 
         /// <summary>
@@ -38,10 +50,16 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public Task OnRequestAsync(ApiParameterContext context)
         {
+            var headerName = this.aliasName;
+            if (string.IsNullOrEmpty(headerName) == true)
+            {
+                headerName = context.ParameterName;
+            }
+
             var headerValue = context.ParameterValue?.ToString();
             if (string.IsNullOrEmpty(headerValue) == false)
             {
-                context.HttpContext.RequestMessage.Headers.TryAddWithoutValidation(this.name, headerValue);
+                context.HttpContext.RequestMessage.Headers.TryAddWithoutValidation(headerName, headerValue);
             }
             return Task.CompletedTask;
         }

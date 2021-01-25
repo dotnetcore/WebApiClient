@@ -37,13 +37,8 @@ namespace WebApiClientCore.Attributes
         /// <exception cref="ArgumentNullException"></exception>
         public RawStringContentAttribute(string mediaType)
         {
-            if (string.IsNullOrEmpty(mediaType))
-            {
-                throw new ArgumentNullException(nameof(mediaType));
-            }
-            this.mediaType = mediaType;
+            this.mediaType = mediaType ?? throw new ArgumentNullException(nameof(mediaType));
         }
-
 
         /// <summary>
         /// 设置参数到http请求内容

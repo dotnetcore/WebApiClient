@@ -9,18 +9,19 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示此请求的超时时间
     /// </summary>
-    [DebuggerDisplay("Timeout = {TimeSpan}")]
+    [DebuggerDisplay("Timeout = {Timeout}")]
     public partial class TimeoutAttribute : ApiActionAttribute
     {
         /// <summary>
         /// 获取超时时间
         /// </summary>
-        public TimeSpan? TimeSpan { get; }
+        public TimeSpan Timeout { get; } = TimeSpan.Zero;
 
         /// <summary>
         /// 指定请求的超时时间
         /// </summary>
         /// <param name="milliseconds">超时时间的毫秒数</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         [AttributeCtorUsage(AttributeTargets.Interface | AttributeTargets.Method)]
         public TimeoutAttribute(int milliseconds)
             : this((double)milliseconds)
@@ -31,10 +32,15 @@ namespace WebApiClientCore.Attributes
         /// 指定请求的超时时间
         /// </summary>
         /// <param name="milliseconds">超时时间的毫秒数</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         [AttributeCtorUsage(AttributeTargets.Interface | AttributeTargets.Method)]
         public TimeoutAttribute(double milliseconds)
         {
-            this.TimeSpan = System.TimeSpan.FromMilliseconds(milliseconds);
+            if (milliseconds <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(milliseconds));
+            }
+            this.Timeout = TimeSpan.FromMilliseconds(milliseconds);
         }
 
         /// <summary>
@@ -45,12 +51,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public override Task OnRequestAsync(ApiRequestContext context)
         {
-            if (this.TimeSpan == null)
-            {
-                throw new ApiInvalidConfigException(Resx.parameter_CannotMissing.Format("milliseconds"));
-            }
-
-            SetTimeout(context, this.TimeSpan.Value);
+            SetTimeout(context, this.Timeout);
             return Task.CompletedTask;
         }
 
@@ -63,7 +64,7 @@ namespace WebApiClientCore.Attributes
         private static void SetTimeout(ApiRequestContext context, TimeSpan timeout)
         {
             var maxTimeout = context.HttpContext.HttpClient.Timeout;
-            if (maxTimeout >= System.TimeSpan.Zero && timeout > maxTimeout)
+            if (maxTimeout >= TimeSpan.Zero && timeout > maxTimeout)
             {
                 throw new ApiInvalidConfigException(Resx.timeout_OutOfRange.Format(timeout));
             }

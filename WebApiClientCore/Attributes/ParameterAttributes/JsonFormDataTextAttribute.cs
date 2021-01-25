@@ -13,12 +13,12 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public sealed override Task OnRequestAsync(ApiParameterContext context)
+        public override Task OnRequestAsync(ApiParameterContext context)
         {
             var json = context.SerializeToJson();
             var fieldName = context.ParameterName;
-            var fildValue = Encoding.UTF8.GetString(json);
-            context.HttpContext.RequestMessage.AddFormDataText(fieldName, fildValue);
+            var fieldValue = Encoding.UTF8.GetString(json);
+            context.HttpContext.RequestMessage.AddFormDataText(fieldName, fieldValue);
 
             return Task.CompletedTask;
         }

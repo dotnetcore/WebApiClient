@@ -13,12 +13,12 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// Header名称
         /// </summary>
-        private readonly string name;
+        private readonly string name = string.Empty;
 
         /// <summary>
         /// Header值 
         /// </summary>
-        private readonly string? value;
+        private readonly string value = string.Empty;
 
         /// <summary>
         /// 将指定值设置到Header       
@@ -41,7 +41,7 @@ namespace WebApiClientCore.Attributes
         public HeaderAttribute(string name, string value)
         {
             this.name = name ?? throw new ArgumentNullException(nameof(name));
-            this.value = value;
+            this.value = value ?? throw new ArgumentNullException(nameof(name));
         }
 
         /// <summary>
@@ -51,10 +51,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public override Task OnRequestAsync(ApiRequestContext context)
         {
-            if (string.IsNullOrEmpty(this.value) == false)
-            {
-                context.HttpContext.RequestMessage.Headers.TryAddWithoutValidation(this.name, this.value);
-            }
+            context.HttpContext.RequestMessage.Headers.TryAddWithoutValidation(this.name, this.value);
             return Task.CompletedTask;
         }
     }
