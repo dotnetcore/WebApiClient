@@ -7,7 +7,7 @@ using System.Linq;
 namespace WebApiClientCore.Implementations
 {
     /// <summary>
-    /// 表示延时初始化的数据集合
+    /// 表示数据集合
     /// </summary>
     [DebuggerDisplay("Count = {Count}")]
     [DebuggerTypeProxy(typeof(DebugView))]
@@ -16,12 +16,12 @@ namespace WebApiClientCore.Implementations
         /// <summary>
         /// 数据字典
         /// </summary>
-        private readonly Lazy<Dictionary<object, object?>> dictionary = new Lazy<Dictionary<object, object?>>(() => new Dictionary<object, object?>());
+        private Dictionary<object, object?>? dictionary;
 
         /// <summary>
         /// 获取集合元素的数量
         /// </summary>
-        public int Count => this.dictionary.IsValueCreated ? this.dictionary.Value.Count : 0;
+        public int Count => this.dictionary == null ? 0 : this.dictionary.Count;
 
         /// <summary>
         /// 设置值
@@ -30,7 +30,11 @@ namespace WebApiClientCore.Implementations
         /// <param name="value">值</param>
         public void Set(object key, object? value)
         {
-            this.dictionary.Value[key] = value;
+            if (this.dictionary == null)
+            {
+                this.dictionary = new Dictionary<object, object?>();
+            }
+            this.dictionary[key] = value;
         }
 
         /// <summary>
@@ -40,7 +44,7 @@ namespace WebApiClientCore.Implementations
         /// <returns></returns>
         public bool ContainsKey(object key)
         {
-            return this.dictionary.IsValueCreated && this.dictionary.Value.ContainsKey(key);
+            return this.dictionary != null && this.dictionary.ContainsKey(key);
         }
 
         /// <summary>
@@ -86,14 +90,14 @@ namespace WebApiClientCore.Implementations
         /// <returns></returns>
         public bool TryGetValue(object key, out object? value)
         {
-            if (this.dictionary.IsValueCreated == false)
+            if (this.dictionary == null)
             {
                 value = default;
                 return false;
             }
             else
             {
-                return this.dictionary.Value.TryGetValue(key, out value);
+                return this.dictionary.TryGetValue(key, out value);
             }
         }
 
@@ -105,14 +109,14 @@ namespace WebApiClientCore.Implementations
         /// <returns></returns>
         public bool TryRemove(object key, out object? value)
         {
-            if (this.dictionary.IsValueCreated == false)
+            if (this.dictionary == null)
             {
                 value = default;
                 return false;
             }
             else
             {
-                return this.dictionary.Value.Remove(key, out value);
+                return this.dictionary.Remove(key, out value);
             }
         }
 
@@ -124,7 +128,7 @@ namespace WebApiClientCore.Implementations
             /// <summary>
             /// 查看的对象
             /// </summary> 
-            private readonly DefaultDataCollection target; 
+            private readonly Dictionary<object, object?>? dictionary;
 
             /// <summary>
             /// 查看的内容
@@ -134,9 +138,9 @@ namespace WebApiClientCore.Implementations
             {
                 get
                 {
-                    return this.target.dictionary.IsValueCreated
-                        ? this.target.dictionary.Value.ToArray()
-                        : Array.Empty<KeyValuePair<object, object?>>();
+                    return this.dictionary == null
+                        ? Array.Empty<KeyValuePair<object, object?>>()
+                        : this.dictionary.ToArray();
                 }
             }
 
@@ -146,7 +150,7 @@ namespace WebApiClientCore.Implementations
             /// <param name="target">查看的对象</param>
             public DebugView(DefaultDataCollection target)
             {
-                this.target = target;
+                this.dictionary = target.dictionary;
             }
         }
     }
