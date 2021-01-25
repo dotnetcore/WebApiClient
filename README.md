@@ -640,13 +640,9 @@ class FaceModel : IApiParameter
         var image1 = GetImageBase64(this.Image1);
         var image2 = GetImageBase64(this.Image2);
         var model = new { image1, image2 };
-
-        var jsonContent = new JsonContent();
-        context.HttpContext.RequestMessage.Content = jsonContent;
-
+        
         var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
-        var serializer = context.HttpContext.ServiceProvider.GetJsonSerializer();
-        serializer.Serialize(jsonContent, model, options);
+        context.HttpContext.RequestMessage.Content = new JsonContent(model,options);
     }
 
     private static string GetImageBase64(Bitmap image)
@@ -706,11 +702,8 @@ public class ProtobufReturnAttribute : ApiReturnAttribute
 
     public override async Task SetResultAsync(ApiResponseContext context)
     {
-        if (context.ApiAction.Return.DataType.IsRawType == false)
-        {
-            var stream = await context.HttpContext.ResponseMessage.Content.ReadAsStreamAsync();
-            context.Result = Serializer.NonGeneric.Deserialize(context.ApiAction.Return.DataType.Type, stream);
-        }
+        var stream = await context.HttpContext.ResponseMessage.Content.ReadAsStreamAsync();
+        context.Result = Serializer.NonGeneric.Deserialize(context.ApiAction.Return.DataType.Type, stream);
     }
 }
 ```
@@ -830,6 +823,24 @@ public interface IDeformedApi
 }
 ```
 
+#### 表单字段排序
+不知道是哪门公司起的所谓的“签名算法”，往往要字段排序等。
+```
+class SortedFormContentAttribute : FormContentAttribute
+{
+    protected override IEnumerable<KeyValue> SerializeToKeyValues(ApiParameterContext context)
+    {
+        这里可以排序、加上其它衍生字段等
+        return base.SerializeToKeyValues(context).OrderBy(item => item.Key);
+    }
+}
+
+public interface IDeformedApi
+{
+    [HttpGet("/path")]
+    Task<HttpResponseMessage> PostAsync([SortedFormContent] Model model);
+}
+```
 
 ### HttpMessageHandler配置
 
@@ -944,9 +955,9 @@ services
 现在，调用IUserApi的任意接口，只要响应的状态码为401，就触发IUserLoginApi登录，然后将登录得到的cookie来重试请求接口，最终响应为正确的结果。你也可以重写CookieAuthorizationHandler的IsUnauthorizedAsync(HttpResponseMessage)方法来指示响应是未授权状态。
 
 ### SourceGenerator
-SourceGenerator是一种新的c#编译时代码补充生成技术，可以非常方便的为WebApiClient生成接口的代理实现类。使用WebApiClientCore.Extensions.SourceGenerator扩展包，可以替换默认的内置Emit生成代理类的方案，支持需要完全AOT编译的平台。
+SourceGenerator是一种新的c#编译时代码补充生成技术，可以非常方便的为WebApiClient生成接口的代理实现类，使用SourceGenerator扩展包，可以替换默认的内置Emit生成代理类的方案，支持需要完全AOT编译的平台。 
 
-要启用SourceGenerator功能，需要如下配置启用
+引用WebApiClientCore.Extensions.SourceGenerator，并在项目启用如下配置:
 ```
 // 应用编译时生成接口的代理类型代码
 services
@@ -1044,9 +1055,12 @@ class UriQueryOAuthTokenHandler : OAuthTokenHandler
     /// <param name="tokenResult"></param>
     protected override void UseTokenResult(HttpRequestMessage request, TokenResult tokenResult)
     {
-        var builder = new UriBuilder(request.RequestUri);
-        builder.Query += "mytoken=" + Uri.EscapeDataString(tokenResult.Access_token);
-        request.RequestUri = builder.Uri;
+        // var builder = new UriBuilder(request.RequestUri);
+        // builder.Query += "mytoken=" + Uri.EscapeDataString(tokenResult.Access_token);
+        // request.RequestUri = builder.Uri;
+        
+        var uriValue = new UriValue(request.RequestUri).AddQuery("myToken", tokenResult.Access_token);
+        request.RequestUri = uriValue.ToUri();
     }
 }
 
