@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using WebApiClientCore.Extensions.NewtonsoftJson;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -8,6 +9,18 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class HttpClientBuilderExtensions
     {
+        /// <summary>
+        /// 为接口配置JsonNetSerializerOptions
+        /// </summary> 
+        /// <param name="builder"></param>
+        /// <param name="configuration">配置</param> 
+        /// <returns></returns>
+        public static IHttpClientBuilder ConfigureNewtonsoftJson(this IHttpClientBuilder builder, IConfiguration  configuration)
+        {
+            builder.Services.AddOptions<JsonNetSerializerOptions>(builder.Name).Bind(configuration);
+            return builder;
+        }
+
         /// <summary>
         /// 为接口配置JsonNetSerializerOptions
         /// </summary> 
