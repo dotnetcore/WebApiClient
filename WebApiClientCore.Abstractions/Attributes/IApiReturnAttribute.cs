@@ -6,7 +6,7 @@ namespace WebApiClientCore
     /// <summary>
     /// 定义回复内容处理特性的行为
     /// </summary>
-    public interface IApiReturnAttribute : IAttributeMultiplable, IAttributeEnable
+    public interface IApiReturnAttribute : IAttributeMultiplable, IAttributeEnable, IApiAttribute
     {
         /// <summary>
         /// 获取期望的媒体类型

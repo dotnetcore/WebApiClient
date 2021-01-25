@@ -6,7 +6,7 @@ namespace WebApiClientCore
     /// <summary>
     /// 定义ApiAction缓存修饰特性的行为
     /// </summary>
-    public interface IApiCacheAttribute
+    public interface IApiCacheAttribute : IApiAttribute
     {
         /// <summary>
         /// 获取缓存的时间戳

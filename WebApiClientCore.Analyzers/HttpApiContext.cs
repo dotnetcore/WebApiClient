@@ -12,7 +12,7 @@ namespace WebApiClientCore.Analyzers
     sealed class HttpApiContext
     {
         private const string IHttpApiTypeName = "WebApiClientCore.IHttpApi";
-        private const string IApiActionAttributeTypeName = "WebApiClientCore.IApiActionAttribute";
+        private const string IApiAttributeTypeName = "WebApiClientCore.IApiAttribute";
         private const string UriAttributeTypeName = "WebApiClientCore.Attributes.UriAttribute";
         private const string AttributeCtorUsageTypName = "WebApiClientCore.AttributeCtorUsageAttribute";
 
@@ -90,8 +90,8 @@ namespace WebApiClientCore.Analyzers
                 return false;
             }
 
-            var iapiActionAttribute = syntaxNodeContext.Compilation.GetTypeByMetadataName(IApiActionAttributeTypeName);
-            if (IsHttpApiInterface(@interface, ihttpApi, iapiActionAttribute) == false)
+            var iapiAttribute = syntaxNodeContext.Compilation.GetTypeByMetadataName(IApiAttributeTypeName);
+            if (IsHttpApiInterface(@interface, ihttpApi, iapiAttribute) == false)
             {
                 return false;
             }
@@ -109,46 +109,35 @@ namespace WebApiClientCore.Analyzers
         /// </summary>
         /// <param name="interface"></param>
         /// <param name="ihttpApi"></param>
-        /// <param name="iapiActionAttribute"></param>
+        /// <param name="iapiAttribute"></param>
         /// <returns></returns>
-        private static bool IsHttpApiInterface(INamedTypeSymbol @interface, INamedTypeSymbol ihttpApi, INamedTypeSymbol? iapiActionAttribute)
+        private static bool IsHttpApiInterface(INamedTypeSymbol @interface, INamedTypeSymbol ihttpApi, INamedTypeSymbol? iapiAttribute)
         {
             if (@interface.AllInterfaces.Contains(ihttpApi))
             {
                 return true;
             }
 
-            if (iapiActionAttribute == null)
+            if (iapiAttribute == null)
             {
                 return false;
             }
 
-            var interfaces = @interface.AllInterfaces.Append(@interface);
-            return interfaces.Any(i => HasApiActionAttribute(i, iapiActionAttribute));
+            return @interface.AllInterfaces.Append(@interface).Any(i =>
+                HasAttribute(i, iapiAttribute) || i.GetMembers().OfType<IMethodSymbol>().Any(m =>
+                HasAttribute(m, iapiAttribute) || m.Parameters.Any(p => HasAttribute(p, iapiAttribute))));
         }
 
 
         /// <summary>
-        /// 返回接口和其声明的方法是否包含IApiActionAttribute
+        /// 返回是否声明指定的特性
         /// </summary>
-        /// <param name="interface"></param>
-        /// <param name="iapiActionAttribute"></param>
-        /// <returns></returns>
-        private static bool HasApiActionAttribute(INamedTypeSymbol @interface, INamedTypeSymbol iapiActionAttribute)
-        {
-            return HasAttribute(@interface, iapiActionAttribute)
-                || @interface.GetMembers().Any(m => HasAttribute(m, iapiActionAttribute));
-        }
-
-        /// <summary>
-        /// 返回成员是否有特性
-        /// </summary>
-        /// <param name="member"></param>
+        /// <param name="symbol"></param>
         /// <param name="attribute"></param>
         /// <returns></returns>
-        private static bool HasAttribute(ISymbol member, INamedTypeSymbol attribute)
+        private static bool HasAttribute(ISymbol symbol, INamedTypeSymbol attribute)
         {
-            foreach (var attr in member.GetAttributes())
+            foreach (var attr in symbol.GetAttributes())
             {
                 var attrClass = attr.AttributeClass;
                 if (attrClass != null && attrClass.AllInterfaces.Contains(attribute))

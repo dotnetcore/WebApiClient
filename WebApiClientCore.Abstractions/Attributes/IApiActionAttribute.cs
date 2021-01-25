@@ -5,7 +5,7 @@ namespace WebApiClientCore
     /// <summary>
     /// 定义ApiAction修饰特性的行为
     /// </summary>
-    public interface IApiActionAttribute : IAttributeMultiplable
+    public interface IApiActionAttribute : IAttributeMultiplable, IApiAttribute
     {
         /// <summary>
         /// 请求前
