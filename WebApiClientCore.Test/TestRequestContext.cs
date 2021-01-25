@@ -15,7 +15,7 @@ namespace WebApiClientCore.Test
         /// <param name="apiActionDescriptor">关联的ApiActionDescriptor</param>
         /// <exception cref="ArgumentNullException"></exception>
         public TestRequestContext(ApiActionDescriptor apiActionDescriptor, params object[] args)
-            : base(GetHttpContext(), apiActionDescriptor, args)
+            : base(GetHttpContext(), apiActionDescriptor, args, new DefaultDataCollection())
         {
             this.HttpContext.ResponseMessage = new HttpResponseMessage(System.Net.HttpStatusCode.OK);
         }

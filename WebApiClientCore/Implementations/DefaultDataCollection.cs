@@ -4,32 +4,24 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace WebApiClientCore
+namespace WebApiClientCore.Implementations
 {
     /// <summary>
     /// 表示延时初始化的数据集合
     /// </summary>
     [DebuggerDisplay("Count = {Count}")]
     [DebuggerTypeProxy(typeof(DebugView))]
-    public class DataCollection
+    public class DefaultDataCollection : IDataCollection
     {
         /// <summary>
         /// 数据字典
         /// </summary>
-        private readonly Lazy<Dictionary<object, object?>> lazy;
+        private readonly Lazy<Dictionary<object, object?>> dictionary = new Lazy<Dictionary<object, object?>>(() => new Dictionary<object, object?>());
 
         /// <summary>
         /// 获取集合元素的数量
         /// </summary>
-        public int Count => this.lazy.IsValueCreated ? this.lazy.Value.Count : 0;
-
-        /// <summary>
-        /// 延时初始化的数据集合   
-        /// </summary>
-        public DataCollection()
-        {
-            this.lazy = new Lazy<Dictionary<object, object?>>(() => new Dictionary<object, object?>());
-        }
+        public int Count => this.dictionary.IsValueCreated ? this.dictionary.Value.Count : 0;
 
         /// <summary>
         /// 设置值
@@ -38,7 +30,7 @@ namespace WebApiClientCore
         /// <param name="value">值</param>
         public void Set(object key, object? value)
         {
-            this.lazy.Value[key] = value;
+            this.dictionary.Value[key] = value;
         }
 
         /// <summary>
@@ -48,7 +40,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         public bool ContainsKey(object key)
         {
-            return this.lazy.IsValueCreated && this.lazy.Value.ContainsKey(key);
+            return this.dictionary.IsValueCreated && this.dictionary.Value.ContainsKey(key);
         }
 
         /// <summary>
@@ -79,9 +71,11 @@ namespace WebApiClientCore
                 value = tValue;
                 return true;
             }
-
-            value = default;
-            return false;
+            else
+            {
+                value = default;
+                return false;
+            }
         }
 
         /// <summary>
@@ -92,13 +86,15 @@ namespace WebApiClientCore
         /// <returns></returns>
         public bool TryGetValue(object key, out object? value)
         {
-            if (this.lazy.IsValueCreated == false)
+            if (this.dictionary.IsValueCreated == false)
             {
                 value = default;
                 return false;
             }
-
-            return this.lazy.Value.TryGetValue(key, out value);
+            else
+            {
+                return this.dictionary.Value.TryGetValue(key, out value);
+            }
         }
 
         /// <summary>
@@ -109,13 +105,15 @@ namespace WebApiClientCore
         /// <returns></returns>
         public bool TryRemove(object key, out object? value)
         {
-            if (this.lazy.IsValueCreated == false)
+            if (this.dictionary.IsValueCreated == false)
             {
                 value = default;
                 return false;
             }
-
-            return this.lazy.Value.Remove(key, out value);
+            else
+            {
+                return this.dictionary.Value.Remove(key, out value);
+            }
         }
 
         /// <summary>
@@ -126,16 +124,7 @@ namespace WebApiClientCore
             /// <summary>
             /// 查看的对象
             /// </summary> 
-            private readonly DataCollection target;
-
-            /// <summary>
-            /// 调试视图
-            /// </summary>
-            /// <param name="target">查看的对象</param>
-            public DebugView(DataCollection target)
-            {
-                this.target = target;
-            }
+            private readonly DefaultDataCollection target; 
 
             /// <summary>
             /// 查看的内容
@@ -145,10 +134,19 @@ namespace WebApiClientCore
             {
                 get
                 {
-                    return this.target.lazy.IsValueCreated
-                        ? this.target.lazy.Value.ToArray()
+                    return this.target.dictionary.IsValueCreated
+                        ? this.target.dictionary.Value.ToArray()
                         : Array.Empty<KeyValuePair<object, object?>>();
                 }
+            }
+
+            /// <summary>
+            /// 调试视图
+            /// </summary>
+            /// <param name="target">查看的对象</param>
+            public DebugView(DefaultDataCollection target)
+            {
+                this.target = target;
             }
         }
     }

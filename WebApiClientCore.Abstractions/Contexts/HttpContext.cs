@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 
@@ -35,7 +34,6 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="context">服务上下文</param>
         /// <param name="requestMessage">请求消息</param>
-        /// <exception cref="ArgumentNullException"></exception>
         public HttpContext(HttpClientContext context, HttpApiRequestMessage requestMessage)
             : base(context.HttpClient, context.ServiceProvider, context.HttpApiOptions, context.OptionsName)
         {

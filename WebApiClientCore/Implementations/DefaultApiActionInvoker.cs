@@ -58,9 +58,10 @@ namespace WebApiClientCore.Implementations
             {
                 var requiredUri = context.HttpApiOptions.HttpHost ?? context.HttpClient.BaseAddress;
                 var useDefaultUserAgent = context.HttpApiOptions.UseDefaultUserAgent;
-                using var message = new HttpApiRequestMessageImpl(requiredUri, useDefaultUserAgent);
-                var httpContext = new HttpContext(context, message);
-                var requestContext = new ApiRequestContext(httpContext, this.ActionDescriptor, arguments);
+                using var requestMessage = new HttpApiRequestMessageImpl(requiredUri, useDefaultUserAgent);
+                var httpContext = new HttpContext(context, requestMessage);
+                var dataCollection = new DefaultDataCollection();
+                var requestContext = new ApiRequestContext(httpContext, this.ActionDescriptor, arguments, dataCollection);
                 return await this.InvokeAsync(requestContext).ConfigureAwait(false);
             }
             catch (HttpRequestException)

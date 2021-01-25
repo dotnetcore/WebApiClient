@@ -33,18 +33,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取自定义数据的存储和访问容器
         /// </summary>
-        public DataCollection Properties { get; }
-
-        /// <summary>
-        /// 请求Api的上下文
-        /// </summary> 
-        /// <param name="httpContext"></param> 
-        /// <param name="actionDescriptor"></param>
-        /// <param name="arguments"></param>
-        public ApiRequestContext(HttpContext httpContext, ApiActionDescriptor actionDescriptor, object?[] arguments)
-            : this(httpContext, actionDescriptor, arguments, new DataCollection())
-        {
-        }
+        public IDataCollection Properties { get; }
 
         /// <summary>
         /// 请求Api的上下文
@@ -53,7 +42,7 @@ namespace WebApiClientCore
         /// <param name="actionDescriptor"></param>
         /// <param name="arguments"></param>
         /// <param name="properties"></param> 
-        protected ApiRequestContext(HttpContext httpContext, ApiActionDescriptor actionDescriptor, object?[] arguments, DataCollection properties)
+        public ApiRequestContext(HttpContext httpContext, ApiActionDescriptor actionDescriptor, object?[] arguments, IDataCollection properties)
         {
             this.HttpContext = httpContext;
             this.ActionDescriptor = actionDescriptor;
