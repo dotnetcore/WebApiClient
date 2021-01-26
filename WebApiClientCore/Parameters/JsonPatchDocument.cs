@@ -92,21 +92,18 @@ namespace WebApiClientCore.Parameters
             private readonly JsonPatchDocument target;
 
             /// <summary>
+            /// 查看的内容
+            /// </summary>
+            [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+            public List<object> Oprations => this.target.oprations;
+
+            /// <summary>
             /// 调试视图
             /// </summary>
             /// <param name="target">查看的对象</param>
             public DebugView(JsonPatchDocument target)
             {
                 this.target = target;
-            }
-
-            /// <summary>
-            /// 查看的内容
-            /// </summary>
-            [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-            public List<object> Oprations
-            {
-                get => this.target.oprations;
             }
         }
     }

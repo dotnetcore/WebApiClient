@@ -227,17 +227,25 @@ namespace WebApiClientCore.Implementations
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EnsureMediaTypeEqual(string newMediaType)
         {
-            var existsMediaType = this.Content?.Headers.ContentType?.MediaType;
-            if (string.IsNullOrEmpty(existsMediaType) == true)
+            if (this.Content == null)
             {
                 return;
             }
 
-            if (string.Equals(existsMediaType, newMediaType, StringComparison.OrdinalIgnoreCase) == false)
+            var contentType = this.Content.Headers.ContentType;
+            if (contentType == null)
             {
-                var message = Resx.contenType_RemainAs.Format(existsMediaType);
-                throw new NotSupportedException(message);
+                return;
             }
+
+            var oldMediaType = contentType.MediaType;
+            if (newMediaType.Equals(oldMediaType, StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            var message = Resx.contenType_RemainAs.Format(oldMediaType);
+            throw new NotSupportedException(message);
         }
 
 

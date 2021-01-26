@@ -7,8 +7,8 @@ namespace WebApiClientCore.Extensions.JsonRpc
     /// <summary>
     /// 表示JsonRpc的请求实体
     /// </summary>
-    class JsonRpcRequest
-    {  
+    sealed class JsonRpcRequest
+    {
         /// <summary>
         /// id值
         /// </summary>

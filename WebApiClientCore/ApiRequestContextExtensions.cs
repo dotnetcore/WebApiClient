@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 
@@ -94,6 +95,24 @@ namespace WebApiClientCore
             return dataType.IsRawHttpResponseMessage || dataType.IsRawStream
                 ? HttpCompletionOption.ResponseHeadersRead
                 : HttpCompletionOption.ResponseContentRead;
+        }
+
+        /// <summary>
+        /// 获取指向api方法名的日志
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        internal static ILogger? GetLogger(this ApiRequestContext context)
+        {
+            var loggerFactory = context.HttpContext.ServiceProvider.GetService<ILoggerFactory>();
+            if (loggerFactory == null)
+            {
+                return null;
+            }
+
+            var method = context.ActionDescriptor.Member;
+            var categoryName = $"{method.DeclaringType?.Namespace}.{method.DeclaringType?.Name}.{method.Name}";
+            return loggerFactory.CreateLogger(categoryName);
         }
     }
 }

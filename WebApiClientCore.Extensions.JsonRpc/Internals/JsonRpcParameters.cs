@@ -7,7 +7,7 @@ namespace WebApiClientCore.Extensions.JsonRpc
     /// <summary>
     /// 表示JsonRpc参数
     /// </summary>
-    class JsonRpcParameters : List<ApiParameterContext>
+    sealed class JsonRpcParameters : List<ApiParameterContext>
     {
         /// <summary>
         /// 转换为jsonRpc请求参数
@@ -24,6 +24,6 @@ namespace WebApiClientCore.Extensions.JsonRpc
             {
                 return this.ToDictionary(item => item.ParameterName, item => item.ParameterValue);
             }
-        } 
+        }
     }
 }

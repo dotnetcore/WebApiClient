@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
 using WebApiClientCore.Extensions.JsonRpc;
-using WebApiClientCore.Serialization;
 
 namespace WebApiClientCore.Attributes
 {
@@ -90,10 +89,9 @@ namespace WebApiClientCore.Attributes
                 Params = parameters.ToJsonRpcParams(this.ParamsStyle),
             };
 
-            var jsonRpcContent = new JsonRpcContent(this.ContentType);
+            var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
+            var jsonRpcContent = new JsonRpcContent(jsonRpcRequest, options, this.ContentType);
             context.HttpContext.RequestMessage.Content = jsonRpcContent;
-            var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;          
-            JsonBufferSerializer.Serialize(jsonRpcContent, jsonRpcRequest, options);
 
             return Task.CompletedTask;
         }

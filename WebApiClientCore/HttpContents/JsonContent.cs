@@ -48,12 +48,10 @@ namespace WebApiClientCore.HttpContents
             }
             else
             {
-                using var bufferWriter = new RecyclableBufferWriter<byte>();
-                JsonBufferSerializer.Serialize(bufferWriter, value, jsonSerializerOptions);
-                var utf8Json = bufferWriter.WrittenSegment;
-                var jsonContent = Encoding.Convert(Encoding.UTF8, encoding, utf8Json.Array, utf8Json.Offset, utf8Json.Count);
+                using var utf8Writer = new RecyclableBufferWriter<byte>();
+                JsonBufferSerializer.Serialize(utf8Writer, value, jsonSerializerOptions);
 
-                this.Write(jsonContent);
+                Encoding.UTF8.Convert(encoding, utf8Writer.WrittenSpan, this);
                 this.Headers.ContentType.CharSet = encoding.WebName;
             }
         }

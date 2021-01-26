@@ -186,7 +186,7 @@ namespace WebApiClientCore.HttpContents
         /// <param name="httpContent">httpContent实例</param>
         /// <param name="disposeHttpContent">是否释放httpContent</param>
         /// <returns></returns>
-        public static async Task<FormContent> ParseAsync(HttpContent httpContent, bool disposeHttpContent = true)
+        public static async Task<FormContent> ParseAsync(HttpContent? httpContent, bool disposeHttpContent = true)
         {
             if (httpContent == null)
             {
