@@ -21,13 +21,13 @@ namespace WebApiClientCore
         {
             var decoder = srcEncoding.GetDecoder();
             var charCount = decoder.GetCharCount(buffer, false);
-            var charArray = ArrayPool<char>.Shared.Rent(charCount);
+            var charArray = charCount > 1024 ? ArrayPool<char>.Shared.Rent(charCount) : null;
+            var chars = charArray == null ? stackalloc char[charCount] : charArray.AsSpan().Slice(0, charCount);
 
             try
             {
-                decoder.Convert(buffer, charArray, true, out _, out var charsUsed, out _);
+                decoder.Convert(buffer, chars, true, out _, out var charsUsed, out _);
                 Debug.Assert(charCount == charsUsed);
-                var chars = charArray.AsSpan().Slice(0, charsUsed);
 
                 var encoder = dstEncoding.GetEncoder();
                 var byteCount = encoder.GetByteCount(chars, false);
@@ -39,7 +39,10 @@ namespace WebApiClientCore
             }
             finally
             {
-                ArrayPool<char>.Shared.Return(charArray);
+                if (charArray != null)
+                {
+                    ArrayPool<char>.Shared.Return(charArray);
+                }
             }
         }
     }
