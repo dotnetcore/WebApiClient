@@ -17,7 +17,7 @@ namespace WebApiClientCore.Implementations
         /// <summary>
         /// 获取提供者的友好名称
         /// </summary>
-        public string Name { get; } = nameof(MemoryCache);
+        public string Name { get; } = nameof(DefaultResponseCacheProvider);
 
         /// <summary>
         /// Api响应结果缓存提供者的接口
