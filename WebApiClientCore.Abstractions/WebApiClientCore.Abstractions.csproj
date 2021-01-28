@@ -1,40 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <Nullable>enable</Nullable>
-    <RootNamespace>WebApiClientCore</RootNamespace>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+	<PropertyGroup>
+		<Nullable>enable</Nullable>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		
+		<RootNamespace>WebApiClientCore</RootNamespace>
+		<AssemblyName>WebApiClientCore.Abstractions</AssemblyName>
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 
-    <Version>2.0.0</Version>
-    <Authors>laojiu</Authors>
-    <Company>laojiu</Company>
-    <Copyright>Copyright © laojiu 2017-2021</Copyright>
-    <Description>WebApiClientCore的接口与抽象类型</Description>
-    <Summary>WebApiClientCore的接口与抽象类型</Summary>
+		<Description>WebApiClientCore的接口与抽象类型</Description>
+		<Summary>WebApiClientCore的接口与抽象类型</Summary>
 
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/dotnetcore/WebApiClient</PackageProjectUrl>
-    <PackageIcon>icon.png</PackageIcon>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>Sign.snk</AssemblyOriginatorKeyFile>
+	</PropertyGroup>
 
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>Sign.snk</AssemblyOriginatorKeyFile>
-    <AssemblyName>WebApiClientCore.Abstractions</AssemblyName>
-  </PropertyGroup>
-  
-  <ItemGroup>
-    <None Include="..\icon.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
- 
-    <None Include="..\.editorconfig" Link=".editorconfig" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="4.6.0" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.6.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="System.Text.Json" Version="4.6.0" />
+		<PackageReference Include="System.ComponentModel.Annotations" Version="4.6.0" />
+	</ItemGroup>
 </Project>

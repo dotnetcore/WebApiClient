@@ -69,7 +69,6 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         /// HttpApi代码构建器
         /// </summary>
         /// <param name="httpApi"></param>
-        /// <param name="prefix">类型前缀</param>
         public HttpApiCodeBuilder(INamedTypeSymbol httpApi)
         {
             this.httpApi = httpApi;

@@ -12,7 +12,6 @@ namespace WebApiClientCore.Analyzers.Providers
         /// <summary>   
         /// 获取诊断描述
         /// </summary>
-        /// </summary>
         public override DiagnosticDescriptor Descriptor => Descriptors.UriAttributeDescriptor;
 
         /// <summary>

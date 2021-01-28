@@ -3,25 +3,13 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Authors>laojiu</Authors>
-    <Company>laojiu</Company>
-    <Copyright>Copyright © laojiu 2017-2020</Copyright>
-    <Description>WebApiClientCore声明接口的代码生成器</Description>
+  
     <Summary>将本地或远程OpenApi文档解析生成WebApiClientCore的接口定义代码文件的工具</Summary>
     <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
 
-    <Version>1.1.5</Version>
-    <Authors>laojiu</Authors>
-    <Company>laojiu</Company>
-    <Copyright>Copyright © laojiu 2017-2020</Copyright>
     <Description>将OpenApi的本地或远程文档解析生成WebApiClientCore的接口定义代码文件</Description>
     <Summary>将OpenApi的本地或远程文档解析生成WebApiClientCore的接口定义代码文件</Summary>
 
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/dotnetcore/WebApiClient</PackageProjectUrl>
-    <PackageIcon>icon.png</PackageIcon>
     <PackAsTool>true</PackAsTool>
   </PropertyGroup>
 
@@ -44,14 +32,6 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <Pack>$(IncludeRazorContentInPack)</Pack>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\.editorconfig" Link=".editorconfig" />
-    <None Include="..\icon.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
     </None>
   </ItemGroup>
 
