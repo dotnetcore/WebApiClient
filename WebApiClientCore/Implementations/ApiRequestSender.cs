@@ -17,7 +17,6 @@ namespace WebApiClientCore.Implementations
         /// 发送http请求
         /// </summary>
         /// <param name="context"></param>
-        /// <exception cref="HttpRequestException"></exception>
         /// <exception cref="ApiInvalidConfigException"></exception>
         /// <returns></returns>
         public static async Task<ApiResponseContext> SendAsync(ApiRequestContext context)
@@ -27,6 +26,25 @@ namespace WebApiClientCore.Implementations
                 throw new ApiInvalidConfigException(Resx.required_HttpHost);
             }
 
+            try
+            {
+                await SendCoreAsync(context).ConfigureAwait(false);
+                return new ApiResponseContext(context);
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponseContext(context) { Exception = ex };
+            }
+        }
+
+        /// <summary>
+        /// 发送http请求
+        /// </summary>
+        /// <param name="context"></param>
+        /// <exception cref="HttpRequestException"></exception> 
+        /// <returns></returns>
+        private static async Task SendCoreAsync(ApiRequestContext context)
+        {
             var actionCache = await context.GetCaheAsync().ConfigureAwait(false);
             if (actionCache != null && actionCache.Value != null)
             {
@@ -44,7 +62,6 @@ namespace WebApiClientCore.Implementations
                 context.HttpContext.ResponseMessage = response;
                 await context.SetCacheAsync(actionCache?.Key, response).ConfigureAwait(false);
             }
-            return new ApiResponseContext(context);
         }
 
         /// <summary>

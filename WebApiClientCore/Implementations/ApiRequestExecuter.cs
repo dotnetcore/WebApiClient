@@ -77,25 +77,33 @@ namespace WebApiClientCore.Implementations
         private static async Task HandleResponseAsync(ApiResponseContext context)
         {
             // Return特性请求后执行
-            foreach (var @return in context.ActionDescriptor.Return.Attributes)
+            var returns = context.ActionDescriptor.Return.Attributes.GetEnumerator();
+            while (context.ResultStatus == ResultStatus.None && returns.MoveNext())
             {
                 try
                 {
-                    await @return.OnResponseAsync(context).ConfigureAwait(false);
+                    await returns.Current.OnResponseAsync(context).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
                     context.Exception = ex;
                 }
-
-                if (context.ResultStatus != ResultStatus.None)
-                {
-                    break;
-                }
             }
 
             // 结果验证
-            DataValidator.ValidateReturnValue(context);
+            if (context.ResultStatus == ResultStatus.HasResult &&
+                context.ActionDescriptor.Return.DataType.IsRawType == false &&
+                context.HttpContext.HttpApiOptions.UseReturnValuePropertyValidate)
+            {
+                try
+                {
+                    DataValidator.ValidateReturnValue(context.Result);
+                }
+                catch (Exception ex)
+                {
+                    context.Exception = ex;
+                }
+            }
 
             // GlobalFilter请求后执行 
             foreach (var filter in context.HttpContext.HttpApiOptions.GlobalFilters)
