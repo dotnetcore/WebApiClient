@@ -338,3 +338,7 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+# nuget打包目录的分析器
+WebApiClientCore/NugetPackage/analyzers/
+WebApiClientCore.Extensions.SourceGenerator/NugetPackage/analyzers/

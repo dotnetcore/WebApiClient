@@ -1,1 +1,0 @@
-dotnet publish -c Release -o ../WebApiClientCore/NugetPackage/analyzers/dotnet/cs
