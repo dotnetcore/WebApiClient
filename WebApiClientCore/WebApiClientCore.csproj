@@ -22,6 +22,7 @@
   <!--nuget analyzers和tools目录-->
   <ItemGroup>
     <None Include="NugetPackage\tools\*.*" PackagePath="tools" Pack="true" />
+    <None Include="NugetPackage\analyzers\dotnet\cs\**" PackagePath="analyzers\dotnet\cs" Pack="true" />
   </ItemGroup>
 
   <ItemGroup>

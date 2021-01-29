@@ -16,13 +16,11 @@
 		<ProjectReference Include="..\WebApiClientCore\WebApiClientCore.csproj" />
 	</ItemGroup>
 
-	<!--nuget analyzers和tools目录-->
-	<ItemGroup>
-		<None Include="NugetPackage\tools\*.*" PackagePath="tools" Pack="true" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="NugetPackage\analyzers\" />
-	</ItemGroup>
+  <!--nuget analyzers和tools目录-->
+  <ItemGroup>
+    <None Include="NugetPackage\tools\*.*" PackagePath="tools" Pack="true" />
+    <None Include="NugetPackage\analyzers\dotnet\cs\**" PackagePath="analyzers\dotnet\cs" Pack="true" />
+  </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="dotnet publish ../WebApiClientCore.Analyzers.SourceGenerator/WebApiClientCore.Analyzers.SourceGenerator.csproj -c Release -o NugetPackage/analyzers/dotnet/cs" />
