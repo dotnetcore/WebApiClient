@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
 using WebApiClientCore.Implementations.Tasks;
@@ -60,7 +61,7 @@ namespace WebApiClientCore.Implementations
                 var useDefaultUserAgent = context.HttpApiOptions.UseDefaultUserAgent;
                 using var requestMessage = new HttpApiRequestMessageImpl(requiredUri, useDefaultUserAgent);
 
-                var httpContext = new HttpContext(context, requestMessage); 
+                var httpContext = new HttpContext(context, requestMessage);
                 var requestContext = new ApiRequestContext(httpContext, this.ActionDescriptor, arguments, new DefaultDataCollection());
                 return await this.InvokeAsync(requestContext).ConfigureAwait(false);
             }
@@ -91,8 +92,7 @@ namespace WebApiClientCore.Implementations
 
             if (response.ResultStatus == ResultStatus.HasException)
             {
-                var inner = response.Exception;
-                throw new HttpRequestException(inner.Message, inner);
+                ExceptionDispatchInfo.Capture(response.Exception).Throw();
             }
 
             throw new ApiReturnNotSupportedExteption(response);
