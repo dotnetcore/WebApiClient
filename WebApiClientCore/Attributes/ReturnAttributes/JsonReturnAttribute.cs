@@ -43,11 +43,11 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="responseContentType">响应的ContentType</param>
         /// <returns></returns>
-        protected override bool IsMatchAcceptContentType(MediaTypeHeaderValue? responseContentType)
+        protected override bool IsMatchAcceptContentType(MediaTypeHeaderValue responseContentType)
         {
             return base.IsMatchAcceptContentType(responseContentType)
-                || MediaTypeUtil.IsMatch(textJson, responseContentType?.MediaType)
-                || MediaTypeUtil.IsMatch(problemJson, responseContentType?.MediaType);
+                || MediaTypeUtil.IsMatch(textJson, responseContentType.MediaType)
+                || MediaTypeUtil.IsMatch(problemJson, responseContentType.MediaType);
         }
 
         /// <summary>

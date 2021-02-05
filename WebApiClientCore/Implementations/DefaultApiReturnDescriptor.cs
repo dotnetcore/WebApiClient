@@ -91,9 +91,9 @@ namespace WebApiClientCore.Implementations
             }
             else
             {
+                yield return new NoneReturnAttribute(acceptQuality);
                 yield return new JsonReturnAttribute(acceptQuality);
                 yield return new XmlReturnAttribute(acceptQuality);
-                yield return new NoneReturnAttribute(acceptQuality);
             }
         }
 

@@ -83,6 +83,10 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
 
             var response = await this.httpClientFactory.CreateClient().PostAsync(endpoint, formContent);
             var utf8Json = await response.Content.ReadAsUtf8ByteArrayAsync();
+            if (utf8Json.Length == 0)
+            {
+                return default;
+            }
             return JsonSerializer.Deserialize<TokenResult>(utf8Json, this.httpApiOptions.JsonDeserializeOptions);
         }
     }

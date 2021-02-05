@@ -20,23 +20,23 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static async Task<object?> JsonDeserializeAsync(this ApiResponseContext context, Type objType)
         {
-            if (context.HttpContext.ResponseMessage == null)
+            var response = context.HttpContext.ResponseMessage;
+            if (response == null)
             {
                 return objType.DefaultValue();
             }
 
-            var content = context.HttpContext.ResponseMessage.Content;
-            if (content == null)
-            {
-                return objType.DefaultValue();
-            }
-
+            var content = response.Content;
             var encoding = content.GetEncoding();
             var options = context.HttpContext.HttpApiOptions.JsonDeserializeOptions;
 
             if (Encoding.UTF8.Equals(encoding) == false)
             {
                 var byteArray = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                if (byteArray.Length == 0)
+                {
+                    return objType.DefaultValue();
+                }
                 var utf8Json = Encoding.Convert(encoding, Encoding.UTF8, byteArray);
                 return JsonSerializer.Deserialize(utf8Json, objType, options);
             }
@@ -49,7 +49,9 @@ namespace WebApiClientCore
             else
             {
                 var utf8Json = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                return JsonSerializer.Deserialize(utf8Json, objType, options);
+                return utf8Json.Length == 0
+                    ? objType.DefaultValue()
+                    : JsonSerializer.Deserialize(utf8Json, objType, options);
             }
         }
 
@@ -61,13 +63,15 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static async Task<object?> XmlDeserializeAsync(this ApiResponseContext context, Type objType)
         {
-            if (context.HttpContext.ResponseMessage == null)
+            var response = context.HttpContext.ResponseMessage;
+            if (response == null)
             {
                 return objType.DefaultValue();
             }
 
+            var content = response.Content;
             var options = context.HttpContext.HttpApiOptions.XmlDeserializeOptions;
-            var xml = await context.HttpContext.ResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var xml = await content.ReadAsStringAsync().ConfigureAwait(false);
             return XmlSerializer.Deserialize(xml, objType, options);
         }
     }

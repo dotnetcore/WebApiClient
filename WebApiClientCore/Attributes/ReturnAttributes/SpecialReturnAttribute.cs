@@ -64,11 +64,23 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public Task OnResponseAsync(ApiResponseContext context)
         {
-            return this.SetResultAsync(context);
+            return this.CanSetResult(context) 
+                ? this.SetResultAsync(context)
+                : Task.CompletedTask;
         }
 
         /// <summary>
-        /// 设置结果值
+        /// 指示是否可以设置结果
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <returns></returns>
+        protected virtual bool CanSetResult(ApiResponseContext context)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// 如果有结果值，则设置结果值到上下文的Result属性
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>

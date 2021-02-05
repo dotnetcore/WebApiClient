@@ -86,13 +86,22 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public async Task OnResponseAsync(ApiResponseContext context)
         {
-            if (context.ActionDescriptor.Return.DataType.IsRawType == true)
+            var dataType = context.ActionDescriptor.Return.DataType;
+            if (dataType.IsRawType == true)
             {
                 return;
             }
 
-            var contenType = context.HttpContext.ResponseMessage?.Content.Headers.ContentType;
-            if (this.EnsureMatchAcceptContentType && this.IsMatchAcceptContentType(contenType) == false)
+            var response = context.HttpContext.ResponseMessage;
+            if (response == null)
+            {
+                return;
+            }
+
+            var contenType = response.Content.Headers.ContentType;
+            if (contenType != null
+                && this.EnsureMatchAcceptContentType
+                && this.IsMatchAcceptContentType(contenType) == false)
             {
                 return;
             }
@@ -101,15 +110,16 @@ namespace WebApiClientCore.Attributes
             await this.SetResultAsync(context).ConfigureAwait(false);
         }
 
+
         /// <summary>
         /// 指示响应的ContentType与AcceptContentType是否匹配
         /// 返回false则调用下一个ApiReturnAttribute来处理响应结果
         /// </summary>
         /// <param name="responseContentType">响应的ContentType</param>
         /// <returns></returns>
-        protected virtual bool IsMatchAcceptContentType(MediaTypeHeaderValue? responseContentType)
+        protected virtual bool IsMatchAcceptContentType(MediaTypeHeaderValue responseContentType)
         {
-            return MediaTypeUtil.IsMatch(this.AcceptContentType.MediaType, responseContentType?.MediaType);
+            return MediaTypeUtil.IsMatch(this.AcceptContentType.MediaType, responseContentType.MediaType);
         }
 
         /// <summary>

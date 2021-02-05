@@ -13,18 +13,7 @@ namespace WebApiClientCore.Internals
         /// <param name="source"></param>
         /// <param name="target"></param>
         /// <returns></returns>
-        public static bool IsMatch(string? source, string? target)
-        {
-            return IsMatch(source.AsSpan(), target.AsSpan());
-        }
-
-        /// <summary>
-        /// 是否与目标匹配
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="target"></param>
-        /// <returns></returns>
-        private static bool IsMatch(ReadOnlySpan<char> source, ReadOnlySpan<char> target)
+        public static bool IsMatch(ReadOnlySpan<char> source, ReadOnlySpan<char> target)
         {
             var index = source.IndexOf('/');
             var sourceMain = index >= 0 ? source.Slice(0, index) : source;

@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
 
 namespace WebApiClientCore.Attributes
@@ -35,25 +34,34 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
+        /// 指示是否可以设置结果
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <returns></returns>
+        protected override bool CanSetResult(ApiResponseContext context)
+        {
+            return context.ActionDescriptor.Return.DataType.IsRawType;
+        }
+
+        /// <summary>
         /// 设置结果值
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
         public async override Task SetResultAsync(ApiResponseContext context)
         {
-            var dataType = context.ActionDescriptor.Return.DataType;
             var response = context.HttpContext.ResponseMessage;
-
-            if (dataType.IsRawType == false || response == null)
+            if (response == null)
             {
                 return;
             }
 
-            if (this.EnsureSuccessStatusCode && IsSuccessStatusCode(response.StatusCode) == false)
+            if (this.EnsureSuccessStatusCode && response.IsSuccessStatusCode == false)
             {
                 throw new ApiResponseStatusException(response);
             }
 
+            var dataType = context.ActionDescriptor.Return.DataType;
             if (dataType.IsRawHttpResponseMessage == true)
             {
                 context.Result = response;
@@ -70,17 +78,6 @@ namespace WebApiClientCore.Attributes
             {
                 context.Result = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
             }
-        }
-
-        /// <summary>
-        /// 指示http状态码是否为成功的状态码
-        /// </summary>
-        /// <param name="statusCode">http状态码</param>
-        /// <returns></returns>
-        private static bool IsSuccessStatusCode(HttpStatusCode statusCode)
-        {
-            var status = (int)statusCode;
-            return status >= 200 && status <= 299;
         }
     }
 }
