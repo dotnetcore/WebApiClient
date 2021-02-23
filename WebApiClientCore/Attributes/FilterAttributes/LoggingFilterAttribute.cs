@@ -68,7 +68,7 @@ namespace WebApiClientCore.Attributes
             {
                 return;
             }
-                        
+
             var logMessage = context.Properties.Get<LogMessage>(typeof(LoggingFilterAttribute));
             if (logMessage == null)
             {
@@ -128,7 +128,8 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 写日志到LoggerFactory
+        /// 写日志到指定日志组件
+        /// 默认写入Microsoft.Extensions.Logging
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="logMessage">日志消息</param>
@@ -136,11 +137,20 @@ namespace WebApiClientCore.Attributes
         protected virtual Task WriteLogAsync(ApiResponseContext context, LogMessage logMessage)
         {
             var logger = context.GetLogger();
-            if (logger == null)
+            if (logger != null)
             {
-                return Task.CompletedTask;
-            }  
+                this.WriteLog(logger, logMessage);
+            }
+            return Task.CompletedTask;
+        }
 
+        /// <summary>
+        /// 写日志到ILogger
+        /// </summary>
+        /// <param name="logger">日志</param>
+        /// <param name="logMessage">日志消息</param>
+        protected virtual void WriteLog(ILogger logger, LogMessage logMessage)
+        {
             if (logMessage.Exception == null)
             {
                 logger.LogInformation(logMessage.ToString());
@@ -149,8 +159,6 @@ namespace WebApiClientCore.Attributes
             {
                 logger.LogError(logMessage.ToString());
             }
-
-            return Task.CompletedTask;
         }
     }
 }
