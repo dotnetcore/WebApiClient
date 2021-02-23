@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -32,6 +33,8 @@ namespace WebApiClientCore.Parameters
         /// <summary>
         /// 获取编码后的文件好友名称
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public virtual string? EncodedFileName => HttpUtil.UrlEncode(this.FileName, Encoding.UTF8);
 
         /// <summary>
@@ -95,7 +98,7 @@ namespace WebApiClientCore.Parameters
         public Task OnRequestAsync(ApiParameterContext context)
         {
             var stream = this.streamFactory();
-            context.HttpContext.RequestMessage.AddFormDataFile(stream, context.ParameterName, this.EncodedFileName, this.ContentType);
+            context.HttpContext.RequestMessage.AddFormDataFile(stream, context.ParameterName, this.FileName, this.ContentType);
             return Task.CompletedTask;
         }
 

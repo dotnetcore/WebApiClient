@@ -26,7 +26,7 @@ namespace App.Clients
             };
 
             // 上传的文件
-            var file = new FormDataFile("TextFile.txt");
+            var file = new FormDataFile("文件TextFile.txt");
 
             var response = await userApi.GetAsync(account: "get1");
 
