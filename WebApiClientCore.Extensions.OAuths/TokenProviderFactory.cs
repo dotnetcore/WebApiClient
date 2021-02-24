@@ -91,6 +91,8 @@ namespace WebApiClientCore.Extensions.OAuths
         /// </summary>
         private class CacheKey : IEquatable<CacheKey>
         {
+            private readonly int hashCode;
+
             public Type HttpApiType { get; }
 
             public TypeMatchMode TypeMatchMode { get; }
@@ -99,6 +101,7 @@ namespace WebApiClientCore.Extensions.OAuths
             {
                 this.HttpApiType = httpApiType;
                 this.TypeMatchMode = typeMatchMode;
+                this.hashCode = HashCode.Combine(this.HttpApiType, this.TypeMatchMode);
             }
 
             public bool Equals(CacheKey other)
@@ -113,7 +116,7 @@ namespace WebApiClientCore.Extensions.OAuths
 
             public override int GetHashCode()
             {
-                return HashCode.Combine(this.HttpApiType, this.TypeMatchMode);
+                return this.hashCode;
             }
         }
     }
