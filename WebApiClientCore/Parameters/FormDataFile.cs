@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using WebApiClientCore.HttpContents;
 using WebApiClientCore.Internals;
 
 namespace WebApiClientCore.Parameters
@@ -28,7 +29,7 @@ namespace WebApiClientCore.Parameters
         /// <summary>
         /// 获取或设置文件的Mime
         /// </summary>
-        public string? ContentType { get; set; }
+        public string? ContentType { get; set; } = FormDataFileContent.OctetStream;
 
         /// <summary>
         /// 获取编码后的文件好友名称

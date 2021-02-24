@@ -10,6 +10,11 @@ namespace WebApiClientCore.HttpContents
     public class FormDataFileContent : StreamContent, ICustomHttpContentConvertable
     {
         /// <summary>
+        /// application/octet-stream
+        /// </summary>
+        public static string OctetStream => "application/octet-stream";
+
+        /// <summary>
         /// form-data文件内容
         /// </summary>
         /// <param name="stream">文件流</param>
@@ -31,7 +36,7 @@ namespace WebApiClientCore.HttpContents
 
             if (string.IsNullOrEmpty(contentType) == true)
             {
-                contentType = "application/octet-stream";
+                contentType = OctetStream;
             }
             this.Headers.ContentType = new MediaTypeHeaderValue(contentType);
         }
