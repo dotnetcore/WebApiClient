@@ -74,7 +74,7 @@ namespace Microsoft.Extensions.DependencyInjection
                .Configure(o => o.Register<THttpApi, TTokenProvider>());
 
             services
-                .AddOptions<HttpApiOptions>(nameof(OAuth2TokenClient))
+                .AddOptions<HttpApiOptions>(HttpApi.GetName(typeof(OAuth2TokenClient)))
                 .Configure(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
 
             services.TryAddSingleton<OAuth2TokenClient>();

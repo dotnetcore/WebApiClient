@@ -26,7 +26,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         public OAuth2TokenClient(IHttpClientFactory httpClientFactory, IOptionsMonitor<HttpApiOptions> httpApiOptionsMonitor)
         {
             this.httpClientFactory = httpClientFactory;
-            this.httpApiOptions = httpApiOptionsMonitor.Get(nameof(OAuth2TokenClient));
+            this.httpApiOptions = httpApiOptionsMonitor.Get(HttpApi.GetName(typeof(OAuth2TokenClient)));
         }
 
         /// <summary>
