@@ -137,7 +137,7 @@ namespace WebApiClientCore.Parameters
             /// <returns></returns>
             protected override Expression VisitMember(MemberExpression node)
             {
-                var name = staticNameCache.GetOrAdd(node.Member, m => this.nameFunc(m));
+                var name = staticNameCache.GetOrAdd(node.Member, this.nameFunc);
                 this.path.Insert(0, $"/{name}");
                 return base.VisitMember(node);
             }

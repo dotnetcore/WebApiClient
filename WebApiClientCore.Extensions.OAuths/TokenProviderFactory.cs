@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Concurrent;
 
 namespace WebApiClientCore.Extensions.OAuths
 {
@@ -11,6 +12,7 @@ namespace WebApiClientCore.Extensions.OAuths
     {
         private readonly IServiceProvider serviceProvider;
         private readonly TokenProviderFactoryOptions options;
+        private readonly ConcurrentDictionary<Type, ITokenProvider> tokenProviderCache = new ConcurrentDictionary<Type, ITokenProvider>();
 
         /// <summary>
         /// 默认的token提供者工厂
@@ -46,7 +48,7 @@ namespace WebApiClientCore.Extensions.OAuths
 
             if (typeMatchMode == TypeMatchMode.TypeOrBaseTypes)
             {
-                return this.GetTokenProviderFromBaseType(httpApiType);
+                return this.tokenProviderCache.GetOrAdd(httpApiType, GetTokenProviderFromBaseType);
             }
 
             throw new InvalidOperationException($"尚未注册{httpApiType}的token提供者");
