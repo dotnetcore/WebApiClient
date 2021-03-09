@@ -68,7 +68,7 @@ namespace WebApiClientCore.Internals
         /// 扩容
         /// </summary>
         /// <param name="newSize"></param>
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Grow(int newSize)
         {
             var size = Math.Max(newSize, this.chars.Length * 2);
