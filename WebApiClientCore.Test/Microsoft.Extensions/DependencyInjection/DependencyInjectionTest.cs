@@ -41,7 +41,7 @@ namespace WebApiClientCore.Test.Microsoft.Extensions.DependencyInjection
             var name = HttpApi.GetName(typeof(IDiApi));
             var options = services.GetService<IOptionsMonitor<HttpApiOptions>>().Get(name);
             Assert.True(options.HttpHost == host);
-        } 
+        }
 
         [Fact]
         public static void ConfigureHttpApiNoGenericTest()
@@ -59,6 +59,32 @@ namespace WebApiClientCore.Test.Microsoft.Extensions.DependencyInjection
             Assert.Null(services.GetService<IOptions<HttpApiOptions>>().Value.HttpHost);
         }
 
+
+        [Fact]
+        public static void ConfigureHttpApiWithDefaultTest()
+        {
+            var di = new ServiceCollection();
+            var host = new Uri("http://www.x.com");
+            di.AddHttpApi<IDiApi>();
+            di.ConfigureHttpApi<IDiApi>(o =>
+            {
+                o.HttpHost = host;
+                Assert.True(o.UseParameterPropertyValidate == false);
+                Assert.True(o.UseReturnValuePropertyValidate == true);
+            });
+            di.AddWebApiClient().ConfigureHttpApi(o =>
+            {
+                o.UseParameterPropertyValidate = false;
+                o.UseReturnValuePropertyValidate = true;
+            });
+            var services = di.BuildServiceProvider();
+
+            var name = HttpApi.GetName(typeof(IDiApi));
+            var options = services.GetService<IOptionsMonitor<HttpApiOptions>>().Get(name);
+            Assert.True(options.HttpHost == host);
+            Assert.True(options.UseParameterPropertyValidate == false);
+            Assert.True(options.UseReturnValuePropertyValidate == true);
+        }
 
         public interface IDiApi
         {
