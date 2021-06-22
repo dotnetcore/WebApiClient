@@ -38,7 +38,7 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
         {
             if (string.IsNullOrEmpty(options.Namespace) == false)
             {
-                this.Settings.NameSpace = options.Namespace;             
+                this.Settings.NameSpace = options.Namespace;
                 this.Settings.CSharpGeneratorSettings.Namespace = options.Namespace;
             }
         }
@@ -64,14 +64,14 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
         private static OpenApiDocument GetDocument(string openApi)
         {
             Console.WriteLine($"正在分析OpenApi：{openApi}");
-            if (Uri.TryCreate(openApi, UriKind.Absolute, out var _) == true)
+            if (Uri.TryCreate(openApi, UriKind.Absolute, out var api))
             {
-                return OpenApiDocument.FromUrlAsync(openApi).Result;
+                if (api.Scheme.StartsWith(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase))
+                {
+                    return OpenApiDocument.FromUrlAsync(openApi).Result;
+                }
             }
-            else
-            {
-                return OpenApiDocument.FromFileAsync(openApi).Result;
-            }
+            return OpenApiDocument.FromFileAsync(openApi).Result;
         }
 
         /// <summary>
