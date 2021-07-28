@@ -30,12 +30,8 @@ namespace WebApiClientCore.Attributes
                 throw new ApiInvalidConfigException(Resx.required_HttpHost);
             }
 
-            if (!context.IsIgnoreAutoUri)
-            {
-                var keyValues = this.SerializeToKeyValues(context).CollectAs(this.CollectionFormat);
-                context.HttpContext.RequestMessage.RequestUri = this.CreateUri(uri, keyValues);
-            }
-
+            var keyValues = this.SerializeToKeyValues(context).CollectAs(this.CollectionFormat);
+            context.HttpContext.RequestMessage.RequestUri = this.CreateUri(uri, keyValues);
             return Task.CompletedTask;
         }
 
