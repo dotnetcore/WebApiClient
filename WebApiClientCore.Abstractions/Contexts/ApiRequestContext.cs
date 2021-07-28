@@ -9,6 +9,11 @@ namespace WebApiClientCore
     public class ApiRequestContext
     {
         /// <summary>
+        /// 忽略自动拼接URI
+        /// </summary>
+        public bool IsIgnoreAutoUri { get; }
+
+        /// <summary>
         /// 获取http上下文
         /// </summary>
         public HttpContext HttpContext { get; }
@@ -42,12 +47,13 @@ namespace WebApiClientCore
         /// <param name="actionDescriptor"></param>
         /// <param name="arguments"></param>
         /// <param name="properties"></param> 
-        public ApiRequestContext(HttpContext httpContext, ApiActionDescriptor actionDescriptor, object?[] arguments, IDataCollection properties)
+        public ApiRequestContext(HttpContext httpContext, ApiActionDescriptor actionDescriptor, object?[] arguments, IDataCollection properties, bool isIgnoreAutoUri)
         {
             this.HttpContext = httpContext;
             this.ActionDescriptor = actionDescriptor;
             this.Arguments = arguments;
             this.Properties = properties;
+            this.IsIgnoreAutoUri = isIgnoreAutoUri;
         }
     }
 }

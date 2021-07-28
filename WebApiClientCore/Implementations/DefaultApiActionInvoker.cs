@@ -62,7 +62,7 @@ namespace WebApiClientCore.Implementations
                 using var requestMessage = new HttpApiRequestMessageImpl(requiredUri, useDefaultUserAgent);
 
                 var httpContext = new HttpContext(context, requestMessage);
-                var requestContext = new ApiRequestContext(httpContext, this.ActionDescriptor, arguments, new DefaultDataCollection());
+                var requestContext = new ApiRequestContext(httpContext, this.ActionDescriptor, arguments, new DefaultDataCollection(), context.HttpApiOptions.IsIgnoreAutoUri);
                 return await this.InvokeAsync(requestContext).ConfigureAwait(false);
             }
             catch (HttpRequestException)

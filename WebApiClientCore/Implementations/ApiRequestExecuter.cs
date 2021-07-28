@@ -44,7 +44,7 @@ namespace WebApiClientCore.Implementations
             // 参数特性请求前执行
             foreach (var parameter in context.ActionDescriptor.Parameters)
             {
-                var ctx = new ApiParameterContext(context, parameter);
+                var ctx = new ApiParameterContext(context, parameter, context.HttpContext.HttpApiOptions.IsIgnoreAutoUri);
                 foreach (var attr in parameter.Attributes)
                 {
                     await attr.OnRequestAsync(ctx).ConfigureAwait(false);
