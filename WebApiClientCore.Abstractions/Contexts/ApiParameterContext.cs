@@ -25,8 +25,8 @@
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="parameterIndex">参数索引</param>
-        public ApiParameterContext(ApiRequestContext context, int parameterIndex)
-            : this(context, context.ActionDescriptor.Parameters[parameterIndex])
+        public ApiParameterContext(ApiRequestContext context, int parameterIndex, bool isIgnoreAutoUri)
+            : this(context, context.ActionDescriptor.Parameters[parameterIndex], isIgnoreAutoUri)
         {
         }
 
@@ -35,8 +35,8 @@
         /// </summary>
         /// <param name="context">上下文</param>
         /// <param name="parameter">参数描述</param>
-        public ApiParameterContext(ApiRequestContext context, ApiParameterDescriptor parameter)
-            : base(context.HttpContext, context.ActionDescriptor, context.Arguments, context.Properties)
+        public ApiParameterContext(ApiRequestContext context, ApiParameterDescriptor parameter, bool isIgnoreAutoUri)
+            : base(context.HttpContext, context.ActionDescriptor, context.Arguments, context.Properties, isIgnoreAutoUri)
         {
             this.Parameter = parameter;
         }

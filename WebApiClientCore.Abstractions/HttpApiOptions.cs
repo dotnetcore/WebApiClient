@@ -14,6 +14,10 @@ namespace WebApiClientCore
     public class HttpApiOptions
     {
         /// <summary>
+        /// 忽略自动URI拼接
+        /// </summary>
+        public bool IsIgnoreAutoUri { get; set; }
+        /// <summary>
         /// 获取或设置Http服务完整主机域名
         /// 例如http://www.abc.com/或http://www.abc.com/path/
         /// 设置了HttpHost值，HttpHostAttribute将失效

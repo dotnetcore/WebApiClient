@@ -57,7 +57,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <param name="context">请求上下文</param>
         public ApiResponseContext(ApiRequestContext context)
-            : base(context.HttpContext, context.ActionDescriptor, context.Arguments, context.Properties)
+            : base(context.HttpContext, context.ActionDescriptor, context.Arguments, context.Properties, false)
         {
         }
     }
