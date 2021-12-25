@@ -1,4 +1,5 @@
 using App.Clients;
+using App.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -67,6 +68,7 @@ namespace App
 
             // userApi客户端后台服务
             services.AddScoped<UserService>().AddHostedService<UserHostedService>();
+            services.AddDynamicHostSupport();
         }
 
         /// <summary>
