@@ -43,18 +43,18 @@ public class MyService
     }
 }
 ```
-    
+
 ### QQ群协助
 > [825135345](https://shang.qq.com/wpa/qunwpa?idkey=c6df21787c9a774ca7504a954402c9f62b6595d1e63120eabebd6b2b93007410)
 
 进群时请注明**WebApiClient**，在咨询问题之前，请先认真阅读以下剩余的文档，避免消耗作者不必要的重复解答时间。
- 
+
 ### 编译时语法分析
 WebApiClientCore.Analyzers提供接口声明的语法分析与提示，帮助开发者声明接口时避免使用不当的语法。
 
 * 1.x版本，接口继承IHttpApi才获得语法分析提示 
 * 2.0以后的版本，不继承IHttpApi也获得语法分析提示 
- 
+
 ### 全局配置
 2.0以后的版本，提供services.AddWebApiClient()的全局配置功能，支持提供自定义的IHttpApiActivator<>、IApiActionDescriptorProvider、IApiActionInvokerProvider和IResponseCacheProvider。
 
@@ -226,7 +226,7 @@ CollectionFormat | Data
 [PathQuery(CollectionFormat = CollectionFormat.Tsv)] | `id=001\002`
 [PathQuery(CollectionFormat = CollectionFormat.Pipes)] | `id=001\|002`
 [PathQuery(CollectionFormat = CollectionFormat.Multi)] | `id=001&id=002`
- 
+
 
 
 
@@ -421,7 +421,7 @@ public interface IPetApi : IHttpApi
     [HttpPost("pet/{petId}/uploadImage")]
     ITask<ApiResponse> UploadFileAsync([Required] long petId, [FormDataText] string additionalMetadata, FormDataFile file, CancellationToken cancellationToken = default);
 }
-``` 
+```
 
 ### 请求条件性重试
 使用ITask<>异步声明，就有Retry的扩展，Retry的条件可以为捕获到某种Exception或响应模型符合某种条件。
@@ -751,14 +751,14 @@ class Field2
 }
 ```
 常规下我们得把field2的实例json序列化得到json文本，然后赋值给field2这个string属性，使用[JsonFormField]特性可以轻松帮我们自动完成Field2类型的json序列化并将结果字符串作为表单的一个字段。
- 
+
 
 ```
 public interface IDeformedApi
 {
     Task PostAsync([FormField] string field1, [JsonFormField] Field2 field2)
 }
-``` 
+```
 
 #### Form提交嵌套的模型
 
@@ -989,7 +989,7 @@ services.AddClientCredentialsTokenProvider<IUserApi>(o =>
     o.Credentials.Client_secret = "xxyyzz";
 });
 ```
- 
+
 ##### 2 token的应用
 
 ###### 2.1 使用OAuthToken特性
@@ -1161,7 +1161,7 @@ class CustomTokenProvider : TokenProvider
 
 System.Text.Json在默认情况下十分严格，避免代表调用方进行任何猜测或解释，强调确定性行为，该库是为了实现性能和安全性而特意这样设计的。Newtonsoft.Json默认情况下十分灵活，默认的配置下，你几乎不会遇到反序列化的种种问题，虽然这些问题很多情况下是由于不严谨的json结构或类型声明造成的。
 
-  
+
 #### 扩展包
 
 默认的基础包是不包含NewtonsoftJson功能的，需要额外引用WebApiClientCore.Extensions.NewtonsoftJson这个扩展包。
@@ -1174,7 +1174,7 @@ services.AddHttpApi<IUserApi>().ConfigureNewtonsoftJson(o =>
     o.JsonSerializeOptions.NullValueHandling = NullValueHandling.Ignore;
 });
 ```
- 
+
 #### 声明特性
 使用[JsonNetReturn]替换内置的[JsonReturn]，[JsonNetContent]替换内置[JsonContent]
 ```
@@ -1214,3 +1214,124 @@ Content-Type: application/json-rpc
 
 {"jsonrpc":"2.0","method":"add","params":["laojiu",18],"id":1}
 ```
+
+
+
+#### 动态Host（Ezreal提供）
+
+针对大家经常提问的动态Host,提供以下简单的示例供参阅；实现的方式不仅限于示例中提及的，**原则上在请求还没有发出去之前的任何环节，都可以修改请求消息的RequestUri来实现动态目标的目的**
+
+```c#
+    
+
+	[LoggingFilter]
+    public interface IDynamicHostDemo
+    {
+        //直接传入绝对目标的方式
+        [HttpGet]
+        ITask<HttpResponseMessage> ByUrlString([Uri] string urlString);
+        
+        //通过Filter的形式
+		[HttpGet]
+        [UriFilter]
+        ITask<HttpResponseMessage> ByFilter();
+
+        //通过Attribute修饰的方式
+        [HttpGet]
+        [ServiceName("baiduService")]
+        ITask<HttpResponseMessage> ByAttribute();
+    }
+
+	/*通过Attribute修饰的方式*/
+
+    /// <summary>
+    /// 表示对应的服务名
+    /// </summary>
+    public class ServiceNameAttribute : ApiActionAttribute
+    {
+        public ServiceNameAttribute(string name)
+        {
+            Name = name;
+            OrderIndex = int.MinValue;
+        }
+
+        public string Name { get; set; }
+
+        public override async Task OnRequestAsync(ApiRequestContext context)
+        {
+            await Task.CompletedTask;
+            IServiceProvider sp = context.HttpContext.ServiceProvider;
+            HostProvider hostProvider = sp.GetRequiredService<HostProvider>();
+            //服务名也可以在接口配置时挂在Properties中
+            string host = hostProvider.ResolveService(this.Name);
+            HttpApiRequestMessage requestMessage = context.HttpContext.RequestMessage;
+            //和原有的Uri组合并覆盖原有Uri
+            //并非一定要这样实现，只要覆盖了RequestUri,即完成了替换
+            requestMessage.RequestUri = requestMessage.MakeRequestUri(new Uri(host));
+        }
+
+    }
+
+	/*通过Filter修饰的方式*/
+
+	/// <summary>
+    ///用来处理动态Uri的拦截器 
+    /// </summary>
+    public class UriFilterAttribute : ApiFilterAttribute
+    {
+        public override Task OnRequestAsync(ApiRequestContext context)
+        {
+            var options = context.HttpContext.HttpApiOptions;
+            //获取注册时为服务配置的服务名
+            options.Properties.TryGetValue("serviceName", out object serviceNameObj);
+            string serviceName = serviceNameObj as string;
+            IServiceProvider sp = context.HttpContext.ServiceProvider;
+            HostProvider hostProvider = sp.GetRequiredService<HostProvider>();
+            string host = hostProvider.ResolveService(serviceName);
+            HttpApiRequestMessage requestMessage = context.HttpContext.RequestMessage;
+            //和原有的Uri组合并覆盖原有Uri
+            //并非一定要这样实现，只要覆盖了RequestUri,即完成了替换
+            requestMessage.RequestUri = requestMessage.MakeRequestUri(new Uri(host));
+            return Task.CompletedTask;
+        }
+
+        public override Task OnResponseAsync(ApiResponseContext context)
+        {
+            //不处理响应的信息
+            return Task.CompletedTask;
+        }
+    }
+
+	//以上代码中涉及的依赖项
+ 	public interface IDBProvider
+    {
+        string SelectServiceUri(string serviceName);
+    }
+    public class DBProvider : IDBProvider
+    {
+        public string SelectServiceUri(string serviceName)
+        {
+            if (serviceName == "baiduService") return "https://www.baidu.com";
+            if (serviceName == "microsoftService") return "https://www.microsoft.com";
+            return string.Empty;
+        }
+    }
+
+    public class HostProvider
+    {
+        private readonly IDBProvider dbProvider;
+
+        public HostProvider(IDBProvider dbProvider)
+        {
+            this.dbProvider = dbProvider;
+            //将HostProvider放到依赖注入容器中，即可从容器获取其它服务来实现动态的服务地址查询
+        }
+
+        internal string ResolveService(string name)
+        {
+            //如何获取动态的服务地址由你自己决定，此处仅以简单的接口定义简要说明
+            return dbProvider.SelectServiceUri(name);
+        }
+    }
+```
+
