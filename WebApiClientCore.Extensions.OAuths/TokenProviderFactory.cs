@@ -35,12 +35,29 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <exception cref="InvalidOperationException"></exception>
         public ITokenProvider Create(Type httpApiType, TypeMatchMode typeMatchMode)
         {
+            return this.Create(httpApiType, typeMatchMode, name: string.Empty);
+        }
+
+        /// <summary>
+        /// 通过接口类型获取或创建其对应的token提供者
+        /// </summary>
+        /// <param name="httpApiType">接口类型</param>
+        /// <param name="typeMatchMode">类型匹配模式</param>
+        /// <param name="name">TokenProvider的区分名称</param>     
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public ITokenProvider Create(Type httpApiType, TypeMatchMode typeMatchMode, string name)
+        {
             if (httpApiType == null)
             {
                 throw new ArgumentNullException(nameof(httpApiType));
             }
+            if (name == null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
 
-            var cacheKey = new CacheKey(httpApiType, typeMatchMode);
+            var cacheKey = new CacheKey(httpApiType, typeMatchMode, name);
             return this.tokenProviderCache.GetOrAdd(cacheKey, this.GetTokenProvider);
         }
 
@@ -97,16 +114,22 @@ namespace WebApiClientCore.Extensions.OAuths
 
             public TypeMatchMode TypeMatchMode { get; }
 
-            public CacheKey(Type httpApiType, TypeMatchMode typeMatchMode)
+            public string Name { get; }
+
+            public CacheKey(Type httpApiType, TypeMatchMode typeMatchMode, string name)
             {
                 this.HttpApiType = httpApiType;
                 this.TypeMatchMode = typeMatchMode;
-                this.hashCode = HashCode.Combine(this.HttpApiType, this.TypeMatchMode);
+                this.Name = name;
+
+                this.hashCode = HashCode.Combine(httpApiType, typeMatchMode, name);
             }
 
             public bool Equals(CacheKey other)
             {
-                return this.HttpApiType == other.HttpApiType && this.TypeMatchMode == other.TypeMatchMode;
+                return this.HttpApiType == other.HttpApiType &&
+                    this.TypeMatchMode == other.TypeMatchMode &&
+                    this.Name == other.Name;
             }
 
             public override bool Equals(object obj)
