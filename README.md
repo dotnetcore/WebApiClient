@@ -15,7 +15,7 @@
 
 ### 如何使用
 
-```
+```csharp
 [HttpHost("http://localhost:5000/")]
 public interface IUserApi
 {
@@ -26,14 +26,14 @@ public interface IUserApi
     Task<User> PostAsync([JsonContent] User user);
 }
 ```
-```
+```csharp
 public void ConfigureServices(IServiceCollection services)
 {
     services.AddHttpApi<IUserApi>();
 }
 ```
 
-```
+```csharp
 public class MyService
 {
     private readonly IUserApi userApi;
@@ -63,7 +63,7 @@ WebApiClientCore.Analyzers提供接口声明的语法分析与提示，帮助开
 每个接口的选项对应为`HttpApiOptions`，选项名称通过HttpApi.GetName()方法获取得到。
 
 #### 在IHttpClientBuilder配置
-```
+```csharp
 services
     .AddHttpApi<IUserApi>()
     .ConfigureHttpApi(Configuration.GetSection(nameof(IUserApi)))
@@ -75,7 +75,7 @@ services
 ```
 
 配置文件的json
-```
+```json
 {
   "IUserApi": {
     "HttpHost": "http://www.webappiclient.com/",
@@ -90,7 +90,7 @@ services
 ```
 
 #### 在IServiceCollection配置
-```
+```csharp
 services
     .ConfigureHttpApi<IUserApi>(Configuration.GetSection(nameof(IUserApi)))
     .ConfigureHttpApi<IUserApi>(o =>
@@ -103,7 +103,7 @@ services
 ### 数据验证
 #### 参数值验证
 对于参数值，支持ValidationAttribute特性修饰来验证值。
-```
+```csharp
 public interface IUserApi
 {
     [HttpGet("api/users/{email}")]
@@ -112,7 +112,7 @@ public interface IUserApi
 ```
 
 #### 参数或返回模型属性验证
-```
+```csharp
 public interface IUserApi
 {
     [HttpPost("api/users")]
@@ -233,7 +233,7 @@ CollectionFormat | Data
 ### CancellationToken参数
 每个接口都支持声明一个或多个CancellationToken类型的参数，用于支持取消请求操作。CancellationToken.None表示永不取消，创建一个CancellationTokenSource，可以提供一个CancellationToken。
 
-```
+```csharp
 [HttpGet("api/users/{id}")]
 ITask<User> GetAsync([Required]string id, CancellationToken token = default);
 ```
@@ -272,7 +272,7 @@ Attribute | ContentType
 
 #### 默认日志
 
-```
+```csharp
 [LoggingFilter]   
 public interface IUserApi
 {
@@ -287,7 +287,7 @@ public interface IUserApi
 ```
 
 #### 自定义日志输出目标
-```
+```csharp
 class MyLoggingAttribute : LoggingFilterAttribute
 {
     protected override Task WriteLogAsync(ApiResponseContext context, LogMessage logMessage)
@@ -316,7 +316,7 @@ public interface IUserApi
 `Task<string>` | 原始响应消息文本
 
 ### 文件下载
-```
+```csharp
 public interface IUserApi
 {
     [HttpGet("/files/{fileName}"]
@@ -324,7 +324,7 @@ public interface IUserApi
 }
 ```
 
-```
+```csharp
 using System.Net.Http
 
 var response = await userApi.DownloadAsync('123.zip');
@@ -335,7 +335,7 @@ await response.SaveAsAsync(fileStream);
 ### 接口声明示例
 这个OpenApi文档在[petstore.swagger.io](https://petstore.swagger.io/)，代码为使用WebApiClientCore.OpenApi.SourceGenerator工具将其OpenApi文档反向生成得到
 
-```
+```csharp
 /// <summary>
 /// Everything about your Pets
 /// </summary>
@@ -426,7 +426,7 @@ public interface IPetApi : IHttpApi
 ### 请求条件性重试
 使用ITask<>异步声明，就有Retry的扩展，Retry的条件可以为捕获到某种Exception或响应模型符合某种条件。
 
-```
+```csharp
 public interface IUserApi
 {
     [HttpGet("api/users/{id}")]
@@ -444,7 +444,7 @@ var result = await userApi.GetAsync(id: "id001")
 
 WebApiClient内部的很多异常都基于ApiException这个抽象异常，也就是很多情况下，抛出的异常都是内为某个ApiException的HttpRequestException。
 
-```
+```csharp
 try
 {
     var model = await api.GetAsync();
@@ -483,7 +483,7 @@ json patch是为客户端能够局部更新服务端已存在的资源而设计�
 3. 请求的Content-Type为application/json-patch+json；
 
 #### 声明Patch方法
-```
+```csharp
 public interface IUserApi
 {
     [HttpPatch("api/users/{id}")]
@@ -492,14 +492,14 @@ public interface IUserApi
 ```
 
 #### 实例化JsonPatchDocument
-```
+```csharp
 var doc = new JsonPatchDocument<User>();
 doc.Replace(item => item.Account, "laojiu");
 doc.Replace(item => item.Email, "laojiu@qq.com");
 ```
 
 #### 请求内容
-```
+```csharp
 PATCH /api/users/id001 HTTP/1.1
 Host: localhost:6000
 User-Agent: WebApiClientCore/1.0.0.0
@@ -514,7 +514,7 @@ Content-Type: application/json-patch+json
 配置CacheAttribute特性的Method会将本次的响应内容缓存起来，下一次如果符合预期条件的话，就不会再请求到远程服务器，而是从IResponseCacheProvider获取缓存内容，开发者可以自己实现ResponseCacheProvider。
 
 #### 声明缓存特性
-```
+```csharp
 public interface IUserApi
 {
     // 缓存一分钟
@@ -526,7 +526,7 @@ public interface IUserApi
 默认缓存条件：URL(如`http://abc.com/a`)和指定的请求Header一致。
 如果需要类似`[CacheByPath]`这样的功能，可直接继承`ApiCacheAttribute`来实现:
 
-```
+```csharp
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class CacheByAbsolutePathAttribute : ApiCacheAttribute
     {
@@ -545,7 +545,7 @@ public interface IUserApi
 #### 自定义缓存提供者
 默认的缓存提供者为内存缓存，如果希望将缓存保存到其它存储位置，则需要自定义 缓存提者，并注册替换默认的缓存提供者。
 
-```
+```csharp
 public class RedisResponseCacheProvider : IResponseCacheProvider
 {
     public string Name => nameof(RedisResponseCacheProvider);
@@ -562,7 +562,7 @@ public class RedisResponseCacheProvider : IResponseCacheProvider
 } 
 ```
 
-```
+```csharp
 public static IWebApiClientBuilder UseRedisResponseCacheProvider(this IWebApiClientBuilder builder)
 {
     builder.Services.AddSingleton<IResponseCacheProvider, RedisResponseCacheProvider>();
@@ -575,7 +575,7 @@ public static IWebApiClientBuilder UseRedisResponseCacheProvider(this IWebApiCli
 
 #### 原始文本
 
-```
+```csharp
 [HttpPost]
 Task PostAsync([RawStringContent("txt/plain")] string text);
 
@@ -585,21 +585,21 @@ Task PostAsync(StringContent text);
 
 
 #### 原始json
-```
+```csharp
 [HttpPost]
 Task PostAsync([RawJsonContent] string json);
 ```
 
 #### 原始xml
 
-```
+```csharp
 [HttpPost]
 Task PostAsync([RawXmlContent] string xml);
 ```
 
 #### 原始表单内容
 
-```
+```csharp
 [HttpPost]
 Task PostAsync([RawFormContent] string form);
 ```
@@ -609,7 +609,7 @@ Task PostAsync([RawFormContent] string form);
 在某些极限情况下，比如人脸比对的接口，我们输入模型与传输模型未必是对等的，例如：
 
 **服务端要求的json模型**
-```
+```json
 {
     "image1" : "图片1的base64",
     "image2" : "图片2的base64"
@@ -617,7 +617,7 @@ Task PostAsync([RawFormContent] string form);
 ```
 
 **客户端期望的业务模型**
-```
+```csharp
 class FaceModel
 {
     public Bitmap Image1 {get; set;}
@@ -627,7 +627,7 @@ class FaceModel
 
 我们希望构造模型实例时传入Bitmap对象，但传输的时候变成Bitmap的base64值，所以我们要改造FaceModel，让它实现IApiParameter接口：
 
-```
+```csharp
 class FaceModel : IApiParameter
 {
     public Bitmap Image1 { get; set; }
@@ -655,7 +655,7 @@ class FaceModel : IApiParameter
 ```
 
 最后，我们在使用改进后的FaceModel来请求
-```
+```csharp
 public interface IFaceApi
 {
     [HttpPost("/somePath")]
@@ -669,7 +669,7 @@ public interface IFaceApi
 #### 1 编写相关自定义特性
 
 ##### 自定义请求内容处理特性
-```
+```csharp
 public class ProtobufContentAttribute : HttpContentAttribute
 {
     public string ContentType { get; set; } = "application/x-protobuf";
@@ -692,7 +692,7 @@ public class ProtobufContentAttribute : HttpContentAttribute
 ```
 ##### 自定义响应内容解析特性
 
-```
+```csharp
 public class ProtobufReturnAttribute : ApiReturnAttribute
 {
     public ProtobufReturnAttribute(string acceptContentType = "application/x-protobuf")
@@ -709,7 +709,7 @@ public class ProtobufReturnAttribute : ApiReturnAttribute
 ```
 
 #### 2 应用相关自定义特性
-```
+```csharp
 [ProtobufReturn]
 public interface IProtobufApi
 {
@@ -724,7 +724,7 @@ public interface IProtobufApi
 #### 不友好的参数名别名
 例如服务器要求一个Query参数的名字为`field-Name`，这个是c#关键字或变量命名不允许的，我们可以使用`[AliasAsAttribute]`来达到这个要求：
 
-```
+```csharp
 public interface IDeformedApi
 {
     [HttpGet("api/users")]
@@ -742,7 +742,7 @@ field1 | someValue
 field2 | {"name":"sb","age":18}
 
 对应强类型模型是
-```
+```csharp
 class Field2
 {
     public string Name {get; set;}
@@ -753,7 +753,7 @@ class Field2
 常规下我们得把field2的实例json序列化得到json文本，然后赋值给field2这个string属性，使用[JsonFormField]特性可以轻松帮我们自动完成Field2类型的json序列化并将结果字符串作为表单的一个字段。
 
 
-```
+```csharp
 public interface IDeformedApi
 {
     Task PostAsync([FormField] string field1, [JsonFormField] Field2 field2)
@@ -769,7 +769,7 @@ public interface IDeformedApi
 |field2.age | 18|
 
 其对应的json格式为
-```
+```json
 {
     "field1" : "someValue",
     "filed2" : {
@@ -780,7 +780,7 @@ public interface IDeformedApi
 ```
 合理情况下，对于复杂嵌套结构的数据模型，应当使用applicaiton/json，但接口要求必须使用Form提交，我可以配置KeyValueSerializeOptions来达到这个格式要求：
 
-```
+```csharp
 services.AddHttpApi<IDeformedApi>(o =>
 {
     o.KeyValueSerializeOptions.KeyNamingStyle = KeyNamingStyle.FullName;
@@ -792,7 +792,7 @@ services.AddHttpApi<IDeformedApi>(o =>
 
 解决办法是在Interface或Method声明`[JsonReturn]`特性，并设置其EnsureMatchAcceptContentType属性为false，表示ContentType不是期望值匹配也要处理。
 
-```
+```csharp
 [JsonReturn(EnsureMatchAcceptContentType = false)] 
 public interface IDeformedApi 
 {
@@ -804,7 +804,7 @@ public interface IDeformedApi
 
 我们可以自定义ApiFilterAttribute来实现自己的sign功能，然后把自定义Filter声明到Interface或Method即可
 
-```
+```csharp
 class SignFilterAttribute : ApiFilterAttribute
 {
     public override Task OnRequestAsync(ApiRequestContext context)
@@ -825,7 +825,7 @@ public interface IDeformedApi
 
 #### 表单字段排序
 不知道是哪门公司起的所谓的“签名算法”，往往要字段排序等。
-```
+```csharp
 class SortedFormContentAttribute : FormContentAttribute
 {
     protected override IEnumerable<KeyValue> SerializeToKeyValues(ApiParameterContext context)
@@ -846,7 +846,7 @@ public interface IDeformedApi
 
 #### Http代理配置
 
-```
+```csharp
 services
     .AddHttpApi<IUserApi>(o =>
     {
@@ -870,7 +870,7 @@ services
 #### 客户端证书配置
 
 有些服务器为了限制客户端的连接，开启了https双向验证，只允许它执有它颁发的证书的客户端进行连接
-```
+```csharp
 services
     .AddHttpApi<IUserApi>(o =>
     {
@@ -888,7 +888,7 @@ services
 
 如果请求的接口不幸使用了Cookie保存身份信息机制，那么就要考虑维持CookieContainer实例不要跟随HttpMessageHandler的生命周期，默认的HttpMessageHandler最短只有2分钟的生命周期。
 
-```
+```csharp
 var cookieContainer = new CookieContainer();
 services
     .AddHttpApi<IUserApi>(o =>
@@ -907,7 +907,7 @@ services
 对于使用Cookie机制的接口，只有在接口请求之后，才知道Cookie是否已失效。通过自定义CookieAuthorizationHandler，可以做在请求某个接口过程中，遇到Cookie失效时自动刷新Cookie再重试请求接口。
 
 首先，我们需要把登录接口与某它业务接口拆分在不同的接口定义，例如IUserApi和IUserLoginApi
-```
+```csharp
 [HttpHost("http://localhost:5000/")]
 public interface IUserLoginApi
 {
@@ -917,7 +917,7 @@ public interface IUserLoginApi
 ```
 
 然后实现自动登录的CookieAuthorizationHandler
-```
+```csharp
 public class AutoRefreshCookieHandler : CookieAuthorizationHandler
 {
     private readonly IUserLoginApi api;
@@ -943,7 +943,7 @@ public class AutoRefreshCookieHandler : CookieAuthorizationHandler
 ```
 
 最后，注册IUserApi、IUserLoginApi，并为IUserApi配置AutoRefreshCookieHandler
-```
+```csharp
 services
     .AddHttpApi<IUserLoginApi>();
 
@@ -958,7 +958,7 @@ services
 SourceGenerator是一种新的c#编译时代码补充生成技术，可以非常方便的为WebApiClient生成接口的代理实现类，使用SourceGenerator扩展包，可以替换默认的内置Emit生成代理类的方案，支持需要完全AOT编译的平台。 
 
 引用WebApiClientCore.Extensions.SourceGenerator，并在项目启用如下配置:
-```
+```csharp
 // 应用编译时生成接口的代理类型代码
 services
     .AddWebApiClient()
@@ -980,7 +980,7 @@ OAuthTokenHandler | 属于http消息处理器，功能与OAuthTokenAttribute一�
 #### OAuth的Client模式
 
 ##### 1 为接口注册tokenProvider
-```
+```csharp
 // 为接口注册与配置Client模式的tokenProvider
 services.AddClientCredentialsTokenProvider<IUserApi>(o =>
 {
@@ -995,7 +995,7 @@ services.AddClientCredentialsTokenProvider<IUserApi>(o =>
 ###### 2.1 使用OAuthToken特性
 OAuthTokenAttribute属于WebApiClientCore框架层，很容易操控请求内容和响应模型，比如将token作为表单字段添加到既有请求表单中，或者读取响应消息反序列化之后对应的业务模型都非常方便，但它不能在请求内部实现重试请求的效果。在服务器颁发token之后，如果服务器的token丢失了，使用OAuthTokenAttribute会得到一次失败的请求，本次失败的请求无法避免。
 
-```
+```csharp
 /// <summary>
 /// 用户操作接口
 /// </summary>
@@ -1008,7 +1008,7 @@ public interface IUserApi
 
 OAuthTokenAttribute默认实现将token放到Authorization请求头，如果你的接口需要请token放到其它地方比如uri的query，需要重写OAuthTokenAttribute：
 
-```
+```csharp
 class UriQueryTokenAttribute : OAuthTokenAttribute
 {
     protected override void UseTokenResult(ApiRequestContext context, TokenResult tokenResult)
@@ -1027,7 +1027,7 @@ public interface IUserApi
 ###### 2.1 使用OAuthTokenHandler
 OAuthTokenHandler的强项是支持在一个请求内部里进行多次尝试，在服务器颁发token之后，如果服务器的token丢失了，OAuthTokenHandler在收到401状态码之后，会在本请求内部丢弃和重新请求token，并使用新token重试请求，从而表现为一次正常的请求。但OAuthTokenHandler不属于WebApiClientCore框架层的对象，在里面只能访问原始的HttpRequestMessage与HttpResponseMessage，如果需要将token追加到HttpRequestMessage的Content里，这是非常困难的，同理，如果不是根据http状态码(401等)作为token无效的依据，而是使用HttpResponseMessage的Content对应的业务模型的某个标记字段，也是非常棘手的活。
 
-```
+```csharp
 // 注册接口时添加OAuthTokenHandler
 services
     .AddHttpApi<IUserApi>()
@@ -1036,7 +1036,7 @@ services
 
 OAuthTokenHandler默认实现将token放到Authorization请求头，如果你的接口需要请token放到其它地方比如uri的query，需要重写OAuthTokenHandler：
 
-```
+```csharp
 class UriQueryOAuthTokenHandler : OAuthTokenHandler
 {
     /// <summary>
@@ -1073,7 +1073,7 @@ services
 
 #### 多接口共享的TokenProvider
 可以给http接口设置基础接口，然后为基础接口配置TokenProvider，例如下面的xxx和yyy接口，都属于IBaidu，只需要给IBaidu配置TokenProvider。
-```
+```csharp
 [OAuthToken]
 public interface IBaidu
 {
@@ -1092,7 +1092,7 @@ public interface IBaidu_YYY_Api : IBaidu
 }
 ```
 
-```
+```csharp
 // 注册与配置password模式的token提者选项
 services.AddPasswordCredentialsTokenProvider<IBaidu>(o =>
 {
@@ -1106,7 +1106,7 @@ services.AddPasswordCredentialsTokenProvider<IBaidu>(o =>
 
 #### 自定义TokenProvider
 扩展包已经内置了OAuth的Client和Password模式两种标准token请求，但是仍然还有很多接口提供方在实现上仅仅体现了它的精神，这时候就需要自定义TokenProvider，假设接口提供方的获取token的接口如下：
-```
+```csharp
 public interface ITokenApi
 {
     [HttpPost("http://xxx.com/token")]
@@ -1117,7 +1117,7 @@ public interface ITokenApi
 ##### 委托TokenProvider
 委托TokenProvider是一种最简单的实现方式，它将请求token的委托作为自定义TokenProvider的实现逻辑：
 
-```
+```csharp
 // 为接口注册自定义tokenProvider
 services.AddTokeProvider<IUserApi>(s =>
 {
@@ -1127,12 +1127,12 @@ services.AddTokeProvider<IUserApi>(s =>
 
 ##### 完整实现的TokenProvider
 
-```
+```csharp
 // 为接口注册CustomTokenProvider
 services.AddTokeProvider<IUserApi, CustomTokenProvider>();
 ```
 
-```
+```csharp
 class CustomTokenProvider : TokenProvider
 {
     public CustomTokenProvider(IServiceProvider serviceProvider)
@@ -1167,7 +1167,7 @@ System.Text.Json在默认情况下十分严格，避免代表调用方进行任�
 默认的基础包是不包含NewtonsoftJson功能的，需要额外引用WebApiClientCore.Extensions.NewtonsoftJson这个扩展包。
 
 #### 配置[可选]
-```
+```csharp
 // ConfigureNewtonsoftJson
 services.AddHttpApi<IUserApi>().ConfigureNewtonsoftJson(o =>
 {
@@ -1177,7 +1177,7 @@ services.AddHttpApi<IUserApi>().ConfigureNewtonsoftJson(o =>
 
 #### 声明特性
 使用[JsonNetReturn]替换内置的[JsonReturn]，[JsonNetContent]替换内置[JsonContent]
-```
+```csharp
 /// <summary>
 /// 用户操作接口
 /// </summary>
