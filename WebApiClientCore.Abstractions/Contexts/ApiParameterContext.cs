@@ -18,7 +18,11 @@
         /// <summary>
         /// 获取参数值
         /// </summary>
-        public object? ParameterValue => this.Arguments[this.Parameter.Index];
+        public object? ParameterValue
+        {
+            get => this.Arguments[this.Parameter.Index];
+            set => this.Arguments[this.Parameter.Index] = value;
+        }
 
         /// <summary>
         /// Api参数上下文
