@@ -1,6 +1,8 @@
 ﻿using System.Buffers;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using WebApiClientCore.Internals;
 using WebApiClientCore.Serialization;
 
@@ -81,6 +83,23 @@ namespace WebApiClientCore
         {
             var options = context.HttpContext.HttpApiOptions.KeyValueSerializeOptions;
             return KeyValueSerializer.Serialize(context.ParameterName, context.ParameterValue, options);
+        }
+
+        readonly static Regex paramterTemplate = new Regex(@"\{([^\}]+)\}");
+
+        /// <summary>
+        /// 动态参数格式化
+        /// </summary>
+        public static string ParameterFormat(this ApiRequestContext context, string template)
+        {
+            foreach (Match item in paramterTemplate.Matches(template).Cast<Match>())
+            {
+                if (context.TryGetArgument<string>(item.Groups[1].Value, out var t1))
+                {
+                    template = template.Replace(item.Groups[0].Value, t1);
+                }
+            }
+            return template;
         }
     }
 }

@@ -26,7 +26,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-        public sealed override async Task OnRequestAsync(ApiRequestContext context)
+        public override async Task OnRequestAsync(ApiRequestContext context)
         {
             var token = await this.GetTokenProvider(context).GetTokenAsync().ConfigureAwait(false);
             this.UseTokenResult(context, token);
@@ -37,7 +37,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public sealed override Task OnResponseAsync(ApiResponseContext context)
+        public override Task OnResponseAsync(ApiResponseContext context)
         {
             if (this.IsUnauthorized(context) == true)
             {
