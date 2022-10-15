@@ -11,12 +11,10 @@ namespace WebApiClientCore.Implementations
     /// 通过查找类型代理类型创建实例
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
-    public class SourceGeneratorHttpApiActivator<THttpApi> : HttpApiActivator<THttpApi>
+    public class SourceGeneratorHttpApiActivator<THttpApi> : IHttpApiActivator<THttpApi>
     {
-        /// <summary>
-        /// 代理类型
-        /// </summary>
-        private static readonly Type? proxyType = FindProxyTypeFromAssembly();
+        private readonly ApiActionInvoker[] actionInvokers;
+        private readonly Func<IHttpApiInterceptor, ApiActionInvoker[], THttpApi> activator;
 
         /// <summary>
         /// 通过查找类型代理类型创建实例
@@ -25,50 +23,54 @@ namespace WebApiClientCore.Implementations
         /// <param name="actionInvokerProvider"></param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
-        public SourceGeneratorHttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
-            : base(apiActionDescriptorProvider, actionInvokerProvider)
-        {
-        }
-
-        /// <summary>
-        /// 查找接口的Api方法
-        /// 用于创建代理对象的ApiActionInvoker
-        /// </summary>
-        /// <returns></returns>
-        protected override MethodInfo[] FindApiMethods()
-        {
-            if (proxyType != null)
-            {
-                var apiMethods = base.FindApiMethods();
-                var proxyMethods = proxyType.GetMethods();
-                var methods = from a in apiMethods
-                              join p in proxyMethods
-                              on new MethodFeature(a) equals new MethodFeature(p)
-                              let attr = p.GetCustomAttribute<HttpApiProxyMethodAttribute>()
-                              let index = attr == null ? 0 : attr.Index
-                              orderby index
-                              select a;
-
-                return methods.ToArray();
-            }
-
-            return base.FindApiMethods();
-        }
-
-        /// <summary>
-        /// 创建实例工厂
-        /// </summary>
         /// <exception cref="ProxyTypeCreateException"></exception>
-        /// <returns></returns>
-        protected override Func<IHttpApiInterceptor, ApiActionInvoker[], THttpApi> CreateFactory()
+        public SourceGeneratorHttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
         {
-            if (proxyType != null)
+            var proxyType = FindProxyTypeFromAssembly();
+            if (proxyType == null)
             {
-                return LambdaUtil.CreateCtorFunc<IHttpApiInterceptor, ApiActionInvoker[], THttpApi>(proxyType);
+                var message = $"找不到{typeof(THttpApi)}的代理类：{GetErrorReason()}";
+                throw new ProxyTypeCreateException(typeof(THttpApi), message);
             }
 
-            var message = $"找不到{typeof(THttpApi)}的代理类：{GetErrorReason()}";
-            throw new ProxyTypeCreateException(typeof(THttpApi), message);
+            var apiMethods = FindApiMethods(proxyType);
+
+            this.actionInvokers = apiMethods
+                .Select(item => apiActionDescriptorProvider.CreateActionDescriptor(item, typeof(THttpApi)))
+                .Select(item => actionInvokerProvider.CreateActionInvoker(item))
+                .ToArray();
+
+            this.activator = LambdaUtil.CreateCtorFunc<IHttpApiInterceptor, ApiActionInvoker[], THttpApi>(proxyType);
+        }
+
+        /// <summary>
+        /// 创建接口的实例
+        /// </summary>
+        /// <param name="apiInterceptor">接口拦截器</param>
+        /// <returns></returns>
+        public THttpApi CreateInstance(IHttpApiInterceptor apiInterceptor)
+        {
+            return this.activator.Invoke(apiInterceptor, this.actionInvokers);
+        }
+
+        /// <summary>
+        /// 查找接口的Api方法 
+        /// </summary>
+        /// <returns></returns>
+        private static MethodInfo[] FindApiMethods(Type proxyType)
+        {
+            var apiMethods = HttpApi.FindApiMethods(typeof(THttpApi));
+            var proxyMethods = proxyType.GetMethods();
+
+            var methods = from a in apiMethods
+                          join p in proxyMethods
+                          on new MethodFeature(a) equals new MethodFeature(p)
+                          let attr = p.GetCustomAttribute<HttpApiProxyMethodAttribute>()
+                          let index = attr == null ? 0 : attr.Index
+                          orderby index
+                          select a;
+
+            return methods.ToArray();
         }
 
         /// <summary>

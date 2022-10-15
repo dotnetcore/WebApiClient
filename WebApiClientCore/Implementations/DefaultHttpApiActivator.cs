@@ -11,8 +11,43 @@ namespace WebApiClientCore.Implementations
     /// 运行时使用Emit动态创建THttpApi的代理类和代理类实例
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
-    public class DefaultHttpApiActivator<THttpApi> : HttpApiActivator<THttpApi>
+    public class DefaultHttpApiActivator<THttpApi> : IHttpApiActivator<THttpApi>
     {
+        private readonly ApiActionInvoker[] actionInvokers;
+        private readonly Func<IHttpApiInterceptor, ApiActionInvoker[], THttpApi> activator;
+
+        /// <summary>
+        /// 运行时使用Emit动态创建THttpApi的代理类和代理类实例
+        /// </summary>
+        /// <param name="apiActionDescriptorProvider"></param>
+        /// <param name="actionInvokerProvider"></param>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        public DefaultHttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
+        {
+            var apiMethods = HttpApi.FindApiMethods(typeof(THttpApi));
+
+            this.actionInvokers = apiMethods
+                .Select(item => apiActionDescriptorProvider.CreateActionDescriptor(item, typeof(THttpApi)))
+                .Select(item => actionInvokerProvider.CreateActionInvoker(item))
+                .ToArray();
+
+            var proxyType = BuildProxyType(typeof(THttpApi), apiMethods);
+            this.activator = LambdaUtil.CreateCtorFunc<IHttpApiInterceptor, ApiActionInvoker[], THttpApi>(proxyType);
+        }
+
+        /// <summary>
+        /// 创建接口的实例
+        /// </summary>
+        /// <param name="apiInterceptor">接口拦截器</param>
+        /// <returns></returns>
+        public THttpApi CreateInstance(IHttpApiInterceptor apiInterceptor)
+        {
+            return this.activator.Invoke(apiInterceptor, this.actionInvokers);
+        }
+
+
+
         /// <summary>
         /// IHttpApiInterceptor的Intercept方法
         /// </summary>
@@ -24,30 +59,6 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IHttpApiInterceptor), typeof(ApiActionInvoker[]) };
 
-
-        /// <summary>
-        /// 运行时使用Emit动态创建THttpApi的代理类和代理类实例
-        /// </summary>
-        /// <param name="apiActionDescriptorProvider"></param>
-        /// <param name="actionInvokerProvider"></param>
-        /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="NotSupportedException"></exception>
-        public DefaultHttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
-            : base(apiActionDescriptorProvider, actionInvokerProvider)
-        {
-        }
-
-        /// <summary>
-        /// 创建实例工厂
-        /// </summary>
-        /// <exception cref="NotSupportedException"></exception>
-        /// <exception cref="ProxyTypeCreateException"></exception>
-        /// <returns></returns>
-        protected override Func<IHttpApiInterceptor, ApiActionInvoker[], THttpApi> CreateFactory()
-        {
-            var proxyType = BuildProxyType(typeof(THttpApi), this.ApiMethods);
-            return LambdaUtil.CreateCtorFunc<IHttpApiInterceptor, ApiActionInvoker[], THttpApi>(proxyType);
-        }
 
         /// <summary>
         /// 创建IHttpApi代理类的类型

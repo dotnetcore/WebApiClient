@@ -8,6 +8,7 @@ namespace WebApiClientCore.Implementations
     /// 表示THttpApi的实例创建器抽象
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
+    [Obsolete("该类型存在构造器调用虚方法的设计失误，不建议再使用", error: false)]
     public abstract class HttpApiActivator<THttpApi> : IHttpApiActivator<THttpApi>
     {
         /// <summary>
