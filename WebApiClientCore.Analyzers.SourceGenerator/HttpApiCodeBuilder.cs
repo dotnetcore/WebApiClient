@@ -138,7 +138,6 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             return httpApi
                 .AllInterfaces
                 .Append(httpApi)
-                .OrderBy(item => item.Name)
                 .SelectMany(item => item.GetMembers())
                 .OfType<IMethodSymbol>();
         }
@@ -155,6 +154,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             var parametersString = string.Join(",", method.Parameters.Select(item => $"{item.Type} {item.Name}"));
             var parameterNamesString = string.Join(",", method.Parameters.Select(item => item.Name));
 
+            builder.AppendLine($"\t\t[ApiMethodIndex({index})]");
             builder.AppendLine($"\t\tpublic {method.ReturnType} {method.Name}( {parametersString} )");
             builder.AppendLine("\t\t{");
             builder.AppendLine($"\t\t\treturn ({method.ReturnType})this.{this.apiInterceptorFieldName}.Intercept(this.{this.actionInvokersFieldName}[{index}], new object[] {{ {parameterNamesString} }});");
