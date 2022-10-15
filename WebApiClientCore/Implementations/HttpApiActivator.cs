@@ -34,15 +34,24 @@ namespace WebApiClientCore.Implementations
         /// <exception cref="NotSupportedException"></exception>
         public HttpApiActivator(IApiActionDescriptorProvider actionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
         {
-            var interfaceType = typeof(THttpApi);
-            this.ApiMethods = HttpApi.FindApiMethods(interfaceType);
+            this.ApiMethods = this.FindApiMethods();
             this.actionInvokers = this.ApiMethods
-                 .Select(item => actionDescriptorProvider.CreateActionDescriptor(item, interfaceType))
+                 .Select(item => actionDescriptorProvider.CreateActionDescriptor(item, typeof(THttpApi)))
                  .Select(item => actionInvokerProvider.CreateActionInvoker(item))
                  .ToArray();
 
             // 最后一步创建工厂
             this.factory = this.CreateFactory();
+        }
+
+        /// <summary>
+        /// 查找接口的Api方法
+        /// 用于创建代理对象的ApiActionInvoker
+        /// </summary>
+        /// <returns></returns>
+        protected virtual MethodInfo[] FindApiMethods()
+        {
+            return HttpApi.FindApiMethods(typeof(THttpApi));
         }
 
         /// <summary>

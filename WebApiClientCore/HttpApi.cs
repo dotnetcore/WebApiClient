@@ -102,8 +102,6 @@ namespace WebApiClientCore
                 .Append(httpApiType)
                 .SelectMany(item => item.GetMethods())
                 .Select(item => item.EnsureApiMethod())
-                .OrderBy(item => item.Index)
-                .Select(item => item.Method)
                 .ToArray();
         }
 
@@ -112,7 +110,7 @@ namespace WebApiClientCore
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        private static (MethodInfo Method, int Index) EnsureApiMethod(this MethodInfo method)
+        private static MethodInfo EnsureApiMethod(this MethodInfo method)
         {
             if (method.IsGenericMethod == true)
             {
@@ -138,10 +136,7 @@ namespace WebApiClientCore
                     throw new NotSupportedException(message);
                 }
             }
-
-            var indexAttribute = method.GetCustomAttribute<ApiMethodIndexAttribute>();
-            var index = indexAttribute == null ? 0 : indexAttribute.Index;
-            return (method, index);
+            return method;
         }
 
         /// <summary>
