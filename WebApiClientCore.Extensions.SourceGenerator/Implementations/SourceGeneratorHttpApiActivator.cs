@@ -85,7 +85,7 @@ namespace WebApiClientCore.Implementations
 
             foreach (var proxyType in interfaceType.Assembly.GetTypes())
             {
-                if (proxyType.IsVisible || proxyType.IsClass == false)
+                if (proxyType.IsClass == false)
                 {
                     continue;
                 }
