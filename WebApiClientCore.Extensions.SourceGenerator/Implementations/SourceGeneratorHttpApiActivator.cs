@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Reflection;
 using WebApiClientCore.Exceptions;
-using WebApiClientCore.Internals;
 
 namespace WebApiClientCore.Implementations
 {
@@ -40,7 +39,7 @@ namespace WebApiClientCore.Implementations
                 .Select(item => actionInvokerProvider.CreateActionInvoker(item))
                 .ToArray();
 
-            this.activator = LambdaUtil.CreateCtorFunc<IHttpApiInterceptor, ApiActionInvoker[], THttpApi>(proxyType);
+            this.activator = (interceptor, invokers) => (THttpApi)Activator.CreateInstance(proxyType, interceptor, invokers);
         }
 
         /// <summary>
@@ -65,9 +64,9 @@ namespace WebApiClientCore.Implementations
             var methods = from a in apiMethods
                           join p in proxyMethods
                           on new MethodFeature(a) equals new MethodFeature(p)
-                          let attr = p.GetCustomAttribute<HttpApiProxyMethodAttribute>()
-                          let index = attr == null ? 0 : attr.Index
-                          orderby index
+                          let methodAttr = p.GetCustomAttribute<HttpApiProxyMethodAttribute>()
+                          where methodAttr != null
+                          orderby methodAttr.Index
                           select a;
 
             return methods.ToArray();
