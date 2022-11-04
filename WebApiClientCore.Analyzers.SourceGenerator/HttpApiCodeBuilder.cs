@@ -58,12 +58,12 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         /// <summary>
         /// 类名
         /// </summary>
-        public string ClassName => "_" + this.httpApi.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+        public string ClassName => this.httpApi.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
 
         /// <summary>
         /// 构造器名
         /// </summary>
-        public string CtorName => "_" + this.httpApi.Name;
+        public string CtorName => this.httpApi.Name;
 
         /// <summary>
         /// HttpApi代码构建器
@@ -98,13 +98,10 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             builder.AppendLine($"namespace {this.Namespace}");
             builder.AppendLine("{");
             builder.AppendLine($"\t[HttpApiProxyClass(typeof({this.HttpApiTypeName}))]");
-            builder.AppendLine($"\tclass {this.ClassName}:{this.BaseInterfaceName}");
+            builder.AppendLine($"\tpublic class {this.ClassName}:{this.BaseInterfaceName}");
             builder.AppendLine("\t{");
 
-            builder.AppendLine("\t\t[DebuggerBrowsable(DebuggerBrowsableState.Never)]");
             builder.AppendLine($"\t\tprivate readonly IHttpApiInterceptor {this.apiInterceptorFieldName};");
-
-            builder.AppendLine("\t\t[DebuggerBrowsable(DebuggerBrowsableState.Never)]");
             builder.AppendLine($"\t\tprivate readonly ApiActionInvoker[] {this.actionInvokersFieldName};");
 
             builder.AppendLine($"\t\tpublic {this.CtorName}(IHttpApiInterceptor apiInterceptor,ApiActionInvoker[] actionInvokers)");
@@ -138,7 +135,6 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             return httpApi
                 .AllInterfaces
                 .Append(httpApi)
-                .OrderBy(item => item.Name)
                 .SelectMany(item => item.GetMembers())
                 .OfType<IMethodSymbol>();
         }
@@ -155,6 +151,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             var parametersString = string.Join(",", method.Parameters.Select(item => $"{item.Type} {item.Name}"));
             var parameterNamesString = string.Join(",", method.Parameters.Select(item => item.Name));
 
+            builder.AppendLine($"\t\t[HttpApiProxyMethod({index})]");
             builder.AppendLine($"\t\tpublic {method.ReturnType} {method.Name}( {parametersString} )");
             builder.AppendLine("\t\t{");
             builder.AppendLine($"\t\t\treturn ({method.ReturnType})this.{this.apiInterceptorFieldName}.Intercept(this.{this.actionInvokersFieldName}[{index}], new object[] {{ {parameterNamesString} }});");

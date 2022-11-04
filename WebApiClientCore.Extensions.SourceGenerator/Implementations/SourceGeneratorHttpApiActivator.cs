@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Reflection;
 using WebApiClientCore.Exceptions;
-using WebApiClientCore.Internals;
 
 namespace WebApiClientCore.Implementations
 {
@@ -11,8 +10,11 @@ namespace WebApiClientCore.Implementations
     /// 通过查找类型代理类型创建实例
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
-    public class SourceGeneratorHttpApiActivator<THttpApi> : HttpApiActivator<THttpApi>
+    public class SourceGeneratorHttpApiActivator<THttpApi> : IHttpApiActivator<THttpApi>
     {
+        private readonly ApiActionInvoker[] actionInvokers;
+        private readonly Func<IHttpApiInterceptor, ApiActionInvoker[], THttpApi> activator;
+
         /// <summary>
         /// 通过查找类型代理类型创建实例
         /// </summary>
@@ -20,42 +22,70 @@ namespace WebApiClientCore.Implementations
         /// <param name="actionInvokerProvider"></param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="ProxyTypeCreateException"></exception>
         public SourceGeneratorHttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
-            : base(apiActionDescriptorProvider, actionInvokerProvider)
         {
+            var proxyType = FindProxyTypeFromAssembly();
+            if (proxyType == null)
+            {
+                var message = $"找不到{typeof(THttpApi)}的代理类：{GetErrorReason()}";
+                throw new ProxyTypeCreateException(typeof(THttpApi), message);
+            }
+
+            var apiMethods = FindApiMethods(proxyType);
+
+            this.actionInvokers = apiMethods
+                .Select(item => apiActionDescriptorProvider.CreateActionDescriptor(item, typeof(THttpApi)))
+                .Select(item => actionInvokerProvider.CreateActionInvoker(item))
+                .ToArray();
+
+            this.activator = (interceptor, invokers) => (THttpApi)Activator.CreateInstance(proxyType, interceptor, invokers);
         }
 
         /// <summary>
-        /// 创建实例工厂
+        /// 创建接口的实例
         /// </summary>
-        /// <exception cref="ProxyTypeCreateException"></exception>
+        /// <param name="apiInterceptor">接口拦截器</param>
         /// <returns></returns>
-        protected override Func<IHttpApiInterceptor, ApiActionInvoker[], THttpApi> CreateFactory()
+        public THttpApi CreateInstance(IHttpApiInterceptor apiInterceptor)
         {
-            var proxyType = FindProxyType(typeof(THttpApi));
-            if (proxyType != null)
-            {
-                return LambdaUtil.CreateCtorFunc<IHttpApiInterceptor, ApiActionInvoker[], THttpApi>(proxyType);
-            }
+            return this.activator.Invoke(apiInterceptor, this.actionInvokers);
+        }
 
-            var message = $"找不到{typeof(THttpApi)}的代理类：{GetErrorReason()}";
-            throw new ProxyTypeCreateException(typeof(THttpApi), message);
-        }       
+        /// <summary>
+        /// 查找接口的Api方法 
+        /// </summary>
+        /// <returns></returns>
+        private static MethodInfo[] FindApiMethods(Type proxyType)
+        {
+            var apiMethods = HttpApi.FindApiMethods(typeof(THttpApi));
+            var proxyMethods = proxyType.GetMethods();
+
+            var methods = from a in apiMethods
+                          join p in proxyMethods
+                          on new MethodFeature(a) equals new MethodFeature(p)
+                          let methodAttr = p.GetCustomAttribute<HttpApiProxyMethodAttribute>()
+                          where methodAttr != null
+                          orderby methodAttr.Index
+                          select a;
+
+            return methods.ToArray();
+        }
 
         /// <summary>
         /// 从接口所在程序集查找代理类
-        /// </summary>
-        /// <param name="interfaceType">接口类型</param>
+        /// </summary> 
         /// <returns></returns>
-        private static Type? FindProxyType(Type interfaceType)
+        private static Type? FindProxyTypeFromAssembly()
         {
+            var interfaceType = typeof(THttpApi);
             var httpApiType = interfaceType.IsGenericType
                 ? interfaceType.GetGenericTypeDefinition()
                 : interfaceType;
 
             foreach (var proxyType in interfaceType.Assembly.GetTypes())
             {
-                if (proxyType.IsVisible || proxyType.IsClass == false)
+                if (proxyType.IsClass == false)
                 {
                     continue;
                 }

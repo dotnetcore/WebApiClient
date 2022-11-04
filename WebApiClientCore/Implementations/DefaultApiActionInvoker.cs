@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace WebApiClientCore.Implementations
     /// 表示Action执行器
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
+    [DebuggerDisplay("Member = {ActionDescriptor.Member}")]
     public class DefaultApiActionInvoker<TResult> : ApiActionInvoker, IITaskReturnConvertable
     {
         /// <summary>
@@ -103,6 +105,7 @@ namespace WebApiClientCore.Implementations
         /// <summary>
         /// 表示ITask返回声明的Action执行器
         /// </summary> 
+        [DebuggerDisplay("Member = {ActionDescriptor.Member}")]
         private class ITaskReturnActionInvoker : ApiActionInvoker
         {
             /// <summary>
@@ -133,7 +136,7 @@ namespace WebApiClientCore.Implementations
             public override object Invoke(HttpClientContext context, object?[] arguments)
             {
                 return new ActionTask<TResult>(this.actionInvoker, context, arguments);
-            }
+            } 
         }
     }
 }
