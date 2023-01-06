@@ -1,13 +1,13 @@
-<Project>	
+<Project>
 	<PropertyGroup>
-		<Version>2.0.3</Version>
+		<Version>2.0.4</Version>
 		<Copyright>Copyright © laojiu 2017-2022</Copyright>
 		<NoWarn>IDE0057</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<Authors>laojiu</Authors>
-		<Company>laojiu</Company>		
+		<Company>laojiu</Company>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -18,8 +18,11 @@
 	<ItemGroup>
 		<None Include="..\icon.png">
 			<Pack>True</Pack>
-			<PackagePath></PackagePath>
+			<PackagePath>\</PackagePath>
 		</None>
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Include="..\.editorconfig" Link=".editorconfig" />
 	</ItemGroup>
 </Project>
