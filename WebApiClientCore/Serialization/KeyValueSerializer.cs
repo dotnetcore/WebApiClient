@@ -127,9 +127,16 @@ namespace WebApiClientCore.Serialization
                             break;
                         }
 
+                    case JsonTokenType.String:
+                        {
+                            var value = reader.GetString();
+                            var keyValue = new KeyValue(key, value);
+                            list.Add(keyValue);
+                            break;
+                        }
+
                     case JsonTokenType.False:
                     case JsonTokenType.True:
-                    case JsonTokenType.String:
                     case JsonTokenType.Number:
                         {
                             var value = Encoding.UTF8.GetString(reader.ValueSpan);
