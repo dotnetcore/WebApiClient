@@ -1,38 +1,39 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp3.1;net5;net6;net7</TargetFrameworks>
-  
-    <Summary>将本地或远程OpenApi文档解析生成WebApiClientCore的接口定义代码文件的工具</Summary>
-    <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
+	<PropertyGroup>
+		<Version>2.0.4.1</Version>
+		<OutputType>Exe</OutputType>
+		<TargetFrameworks>netcoreapp3.1;net5;net6;net7</TargetFrameworks>
 
-    <Description>将OpenApi的本地或远程文档解析生成WebApiClientCore的接口定义代码文件</Description>
-    <Summary>将OpenApi的本地或远程文档解析生成WebApiClientCore的接口定义代码文件</Summary>
+		<Summary>将本地或远程OpenApi文档解析生成WebApiClientCore的接口定义代码文件的工具</Summary>
+		<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
 
-    <PackAsTool>true</PackAsTool>
-  </PropertyGroup>
+		<Description>将OpenApi的本地或远程文档解析生成WebApiClientCore的接口定义代码文件</Description>
+		<Summary>将OpenApi的本地或远程文档解析生成WebApiClientCore的接口定义代码文件</Summary>
 
-  <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.8.0" />
-    <PackageReference Include="RazorEngineCore" Version="2020.6.1" />
-    <PackageReference Include="NSwag.CodeGeneration.CSharp" Version="13.6.2" />
-  </ItemGroup>
+		<PackAsTool>true</PackAsTool>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Update="petstore.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Views\HttpApi.cshtml">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Views\HttpModel.cshtml">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="CommandLineParser" Version="2.8.0" />
+		<PackageReference Include="RazorEngineCore" Version="2020.6.1" />
+		<PackageReference Include="NSwag.CodeGeneration.CSharp" Version="13.19.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="petstore.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\HttpApi.cshtml">
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			<Pack>$(IncludeRazorContentInPack)</Pack>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\HttpModel.cshtml">
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			<Pack>$(IncludeRazorContentInPack)</Pack>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>
