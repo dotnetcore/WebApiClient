@@ -158,7 +158,7 @@ namespace WebApiClientCore.Attributes
         {
             if (logMessage.Exception == null)
             {
-                logger.Log(LogLevel, logMessage.ToString());
+                logger.Log(logLevel, logMessage.ToString());
             }
             else
             {
