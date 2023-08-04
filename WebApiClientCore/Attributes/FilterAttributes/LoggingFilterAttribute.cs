@@ -12,6 +12,11 @@ namespace WebApiClientCore.Attributes
     public class LoggingFilterAttribute : ApiFilterAttribute
     {
         /// <summary>
+        /// 获取或设置日志输出等级
+        /// </summary>
+        public LogLevel logLevel { get; set; } = LogLevel.Information;
+
+        /// <summary>
         /// 获取或设置是否输出请求内容
         /// </summary>
         public bool LogRequest { get; set; } = true;
@@ -153,7 +158,7 @@ namespace WebApiClientCore.Attributes
         {
             if (logMessage.Exception == null)
             {
-                logger.LogInformation(logMessage.ToString());
+                logger.Log(LogLevel, logMessage.ToString());
             }
             else
             {
