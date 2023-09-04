@@ -27,8 +27,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddSingleton(typeof(HttpApiProvider<>));
             services.TryAddTransient(serviceProvider =>
             {
-                var httiApiProvider = serviceProvider.GetRequiredService<HttpApiProvider<THttpApi>>();
-                return httiApiProvider.CreateHttpApi(serviceProvider, name);
+                var httpApiProvider = serviceProvider.GetRequiredService<HttpApiProvider<THttpApi>>();
+                return httpApiProvider.CreateHttpApi(serviceProvider, name);
             });
 
             return services.AddHttpClient(name);
