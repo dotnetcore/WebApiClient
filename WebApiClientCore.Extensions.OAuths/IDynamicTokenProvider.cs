@@ -14,12 +14,12 @@ namespace WebApiClientCore.Extensions.OAuths
         /// 强制清除token以支持下次获取到新的token
         /// </summary>
         /// <param name="identifier">应用标识</param>
-        Task ClearTokenAsync(string? identifier);
+        Task ClearTokenAsync(string identifier);
 
         /// <summary>
         /// 根据应用标识获取token信息
         /// </summary>
         /// <param name="identifier">应用标识</param>
-        Task<TokenResult> GetTokenAsync(string? identifier);
+        Task<TokenResult> GetTokenAsync(string identifier);
     }
 }

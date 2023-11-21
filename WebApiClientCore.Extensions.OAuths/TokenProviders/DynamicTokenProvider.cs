@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebApiClientCore.Extensions.OAuths.Exceptions;
@@ -15,8 +16,8 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <summary>
         /// token缓存
         /// </summary>
-        private static readonly Dictionary<string, TokenResult> tokenResults
-            = new Dictionary<string, TokenResult>();
+        private static readonly ConcurrentDictionary<string, TokenResult> tokenResults
+            = new ConcurrentDictionary<string, TokenResult>();
 
         /// <summary>
         /// 服务提供者
@@ -42,10 +43,6 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         }
 
         private const string _default_identifier = "default";
-        /// <summary>
-        /// 应用标识（默认标识为 "default"）
-        /// </summary>
-        public string Identifier { get; private set; } = _default_identifier;
 
         /// <summary>
         /// 强制清除token以支持下次获取到新的token
@@ -59,25 +56,25 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// 强制清除token以支持下次获取到新的token
         /// </summary>
         /// <param name="identifier">应用标识</param>
-        public async Task ClearTokenAsync(string? identifier)
+        public async Task ClearTokenAsync(string identifier)
         {
             using (await asyncRoot.LockAsync().ConfigureAwait(false))
             {
                 identifier ??= _default_identifier;
                 if (tokenResults.ContainsKey(identifier))
-                    tokenResults.Remove(identifier);
+                    tokenResults.Remove(identifier, out _);
             }
         }
 
         /// <summary>
         /// 根据应用标识获取token信息
         /// </summary>
-        public async Task<TokenResult> GetTokenAsync(string? identifier)
+        public async Task<TokenResult> GetTokenAsync(string identifier)
         {
             using (await asyncRoot.LockAsync().ConfigureAwait(false))
             {
-                Identifier = identifier ?? _default_identifier;
-                if (!tokenResults.TryGetValue(Identifier, out var token) || token.IsExpired())
+                identifier ??= _default_identifier;
+                if (!tokenResults.TryGetValue(identifier, out var token) || token.IsExpired())
                 {
                     using var scope = _services.CreateScope();
 
@@ -90,7 +87,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
                         throw new TokenNullException();
                     }
 
-                    tokenResults[Identifier] = token!;
+                    tokenResults.GetOrAdd(identifier, token);
                     return token.EnsureSuccess();
                 }
                 return token;
@@ -126,7 +123,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <returns></returns>
         public override string ToString()
         {
-            return $"{Name}[{Identifier ?? _default_identifier}]";
+            return $"{Name}";
         }
     }
 }
