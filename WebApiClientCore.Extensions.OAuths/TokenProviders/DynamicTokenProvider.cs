@@ -87,7 +87,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
                         throw new TokenNullException();
                     }
 
-                    tokenResults.GetOrAdd(identifier, token);
+                    tokenResults.AddOrUpdate(identifier, token, (key, old) => token);
                     return token.EnsureSuccess();
                 }
                 return token;
