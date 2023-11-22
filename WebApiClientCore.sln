@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29519.181
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34316.72
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore", "WebApiClientCore\WebApiClientCore.csproj", "{6D2952E5-CFD8-40AF-91B1-3C30F043E79B}"
 EndProject
@@ -23,9 +23,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore.Extensions
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore.Abstractions", "WebApiClientCore.Abstractions\WebApiClientCore.Abstractions.csproj", "{BB0EFCA6-6AD2-45A2-B62D-62426F5015D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiClientCore.Extensions.SourceGenerator", "WebApiClientCore.Extensions.SourceGenerator\WebApiClientCore.Extensions.SourceGenerator.csproj", "{344CF9EB-5B11-406A-A8BC-93E5BAC6A5A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore.Extensions.SourceGenerator", "WebApiClientCore.Extensions.SourceGenerator\WebApiClientCore.Extensions.SourceGenerator.csproj", "{344CF9EB-5B11-406A-A8BC-93E5BAC6A5A0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore.Analyzers.SourceGenerator", "WebApiClientCore.Analyzers.SourceGenerator\WebApiClientCore.Analyzers.SourceGenerator.csproj", "{DFE35D63-0888-4EE2-A9F1-AC45756F5909}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestAOT", "..\..\..\Source\Repos\TestAOT\TestAOT\TestAOT.csproj", "{D130961F-45F4-4247-830F-BC6C10A5A0E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +83,10 @@ Global
 		{DFE35D63-0888-4EE2-A9F1-AC45756F5909}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFE35D63-0888-4EE2-A9F1-AC45756F5909}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFE35D63-0888-4EE2-A9F1-AC45756F5909}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D130961F-45F4-4247-830F-BC6C10A5A0E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D130961F-45F4-4247-830F-BC6C10A5A0E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D130961F-45F4-4247-830F-BC6C10A5A0E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D130961F-45F4-4247-830F-BC6C10A5A0E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
+using System;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -9,7 +11,7 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示token应用特性
     /// 需要为接口或接口的基础接口注册TokenProvider
-    /// </summary> 
+    /// </summary>
     /// <remarks>
     /// <para>• Client模式：services.AddClientCredentialsTokenProvider</para>
     /// <para>• Password模式：services.AddPasswordCredentialsTokenProvider</para>
@@ -28,8 +30,23 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public sealed override async Task OnRequestAsync(ApiRequestContext context)
         {
-            var token = await this.GetTokenProvider(context).GetTokenAsync().ConfigureAwait(false);
+            var identifier = GetTokenKey(context);
+            var token = await this.GetTokenProvider(context).GetTokenAsync(identifier).ConfigureAwait(false);
             this.UseTokenResult(context, token);
+        }
+
+        private static string GetTokenKey(ApiRequestContext context)
+        {
+            var parameter = context.ActionDescriptor.Parameters
+                    .FirstOrDefault(p => p.ParameterType == typeof(OAuthTokenKeyAttribute));
+
+            if (parameter == null)
+                throw new ArgumentNullException(nameof(parameter));
+
+            if (!context.TryGetArgument(parameter.Name, out string? identifier))
+                throw new ArgumentNullException(nameof(parameter));
+
+            return identifier ?? string.Empty;
         }
 
         /// <summary>

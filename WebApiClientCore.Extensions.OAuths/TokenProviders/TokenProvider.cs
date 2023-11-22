@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using WebApiClientCore.Extensions.OAuths.Exceptions;
 
@@ -11,20 +12,26 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
     /// </summary>
     public abstract class TokenProvider : ITokenProvider
     {
+        private class TokenItem
+        {
+            /// <summary>
+            /// 异步锁
+            /// </summary>
+            private readonly AsyncRoot asyncRoot = new AsyncRoot();
+            public TokenResult? TokenResult { get; set; }
+        }
         /// <summary>
-        /// 最近请求到的token
+        /// token缓存
         /// </summary>
-        private TokenResult? token;
+        private static readonly ConcurrentDictionary<string, Lazy<TokenItem>> keyTokens
+            = new ConcurrentDictionary<string, Lazy<TokenItem>>();
+
+        #region MyRegion
 
         /// <summary>
         /// 服务提供者
         /// </summary>
         private readonly IServiceProvider services;
-
-        /// <summary>
-        /// 异步锁
-        /// </summary>
-        private readonly AsyncRoot asyncRoot = new AsyncRoot();
 
         /// <summary>
         /// 获取或设置别名
@@ -50,59 +57,73 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         {
             return this.services.GetRequiredService<IOptionsMonitor<TOptions>>().Get(this.Name);
         }
+        #endregion
 
         /// <summary>
         /// 强制清除token以支持下次获取到新的token
         /// </summary>
         public void ClearToken()
         {
-            using (this.asyncRoot.Lock())
-            {
-                this.token = null;
-            }
+            ClearToken(string.Empty);
+        }
+        /// <summary>
+        /// 强制清除token以支持下次获取到新的token
+        /// </summary>
+        /// <param name="identifier">应用标识</param>
+        public void ClearToken(string identifier)
+        {
+            keyTokens.TryRemove(identifier, out _);
         }
 
         /// <summary>
         /// 获取token信息
-        /// </summary> 
+        /// </summary>
         /// <returns></returns>
         public async Task<TokenResult> GetTokenAsync()
         {
-            using (await this.asyncRoot.LockAsync().ConfigureAwait(false))
+            return await GetTokenAsync(string.Empty);
+        }
+
+        /// <summary>
+        /// 获取token信息
+        /// </summary>
+        /// <param name="identifier">应用标识</param>
+        public async Task<TokenResult> GetTokenAsync(string identifier)
+        {
+            if (!keyTokens.TryGetValue(identifier, out var tokenItem)
+                || tokenItem.Value.TokenResult?.IsExpired() == true)
             {
-                if (this.token == null)
-                {
-                    using var scope = this.services.CreateScope();
-                    this.token = await this.RequestTokenAsync(scope.ServiceProvider).ConfigureAwait(false);
-                }
-                else if (this.token.IsExpired() == true)
-                {
-                    using var scope = this.services.CreateScope();
+                using var scope = services.CreateScope();
 
-                    this.token = this.token.CanRefresh() == false
-                        ? await this.RequestTokenAsync(scope.ServiceProvider).ConfigureAwait(false)
-                        : await this.RefreshTokenAsync(scope.ServiceProvider, this.token.Refresh_token ?? string.Empty).ConfigureAwait(false);
-                }
+                var token = (
+                    tokenItem.Value.TokenResult?.CanRefresh() != true
+                        ? await RequestTokenAsync(scope.ServiceProvider)
+                            .ConfigureAwait(false)
+                        : await RefreshTokenAsync(scope.ServiceProvider, tokenItem.Value.TokenResult.Refresh_token!)
+                            .ConfigureAwait(false)
+                    ) ?? throw new TokenNullException();
 
-                if (this.token == null)
-                {
-                    throw new TokenNullException();
-                }
-                return this.token.EnsureSuccess();
+                tokenItem = new Lazy<TokenItem>(() => new TokenItem() { TokenResult = token });
+
+                keyTokens.AddOrUpdate(identifier, tokenItem, (key, old) => tokenItem);
+
+                return token.EnsureSuccess();
             }
+
+            return tokenItem.Value.TokenResult!;
         }
 
 
         /// <summary>
         /// 请求获取token
-        /// </summary> 
+        /// </summary>
         /// <param name="serviceProvider">服务提供者</param>
         /// <returns></returns>
         protected abstract Task<TokenResult?> RequestTokenAsync(IServiceProvider serviceProvider);
 
         /// <summary>
         /// 刷新token
-        /// </summary> 
+        /// </summary>
         /// <param name="serviceProvider">服务提供者</param>
         /// <param name="refresh_token">刷新token</param>
         /// <returns></returns>
