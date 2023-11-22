@@ -23,6 +23,12 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         public TypeMatchMode TokenProviderSearchMode { get; set; } = TypeMatchMode.TypeOrBaseTypes;
 
+        private static string GetDynamicTokenKey(ApiRequestContext context)
+        {
+            context.Properties.TryGetValue(typeof(OAuthTokenAttribute), out string? identifier);
+            return identifier ?? string.Empty;
+        }
+
         /// <summary>
         /// 请求之前
         /// </summary>
@@ -30,8 +36,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public sealed override async Task OnRequestAsync(ApiRequestContext context)
         {
-            context.Properties.TryGetValue(typeof(OAuthTokenAttribute), out string? identifier);
-            identifier ??= string.Empty;
+            var identifier = GetDynamicTokenKey(context);
             var token = await this.GetTokenProvider(context).GetTokenAsync(identifier).ConfigureAwait(false);
             this.UseTokenResult(context, token);
         }
@@ -45,7 +50,8 @@ namespace WebApiClientCore.Attributes
         {
             if (this.IsUnauthorized(context) == true)
             {
-                this.GetTokenProvider(context).ClearToken();
+                var identifier = GetDynamicTokenKey(context);
+                this.GetTokenProvider(context).ClearToken(identifier);
             }
             return Task.CompletedTask;
         }

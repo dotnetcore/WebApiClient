@@ -12,19 +12,11 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
     /// </summary>
     public abstract class TokenProvider : ITokenProvider
     {
-        private class TokenItem
-        {
-            /// <summary>
-            /// 异步锁
-            /// </summary>
-            private readonly AsyncRoot asyncRoot = new AsyncRoot();
-            public TokenResult? TokenResult { get; set; }
-        }
         /// <summary>
         /// token缓存
         /// </summary>
-        private static readonly ConcurrentDictionary<string, Lazy<TokenItem>> keyTokens
-            = new ConcurrentDictionary<string, Lazy<TokenItem>>();
+        private static readonly ConcurrentDictionary<string, Lazy<TokenResult>> keyTokens
+            = new ConcurrentDictionary<string, Lazy<TokenResult>>();
 
         #region MyRegion
 
@@ -91,26 +83,26 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         public async Task<TokenResult> GetTokenAsync(string identifier)
         {
             if (!keyTokens.TryGetValue(identifier, out var tokenItem)
-                || tokenItem.Value.TokenResult?.IsExpired() == true)
+                || tokenItem.Value.IsExpired() == true)
             {
                 using var scope = services.CreateScope();
 
                 var token = (
-                    tokenItem.Value.TokenResult?.CanRefresh() != true
-                        ? await RequestTokenAsync(scope.ServiceProvider)
+                    tokenItem.Value.CanRefresh() != true
+                        ? await RequestTokenAsync(scope.ServiceProvider, identifier)
                             .ConfigureAwait(false)
-                        : await RefreshTokenAsync(scope.ServiceProvider, tokenItem.Value.TokenResult.Refresh_token!)
+                        : await RefreshTokenAsync(scope.ServiceProvider, tokenItem.Value.Refresh_token!)
                             .ConfigureAwait(false)
                     ) ?? throw new TokenNullException();
 
-                tokenItem = new Lazy<TokenItem>(() => new TokenItem() { TokenResult = token });
+                tokenItem = new Lazy<TokenResult>(() => token);
 
                 keyTokens.AddOrUpdate(identifier, tokenItem, (key, old) => tokenItem);
 
                 return token.EnsureSuccess();
             }
 
-            return tokenItem.Value.TokenResult!;
+            return tokenItem.Value;
         }
 
 
@@ -120,6 +112,19 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <param name="serviceProvider">服务提供者</param>
         /// <returns></returns>
         protected abstract Task<TokenResult?> RequestTokenAsync(IServiceProvider serviceProvider);
+
+        /// <summary>
+        /// 请求获取token
+        /// </summary>
+        /// <param name="serviceProvider">服务提供者</param>
+        /// <param name="identifier">服务提供者</param>
+        protected virtual Task<TokenResult?> RequestTokenAsync(IServiceProvider serviceProvider, string? identifier)
+        {
+            if (string.IsNullOrEmpty(identifier))
+                return RequestTokenAsync(serviceProvider);
+
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// 刷新token
