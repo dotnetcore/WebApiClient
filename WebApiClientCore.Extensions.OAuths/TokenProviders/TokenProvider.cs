@@ -15,10 +15,8 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <summary>
         /// token缓存
         /// </summary>
-        private static readonly ConcurrentDictionary<string, Lazy<TokenResult>> keyTokens
-            = new ConcurrentDictionary<string, Lazy<TokenResult>>();
-
-        #region MyRegion
+        private static readonly ConcurrentDictionary<string, Lazy<TokenResult?>> keyTokens
+            = new ConcurrentDictionary<string, Lazy<TokenResult?>>();
 
         /// <summary>
         /// 服务提供者
@@ -49,7 +47,6 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         {
             return this.services.GetRequiredService<IOptionsMonitor<TOptions>>().Get(this.Name);
         }
-        #endregion
 
         /// <summary>
         /// 强制清除token以支持下次获取到新的token
@@ -83,26 +80,26 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         public async Task<TokenResult> GetTokenAsync(string identifier)
         {
             if (!keyTokens.TryGetValue(identifier, out var tokenItem)
-                || tokenItem.Value.IsExpired() == true)
+                || tokenItem?.Value?.IsExpired() == true)
             {
                 using var scope = services.CreateScope();
 
                 var token = (
-                    tokenItem.Value.CanRefresh() != true
+                    tokenItem?.Value?.CanRefresh() != true
                         ? await RequestTokenAsync(scope.ServiceProvider, identifier)
                             .ConfigureAwait(false)
                         : await RefreshTokenAsync(scope.ServiceProvider, tokenItem.Value.Refresh_token!)
                             .ConfigureAwait(false)
                     ) ?? throw new TokenNullException();
 
-                tokenItem = new Lazy<TokenResult>(() => token);
+                tokenItem = new Lazy<TokenResult?>(() => token);
 
                 keyTokens.AddOrUpdate(identifier, tokenItem, (key, old) => tokenItem);
 
                 return token.EnsureSuccess();
             }
 
-            return tokenItem.Value;
+            return tokenItem?.Value!;
         }
 
 
