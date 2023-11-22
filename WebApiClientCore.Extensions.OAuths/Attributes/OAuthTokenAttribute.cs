@@ -30,23 +30,10 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public sealed override async Task OnRequestAsync(ApiRequestContext context)
         {
-            var identifier = GetTokenKey(context);
+            context.Properties.TryGetValue(typeof(OAuthTokenAttribute), out string? identifier);
+            identifier ??= string.Empty;
             var token = await this.GetTokenProvider(context).GetTokenAsync(identifier).ConfigureAwait(false);
             this.UseTokenResult(context, token);
-        }
-
-        private static string GetTokenKey(ApiRequestContext context)
-        {
-            var parameter = context.ActionDescriptor.Parameters
-                    .FirstOrDefault(p => p.ParameterType == typeof(OAuthTokenKeyAttribute));
-
-            if (parameter == null)
-                throw new ArgumentNullException(nameof(parameter));
-
-            if (!context.TryGetArgument(parameter.Name, out string? identifier))
-                throw new ArgumentNullException(nameof(parameter));
-
-            return identifier ?? string.Empty;
         }
 
         /// <summary>

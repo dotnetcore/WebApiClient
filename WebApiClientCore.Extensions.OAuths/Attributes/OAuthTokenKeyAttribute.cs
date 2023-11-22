@@ -12,6 +12,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         public override Task OnRequestAsync(ApiParameterContext context)
         {
+            context.Properties.Set(typeof(OAuthTokenAttribute), context.ParameterValue);
             return Task.CompletedTask;
         }
     }
