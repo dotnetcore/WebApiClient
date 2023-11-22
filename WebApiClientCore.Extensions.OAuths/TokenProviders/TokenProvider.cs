@@ -12,11 +12,17 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
     /// </summary>
     public abstract class TokenProvider : ITokenProvider
     {
+        private class TokenItem
+        {
+            public AsyncRoot AsyncRoot { get; } = new AsyncRoot();
+            public TokenResult? TokenResult { get; set; }
+        }
+
         /// <summary>
         /// token缓存
         /// </summary>
-        private static readonly ConcurrentDictionary<string, Lazy<TokenResult?>> keyTokens
-            = new ConcurrentDictionary<string, Lazy<TokenResult?>>();
+        private static readonly ConcurrentDictionary<string, Lazy<TokenItem?>> keyTokens
+            = new ConcurrentDictionary<string, Lazy<TokenItem?>>();
 
         /// <summary>
         /// 服务提供者
@@ -58,10 +64,10 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <summary>
         /// 强制清除token以支持下次获取到新的token
         /// </summary>
-        /// <param name="identifier">应用标识</param>
-        public void ClearToken(string identifier)
+        /// <param name="key">应用标识</param>
+        public void ClearToken(string key)
         {
-            keyTokens.TryRemove(identifier, out _);
+            keyTokens.TryRemove(key, out _);
         }
 
         /// <summary>
@@ -76,30 +82,32 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <summary>
         /// 获取token信息
         /// </summary>
-        /// <param name="identifier">应用标识</param>
-        public async Task<TokenResult> GetTokenAsync(string identifier)
+        /// <param name="key">应用标识</param>
+        public async Task<TokenResult> GetTokenAsync(string key)
         {
-            if (!keyTokens.TryGetValue(identifier, out var tokenItem)
-                || tokenItem?.Value?.IsExpired() == true)
+            var tokenItem = keyTokens.GetOrAdd(key, _ => new Lazy<TokenItem?>(() => new TokenItem())).Value!;
+
+            using (await tokenItem.AsyncRoot.LockAsync().ConfigureAwait(false))
             {
-                using var scope = services.CreateScope();
+                if (tokenItem.TokenResult == null)
+                {
+                    using var scope = services.CreateScope();
+                    tokenItem.TokenResult = await RequestTokenAsync(scope.ServiceProvider, key)
+                             .ConfigureAwait(false);
+                }
+                else if (tokenItem.TokenResult.IsExpired())
+                {
+                    using var scope = services.CreateScope();
+                    tokenItem.TokenResult = await RefreshTokenAsync(scope.ServiceProvider, tokenItem.TokenResult.Refresh_token!)
+                             .ConfigureAwait(false);
+                }
+                if (tokenItem.TokenResult == null)
+                {
+                    throw new TokenNullException();
+                }
 
-                var token = (
-                    tokenItem?.Value?.CanRefresh() != true
-                        ? await RequestTokenAsync(scope.ServiceProvider, identifier)
-                            .ConfigureAwait(false)
-                        : await RefreshTokenAsync(scope.ServiceProvider, tokenItem.Value.Refresh_token!)
-                            .ConfigureAwait(false)
-                    ) ?? throw new TokenNullException();
-
-                tokenItem = new Lazy<TokenResult?>(() => token);
-
-                keyTokens.AddOrUpdate(identifier, tokenItem, (key, old) => tokenItem);
-
-                return token.EnsureSuccess();
+                return tokenItem.TokenResult.EnsureSuccess();
             }
-
-            return tokenItem?.Value!;
         }
 
 
@@ -114,10 +122,10 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// 请求获取token
         /// </summary>
         /// <param name="serviceProvider">服务提供者</param>
-        /// <param name="identifier">服务提供者</param>
-        protected virtual Task<TokenResult?> RequestTokenAsync(IServiceProvider serviceProvider, string? identifier)
+        /// <param name="key">应用标识</param>
+        protected virtual Task<TokenResult?> RequestTokenAsync(IServiceProvider serviceProvider, string? key)
         {
-            if (string.IsNullOrEmpty(identifier))
+            if (string.IsNullOrEmpty(key))
                 return RequestTokenAsync(serviceProvider);
 
             throw new NotImplementedException();

@@ -25,8 +25,8 @@ namespace WebApiClientCore.Attributes
 
         private static string GetDynamicTokenKey(ApiRequestContext context)
         {
-            context.Properties.TryGetValue(typeof(OAuthTokenAttribute), out string? identifier);
-            return identifier ?? string.Empty;
+            context.Properties.TryGetValue(typeof(OAuthTokenAttribute), out string? key);
+            return key ?? string.Empty;
         }
 
         /// <summary>
@@ -36,8 +36,8 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public sealed override async Task OnRequestAsync(ApiRequestContext context)
         {
-            var identifier = GetDynamicTokenKey(context);
-            var token = await this.GetTokenProvider(context).GetTokenAsync(identifier).ConfigureAwait(false);
+            var key = GetDynamicTokenKey(context);
+            var token = await this.GetTokenProvider(context).GetTokenAsync(key).ConfigureAwait(false);
             this.UseTokenResult(context, token);
         }
 
@@ -50,8 +50,8 @@ namespace WebApiClientCore.Attributes
         {
             if (this.IsUnauthorized(context) == true)
             {
-                var identifier = GetDynamicTokenKey(context);
-                this.GetTokenProvider(context).ClearToken(identifier);
+                var key = GetDynamicTokenKey(context);
+                this.GetTokenProvider(context).ClearToken(key);
             }
             return Task.CompletedTask;
         }
