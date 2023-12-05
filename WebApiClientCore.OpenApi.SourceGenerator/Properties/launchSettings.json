@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "WebApiClient.Tools.Swagger": {
+    "WebApiClientCore.OpenApi.SourceGenerator": {
       "commandName": "Project",
       "commandLineArgs": "-o petstore.json"
     }
