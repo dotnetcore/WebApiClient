@@ -92,14 +92,14 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
                 if (tokenItem.TokenResult == null)
                 {
                     using var scope = services.CreateScope();
-                    tokenItem.TokenResult = await RequestTokenAsync(scope.ServiceProvider, key)
-                             .ConfigureAwait(false);
+                    tokenItem.TokenResult = await RequestTokenAsync(scope.ServiceProvider, key).ConfigureAwait(false);
                 }
                 else if (tokenItem.TokenResult.IsExpired())
                 {
                     using var scope = services.CreateScope();
-                    tokenItem.TokenResult = await RefreshTokenAsync(scope.ServiceProvider, tokenItem.TokenResult.Refresh_token!)
-                             .ConfigureAwait(false);
+                    tokenItem.TokenResult = tokenItem.TokenResult.CanRefresh()
+                        ? await RefreshTokenAsync(scope.ServiceProvider, tokenItem.TokenResult.Refresh_token!).ConfigureAwait(false)
+                        : await RequestTokenAsync(scope.ServiceProvider, key).ConfigureAwait(false);
                 }
                 if (tokenItem.TokenResult == null)
                 {
