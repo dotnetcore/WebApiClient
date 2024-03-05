@@ -27,7 +27,7 @@ namespace WebApiClientCore.Implementations.TypeAttributes
             {
                 foreach (var item in tokens)
                 {
-                    if (token.Equals(CancellationToken.None) == false)
+                    if (item.Equals(CancellationToken.None) == false)
                     {
                         context.HttpContext.CancellationTokens.Add(item);
                     }
