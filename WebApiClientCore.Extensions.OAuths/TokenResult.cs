@@ -28,7 +28,7 @@ namespace WebApiClientCore.Extensions.OAuths
 
         /// <summary>
         /// expires_in
-        /// 过期时间戳(秒)
+        /// access_token 过期时间戳(秒)
         /// </summary>
         [JsonPropertyName("expires_in")]
         public long Expires_in { get; set; }
@@ -44,6 +44,13 @@ namespace WebApiClientCore.Extensions.OAuths
         /// </summary>
         [JsonPropertyName("refresh_token")]
         public string? Refresh_token { get; set; }
+
+        /// <summary>
+        /// refresh_expires_in
+        /// refresh_token 过期时间戳(秒)
+        /// </summary>
+        [JsonPropertyName("refresh_expires_in")]
+        public long? Refresh_expires_in { get; set; }
 
         /// <summary>
         /// error
@@ -74,7 +81,7 @@ namespace WebApiClientCore.Extensions.OAuths
         }
 
         /// <summary>
-        /// 返回是否已过期 
+        /// 返回是否已过期
         /// </summary>
         /// <returns></returns>
         public virtual bool IsExpired()
@@ -83,12 +90,15 @@ namespace WebApiClientCore.Extensions.OAuths
         }
 
         /// <summary>
-        /// 返回token是否支持刷新
+        /// 返回token是否支持刷新，需要同时满足：refresh_token有值，refresh_expires_in无值，若refresh_expires_in有值 必须当前没有过期。
         /// </summary>
         /// <returns></returns>
         public virtual bool CanRefresh()
         {
-            return string.IsNullOrEmpty(this.Refresh_token) == false;
+            return string.IsNullOrEmpty(this.Refresh_token) == false
+                && (!this.Refresh_expires_in.HasValue
+                    || (this.Refresh_expires_in.HasValue
+                        && DateTime.Now.Subtract(this.createTime) < TimeSpan.FromSeconds(this.Refresh_expires_in.Value)));
         }
     }
 }
