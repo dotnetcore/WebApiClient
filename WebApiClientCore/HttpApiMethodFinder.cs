@@ -14,17 +14,15 @@ namespace WebApiClientCore
         /// 查找接口类型及其继承的接口的所有方法
         /// </summary>
         /// <param name="httpApiType">接口类型</param> 
-        /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="ArgumentException"></exception> 
         /// <returns></returns>
         public static IEnumerable<MethodInfo> FindApiMethods(Type httpApiType)
         {
             var interfaces = httpApiType.GetInterfaces().Append(httpApiType);
             return Sort(interfaces, t => t.GetInterfaces())
                 .Reverse()
-                .SelectMany(item => item.GetMethods().Select(m => new MethodFeature(m)))
-                .Distinct()
-                .Select(item => item.Method);
+                .SelectMany(item => item.GetMethods())
+                .Distinct(MethodEqualityComparer.Default);
         }
 
         /// <summary>
@@ -49,8 +47,7 @@ namespace WebApiClientCore
 
         private static void Visit<T>(T item, Func<T, IEnumerable<T>> getDependencies, List<T> sorted, Dictionary<T, bool> visited)
         {
-            bool inProcess;
-            var alreadyVisited = visited.TryGetValue(item, out inProcess);
+            var alreadyVisited = visited.TryGetValue(item, out var inProcess);
 
             // 如果已经访问该顶点，则直接返回
             if (alreadyVisited)
@@ -85,33 +82,14 @@ namespace WebApiClientCore
         }
 
         /// <summary>
-        /// 表示MethodInfo的特征
+        /// 表示MethodInfo的相等比较器
         /// </summary>
-        private class MethodFeature : IEquatable<MethodFeature>
+        private class MethodEqualityComparer : IEqualityComparer<MethodInfo>
         {
-            private readonly MethodInfo method;
+            public static MethodEqualityComparer Default { get; } = new MethodEqualityComparer();
 
-            public MethodInfo Method => method;
-
-            /// <summary>
-            /// MethodInfo的特征
-            /// </summary>
-            /// <param name="method"></param>
-            public MethodFeature(MethodInfo method)
+            public bool Equals(MethodInfo x, MethodInfo y)
             {
-                this.method = method;
-            }
-
-            /// <summary>
-            /// 比较方法原型是否相等
-            /// </summary>
-            /// <param name="other"></param>
-            /// <returns></returns>
-            public bool Equals(MethodFeature other)
-            {
-                var x = this.method;
-                var y = other.method;
-
                 if (x.Name != y.Name || x.ReturnType != y.ReturnType)
                 {
                     return false;
@@ -122,25 +100,16 @@ namespace WebApiClientCore
                 return xParameterTypes.SequenceEqual(yParameterTypes);
             }
 
-            /// <summary>
-            /// 获取哈希
-            /// </summary>
-            /// <returns></returns>
-            public override int GetHashCode()
+            public int GetHashCode(MethodInfo obj)
             {
                 var hashCode = new HashCode();
-                hashCode.Add(this.method.Name);
-                hashCode.Add(this.method.ReturnType);
-                foreach (var parameter in this.method.GetParameters())
+                hashCode.Add(obj.Name);
+                hashCode.Add(obj.ReturnType);
+                foreach (var parameter in obj.GetParameters())
                 {
                     hashCode.Add(parameter.ParameterType);
                 }
                 return hashCode.ToHashCode();
-            }
-
-            public override bool Equals(object obj)
-            {
-                return obj is MethodFeature other && this.Equals(other);
             }
         }
     }
