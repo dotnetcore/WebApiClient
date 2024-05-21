@@ -141,7 +141,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             builder.AppendLine($"\t\t[HttpApiProxyMethod({index})]");
             builder.AppendLine($"\t\tpublic {method.ReturnType} {method.Name}( {parametersString} )");
             builder.AppendLine("\t\t{");
-            builder.AppendLine($"\t\t\treturn ({method.ReturnType})this.{this.apiInterceptorFieldName}.Intercept(this.{this.actionInvokersFieldName}[{index}], new object[] {{ {parameterNamesString} }});");
+            builder.AppendLine($"\t\t\treturn ({method.ReturnType})this.{this.apiInterceptorFieldName}.Intercept(this.{this.actionInvokersFieldName}[{index}], new object?[] {{ {parameterNamesString} }});");
             builder.AppendLine("\t\t}");
             return builder.ToString();
         }
