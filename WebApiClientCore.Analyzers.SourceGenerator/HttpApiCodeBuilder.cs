@@ -111,7 +111,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             builder.AppendLine("\t\t}");
 
             var index = 0;
-            foreach (var method in FindApiMethods(this.httpApi))
+            foreach (var method in HttpApiMethodFinder.FindApiMethods(this.httpApi))
             {
                 var methodCode = this.BuildMethod(method, index);
                 builder.AppendLine(methodCode);
@@ -125,19 +125,6 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             return builder.ToString();
         }
 
-        /// <summary>
-        /// 查找接口类型及其继承的接口的所有方法
-        /// </summary>
-        /// <param name="httpApi">接口</param>
-        /// <returns></returns>
-        private static IEnumerable<IMethodSymbol> FindApiMethods(INamedTypeSymbol httpApi)
-        {
-            return httpApi
-                .AllInterfaces
-                .Append(httpApi)
-                .SelectMany(item => item.GetMembers())
-                .OfType<IMethodSymbol>();
-        }
 
         /// <summary>
         /// 构建方法
