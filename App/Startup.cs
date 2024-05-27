@@ -49,7 +49,8 @@ namespace App
             services
                 .AddWebApiClient()
                 .UseJsonFirstApiActionDescriptor()
-                .UseSourceGeneratorHttpApiActivator();
+                .UseSourceGeneratorHttpApiActivator()
+                .AddDynamicDependencyApp();
 
             // ×¢²áuserApi
             services.AddHttpApi(typeof(IUserApi), o =>

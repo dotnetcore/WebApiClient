@@ -35,6 +35,9 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
                 {
                     context.AddSource(builder.HttpApiTypeName, builder.ToSourceText());
                 }
+
+                var dependencyBuilder = new DynamicDependencyBuilder(context.Compilation, builders);
+                context.AddSource(dependencyBuilder.FileName, dependencyBuilder.ToSourceText());
             }
         }
     }

@@ -8,5 +8,6 @@ SourceGenerator是一种新的c#编译时代码补充生成技术，可以非常
 // 应用编译时生成接口的代理类型代码
 services
     .AddWebApiClient()
-    .UseSourceGeneratorHttpApiActivator();
+    .UseSourceGeneratorHttpApiActivator()
+	.AddDynamicDependency{AssemblyName};
 ```
