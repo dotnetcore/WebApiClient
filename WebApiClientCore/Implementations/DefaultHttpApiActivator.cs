@@ -11,7 +11,11 @@ namespace WebApiClientCore.Implementations
     /// 运行时使用Emit动态创建THttpApi的代理类和代理类实例
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
-    public class DefaultHttpApiActivator<THttpApi> : IHttpApiActivator<THttpApi>
+    public class DefaultHttpApiActivator<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        THttpApi> : IHttpApiActivator<THttpApi>
     {
         private readonly ApiActionInvoker[] actionInvokers;
         private readonly Func<IHttpApiInterceptor, ApiActionInvoker[], THttpApi> activator;

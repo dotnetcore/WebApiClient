@@ -1,9 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<Version>2.0.5.1</Version>
+	<PropertyGroup> 
 		<Nullable>enable</Nullable>
-		<TargetFramework>netstandard2.1</TargetFramework>
+		<TargetFrameworks>netstandard2.1;net5.0</TargetFrameworks>
 		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 
 		<SignAssembly>true</SignAssembly>

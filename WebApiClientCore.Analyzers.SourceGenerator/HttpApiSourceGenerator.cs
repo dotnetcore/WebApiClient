@@ -29,15 +29,19 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
                 var builders = receiver
                     .GetHttpApiTypes(context.Compilation)
                     .Select(i => new HttpApiCodeBuilder(i))
-                    .Distinct();
+                    .Distinct()
+                    .ToArray();
 
                 foreach (var builder in builders)
                 {
                     context.AddSource(builder.HttpApiTypeName, builder.ToSourceText());
                 }
 
-                var dependencyBuilder = new DynamicDependencyBuilder(context.Compilation, builders);
-                context.AddSource(dependencyBuilder.FileName, dependencyBuilder.ToSourceText());
+                if (builders.Length > 0)
+                {
+                    var dependencyBuilder = new DynamicDependencyBuilder(context.Compilation, builders);
+                    context.AddSource(dependencyBuilder.FileName, dependencyBuilder.ToSourceText());
+                }
             }
         }
     }

@@ -65,7 +65,7 @@ namespace WebApiClientCore.Implementations
 
                 var httpContext = new HttpContext(context, requestMessage);
                 var requestContext = new ApiRequestContext(httpContext, this.ActionDescriptor, arguments, new DefaultDataCollection());
-                return await this.InvokeAsync(requestContext).ConfigureAwait(false);
+                return await InvokeAsync(requestContext).ConfigureAwait(false);
             }
             catch (HttpRequestException)
             {
@@ -83,7 +83,7 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        private async Task<TResult> InvokeAsync(ApiRequestContext request)
+        private static async Task<TResult> InvokeAsync(ApiRequestContext request)
         {
 #nullable disable
             var response = await ApiRequestExecuter.ExecuteAsync(request).ConfigureAwait(false);
@@ -136,7 +136,7 @@ namespace WebApiClientCore.Implementations
             public override object Invoke(HttpClientContext context, object?[] arguments)
             {
                 return new ActionTask<TResult>(this.actionInvoker, context, arguments);
-            } 
+            }
         }
     }
 }
