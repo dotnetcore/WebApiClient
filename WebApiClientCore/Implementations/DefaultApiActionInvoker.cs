@@ -13,7 +13,11 @@ namespace WebApiClientCore.Implementations
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
     [DebuggerDisplay("Member = {ActionDescriptor.Member}")]
-    public class DefaultApiActionInvoker<TResult> : ApiActionInvoker, IITaskReturnConvertable
+    public class DefaultApiActionInvoker<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)]
+#endif
+    TResult> : ApiActionInvoker, IITaskReturnConvertable
     {
         /// <summary>
         /// 获取Action描述

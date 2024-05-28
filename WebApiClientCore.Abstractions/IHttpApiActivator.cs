@@ -4,7 +4,11 @@
     /// 定义THttpApi的实例创建器的接口
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
-    public interface IHttpApiActivator<THttpApi>
+    public interface IHttpApiActivator<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)]
+#endif
+    THttpApi>
     {
         /// <summary>
         /// 创建THttpApi的代理实例
