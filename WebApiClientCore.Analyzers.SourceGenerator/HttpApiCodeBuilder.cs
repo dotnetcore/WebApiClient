@@ -75,6 +75,26 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         }
 
         /// <summary>
+        /// 获取所有方法的返回类型的Result类型
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<ITypeSymbol> GetResultTypes()
+        {
+            var methods = HttpApiMethodFinder.FindApiMethods(this.httpApi);
+            foreach (var method in methods)
+            {
+                if (method.ReturnType is INamedTypeSymbol typeSymbol)
+                {
+                    var resultType = typeSymbol.TypeArguments.FirstOrDefault();
+                    if (resultType != null)
+                    {
+                        yield return resultType;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// 转换为SourceText
         /// </summary>
         /// <returns></returns>
@@ -128,22 +148,6 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         }
 
 
-        public IEnumerable<ITypeSymbol> GetResultTypes()
-        {
-            var methods = HttpApiMethodFinder.FindApiMethods(this.httpApi);
-            foreach (var method in methods)
-            {
-                if (method.ReturnType is INamedTypeSymbol typeSymbol)
-                {
-                    var resultType = typeSymbol.TypeArguments.FirstOrDefault();
-                    if (resultType != null)
-                    {
-                        yield return resultType;
-                    }
-                }
-            }
-        }
-
         /// <summary>
         /// 构建方法
         /// </summary>
@@ -155,11 +159,14 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             var builder = new StringBuilder();
             var parametersString = string.Join(",", method.Parameters.Select(item => $"{item.Type} {item.Name}"));
             var parameterNamesString = string.Join(",", method.Parameters.Select(item => item.Name));
+            var paremterArrayString = string.IsNullOrEmpty(parameterNamesString)
+                ? "Array.Empty<object>()"
+                : $"new object[] {{ {parameterNamesString} }}";
 
             builder.AppendLine($"\t\t[HttpApiProxyMethod({index})]");
             builder.AppendLine($"\t\tpublic {method.ReturnType} {method.Name}( {parametersString} )");
             builder.AppendLine("\t\t{");
-            builder.AppendLine($"\t\t\treturn ({method.ReturnType})this.{this.apiInterceptorFieldName}.Intercept(this.{this.actionInvokersFieldName}[{index}], new object[] {{ {parameterNamesString} }});");
+            builder.AppendLine($"\t\t\treturn ({method.ReturnType})this.{this.apiInterceptorFieldName}.Intercept(this.{this.actionInvokersFieldName}[{index}], {paremterArrayString});");
             builder.AppendLine("\t\t}");
             return builder.ToString();
         }
