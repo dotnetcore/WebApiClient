@@ -1,7 +1,7 @@
 <Project>
 	<PropertyGroup>
-		<Version>2.0.5</Version>
-		<Copyright>Copyright © laojiu 2017-2023</Copyright>
+		<Version>2.0.6</Version>
+		<Copyright>Copyright © laojiu 2017-2024</Copyright>
 		<NoWarn>IDE0057</NoWarn>
 	</PropertyGroup>
 
