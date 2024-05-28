@@ -28,6 +28,7 @@ namespace AppAot
             using var scope = this.serviceScopeFactory.CreateScope();
             var api = scope.ServiceProvider.GetRequiredService<ICloudflareApi>();
             var appData = await api.GetAppDataAsync();
+            appData = await api.GetAppData2Async();
             this.logger.LogInformation($"WebpackCompilationHash: {appData.WebpackCompilationHash}");
         }
     }

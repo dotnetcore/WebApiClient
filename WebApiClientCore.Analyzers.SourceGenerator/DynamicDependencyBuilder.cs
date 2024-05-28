@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace WebApiClientCore.Analyzers.SourceGenerator
@@ -35,7 +36,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             builder.AppendLine("#if NET5_0_OR_GREATER");
             builder.AppendLine("using System.Diagnostics.CodeAnalysis;");
             builder.AppendLine("using System.Runtime.CompilerServices;");
-            builder.AppendLine($"namespace WebApiClientCore");
+            builder.AppendLine($"namespace WebApiClientCore.Implementations");
             builder.AppendLine("{");
             builder.AppendLine("    /// <summary>动态依赖初始化器</summary>");
             builder.AppendLine($"    static partial class {this.ClassName}");
@@ -47,11 +48,19 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
                         /// 避免程序集在裁剪时裁剪掉由SourceGenerator生成的代理类
                         /// </summary>
                 """);
+
+            builder.AppendLine("        [ModuleInitializer]");
             foreach (var codeBuilder in this.codeBuilders)
             {
                 builder.AppendLine($"        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof({codeBuilder.Namespace}.{codeBuilder.ClassName}))]");
             }
-            builder.AppendLine("        [ModuleInitializer]");
+
+            var resultTypes = this.codeBuilders.SelectMany(item => item.GetResultTypes()).Distinct(SymbolEqualityComparer.Default);
+            foreach(var resultType in resultTypes)
+            {
+                builder.AppendLine($"        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(DefaultApiActionInvoker<{resultType}>))]");
+            }
+
             builder.AppendLine("        public static void AddDynamicDependency()");
             builder.AppendLine("        {");
             builder.AppendLine("        }");

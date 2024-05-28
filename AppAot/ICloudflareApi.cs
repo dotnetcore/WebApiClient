@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using WebApiClientCore;
 using WebApiClientCore.Attributes;
 
 namespace AppAot
@@ -9,5 +10,8 @@ namespace AppAot
     {
         [HttpGet("/page-data/app-data.json")]
         Task<AppData> GetAppDataAsync();
+
+        [HttpGet("/page-data/app-data.json")]
+        ITask<AppData> GetAppData2Async();
     }
 }

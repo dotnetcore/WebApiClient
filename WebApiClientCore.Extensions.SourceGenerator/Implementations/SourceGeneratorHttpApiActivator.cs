@@ -12,7 +12,7 @@ namespace WebApiClientCore.Implementations
     /// <typeparam name="THttpApi"></typeparam>
     public class SourceGeneratorHttpApiActivator<
 #if NET5_0_OR_GREATER
-        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)]
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]
 #endif
         THttpApi> : IHttpApiActivator<THttpApi>
     {

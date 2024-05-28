@@ -128,6 +128,22 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         }
 
 
+        public IEnumerable<ITypeSymbol> GetResultTypes()
+        {
+            var methods = HttpApiMethodFinder.FindApiMethods(this.httpApi);
+            foreach (var method in methods)
+            {
+                if (method.ReturnType is INamedTypeSymbol typeSymbol)
+                {
+                    var resultType = typeSymbol.TypeArguments.FirstOrDefault();
+                    if (resultType != null)
+                    {
+                        yield return resultType;
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// 构建方法
         /// </summary>

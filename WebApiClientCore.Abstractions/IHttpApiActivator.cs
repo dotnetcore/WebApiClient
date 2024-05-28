@@ -6,7 +6,7 @@
     /// <typeparam name="THttpApi"></typeparam>
     public interface IHttpApiActivator<
 #if NET5_0_OR_GREATER
-        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)]
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]
 #endif
     THttpApi>
     {

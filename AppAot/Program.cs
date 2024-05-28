@@ -6,7 +6,7 @@ namespace AppAot
     class Program
     {
         static void Main(string[] args)
-        { 
+        {
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices(services =>
                 {
