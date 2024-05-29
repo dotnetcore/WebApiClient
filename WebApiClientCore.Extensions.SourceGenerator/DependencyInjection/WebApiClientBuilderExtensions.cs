@@ -1,4 +1,5 @@
-﻿using WebApiClientCore;
+﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+using WebApiClientCore;
 using WebApiClientCore.Implementations;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -21,7 +22,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IWebApiClientBuilder UseSourceGeneratorHttpApiActivator(this IWebApiClientBuilder builder)
         {
-            builder.Services.AddSingleton(typeof(IHttpApiActivator<>), typeof(SourceGeneratorHttpApiActivator<>));
+            var descriptor = ServiceDescriptor.Singleton(typeof(IHttpApiActivator<>), typeof(SourceGeneratorHttpApiActivator<>));
+            builder.Services.Replace(descriptor);
             return builder;
         }
     }
