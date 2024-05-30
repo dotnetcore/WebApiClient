@@ -54,7 +54,7 @@ namespace WebApiClientCore.Serialization.JsonConverters
             {
                 var json = reader.GetString();
                 var valueType = typeToConvert.GenericTypeArguments.First();
-                var value = JsonSerializer.Deserialize(json, valueType, options);
+                var value = string.IsNullOrEmpty(json) ? null : JsonSerializer.Deserialize(json, valueType, options);
                 return typeToConvert.CreateInstance<TJsonString>(value);
             }
 
