@@ -1,10 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
-using WebApiClientCore;
-using WebApiClientCore.Attributes;
 using WebApiClientCore.Extensions.OAuths;
 
-namespace App.Attributes
+namespace WebApiClientCore.Attributes
 {
     /// <summary>
     /// 表示支持多用户的token应用特性
