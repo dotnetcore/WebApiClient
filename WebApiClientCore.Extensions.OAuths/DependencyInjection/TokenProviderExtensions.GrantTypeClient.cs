@@ -14,11 +14,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <typeparam name="THttpApi">接口类型</typeparam>
         /// <param name="services"></param>
-        /// <param name="name">token提供者的别名</param>
+        /// <param name="alias">TokenProvider的别名</param>
         /// <returns></returns>     
-        public static OptionsBuilder<ClientCredentialsOptions> AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services, string name = "")
+        public static OptionsBuilder<ClientCredentialsOptions> AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services, string alias = "")
         { 
-            var builder = services.AddTokenProvider<THttpApi, ClientCredentialsTokenProvider>(name);
+            var builder = services.AddTokenProvider<THttpApi, ClientCredentialsTokenProvider>(alias);
             return new OptionsBuilder<ClientCredentialsOptions>(builder.Services, builder.Name);
         }
 
@@ -39,12 +39,12 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <typeparam name="THttpApi">接口类型</typeparam>
         /// <param name="services"></param>
-        /// <param name="name">token提供者的别名</param>
+        /// <param name="alias">TokenProvider的别名</param>
         /// <param name="configureOptions">配置</param>
         /// <returns></returns>
-        public static OptionsBuilder<ClientCredentialsOptions> AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services, string name, Action<ClientCredentialsOptions> configureOptions)
+        public static OptionsBuilder<ClientCredentialsOptions> AddClientCredentialsTokenProvider<THttpApi>(this IServiceCollection services, string alias, Action<ClientCredentialsOptions> configureOptions)
         {
-            return services.AddClientCredentialsTokenProvider<THttpApi>(name).Configure(configureOptions);
+            return services.AddClientCredentialsTokenProvider<THttpApi>(alias).Configure(configureOptions);
         }
     }
 }

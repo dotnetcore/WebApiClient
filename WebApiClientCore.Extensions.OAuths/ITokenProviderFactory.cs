@@ -21,9 +21,9 @@ namespace WebApiClientCore.Extensions.OAuths
         /// </summary>
         /// <param name="httpApiType">接口类型</param>
         /// <param name="typeMatchMode">类型匹配模式</param>
-        /// <param name="name">TokenProvider的区分名称</param>     
+        /// <param name="alias">TokenProvider的别名</param>     
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        ITokenProvider Create(Type httpApiType, TypeMatchMode typeMatchMode, string name);
+        ITokenProvider Create(Type httpApiType, TypeMatchMode typeMatchMode, string alias);
     }
 }

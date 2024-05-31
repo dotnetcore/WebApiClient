@@ -14,11 +14,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <typeparam name="THttpApi">接口类型</typeparam>
         /// <param name="services"></param>
-        /// <param name="name">token提供者的别名</param>
+        /// <param name="alias">TokenProvider的别名</param>
         /// <returns></returns>
-        public static OptionsBuilder<PasswordCredentialsOptions> AddPasswordCredentialsTokenProvider<THttpApi>(this IServiceCollection services, string name = "")
+        public static OptionsBuilder<PasswordCredentialsOptions> AddPasswordCredentialsTokenProvider<THttpApi>(this IServiceCollection services, string alias = "")
         {
-            var builder = services.AddTokenProvider<THttpApi, PasswordCredentialsTokenProvider>(name);
+            var builder = services.AddTokenProvider<THttpApi, PasswordCredentialsTokenProvider>(alias);
             return new OptionsBuilder<PasswordCredentialsOptions>(builder.Services, builder.Name);
         }
 
@@ -39,12 +39,12 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <typeparam name="THttpApi">接口类型</typeparam>
         /// <param name="services"></param>
-        /// <param name="name">token提供者的别名</param>
+        /// <param name="alias">TokenProvider的别名</param>
         /// <param name="configureOptions">配置</param>
         /// <returns></returns>
-        public static OptionsBuilder<PasswordCredentialsOptions> AddPasswordCredentialsTokenProvider<THttpApi>(this IServiceCollection services, string name, Action<PasswordCredentialsOptions> configureOptions)
+        public static OptionsBuilder<PasswordCredentialsOptions> AddPasswordCredentialsTokenProvider<THttpApi>(this IServiceCollection services, string alias, Action<PasswordCredentialsOptions> configureOptions)
         {
-            return services.AddPasswordCredentialsTokenProvider<THttpApi>(name).Configure(configureOptions);
+            return services.AddPasswordCredentialsTokenProvider<THttpApi>(alias).Configure(configureOptions);
         }
     }
 }

@@ -22,28 +22,29 @@
         }
 
         /// <summary>
-        /// 设置服务提供者的完整名称
+        /// 设置服务提供者的名称
         /// </summary>
-        /// <param name="name"></param>
-        public void SetProviderName(string name)
+        /// <param name="alias"></param>
+        public void SetProviderName(string alias)
         {
-            this.TokenProvider.Name = GetTokenProviderName(name);
+            this.TokenProvider.Name = GetTokenProviderName(alias);
         }
 
         /// <summary>
-        /// 返回服务提供者的完整名称
+        /// 获取服务提供者的名称
         /// </summary> 
         /// <returns></returns>
-        public static string GetTokenProviderName(string name)
+        public static string GetTokenProviderName(string alias)
         {
             var httpApiName = HttpApi.GetName(typeof(THttpApi), false);
             var providerName = HttpApi.GetName(typeof(TTokenProvider), false);
-            var fullName = $"{providerName}+{httpApiName}";
-            if (string.IsNullOrEmpty(name) == false)
+
+            var name = $"{providerName}+{httpApiName}";
+            if (string.IsNullOrEmpty(alias) == false)
             {
-                fullName = $"{fullName}+{name}";
+                name = $"{name}+{alias}";
             }
-            return fullName;
+            return name;
         }
     }
 }

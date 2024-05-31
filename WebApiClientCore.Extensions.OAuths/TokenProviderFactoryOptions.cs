@@ -12,28 +12,28 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <summary>
         /// httpApi的服务描述映射
         /// </summary>
-        private readonly Dictionary<Type, NamedServiceDescriptor> httpApiServiceDescriptors = [];
+        private readonly Dictionary<Type, AliasServiceDescriptor> httpApiServiceDescriptors = [];
 
         /// <summary>
         /// 登记映射
         /// </summary>
         /// <typeparam name="THttpApi">接口类型</typeparam>
         /// <typeparam name="TTokenPrivder">提供者类型</typeparam>
-        /// <param name="name">token提供者的别名</param>
-        public void Register<THttpApi, TTokenPrivder>(string name) where TTokenPrivder : ITokenProvider
+        /// <param name="alias">TokenProvider的别名</param>
+        public void Register<THttpApi, TTokenPrivder>(string alias) where TTokenPrivder : ITokenProvider
         {
             var httpApiType = typeof(THttpApi);
             var serviceType = typeof(TokenProviderService<THttpApi, TTokenPrivder>);
-            var serviceDescriptor = new NamedServiceDescriptor(serviceType);
+            var serviceDescriptor = new AliasServiceDescriptor(serviceType);
 
             if (this.httpApiServiceDescriptors.TryGetValue(httpApiType, out var existDescriptor) &&
                 existDescriptor.ServiceType == serviceType)
             {
-                existDescriptor.AddName(name);
+                existDescriptor.AddAlias(alias);
             }
             else
             {
-                serviceDescriptor.AddName(name);
+                serviceDescriptor.AddAlias(alias);
                 this.httpApiServiceDescriptors.Add(httpApiType, serviceDescriptor);
             }
         }
@@ -44,7 +44,7 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <param name="httpApiType">接口类型</param>
         /// <param name="descriptor">TokenProviderService的描述</param>
         /// <returns></returns>
-        public bool TryGetValue(Type httpApiType, [MaybeNullWhen(false)] out NamedServiceDescriptor descriptor)
+        public bool TryGetValue(Type httpApiType, [MaybeNullWhen(false)] out AliasServiceDescriptor descriptor)
         {
             return this.httpApiServiceDescriptors.TryGetValue(httpApiType, out descriptor);
         }
@@ -52,9 +52,9 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <summary>
         /// 别名的服务描述
         /// </summary>
-        public class NamedServiceDescriptor
+        public class AliasServiceDescriptor
         {
-            private readonly HashSet<string> names = [];
+            private readonly HashSet<string> aliasSet = [];
 
             /// <summary>
             /// 获取服务类型
@@ -65,7 +65,7 @@ namespace WebApiClientCore.Extensions.OAuths
             /// 别名的服务描述
             /// </summary>
             /// <param name="serviceType">服务类型</param>
-            public NamedServiceDescriptor(Type serviceType)
+            public AliasServiceDescriptor(Type serviceType)
             {
                 this.ServiceType = serviceType;
             }
@@ -73,20 +73,20 @@ namespace WebApiClientCore.Extensions.OAuths
             /// <summary>
             /// 添加别名
             /// </summary>
-            /// <param name="name"></param>
-            public void AddName(string name)
+            /// <param name="alias"></param>
+            public void AddAlias(string alias)
             {
-                this.names.Add(name);
+                this.aliasSet.Add(alias);
             }
 
             /// <summary>
             /// 是否存在别名
             /// </summary>
-            /// <param name="name"></param>
+            /// <param name="alias"></param>
             /// <returns></returns>
-            public bool ContainsName(string name)
+            public bool ContainsAlias(string alias)
             {
-                return this.names.Contains(name);
+                return this.aliasSet.Contains(alias);
             }
         }
     }

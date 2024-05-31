@@ -11,9 +11,9 @@
         ITokenProvider TokenProvider { get; }
 
         /// <summary>
-        /// 设置服务提供者的别名
+        /// 设置服务提供者的名称
         /// </summary>
-        /// <param name="name"></param>
-        void SetProviderName(string name);
+        /// <param name="alias"></param>
+        void SetProviderName(string alias);
     }
 }

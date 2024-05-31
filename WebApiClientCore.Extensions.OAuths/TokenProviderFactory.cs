@@ -35,7 +35,7 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <exception cref="InvalidOperationException"></exception>
         public ITokenProvider Create(Type httpApiType, TypeMatchMode typeMatchMode)
         {
-            return this.Create(httpApiType, typeMatchMode, name: string.Empty);
+            return this.Create(httpApiType, typeMatchMode, alias: string.Empty);
         }
 
         /// <summary>
@@ -43,21 +43,21 @@ namespace WebApiClientCore.Extensions.OAuths
         /// </summary>
         /// <param name="httpApiType">接口类型</param>
         /// <param name="typeMatchMode">类型匹配模式</param>
-        /// <param name="name">TokenProvider的别名</param>     
+        /// <param name="alias">TokenProvider的别名</param>     
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public ITokenProvider Create(Type httpApiType, TypeMatchMode typeMatchMode, string name)
+        public ITokenProvider Create(Type httpApiType, TypeMatchMode typeMatchMode, string alias)
         {
             if (httpApiType == null)
             {
                 throw new ArgumentNullException(nameof(httpApiType));
             }
-            if (name == null)
+            if (alias == null)
             {
-                throw new ArgumentNullException(nameof(name));
+                throw new ArgumentNullException(nameof(alias));
             }
 
-            var serviceKey = new ServiceKey(httpApiType, typeMatchMode, name);
+            var serviceKey = new ServiceKey(httpApiType, typeMatchMode, alias);
             return this.tokenProviderCache.GetOrAdd(serviceKey, this.CreateTokenProvider);
         }
 
@@ -69,18 +69,18 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <exception cref="InvalidOperationException"></exception>
         private ITokenProvider CreateTokenProvider(ServiceKey serviceKey)
         {
-            var name = serviceKey.Name;
+            var alias = serviceKey.Alias;
             var httpApiType = serviceKey.HttpApiType;
-            if (this.options.TryGetValue(httpApiType, out var descriptor) && descriptor.ContainsName(name))
+            if (this.options.TryGetValue(httpApiType, out var descriptor) && descriptor.ContainsAlias(alias))
             {
                 var service = (ITokenProviderService)this.serviceProvider.GetRequiredService(descriptor.ServiceType);
-                service.SetProviderName(name);
+                service.SetProviderName(alias);
                 return service.TokenProvider;
             }
 
             if (serviceKey.TypeMatchMode == TypeMatchMode.TypeOrBaseTypes)
             {
-                var tokenProvider = this.CreateTokenProviderFromBaseType(httpApiType, name);
+                var tokenProvider = this.CreateTokenProviderFromBaseType(httpApiType, alias);
                 if (tokenProvider != null)
                 {
                     return tokenProvider;
@@ -88,9 +88,9 @@ namespace WebApiClientCore.Extensions.OAuths
             }
 
 
-            var message = string.IsNullOrEmpty(name)
+            var message = string.IsNullOrEmpty(alias)
                 ? $"尚未注册{httpApiType}无别名的token提供者"
-                : $"尚未注册{httpApiType}别名为{name}的token提供者";
+                : $"尚未注册{httpApiType}别名为{alias}的token提供者";
             throw new InvalidOperationException(message);
         }
 
@@ -98,17 +98,17 @@ namespace WebApiClientCore.Extensions.OAuths
         /// 从基础接口创建TokenProvider
         /// </summary>
         /// <param name="httpApiType"></param>
-        /// <param name="name">别名</param>
+        /// <param name="alias">别名</param>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
-        private ITokenProvider? CreateTokenProviderFromBaseType(Type httpApiType, string name)
+        private ITokenProvider? CreateTokenProviderFromBaseType(Type httpApiType, string alias)
         {
             foreach (var baseType in httpApiType.GetInterfaces())
             {
-                if (this.options.TryGetValue(baseType, out var descriptor) && descriptor.ContainsName(name))
+                if (this.options.TryGetValue(baseType, out var descriptor) && descriptor.ContainsAlias(alias))
                 {
                     var service = (ITokenProviderService)this.serviceProvider.GetRequiredService(descriptor.ServiceType);
-                    service.SetProviderName(name);
+                    service.SetProviderName(alias);
                     return service.TokenProvider;
                 }
             }
@@ -126,13 +126,13 @@ namespace WebApiClientCore.Extensions.OAuths
 
             public TypeMatchMode TypeMatchMode { get; }
 
-            public string Name { get; }
+            public string Alias { get; }
 
-            public ServiceKey(Type httpApiType, TypeMatchMode typeMatchMode, string name)
+            public ServiceKey(Type httpApiType, TypeMatchMode typeMatchMode, string alias)
             {
                 this.HttpApiType = httpApiType;
                 this.TypeMatchMode = typeMatchMode;
-                this.Name = name;
+                this.Alias = alias;
             }
 
             public bool Equals(ServiceKey? other)
@@ -140,7 +140,7 @@ namespace WebApiClientCore.Extensions.OAuths
                 return other != null &&
                     this.HttpApiType == other.HttpApiType &&
                     this.TypeMatchMode == other.TypeMatchMode &&
-                    this.Name == other.Name;
+                    this.Alias == other.Alias;
             }
 
             public override bool Equals(object? obj)
@@ -150,7 +150,7 @@ namespace WebApiClientCore.Extensions.OAuths
 
             public override int GetHashCode()
             {
-                this.hashCode ??= HashCode.Combine(this.HttpApiType, this.TypeMatchMode, this.Name);
+                this.hashCode ??= HashCode.Combine(this.HttpApiType, this.TypeMatchMode, this.Alias);
                 return this.hashCode.Value;
             }
         }
