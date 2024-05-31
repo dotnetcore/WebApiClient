@@ -24,7 +24,6 @@ namespace WebApiClientCore.Extensions.OAuths
         {
             var httpApiType = typeof(THttpApi);
             var serviceType = typeof(TokenProviderService<THttpApi, TTokenPrivder>);
-            var serviceDescriptor = new AliasServiceDescriptor(serviceType);
 
             if (this.httpApiServiceDescriptors.TryGetValue(httpApiType, out var existDescriptor) &&
                 existDescriptor.ServiceType == serviceType)
@@ -33,7 +32,7 @@ namespace WebApiClientCore.Extensions.OAuths
             }
             else
             {
-                serviceDescriptor.AddAlias(alias);
+                var serviceDescriptor = new AliasServiceDescriptor(serviceType, alias);
                 this.httpApiServiceDescriptors[httpApiType] = serviceDescriptor;
             }
         }
@@ -54,7 +53,7 @@ namespace WebApiClientCore.Extensions.OAuths
         /// </summary>
         public class AliasServiceDescriptor
         {
-            private readonly HashSet<string> aliasSet = [];
+            private readonly HashSet<string> aliasSet;
 
             /// <summary>
             /// 获取服务类型
@@ -65,9 +64,11 @@ namespace WebApiClientCore.Extensions.OAuths
             /// 别名的服务描述
             /// </summary>
             /// <param name="serviceType">服务类型</param>
-            public AliasServiceDescriptor(Type serviceType)
+            /// <param name="alias"></param>
+            public AliasServiceDescriptor(Type serviceType, string alias)
             {
                 this.ServiceType = serviceType;
+                this.aliasSet = [alias];
             }
 
             /// <summary>
