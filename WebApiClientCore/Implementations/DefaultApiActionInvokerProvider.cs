@@ -30,6 +30,9 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="actionDescriptor">Action描述</param>
         /// <returns></returns>
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicDependency(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors, typeof(DefaultApiActionInvoker<>))]
+#endif
         protected virtual ApiActionInvoker CreateDefaultActionInvoker(ApiActionDescriptor actionDescriptor)
         {
             var resultType = actionDescriptor.Return.DataType.Type;

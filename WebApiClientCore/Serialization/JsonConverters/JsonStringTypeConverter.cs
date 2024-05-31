@@ -31,6 +31,9 @@ namespace WebApiClientCore.Serialization.JsonConverters
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicDependency(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Converter<>))]
+#endif
         public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
         {
             return typeof(Converter<>).MakeGenericType(typeToConvert).CreateInstance<JsonConverter>();

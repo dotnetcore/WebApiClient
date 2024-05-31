@@ -55,12 +55,6 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
                 builder.AppendLine($"        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof({codeBuilder.Namespace}.{codeBuilder.ClassName}))]");
             }
 
-            var resultTypes = this.codeBuilders.SelectMany(item => item.GetResultTypes()).Distinct(SymbolEqualityComparer.Default);
-            foreach(var resultType in resultTypes)
-            {
-                builder.AppendLine($"        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(DefaultApiActionInvoker<{resultType}>))]");
-            }
-
             builder.AppendLine("        public static void AddDynamicDependency()");
             builder.AppendLine("        {");
             builder.AppendLine("        }");

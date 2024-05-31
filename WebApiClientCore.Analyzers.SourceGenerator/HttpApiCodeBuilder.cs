@@ -75,26 +75,6 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         }
 
         /// <summary>
-        /// 获取所有方法的返回类型的Result类型
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<ITypeSymbol> GetResultTypes()
-        {
-            var methods = HttpApiMethodFinder.FindApiMethods(this.httpApi);
-            foreach (var method in methods)
-            {
-                if (method.ReturnType is INamedTypeSymbol typeSymbol)
-                {
-                    var resultType = typeSymbol.TypeArguments.FirstOrDefault();
-                    if (resultType != null)
-                    {
-                        yield return resultType;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// 转换为SourceText
         /// </summary>
         /// <returns></returns>

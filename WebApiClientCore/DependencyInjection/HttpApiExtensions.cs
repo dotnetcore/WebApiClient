@@ -174,6 +174,10 @@ namespace Microsoft.Extensions.DependencyInjection
             /// </summary>
             /// <param name="httpApiType">接口类型</param>
             /// <returns></returns>
+
+#if NET5_0_OR_GREATER
+            [System.Diagnostics.CodeAnalysis.DynamicDependency(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors, typeof(HttpApiAdderOf<>))]
+#endif
             public static HttpApiAdder Create(Type httpApiType)
             {
                 var adderType = typeof(HttpApiAdderOf<>).MakeGenericType(httpApiType);
