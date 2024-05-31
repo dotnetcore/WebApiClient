@@ -19,11 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="tokenRequest">token请求委托</param>
         /// <returns></returns>
-        public static ITokenProviderBuilder AddTokenProvider<
-#if NET5_0_OR_GREATER
-        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-        THttpApi>(this IServiceCollection services, Func<IServiceProvider, Task<TokenResult?>> tokenRequest)
+        public static ITokenProviderBuilder AddTokenProvider<THttpApi>(this IServiceCollection services, Func<IServiceProvider, Task<TokenResult?>> tokenRequest)
         {
             return services.AddTokenProvider<THttpApi, DelegateTokenProvider>(s => new DelegateTokenProvider(s, tokenRequest));
         }
