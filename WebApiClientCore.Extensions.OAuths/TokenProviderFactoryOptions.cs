@@ -34,7 +34,7 @@ namespace WebApiClientCore.Extensions.OAuths
             else
             {
                 serviceDescriptor.AddAlias(alias);
-                this.httpApiServiceDescriptors.Add(httpApiType, serviceDescriptor);
+                this.httpApiServiceDescriptors[httpApiType] = serviceDescriptor;
             }
         }
 
