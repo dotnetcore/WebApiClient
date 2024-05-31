@@ -22,8 +22,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IWebApiClientBuilder UseSourceGeneratorHttpApiActivator(this IWebApiClientBuilder builder)
         {
-            var descriptor = ServiceDescriptor.Singleton(typeof(IHttpApiActivator<>), typeof(SourceGeneratorHttpApiActivator<>));
-            builder.Services.Replace(descriptor);
+            builder.Services.RemoveAll(typeof(IHttpApiActivator<>));
+            builder.Services.AddSingleton(typeof(IHttpApiActivator<>), typeof(SourceGeneratorHttpApiActivator<>));
             return builder;
         }
     }
