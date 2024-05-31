@@ -19,8 +19,20 @@ namespace WebApiClientCore.Extensions.OAuths
 
         /// <summary>
         /// 获取token信息
-        /// </summary> 
+        /// </summary>
         /// <returns></returns>
         Task<TokenResult> GetTokenAsync();
+
+        /// <summary>
+        /// 强制清除token以支持下次获取到新的token
+        /// </summary>
+        /// <param name="key">应用标识</param>
+        void ClearToken(string key);
+
+        /// <summary>
+        /// 根据应用标识获取token信息
+        /// </summary>
+        /// <param name="key">应用标识</param>
+        Task<TokenResult> GetTokenAsync(string key);
     }
 }

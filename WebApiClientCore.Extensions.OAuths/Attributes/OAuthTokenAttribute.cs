@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
+using System;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -9,7 +11,7 @@ namespace WebApiClientCore.Attributes
     /// <summary>
     /// 表示token应用特性
     /// 需要为接口或接口的基础接口注册TokenProvider
-    /// </summary> 
+    /// </summary>
     /// <remarks>
     /// <para>• Client模式：services.AddClientCredentialsTokenProvider</para>
     /// <para>• Password模式：services.AddPasswordCredentialsTokenProvider</para>
@@ -21,6 +23,12 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         public TypeMatchMode TokenProviderSearchMode { get; set; } = TypeMatchMode.TypeOrBaseTypes;
 
+        private static string GetDynamicTokenKey(ApiRequestContext context)
+        {
+            context.Properties.TryGetValue(typeof(OAuthTokenAttribute), out string? key);
+            return key ?? string.Empty;
+        }
+
         /// <summary>
         /// 请求之前
         /// </summary>
@@ -28,7 +36,8 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public sealed override async Task OnRequestAsync(ApiRequestContext context)
         {
-            var token = await this.GetTokenProvider(context).GetTokenAsync().ConfigureAwait(false);
+            var key = GetDynamicTokenKey(context);
+            var token = await this.GetTokenProvider(context).GetTokenAsync(key).ConfigureAwait(false);
             this.UseTokenResult(context, token);
         }
 
@@ -41,7 +50,8 @@ namespace WebApiClientCore.Attributes
         {
             if (this.IsUnauthorized(context) == true)
             {
-                this.GetTokenProvider(context).ClearToken();
+                var key = GetDynamicTokenKey(context);
+                this.GetTokenProvider(context).ClearToken(key);
             }
             return Task.CompletedTask;
         }
