@@ -19,7 +19,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="tokenRequest">token请求委托</param>
         /// <returns></returns>
-        public static ITokenProviderBuilder AddTokenProvider<THttpApi>(this IServiceCollection services, Func<IServiceProvider, Task<TokenResult?>> tokenRequest)
+        public static ITokenProviderBuilder AddTokenProvider<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        THttpApi>(this IServiceCollection services, Func<IServiceProvider, Task<TokenResult?>> tokenRequest)
         {
             return services.AddTokenProvider<THttpApi, DelegateTokenProvider>(s => new DelegateTokenProvider(s, tokenRequest));
         }
@@ -32,7 +36,15 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="tokenProviderFactory">token提供者创建工厂</param>
         /// <returns></returns>
-        public static ITokenProviderBuilder AddTokenProvider<THttpApi, TTokenProvider>(this IServiceCollection services, Func<IServiceProvider, TTokenProvider> tokenProviderFactory)
+        public static ITokenProviderBuilder AddTokenProvider<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        THttpApi,
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        TTokenProvider>(this IServiceCollection services, Func<IServiceProvider, TTokenProvider> tokenProviderFactory)
             where TTokenProvider : class, ITokenProvider
         {
             return services
@@ -49,7 +61,15 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TTokenProvider">token提供者类型</typeparam>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static ITokenProviderBuilder AddTokenProvider<THttpApi, TTokenProvider>(this IServiceCollection services)
+        public static ITokenProviderBuilder AddTokenProvider<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        THttpApi,
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        TTokenProvider>(this IServiceCollection services)
             where TTokenProvider : class, ITokenProvider
         {
             return services
