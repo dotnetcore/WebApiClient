@@ -9,5 +9,11 @@
         /// 获取token提供者
         /// </summary>
         ITokenProvider TokenProvider { get; }
+
+        /// <summary>
+        /// 设置服务提供者的别名
+        /// </summary>
+        /// <param name="name"></param>
+        void SetProviderName(string name);
     }
 }

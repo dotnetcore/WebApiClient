@@ -8,7 +8,7 @@ namespace WebApiClientCore.Extensions.OAuths
     public interface ITokenProvider
     {
         /// <summary>
-        /// 设置别名
+        /// 设置名称
         /// </summary>
         string Name { set; }
 

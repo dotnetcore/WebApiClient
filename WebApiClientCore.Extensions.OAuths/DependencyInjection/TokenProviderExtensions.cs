@@ -18,10 +18,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="THttpApi">接口类型</typeparam>
         /// <param name="services"></param>
         /// <param name="tokenRequest">token请求委托</param>
+        /// <param name="name">token提供者的别名</param>
         /// <returns></returns>
-        public static ITokenProviderBuilder AddTokenProvider<THttpApi>(this IServiceCollection services, Func<IServiceProvider, Task<TokenResult?>> tokenRequest)
+        public static ITokenProviderBuilder AddTokenProvider<THttpApi>(this IServiceCollection services, Func<IServiceProvider, Task<TokenResult?>> tokenRequest, string name = "")
         {
-            return services.AddTokenProvider<THttpApi, DelegateTokenProvider>(s => new DelegateTokenProvider(s, tokenRequest));
+            return services.AddTokenProvider<THttpApi, DelegateTokenProvider>(s => new DelegateTokenProvider(s, tokenRequest), name);
         }
 
         /// <summary>
@@ -31,6 +32,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TTokenProvider">token提供者类型</typeparam>
         /// <param name="services"></param>
         /// <param name="tokenProviderFactory">token提供者创建工厂</param>
+        /// <param name="name">token提供者的别名</param>
         /// <returns></returns>
         public static ITokenProviderBuilder AddTokenProvider<
 #if NET5_0_OR_GREATER
@@ -40,13 +42,13 @@ namespace Microsoft.Extensions.DependencyInjection
 #if NET5_0_OR_GREATER
         [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]
 #endif
-        TTokenProvider>(this IServiceCollection services, Func<IServiceProvider, TTokenProvider> tokenProviderFactory)
+        TTokenProvider>(this IServiceCollection services, Func<IServiceProvider, TTokenProvider> tokenProviderFactory, string name = "")
             where TTokenProvider : class, ITokenProvider
         {
             return services
                 .RemoveAll<TTokenProvider>()
                 .AddTransient(tokenProviderFactory)
-                .AddTokenProviderCore<THttpApi, TTokenProvider>();
+                .AddTokenProviderCore<THttpApi, TTokenProvider>(name);
         }
 
 
@@ -56,6 +58,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="THttpApi">接口类型</typeparam>
         /// <typeparam name="TTokenProvider">token提供者类型</typeparam>
         /// <param name="services"></param>
+        /// <param name="name">token提供者的别名</param>
         /// <returns></returns>
         public static ITokenProviderBuilder AddTokenProvider<
 #if NET5_0_OR_GREATER
@@ -65,13 +68,13 @@ namespace Microsoft.Extensions.DependencyInjection
 #if NET5_0_OR_GREATER
         [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]
 #endif
-        TTokenProvider>(this IServiceCollection services)
+        TTokenProvider>(this IServiceCollection services, string name = "")
             where TTokenProvider : class, ITokenProvider
         {
             return services
                 .RemoveAll<TTokenProvider>()
                 .AddTransient<TTokenProvider>()
-                .AddTokenProviderCore<THttpApi, TTokenProvider>();
+                .AddTokenProviderCore<THttpApi, TTokenProvider>(name);
         }
 
 
@@ -81,24 +84,25 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="THttpApi">接口类型</typeparam>
         /// <typeparam name="TTokenProvider">token提供者类型</typeparam>
         /// <param name="services"></param>
+        /// <param name="name">token提供者的别名</param>
         /// <returns></returns>
-        private static ITokenProviderBuilder AddTokenProviderCore<THttpApi, TTokenProvider>(this IServiceCollection services)
+        private static ITokenProviderBuilder AddTokenProviderCore<THttpApi, TTokenProvider>(this IServiceCollection services, string name)
             where TTokenProvider : class, ITokenProvider
         {
             services
                .AddOptions<TokenProviderFactoryOptions>()
-               .Configure(o => o.Register<THttpApi, TTokenProvider>());
+               .Configure(o => o.Register<THttpApi, TTokenProvider>(name));
 
             services
                 .AddOptions<HttpApiOptions>(HttpApi.GetName(typeof(OAuth2TokenClient)))
                 .Configure(o => o.KeyValueSerializeOptions.IgnoreNullValues = true);
 
             services.TryAddSingleton<OAuth2TokenClient>();
-            services.TryAddSingleton(typeof(TokenProviderService<,>));
+            services.TryAddTransient(typeof(TokenProviderService<,>));
             services.TryAddSingleton<ITokenProviderFactory, TokenProviderFactory>();
 
-            var name = TokenProviderService<THttpApi, TTokenProvider>.Name;
-            return new TokenProviderBuilder(name, services);
+            var providerName = TokenProviderService<THttpApi, TTokenProvider>.GetTokenProviderName(name);
+            return new TokenProviderBuilder(providerName, services);
         }
 
 
@@ -108,7 +112,7 @@ namespace Microsoft.Extensions.DependencyInjection
         private class TokenProviderBuilder : ITokenProviderBuilder
         {
             /// <summary>
-            /// 获取token提供者的别名
+            /// 获取token提供者的名称
             /// </summary>
             public string Name { get; }
 
@@ -120,7 +124,7 @@ namespace Microsoft.Extensions.DependencyInjection
             /// <summary>
             /// token提供者创建器
             /// </summary>
-            /// <param name="name">token提供者的别名</param>
+            /// <param name="name">token提供者的名称</param>
             /// <param name="services">服务描述集合</param>
             public TokenProviderBuilder(string name, IServiceCollection services)
             {

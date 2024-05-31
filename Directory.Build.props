@@ -8,6 +8,7 @@
 	<PropertyGroup>
 		<Authors>laojiu</Authors>
 		<Company>laojiu</Company>
+		<LangVersion>latest</LangVersion>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>

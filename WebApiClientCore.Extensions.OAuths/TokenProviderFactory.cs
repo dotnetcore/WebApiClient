@@ -12,7 +12,7 @@ namespace WebApiClientCore.Extensions.OAuths
     {
         private readonly IServiceProvider serviceProvider;
         private readonly TokenProviderFactoryOptions options;
-        private readonly ConcurrentDictionary<CacheKey, ITokenProvider> tokenProviderCache = new ConcurrentDictionary<CacheKey, ITokenProvider>();
+        private readonly ConcurrentDictionary<ServiceKey, ITokenProvider> tokenProviderCache = new();
 
         /// <summary>
         /// 默认的token提供者工厂
@@ -43,7 +43,7 @@ namespace WebApiClientCore.Extensions.OAuths
         /// </summary>
         /// <param name="httpApiType">接口类型</param>
         /// <param name="typeMatchMode">类型匹配模式</param>
-        /// <param name="name">TokenProvider的区分名称</param>     
+        /// <param name="name">TokenProvider的别名</param>     
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         public ITokenProvider Create(Type httpApiType, TypeMatchMode typeMatchMode, string name)
@@ -57,58 +57,70 @@ namespace WebApiClientCore.Extensions.OAuths
                 throw new ArgumentNullException(nameof(name));
             }
 
-            var cacheKey = new CacheKey(httpApiType, typeMatchMode, name);
-            return this.tokenProviderCache.GetOrAdd(cacheKey, this.GetTokenProvider);
+            var serviceKey = new ServiceKey(httpApiType, typeMatchMode, name);
+            return this.tokenProviderCache.GetOrAdd(serviceKey, this.CreateTokenProvider);
         }
 
         /// <summary>
-        /// 获取或创建其对应的token提供者
+        /// 创建其对应的token提供者
         /// </summary>
-        /// <param name="cacheKey">缓存的键</param>    
+        /// <param name="serviceKey">缓存的键</param>    
         /// <returns></returns> 
         /// <exception cref="InvalidOperationException"></exception>
-        private ITokenProvider GetTokenProvider(CacheKey cacheKey)
+        private ITokenProvider CreateTokenProvider(ServiceKey serviceKey)
         {
-            var httpApiType = cacheKey.HttpApiType;
-            if (this.options.TryGetValue(httpApiType, out var serviceType))
+            var name = serviceKey.Name;
+            var httpApiType = serviceKey.HttpApiType;
+            if (this.options.TryGetValue(httpApiType, out var descriptor) && descriptor.ContainsName(name))
             {
-                var service = this.serviceProvider.GetRequiredService(serviceType);
-                return ((ITokenProviderService)service).TokenProvider;
+                var service = (ITokenProviderService)this.serviceProvider.GetRequiredService(descriptor.ServiceType);
+                service.SetProviderName(name);
+                return service.TokenProvider;
             }
 
-            if (cacheKey.TypeMatchMode == TypeMatchMode.TypeOrBaseTypes)
+            if (serviceKey.TypeMatchMode == TypeMatchMode.TypeOrBaseTypes)
             {
-                return this.GetTokenProviderFromBaseType(httpApiType);
+                var tokenProvider = this.CreateTokenProviderFromBaseType(httpApiType, name);
+                if (tokenProvider != null)
+                {
+                    return tokenProvider;
+                }
             }
 
-            throw new InvalidOperationException($"尚未注册{httpApiType}的token提供者");
+
+            var message = string.IsNullOrEmpty(name)
+                ? $"尚未注册{httpApiType}无别名的token提供者"
+                : $"尚未注册{httpApiType}别名为{name}的token提供者";
+            throw new InvalidOperationException(message);
         }
 
         /// <summary>
-        /// 从基础接口获取TokenProvider
+        /// 从基础接口创建TokenProvider
         /// </summary>
         /// <param name="httpApiType"></param>
+        /// <param name="name">别名</param>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
-        private ITokenProvider GetTokenProviderFromBaseType(Type httpApiType)
+        private ITokenProvider? CreateTokenProviderFromBaseType(Type httpApiType, string name)
         {
             foreach (var baseType in httpApiType.GetInterfaces())
             {
-                if (this.options.TryGetValue(baseType, out var serviceType))
+                if (this.options.TryGetValue(baseType, out var descriptor) && descriptor.ContainsName(name))
                 {
-                    var service = this.serviceProvider.GetRequiredService(serviceType);
-                    return ((ITokenProviderService)service).TokenProvider;
+                    var service = (ITokenProviderService)this.serviceProvider.GetRequiredService(descriptor.ServiceType);
+                    service.SetProviderName(name);
+                    return service.TokenProvider;
                 }
             }
-            throw new InvalidOperationException($"尚未注册{httpApiType}或其基础接口的token提供者");
+            return null;
         }
 
         /// <summary>
-        /// 缓存的键
+        /// 服务缓存的键
         /// </summary>
-        private class CacheKey : IEquatable<CacheKey>
+        private sealed class ServiceKey : IEquatable<ServiceKey>
         {
-            private readonly int hashCode;
+            private int? hashCode;
 
             public Type HttpApiType { get; }
 
@@ -116,30 +128,30 @@ namespace WebApiClientCore.Extensions.OAuths
 
             public string Name { get; }
 
-            public CacheKey(Type httpApiType, TypeMatchMode typeMatchMode, string name)
+            public ServiceKey(Type httpApiType, TypeMatchMode typeMatchMode, string name)
             {
                 this.HttpApiType = httpApiType;
                 this.TypeMatchMode = typeMatchMode;
                 this.Name = name;
-
-                this.hashCode = HashCode.Combine(httpApiType, typeMatchMode, name);
             }
 
-            public bool Equals(CacheKey other)
+            public bool Equals(ServiceKey? other)
             {
-                return this.HttpApiType == other.HttpApiType &&
+                return other != null &&
+                    this.HttpApiType == other.HttpApiType &&
                     this.TypeMatchMode == other.TypeMatchMode &&
                     this.Name == other.Name;
             }
 
-            public override bool Equals(object obj)
+            public override bool Equals(object? obj)
             {
-                return obj is CacheKey other && this.Equals(other);
+                return obj is ServiceKey other && this.Equals(other);
             }
 
             public override int GetHashCode()
             {
-                return this.hashCode;
+                this.hashCode ??= HashCode.Combine(this.HttpApiType, this.TypeMatchMode, this.Name);
+                return this.hashCode.Value;
             }
         }
     }

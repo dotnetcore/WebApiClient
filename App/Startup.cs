@@ -52,14 +52,14 @@ namespace App
                 .UseSourceGeneratorHttpApiActivator();
 
             // 注册userApi
-            services.AddHttpApi(typeof(IUserApi), o =>
+            services.AddHttpApi(typeof(IUserApi)).ConfigureHttpApi(o =>
             {
                 o.UseLogging = Environment.IsDevelopment();
                 o.HttpHost = new Uri("http://localhost:5000/");
             });
 
             // 注册与配置clientId模式的token提者选项
-            services.AddClientCredentialsTokenProvider<IUserApi>(o =>
+            services.AddClientCredentialsTokenProvider<IUserApi>().Configure(o =>
             {
                 o.Endpoint = new Uri("http://localhost:5000/api/tokens");
                 o.Credentials.Client_id = "clientId";

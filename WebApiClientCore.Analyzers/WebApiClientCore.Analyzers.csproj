@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<Nullable>enable</Nullable>
-		<LangVersion>8.0</LangVersion>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 
