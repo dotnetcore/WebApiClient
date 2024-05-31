@@ -89,6 +89,11 @@ namespace Microsoft.Extensions.DependencyInjection
         private static ITokenProviderBuilder AddTokenProviderCore<THttpApi, TTokenProvider>(this IServiceCollection services, string alias)
             where TTokenProvider : class, ITokenProvider
         {
+            if (alias == null)
+            {
+                throw new ArgumentNullException(nameof(alias));
+            }
+
             services
                .AddOptions<TokenProviderFactoryOptions>()
                .Configure(o => o.Register<THttpApi, TTokenProvider>(alias));
