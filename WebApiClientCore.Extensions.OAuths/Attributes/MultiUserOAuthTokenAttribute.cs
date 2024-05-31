@@ -31,11 +31,10 @@ namespace WebApiClientCore.Attributes
         /// <exception cref="InvalidOperationException"></exception>
         protected sealed override ITokenProvider GetTokenProvider(ApiRequestContext context)
         {
-            if (context.TryGetArgument(this.UserIdParameterName, StringComparer.OrdinalIgnoreCase, out var userId) &&
-                userId is string userIdValue)
+            if (context.TryGetArgument<string>(this.UserIdParameterName, StringComparer.OrdinalIgnoreCase, out var userId))
             {
                 var tokenProviderFactory = context.HttpContext.ServiceProvider.GetRequiredService<ITokenProviderFactory>();
-                return tokenProviderFactory.Create(context.ActionDescriptor.InterfaceType, this.TokenProviderSearchMode, userIdValue);
+                return tokenProviderFactory.Create(context.ActionDescriptor.InterfaceType, this.TokenProviderSearchMode, userId);
             }
 
             throw new InvalidOperationException($"未提供有效的参数值: {this.UserIdParameterName}");
