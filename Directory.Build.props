@@ -1,6 +1,6 @@
 <Project>
 	<PropertyGroup>
-		<Version>2.0.6</Version>
+		<Version>2.0.7</Version>
 		<Copyright>Copyright © laojiu 2017-2024</Copyright>
 		<NoWarn>IDE0057</NoWarn>
 	</PropertyGroup>
@@ -15,6 +15,16 @@
 		<PackageProjectUrl>https://github.com/dotnetcore/WebApiClient</PackageProjectUrl>
 		<PackageIcon>icon.png</PackageIcon>
 	</PropertyGroup>
+
+	<PropertyGroup>
+		<IncludeSymbols>True</IncludeSymbols>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
+	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="..\icon.png">
