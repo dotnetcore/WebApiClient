@@ -6,8 +6,8 @@ namespace WebApiClientCore
     /// <summary>
     /// 表示HttpApi代理方法的特性 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     [EditorBrowsable(EditorBrowsableState.Never)]
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public sealed class HttpApiProxyMethodAttribute : Attribute
     {
         /// <summary>

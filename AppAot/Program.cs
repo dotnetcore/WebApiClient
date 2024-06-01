@@ -12,7 +12,6 @@ namespace AppAot
                 {
                     services
                         .AddWebApiClient()
-                        .UseSourceGeneratorHttpApiActivator() // SG 激活器
                         .ConfigureHttpApi(options => // json SG生成器配置
                         {
                             var jsonContext = AppJsonSerializerContext.Default;

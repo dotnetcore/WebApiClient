@@ -9,7 +9,7 @@
 		<Summary>一款基于HttpClient封装，只需要定义c#接口并修饰相关特性，即可异步调用远程http接口的客户端库</Summary>
 
 		<SignAssembly>true</SignAssembly>
-		<AssemblyOriginatorKeyFile>Sign.snk</AssemblyOriginatorKeyFile>		 
+		<AssemblyOriginatorKeyFile>Sign.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -42,13 +42,14 @@
 			<LastGenOutput>Resx.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<Folder Include="NugetPackage\analyzers\" />
-	</ItemGroup>	
+	</ItemGroup>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="dotnet publish ../WebApiClientCore.Analyzers/WebApiClientCore.Analyzers.csproj -c Release -o NugetPackage/analyzers/dotnet/cs" />
+		<Exec Command="dotnet publish ../WebApiClientCore.Analyzers.SourceGenerator/WebApiClientCore.Analyzers.SourceGenerator.csproj -c Release -o NugetPackage/analyzers/dotnet/cs" />
 	</Target>
 
 </Project>

@@ -1,7 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace WebApiClientCore.Analyzers.SourceGenerator
@@ -36,7 +35,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             builder.AppendLine("#if NET5_0_OR_GREATER");
             builder.AppendLine("using System.Diagnostics.CodeAnalysis;");
             builder.AppendLine("using System.Runtime.CompilerServices;");
-            builder.AppendLine($"namespace WebApiClientCore.Implementations");
+            builder.AppendLine($"namespace WebApiClientCore");
             builder.AppendLine("{");
             builder.AppendLine("    /// <summary>动态依赖初始化器</summary>");
             builder.AppendLine($"    static partial class {this.ClassName}");
