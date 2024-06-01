@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -16,6 +17,11 @@ namespace WebApiClientCore.Attributes
     /// </remarks>
     public class OAuthTokenAttribute : ApiFilterAttribute
     {
+        /// <summary>
+        /// 获取或设置指定TokenProvider别名的方法参数名
+        /// </summary>
+        public string? AliasParameterName { get; set; }
+
         /// <summary>
         /// 获取或设置token提供者的查找模式
         /// </summary>
@@ -53,8 +59,21 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected virtual ITokenProvider GetTokenProvider(ApiRequestContext context)
         {
+            var alias = string.Empty;
+            if (string.IsNullOrEmpty(this.AliasParameterName) == false)
+            {
+                if (context.TryGetArgument<string>(this.AliasParameterName, StringComparer.OrdinalIgnoreCase, out var aliasValue))
+                {
+                    alias = aliasValue;
+                }
+                else
+                {
+                    throw new InvalidOperationException($"未提供有效的参数值: {this.AliasParameterName}");
+                }
+            }
+
             var factory = context.HttpContext.ServiceProvider.GetRequiredService<ITokenProviderFactory>();
-            return factory.Create(context.ActionDescriptor.InterfaceType, this.TokenProviderSearchMode);
+            return factory.Create(context.ActionDescriptor.InterfaceType, this.TokenProviderSearchMode, alias);
         }
 
         /// <summary>
