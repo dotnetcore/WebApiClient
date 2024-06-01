@@ -153,4 +153,16 @@
   <data name="WA1006_title" xml:space="preserve">
     <value>Unsupported decorated parameter index</value>
   </data>
+  <data name="WA1007_message" xml:space="preserve">
+    <value>The interface must be public</value>
+  </data>
+  <data name="WA1007_title" xml:space="preserve">
+    <value>Unsupported modifiers</value>
+  </data>
+  <data name="WA1008_message" xml:space="preserve">
+    <value>Declaring generic interface is not supported</value>
+  </data>
+  <data name="WA1008_title" xml:space="preserve">
+    <value>Unsupported generic interface</value>
+  </data>
 </root>

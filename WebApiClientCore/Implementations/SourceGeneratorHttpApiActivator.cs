@@ -89,10 +89,6 @@ namespace WebApiClientCore.Implementations
         private static Type? FindProxyTypeFromAssembly()
         {
             var interfaceType = typeof(THttpApi);
-            var httpApiType = interfaceType.IsGenericType
-                ? interfaceType.GetGenericTypeDefinition()
-                : interfaceType;
-
             foreach (var proxyType in interfaceType.Assembly.GetTypes())
             {
                 if (proxyType.IsClass == false)
@@ -101,14 +97,12 @@ namespace WebApiClientCore.Implementations
                 }
 
                 var proxyClassAttr = proxyType.GetCustomAttribute<HttpApiProxyClassAttribute>();
-                if (proxyClassAttr == null || proxyClassAttr.HttpApiType != httpApiType)
+                if (proxyClassAttr == null || proxyClassAttr.HttpApiType != interfaceType)
                 {
                     continue;
                 }
 
-                return proxyType.IsGenericType
-                    ? proxyType.MakeGenericType(interfaceType.GetGenericArguments())
-                    : proxyType;
+                return proxyType;
             }
 
             return null;
