@@ -32,7 +32,7 @@ namespace WebApiClientCore
         /// <param name="source"></param>
         /// <param name="getDependencies"></param>
         /// <returns></returns>
-        private static IList<T> Sort<T>(IEnumerable<T> source, Func<T, IEnumerable<T>> getDependencies)
+        private static IList<T> Sort<T>(IEnumerable<T> source, Func<T, IEnumerable<T>> getDependencies) where T : notnull
         {
             var sorted = new List<T>();
             var visited = new Dictionary<T, bool>();
@@ -45,7 +45,7 @@ namespace WebApiClientCore
             return sorted;
         }
 
-        private static void Visit<T>(T item, Func<T, IEnumerable<T>> getDependencies, List<T> sorted, Dictionary<T, bool> visited)
+        private static void Visit<T>(T item, Func<T, IEnumerable<T>> getDependencies, List<T> sorted, Dictionary<T, bool> visited) where T : notnull
         {
             var alreadyVisited = visited.TryGetValue(item, out var inProcess);
 
@@ -88,8 +88,13 @@ namespace WebApiClientCore
         {
             public static MethodEqualityComparer Default { get; } = new MethodEqualityComparer();
 
-            public bool Equals(MethodInfo x, MethodInfo y)
+            public bool Equals(MethodInfo? x, MethodInfo? y)
             {
+                if (x == null || y == null)
+                {
+                    return false;
+                }
+
                 if (x.Name != y.Name || x.ReturnType != y.ReturnType)
                 {
                     return false;

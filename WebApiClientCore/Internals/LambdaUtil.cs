@@ -36,7 +36,7 @@ namespace WebApiClientCore.Internals
 
             if (typeof(TDeclaring) != property.DeclaringType)
             {
-                bodyInstance = Expression.Convert(bodyInstance, property.DeclaringType);
+                bodyInstance = Expression.Convert(bodyInstance, property.DeclaringType!);
             }
 
             if (typeof(TProperty) != property.PropertyType)
@@ -136,7 +136,7 @@ namespace WebApiClientCore.Internals
             var bodyInstance = (Expression)paramInstance;
             if (typeof(TDeclaring) != field.DeclaringType)
             {
-                bodyInstance = Expression.Convert(bodyInstance, field.DeclaringType);
+                bodyInstance = Expression.Convert(bodyInstance, field.DeclaringType!);
             }
 
             var bodyField = (Expression)Expression.Field(bodyInstance, field);

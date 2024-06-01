@@ -39,7 +39,7 @@ namespace WebApiClientCore
             else
             {
                 var utf8Json = bufferWriter.WrittenSegment;
-                return Encoding.Convert(Encoding.UTF8, encoding, utf8Json.Array, utf8Json.Offset, utf8Json.Count);
+                return Encoding.Convert(Encoding.UTF8, encoding, utf8Json.Array!, utf8Json.Offset, utf8Json.Count);
             }
         }
 
