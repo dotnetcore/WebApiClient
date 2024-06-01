@@ -35,7 +35,7 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="method">方法信息</param>  
         internal DefaultApiReturnDescriptor(MethodInfo method)
-            : this(method, method.DeclaringType)
+            : this(method, method.DeclaringType!)
         {
         }
 
@@ -114,8 +114,13 @@ namespace WebApiClientCore.Implementations
             /// <param name="x"></param>
             /// <param name="y"></param>
             /// <returns></returns>
-            public bool Equals(IApiReturnAttribute x, IApiReturnAttribute y)
+            public bool Equals(IApiReturnAttribute? x, IApiReturnAttribute? y)
             {
+                if (x == null || y == null)
+                {
+                    return false;
+                }
+
                 var xVal = x.AcceptContentType?.MediaType;
                 var yVal = y.AcceptContentType?.MediaType;
 

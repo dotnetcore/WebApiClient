@@ -52,7 +52,7 @@ namespace WebApiClientCore.HttpContents
                 JsonBufferSerializer.Serialize(utf8Writer, value, jsonSerializerOptions);
 
                 Encoding.UTF8.Convert(encoding, utf8Writer.WrittenSpan, this);
-                this.Headers.ContentType.CharSet = encoding.WebName;
+                this.Headers.ContentType!.CharSet = encoding.WebName;
             }
         }
     }

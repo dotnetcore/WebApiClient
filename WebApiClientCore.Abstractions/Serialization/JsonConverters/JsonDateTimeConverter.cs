@@ -10,7 +10,7 @@ namespace WebApiClientCore.Serialization.JsonConverters
     /// 支持DateTime和DateTimeOffset
     /// </summary>
     public class JsonDateTimeConverter : JsonConverterFactory
-    {        
+    {
         /// <summary>
         /// 获取日期时间格式
         /// </summary>
@@ -85,7 +85,13 @@ namespace WebApiClientCore.Serialization.JsonConverters
                 {
                     return value;
                 }
-                return DateTime.Parse(reader.GetString());
+                var stringValue = reader.GetString();
+                if (string.IsNullOrEmpty(stringValue))
+                {
+                    throw new NotSupportedException("无法将空值转为DateTime");
+                }
+
+                return DateTime.Parse(stringValue);
             }
 
             public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
@@ -115,7 +121,8 @@ namespace WebApiClientCore.Serialization.JsonConverters
                     return value;
                 }
 
-                return DateTime.Parse(reader.GetString());
+                var stringValue = reader.GetString();
+                return string.IsNullOrEmpty(stringValue) ? null : DateTime.Parse(stringValue);
             }
 
             public override void Write(Utf8JsonWriter writer, DateTime? value, JsonSerializerOptions options)
@@ -150,7 +157,13 @@ namespace WebApiClientCore.Serialization.JsonConverters
                 {
                     return value;
                 }
-                return DateTimeOffset.Parse(reader.GetString());
+
+                var stringValue = reader.GetString();
+                if (string.IsNullOrEmpty(stringValue))
+                {
+                    throw new NotSupportedException("无法将空值转为DateTimeOffset");
+                }
+                return DateTimeOffset.Parse(stringValue);
             }
 
             public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options)
@@ -179,7 +192,9 @@ namespace WebApiClientCore.Serialization.JsonConverters
                 {
                     return value;
                 }
-                return DateTimeOffset.Parse(reader.GetString());
+
+                var stringValue = reader.GetString();
+                return string.IsNullOrEmpty(stringValue) ? null : DateTimeOffset.Parse(stringValue);
             }
 
             public override void Write(Utf8JsonWriter writer, DateTimeOffset? value, JsonSerializerOptions options)

@@ -62,7 +62,7 @@ namespace WebApiClientCore.Attributes
             if (headersString != null)
             {
                 this.IncludeHeaderNames = headersString
-                    .Split(new[] { ',', '|', ';' })
+                    .Split([',', '|', ';'])
                     .Select(h => h.Trim())
                     .Where(h => string.IsNullOrEmpty(h) == false)
                     .ToArray();

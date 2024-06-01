@@ -36,7 +36,7 @@ namespace WebApiClientCore.Internals
 
             if (typeof(TDeclaring) != property.DeclaringType)
             {
-                bodyInstance = Expression.Convert(bodyInstance, property.DeclaringType);
+                bodyInstance = Expression.Convert(bodyInstance, property.DeclaringType!);
             }
 
             if (typeof(TProperty) != property.PropertyType)
@@ -44,7 +44,8 @@ namespace WebApiClientCore.Internals
                 bodyValue = Expression.Convert(bodyValue, property.PropertyType);
             }
 
-            var bodyCall = Expression.Call(bodyInstance, property.GetSetMethod(), bodyValue);
+            var setMethod = property.GetSetMethod() ?? throw new NotSupportedException();
+            var bodyCall = Expression.Call(bodyInstance, setMethod, bodyValue);
             return Expression.Lambda<Action<TDeclaring, TProperty>>(bodyCall, paramInstance, paramValue).Compile();
         }
 
@@ -136,7 +137,7 @@ namespace WebApiClientCore.Internals
             var bodyInstance = (Expression)paramInstance;
             if (typeof(TDeclaring) != field.DeclaringType)
             {
-                bodyInstance = Expression.Convert(bodyInstance, field.DeclaringType);
+                bodyInstance = Expression.Convert(bodyInstance, field.DeclaringType!);
             }
 
             var bodyField = (Expression)Expression.Field(bodyInstance, field);

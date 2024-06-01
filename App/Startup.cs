@@ -45,11 +45,11 @@ namespace App
             // 添加控制器
             services.AddControllers().AddXmlSerializerFormatters();
 
-            // 应用编译时生成接口的代理类型代码
+            // 全局默认配置
             services
                 .AddWebApiClient()
-                .UseJsonFirstApiActionDescriptor()
-                .UseSourceGeneratorHttpApiActivator();
+                .ConfigureHttpApi(o => { })
+                .UseJsonFirstApiActionDescriptor();
 
             // 注册userApi
             services.AddHttpApi(typeof(IUserApi)).ConfigureHttpApi(o =>

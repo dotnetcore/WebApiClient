@@ -35,9 +35,9 @@ namespace WebApiClientCore.HttpContents
             : base("form-data", boundary)
         {
             this.boundary = boundary;
-            var parameter = new NameValueHeaderValue("boundary", boundary);
-            this.Headers.ContentType.Parameters.Clear();
-            this.Headers.ContentType.Parameters.Add(parameter);
+            var parameter = new NameValueHeaderValue("boundary", boundary);             
+            this.Headers.ContentType!.Parameters.Clear();
+            this.Headers.ContentType!.Parameters.Add(parameter);
         }
 
         /// <summary>

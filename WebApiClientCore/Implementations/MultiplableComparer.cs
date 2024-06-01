@@ -18,8 +18,13 @@ namespace WebApiClientCore.Implementations
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public bool Equals(TAttributeMultiplable x, TAttributeMultiplable y)
+        public bool Equals(TAttributeMultiplable? x, TAttributeMultiplable? y)
         {
+            if (x == null || y == null)
+            {
+                return false;
+            }
+
             // 如果其中一个不允许重复，返回true将y过滤
             if (x.GetType() == y.GetType())
             {

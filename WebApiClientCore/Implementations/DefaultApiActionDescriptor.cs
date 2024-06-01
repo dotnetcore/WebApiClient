@@ -66,7 +66,7 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="method">接口的方法</param>
         internal DefaultApiActionDescriptor(MethodInfo method)
-            : this(method, method.DeclaringType)
+            : this(method, method.DeclaringType!)
         {
         }
 

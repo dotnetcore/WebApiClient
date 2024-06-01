@@ -14,10 +14,16 @@ namespace WebApiClientCore.Implementations
 #if NET5_0_OR_GREATER
         [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]
 #endif
-        THttpApi> : IHttpApiActivator<THttpApi>
+    THttpApi> : IHttpApiActivator<THttpApi>
     {
         private readonly ApiActionInvoker[] actionInvokers;
         private readonly Func<IHttpApiInterceptor, ApiActionInvoker[], THttpApi> activator;
+        private static readonly Type? proxyClassType = FindProxyTypeFromAssembly();
+
+        /// <summary>
+        /// 获取是否支持
+        /// </summary>
+        public static bool IsSupported => proxyClassType != null;
 
         /// <summary>
         /// 通过查找类型代理类型创建实例
@@ -29,10 +35,10 @@ namespace WebApiClientCore.Implementations
         /// <exception cref="ProxyTypeCreateException"></exception>
         public SourceGeneratorHttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
         {
-            var proxyType = FindProxyTypeFromAssembly();
+            var proxyType = proxyClassType;
             if (proxyType == null)
             {
-                var message = $"找不到{typeof(THttpApi)}的代理类：{GetErrorReason()}";
+                var message = $"找不到{typeof(THttpApi)}的代理类";
                 throw new ProxyTypeCreateException(typeof(THttpApi), message);
             }
 
@@ -43,7 +49,7 @@ namespace WebApiClientCore.Implementations
                 .Select(item => actionInvokerProvider.CreateActionInvoker(item))
                 .ToArray();
 
-            this.activator = (interceptor, invokers) => (THttpApi)Activator.CreateInstance(proxyType, interceptor, invokers);
+            this.activator = (interceptor, invokers) => proxyType.CreateInstance<THttpApi>(interceptor, invokers);
         }
 
         /// <summary>
@@ -83,10 +89,6 @@ namespace WebApiClientCore.Implementations
         private static Type? FindProxyTypeFromAssembly()
         {
             var interfaceType = typeof(THttpApi);
-            var httpApiType = interfaceType.IsGenericType
-                ? interfaceType.GetGenericTypeDefinition()
-                : interfaceType;
-
             foreach (var proxyType in interfaceType.Assembly.GetTypes())
             {
                 if (proxyType.IsClass == false)
@@ -95,35 +97,80 @@ namespace WebApiClientCore.Implementations
                 }
 
                 var proxyClassAttr = proxyType.GetCustomAttribute<HttpApiProxyClassAttribute>();
-                if (proxyClassAttr == null || proxyClassAttr.HttpApiType != httpApiType)
+                if (proxyClassAttr == null || proxyClassAttr.HttpApiType != interfaceType)
                 {
                     continue;
                 }
 
-                return proxyType.IsGenericType
-                    ? proxyType.MakeGenericType(interfaceType.GetGenericArguments())
-                    : proxyType;
+                return proxyType;
             }
 
             return null;
         }
 
         /// <summary>
-        /// 获取错误原因
+        /// 表示MethodInfo的特征
         /// </summary>
-        /// <returns></returns>
-        private static string GetErrorReason()
+        private sealed class MethodFeature : IEquatable<MethodFeature>
         {
-            var assembly = typeof(THttpApi).Assembly;
-            const string SourceGenerator = "WebApiClientCore.Extensions.SourceGenerator";
-            if (assembly.GetReferencedAssemblies().Any(a => a.Name == SourceGenerator))
+            private readonly MethodInfo method;
+
+            /// <summary>
+            /// MethodInfo的特征
+            /// </summary>
+            /// <param name="method"></param>
+            public MethodFeature(MethodInfo method)
             {
-                return "需要更新你的Visual Studio或msbuild工具到新版本";
+                this.method = method;
             }
-            else
+
+            /// <summary>
+            /// 比较方法原型是否相等
+            /// </summary>
+            /// <param name="other"></param>
+            /// <returns></returns>
+            public bool Equals(MethodFeature? other)
             {
-                return $"项目{assembly.GetName().Name}需要引用{SourceGenerator}";
+                if (other == null)
+                {
+                    return false;
+                }
+
+                var x = this.method;
+                var y = other.method;
+
+                if (x.Name != y.Name || x.ReturnType != y.ReturnType)
+                {
+                    return false;
+                }
+
+                var xParameterTypes = x.GetParameters().Select(p => p.ParameterType);
+                var yParameterTypes = y.GetParameters().Select(p => p.ParameterType);
+                return xParameterTypes.SequenceEqual(yParameterTypes);
             }
+
+
+            public override bool Equals(object? obj)
+            {
+                return this.Equals(obj as MethodFeature);
+            }
+
+            /// <summary>
+            /// 获取哈希
+            /// </summary>
+            /// <returns></returns>
+            public override int GetHashCode()
+            {
+                var hashCode = new HashCode();
+                hashCode.Add(this.method.Name);
+                hashCode.Add(this.method.ReturnType);
+                foreach (var parameter in this.method.GetParameters())
+                {
+                    hashCode.Add(parameter.ParameterType);
+                }
+                return hashCode.ToHashCode();
+            }
+
         }
     }
 }

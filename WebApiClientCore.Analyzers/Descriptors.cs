@@ -50,6 +50,13 @@ namespace WebApiClientCore.Analyzers
         public static DiagnosticDescriptor ModifierDescriptor { get; }
             = Create("WA1007", Resx.WA1007_title, Resx.WA1007_message);
 
+
+        /// <summary>
+        /// 泛型接口诊断描述器
+        /// </summary>
+        public static DiagnosticDescriptor GenericInterfaceDescriptor { get; }
+            = Create("WA1008", Resx.WA1008_title, Resx.WA1008_message);
+
         /// <summary>
         /// 创建诊断描述器
         /// </summary>

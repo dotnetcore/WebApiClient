@@ -24,7 +24,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <summary>
         /// 异步锁
         /// </summary>
-        private readonly AsyncRoot asyncRoot = new AsyncRoot();
+        private readonly AsyncRoot asyncRoot = new();
 
         /// <summary>
         /// 获取或设置名称

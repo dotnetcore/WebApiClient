@@ -88,7 +88,7 @@ namespace WebApiClientCore.Internals
         /// 转换为字符串
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
+        public override readonly string ToString()
         {
             return this.chars.Slice(0, this.index).ToString();
         }

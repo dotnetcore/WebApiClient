@@ -162,4 +162,10 @@
   <data name="WA1007_title" xml:space="preserve">
     <value>不支持的修饰符</value>
   </data>
+  <data name="WA1008_message" xml:space="preserve">
+    <value>不支持声明泛型接口</value>
+  </data>
+  <data name="WA1008_title" xml:space="preserve">
+    <value>不支持的泛型接口</value>
+  </data>
 </root>

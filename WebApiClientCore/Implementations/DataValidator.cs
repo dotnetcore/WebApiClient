@@ -14,7 +14,7 @@ namespace WebApiClientCore.Implementations
         /// <summary>
         /// 类型的属性否需要验证缓存
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, bool> cache = new ConcurrentDictionary<Type, bool>();
+        private static readonly ConcurrentDictionary<Type, bool> cache = new();
 
         /// <summary>
         /// 验证参数值输入合法性
@@ -32,7 +32,7 @@ namespace WebApiClientCore.Implementations
                 validation.Validate(parameterValue, name);
             }
 
-            if (validateProperty == true && IsNeedValidateProperty(parameterValue) == true)
+            if (validateProperty && parameterValue != null && IsNeedValidateProperty(parameterValue) == true)
             {
                 var ctx = new ValidationContext(parameterValue) { MemberName = name };
                 Validator.ValidateObject(parameterValue, ctx, true);
@@ -46,7 +46,7 @@ namespace WebApiClientCore.Implementations
         /// <exception cref="ValidationException"></exception>
         public static void ValidateReturnValue(object? value)
         {
-            if (IsNeedValidateProperty(value) == true)
+            if (value != null && IsNeedValidateProperty(value) == true)
             {
                 var ctx = new ValidationContext(value);
                 Validator.ValidateObject(value, ctx, true);
@@ -58,13 +58,8 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="instance">实例</param>
         /// <returns></returns>
-        private static bool IsNeedValidateProperty(object? instance)
+        private static bool IsNeedValidateProperty(object instance)
         {
-            if (instance == null)
-            {
-                return false;
-            }
-
             var type = instance.GetType();
             if (type == typeof(string) || type.IsValueType == true)
             {
