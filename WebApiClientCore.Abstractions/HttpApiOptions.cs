@@ -70,7 +70,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取自定义数据存储的字典
         /// </summary>
-        public Dictionary<object, object> Properties { get; } = new Dictionary<object, object>();
+        public Dictionary<object, object> Properties { get; } = [];
 
         /// <summary>
         /// 获取接口的全局过滤器集合

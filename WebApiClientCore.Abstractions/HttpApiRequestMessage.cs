@@ -59,7 +59,7 @@ namespace WebApiClientCore
         public void AddFormDataText(string name, string? value)
         {
             var keyValue = new KeyValue(name, value);
-            this.AddFormDataText(new[] { keyValue });
+            this.AddFormDataText([keyValue]);
         }
 
         /// <summary>

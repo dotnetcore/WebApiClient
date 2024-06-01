@@ -25,7 +25,7 @@ namespace WebApiClientCore.Implementations
         /// <summary>
         /// 请求头的默认UserAgent
         /// </summary>
-        private readonly static ProductInfoHeaderValue defaultUserAgent = new ProductInfoHeaderValue(assemblyName.Name, assemblyName.Version?.ToString());
+        private readonly static ProductInfoHeaderValue defaultUserAgent = new(assemblyName.Name ?? "WebApiClientCore", assemblyName.Version?.ToString());
 
         /// <summary>
         /// httpApi的请求消息

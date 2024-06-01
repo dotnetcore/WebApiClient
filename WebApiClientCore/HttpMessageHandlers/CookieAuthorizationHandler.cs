@@ -19,9 +19,9 @@ namespace WebApiClientCore.HttpMessageHandlers
         /// <returns></returns>
         protected sealed override async Task SetAuthorizationAsync(SetReason reason, HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            if (reason == SetReason.ForResend)
+            if (reason == SetReason.ForResend && request.RequestUri != null)
             {
-                var handler = this.GetHttpClientHandler(this.InnerHandler);
+                var handler = GetHttpClientHandler(this.InnerHandler);
                 if (handler.UseCookies == false)
                 {
                     throw new NotSupportedException(Resx.unsupported_NoUseCookies);
@@ -43,11 +43,11 @@ namespace WebApiClientCore.HttpMessageHandlers
         /// </summary>
         /// <param name="handler"></param>
         /// <returns></returns>
-        private HttpClientHandler GetHttpClientHandler(HttpMessageHandler handler)
+        private static HttpClientHandler GetHttpClientHandler(HttpMessageHandler? handler)
         {
             if (handler is DelegatingHandler delegatingHandler)
             {
-                return this.GetHttpClientHandler(delegatingHandler.InnerHandler);
+                return GetHttpClientHandler(delegatingHandler.InnerHandler);
             }
 
             if (handler is HttpClientHandler clientHandler)

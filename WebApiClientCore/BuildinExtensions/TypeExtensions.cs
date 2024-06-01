@@ -15,7 +15,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 类型的默认值缓存
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, object?> defaultValueCache = new ConcurrentDictionary<Type, object?>();
+        private static readonly ConcurrentDictionary<Type, object?> defaultValueCache = new();
 
         /// <summary>
         /// 关联的AttributeUsageAttribute是否AllowMultiple

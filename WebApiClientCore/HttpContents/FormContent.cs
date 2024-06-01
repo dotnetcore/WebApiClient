@@ -20,7 +20,7 @@ namespace WebApiClientCore.HttpContents
         /// <summary>
         /// buffer写入器
         /// </summary>
-        private readonly RecyclableBufferWriter<byte> bufferWriter = new RecyclableBufferWriter<byte>();
+        private readonly RecyclableBufferWriter<byte> bufferWriter = new();
 
         /// <summary>
         /// 默认的http编码

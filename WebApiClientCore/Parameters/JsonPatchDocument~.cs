@@ -107,12 +107,12 @@ namespace WebApiClientCore.Parameters
             /// <summary>
             /// path变量
             /// </summary>
-            private readonly StringBuilder path = new StringBuilder();
+            private readonly StringBuilder path = new();
 
             /// <summary>
             /// 属性名称缓存
             /// </summary>
-            private static readonly ConcurrentDictionary<MemberInfo, string> staticNameCache = new ConcurrentDictionary<MemberInfo, string>();
+            private static readonly ConcurrentDictionary<MemberInfo, string> staticNameCache = new();
 
             /// <summary>
             /// Path访问器

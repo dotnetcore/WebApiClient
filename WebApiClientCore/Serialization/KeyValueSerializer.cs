@@ -16,7 +16,7 @@ namespace WebApiClientCore.Serialization
         /// <summary>
         /// 默认的序列化选项
         /// </summary>
-        private static readonly KeyValueSerializerOptions defaultOptions = new KeyValueSerializerOptions();
+        private static readonly KeyValueSerializerOptions defaultOptions = new();
 
         /// <summary>
         /// 序列化对象为键值对
@@ -35,7 +35,7 @@ namespace WebApiClientCore.Serialization
                     return Array.Empty<KeyValue>();
                 }
                 var keyValue = new KeyValue(key, null);
-                return new KeyValue[] { keyValue };
+                return [keyValue];
             }
 
             var objType = obj.GetType();
@@ -49,7 +49,7 @@ namespace WebApiClientCore.Serialization
                 typeCode == TypeCode.Single)
             {
                 var keyValue = new KeyValue(key, obj.ToString());
-                return new KeyValue[] { keyValue };
+                return [keyValue];
             }
 
             if (obj is IEnumerable<KeyValuePair<string, string>> keyValues)
@@ -117,7 +117,7 @@ namespace WebApiClientCore.Serialization
                 {
                     case JsonTokenType.PropertyName:
                         {
-                            key = reader.GetString();
+                            key = reader.GetString() ?? string.Empty;
                             break;
                         }
 

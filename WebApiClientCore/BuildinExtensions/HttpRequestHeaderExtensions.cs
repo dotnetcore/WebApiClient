@@ -19,7 +19,7 @@ namespace WebApiClientCore
         /// <summary>
         /// 请求头枚举和名称的缓存
         /// </summary>
-        private static readonly Dictionary<HttpRequestHeader, string> cache = new Dictionary<HttpRequestHeader, string>();
+        private static readonly Dictionary<HttpRequestHeader, string> cache = [];
 
         /// <summary>
         /// 请求头枚举到名称的转换

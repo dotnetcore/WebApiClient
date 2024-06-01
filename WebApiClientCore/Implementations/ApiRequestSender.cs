@@ -181,7 +181,7 @@ namespace WebApiClientCore.Implementations
         /// <summary>
         /// 表示CancellationToken链接器
         /// </summary>
-        private struct CancellationTokenLinker : IDisposable
+        private readonly struct CancellationTokenLinker : IDisposable
         {
             /// <summary>
             /// 链接产生的tokenSource

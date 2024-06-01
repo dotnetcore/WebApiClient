@@ -44,7 +44,8 @@ namespace WebApiClientCore.Internals
                 bodyValue = Expression.Convert(bodyValue, property.PropertyType);
             }
 
-            var bodyCall = Expression.Call(bodyInstance, property.GetSetMethod(), bodyValue);
+            var setMethod = property.GetSetMethod() ?? throw new NotSupportedException();
+            var bodyCall = Expression.Call(bodyInstance, setMethod, bodyValue);
             return Expression.Lambda<Action<TDeclaring, TProperty>>(bodyCall, paramInstance, paramValue).Compile();
         }
 

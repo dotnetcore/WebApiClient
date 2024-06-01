@@ -51,7 +51,14 @@ namespace WebApiClientCore.Attributes
             {
                 var request = context.HttpContext.RequestMessage;
                 logMessage.RequestHeaders = request.GetHeadersString();
+
+/* 项目“WebApiClientCore (net5.0)”的未合并的更改
+在此之前:
                 logMessage.RequestContent = await this.ReadRequestContentAsync(request).ConfigureAwait(false);
+在此之后:
+                logMessage.RequestContent = await ReadRequestContentAsync(request).ConfigureAwait(false);
+*/
+                logMessage.RequestContent = await LoggingFilterAttribute.ReadRequestContentAsync(request).ConfigureAwait(false);
             }
 
             context.Properties.Set(typeof(LoggingFilterAttribute), logMessage);
@@ -83,7 +90,14 @@ namespace WebApiClientCore.Attributes
             {
                 logMessage.HasResponse = true;
                 logMessage.ResponseHeaders = response.GetHeadersString();
+
+/* 项目“WebApiClientCore (net5.0)”的未合并的更改
+在此之前:
                 logMessage.ResponseContent = await this.ReadResponseContentAsync(context).ConfigureAwait(false);
+在此之后:
+                logMessage.ResponseContent = await ReadResponseContentAsync(context).ConfigureAwait(false);
+*/
+                logMessage.ResponseContent = await LoggingFilterAttribute.ReadResponseContentAsync(context).ConfigureAwait(false);
             }
 
             await this.WriteLogAsync(context, logMessage).ConfigureAwait(false);
@@ -94,7 +108,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        private async Task<string?> ReadRequestContentAsync(HttpApiRequestMessage request)
+        private static async Task<string?> ReadRequestContentAsync(HttpApiRequestMessage request)
         {
             if (request.Content == null)
             {
@@ -111,7 +125,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        private async Task<string?> ReadResponseContentAsync(ApiResponseContext context)
+        private static async Task<string?> ReadResponseContentAsync(ApiResponseContext context)
         {
             var content = context.HttpContext.ResponseMessage?.Content;
             if (content == null)

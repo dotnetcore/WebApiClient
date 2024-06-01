@@ -61,7 +61,7 @@ namespace WebApiClientCore.Implementations
         /// 代理类型的构造器的参数类型
         /// (IHttpApiInterceptor interceptor,ApiActionInvoker[] actionInvokers)
         /// </summary>
-        private static readonly Type[] proxyTypeCtorArgTypes = new Type[] { typeof(IHttpApiInterceptor), typeof(ApiActionInvoker[]) };
+        private static readonly Type[] proxyTypeCtorArgTypes = [typeof(IHttpApiInterceptor), typeof(ApiActionInvoker[])];
 
 
         /// <summary>

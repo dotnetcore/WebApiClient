@@ -53,9 +53,9 @@ namespace WebApiClientCore.Attributes
             }
 
             var uriString = uriValue.ToString();
-            if (Uri.TryCreate(uriString, UriKind.RelativeOrAbsolute, out uri))
+            if (Uri.TryCreate(uriString, UriKind.RelativeOrAbsolute, out var value))
             {
-                return uri;
+                return value;
             }
 
             throw new ApiInvalidConfigException(Resx.parameter_CannotCvtUri.Format(uriString));

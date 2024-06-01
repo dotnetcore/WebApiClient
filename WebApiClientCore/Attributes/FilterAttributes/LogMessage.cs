@@ -157,7 +157,7 @@ namespace WebApiClientCore.Attributes
             /// <summary>
             /// StringBuilder
             /// </summary>
-            private readonly StringBuilder builder = new StringBuilder();
+            private readonly StringBuilder builder = new();
 
             /// <summary>
             /// 添加文本

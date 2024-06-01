@@ -17,7 +17,7 @@ namespace WebApiClientCore.HttpContents
         /// <summary>
         /// buffer
         /// </summary>
-        private readonly RecyclableBufferWriter<byte> bufferWriter = new RecyclableBufferWriter<byte>();
+        private readonly RecyclableBufferWriter<byte> bufferWriter = new();
 
         /// <summary>
         /// utf8的BufferContent
