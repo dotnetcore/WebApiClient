@@ -3,8 +3,8 @@
 	<PropertyGroup>
 		<Nullable>enable</Nullable>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-		
+		<DocumentationFile>$(TargetPath)\$(AssemblyName).xml</DocumentationFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 

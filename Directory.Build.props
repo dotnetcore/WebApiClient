@@ -14,9 +14,10 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/dotnetcore/WebApiClient</PackageProjectUrl>
 		<PackageIcon>icon.png</PackageIcon>
+		<UseArtifactsOutput>true</UseArtifactsOutput>
 	</PropertyGroup>
 
-	<PropertyGroup>
+	<PropertyGroup>		
 		<IncludeSymbols>True</IncludeSymbols>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>

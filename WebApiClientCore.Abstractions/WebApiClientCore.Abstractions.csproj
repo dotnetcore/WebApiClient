@@ -6,7 +6,7 @@
 		
 		<RootNamespace>WebApiClientCore</RootNamespace>
 		<AssemblyName>WebApiClientCore.Abstractions</AssemblyName>
-		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+		<DocumentationFile>$(TargetPath)\$(AssemblyName).xml</DocumentationFile>
 
 		<Description>WebApiClientCore的接口与抽象类型</Description>
 		<Summary>WebApiClientCore的接口与抽象类型</Summary>
