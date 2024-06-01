@@ -18,14 +18,30 @@ namespace WebApiClientCore.Attributes
     public class OAuthTokenAttribute : ApiFilterAttribute
     {
         /// <summary>
-        /// 获取或设置指定TokenProvider别名的方法参数名
+        /// 获取指定TokenProvider别名的方法参数名
         /// </summary>
-        public string? AliasParameterName { get; set; }
+        public string? AliasParameterName { get; }
 
         /// <summary>
         /// 获取或设置token提供者的查找模式
         /// </summary>
         public TypeMatchMode TokenProviderSearchMode { get; set; } = TypeMatchMode.TypeOrBaseTypes;
+
+        /// <summary>
+        /// token应用特性
+        /// </summary>
+        public OAuthTokenAttribute()
+        {
+        }
+
+        /// <summary>
+        /// token应用特性
+        /// </summary>
+        /// <param name="aliasParameterName">指定TokenProvider别名的方法参数名</param>
+        public OAuthTokenAttribute(string? aliasParameterName)
+        {
+            this.AliasParameterName = aliasParameterName;
+        }
 
         /// <summary>
         /// 请求之前
