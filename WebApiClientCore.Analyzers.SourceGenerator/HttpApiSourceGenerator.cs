@@ -26,20 +26,20 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         {
             if (context.SyntaxReceiver is HttpApiSyntaxReceiver receiver)
             {
-                var builders = receiver
+                var proxyClasses = receiver
                     .GetHttpApiTypes(context.Compilation)
-                    .Select(i => new HttpApiCodeBuilder(i))
+                    .Select(i => new HttpApiProxyClass(i))
                     .Distinct()
                     .ToArray();
 
-                foreach (var builder in builders)
+                foreach (var proxyClass in proxyClasses)
                 {
-                    context.AddSource(builder.FileName, builder.ToSourceText());
+                    context.AddSource(proxyClass.FileName, proxyClass.ToSourceText());
                 }
 
-                if (builders.Length > 0)
+                if (proxyClasses.Length > 0)
                 {
-                    var initializer = new HttpApiProxyClassInitializer(context.Compilation, builders);
+                    var initializer = new HttpApiProxyClassInitializer(context.Compilation, proxyClasses);
                     context.AddSource(initializer.FileName, initializer.ToSourceText());
                 }
             }

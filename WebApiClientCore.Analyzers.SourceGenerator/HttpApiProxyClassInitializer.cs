@@ -5,20 +5,28 @@ using System.Text;
 
 namespace WebApiClientCore.Analyzers.SourceGenerator
 {
-    sealed class HttpApiProxyClassInitializer
+    /// <summary>
+    /// HttpApi代理类初始化器
+    /// </summary>
+    sealed class HttpApiProxyClassInitializer : ISourceTextBuilder
     {
         private readonly Compilation compilation;
-        private readonly IEnumerable<HttpApiCodeBuilder> codeBuilders;
+        private readonly IEnumerable<HttpApiProxyClass> proxyClasses;
 
         /// <summary>
         /// 文件名
         /// </summary>
         public string FileName => $"{nameof(HttpApiProxyClassInitializer)}.cs";
 
-        public HttpApiProxyClassInitializer(Compilation compilation, IEnumerable<HttpApiCodeBuilder> codeBuilders)
+        /// <summary>
+        /// HttpApi代理类初始化器
+        /// </summary>
+        /// <param name="compilation"></param>
+        /// <param name="proxyClasses"></param>
+        public HttpApiProxyClassInitializer(Compilation compilation, IEnumerable<HttpApiProxyClass> proxyClasses)
         {
             this.compilation = compilation;
-            this.codeBuilders = codeBuilders;
+            this.proxyClasses = proxyClasses;
         }
 
         /// <summary>
@@ -51,9 +59,9 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
                 """);
 
             builder.AppendLine("        [ModuleInitializer]");
-            foreach (var codeBuilder in this.codeBuilders)
+            foreach (var item in this.proxyClasses)
             {
-                builder.AppendLine($"        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof({codeBuilder.Namespace}.{codeBuilder.ClassName}))]");
+                builder.AppendLine($"        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof({item.Namespace}.{item.ClassName}))]");
             }
 
             builder.AppendLine("        public static void Initialize()");
