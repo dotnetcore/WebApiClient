@@ -1,7 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -16,6 +15,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         /// 接口符号
         /// </summary>
         private readonly INamedTypeSymbol httpApi;
+        private readonly string httpApiFullName;
 
         /// <summary>
         /// 拦截器变量名
@@ -28,42 +28,19 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         private readonly string actionInvokersFieldName = $"actionInvokers_{(uint)Environment.TickCount}";
 
         /// <summary>
-        /// using
+        /// 文件名
         /// </summary>
-        public IEnumerable<string> Usings
-        {
-            get
-            {
-                yield return "using System;";
-                yield return "using System.Diagnostics;";
-                yield return "using WebApiClientCore;";
-            }
-        }
+        public string FileName => this.httpApi.ToDisplayString();
 
         /// <summary>
         /// 命名空间
         /// </summary>
-        public string Namespace => $"{this.httpApi.ContainingNamespace}.SourceGenerators";
+        public string Namespace => $"WebApiClientCore.{this.httpApi.ContainingNamespace}";
 
         /// <summary>
-        /// 基础接口名
+        /// 类型名
         /// </summary>
-        public string BaseInterfaceName => this.httpApi.ToDisplayString();
-
-        /// <summary>
-        /// 代理的接口类型名称
-        /// </summary>
-        public string HttpApiTypeName => this.httpApi.IsGenericType ? this.httpApi.ConstructUnboundGenericType().ToDisplayString() : this.httpApi.ToDisplayString();
-
-        /// <summary>
-        /// 类名
-        /// </summary>
-        public string ClassName => this.httpApi.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
-
-        /// <summary>
-        /// 构造器名
-        /// </summary>
-        public string CtorName => this.httpApi.Name;
+        public string ClassName => this.httpApi.Name;
 
         /// <summary>
         /// HttpApi代码构建器
@@ -72,6 +49,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         public HttpApiCodeBuilder(INamedTypeSymbol httpApi)
         {
             this.httpApi = httpApi;
+            this.httpApiFullName = httpApi.GetFullName();
         }
 
         /// <summary>
@@ -91,22 +69,23 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         public override string ToString()
         {
             var builder = new StringBuilder();
-            foreach (var item in this.Usings)
-            {
-                builder.AppendLine(item);
-            }
+            builder.AppendLine($"using System;");
+            builder.AppendLine($"using System.Diagnostics;");
+
             builder.AppendLine($"#pragma warning disable CS8601");
             builder.AppendLine($"#pragma warning disable 1591");
             builder.AppendLine($"namespace {this.Namespace}");
             builder.AppendLine("{");
-            builder.AppendLine($"\t[HttpApiProxyClass(typeof({this.HttpApiTypeName}))]");
-            builder.AppendLine($"\tpublic class {this.ClassName}:{this.BaseInterfaceName}");
+
+            builder.AppendLine($"\t[DebuggerTypeProxy(typeof({this.httpApiFullName}))]");
+            builder.AppendLine($"\t[HttpApiProxyClass(typeof({this.httpApiFullName}))]");
+            builder.AppendLine($"\tpublic class {this.ClassName}:{this.httpApiFullName}");
             builder.AppendLine("\t{");
 
             builder.AppendLine($"\t\tprivate readonly IHttpApiInterceptor {this.apiInterceptorFieldName};");
             builder.AppendLine($"\t\tprivate readonly ApiActionInvoker[] {this.actionInvokersFieldName};");
 
-            builder.AppendLine($"\t\tpublic {this.CtorName}(IHttpApiInterceptor apiInterceptor,ApiActionInvoker[] actionInvokers)");
+            builder.AppendLine($"\t\tpublic {this.httpApi.Name}(IHttpApiInterceptor apiInterceptor,ApiActionInvoker[] actionInvokers)");
             builder.AppendLine("\t\t{");
             builder.AppendLine($"\t\t\tthis.{this.apiInterceptorFieldName} = apiInterceptor;");
             builder.AppendLine($"\t\t\tthis.{this.actionInvokersFieldName} = actionInvokers;");
@@ -139,16 +118,17 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         private string BuildMethod(IMethodSymbol method, int index)
         {
             var builder = new StringBuilder();
-            var parametersString = string.Join(",", method.Parameters.Select(item => $"{item.Type} {item.Name}"));
+            var parametersString = string.Join(",", method.Parameters.Select(item => $"{item.Type.GetFullName()} {item.Name}"));
             var parameterNamesString = string.Join(",", method.Parameters.Select(item => item.Name));
             var paremterArrayString = string.IsNullOrEmpty(parameterNamesString)
                 ? "Array.Empty<object>()"
                 : $"new object[] {{ {parameterNamesString} }}";
 
+            var returnTypeString = method.ReturnType.GetFullName();
             builder.AppendLine($"\t\t[HttpApiProxyMethod({index})]");
-            builder.AppendLine($"\t\tpublic {method.ReturnType} {method.Name}( {parametersString} )");
+            builder.AppendLine($"\t\tpublic {returnTypeString} {method.Name}( {parametersString} )");
             builder.AppendLine("\t\t{");
-            builder.AppendLine($"\t\t\treturn ({method.ReturnType})this.{this.apiInterceptorFieldName}.Intercept(this.{this.actionInvokersFieldName}[{index}], {paremterArrayString});");
+            builder.AppendLine($"\t\t\treturn ({returnTypeString})this.{this.apiInterceptorFieldName}.Intercept(this.{this.actionInvokersFieldName}[{index}], {paremterArrayString});");
             builder.AppendLine("\t\t}");
             return builder.ToString();
         }
@@ -160,7 +140,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         /// <returns></returns>
         public bool Equals(HttpApiCodeBuilder other)
         {
-            return this.HttpApiTypeName == other.HttpApiTypeName;
+            return this.FileName == other.FileName;
         }
 
         /// <summary>
@@ -183,7 +163,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return this.HttpApiTypeName.GetHashCode();
+            return this.FileName.GetHashCode();
         }
     }
 }

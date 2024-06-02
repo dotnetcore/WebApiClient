@@ -10,6 +10,9 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         private readonly Compilation compilation;
         private readonly IEnumerable<HttpApiCodeBuilder> codeBuilders;
 
+        /// <summary>
+        /// 文件名
+        /// </summary>
         public string FileName => $"{nameof(HttpApiProxyClassInitializer)}.cs";
 
         public HttpApiProxyClassInitializer(Compilation compilation, IEnumerable<HttpApiCodeBuilder> codeBuilders)

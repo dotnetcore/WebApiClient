@@ -34,7 +34,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
 
                 foreach (var builder in builders)
                 {
-                    context.AddSource(builder.HttpApiTypeName, builder.ToSourceText());
+                    context.AddSource(builder.FileName, builder.ToSourceText());
                 }
 
                 if (builders.Length > 0)
