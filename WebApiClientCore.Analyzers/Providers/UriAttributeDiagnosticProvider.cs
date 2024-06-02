@@ -40,7 +40,7 @@ namespace WebApiClientCore.Analyzers.Providers
                 for (var i = 1; i < method.Parameters.Length; i++)
                 {
                     var parameter = method.Parameters[i];
-                    var uriAttribute = parameter.GetAttributes().FirstOrDefault(item => attr.Equals(item.AttributeClass));
+                    var uriAttribute = parameter.GetAttributes().FirstOrDefault(item => attr.Equals(item.AttributeClass, SymbolEqualityComparer.Default));
                     var appSyntax = uriAttribute?.ApplicationSyntaxReference;
                     if (appSyntax == null)
                     {

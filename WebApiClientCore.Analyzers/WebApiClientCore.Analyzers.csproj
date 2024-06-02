@@ -4,11 +4,8 @@
 		<Nullable>enable</Nullable>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<DocumentationFile>$(TargetPath)\$(AssemblyName).xml</DocumentationFile>
-		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-		<NoWarn>1701;1702;RS1024;RS1025;RS1026</NoWarn>
-		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>		
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>Sign.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>

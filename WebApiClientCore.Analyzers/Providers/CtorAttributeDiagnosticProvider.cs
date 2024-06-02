@@ -116,7 +116,7 @@ namespace WebApiClientCore.Analyzers.Providers
             var ctorUsageAttribute = attributeData
                 .AttributeConstructor
                 .GetAttributes()
-                .FirstOrDefault(item => ctorAttr.Equals(item.AttributeClass));
+                .FirstOrDefault(item => ctorAttr.Equals(item.AttributeClass, SymbolEqualityComparer.Default));
 
             if (ctorUsageAttribute == null)
             {

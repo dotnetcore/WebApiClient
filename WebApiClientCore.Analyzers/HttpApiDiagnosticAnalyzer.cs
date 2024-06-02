@@ -39,14 +39,16 @@ namespace WebApiClientCore.Analyzers
         /// <param name="context">上下文</param>
         public override void Initialize(AnalysisContext context)
         {
+            context.EnableConcurrentExecution();
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
             context.RegisterSyntaxNodeAction(syntaxNodeContext =>
             {
                 if (HttpApiContext.TryParse(syntaxNodeContext, out var httpApiContext))
                 {
                     if (httpApiContext != null)
                     {
-                        var diagnostics = this
-                            .GetDiagnosticProviders(httpApiContext)
+                        var diagnostics =
+                            GetDiagnosticProviders(httpApiContext)
                             .SelectMany(d => d.CreateDiagnostics());
 
                         foreach (var item in diagnostics)
