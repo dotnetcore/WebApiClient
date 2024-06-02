@@ -49,7 +49,6 @@
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="dotnet publish ../WebApiClientCore.Analyzers/WebApiClientCore.Analyzers.csproj -c Release -o NugetPackage/analyzers/dotnet/cs" />
-		<Exec Command="dotnet publish ../WebApiClientCore.Analyzers.SourceGenerator/WebApiClientCore.Analyzers.SourceGenerator.csproj -c Release -o NugetPackage/analyzers/dotnet/cs" />
 	</Target>
 
 </Project>

@@ -10,7 +10,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
     /// <summary>
     /// HttpApi代理类
     /// </summary>
-    sealed class HttpApiProxyClass : IEquatable<HttpApiProxyClass>, ISourceTextBuilder
+    sealed class HttpApiProxyClass : IEquatable<HttpApiProxyClass>
     {
         /// <summary>
         /// 接口符号

@@ -4,7 +4,7 @@
 		<Nullable>enable</Nullable>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<DocumentationFile>$(TargetPath)\$(AssemblyName).xml</DocumentationFile>
-		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>		
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>Sign.snk</AssemblyOriginatorKeyFile>
@@ -32,4 +32,5 @@
 			<LastGenOutput>Resx.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
 	</ItemGroup>
+
 </Project>

@@ -1,7 +1,8 @@
 ﻿using Microsoft.CodeAnalysis;
 using System.Linq;
+using WebApiClientCore.Analyzers.SourceGenerator;
 
-namespace WebApiClientCore.Analyzers.SourceGenerator
+namespace WebApiClientCore.Analyzers
 {
     /// <summary>
     /// HttpApi代码生成器

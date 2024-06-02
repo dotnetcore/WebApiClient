@@ -8,7 +8,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
     /// <summary>
     /// HttpApi代理类初始化器
     /// </summary>
-    sealed class HttpApiProxyClassInitializer : ISourceTextBuilder
+    sealed class HttpApiProxyClassInitializer
     {
         private readonly Compilation compilation;
         private readonly IEnumerable<HttpApiProxyClass> proxyClasses;

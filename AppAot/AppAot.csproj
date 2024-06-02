@@ -17,7 +17,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\WebApiClientCore\WebApiClientCore.csproj" />
 		<ProjectReference Include="..\WebApiClientCore.Analyzers\WebApiClientCore.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-		<ProjectReference Include="..\WebApiClientCore.Analyzers.SourceGenerator\WebApiClientCore.Analyzers.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
 </Project>
