@@ -39,8 +39,8 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
 
                 if (builders.Length > 0)
                 {
-                    var dependencyBuilder = new DynamicDependencyBuilder(context.Compilation, builders);
-                    context.AddSource(dependencyBuilder.FileName, dependencyBuilder.ToSourceText());
+                    var initializer = new HttpApiProxyClassInitializer(context.Compilation, builders);
+                    context.AddSource(initializer.FileName, initializer.ToSourceText());
                 }
             }
         }

@@ -5,15 +5,14 @@ using System.Text;
 
 namespace WebApiClientCore.Analyzers.SourceGenerator
 {
-    sealed class DynamicDependencyBuilder
+    sealed class HttpApiProxyClassInitializer
     {
         private readonly Compilation compilation;
         private readonly IEnumerable<HttpApiCodeBuilder> codeBuilders;
 
-        public string FileName => "DynamicDependencyInitializer.g.cs";
-        public string ClassName => "DynamicDependencyInitializer_G";
+        public string FileName => $"{nameof(HttpApiProxyClassInitializer)}.cs";
 
-        public DynamicDependencyBuilder(Compilation compilation, IEnumerable<HttpApiCodeBuilder> codeBuilders)
+        public HttpApiProxyClassInitializer(Compilation compilation, IEnumerable<HttpApiCodeBuilder> codeBuilders)
         {
             this.compilation = compilation;
             this.codeBuilders = codeBuilders;
@@ -38,7 +37,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             builder.AppendLine($"namespace WebApiClientCore");
             builder.AppendLine("{");
             builder.AppendLine("    /// <summary>动态依赖初始化器</summary>");
-            builder.AppendLine($"    static partial class {this.ClassName}");
+            builder.AppendLine($"    static partial class {nameof(HttpApiProxyClassInitializer)}");
             builder.AppendLine("    {");
 
             builder.AppendLine($"""
@@ -54,10 +53,9 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
                 builder.AppendLine($"        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof({codeBuilder.Namespace}.{codeBuilder.ClassName}))]");
             }
 
-            builder.AppendLine("        public static void AddDynamicDependency()");
+            builder.AppendLine("        public static void Initialize()");
             builder.AppendLine("        {");
             builder.AppendLine("        }");
-
             builder.AppendLine("    }");
             builder.AppendLine("}");
             builder.AppendLine("#endif");
