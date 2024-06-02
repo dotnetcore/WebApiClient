@@ -9,13 +9,14 @@ namespace WebApiClientCore.Benchmarks.Requests
     /// <summary> 
     /// 跳过真实的http请求环节的模拟Get请求
     /// </summary>
+    [MemoryDiagnoser]
     public class GetBenchmark : Benchmark
-    { 
+    {
         /// <summary>
         /// 使用原生HttpClient请求
         /// </summary>
         /// <returns></returns>
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         public async Task<Model> HttpClient_GetAsync()
         {
             using var scope = this.ServiceProvider.CreateScope();

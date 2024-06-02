@@ -3,6 +3,7 @@ using WebApiClientCore.Internals;
 
 namespace WebApiClientCore.Benchmarks.Buffers
 {
+    [InProcess]
     public class Benchmark : IBenchmark
     {
         [Benchmark]

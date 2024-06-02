@@ -7,13 +7,14 @@ namespace WebApiClientCore.Benchmarks.Requests
     /// <summary> 
     /// 跳过真实的http请求环节的模拟Post表单请求
     /// </summary>
+    [MemoryDiagnoser]
     public class PutFormBenchmark : Benchmark
     {
         /// <summary>
         /// 使用WebApiClientCore请求
         /// </summary>
         /// <returns></returns>
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         public async Task<Model> WebApiClientCore_PutFormAsync()
         {
             using var scope = this.ServiceProvider.CreateScope();

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace WebApiClientCore.Benchmarks.Requests
 {
+    [InProcess]
     [MemoryDiagnoser]
     public abstract class Benchmark : IBenchmark
     {

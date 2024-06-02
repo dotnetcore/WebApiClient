@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace WebApiClientCore.Benchmarks.StringReplaces
 {
+    [InProcess]
     [MemoryDiagnoser]
     public class Benchmark : IBenchmark
     {

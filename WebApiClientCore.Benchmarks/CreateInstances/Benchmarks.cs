@@ -4,6 +4,7 @@ using WebApiClientCore.Internals;
 
 namespace WebApiClientCore.Benchmarks.CreateInstances
 {
+    [InProcess]
     public class Benchmarks : IBenchmark
     {
         private readonly Func<int, Model> ctor = LambdaUtil.CreateCtorFunc<int, Model>(typeof(Model));
