@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Net;
 
 namespace WebApiClientCore.Exceptions
 {
     /// <summary>
     /// 表示接口不支持处理响应消息的异常
     /// </summary>
-    public class ApiReturnNotSupportedExteption : ApiException
+    public class ApiReturnNotSupportedExteption : ApiException, IStatusCodeException
     {
         /// <summary>
         /// 获取请求上下文
@@ -32,6 +33,14 @@ namespace WebApiClientCore.Exceptions
         public ApiReturnNotSupportedExteption(ApiResponseContext context)
         {
             this.Context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
+        /// <summary>
+        /// 获取响应状态码
+        /// </summary>
+        HttpStatusCode? IStatusCodeException.GetStatusCode()
+        {
+            return this.Context.HttpContext.ResponseMessage?.StatusCode;
         }
     }
 }

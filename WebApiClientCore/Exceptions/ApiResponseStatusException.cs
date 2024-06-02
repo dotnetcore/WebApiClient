@@ -7,7 +7,7 @@ namespace WebApiClientCore.Exceptions
     /// <summary>
     /// 表示接口响应状态码异常
     /// </summary>
-    public class ApiResponseStatusException : ApiException
+    public class ApiResponseStatusException : ApiException, IStatusCodeException
     {
         /// <summary>
         /// 获取响应消息
@@ -40,6 +40,14 @@ namespace WebApiClientCore.Exceptions
         public ApiResponseStatusException(HttpResponseMessage responseMessage)
         {
             this.ResponseMessage = responseMessage;
+        }
+
+        /// <summary>
+        /// 获取响应状态码
+        /// </summary>
+        HttpStatusCode? IStatusCodeException.GetStatusCode()
+        {
+            return this.StatusCode;
         }
     }
 }

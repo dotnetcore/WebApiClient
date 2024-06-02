@@ -73,6 +73,12 @@ namespace WebApiClientCore.Implementations
             }
             catch (Exception ex)
             {
+#if NET5_0_OR_GREATER
+                if (ex is IStatusCodeException exception)
+                {
+                    throw new HttpRequestException(ex.Message, ex, exception.GetStatusCode());
+                }
+#endif
                 throw new HttpRequestException(ex.Message, ex);
             }
         }
