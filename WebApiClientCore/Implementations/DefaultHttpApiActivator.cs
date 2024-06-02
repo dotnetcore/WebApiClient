@@ -40,11 +40,9 @@ namespace WebApiClientCore.Implementations
         /// <returns></returns>
         public THttpApi CreateInstance(IHttpApiInterceptor apiInterceptor)
         {
-            if (this.sourceGeneratorHttpApiActivator != null)
-            {
-                return this.sourceGeneratorHttpApiActivator.CreateInstance(apiInterceptor);
-            }
-            return this.emitHttpApiActivatorLazy.Value.CreateInstance(apiInterceptor);
+            return this.sourceGeneratorHttpApiActivator == null
+                ? this.emitHttpApiActivatorLazy.Value.CreateInstance(apiInterceptor)
+                : this.sourceGeneratorHttpApiActivator.CreateInstance(apiInterceptor);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace WebApiClientCore.Internals
     /// <summary>
     /// 表示Uri值
     /// </summary>
-    public ref struct UriValue
+    public readonly ref struct UriValue
     {
         /// <summary>
         /// uri
@@ -101,7 +101,7 @@ namespace WebApiClientCore.Internals
         private static ReadOnlySpan<char> GetFragment(ReadOnlySpan<char> uriSpan)
         {
             var index = uriSpan.LastIndexOf('#');
-            return index < 0 ? ReadOnlySpan<char>.Empty : uriSpan.Slice(index);
+            return index < 0 ? ReadOnlySpan<char>.Empty : uriSpan[index..];
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace WebApiClientCore.Internals
             {
                 return false;
             }
-            return uriSpan.Slice(index + 3).IndexOf('/') < 0;
+            return uriSpan[(index + 3)..].IndexOf('/') < 0;
         }
 
         /// <summary>

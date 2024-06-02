@@ -116,10 +116,7 @@ namespace System.Net.Http
 #endif
                 if (length == 0)
                 {
-                    if (fileSize == null)
-                    {
-                        fileSize = recvSize;
-                    }
+                    fileSize ??= recvSize;
                     isCompleted = true;
                 }
                 else

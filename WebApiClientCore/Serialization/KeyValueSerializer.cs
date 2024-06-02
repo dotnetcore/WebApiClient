@@ -92,14 +92,9 @@ namespace WebApiClientCore.Serialization
                 AllowTrailingCommas = jsonOptions.AllowTrailingCommas,
             });
 
-            if (options.KeyNamingStyle == KeyNamingStyle.ShortName)
-            {
-                return GetShortNameKeyValueList(key, ref utf8JsonReader);
-            }
-            else
-            {
-                return GetFullNameKeyValueList(key, ref utf8JsonReader, options);
-            }
+            return options.KeyNamingStyle == KeyNamingStyle.ShortName
+                ? GetShortNameKeyValueList(key, ref utf8JsonReader)
+                : GetFullNameKeyValueList(key, ref utf8JsonReader, options);
         }
 
         /// <summary>

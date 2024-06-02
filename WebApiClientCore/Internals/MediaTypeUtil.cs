@@ -16,12 +16,12 @@ namespace WebApiClientCore.Internals
         public static bool IsMatch(ReadOnlySpan<char> source, ReadOnlySpan<char> target)
         {
             var index = source.IndexOf('/');
-            var sourceMain = index >= 0 ? source.Slice(0, index) : source;
-            var sourceSub = index >= 0 ? source.Slice(index + 1) : ReadOnlySpan<char>.Empty;
+            var sourceMain = index >= 0 ? source[..index] : source;
+            var sourceSub = index >= 0 ? source[(index + 1)..] : ReadOnlySpan<char>.Empty;
 
             index = target.IndexOf('/');
-            var targetMain = index >= 0 ? target.Slice(0, index) : target;
-            var targetSub = index >= 0 ? target.Slice(index + 1) : ReadOnlySpan<char>.Empty;
+            var targetMain = index >= 0 ? target[..index] : target;
+            var targetSub = index >= 0 ? target[(index + 1)..] : ReadOnlySpan<char>.Empty;
 
             return MediaTypeMatch(sourceMain, targetMain) && MediaTypeMatch(sourceSub, targetSub);
         }

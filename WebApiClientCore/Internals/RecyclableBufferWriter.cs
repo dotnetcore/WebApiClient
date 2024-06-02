@@ -34,7 +34,7 @@ namespace WebApiClientCore.Internals
         /// 获取已数入的数据
         /// </summary>
         /// <returns></returns>
-        public ArraySegment<T> WrittenSegment => new ArraySegment<T>(this.buffer, 0, this.index);
+        public ArraySegment<T> WrittenSegment => new(this.buffer, 0, this.index);
 
         /// <summary>
         /// 获取容量

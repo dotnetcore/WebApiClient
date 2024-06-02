@@ -6,12 +6,12 @@ namespace WebApiClientCore
     /// 表示响应缓存结果
     /// </summary>
     [DebuggerDisplay("HasValue = {HasValue}")]
-    public struct ResponseCacheResult
+    public readonly struct ResponseCacheResult
     {
         /// <summary>
         /// 表示无Value的缓存结果 
         /// </summary>
-        public static readonly ResponseCacheResult NoValue = new ResponseCacheResult(null, false);
+        public static readonly ResponseCacheResult NoValue = new(null, false);
 
         /// <summary>
         /// 获取缓存的值

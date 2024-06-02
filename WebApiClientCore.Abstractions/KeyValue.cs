@@ -8,7 +8,7 @@ namespace WebApiClientCore
     /// 表示键值对
     /// </summary>
     [DebuggerDisplay("{Key}={Value}")]
-    public struct KeyValue
+    public readonly struct KeyValue
     {
         /// <summary>
         /// 获取键

@@ -10,8 +10,8 @@ namespace WebApiClientCore.Serialization
     /// </summary>
     public static class XmlSerializer
     {
-        private static readonly XmlReaderSettings readerSettings = new XmlReaderSettings();
-        private static readonly XmlWriterSettings writerSettings = new XmlWriterSettings();
+        private static readonly XmlReaderSettings readerSettings = new();
+        private static readonly XmlWriterSettings writerSettings = new();
 
         /// <summary>
         /// 将对象序列化为xml文本

@@ -8,6 +8,7 @@
 	<PropertyGroup>
 		<Authors>laojiu</Authors>
 		<Company>laojiu</Company>
+		<NoWarn>IDE0290</NoWarn>
 		<LangVersion>latest</LangVersion>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>

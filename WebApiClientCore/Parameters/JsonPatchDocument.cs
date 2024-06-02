@@ -17,7 +17,7 @@ namespace WebApiClientCore.Parameters
         /// <summary>
         /// 操作列表
         /// </summary>
-        private readonly List<object> oprations = new List<object>();
+        private readonly List<object> oprations = new();
 
         /// <summary>
         /// Add操作

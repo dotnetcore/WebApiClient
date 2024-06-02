@@ -42,11 +42,9 @@ namespace WebApiClientCore.Implementations
                 throw new ProxyTypeCreateException(typeof(THttpApi), message);
             }
 
-            var apiMethods = FindApiMethods(proxyType);
-
-            this.actionInvokers = apiMethods
+            this.actionInvokers = FindApiMethods(proxyType)
                 .Select(item => apiActionDescriptorProvider.CreateActionDescriptor(item, typeof(THttpApi)))
-                .Select(item => actionInvokerProvider.CreateActionInvoker(item))
+                .Select(actionInvokerProvider.CreateActionInvoker)
                 .ToArray();
 
             this.activator = (interceptor, invokers) => proxyType.CreateInstance<THttpApi>(interceptor, invokers);

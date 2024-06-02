@@ -64,7 +64,7 @@ namespace WebApiClientCore
             var index = name.LastIndexOf('`');
             if (index > -1)
             {
-                name = name.Slice(0, index);
+                name = name[..index];
             }
             builder.Append(name);
             builder.Append('<');
