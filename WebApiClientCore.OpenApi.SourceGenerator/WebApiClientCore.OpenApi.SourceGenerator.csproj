@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup> 
+	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFrameworks>netcoreapp3.1;net5;net6;net7</TargetFrameworks>
+		<TargetFrameworks>netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
 
 		<Summary>将本地或远程OpenApi文档解析生成WebApiClientCore的接口定义代码文件的工具</Summary>
 		<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
