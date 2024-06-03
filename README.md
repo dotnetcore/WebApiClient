@@ -24,7 +24,7 @@
 支持将本地或远程OpenApi文档解析生成WebApiClientCore接口代码的dotnet tool，简化接口声明的工作量
 
 #### 性能强劲
-在[BenchmarkDotNet](WebApiClientCore.Benchmarks/results)中，各种请求下2.X性能倍领先于同类产品[refit](https://github.com/reactiveui/refit)。
+在[BenchmarkDotNet](WebApiClientCore.Benchmarks/results)中，各种请求下2.X倍性能领先于同类产品[refit](https://github.com/reactiveui/refit)。
 
 ### 文档支持
 https://webapiclient.github.io/
