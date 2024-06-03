@@ -1,6 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<Nullable>enable</Nullable>
+		<!--2.0.8将是其最后一个版本-->
+		<Version>2.0.8</Version>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<DocumentationFile>$(TargetPath)\$(AssemblyName).xml</DocumentationFile>
 
