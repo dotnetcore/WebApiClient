@@ -119,7 +119,7 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
             /// <summary>
             /// api列表
             /// </summary>
-            private readonly List<HttpApi> httpApiList = new List<HttpApi>();
+            private readonly List<HttpApi> httpApiList = [];
 
             /// <summary>
             /// HttpApi提供者
@@ -154,7 +154,7 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
             {
                 var model = new HttpApi(controllerClassName, operations, this.openApi.Document, this.openApi.Settings);
                 this.httpApiList.Add(model);
-                return new CodeArtifact[0];
+                return [];
             }
 
 

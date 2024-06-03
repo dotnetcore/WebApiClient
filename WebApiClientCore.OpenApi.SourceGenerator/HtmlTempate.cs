@@ -11,7 +11,7 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
         /// html标签转换
         /// </summary>
         /// <param name="obj"></param>
-        public override void Write(object obj = null)
+        public override void Write(object? obj = null)
         {
             var text = obj?.ToString();
             if (text != null)
@@ -28,6 +28,6 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
     /// <typeparam name="T"></typeparam>
     public class HtmlTempate<T> : HtmlTempate
     {
-        public new T Model { get; set; }
+        public new T? Model { get; set; }
     }
 }

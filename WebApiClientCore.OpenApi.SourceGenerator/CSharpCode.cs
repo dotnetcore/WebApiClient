@@ -85,7 +85,7 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
                 var cleaned = line
                     .Replace("partial class", "class")
                     .Replace("System.Collections.Generic.", null)
-                    .Replace("System.Runtime.Serialization.",null)
+                    .Replace("System.Runtime.Serialization.", null)
                     .Replace("System.ComponentModel.DataAnnotations.", null);
 
                 builder.AppendLine(cleaned);
@@ -99,7 +99,7 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
         /// </summary>
         /// <param name="code">源代码</param>
         /// <returns></returns>
-        private static string Pretty(string code)
+        private static string? Pretty(string? code)
         {
             if (code == null)
             {
@@ -115,12 +115,12 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
                 var cTab = tab;
                 if (line == "{")
                 {
-                    tab = tab + 1;
+                    tab++;
                 }
                 else if (line == "}")
                 {
                     cTab = tab - 1;
-                    tab = tab - 1;
+                    tab--;
                 }
 
                 var isEndMethod = line.EndsWith(");");
@@ -142,7 +142,7 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
         /// </summary>
         /// <param name="code">源代码</param>
         /// <returns></returns>
-        private static string Compact(string code)
+        private static string? Compact(string? code)
         {
             if (code == null)
             {
@@ -166,18 +166,24 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
         /// </summary>
         /// <param name="code">源代码</param>
         /// <returns></returns>
-        private static IEnumerable<string> GetLines(string code)
+        private static IEnumerable<string> GetLines(string? code)
         {
             if (code == null)
             {
                 yield break;
             }
 
-            using (var reader = new StringReader(code))
+            using var reader = new StringReader(code);
+            while (true)
             {
-                while (reader.Peek() >= 0)
+                var line = reader.ReadLine();
+                if (line == null)
                 {
-                    yield return reader.ReadLine();
+                    yield break;
+                }
+                else
+                {
+                    yield return line;
                 }
             }
         }

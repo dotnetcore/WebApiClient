@@ -2,6 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
+		<Nullable>enable</Nullable>
 		<TargetFrameworks>netcoreapp3.1;net6.0;net8.0</TargetFrameworks>
 
 		<Summary>将本地或远程OpenApi文档解析生成WebApiClientCore的接口定义代码文件的工具</Summary>

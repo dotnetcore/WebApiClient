@@ -52,7 +52,7 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
             /// <param name="httpMethod"></param>
             /// <param name="operation"></param>
             /// <returns></returns>
-            public override string GetClientName(OpenApiDocument document, string path, string httpMethod, OpenApiOperation operation)
+            public override string? GetClientName(OpenApiDocument document, string path, string httpMethod, OpenApiOperation operation)
             {
                 return operation.Tags.FirstOrDefault();
             }
@@ -85,7 +85,9 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
                     .Replace("]", string.Empty));
 
                 if (allParameters.Count(p => p.Name == parameter.Name) > 1)
+                {
                     return variableName + parameter.Kind;
+                }
 
                 return variableName;
             }
@@ -164,7 +166,7 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
                 var index = -1;
                 return Regex.Replace(name, @"\W", m =>
                 {
-                    index = index + 1;
+                    index++;
                     return index < matchs.Count / 2 ? "Of" : null;
                 });
             }

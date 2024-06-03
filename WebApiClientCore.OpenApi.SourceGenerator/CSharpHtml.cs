@@ -86,7 +86,7 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
             }
 
             this.FilePath = Path.GetFullPath(path);
-            this.BlockElements = new HashSet<string>(new[] { "p", "div" }, StringComparer.OrdinalIgnoreCase);
+            this.BlockElements = new HashSet<string>(["p", "div"], StringComparer.OrdinalIgnoreCase);
         }
 
 
@@ -110,15 +110,10 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
         /// <summary>
         /// 返回视图文本
         /// </summary>
-        /// <param name="model">模型</param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="model">模型</param> 
         /// <returns></returns>
         public string RenderText(T model)
         {
-            if (model == null)
-            {
-                throw new ArgumentNullException(nameof(model));
-            }
             var html = this.RenderHtml(model);
             var doc = XDocument.Parse(html).Root;
             var builder = new StringBuilder();
@@ -176,7 +171,7 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
             /// <summary>
             /// 模板缓存
             /// </summary>
-            private static readonly ConcurrentDictionary<string, IRazorEngineCompiledTemplate> templateCache = new ConcurrentDictionary<string, IRazorEngineCompiledTemplate>();
+            private static readonly ConcurrentDictionary<string, IRazorEngineCompiledTemplate> templateCache = new();
 
             /// <summary>
             /// 编译并执行

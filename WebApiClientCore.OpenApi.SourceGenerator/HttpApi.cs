@@ -24,7 +24,7 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
         /// <summary>
         /// 获取文档描述
         /// </summary>
-        public string Summary { get; }
+        public string? Summary { get; }
 
         /// <summary>
         /// 获取是否有文档描述
@@ -44,8 +44,7 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
         public HttpApi(string className, IEnumerable<CSharpOperationModel> operations, OpenApiDocument document, HttpApiSettings settings)
             : base(className, operations, document, settings)
         {
-            var tag = document.Tags
-                .FirstOrDefault(item => string.Equals(item.Name, className, StringComparison.OrdinalIgnoreCase));
+            var tag = document.Tags.FirstOrDefault(item => string.Equals(item.Name, className, StringComparison.OrdinalIgnoreCase));
 
             this.TypeName = $"I{this.Class}Api";
             this.Summary = tag?.Description;

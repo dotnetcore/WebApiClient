@@ -80,7 +80,7 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
             return base.ResolveParameterType(parameter);
         }
 
-        private static bool IsFileParameter(JsonSchema parameter)
+        private static bool IsFileParameter(JsonSchema? parameter)
         {
             if (parameter == null)
             {

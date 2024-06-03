@@ -1,5 +1,4 @@
 ﻿using CommandLine;
-using CommandLine.Text;
 
 namespace WebApiClientCore.OpenApi.SourceGenerator
 {
@@ -12,12 +11,12 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
         /// openApi的json本地文件路径或远程Uri地址
         /// </summary>
         [Option('o', "openapi", MetaValue = "OpenApi", Required = true, HelpText = "OpenApi的本地文件路径或远程Uri地址")]
-        public string OpenApi { get; set; }
+        public string OpenApi { get; set; } = string.Empty;
 
         /// <summary>
         /// 代码的命名空间
         /// </summary>
         [Option('n', "namespace", MetaValue = "Namespace", Required = false, HelpText = "代码的命名空间，如WebApiClientCore")]
-        public string Namespace { get; set; }
+        public string Namespace { get; set; } = string.Empty;
     }
 }
