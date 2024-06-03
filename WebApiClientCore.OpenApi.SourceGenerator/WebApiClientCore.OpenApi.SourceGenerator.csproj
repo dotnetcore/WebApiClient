@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFrameworks>netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
+		<TargetFrameworks>netcoreapp3.1;net6.0;net8.0</TargetFrameworks>
 
 		<Summary>将本地或远程OpenApi文档解析生成WebApiClientCore的接口定义代码文件的工具</Summary>
 		<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
@@ -14,7 +14,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="CommandLineParser" Version="2.8.0" />
+		<PackageReference Include="CommandLineParser" Version="2.9.1" />
 		<PackageReference Include="RazorEngineCore" Version="2020.6.1" />
 		<PackageReference Include="NSwag.CodeGeneration.CSharp" Version="13.19.0" />
 	</ItemGroup>
