@@ -15,7 +15,7 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
         [Fact]
         public async Task JsonResultTest()
         {
-            var apiAction = new DefaultApiActionDescriptor(typeof(ITestApi).GetMethod("JsonXmlAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(ITestApi).GetMethod("JsonXmlAsync")!);
             var context = new TestRequestContext(apiAction, "laojiu");
             var responseContext = new ApiResponseContext(context);
 
@@ -23,19 +23,19 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
 
             var model = new TestModel();
             var jsonContent = new JsonContent();
-            context.HttpContext.ResponseMessage.Content = jsonContent;
+            context.HttpContext.ResponseMessage!.Content = jsonContent;
             JsonBufferSerializer.Serialize(jsonContent, model, null);
 
             var attr = new JsonReturnAttribute();
             await attr.OnResponseAsync(responseContext);
             var result = responseContext.Result as TestModel;
-            Assert.True(model.Name == result.Name && model.Age == result.Age);
+            Assert.True(model.Name == result?.Name && model.Age == result.Age);
         }
 
         [Fact]
         public async Task XmlResultTest()
         {
-            var apiAction = new DefaultApiActionDescriptor(typeof(ITestApi).GetMethod("JsonXmlAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(ITestApi).GetMethod("JsonXmlAsync")!);
             var context = new TestRequestContext(apiAction, "laojiu");
             var responseContext = new ApiResponseContext(context);
 
@@ -43,11 +43,12 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
 
             var model = new TestModel();
             var xml = XmlSerializer.Serialize(model, null);
-            context.HttpContext.ResponseMessage.Content = new XmlContent(xml, Encoding.UTF8);
+            context.HttpContext.ResponseMessage!.Content = new XmlContent(xml, Encoding.UTF8);
 
             var attr = new XmlReturnAttribute();
             await attr.OnResponseAsync(responseContext);
-            var result = responseContext.Result as TestModel;
+            var result = (TestModel?)responseContext.Result;
+            Assert.NotNull(result);
             Assert.True(model.Name == result.Name && model.Age == result.Age);
         }
 
@@ -55,12 +56,12 @@ namespace WebApiClientCore.Test.Attributes.ReturnAttributes
         [Fact]
         public async Task EnsureSuccessStatusCodeTest()
         {
-            var apiAction = new DefaultApiActionDescriptor(typeof(ITestApi).GetMethod("JsonXmlAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(ITestApi).GetMethod("JsonXmlAsync")!);
             var context = new TestRequestContext(apiAction, "laojiu");
             var responseContext = new ApiResponseContext(context);
 
             context.HttpContext.RequestMessage.Method = HttpMethod.Post;
-            context.HttpContext.ResponseMessage.Content = new JsonContent();
+            context.HttpContext.ResponseMessage!.Content = new JsonContent();
             context.HttpContext.ResponseMessage.StatusCode = System.Net.HttpStatusCode.InternalServerError;
 
             await Assert.ThrowsAsync<ApiResponseStatusException>(async () =>

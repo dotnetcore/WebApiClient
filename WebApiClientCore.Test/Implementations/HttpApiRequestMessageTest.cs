@@ -79,7 +79,7 @@ namespace WebApiClientCore.Test.Implementations
             request.AddUrlQuery("xKey", "xValue");
             Assert.True(request.RequestUri == new Uri("http://webapiclient.com?xKey=xValue"));
 
-            Assert.Throws<ArgumentNullException>(() => request.AddUrlQuery(null, string.Empty));
+            Assert.Throws<ArgumentNullException>(() => request.AddUrlQuery(null!, string.Empty));
 
             request.AddUrlQuery("yKey", "yValue");
             Assert.True(request.RequestUri == new Uri("http://webapiclient.com?xKey=xValue&yKey=yValue"));
@@ -101,11 +101,11 @@ namespace WebApiClientCore.Test.Implementations
             reqeust.Method = System.Net.Http.HttpMethod.Post;
             reqeust.RequestUri = new Uri("http://webapiclient.com");
             await reqeust.AddFormFieldAsync("name", "laojiu");
-            await reqeust.AddFormFieldAsync(new[] { new KeyValue("age", "18") });
+            await reqeust.AddFormFieldAsync([new KeyValue("age", "18")]);
 
-            var body = await reqeust.Content.ReadAsStringAsync();
+            var body = await reqeust.Content!.ReadAsStringAsync();
             Assert.Equal("name=laojiu&age=18", body);
-            Assert.True(reqeust.Content.Headers.ContentType.MediaType == "application/x-www-form-urlencoded");
+            Assert.Equal("application/x-www-form-urlencoded", reqeust.Content.Headers.ContentType!.MediaType);
         }
 
 
@@ -123,14 +123,14 @@ namespace WebApiClientCore.Test.Implementations
             reqeust.Method = System.Net.Http.HttpMethod.Post;
             reqeust.RequestUri = new Uri("http://webapiclient.com");
             reqeust.AddFormDataText("name", "laojiu");
-            reqeust.AddFormDataText(new[] { new KeyValue("age", "18") });
+            reqeust.AddFormDataText([new KeyValue("age", "18")]);
 
             await Assert.ThrowsAsync<NotSupportedException>(() => reqeust.AddFormFieldAsync("key", "value"));
 
-            var body = await reqeust.Content.ReadAsStringAsync();
+            var body = await reqeust.Content!.ReadAsStringAsync();
             Assert.Contains(get("name", "laojiu"), body);
             Assert.Contains(get("age", "18"), body);
-            Assert.True(reqeust.Content.Headers.ContentType.MediaType == "multipart/form-data");
+            Assert.Equal("multipart/form-data", reqeust.Content.Headers.ContentType!.MediaType);
         }
     }
 }

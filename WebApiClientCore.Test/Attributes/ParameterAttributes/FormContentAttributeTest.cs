@@ -15,7 +15,7 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
         [Fact]
         public async Task OnRequestAsyncTest()
         {
-            var apiAction = new DefaultApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync")!);
             var context = new TestRequestContext(apiAction, new
             {
                 name = "老 九",
@@ -28,7 +28,7 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
             var attr = new FormContentAttribute();
             await attr.OnRequestAsync(new ApiParameterContext(context, 0));
 
-            var body = await context.HttpContext.RequestMessage.Content.ReadAsStringAsync();
+            var body = await context.HttpContext.RequestMessage.Content!.ReadAsStringAsync();
             var time = KeyValueSerializer.Serialize("time", DateTime.Parse("2010-10-10"), null);
             var target = $"name={HttpUtility.UrlEncode("老 九", Encoding.UTF8)}&birthDay={HttpUtility.UrlEncode(time[0].Value, Encoding.UTF8)}";
             Assert.True(body.ToUpper() == target.ToUpper());

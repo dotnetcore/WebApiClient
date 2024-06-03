@@ -22,7 +22,7 @@ namespace WebApiClientCore.Test.BuildinExtensions
             [JsonPropertyName("arg")]
             public int Age { get; set; }
 
-            public string Name { get; set; }
+            public string? Name { get; set; }
         }
 
         public interface IGet
@@ -51,11 +51,11 @@ namespace WebApiClientCore.Test.BuildinExtensions
         [Fact]
         public void DefaultValueTest()
         {
-            Assert.True(typeof(A).DefaultValue() == null);
-            Assert.True(typeof(int?).DefaultValue() == null);
-            Assert.True((int)typeof(int).DefaultValue() == 0);
-            Assert.True((float)typeof(float).DefaultValue() == 0f);
-            Assert.True((Guid)typeof(Guid).DefaultValue() == Guid.Empty);
+            Assert.Null(typeof(A).DefaultValue());
+            Assert.Null(typeof(int?).DefaultValue());
+            Assert.Equal(0, (int?)typeof(int).DefaultValue());
+            Assert.Equal(0f, (float?)typeof(float).DefaultValue());
+            Assert.True((Guid?)typeof(Guid).DefaultValue() == Guid.Empty);
         }
 
         [Fact]
@@ -95,8 +95,8 @@ namespace WebApiClientCore.Test.BuildinExtensions
         [Fact]
         public void GetInterfaceCustomAttributesTest()
         {
-            Assert.Equal(2, typeof(Interface2).GetInterfaceCustomAttributes().Count());
-            Assert.Equal(4, typeof(Interface3).GetInterfaceCustomAttributes().Count());
+            Assert.Equal(2, typeof(Interface2).GetInterfaceCustomAttributes().Length);
+            Assert.Equal(4, typeof(Interface3).GetInterfaceCustomAttributes().Length);
         }
     }
 }

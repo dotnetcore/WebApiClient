@@ -12,7 +12,7 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
     { 
         public class Model
         {
-            public string name { get; set; }
+            public string? name { get; set; }
 
             public DateTime birthDay { get; set; }
         }
@@ -20,7 +20,7 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
         [Fact]
         public async Task OnRequestAsyncTest()
         {
-            var apiAction = new DefaultApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync")!);
             var context = new TestRequestContext(apiAction, new Model
             {
                 name = "laojiu",
@@ -33,7 +33,7 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
             var attr = new XmlContentAttribute();
             await attr.OnRequestAsync(new ApiParameterContext(context, 0));
 
-            var body = await context.HttpContext.RequestMessage.Content.ReadAsStringAsync();
+            var body = await context.HttpContext.RequestMessage.Content!.ReadAsStringAsync();
             var target = XmlSerializer.Serialize(context.Arguments[0],null);
             Assert.True(body == target);
         }

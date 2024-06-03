@@ -13,7 +13,7 @@ namespace WebApiClientCore.Test.Attributes
         [Fact]
         public async Task OnRequestAsync()
         {
-            var apiAction = new DefaultApiActionDescriptor(typeof(ITestApi).GetMethod("PostAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(ITestApi).GetMethod("PostAsync")!);
             var context = new TestRequestContext(apiAction, 10);
 
             var attr = new TimeoutAttribute(50);
@@ -27,14 +27,14 @@ namespace WebApiClientCore.Test.Attributes
         [Fact]
         public async Task OnRequestAsync_Parameter_Double_Test()
         {
-            var apiAction = new DefaultApiActionDescriptor(typeof(ITestApi).GetMethod("PostAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(ITestApi).GetMethod("PostAsync")!);
             var context = new TestRequestContext(apiAction, 1);
 
             var attr = new TimeoutAttribute();
             var parameterContext = new ApiParameterContext(context, 0);
             await attr.OnRequestAsync(parameterContext);
 
-            await Task.Delay(20);
+            await Task.Delay(50);
             var canceled = context.HttpContext.CancellationTokens[0].IsCancellationRequested;
             Assert.True(canceled);
         }
@@ -42,7 +42,7 @@ namespace WebApiClientCore.Test.Attributes
         [Fact]
         public async Task OnRequestAsync_Parameter_Timespan_Test()
         {
-            var apiAction = new DefaultApiActionDescriptor(typeof(ITestApi).GetMethod("PostAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(ITestApi).GetMethod("PostAsync")!);
             var context = new TestRequestContext(apiAction, 5);
 
             var attr = new TimeoutAttribute();
@@ -62,7 +62,7 @@ namespace WebApiClientCore.Test.Attributes
             context.Arguments[0] = null;
 
             await attr.OnRequestAsync(parameterContext);
-            Assert.True(context.HttpContext.CancellationTokens.Count == 1);
+            Assert.Single(context.HttpContext.CancellationTokens);
         }
     }
 }

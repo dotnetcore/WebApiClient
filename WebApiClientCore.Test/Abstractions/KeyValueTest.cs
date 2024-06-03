@@ -9,7 +9,7 @@ namespace WebApiClientCore.Test.Abstractions
         public void CtorTest()
         {
             Assert.Throws<ArgumentNullException>(() => new KeyValue("", ""));
-            Assert.Throws<ArgumentNullException>(() => new KeyValue(null, ""));
+            Assert.Throws<ArgumentNullException>(() => new KeyValue(null!, ""));
 
             var kv = new KeyValue("key", "value");
             Assert.Equal("key", kv.Key);

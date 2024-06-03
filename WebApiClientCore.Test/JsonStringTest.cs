@@ -20,15 +20,15 @@ namespace WebApiClientCore.Test
             Assert.Equal(json1, json3);
 
             var b2 = JsonSerializer.Deserialize(json3, typeof(JsonString<B>), options) as JsonString<B>;
-            Assert.Equal("name", b2.Value.Name);
+            Assert.Equal("name", b2?.Value.Name);
 
 
             var a = new A();
             var aJson = JsonSerializer.Serialize(a, options);
             var a2 = JsonSerializer.Deserialize(aJson, typeof(A), options) as A;
 
-            Assert.Equal(a.Age, a2.Age);
-            Assert.Equal(a.B.Value.Name, a2.B.Value.Name);
+            Assert.Equal(a.Age, a2?.Age);
+            Assert.Equal(a.B.Value.Name, a2?.B.Value.Name);
         }
 
         class A

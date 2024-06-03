@@ -9,7 +9,7 @@ namespace WebApiClientCore.Test
         public void NullHttpPathTest()
         {
             var path = HttpPath.Create(null);
-            Uri input = null;
+            Uri? input = null;
             var output = path.MakeUri(input);
             Assert.Null(output);
 

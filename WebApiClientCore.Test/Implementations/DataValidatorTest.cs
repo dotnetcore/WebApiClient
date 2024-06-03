@@ -10,7 +10,7 @@ namespace WebApiClientCore.Test.Implementations
         {
             [Required]
             [StringLength(4)]
-            public string Account { get; set; }
+            public string? Account { get; set; }
         }
 
         [Fact]
@@ -53,7 +53,7 @@ namespace WebApiClientCore.Test.Implementations
 
             public static ApiParameterDescriptor Create()
             {
-                var p = typeof(TestParameter).GetMethod("Test").GetParameters()[0];
+                var p = typeof(TestParameter).GetMethod("Test")!.GetParameters()[0];
                 return new DefaultApiParameterDescriptor(p);
             }
         }

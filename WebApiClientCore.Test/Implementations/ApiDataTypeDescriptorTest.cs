@@ -1,4 +1,5 @@
-﻿using WebApiClientCore.Implementations;
+﻿using System.Diagnostics;
+using WebApiClientCore.Implementations;
 using Xunit;
 
 namespace WebApiClientCore.Test.Implementations
@@ -8,6 +9,7 @@ namespace WebApiClientCore.Test.Implementations
         private ApiDataTypeDescriptor Create(string methodName)
         {
             var method = typeof(IDescriptorApi).GetMethod(methodName);
+            Debug.Assert(method != null);
             return new DefaultApiReturnDescriptor(method).DataType;
         }
 

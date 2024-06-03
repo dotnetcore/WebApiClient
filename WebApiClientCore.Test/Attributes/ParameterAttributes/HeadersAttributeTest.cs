@@ -13,7 +13,7 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
         [Fact]
         public async Task OnRequestAsyncTest()
         {
-            var apiAction = new DefaultApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync")!);
             var context = new TestRequestContext(apiAction, new
             {
                 @class = 123,
@@ -24,11 +24,11 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
             context.HttpContext.RequestMessage.Headers.Clear();
             await attr.OnRequestAsync(new ApiParameterContext(context, 0));         
 
-            context.HttpContext.RequestMessage.Headers.TryGetValues("xx-yy", out IEnumerable<string> values);
-            Assert.Equal("xxyy", values.FirstOrDefault());
+            context.HttpContext.RequestMessage.Headers.TryGetValues("xx-yy", out IEnumerable<string>? values);
+            Assert.Equal("xxyy", values?.FirstOrDefault());
 
-            context.HttpContext.RequestMessage.Headers.TryGetValues("class", out IEnumerable<string> cValues);
-            Assert.Equal("123", cValues.FirstOrDefault());
+            context.HttpContext.RequestMessage.Headers.TryGetValues("class", out IEnumerable<string>? cValues);
+            Assert.Equal("123", cValues?.FirstOrDefault());
 
 
            
@@ -36,8 +36,8 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
             context.HttpContext.RequestMessage.Headers.Clear();
             await attr.OnRequestAsync(new ApiParameterContext(context, 0));
 
-            context.HttpContext.RequestMessage.Headers.TryGetValues("xx_yy", out IEnumerable<string> values2);
-            Assert.Equal("xxyy", values2.FirstOrDefault());
+            context.HttpContext.RequestMessage.Headers.TryGetValues("xx_yy", out IEnumerable<string>? values2);
+            Assert.Equal("xxyy", values2?.FirstOrDefault());
         }
     }
 }

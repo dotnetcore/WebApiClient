@@ -9,14 +9,15 @@ namespace WebApiClientCore.Test.Implementations
         public void CtorTest()
         {
             var m = typeof(IDescriptorApi).GetMethod("Get1");
+            Assert.NotNull(m);
             var d = new DefaultApiActionDescriptor(m);
 
-            Assert.True(d.Attributes.Count == 3);
-            Assert.True(d.FilterAttributes.Count == 1);
-            Assert.True(d.Parameters.Count == 2);
+            Assert.Equal(3, d.Attributes.Count);
+            Assert.Single(d.FilterAttributes);
+            Assert.Equal(2, d.Parameters.Count);
             Assert.True(d.Name == m.Name);
             Assert.True(d.Member == m);
-            Assert.True(d.Return.Attributes.Count == 1);
+            Assert.Single(d.Return.Attributes);
             Assert.True(d.Return.ReturnType == m.ReturnType);
         }
     }

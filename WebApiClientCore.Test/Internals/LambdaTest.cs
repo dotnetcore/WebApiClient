@@ -11,7 +11,7 @@ namespace WebApiClientCore.Test.Internals
         {
             var model = new Model { name = "laojiu" };
             var p = model.GetType().GetProperty("name");
-
+            Assert.NotNull(p);
             var getter = LambdaUtil.CreateGetFunc<Model, string>(p);
             var name = getter.Invoke(model);
             Assert.True(name == model.name);
@@ -21,6 +21,7 @@ namespace WebApiClientCore.Test.Internals
             var name2 = getter2.Invoke(model);
             Assert.True(name2 == model.name);
 
+            Assert.NotNull(p.DeclaringType);
             var getter3 = LambdaUtil.CreateGetFunc<object, object>(p.DeclaringType, p.Name);
             var name3 = getter2.Invoke(model).ToString();
             Assert.True(name3 == model.name);
@@ -41,9 +42,9 @@ namespace WebApiClientCore.Test.Internals
         public void SetTest()
         {
             var model = new Model { name = "laojiu" };
-            var setter = LambdaUtil.CreateSetAction<object, object>(model.GetType().GetProperty("name"));
+            var setter = LambdaUtil.CreateSetAction<object, object>(model.GetType().GetProperty("name")!);
             setter.Invoke(model, "ee");
-            Assert.True("ee" == model.name);
+            Assert.Equal("ee", model.name);
         }
 
         [Fact]
@@ -54,17 +55,18 @@ namespace WebApiClientCore.Test.Internals
             Assert.True(name == value);
 
             var func = LambdaUtil.CreateCtorFunc<string, object>(typeof(Model));
-            var model = func.Invoke(value) as Model;
+            var model = (Model)func.Invoke(value);
             Assert.True(model.name == value);
         }
 
 
         class Model
         {
-            public string name { get; set; }
+            public string? name { get; set; }
 
             public Model()
             {
+               
             }
 
             public Model(string name)

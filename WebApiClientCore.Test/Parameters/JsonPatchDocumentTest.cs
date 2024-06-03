@@ -14,33 +14,34 @@ namespace WebApiClientCore.Test.Parameters
             doc.Replace(item => item.Name, "33");
             doc.Replace(item => item.Age, 10);
 
-            var apiAction = new DefaultApiActionDescriptor(typeof(ITestApi).GetMethod("PostAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(ITestApi).GetMethod("PostAsync")!);
             var context = new TestRequestContext(apiAction, string.Empty);
 
             context.HttpContext.RequestMessage.Method = new System.Net.Http.HttpMethod("Patch");
             await doc.OnRequestAsync(new ApiParameterContext(context, 0));
 
-            var body = await context.HttpContext.RequestMessage.Content.ReadAsStringAsync();
+            var body = await context.HttpContext.RequestMessage.Content!.ReadAsStringAsync();
             var ops = System.Text.Json.JsonSerializer.Deserialize<Op[]>(body);
+            Assert.NotNull(ops);
             Assert.Equal(2, ops.Length);
 
             Assert.Equal("replace", ops[0].op);
             Assert.Equal("/name", ops[0].path);
-            Assert.Equal("33", ops[0].value.ToString());
+            Assert.Equal("33", ops[0].value?.ToString());
         }
     }
 
     class Op
     {
-        public string op { get; set; }
+        public string? op { get; set; }
 
-        public string path { get; set; }
+        public string? path { get; set; }
 
-        public object value { get; set; }
+        public object? value { get; set; }
     }
     class Model
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public int Age { get; set; }
     }
 }

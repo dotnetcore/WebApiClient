@@ -8,9 +8,9 @@ namespace WebApiClientCore.Test.Implementations.Tasks
 {
     public class ActionRetryTaskTest
     {
-        class ResultApiTask<T> : TaskBase<T>
+        class ResultApiTask<T> : TaskBase<T>  
         {
-            public T Result { get; set; }
+            public T? Result { get; set; }
 
             protected override Task<T> InvokeAsync()
             {

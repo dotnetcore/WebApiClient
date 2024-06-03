@@ -15,7 +15,7 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
         [Fact]
         public async Task BeforeRequestAsyncTest()
         {
-            var apiAction = new DefaultApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync"));
+            var apiAction = new DefaultApiActionDescriptor(typeof(IMyApi).GetMethod("PostAsync")!);
             var context = new TestRequestContext(apiAction, new
             {
                 name = "laojiu",
@@ -28,7 +28,7 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
             var attr = new JsonContentAttribute() { CharSet = "utf-16" };
             await attr.OnRequestAsync(new ApiParameterContext(context, 0));
 
-            var body = await context.HttpContext.RequestMessage.Content.ReadAsUtf8ByteArrayAsync();
+            var body = await context.HttpContext.RequestMessage.Content!.ReadAsUtf8ByteArrayAsync();
 
             var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
             using var buffer = new RecyclableBufferWriter<byte>();
