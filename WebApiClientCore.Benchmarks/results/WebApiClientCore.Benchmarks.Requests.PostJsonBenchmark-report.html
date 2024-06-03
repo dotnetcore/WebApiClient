@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>WebApiClientCore.Benchmarks.Requests.PostJsonBenchmark-20240603-111552</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.13.12, Windows 11 (10.0.22631.3593/23H2/2023Update/SunValley3)
+Intel Core i7-8565U CPU 1.80GHz (Whiskey Lake), 1 CPU, 8 logical and 4 physical cores
+  [Host] : .NET 6.0.29, X64 NativeAOT AVX2
+</code></pre>
+<pre><code>Job=InProcess  Toolchain=InProcessEmitToolchain  
+</code></pre>
+
+<table>
+<thead><tr><th>Method                  </th><th>Mean</th><th>Error</th><th>StdDev</th><th>Ratio</th><th>RatioSD</th><th>Gen0</th><th>Allocated</th><th>Alloc Ratio</th>
+</tr>
+</thead><tbody><tr><td>HttpClient_PostJsonAsync</td><td>4.372 &mu;s</td><td>0.0680 &mu;s</td><td>0.0568 &mu;s</td><td>1.00</td><td>0.00</td><td>0.6409</td><td>2.64 KB</td><td>1.00</td>
+</tr><tr><td>WebApiClientCore_PostJsonAsync</td><td>10.299 &mu;s</td><td>0.1485 &mu;s</td><td>0.1389 &mu;s</td><td>2.35</td><td>0.04</td><td>1.1902</td><td>4.9 KB</td><td>1.86</td>
+</tr><tr><td>Refit_PostJsonAsync</td><td>21.006 &mu;s</td><td>0.4003 &mu;s</td><td>0.7320 &mu;s</td><td>4.84</td><td>0.19</td><td>1.5869</td><td>6.53 KB</td><td>2.47</td>
+</tr></tbody></table>
+</body>
+</html>
