@@ -61,7 +61,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             builder.AppendLine("        [ModuleInitializer]");
             foreach (var item in this.proxyClasses)
             {
-                builder.AppendLine($"        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof({item.Namespace}.{item.ClassName}))]");
+                builder.AppendLine($"        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(global::{item.Namespace}.{item.ClassName}))]");
             }
 
             builder.AppendLine("        public static void Initialize()");
