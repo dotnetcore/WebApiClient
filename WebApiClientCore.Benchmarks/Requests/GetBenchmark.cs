@@ -16,7 +16,7 @@ namespace WebApiClientCore.Benchmarks.Requests
         /// 使用原生HttpClient请求
         /// </summary>
         /// <returns></returns>
-        [Benchmark(Baseline = true)]
+        [Benchmark]
         public async Task<Model> HttpClient_GetAsync()
         {
             using var scope = this.ServiceProvider.CreateScope();
@@ -34,7 +34,7 @@ namespace WebApiClientCore.Benchmarks.Requests
         /// 使用WebApiClientCore请求
         /// </summary>
         /// <returns></returns>
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         public async Task<Model> WebApiClientCore_GetAsync()
         {
             using var scope = this.ServiceProvider.CreateScope();

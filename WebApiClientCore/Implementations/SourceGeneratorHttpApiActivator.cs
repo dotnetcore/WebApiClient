@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using WebApiClientCore.Exceptions;
+using WebApiClientCore.Internals;
 
 namespace WebApiClientCore.Implementations
 {
@@ -47,7 +48,7 @@ namespace WebApiClientCore.Implementations
                 .Select(actionInvokerProvider.CreateActionInvoker)
                 .ToArray();
 
-            this.activator = (interceptor, invokers) => proxyType.CreateInstance<THttpApi>(interceptor, invokers);
+            this.activator = LambdaUtil.CreateCtorFunc<IHttpApiInterceptor, ApiActionInvoker[], THttpApi>(proxyType);
         }
 
         /// <summary>

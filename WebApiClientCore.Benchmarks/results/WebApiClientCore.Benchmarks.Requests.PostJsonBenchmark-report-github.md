@@ -1,14 +1,14 @@
 ```
 
-BenchmarkDotNet v0.13.12, Windows 11 (10.0.22631.3593/23H2/2023Update/SunValley3)
-Intel Core i7-8565U CPU 1.80GHz (Whiskey Lake), 1 CPU, 8 logical and 4 physical cores
-  [Host] : .NET 6.0.29, X64 NativeAOT AVX2
+BenchmarkDotNet v0.13.12, Windows 10 (10.0.19045.4412/22H2/2022Update)
+Intel Core i3-4150 CPU 3.50GHz (Haswell), 1 CPU, 4 logical and 2 physical cores
+  [Host] : .NET 8.0.4, X64 NativeAOT AVX2
 
 Job=InProcess  Toolchain=InProcessEmitToolchain  
 
 ```
 | Method                         | Mean      | Error     | StdDev    | Ratio | RatioSD | Gen0   | Allocated | Alloc Ratio |
 |------------------------------- |----------:|----------:|----------:|------:|--------:|-------:|----------:|------------:|
-| HttpClient_PostJsonAsync       |  4.372 μs | 0.0680 μs | 0.0568 μs |  1.00 |    0.00 | 0.6409 |   2.64 KB |        1.00 |
-| WebApiClientCore_PostJsonAsync | 10.299 μs | 0.1485 μs | 0.1389 μs |  2.35 |    0.04 | 1.1902 |    4.9 KB |        1.86 |
-| Refit_PostJsonAsync            | 21.006 μs | 0.4003 μs | 0.7320 μs |  4.84 |    0.19 | 1.5869 |   6.53 KB |        2.47 |
+| HttpClient_PostJsonAsync       |  2.760 μs | 0.0294 μs | 0.0246 μs |  0.48 |    0.01 | 1.5068 |   2.31 KB |        0.55 |
+| WebApiClientCore_PostJsonAsync |  5.712 μs | 0.0614 μs | 0.0512 μs |  1.00 |    0.00 | 2.7237 |   4.17 KB |        1.00 |
+| Refit_PostJsonAsync            | 13.246 μs | 0.0457 μs | 0.0382 μs |  2.32 |    0.02 | 3.9215 |   6.02 KB |        1.44 |
