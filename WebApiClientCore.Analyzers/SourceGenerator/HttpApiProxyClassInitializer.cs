@@ -43,14 +43,11 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         {
             var builder = new StringBuilder();
             builder.AppendLine("#if NET5_0_OR_GREATER");
-            builder.AppendLine("#pragma warning disable");
-            builder.AppendLine("using System.ComponentModel;");
-            builder.AppendLine("using System.Diagnostics.CodeAnalysis;");
-            builder.AppendLine("using System.Runtime.CompilerServices;");
+            builder.AppendLine("#pragma warning disable"); 
             builder.AppendLine($"namespace WebApiClientCore");
             builder.AppendLine("{");
             builder.AppendLine("    /// <summary>动态依赖初始化器</summary>");
-            builder.AppendLine("    [EditorBrowsable(EditorBrowsableState.Never)]");
+            builder.AppendLine("    [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
             builder.AppendLine($"    static partial class {nameof(HttpApiProxyClassInitializer)}");
             builder.AppendLine("    {");
 
@@ -61,10 +58,10 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
                         /// </summary>
                 """);
 
-            builder.AppendLine("        [ModuleInitializer]");
+            builder.AppendLine("        [global::System.Runtime.CompilerServices.ModuleInitializer]");
             foreach (var item in this.proxyClasses)
             {
-                builder.AppendLine($"        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(global::{item.Namespace}.{item.ClassName}))]");
+                builder.AppendLine($"        [global::System.Diagnostics.CodeAnalysis.DynamicDependency(global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All, typeof(global::{item.Namespace}.{item.ClassName}))]");
             }
 
             builder.AppendLine("        public static void Initialize()");
