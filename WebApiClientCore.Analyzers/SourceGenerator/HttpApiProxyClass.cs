@@ -81,14 +81,16 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         public override string ToString()
         {
             var builder = new StringBuilder();
-            builder.AppendLine($"using System;");
-            builder.AppendLine($"using System.Diagnostics;");
+            builder.AppendLine("using System;");
+            builder.AppendLine("using System.ComponentModel;");
+            builder.AppendLine("using System.Diagnostics;");
 
-            builder.AppendLine($"#pragma warning disable CS8601");
-            builder.AppendLine($"#pragma warning disable 1591");
+            builder.AppendLine("#pragma warning disable CS8601");
+            builder.AppendLine("#pragma warning disable 1591");
             builder.AppendLine($"namespace {this.Namespace}");
             builder.AppendLine("{");
 
+            builder.AppendLine($"\t[EditorBrowsable(EditorBrowsableState.Never)]");
             builder.AppendLine($"\t[DebuggerTypeProxy(typeof({this.httpApiFullName}))]");
             builder.AppendLine($"\t[HttpApiProxyClass(typeof({this.httpApiFullName}))]");
             builder.AppendLine($"\tpublic class {this.ClassName}:{this.httpApiFullName}");

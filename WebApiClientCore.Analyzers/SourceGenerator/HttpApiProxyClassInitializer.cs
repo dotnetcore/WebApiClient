@@ -43,11 +43,13 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         {
             var builder = new StringBuilder();
             builder.AppendLine("#if NET5_0_OR_GREATER");
+            builder.AppendLine("using System.ComponentModel;");
             builder.AppendLine("using System.Diagnostics.CodeAnalysis;");
             builder.AppendLine("using System.Runtime.CompilerServices;");
             builder.AppendLine($"namespace WebApiClientCore");
             builder.AppendLine("{");
             builder.AppendLine("    /// <summary>动态依赖初始化器</summary>");
+            builder.AppendLine("    [EditorBrowsable(EditorBrowsableState.Never)]");
             builder.AppendLine($"    static partial class {nameof(HttpApiProxyClassInitializer)}");
             builder.AppendLine("    {");
 
