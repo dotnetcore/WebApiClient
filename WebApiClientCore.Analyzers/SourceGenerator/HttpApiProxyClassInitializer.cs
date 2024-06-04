@@ -43,6 +43,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         {
             var builder = new StringBuilder();
             builder.AppendLine("#if NET5_0_OR_GREATER");
+            builder.AppendLine("#pragma warning disable");
             builder.AppendLine("using System.ComponentModel;");
             builder.AppendLine("using System.Diagnostics.CodeAnalysis;");
             builder.AppendLine("using System.Runtime.CompilerServices;");
@@ -71,6 +72,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             builder.AppendLine("        }");
             builder.AppendLine("    }");
             builder.AppendLine("}");
+            builder.AppendLine("#pragma warning restore");
             builder.AppendLine("#endif");
             return builder.ToString();
         }

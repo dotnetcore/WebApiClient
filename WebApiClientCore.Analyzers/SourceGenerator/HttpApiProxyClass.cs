@@ -85,8 +85,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             builder.AppendLine("using System.ComponentModel;");
             builder.AppendLine("using System.Diagnostics;");
 
-            builder.AppendLine("#pragma warning disable CS8601");
-            builder.AppendLine("#pragma warning disable 1591");
+            builder.AppendLine("#pragma warning disable"); 
             builder.AppendLine($"namespace {this.Namespace}");
             builder.AppendLine("{");
 
@@ -115,8 +114,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
 
             builder.AppendLine("\t}");
             builder.AppendLine("}");
-            builder.AppendLine("#pragma warning restore 1591");
-            builder.AppendLine("#pragma warning restore CS8601");
+            builder.AppendLine("#pragma warning restore");
 
             return builder.ToString();
         }
