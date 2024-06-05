@@ -33,7 +33,7 @@ namespace WebApiClientCore.Implementations
 
             this.actionInvokers = apiMethods
                 .Select(item => apiActionDescriptorProvider.CreateActionDescriptor(item, typeof(THttpApi)))
-                .Select(item => actionInvokerProvider.CreateActionInvoker(item))
+                .Select(actionInvokerProvider.CreateActionInvoker)
                 .ToArray();
 
             var proxyType = BuildProxyType(typeof(THttpApi), apiMethods);
