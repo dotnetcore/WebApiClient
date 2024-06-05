@@ -16,12 +16,19 @@ namespace WebApiClientCore
         public int Index { get; }
 
         /// <summary>
+        /// 获取名称
+        /// </summary>
+        public string Name { get; }
+
+        /// <summary>
         /// 方法的索引特性
         /// </summary>
         /// <param name="index">索引值，确保连续且不重复</param>
-        public HttpApiProxyMethodAttribute(int index)
+        /// <param name="name">方法的名称</param>
+        public HttpApiProxyMethodAttribute(int index, string name)
         {
             this.Index = index;
+            this.Name = name;
         }
     }
 }

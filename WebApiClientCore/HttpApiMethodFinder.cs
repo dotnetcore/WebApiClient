@@ -22,7 +22,8 @@ namespace WebApiClientCore
             return Sort(interfaces, t => t.GetInterfaces())
                 .Reverse()
                 .SelectMany(item => item.GetMethods())
-                .Distinct(MethodEqualityComparer.Default);
+                //.Distinct(MethodEqualityComparer.Default)
+                ;
         }
 
         /// <summary>

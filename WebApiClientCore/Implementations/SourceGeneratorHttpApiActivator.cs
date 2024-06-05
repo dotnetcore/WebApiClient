@@ -68,15 +68,13 @@ namespace WebApiClientCore.Implementations
         private static MethodInfo[] FindApiMethods(Type proxyType)
         {
             var apiMethods = HttpApi.FindApiMethods(typeof(THttpApi));
-            var proxyMethods = proxyType.GetMethods();
+            var proxyMethods = proxyType.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance);
 
-            var methods = from a in apiMethods
-                          join p in proxyMethods
-                          on new MethodFeature(a) equals new MethodFeature(p)
-                          let methodAttr = p.GetCustomAttribute<HttpApiProxyMethodAttribute>()
-                          where methodAttr != null
-                          orderby methodAttr.Index
-                          select a;
+            var methods = from a in apiMethods.Select(item => new MethodFeature(item))
+                          join p in proxyMethods.Select(item => new MethodFeature(item))
+                          on a equals p
+                          orderby p.Index
+                          select a.Method;
 
             return methods.ToArray();
         }
@@ -112,7 +110,11 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         private sealed class MethodFeature : IEquatable<MethodFeature>
         {
-            private readonly MethodInfo method;
+            public MethodInfo Method { get; }
+
+            public int Index { get; }
+
+            public string Name { get; }
 
             /// <summary>
             /// MethodInfo的特征
@@ -120,7 +122,10 @@ namespace WebApiClientCore.Implementations
             /// <param name="method"></param>
             public MethodFeature(MethodInfo method)
             {
-                this.method = method;
+                var attribute = method.GetCustomAttribute<HttpApiProxyMethodAttribute>();
+                this.Method = method;
+                this.Index = attribute == null ? -1 : attribute.Index;
+                this.Name = attribute == null ? $"{method.DeclaringType?.FullName}.{method.Name}" : attribute.Name;
             }
 
             /// <summary>
@@ -130,15 +135,14 @@ namespace WebApiClientCore.Implementations
             /// <returns></returns>
             public bool Equals(MethodFeature? other)
             {
-                if (other == null)
+                if (other == null || this.Name != other.Name)
                 {
                     return false;
                 }
 
-                var x = this.method;
-                var y = other.method;
-
-                if (x.Name != y.Name || x.ReturnType != y.ReturnType)
+                var x = this.Method;
+                var y = other.Method;
+                if (x.ReturnType != y.ReturnType)
                 {
                     return false;
                 }
@@ -161,9 +165,9 @@ namespace WebApiClientCore.Implementations
             public override int GetHashCode()
             {
                 var hashCode = new HashCode();
-                hashCode.Add(this.method.Name);
-                hashCode.Add(this.method.ReturnType);
-                foreach (var parameter in this.method.GetParameters())
+                hashCode.Add(this.Name);
+                hashCode.Add(this.Method.ReturnType);
+                foreach (var parameter in this.Method.GetParameters())
                 {
                     hashCode.Add(parameter.ParameterType);
                 }

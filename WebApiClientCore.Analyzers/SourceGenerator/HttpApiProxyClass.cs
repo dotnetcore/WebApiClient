@@ -103,12 +103,16 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             builder.AppendLine();
 
             var index = 0;
-            foreach (var method in this.FindApiMethods())
+            foreach (var interfaceType in this.httpApi.AllInterfaces.Append(httpApi))
             {
-                var methodCode = this.BuildMethod(method, index);
-                builder.AppendLine(methodCode);
-                index += 1;
+                foreach (var method in interfaceType.GetMembers().OfType<IMethodSymbol>())
+                {
+                    var methodCode = this.BuildMethod(interfaceType, method, index);
+                    builder.AppendLine(methodCode);
+                    index += 1;
+                }
             }
+
 
             builder.AppendLine("\t}");
             builder.AppendLine("}");
@@ -118,26 +122,13 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         }
 
         /// <summary>
-        /// 查找接口类型及其继承的接口的所有方法
-        /// </summary>
-        /// <returns></returns>
-        private IEnumerable<IMethodSymbol> FindApiMethods()
-        {
-#pragma warning disable RS1024
-            return this.httpApi.AllInterfaces.Append(httpApi)
-                .SelectMany(item => item.GetMembers())
-                .OfType<IMethodSymbol>()
-                .Distinct(MethodEqualityComparer.Default);
-#pragma warning restore RS1024
-        }
-
-        /// <summary>
         /// 构建方法
         /// </summary>
+        /// <param name="interfaceType"></param>
         /// <param name="method"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        private string BuildMethod(IMethodSymbol method, int index)
+        private string BuildMethod(INamedTypeSymbol interfaceType, IMethodSymbol method, int index)
         {
             var builder = new StringBuilder();
             var parametersString = string.Join(",", method.Parameters.Select(item => $"{GetFullName(item.Type)} {item.Name}"));
@@ -146,9 +137,10 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
                 ? "global::System.Array.Empty<global::System.Object>()"
                 : $"new global::System.Object[] {{ {parameterNamesString} }}";
 
+            var methodName = $"\"{interfaceType.ToDisplayString()}.{method.Name}\"";
             var returnTypeString = GetFullName(method.ReturnType);
-            builder.AppendLine($"\t\t[global::WebApiClientCore.HttpApiProxyMethod({index})]");
-            builder.AppendLine($"\t\tpublic {returnTypeString} {method.Name}( {parametersString} )");
+            builder.AppendLine($"\t\t[global::WebApiClientCore.HttpApiProxyMethod({index}, {methodName})]");
+            builder.AppendLine($"\t\t{returnTypeString} {GetFullName(interfaceType)}.{method.Name}( {parametersString} )");
             builder.AppendLine("\t\t{");
             builder.AppendLine($"\t\t\treturn ({returnTypeString})this.{this.apiInterceptorFieldName}.Intercept(this.{this.actionInvokersFieldName}[{index}], {paremterArrayString});");
             builder.AppendLine("\t\t}");
