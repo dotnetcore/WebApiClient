@@ -19,12 +19,12 @@ namespace WebApiClientCore.Implementations
     {
         private readonly ApiActionInvoker[] actionInvokers;
         private readonly Func<IHttpApiInterceptor, ApiActionInvoker[], THttpApi> activator;
-        private static readonly Type? proxyClassType = FindProxyTypeFromAssembly();
+        private static readonly Type? _proxyClassType = SourceGeneratorProxyClassType.Find(typeof(THttpApi));
 
         /// <summary>
         /// 获取是否支持
         /// </summary>
-        public static bool IsSupported => proxyClassType != null;
+        public static bool IsSupported => _proxyClassType != null;
 
         /// <summary>
         /// 通过查找类型代理类型创建实例
@@ -36,19 +36,20 @@ namespace WebApiClientCore.Implementations
         /// <exception cref="ProxyTypeCreateException"></exception>
         public SourceGeneratorHttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
         {
-            var proxyType = proxyClassType;
-            if (proxyType == null)
+            var httpApiType = typeof(THttpApi);
+            var proxyClassType = _proxyClassType;
+            if (proxyClassType == null)
             {
-                var message = $"找不到{typeof(THttpApi)}的代理类";
-                throw new ProxyTypeCreateException(typeof(THttpApi), message);
+                var message = $"找不到{httpApiType}的代理类";
+                throw new ProxyTypeCreateException(httpApiType, message);
             }
 
-            this.actionInvokers = FindApiMethods(proxyType)
-                .Select(item => apiActionDescriptorProvider.CreateActionDescriptor(item, typeof(THttpApi)))
+            this.actionInvokers = FindApiMethods(httpApiType, proxyClassType)
+                .Select(item => apiActionDescriptorProvider.CreateActionDescriptor(item, httpApiType))
                 .Select(actionInvokerProvider.CreateActionInvoker)
                 .ToArray();
 
-            this.activator = LambdaUtil.CreateCtorFunc<IHttpApiInterceptor, ApiActionInvoker[], THttpApi>(proxyType);
+            this.activator = LambdaUtil.CreateCtorFunc<IHttpApiInterceptor, ApiActionInvoker[], THttpApi>(proxyClassType);
         }
 
         /// <summary>
@@ -62,49 +63,31 @@ namespace WebApiClientCore.Implementations
         }
 
         /// <summary>
-        /// 查找接口的Api方法 
+        /// 查找接口的方法
         /// </summary>
+        /// <param name="httpApiType">接口类型</param> 
+        /// <param name="proxyClassType">接口的实现类型</param>
         /// <returns></returns>
-        private static MethodInfo[] FindApiMethods(Type proxyType)
+        private static MethodInfo[] FindApiMethods(Type httpApiType, Type proxyClassType)
         {
-            var apiMethods = HttpApi.FindApiMethods(typeof(THttpApi));
-            var proxyMethods = proxyType.GetMethods();
+            var apiMethods = HttpApi.FindApiMethods(httpApiType);
+            var classMethods = proxyClassType.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance);
 
-            var methods = from a in apiMethods
-                          join p in proxyMethods
-                          on new MethodFeature(a) equals new MethodFeature(p)
-                          let methodAttr = p.GetCustomAttribute<HttpApiProxyMethodAttribute>()
-                          where methodAttr != null
-                          orderby methodAttr.Index
-                          select a;
+            // 按照Index特征对apiMethods进行排序
+            var query = from a in apiMethods.Select(item => new MethodFeature(item, isProxyMethod: false))
+                        join c in classMethods.Select(item => new MethodFeature(item, isProxyMethod: true))
+                        on a equals c
+                        orderby c.Index
+                        select a.Method;
 
-            return methods.ToArray();
-        }
-
-        /// <summary>
-        /// 从接口所在程序集查找代理类
-        /// </summary> 
-        /// <returns></returns>
-        private static Type? FindProxyTypeFromAssembly()
-        {
-            var interfaceType = typeof(THttpApi);
-            foreach (var proxyType in interfaceType.Assembly.GetTypes())
+            var methods = query.ToArray();
+            if (apiMethods.Length != methods.Length)
             {
-                if (proxyType.IsClass == false)
-                {
-                    continue;
-                }
-
-                var proxyClassAttr = proxyType.GetCustomAttribute<HttpApiProxyClassAttribute>();
-                if (proxyClassAttr == null || proxyClassAttr.HttpApiType != interfaceType)
-                {
-                    continue;
-                }
-
-                return proxyType;
+                var missingMethod = apiMethods.Except(methods).FirstOrDefault();
+                var message = $"{httpApiType}的代理类缺失方法{missingMethod}";
+                throw new ProxyTypeException(httpApiType, message);
             }
-
-            return null;
+            return methods;
         }
 
         /// <summary>
@@ -112,15 +95,29 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         private sealed class MethodFeature : IEquatable<MethodFeature>
         {
-            private readonly MethodInfo method;
+            public MethodInfo Method { get; }
+
+            public int Index { get; }
+
+            public string Name { get; }
 
             /// <summary>
             /// MethodInfo的特征
             /// </summary>
             /// <param name="method"></param>
-            public MethodFeature(MethodInfo method)
+            /// <param name="isProxyMethod"></param>
+            public MethodFeature(MethodInfo method, bool isProxyMethod)
             {
-                this.method = method;
+                this.Method = method;
+
+                var attribute = default(HttpApiProxyMethodAttribute);
+                if (isProxyMethod)
+                {
+                    attribute = method.GetCustomAttribute<HttpApiProxyMethodAttribute>();
+                }
+
+                this.Index = attribute == null ? -1 : attribute.Index;
+                this.Name = attribute == null ? $"{method.DeclaringType?.FullName}.{method.Name}" : attribute.Name;
             }
 
             /// <summary>
@@ -130,15 +127,14 @@ namespace WebApiClientCore.Implementations
             /// <returns></returns>
             public bool Equals(MethodFeature? other)
             {
-                if (other == null)
+                if (other == null || this.Name != other.Name)
                 {
                     return false;
                 }
 
-                var x = this.method;
-                var y = other.method;
-
-                if (x.Name != y.Name || x.ReturnType != y.ReturnType)
+                var x = this.Method;
+                var y = other.Method;
+                if (x.ReturnType != y.ReturnType)
                 {
                     return false;
                 }
@@ -161,9 +157,9 @@ namespace WebApiClientCore.Implementations
             public override int GetHashCode()
             {
                 var hashCode = new HashCode();
-                hashCode.Add(this.method.Name);
-                hashCode.Add(this.method.ReturnType);
-                foreach (var parameter in this.method.GetParameters())
+                hashCode.Add(this.Name);
+                hashCode.Add(this.Method.ReturnType);
+                foreach (var parameter in this.Method.GetParameters())
                 {
                     hashCode.Add(parameter.ParameterType);
                 }

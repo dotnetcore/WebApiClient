@@ -97,8 +97,8 @@ namespace WebApiClientCore
                 throw new ArgumentException(Resx.required_InterfaceType.Format(httpApiType.Name));
             }
 
-            return HttpApiMethodFinder
-                .FindApiMethods(httpApiType)
+            return httpApiType.GetInterfaces().Append(httpApiType)
+                .SelectMany(item => item.GetMethods())
                 .Select(item => item.EnsureApiMethod())
                 .ToArray();
         }
