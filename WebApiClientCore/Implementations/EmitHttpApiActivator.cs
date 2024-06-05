@@ -161,7 +161,7 @@ namespace WebApiClientCore.Implementations
                 var parameterTypes = actionParameters.Select(p => p.ParameterType).ToArray();
                 var actionMethodName = $"{actionMethod.DeclaringType?.FullName}.{actionMethod.Name}";
 
-                var methodBuilder = builder.DefineMethod(actionMethodName, implementAttribute, CallingConventions.Standard, actionMethod.ReturnType, parameterTypes);
+                var methodBuilder = builder.DefineMethod(actionMethodName, implementAttribute, CallingConventions.Standard | CallingConventions.HasThis, actionMethod.ReturnType, parameterTypes);
                 builder.DefineMethodOverride(methodBuilder, actionMethod);
                 var iL = methodBuilder.GetILGenerator();
 
