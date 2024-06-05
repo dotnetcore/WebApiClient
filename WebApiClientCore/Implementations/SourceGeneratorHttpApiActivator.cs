@@ -73,13 +73,21 @@ namespace WebApiClientCore.Implementations
             var apiMethods = HttpApi.FindApiMethods(httpApiType);
             var classMethods = proxyClassType.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance);
 
-            var methods = from a in apiMethods.Select(item => new MethodFeature(item))
-                          join c in classMethods.Select(item => new MethodFeature(item))
-                          on a equals c
-                          orderby c.Index
-                          select a.Method;
+            // 按照Index特征对apiMethods进行排序
+            var query = from a in apiMethods.Select(item => new MethodFeature(item, isProxyMethod: false))
+                        join c in classMethods.Select(item => new MethodFeature(item, isProxyMethod: true))
+                        on a equals c
+                        orderby c.Index
+                        select a.Method;
 
-            return methods.ToArray();
+            var methods = query.ToArray();
+            if (apiMethods.Length != methods.Length)
+            {
+                var missingMethod = apiMethods.Except(methods).FirstOrDefault();
+                var message = $"{httpApiType}的代理类缺失方法{missingMethod}";
+                throw new ProxyTypeException(httpApiType, message);
+            }
+            return methods;
         }
 
         /// <summary>
@@ -97,10 +105,17 @@ namespace WebApiClientCore.Implementations
             /// MethodInfo的特征
             /// </summary>
             /// <param name="method"></param>
-            public MethodFeature(MethodInfo method)
+            /// <param name="isProxyMethod"></param>
+            public MethodFeature(MethodInfo method, bool isProxyMethod)
             {
-                var attribute = method.GetCustomAttribute<HttpApiProxyMethodAttribute>();
                 this.Method = method;
+
+                var attribute = default(HttpApiProxyMethodAttribute);
+                if (isProxyMethod)
+                {
+                    attribute = method.GetCustomAttribute<HttpApiProxyMethodAttribute>();
+                }
+
                 this.Index = attribute == null ? -1 : attribute.Index;
                 this.Name = attribute == null ? $"{method.DeclaringType?.FullName}.{method.Name}" : attribute.Name;
             }
