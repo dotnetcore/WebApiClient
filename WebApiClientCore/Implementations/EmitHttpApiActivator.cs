@@ -15,7 +15,7 @@ namespace WebApiClientCore.Implementations
 #if NET5_0_OR_GREATER
         [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]
 #endif
-        THttpApi> : IHttpApiActivator<THttpApi>
+    THttpApi> : IHttpApiActivator<THttpApi>
     {
         private readonly ApiActionInvoker[] actionInvokers;
         private readonly Func<IHttpApiInterceptor, ApiActionInvoker[], THttpApi> activator;
@@ -151,17 +151,19 @@ namespace WebApiClientCore.Implementations
         /// <param name="fieldActionInvokers">action执行器字段</param> 
         private static void BuildMethods(TypeBuilder builder, MethodInfo[] actionMethods, FieldBuilder fieldApiInterceptor, FieldBuilder fieldActionInvokers)
         {
-            const MethodAttributes implementAttribute = MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot | MethodAttributes.HideBySig;
+            // private final hidebysig newslot virtual
+            const MethodAttributes implementAttribute = MethodAttributes.Private | MethodAttributes.Final | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Virtual;
 
             for (var i = 0; i < actionMethods.Length; i++)
             {
                 var actionMethod = actionMethods[i];
                 var actionParameters = actionMethod.GetParameters();
                 var parameterTypes = actionParameters.Select(p => p.ParameterType).ToArray();
+                var actionMethodName = $"{actionMethod.DeclaringType?.FullName}.{actionMethod.Name}";
 
-                var iL = builder
-                    .DefineMethod(actionMethod.Name, implementAttribute, CallingConventions.Standard, actionMethod.ReturnType, parameterTypes)
-                    .GetILGenerator();
+                var methodBuilder = builder.DefineMethod(actionMethodName, implementAttribute, CallingConventions.Standard, actionMethod.ReturnType, parameterTypes);
+                builder.DefineMethodOverride(methodBuilder, actionMethod);
+                var iL = methodBuilder.GetILGenerator();
 
                 // this.apiInterceptor
                 iL.Emit(OpCodes.Ldarg_0);
