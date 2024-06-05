@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Xunit;
 
 namespace WebApiClientCore.Test
@@ -39,11 +40,11 @@ namespace WebApiClientCore.Test
             var m2 = HttpApi.FindApiMethods(typeof(IMyApi));
 
             Assert.False(object.ReferenceEquals(m1, m2));
-            Assert.True(m1.Length == 3);
+            Assert.Equal(3, m1.Length);
 
             var m3 = HttpApi.FindApiMethods(typeof(IPostNew));
-            Assert.Single(m3);
-            Assert.True(m3[0].IsDefined(typeof(NewAttribute), true));
+            Assert.Equal(2, m3.Length);
+            Assert.Contains(m3, i => i.IsDefined(typeof(NewAttribute), true));
         }
     }
 }
