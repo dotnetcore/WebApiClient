@@ -15,7 +15,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         /// <summary>
         /// 文件名
         /// </summary>
-        public string FileName => $"{nameof(HttpApiProxyClassInitializer)}.cs";
+        public string FileName => $"{nameof(HttpApiProxyClassInitializer)}.g.cs";
 
         /// <summary>
         /// HttpApi代理类初始化器

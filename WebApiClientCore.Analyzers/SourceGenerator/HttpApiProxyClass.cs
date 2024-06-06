@@ -31,7 +31,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         /// <summary>
         /// 文件名
         /// </summary>
-        public string FileName => this.httpApi.ToDisplayString();
+        public string FileName => this.httpApi.ToDisplayString() + ".g.cs";
 
         /// <summary>
         /// 命名空间
