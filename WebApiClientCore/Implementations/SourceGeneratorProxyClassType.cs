@@ -40,7 +40,7 @@ namespace WebApiClientCore.Implementations
                     if (classType.IsClass)
                     {
                         var proxyClassAttr = classType.GetCustomAttribute<HttpApiProxyClassAttribute>();
-                        if (proxyClassAttr != null)
+                        if (proxyClassAttr != null && proxyClassAttr.HttpApiType.IsAssignableFrom(classType))
                         {
                             httpApiProxyClassTable.TryAdd(proxyClassAttr.HttpApiType, classType);
                         }
