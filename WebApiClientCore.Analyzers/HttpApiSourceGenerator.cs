@@ -40,7 +40,7 @@ namespace WebApiClientCore.Analyzers
 
                 if (proxyClasses.Length > 0)
                 {
-                    var initializer = new HttpApiProxyClassInitializer(context.Compilation, proxyClasses);
+                    var initializer = new HttpApiProxyClassInitializer(proxyClasses);
                     context.AddSource(initializer.FileName, initializer.ToSourceText());
                 }
             }

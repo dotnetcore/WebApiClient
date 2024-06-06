@@ -137,9 +137,8 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
                 ? "global::System.Array.Empty<global::System.Object>()"
                 : $"new global::System.Object[] {{ {parameterNamesString} }}";
 
-            var methodName = $"\"{interfaceType.ToDisplayString()}.{method.Name}\"";
-            var returnTypeString = GetFullName(method.ReturnType); 
-            builder.AppendLine($"\t\t[global::WebApiClientCore.HttpApiProxyMethod({index}, {methodName})]");
+            var returnTypeString = GetFullName(method.ReturnType);
+            builder.AppendLine($"\t\t[global::WebApiClientCore.HttpApiProxyMethod({index}, typeof({GetFullName(interfaceType)}), \"{method.Name}\")]");
             builder.AppendLine($"\t\t{returnTypeString} {GetFullName(interfaceType)}.{method.Name}( {parametersString} )");
             builder.AppendLine("\t\t{");
             builder.AppendLine($"\t\t\treturn ({returnTypeString})this.{this.apiInterceptorFieldName}.Intercept(this.{this.actionInvokersFieldName}[{index}], {paremterArrayString});");

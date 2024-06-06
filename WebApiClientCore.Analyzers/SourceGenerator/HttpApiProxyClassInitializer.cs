@@ -10,7 +10,6 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
     /// </summary>
     sealed class HttpApiProxyClassInitializer
     {
-        private readonly Compilation compilation;
         private readonly IEnumerable<HttpApiProxyClass> proxyClasses;
 
         /// <summary>
@@ -20,12 +19,10 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
 
         /// <summary>
         /// HttpApi代理类初始化器
-        /// </summary>
-        /// <param name="compilation"></param>
+        /// </summary> 
         /// <param name="proxyClasses"></param>
-        public HttpApiProxyClassInitializer(Compilation compilation, IEnumerable<HttpApiProxyClass> proxyClasses)
+        public HttpApiProxyClassInitializer(IEnumerable<HttpApiProxyClass> proxyClasses)
         {
-            this.compilation = compilation;
             this.proxyClasses = proxyClasses;
         }
 

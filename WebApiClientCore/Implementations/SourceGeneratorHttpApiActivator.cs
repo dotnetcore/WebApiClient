@@ -95,11 +95,12 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         private sealed class MethodFeature : IEquatable<MethodFeature>
         {
+            private readonly string name;
+            private readonly Type? declaringType;
+
             public MethodInfo Method { get; }
 
             public int Index { get; }
-
-            public string Name { get; }
 
             /// <summary>
             /// MethodInfo的特征
@@ -116,8 +117,18 @@ namespace WebApiClientCore.Implementations
                     attribute = method.GetCustomAttribute<HttpApiProxyMethodAttribute>();
                 }
 
-                this.Index = attribute == null ? -1 : attribute.Index;
-                this.Name = attribute == null ? $"{method.DeclaringType?.FullName}.{method.Name}" : attribute.Name;
+                if (attribute == null)
+                {
+                    this.Index = -1;
+                    this.declaringType = method.DeclaringType;
+                    this.name = method.Name;
+                }
+                else
+                {
+                    this.Index = attribute.Index;
+                    this.declaringType = attribute.DeclaringType;
+                    this.name = attribute.Name;
+                }
             }
 
             /// <summary>
@@ -127,7 +138,9 @@ namespace WebApiClientCore.Implementations
             /// <returns></returns>
             public bool Equals(MethodFeature? other)
             {
-                if (other == null || this.Name != other.Name)
+                if (other == null ||
+                    this.name != other.name ||
+                    this.declaringType != other.declaringType)
                 {
                     return false;
                 }
@@ -157,7 +170,9 @@ namespace WebApiClientCore.Implementations
             public override int GetHashCode()
             {
                 var hashCode = new HashCode();
-                hashCode.Add(this.Name);
+
+                hashCode.Add(this.declaringType);
+                hashCode.Add(this.name);
                 hashCode.Add(this.Method.ReturnType);
                 foreach (var parameter in this.Method.GetParameters())
                 {
