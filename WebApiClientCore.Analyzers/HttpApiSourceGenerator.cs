@@ -26,7 +26,7 @@ namespace WebApiClientCore.Analyzers
         public void Execute(GeneratorExecutionContext context)
         {
             if (context.SyntaxReceiver is HttpApiSyntaxReceiver receiver)
-            {   
+            {
                 // System.Diagnostics.Debugger.Launch();
                 var proxyClasses = receiver
                     .GetHttpApiTypes(context.Compilation)
@@ -36,9 +36,7 @@ namespace WebApiClientCore.Analyzers
 
                 if (proxyClasses.Length > 0)
                 {
-                    context.AddSource(HttpApiProxyClassStatic.FileName, HttpApiProxyClassStatic.ToSourceText());
                     context.AddSource(HttpApiProxyClassInitializer.FileName, HttpApiProxyClassInitializer.ToSourceText());
-
                     foreach (var proxyClass in proxyClasses)
                     {
                         context.AddSource(proxyClass.FileName, proxyClass.ToSourceText());
