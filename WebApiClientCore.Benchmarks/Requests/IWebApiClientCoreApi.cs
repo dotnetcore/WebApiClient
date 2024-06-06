@@ -6,7 +6,7 @@ namespace WebApiClientCore.Benchmarks.Requests
     public interface IWebApiClientCoreApi
     {
         [HttpGet("/benchmarks/{id}")]
-        Task<Model> GetAsyc(string id);
+        Task<Model> GetAsync(string id);
 
         [HttpPost("/benchmarks")]
         Task<Model> PostJsonAsync([JsonContent] Model model);

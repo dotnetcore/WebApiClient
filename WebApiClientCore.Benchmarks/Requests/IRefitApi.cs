@@ -6,7 +6,7 @@ namespace WebApiClientCore.Benchmarks.Requests
     public interface IRefitApi
     {
         [Get("/benchmarks/{id}")]
-        Task<Model> GetAsyc(string id);
+        Task<Model> GetAsync(string id);
 
         [Post("/benchmarks")]
         Task<Model> PostJsonAsync([Body(BodySerializationMethod.Serialized)]Model model);

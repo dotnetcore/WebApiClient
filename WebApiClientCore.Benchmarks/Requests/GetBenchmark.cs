@@ -38,8 +38,8 @@ namespace WebApiClientCore.Benchmarks.Requests
         public async Task<Model> WebApiClientCore_GetAsync()
         {
             using var scope = this.ServiceProvider.CreateScope();
-            var banchmarkApi = scope.ServiceProvider.GetRequiredService<IWebApiClientCoreApi>();
-            return await banchmarkApi.GetAsyc(id: "id");
+            var benchmarkApi = scope.ServiceProvider.GetRequiredService<IWebApiClientCoreApi>();
+            return await benchmarkApi.GetAsync(id: "id");
         }
 
 
@@ -51,8 +51,8 @@ namespace WebApiClientCore.Benchmarks.Requests
         public async Task<Model> Refit_GetAsync()
         {
             using var scope = this.ServiceProvider.CreateScope();
-            var banchmarkApi = scope.ServiceProvider.GetRequiredService<IRefitApi>();
-            return await banchmarkApi.GetAsyc(id: "id");
+            var benchmarkApi = scope.ServiceProvider.GetRequiredService<IRefitApi>();
+            return await benchmarkApi.GetAsync(id: "id");
         }
     }
 }

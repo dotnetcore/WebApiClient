@@ -42,9 +42,9 @@ namespace WebApiClientCore.Benchmarks.Requests
         public async Task<Model> WebApiClientCore_PostJsonAsync()
         {
             using var scope = this.ServiceProvider.CreateScope();
-            var banchmarkApi = scope.ServiceProvider.GetRequiredService<IWebApiClientCoreApi>();
+            var benchmarkApi = scope.ServiceProvider.GetRequiredService<IWebApiClientCoreApi>();
             var input = new Model { A = "a" };
-            return await banchmarkApi.PostJsonAsync(input);
+            return await benchmarkApi.PostJsonAsync(input);
         }
 
 
@@ -52,9 +52,9 @@ namespace WebApiClientCore.Benchmarks.Requests
         public async Task<Model> Refit_PostJsonAsync()
         {
             using var scope = this.ServiceProvider.CreateScope();
-            var banchmarkApi = scope.ServiceProvider.GetRequiredService<IRefitApi>();
+            var benchmarkApi = scope.ServiceProvider.GetRequiredService<IRefitApi>();
             var input = new Model { A = "a" };
-            return await banchmarkApi.PostJsonAsync(input);
+            return await benchmarkApi.PostJsonAsync(input);
         }
     }
 }

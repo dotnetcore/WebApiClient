@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using System;
 using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace WebApiClientCore.Benchmarks.Requests
 {
@@ -15,7 +14,7 @@ namespace WebApiClientCore.Benchmarks.Requests
 
 
         [GlobalSetup]
-        public async Task SetupAsync()
+        public void Setup()
         {
             var services = new ServiceCollection();
 
@@ -41,17 +40,6 @@ namespace WebApiClientCore.Benchmarks.Requests
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://webapiclient.com/"));
 
             this.ServiceProvider = services.BuildServiceProvider();
-
-            using var scope = this.ServiceProvider.CreateScope();
-
-            var core = scope.ServiceProvider.GetService<IWebApiClientCoreApi>();
-            var refit = scope.ServiceProvider.GetService<IRefitApi>();
-
-            await core.GetAsyc("id");
-            await core.PostJsonAsync(new Model { });
-
-            await refit.GetAsyc("id");
-            await refit.PostJsonAsync(new Model { });
         }
     }
 }
