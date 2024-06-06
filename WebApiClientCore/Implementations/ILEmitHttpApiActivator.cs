@@ -8,10 +8,10 @@ using WebApiClientCore.Internals;
 namespace WebApiClientCore.Implementations
 {
     /// <summary>
-    /// 运行时使用Emit动态创建THttpApi的代理类和代理类实例
+    /// 运行时使用ILEmit动态创建THttpApi的代理类和代理类实例
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
-    public class EmitHttpApiActivator<
+    public class ILEmitHttpApiActivator<
 #if NET5_0_OR_GREATER
         [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]
 #endif
@@ -21,13 +21,13 @@ namespace WebApiClientCore.Implementations
         private readonly Func<IHttpApiInterceptor, ApiActionInvoker[], THttpApi> activator;
 
         /// <summary>
-        /// 运行时使用Emit动态创建THttpApi的代理类和代理类实例
+        /// 运行时使用ILEmit动态创建THttpApi的代理类和代理类实例
         /// </summary>
         /// <param name="apiActionDescriptorProvider"></param>
         /// <param name="actionInvokerProvider"></param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
-        public EmitHttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
+        public ILEmitHttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
         {
             var apiMethods = HttpApi.FindApiMethods(typeof(THttpApi));
 

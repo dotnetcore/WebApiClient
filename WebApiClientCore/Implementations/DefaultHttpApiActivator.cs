@@ -14,7 +14,7 @@ namespace WebApiClientCore.Implementations
 #endif
     THttpApi> : IHttpApiActivator<THttpApi>
     {
-        private readonly Lazy<EmitHttpApiActivator<THttpApi>> emitHttpApiActivatorLazy;
+        private readonly Lazy<ILEmitHttpApiActivator<THttpApi>> ilEmitHttpApiActivatorLazy;
         private readonly SourceGeneratorHttpApiActivator<THttpApi>? sourceGeneratorHttpApiActivator;
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace WebApiClientCore.Implementations
             {
                 this.sourceGeneratorHttpApiActivator = new SourceGeneratorHttpApiActivator<THttpApi>(apiActionDescriptorProvider, actionInvokerProvider);
             }
-            this.emitHttpApiActivatorLazy = new Lazy<EmitHttpApiActivator<THttpApi>>(() => new EmitHttpApiActivator<THttpApi>(apiActionDescriptorProvider, actionInvokerProvider), isThreadSafe: true);
+            this.ilEmitHttpApiActivatorLazy = new Lazy<ILEmitHttpApiActivator<THttpApi>>(() => new ILEmitHttpApiActivator<THttpApi>(apiActionDescriptorProvider, actionInvokerProvider), isThreadSafe: true);
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace WebApiClientCore.Implementations
         public THttpApi CreateInstance(IHttpApiInterceptor apiInterceptor)
         {
             return this.sourceGeneratorHttpApiActivator == null
-                ? this.emitHttpApiActivatorLazy.Value.CreateInstance(apiInterceptor)
+                ? this.ilEmitHttpApiActivatorLazy.Value.CreateInstance(apiInterceptor)
                 : this.sourceGeneratorHttpApiActivator.CreateInstance(apiInterceptor);
         }
     }

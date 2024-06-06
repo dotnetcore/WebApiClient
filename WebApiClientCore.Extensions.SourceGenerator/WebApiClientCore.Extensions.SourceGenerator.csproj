@@ -1,18 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<Nullable>enable</Nullable>
-		<!--2.0.8将是其最后一个版本-->
-		<Version>2.0.8</Version>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
 		<TargetFramework>netstandard2.1</TargetFramework>
-		<DocumentationFile>$(TargetPath)\$(AssemblyName).xml</DocumentationFile>
-
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>Sign.snk</AssemblyOriginatorKeyFile>
-
-		<Description>WebApiClientCore的接口代理类代码生成扩展</Description>
-		<Summary>WebApiClientCore的接口代理类代码生成扩展</Summary>
+		<Summary>此扩展包的实现已合并到WebApiClientCore包，无任何功能</Summary>
+		<Description>此扩展包的实现已合并到WebApiClientCore包，无任何功能</Description>
 	</PropertyGroup>
-
 	<ItemGroup>
 		<ProjectReference Include="..\WebApiClientCore\WebApiClientCore.csproj" />
 	</ItemGroup>

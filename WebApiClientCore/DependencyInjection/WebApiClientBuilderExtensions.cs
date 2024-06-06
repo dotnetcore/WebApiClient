@@ -18,10 +18,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// 添加WebApiClient全局默认配置
         /// </summary>
         /// <remarks>
-        /// <para>• 尝试使用DefaultHttpApiActivator，使用SourceGenerator生成的代理类或Emit动态创建代理类来创建代理实例</para>
-        /// <para>• 尝试使用DefaultApiActionDescriptorProvider，缺省参数特性声明时为参数应用PathQueryAttribute</para>
-        /// <para>• 尝试使用DefaultResponseCacheProvider，在内存中缓存响应结果</para>
-        /// <para>• 尝试使用DefaultApiActionInvokerProvider</para>
+        /// <para>• 尝试使用<see cref="DefaultHttpApiActivator{T}"/>，注册为<see cref="IHttpApiActivator{T}"/></para>
+        /// <para>• 尝试使用<see cref="DefaultApiActionDescriptorProvider"/>，注册为<see cref="IApiActionDescriptorProvider"/></para>
+        /// <para>• 尝试使用<see cref="DefaultResponseCacheProvider"/>，注册为<see cref="IResponseCacheProvider"/></para>
+        /// <para>• 尝试使用<see cref="DefaultApiActionInvokerProvider"/>，注册为<see cref="IApiActionInvokerProvider"/></para>
         /// </remarks> 
         /// <param name="services"></param>
         /// <returns></returns>
@@ -39,6 +39,29 @@ namespace Microsoft.Extensions.DependencyInjection
             return new WebApiClientBuilder(services);
         }
 
+
+        /// <summary>
+        /// 使用 <see cref="ILEmitHttpApiActivator{T}"/> 替换 <see cref="IHttpApiActivator{T}"/> 的实现
+        /// </summary>
+        /// <param name="builder">IWebApiClientBuilder 实例</param>
+        /// <returns>返回 IWebApiClientBuilder 实例</returns>
+        public static IWebApiClientBuilder UseILEmitHttpApiActivator(this IWebApiClientBuilder builder)
+        {
+            builder.Services.RemoveAll(typeof(IHttpApiActivator<>)).AddSingleton(typeof(IHttpApiActivator<>), typeof(ILEmitHttpApiActivator<>));
+            return builder;
+        }
+
+        /// <summary>
+        /// 使用 <see cref="SourceGeneratorHttpApiActivator{T}"/> 替换 <see cref="IHttpApiActivator{T}"/> 的实现
+        /// </summary> 
+        /// <param name="builder"></param>
+        /// <returns></returns> 
+        public static IWebApiClientBuilder UseSourceGeneratorHttpApiActivator(this IWebApiClientBuilder builder)
+        {
+            builder.Services.RemoveAll(typeof(IHttpApiActivator<>)).AddSingleton(typeof(IHttpApiActivator<>), typeof(SourceGeneratorHttpApiActivator<>));
+            return builder;
+        }
+
         /// <summary>
         /// 当非GET或HEAD请求的缺省参数特性声明时
         /// 为复杂参数类型的参数应用JsonContentAttribute
@@ -52,7 +75,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// 配置HttpApiOptions的默认值
+        /// 配置<see cref="HttpApiOptions"/>的默认值
         /// </summary>
         /// <param name="builder"></param>  
         /// <param name="configureOptions">配置选项</param>
@@ -64,7 +87,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// 配置HttpApiOptions的默认值
+        /// 配置<see cref="HttpApiOptions"/>的默认值
         /// </summary>
         /// <param name="builder"></param>  
         /// <param name="configureOptions">配置选项</param>
@@ -76,7 +99,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// 配置HttpApiOptions的默认值
+        /// 配置<see cref="HttpApiOptions"/>的默认值
         /// </summary>
         /// <param name="builder"></param>  
         /// <param name="configuration">配置</param>
