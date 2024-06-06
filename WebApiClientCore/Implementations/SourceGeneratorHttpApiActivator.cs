@@ -83,7 +83,7 @@ namespace WebApiClientCore.Implementations
 
             if (apiMethods.Length != classMethods.Length)
             {
-                var message = $"接口类型{httpApiType}与其代理类不匹配，请重新编译接口类型所在的项目";
+                var message = $"接口类型{httpApiType}的代理类{proxyClassType}和当前版本不兼容，请将{httpApiType.Assembly.GetName().Name}项目所依赖的WebApiClientCore更新到版本v{typeof(SourceGeneratorHttpApiActivator<>).Assembly.GetName().Version}";
                 throw new ProxyTypeException(httpApiType, message);
             }
 
