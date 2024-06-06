@@ -89,7 +89,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             builder.AppendLine($"\t[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
             builder.AppendLine($"\t[global::System.Diagnostics.DebuggerTypeProxy(typeof({this.httpApiFullName}))]");
             builder.AppendLine($"\t[global::WebApiClientCore.HttpApiProxyClass(typeof({this.httpApiFullName}))]");
-            builder.AppendLine($"\tpartial class {this.ClassName} : {this.httpApiFullName}");
+            builder.AppendLine($"\tsealed class {this.ClassName} : {this.httpApiFullName}");
             builder.AppendLine("\t{");
 
             builder.AppendLine($"\t\tprivate readonly global::WebApiClientCore.IHttpApiInterceptor {this.apiInterceptorFieldName};");

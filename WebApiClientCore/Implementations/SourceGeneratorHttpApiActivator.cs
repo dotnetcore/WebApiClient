@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using WebApiClientCore.Exceptions;
@@ -68,31 +70,35 @@ namespace WebApiClientCore.Implementations
         /// <param name="httpApiType">接口类型</param> 
         /// <param name="proxyClassType">接口的实现类型</param>
         /// <returns></returns>
-        private static MethodInfo[] FindApiMethods(Type httpApiType, Type proxyClassType)
+        private static IEnumerable<MethodInfo> FindApiMethods(Type httpApiType, Type proxyClassType)
         {
-            var apiMethods = HttpApi.FindApiMethods(httpApiType);
-            var classMethods = proxyClassType.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance);
+            var apiMethods = HttpApi.FindApiMethods(httpApiType)
+                .Select(item => new MethodFeature(item, isProxyMethod: false))
+                .ToArray();
 
-            // 按照Index特征对apiMethods进行排序
-            var query = from a in apiMethods.Select(item => new MethodFeature(item, isProxyMethod: false))
-                        join c in classMethods.Select(item => new MethodFeature(item, isProxyMethod: true))
-                        on a equals c
-                        orderby c.Index
-                        select a.Method;
+            var classMethods = proxyClassType.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+                .Select(item => new MethodFeature(item, isProxyMethod: true))
+                .Where(item => item.Index >= 0)
+                .ToArray();
 
-            var methods = query.ToArray();
-            if (apiMethods.Length != methods.Length)
+            if (apiMethods.Length != classMethods.Length)
             {
-                var missingMethod = apiMethods.Except(methods).FirstOrDefault();
-                var message = $"{httpApiType}的代理类缺失方法{missingMethod}";
+                var message = $"接口类型{httpApiType}与其代理类不匹配，请重新编译接口类型所在的项目";
                 throw new ProxyTypeException(httpApiType, message);
             }
-            return methods;
+
+            // 按照Index特征对apiMethods进行排序
+            return from a in apiMethods
+                   join c in classMethods
+                   on a equals c
+                   orderby c.Index
+                   select a.Method;
         }
 
         /// <summary>
         /// 表示MethodInfo的特征
         /// </summary>
+        [DebuggerDisplay("[{Index,nq}] {declaringType.FullName,nq}.{name,nq}")]
         private sealed class MethodFeature : IEquatable<MethodFeature>
         {
             private readonly string name;
