@@ -39,35 +39,30 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             return SourceText.From(code, Encoding.UTF8);
         }
 
+
         public override string ToString()
         {
             var builder = new StringBuilder();
             builder.AppendLine("#if NET5_0_OR_GREATER");
-            builder.AppendLine("#pragma warning disable"); 
+            builder.AppendLine("#pragma warning disable");
             builder.AppendLine($"namespace WebApiClientCore");
             builder.AppendLine("{");
-            builder.AppendLine("    /// <summary>动态依赖初始化器</summary>");
-            builder.AppendLine("    [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
-            builder.AppendLine($"    static partial class {nameof(HttpApiProxyClassInitializer)}");
-            builder.AppendLine("    {");
+            builder.AppendLine("\t/// <summary>动态依赖初始化器</summary>");
+            builder.AppendLine("\t[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
+            builder.AppendLine($"\tstatic partial class {nameof(HttpApiProxyClassInitializer)}");
+            builder.AppendLine("\t{");
 
-            builder.AppendLine($"""
-                        /// <summary>
-                        /// 注册程序集{compilation.AssemblyName}的所有动态依赖
-                        /// 避免程序集在裁剪时裁剪掉由SourceGenerator生成的代理类
-                        /// </summary>
-                """);
-
-            builder.AppendLine("        [global::System.Runtime.CompilerServices.ModuleInitializer]");
+            builder.AppendLine($"\t\t/// <summary>初始化本程序集的动态依赖</summary> ");
+            builder.AppendLine("\t\t[global::System.Runtime.CompilerServices.ModuleInitializer]");
             foreach (var item in this.proxyClasses)
             {
-                builder.AppendLine($"        [global::System.Diagnostics.CodeAnalysis.DynamicDependency(global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All, typeof(global::{item.Namespace}.{item.ClassName}))]");
+                builder.AppendLine($"\t\t[global::System.Diagnostics.CodeAnalysis.DynamicDependency(global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All, typeof(global::{item.Namespace}.{item.ClassName}))]");
             }
 
-            builder.AppendLine("        public static void Initialize()");
-            builder.AppendLine("        {");
-            builder.AppendLine("        }");
-            builder.AppendLine("    }");
+            builder.AppendLine("\t\tpublic static void Initialize()");
+            builder.AppendLine("\t\t{");
+            builder.AppendLine("\t\t}");
+            builder.AppendLine("\t}");
             builder.AppendLine("}");
             builder.AppendLine("#pragma warning restore");
             builder.AppendLine("#endif");

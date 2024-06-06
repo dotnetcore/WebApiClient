@@ -21,12 +21,12 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         /// <summary>
         /// 拦截器变量名
         /// </summary>
-        private readonly string apiInterceptorFieldName = $"apiInterceptor_{(uint)Environment.TickCount}";
+        private readonly string apiInterceptorFieldName = "_apiInterceptor";
 
         /// <summary>
         /// action执行器变量名
         /// </summary>
-        private readonly string actionInvokersFieldName = $"actionInvokers_{(uint)Environment.TickCount}";
+        private readonly string actionInvokersFieldName = "_actionInvokers";
 
         /// <summary>
         /// 文件名
@@ -41,7 +41,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         /// <summary>
         /// 类型名
         /// </summary>
-        public string ClassName => this.httpApi.Name;
+        public string ClassName => this.httpApi.Name + "Class";
 
         /// <summary>
         /// HttpApi代理类
@@ -89,13 +89,13 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             builder.AppendLine($"\t[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
             builder.AppendLine($"\t[global::System.Diagnostics.DebuggerTypeProxy(typeof({this.httpApiFullName}))]");
             builder.AppendLine($"\t[global::WebApiClientCore.HttpApiProxyClass(typeof({this.httpApiFullName}))]");
-            builder.AppendLine($"\tpartial class {this.ClassName}:{this.httpApiFullName}");
+            builder.AppendLine($"\tpartial class {this.ClassName} : {this.httpApiFullName}");
             builder.AppendLine("\t{");
 
             builder.AppendLine($"\t\tprivate readonly global::WebApiClientCore.IHttpApiInterceptor {this.apiInterceptorFieldName};");
             builder.AppendLine($"\t\tprivate readonly global::WebApiClientCore.ApiActionInvoker[] {this.actionInvokersFieldName};");
 
-            builder.AppendLine($"\t\tpublic {this.httpApi.Name}(global::WebApiClientCore.IHttpApiInterceptor apiInterceptor, global::WebApiClientCore.ApiActionInvoker[] actionInvokers)");
+            builder.AppendLine($"\t\tpublic {this.ClassName}(global::WebApiClientCore.IHttpApiInterceptor apiInterceptor, global::WebApiClientCore.ApiActionInvoker[] actionInvokers)");
             builder.AppendLine("\t\t{");
             builder.AppendLine($"\t\t\tthis.{this.apiInterceptorFieldName} = apiInterceptor;");
             builder.AppendLine($"\t\t\tthis.{this.actionInvokersFieldName} = actionInvokers;");
@@ -138,7 +138,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
                 : $"new global::System.Object[] {{ {parameterNamesString} }}";
 
             var methodName = $"\"{interfaceType.ToDisplayString()}.{method.Name}\"";
-            var returnTypeString = GetFullName(method.ReturnType);
+            var returnTypeString = GetFullName(method.ReturnType); 
             builder.AppendLine($"\t\t[global::WebApiClientCore.HttpApiProxyMethod({index}, {methodName})]");
             builder.AppendLine($"\t\t{returnTypeString} {GetFullName(interfaceType)}.{method.Name}( {parametersString} )");
             builder.AppendLine("\t\t{");
