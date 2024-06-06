@@ -26,22 +26,23 @@ namespace WebApiClientCore.Analyzers
         public void Execute(GeneratorExecutionContext context)
         {
             if (context.SyntaxReceiver is HttpApiSyntaxReceiver receiver)
-            {
+            {   
+                // System.Diagnostics.Debugger.Launch();
                 var proxyClasses = receiver
                     .GetHttpApiTypes(context.Compilation)
                     .Select(i => new HttpApiProxyClass(i))
                     .Distinct()
                     .ToArray();
 
-                foreach (var proxyClass in proxyClasses)
-                {
-                    context.AddSource(proxyClass.FileName, proxyClass.ToSourceText());
-                }
-
                 if (proxyClasses.Length > 0)
                 {
-                    var initializer = new HttpApiProxyClassInitializer(proxyClasses);
-                    context.AddSource(initializer.FileName, initializer.ToSourceText());
+                    context.AddSource(HttpApiProxyClassStatic.FileName, HttpApiProxyClassStatic.ToSourceText());
+                    context.AddSource(HttpApiProxyClassInitializer.FileName, HttpApiProxyClassInitializer.ToSourceText());
+
+                    foreach (var proxyClass in proxyClasses)
+                    {
+                        context.AddSource(proxyClass.FileName, proxyClass.ToSourceText());
+                    }
                 }
             }
         }

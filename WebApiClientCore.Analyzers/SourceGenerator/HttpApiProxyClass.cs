@@ -31,17 +31,12 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         /// <summary>
         /// 文件名
         /// </summary>
-        public string FileName => this.httpApi.ToDisplayString() + ".g.cs";
-
-        /// <summary>
-        /// 命名空间
-        /// </summary>
-        public string Namespace => $"WebApiClientCore.{this.httpApi.ContainingNamespace}";
+        public string FileName => $"{nameof(HttpApiProxyClass)}.{this.httpApi.ToDisplayString()}.g.cs";
 
         /// <summary>
         /// 类型名
         /// </summary>
-        public string ClassName => this.httpApi.Name + "Class";
+        public string ClassName => this.httpApi.Name;
 
         /// <summary>
         /// HttpApi代理类
@@ -68,8 +63,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         /// </summary>
         /// <returns></returns>
         public SourceText ToSourceText()
-        {
-            // System.Diagnostics.Debugger.Launch();
+        {      
             var code = this.ToString();
             return SourceText.From(code, Encoding.UTF8);
         }
@@ -82,24 +76,23 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         {
             var builder = new StringBuilder();
             builder.AppendLine("#pragma warning disable");
-            builder.AppendLine("using System;");
-            builder.AppendLine($"namespace {this.Namespace}");
+            builder.AppendLine($"namespace WebApiClientCore");
             builder.AppendLine("{");
-
-            builder.AppendLine($"\t[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
-            builder.AppendLine($"\t[global::System.Diagnostics.DebuggerTypeProxy(typeof({this.httpApiFullName}))]");
-            builder.AppendLine($"\t[global::WebApiClientCore.HttpApiProxyClass(typeof({this.httpApiFullName}))]");
-            builder.AppendLine($"\tsealed class {this.ClassName} : {this.httpApiFullName}");
+            builder.AppendLine($"\tpartial class {nameof(HttpApiProxyClass)}");
             builder.AppendLine("\t{");
-
-            builder.AppendLine($"\t\tprivate readonly global::WebApiClientCore.IHttpApiInterceptor {this.apiInterceptorFieldName};");
-            builder.AppendLine($"\t\tprivate readonly global::WebApiClientCore.ApiActionInvoker[] {this.actionInvokersFieldName};");
-
-            builder.AppendLine($"\t\tpublic {this.ClassName}(global::WebApiClientCore.IHttpApiInterceptor apiInterceptor, global::WebApiClientCore.ApiActionInvoker[] actionInvokers)");
+            builder.AppendLine($"\t\t[global::WebApiClientCore.HttpApiProxyClass(typeof({this.httpApiFullName}))]");
+            builder.AppendLine($"\t\t[global::System.Diagnostics.DebuggerTypeProxy(typeof({this.httpApiFullName}))]");
+            builder.AppendLine($"\t\tsealed class {this.ClassName} : {this.httpApiFullName}");
             builder.AppendLine("\t\t{");
-            builder.AppendLine($"\t\t\tthis.{this.apiInterceptorFieldName} = apiInterceptor;");
-            builder.AppendLine($"\t\t\tthis.{this.actionInvokersFieldName} = actionInvokers;");
-            builder.AppendLine("\t\t}");
+
+            builder.AppendLine($"\t\t\tprivate readonly global::WebApiClientCore.IHttpApiInterceptor {this.apiInterceptorFieldName};");
+            builder.AppendLine($"\t\t\tprivate readonly global::WebApiClientCore.ApiActionInvoker[] {this.actionInvokersFieldName};");
+            builder.AppendLine();
+            builder.AppendLine($"\t\t\tpublic {this.ClassName}(global::WebApiClientCore.IHttpApiInterceptor apiInterceptor, global::WebApiClientCore.ApiActionInvoker[] actionInvokers)");
+            builder.AppendLine("\t\t\t{");
+            builder.AppendLine($"\t\t\t\tthis.{this.apiInterceptorFieldName} = apiInterceptor;");
+            builder.AppendLine($"\t\t\t\tthis.{this.actionInvokersFieldName} = actionInvokers;");
+            builder.AppendLine("\t\t\t}");
             builder.AppendLine();
 
             var index = 0;
@@ -113,7 +106,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
                 }
             }
 
-
+            builder.AppendLine("\t\t}");
             builder.AppendLine("\t}");
             builder.AppendLine("}");
             builder.AppendLine("#pragma warning restore");
@@ -133,16 +126,16 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             var builder = new StringBuilder();
             var parametersString = string.Join(",", method.Parameters.Select(item => $"{GetFullName(item.Type)} {item.Name}"));
             var parameterNamesString = string.Join(",", method.Parameters.Select(item => item.Name));
-            var paremterArrayString = string.IsNullOrEmpty(parameterNamesString)
+            var parameterArrayString = string.IsNullOrEmpty(parameterNamesString)
                 ? "global::System.Array.Empty<global::System.Object>()"
                 : $"new global::System.Object[] {{ {parameterNamesString} }}";
 
             var returnTypeString = GetFullName(method.ReturnType);
-            builder.AppendLine($"\t\t[global::WebApiClientCore.HttpApiProxyMethod({index}, \"{method.Name}\", typeof({GetFullName(interfaceType)}))]");
-            builder.AppendLine($"\t\t{returnTypeString} {GetFullName(interfaceType)}.{method.Name}( {parametersString} )");
-            builder.AppendLine("\t\t{");
-            builder.AppendLine($"\t\t\treturn ({returnTypeString})this.{this.apiInterceptorFieldName}.Intercept(this.{this.actionInvokersFieldName}[{index}], {paremterArrayString});");
-            builder.AppendLine("\t\t}");
+            builder.AppendLine($"\t\t\t[global::WebApiClientCore.HttpApiProxyMethod({index}, \"{method.Name}\", typeof({GetFullName(interfaceType)}))]");
+            builder.AppendLine($"\t\t\t{returnTypeString} {GetFullName(interfaceType)}.{method.Name}({parametersString})");
+            builder.AppendLine("\t\t\t{");
+            builder.AppendLine($"\t\t\t\treturn ({returnTypeString})this.{this.apiInterceptorFieldName}.Intercept(this.{this.actionInvokersFieldName}[{index}], {parameterArrayString});");
+            builder.AppendLine("\t\t\t}");
             return builder.ToString();
         }
 

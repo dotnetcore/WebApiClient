@@ -13,6 +13,7 @@ namespace WebApiClientCore.Implementations
         private static readonly object syncRoot = new();
         private static readonly HashSet<Assembly> assemblies = [];
         private static readonly ConcurrentDictionary<Type, Type> httpApiProxyClassTable = [];
+        private const string HttpApiProxyClassTypeName = "WebApiClientCore.HttpApiProxyClass";
 
         /// <summary>
         /// 查找指定接口类型的代理类类型
@@ -35,14 +36,18 @@ namespace WebApiClientCore.Implementations
         {
             if (AddAssembly(assembly))
             {
-                foreach (var classType in assembly.GetTypes())
+                var httpApiProxyClass = assembly.GetType(HttpApiProxyClassTypeName);
+                if (httpApiProxyClass != null)
                 {
-                    if (classType.IsClass)
+                    foreach (var classType in httpApiProxyClass.GetNestedTypes(BindingFlags.NonPublic))
                     {
-                        var proxyClassAttr = classType.GetCustomAttribute<HttpApiProxyClassAttribute>();
-                        if (proxyClassAttr != null && proxyClassAttr.HttpApiType.IsAssignableFrom(classType))
+                        if (classType.IsClass)
                         {
-                            httpApiProxyClassTable.TryAdd(proxyClassAttr.HttpApiType, classType);
+                            var proxyClassAttr = classType.GetCustomAttribute<HttpApiProxyClassAttribute>();
+                            if (proxyClassAttr != null && proxyClassAttr.HttpApiType.IsAssignableFrom(classType))
+                            {
+                                httpApiProxyClassTable.TryAdd(proxyClassAttr.HttpApiType, classType);
+                            }
                         }
                     }
                 }
