@@ -14,8 +14,7 @@ namespace WebApiClientCore.Implementations
 #endif
     THttpApi> : IHttpApiActivator<THttpApi>
     {
-        private readonly Lazy<ILEmitHttpApiActivator<THttpApi>> ilEmitHttpApiActivatorLazy;
-        private readonly SourceGeneratorHttpApiActivator<THttpApi>? sourceGeneratorHttpApiActivator;
+        private readonly IHttpApiActivator<THttpApi> httpApiActivator;
 
         /// <summary>
         /// 默认的THttpApi的实例创建器
@@ -26,11 +25,9 @@ namespace WebApiClientCore.Implementations
         /// <exception cref="NotSupportedException"></exception>
         public DefaultHttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
         {
-            if (SourceGeneratorHttpApiActivator<THttpApi>.IsSupported)
-            {
-                this.sourceGeneratorHttpApiActivator = new SourceGeneratorHttpApiActivator<THttpApi>(apiActionDescriptorProvider, actionInvokerProvider);
-            }
-            this.ilEmitHttpApiActivatorLazy = new Lazy<ILEmitHttpApiActivator<THttpApi>>(() => new ILEmitHttpApiActivator<THttpApi>(apiActionDescriptorProvider, actionInvokerProvider), isThreadSafe: true);
+            this.httpApiActivator = SourceGeneratorHttpApiActivator<THttpApi>.IsSupported
+                ? new SourceGeneratorHttpApiActivator<THttpApi>(apiActionDescriptorProvider, actionInvokerProvider)
+                : new ILEmitHttpApiActivator<THttpApi>(apiActionDescriptorProvider, actionInvokerProvider);
         }
 
         /// <summary>
@@ -40,9 +37,7 @@ namespace WebApiClientCore.Implementations
         /// <returns></returns>
         public THttpApi CreateInstance(IHttpApiInterceptor apiInterceptor)
         {
-            return this.sourceGeneratorHttpApiActivator == null
-                ? this.ilEmitHttpApiActivatorLazy.Value.CreateInstance(apiInterceptor)
-                : this.sourceGeneratorHttpApiActivator.CreateInstance(apiInterceptor);
+            return this.httpApiActivator.CreateInstance(apiInterceptor);
         }
     }
 }
