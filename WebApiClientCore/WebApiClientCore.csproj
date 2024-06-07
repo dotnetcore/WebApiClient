@@ -19,11 +19,6 @@
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.0.0" />
 	</ItemGroup>
 
-	<!--nuget analyzers目录-->
-	<ItemGroup>
-		<None Include="$(OutputPath)\..\..\WebApiClientCore.Analyzers\$(Configuration)\**" PackagePath="analyzers\dotnet\cs" Pack="true" Visible="false" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<ProjectReference Include="..\WebApiClientCore.Abstractions\WebApiClientCore.Abstractions.csproj" />
 		<ProjectReference Include="..\WebApiClientCore.Analyzers\WebApiClientCore.Analyzers.csproj" ReferenceOutputAssembly="false" />
@@ -43,4 +38,8 @@
 		</EmbeddedResource>
 	</ItemGroup>
 
+	<!--nuget analyzers目录-->
+	<ItemGroup>
+		<None Include="$(OutputPath)\..\..\WebApiClientCore.Analyzers\$(Configuration)\**" PackagePath="analyzers\dotnet\cs" Pack="true" Visible="false" />
+	</ItemGroup>
 </Project>
