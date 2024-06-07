@@ -8,7 +8,7 @@ using System.Text;
 namespace WebApiClientCore.Analyzers.SourceGenerator
 {
     /// <summary>
-    /// HttpApi代理类
+    /// HttpApi代理类生成器
     /// </summary>
     sealed class HttpApiProxyClass : IEquatable<HttpApiProxyClass>
     {
@@ -25,7 +25,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         public string FileName { get; }
 
         /// <summary>
-        /// HttpApi代理类
+        /// HttpApi代理类生成器
         /// </summary>
         /// <param name="httpApi"></param>
         public HttpApiProxyClass(INamedTypeSymbol httpApi)
@@ -70,7 +70,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             builder.AppendLine("\t{");
             builder.AppendLine($"\t\t[global::WebApiClientCore.HttpApiProxyClass(typeof({this.httpApiFullName}))]");
             builder.AppendLine($"\t\t[global::System.Diagnostics.DebuggerTypeProxy(typeof({this.httpApiFullName}))]");
-            builder.AppendLine($"\t\tsealed class {this.proxyClassName} : {this.httpApiFullName}");
+            builder.AppendLine($"\t\tsealed partial class {this.proxyClassName} : {this.httpApiFullName}");
             builder.AppendLine("\t\t{");
 
             builder.AppendLine($"\t\t\tprivate readonly global::WebApiClientCore.IHttpApiInterceptor {ApiInterceptorFieldName};");
@@ -84,11 +84,11 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             builder.AppendLine();
 
             var index = 0;
-            foreach (var interfaceType in this.httpApi.AllInterfaces.Append(httpApi))
+            foreach (var declaringType in this.httpApi.AllInterfaces.Append(httpApi))
             {
-                foreach (var method in interfaceType.GetMembers().OfType<IMethodSymbol>())
+                foreach (var method in declaringType.GetMembers().OfType<IMethodSymbol>())
                 {
-                    var methodCode = this.BuildMethod(interfaceType, method, index);
+                    var methodCode = this.BuildMethod(declaringType, method, index);
                     builder.AppendLine(methodCode);
                     index += 1;
                 }
@@ -105,11 +105,11 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         /// <summary>
         /// 构建方法
         /// </summary>
-        /// <param name="interfaceType"></param>
+        /// <param name="declaringType"></param>
         /// <param name="method"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        private string BuildMethod(INamedTypeSymbol interfaceType, IMethodSymbol method, int index)
+        private string BuildMethod(INamedTypeSymbol declaringType, IMethodSymbol method, int index)
         {
             var builder = new StringBuilder();
             var parametersString = string.Join(",", method.Parameters.Select(item => $"{GetFullName(item.Type)} {item.Name}"));
@@ -119,8 +119,10 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
                 : $"new global::System.Object[] {{ {parameterNamesString} }}";
 
             var returnTypeString = GetFullName(method.ReturnType);
-            builder.AppendLine($"\t\t\t[global::WebApiClientCore.HttpApiProxyMethod({index}, \"{method.Name}\", typeof({GetFullName(interfaceType)}))]");
-            builder.AppendLine($"\t\t\t{returnTypeString} {GetFullName(interfaceType)}.{method.Name}({parametersString})");
+            var declaringTypeString = GetFullName(declaringType);
+
+            builder.AppendLine($"\t\t\t[global::WebApiClientCore.HttpApiProxyMethod({index}, \"{method.Name}\", typeof({declaringTypeString}))]");
+            builder.AppendLine($"\t\t\t{returnTypeString} {declaringTypeString}.{method.Name}({parametersString})");
             builder.AppendLine("\t\t\t{");
             builder.AppendLine($"\t\t\t\treturn ({returnTypeString})this.{ApiInterceptorFieldName}.Intercept(this.{ActionInvokersFieldName}[{index}], {parameterArrayString});");
             builder.AppendLine("\t\t\t}");
@@ -132,9 +134,9 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public bool Equals(HttpApiProxyClass other)
+        public bool Equals(HttpApiProxyClass? other)
         {
-            return this.FileName == other.FileName;
+            return other != null && this.FileName == other.FileName;
         }
 
         /// <summary>
@@ -142,13 +144,9 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            if (obj is HttpApiProxyClass builder)
-            {
-                return this.Equals(builder);
-            }
-            return false;
+            return obj is HttpApiProxyClass other && this.Equals(other);
         }
 
         /// <summary>
