@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -12,7 +11,7 @@ namespace WebApiClientCore.Implementations
     {
         private static readonly object syncRoot = new();
         private static readonly HashSet<Assembly> assemblies = [];
-        private static readonly ConcurrentDictionary<Type, Type> httpApiProxyClassTable = [];
+        private static readonly Dictionary<Type, Type> httpApiProxyClassTable = [];
         private const string HttpApiProxyClassTypeName = "WebApiClientCore.HttpApiProxyClass";
 
         /// <summary>
@@ -22,7 +21,13 @@ namespace WebApiClientCore.Implementations
         /// <returns></returns>
         public static Type? Find(Type httpApiType)
         {
-            AnalyzeAssembly(httpApiType.Assembly);
+            lock (syncRoot)
+            {
+                if (assemblies.Add(httpApiType.Assembly))
+                {
+                    AnalyzeAssembly(httpApiType.Assembly);
+                }
+            }
 
             if (httpApiProxyClassTable.TryGetValue(httpApiType, out var proxyClassType))
             {
@@ -34,31 +39,17 @@ namespace WebApiClientCore.Implementations
 
         private static void AnalyzeAssembly(Assembly assembly)
         {
-            if (AddAssembly(assembly))
+            var httpApiProxyClass = assembly.GetType(HttpApiProxyClassTypeName);
+            if (httpApiProxyClass != null)
             {
-                var httpApiProxyClass = assembly.GetType(HttpApiProxyClassTypeName);
-                if (httpApiProxyClass != null)
+                foreach (var classType in httpApiProxyClass.GetNestedTypes(BindingFlags.NonPublic))
                 {
-                    foreach (var classType in httpApiProxyClass.GetNestedTypes(BindingFlags.NonPublic))
+                    var proxyClassAttr = classType.GetCustomAttribute<HttpApiProxyClassAttribute>();
+                    if (proxyClassAttr != null && proxyClassAttr.HttpApiType.IsAssignableFrom(classType))
                     {
-                        if (classType.IsClass)
-                        {
-                            var proxyClassAttr = classType.GetCustomAttribute<HttpApiProxyClassAttribute>();
-                            if (proxyClassAttr != null && proxyClassAttr.HttpApiType.IsAssignableFrom(classType))
-                            {
-                                httpApiProxyClassTable.TryAdd(proxyClassAttr.HttpApiType, classType);
-                            }
-                        }
+                        httpApiProxyClassTable.TryAdd(proxyClassAttr.HttpApiType, classType);
                     }
                 }
-            }
-        }
-
-        private static bool AddAssembly(Assembly assembly)
-        {
-            lock (syncRoot)
-            {
-                return assemblies.Add(assembly);
             }
         }
     }
