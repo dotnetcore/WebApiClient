@@ -12,31 +12,17 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
     /// </summary>
     sealed class HttpApiProxyClass : IEquatable<HttpApiProxyClass>
     {
-        /// <summary>
-        /// 接口符号
-        /// </summary>
         private readonly INamedTypeSymbol httpApi;
         private readonly string httpApiFullName;
+        private readonly string proxyClassName;
 
-        /// <summary>
-        /// 拦截器变量名
-        /// </summary>
-        private readonly string apiInterceptorFieldName = "_apiInterceptor";
-
-        /// <summary>
-        /// action执行器变量名
-        /// </summary>
-        private readonly string actionInvokersFieldName = "_actionInvokers";
+        private const string ApiInterceptorFieldName = "_apiInterceptor";
+        private const string ActionInvokersFieldName = "_actionInvokers";
 
         /// <summary>
         /// 文件名
         /// </summary>
         public string FileName { get; }
-
-        /// <summary>
-        /// 类型名
-        /// </summary>
-        public string ClassName { get; }
 
         /// <summary>
         /// HttpApi代理类
@@ -46,10 +32,8 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         {
             this.httpApi = httpApi;
             this.httpApiFullName = GetFullName(httpApi);
-
-            var httpApiName = httpApi.ToDisplayString();
-            this.FileName = $"{nameof(HttpApiProxyClass)}.{httpApiName}.g.cs";
-            this.ClassName = httpApiName.Replace(".", "_");
+            this.proxyClassName = httpApi.ToDisplayString().Replace(".", "_");
+            this.FileName = $"{nameof(HttpApiProxyClass)}.{proxyClassName}.g.cs";
         }
 
         /// <summary>
@@ -86,16 +70,16 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             builder.AppendLine("\t{");
             builder.AppendLine($"\t\t[global::WebApiClientCore.HttpApiProxyClass(typeof({this.httpApiFullName}))]");
             builder.AppendLine($"\t\t[global::System.Diagnostics.DebuggerTypeProxy(typeof({this.httpApiFullName}))]");
-            builder.AppendLine($"\t\tsealed class {this.ClassName} : {this.httpApiFullName}");
+            builder.AppendLine($"\t\tsealed class {this.proxyClassName} : {this.httpApiFullName}");
             builder.AppendLine("\t\t{");
 
-            builder.AppendLine($"\t\t\tprivate readonly global::WebApiClientCore.IHttpApiInterceptor {this.apiInterceptorFieldName};");
-            builder.AppendLine($"\t\t\tprivate readonly global::WebApiClientCore.ApiActionInvoker[] {this.actionInvokersFieldName};");
+            builder.AppendLine($"\t\t\tprivate readonly global::WebApiClientCore.IHttpApiInterceptor {ApiInterceptorFieldName};");
+            builder.AppendLine($"\t\t\tprivate readonly global::WebApiClientCore.ApiActionInvoker[] {ActionInvokersFieldName};");
             builder.AppendLine();
-            builder.AppendLine($"\t\t\tpublic {this.ClassName}(global::WebApiClientCore.IHttpApiInterceptor apiInterceptor, global::WebApiClientCore.ApiActionInvoker[] actionInvokers)");
+            builder.AppendLine($"\t\t\tpublic {this.proxyClassName}(global::WebApiClientCore.IHttpApiInterceptor apiInterceptor, global::WebApiClientCore.ApiActionInvoker[] actionInvokers)");
             builder.AppendLine("\t\t\t{");
-            builder.AppendLine($"\t\t\t\tthis.{this.apiInterceptorFieldName} = apiInterceptor;");
-            builder.AppendLine($"\t\t\t\tthis.{this.actionInvokersFieldName} = actionInvokers;");
+            builder.AppendLine($"\t\t\t\tthis.{ApiInterceptorFieldName} = apiInterceptor;");
+            builder.AppendLine($"\t\t\t\tthis.{ActionInvokersFieldName} = actionInvokers;");
             builder.AppendLine("\t\t\t}");
             builder.AppendLine();
 
@@ -138,7 +122,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
             builder.AppendLine($"\t\t\t[global::WebApiClientCore.HttpApiProxyMethod({index}, \"{method.Name}\", typeof({GetFullName(interfaceType)}))]");
             builder.AppendLine($"\t\t\t{returnTypeString} {GetFullName(interfaceType)}.{method.Name}({parametersString})");
             builder.AppendLine("\t\t\t{");
-            builder.AppendLine($"\t\t\t\treturn ({returnTypeString})this.{this.apiInterceptorFieldName}.Intercept(this.{this.actionInvokersFieldName}[{index}], {parameterArrayString});");
+            builder.AppendLine($"\t\t\t\treturn ({returnTypeString})this.{ApiInterceptorFieldName}.Intercept(this.{ActionInvokersFieldName}[{index}], {parameterArrayString});");
             builder.AppendLine("\t\t\t}");
             return builder.ToString();
         }
