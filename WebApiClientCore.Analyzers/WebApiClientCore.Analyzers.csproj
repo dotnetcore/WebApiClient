@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<Nullable>enable</Nullable>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<DocumentationFile>$(TargetPath)\$(AssemblyName).xml</DocumentationFile>
+		<DocumentationFile>$(OutputPath)\$(AssemblyName).xml</DocumentationFile>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<SignAssembly>true</SignAssembly>

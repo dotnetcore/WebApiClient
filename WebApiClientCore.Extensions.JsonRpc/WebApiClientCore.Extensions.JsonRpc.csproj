@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<Nullable>enable</Nullable>
 		<TargetFramework>netstandard2.1</TargetFramework>
-		<DocumentationFile>$(TargetPath)\$(AssemblyName).xml</DocumentationFile>
+		<DocumentationFile>$(OutputPath)\$(AssemblyName).xml</DocumentationFile>
 
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>Sign.snk</AssemblyOriginatorKeyFile>

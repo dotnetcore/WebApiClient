@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<Nullable>enable</Nullable>
 		<TargetFrameworks>netstandard2.1;net5.0</TargetFrameworks>
-		<DocumentationFile>$(TargetPath)\$(AssemblyName).xml</DocumentationFile>
+		<DocumentationFile>$(OutputPath)\$(AssemblyName).xml</DocumentationFile>
 
 		<Description>.NetCore声明式的Http客户端库</Description>
 		<Summary>一款基于HttpClient封装，只需要定义c#接口并修饰相关特性，即可异步调用远程http接口的客户端库</Summary>
@@ -19,14 +19,14 @@
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.0.0" />
 	</ItemGroup>
 
-	<!--nuget analyzers和tools目录-->
+	<!--nuget analyzers目录-->
 	<ItemGroup>
-		<None Include="NugetPackage\tools\*.*" PackagePath="tools" Pack="true" />
-		<None Include="NugetPackage\analyzers\dotnet\cs\**" PackagePath="analyzers\dotnet\cs" Pack="true" />
+		<None Include="$(OutputPath)\..\..\WebApiClientCore.Analyzers\$(Configuration)\**" PackagePath="analyzers\dotnet\cs" Pack="true" Visible="false" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\WebApiClientCore.Abstractions\WebApiClientCore.Abstractions.csproj" />
+		<ProjectReference Include="..\WebApiClientCore.Analyzers\WebApiClientCore.Analyzers.csproj" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -42,13 +42,5 @@
 			<LastGenOutput>Resx.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
 	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="NugetPackage\analyzers\" />
-	</ItemGroup>
-
-	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-		<Exec Command="dotnet publish ../WebApiClientCore.Analyzers/WebApiClientCore.Analyzers.csproj -c Release -o $(MSBuildProjectDirectory)/NugetPackage/analyzers/dotnet/cs" />
-	</Target>
 
 </Project>
