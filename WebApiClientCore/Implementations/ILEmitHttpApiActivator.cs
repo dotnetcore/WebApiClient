@@ -11,7 +11,7 @@ namespace WebApiClientCore.Implementations
     /// 运行时使用ILEmit动态创建THttpApi的代理类和代理类实例
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
-    public class ILEmitHttpApiActivator<
+    public sealed class ILEmitHttpApiActivator<
 #if NET5_0_OR_GREATER
         [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]
 #endif
