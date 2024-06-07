@@ -38,7 +38,8 @@ namespace WebApiClientCore
             var builder = new ValueStringBuilder(stackalloc char[256]);
             if (includeNamespace == true)
             {
-                builder.Append(httpApiType.Namespace).Append(".");
+                builder.Append(httpApiType.Namespace);
+                builder.Append(".");
             }
 
             GetName(httpApiType, ref builder);
