@@ -116,8 +116,12 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
         {
             var html = this.RenderHtml(model);
             var doc = XDocument.Parse(html).Root;
-            var builder = new StringBuilder();
+            if (doc == null)
+            {
+                return string.Empty;
+            }
 
+            var builder = new StringBuilder();
             RenderText(doc, builder);
             return builder.ToString();
         }
@@ -157,7 +161,7 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
                 builder.Append(text);
                 if (element.NextNode != null)
                 {
-                    builder.Append(" ");
+                    builder.Append(' ');
                 }
             }
         }
