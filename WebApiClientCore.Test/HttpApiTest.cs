@@ -34,6 +34,13 @@ namespace WebApiClientCore.Test
         }
 
         [Fact]
+        public void GetNameTest()
+        {
+            var name = HttpApi.GetName(typeof(HttpApiTest));
+            Assert.Equal(typeof(HttpApiTest).FullName, name);
+        }
+
+        [Fact]
         public void GetAllApiMethodsTest()
         {
             var m1 = HttpApi.FindApiMethods(typeof(IMyApi));
