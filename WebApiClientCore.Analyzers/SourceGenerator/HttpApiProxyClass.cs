@@ -31,12 +31,12 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         /// <summary>
         /// 文件名
         /// </summary>
-        public string FileName => $"{nameof(HttpApiProxyClass)}.{this.httpApi.ToDisplayString()}.g.cs";
+        public string FileName { get; }
 
         /// <summary>
         /// 类型名
         /// </summary>
-        public string ClassName => this.httpApi.Name;
+        public string ClassName { get; }
 
         /// <summary>
         /// HttpApi代理类
@@ -46,6 +46,10 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         {
             this.httpApi = httpApi;
             this.httpApiFullName = GetFullName(httpApi);
+
+            var httpApiName = httpApi.ToDisplayString();
+            this.FileName = $"{nameof(HttpApiProxyClass)}.{httpApiName}.g.cs";
+            this.ClassName = httpApiName.Replace(".", "_");
         }
 
         /// <summary>
@@ -63,7 +67,7 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         /// </summary>
         /// <returns></returns>
         public SourceText ToSourceText()
-        {      
+        {
             var code = this.ToString();
             return SourceText.From(code, Encoding.UTF8);
         }
