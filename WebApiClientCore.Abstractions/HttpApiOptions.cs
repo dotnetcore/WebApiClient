@@ -103,5 +103,18 @@ namespace WebApiClientCore
             options.Converters.Add(JsonCompatibleConverter.DateTimeReader);
             return options;
         }
+
+#if NET8_0_OR_GREATER
+        /// <summary>
+        /// 插入指定的<see cref="System.Text.Json.Serialization.JsonSerializerContext"/>到所有序列化选项的TypeInfoResolverChain的最前位置
+        /// </summary>
+        /// <param name="context"></param>
+        public void PrependJsonSerializerContext(System.Text.Json.Serialization.JsonSerializerContext context)
+        {
+            this.JsonSerializeOptions.TypeInfoResolverChain.Insert(0, context);
+            this.JsonDeserializeOptions.TypeInfoResolverChain.Insert(0, context);
+            this.KeyValueSerializeOptions.GetJsonSerializerOptions().TypeInfoResolverChain.Insert(0, context);
+        }
+#endif
     }
 }
