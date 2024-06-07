@@ -103,7 +103,7 @@ namespace WebApiClientCore.Implementations
                 ExceptionDispatchInfo.Capture(response.Exception).Throw();
             }
 
-            throw new ApiReturnNotSupportedExteption(response);
+            throw new ApiReturnNotSupportedException(response);
 #nullable enable
         }
 

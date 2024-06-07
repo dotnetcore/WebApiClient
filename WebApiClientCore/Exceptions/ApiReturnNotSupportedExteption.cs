@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Net;
 
 namespace WebApiClientCore.Exceptions
@@ -6,6 +7,7 @@ namespace WebApiClientCore.Exceptions
     /// <summary>
     /// 表示接口不支持处理响应消息的异常
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public class ApiReturnNotSupportedExteption : ApiException, IStatusCodeException
     {
         /// <summary>
