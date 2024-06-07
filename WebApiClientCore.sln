@@ -27,6 +27,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore.Extensions
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppAot", "AppAot\AppAot.csproj", "{F77DA016-1F63-46BF-A5A0-AD4662D528B9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{056F3910-2135-4D12-A420-6C3060533422}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apps", "Apps", "{E938B9B9-5F60-46BA-82D4-C7C30EBF6FF2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -84,6 +88,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{518364A8-36D6-4927-929D-2CC26C099244} = {E938B9B9-5F60-46BA-82D4-C7C30EBF6FF2}
+		{3692CADD-3B12-4720-BB56-CE7511C69F9A} = {056F3910-2135-4D12-A420-6C3060533422}
+		{3371725B-C3BC-492C-B7A2-2B982EEF28AA} = {056F3910-2135-4D12-A420-6C3060533422}
+		{F77DA016-1F63-46BF-A5A0-AD4662D528B9} = {E938B9B9-5F60-46BA-82D4-C7C30EBF6FF2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {915190C5-E5CB-440F-84B4-AE76368EA776}
