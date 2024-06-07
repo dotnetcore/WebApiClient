@@ -1,7 +1,7 @@
 ```
 
-BenchmarkDotNet v0.13.12, Windows 10 (10.0.19045.4412/22H2/2022Update)
-Intel Core i3-4150 CPU 3.50GHz (Haswell), 1 CPU, 4 logical and 2 physical cores
+BenchmarkDotNet v0.13.12, Windows 11 (10.0.22631.3593/23H2/2023Update/SunValley3)
+Intel Core i7-8565U CPU 1.80GHz (Whiskey Lake), 1 CPU, 8 logical and 4 physical cores
   [Host] : .NET 8.0.4, X64 NativeAOT AVX2
 
 Job=InProcess  Toolchain=InProcessEmitToolchain  
@@ -9,6 +9,6 @@ Job=InProcess  Toolchain=InProcessEmitToolchain
 ```
 | Method                    | Mean      | Error     | StdDev    | Ratio | RatioSD | Gen0   | Allocated | Alloc Ratio |
 |-------------------------- |----------:|----------:|----------:|------:|--------:|-------:|----------:|------------:|
-| HttpClient_GetAsync       |  2.203 μs | 0.0430 μs | 0.0574 μs |  0.42 |    0.01 | 1.3237 |   2.03 KB |        0.51 |
-| WebApiClientCore_GetAsync |  5.245 μs | 0.1027 μs | 0.1142 μs |  1.00 |    0.00 | 2.6169 |   4.02 KB |        1.00 |
-| Refit_GetAsync            | 12.336 μs | 0.2447 μs | 0.6615 μs |  2.37 |    0.13 | 3.4790 |   5.34 KB |        1.33 |
+| HttpClient_GetAsync       |  3.059 μs | 0.1315 μs | 0.3816 μs |  0.49 |    0.09 | 0.4959 |   2.03 KB |        0.51 |
+| WebApiClientCore_GetAsync |  6.277 μs | 0.2695 μs | 0.7903 μs |  1.00 |    0.00 | 0.9766 |   4.02 KB |        1.00 |
+| Refit_GetAsync            | 14.295 μs | 0.4401 μs | 1.2626 μs |  2.30 |    0.31 | 1.2817 |   5.34 KB |        1.33 |

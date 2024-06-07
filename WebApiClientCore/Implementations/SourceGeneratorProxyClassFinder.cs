@@ -7,7 +7,7 @@ namespace WebApiClientCore.Implementations
     /// <summary>
     /// 提供获取SourceGenerator生成的代理类型
     /// </summary>
-    static class SourceGeneratorProxyClassType
+    static class SourceGeneratorProxyClassFinder
     {
         private static readonly object syncRoot = new();
         private static readonly HashSet<Assembly> assemblies = [];

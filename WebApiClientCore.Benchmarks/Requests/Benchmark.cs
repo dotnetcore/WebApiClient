@@ -34,12 +34,13 @@ namespace WebApiClientCore.Benchmarks.Requests
             services
                 .AddRefitClient<IRefitApi>(new RefitSettings
                 {
-                    Buffered = true,
                 })
                 .AddHttpMessageHandler(() => new MockResponseHandler())
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://webapiclient.com/"));
 
             this.ServiceProvider = services.BuildServiceProvider();
+            this.ServiceProvider.GetService<IWebApiClientCoreApi>();
+            this.ServiceProvider.GetService<IRefitApi>();
         }
     }
 }
