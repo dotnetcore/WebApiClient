@@ -1,30 +1,32 @@
+[README](README.md) | [中文文档](README_zh.md)
+
 ## WebApiClient　　　　　　　　　　　　　　　　　
-集高性能高可扩展性于一体的声明式http客户端库。
+A REST API library with better functionality, performance, and scalability than refit.
 
-### 功能特性
-#### 语义化声明
-客户端的开发，只需语义化的声明接口。
+### Features
+#### Semantic Declaration
+Client development only requires semantic declaration of C# interfaces.
 
-#### 多样序列化
-支持json、xml、form等序列化和其它自定义序列化方式。
+#### Diverse serialization
+Supports json, xml, form and other custom serialization methods.
 
-#### 裁剪与AOT
-支持.net8的代码完全裁剪和AOT发布。
+#### Full trimmed and AOT
+Supports full trimmed and AOT publishing of .NET8.
 
-#### 面向切面
-支持多种拦截器、过滤器、日志、重试、缓存自定义等功能。
+#### Aspect-Oriented Programming
+Supports multiple interceptors, filters, logs, retries, custom caches and other aspects.
 
-#### 语法分析
-提供接口声明的语法分析与提示，帮助开发者声明接口时避免使用不当的语法。
+#### Code Syntax Analysis
+Provides syntax analysis and prompts for interface code declarations to help developers avoid using improper syntax when declaring interfaces.
 
-#### 快速接入
-支持OAuth2与token管理扩展包，方便实现身份认证和授权。
+#### Quick access
+Supports OAuth2 and token management extension packages to facilitate identity authentication and authorization.
 
-#### 自动代码
-支持将本地或远程OpenApi文档解析生成WebApiClientCore接口代码的dotnet tool，简化接口声明的工作量
+#### Swagger to code
+Supports parsing local or remote OpenApi documents to generate WebApiClientCore interface code, which simplifies the workload of interface declaration.
 
-#### 性能强劲
-在[BenchmarkDotNet](WebApiClientCore.Benchmarks/results)中，各种请求下2.X倍性能领先于同类产品[refit](https://github.com/reactiveui/refit)。
+#### Powerful performance
+In [BenchmarkDotNet](WebApiClientCore.Benchmarks/results), the performance is 2.X times ahead of the similar product [refit](https://github.com/reactiveui/refit) under various requests.
 
-### 文档支持
+### Documentation support
 https://webapiclient.github.io/
