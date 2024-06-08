@@ -151,13 +151,14 @@ namespace WebApiClientCore.Attributes
         /// <param name="logMessage">日志消息</param>
         protected virtual void WriteLog(ILogger logger, LogMessage logMessage)
         {
+            // .NET6之后可以适配LoggerMessage以实现高性能日志
             if (logMessage.Exception == null)
             {
-                logger.LogInformation(logMessage.ToString());
+                logger.LogInformation("{logMessage}", logMessage);
             }
             else
             {
-                logger.LogError(logMessage.ToString());
+                logger.LogError("{logMessage}", logMessage);
             }
         }
     }
