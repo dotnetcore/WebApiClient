@@ -17,7 +17,7 @@ namespace WebApiClientCore.Parameters
         /// <summary>
         /// 操作列表
         /// </summary>
-        private readonly List<object> oprations = new();
+        private readonly List<object> operations = new();
 
         /// <summary>
         /// Add操作
@@ -31,7 +31,7 @@ namespace WebApiClientCore.Parameters
             {
                 throw new ArgumentNullException(nameof(path));
             }
-            this.oprations.Add(new { op = "add", path, value });
+            this.operations.Add(new { op = "add", path, value });
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace WebApiClientCore.Parameters
             {
                 throw new ArgumentNullException(nameof(path));
             }
-            this.oprations.Add(new { op = "remove", path });
+            this.operations.Add(new { op = "remove", path });
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace WebApiClientCore.Parameters
             {
                 throw new ArgumentNullException(nameof(path));
             }
-            this.oprations.Add(new { op = "replace", path, value });
+            this.operations.Add(new { op = "replace", path, value });
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace WebApiClientCore.Parameters
             }
 
             var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
-            context.HttpContext.RequestMessage.Content = new JsonPatchContent(this.oprations, options);
+            context.HttpContext.RequestMessage.Content = new JsonPatchContent(this.operations, options);
 
             return Task.CompletedTask;
         }
@@ -95,7 +95,7 @@ namespace WebApiClientCore.Parameters
             /// 查看的内容
             /// </summary>
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-            public List<object> Oprations => this.target.oprations;
+            public List<object> Oprations => this.target.operations;
 
             /// <summary>
             /// 调试视图
