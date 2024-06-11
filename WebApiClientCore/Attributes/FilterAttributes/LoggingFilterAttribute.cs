@@ -11,6 +11,9 @@ namespace WebApiClientCore.Attributes
     /// </summary>
     public class LoggingFilterAttribute : ApiFilterAttribute
     {
+        private static readonly Action<ILogger, LogMessage, Exception> logError = LoggerMessage.Define<LogMessage>(LogLevel.Error, 0, "{LogMessage}");
+        private static readonly Action<ILogger, LogMessage, Exception?> logInformation = LoggerMessage.Define<LogMessage>(LogLevel.Information, 1, "{LogMessage}");
+
         /// <summary>
         /// 获取或设置是否输出请求内容
         /// </summary>
@@ -151,14 +154,13 @@ namespace WebApiClientCore.Attributes
         /// <param name="logMessage">日志消息</param>
         protected virtual void WriteLog(ILogger logger, LogMessage logMessage)
         {
-            // .NET6之后可以适配LoggerMessage以实现高性能日志
             if (logMessage.Exception == null)
             {
-                logger.LogInformation("{logMessage}", logMessage);
+                logInformation(logger, logMessage, null);
             }
             else
             {
-                logger.LogError("{logMessage}", logMessage);
+                logError(logger, logMessage.ToExcludeException(), logMessage.Exception);
             }
         }
     }
