@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using WebApiClientCore.Exceptions;
 using WebApiClientCore.Internals;
 
@@ -52,9 +51,7 @@ namespace WebApiClientCore.Implementations
                 .Select(actionInvokerProvider.CreateActionInvoker)
                 .ToArray();
 
-            this.activator = RuntimeFeature.IsDynamicCodeSupported
-                ? LambdaUtil.CreateCtorFunc<IHttpApiInterceptor, ApiActionInvoker[], THttpApi>(proxyClassType)
-                : (interceptor, invokers) => proxyClassType.CreateInstance<THttpApi>(interceptor, invokers);
+            this.activator = LambdaUtil.CreateCtorFunc<IHttpApiInterceptor, ApiActionInvoker[], THttpApi>(proxyClassType);
         }
 
         /// <summary>
