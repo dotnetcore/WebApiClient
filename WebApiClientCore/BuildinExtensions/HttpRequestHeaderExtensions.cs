@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace WebApiClientCore
@@ -59,10 +60,11 @@ namespace WebApiClientCore
         /// 转换为header名
         /// </summary>
         /// <param name="header">请求头枚举</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <returns></returns>
         public static string ToHeaderName(this HttpRequestHeader header)
         {
-            return cache.TryGetValue(header, out var name) ? name : header.ToString();
+            return cache.TryGetValue(header, out var name) ? name : throw new ArgumentOutOfRangeException(nameof(header));
         }
     }
 }

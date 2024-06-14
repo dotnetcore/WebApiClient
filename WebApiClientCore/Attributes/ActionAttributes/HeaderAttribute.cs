@@ -25,6 +25,7 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="name">header名称</param>
         /// <param name="value">header值</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         [AttributeCtorUsage(AttributeTargets.Interface | AttributeTargets.Method)]
         public HeaderAttribute(HttpRequestHeader name, string value)
             : this(name.ToHeaderName(), value)
