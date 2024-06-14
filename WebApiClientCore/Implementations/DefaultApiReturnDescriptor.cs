@@ -84,7 +84,7 @@ namespace WebApiClientCore.Implementations
         /// <returns></returns>
         private static IEnumerable<IApiReturnAttribute> GetDefaultAttributes(ApiDataTypeDescriptor dataType)
         {
-            const double acceptQuality = 0.001;
+            const double acceptQuality = 0.1;
             if (dataType.IsRawType == true)
             {
                 yield return new RawReturnAttribute(acceptQuality);
@@ -92,8 +92,8 @@ namespace WebApiClientCore.Implementations
             else
             {
                 yield return new NoneReturnAttribute(acceptQuality);
-                yield return new JsonReturnAttribute(acceptQuality);
-                yield return new XmlReturnAttribute(acceptQuality);
+                yield return new JsonReturnAttribute(acceptQuality) { EnsureMatchAcceptContentType = true };
+                yield return new XmlReturnAttribute(acceptQuality) { EnsureMatchAcceptContentType = true };
             }
         }
 

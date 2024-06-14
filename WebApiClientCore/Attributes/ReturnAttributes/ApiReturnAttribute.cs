@@ -51,9 +51,9 @@ namespace WebApiClientCore.Attributes
 
         /// <summary>
         /// 获取或设置是否确保响应的ContentType与指定的Accpet-ContentType一致
-        /// 默认为true
+        /// 默认为false
         /// </summary>
-        public bool EnsureMatchAcceptContentType { get; set; } = true;
+        public bool EnsureMatchAcceptContentType { get; set; } = false;
 
         /// <summary>
         /// 响应内容处理的抽象特性
