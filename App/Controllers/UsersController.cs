@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using App.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Controllers
 {
+    [TokenFilter]
     [ApiController]
     [Route("api/[controller]")]
-    [TokenFilter]
     public class UsersController : ControllerBase
     {
         [HttpGet("{account}")]
@@ -28,9 +29,9 @@ namespace App.Controllers
         }
 
         [HttpPost("formdata")]
-        public User PostByFormData([FromForm] User formDatauser, IFormFile file)
+        public User PostByFormData([FromForm] User formDataUser, IFormFile file)
         {
-            return formDatauser;
+            return formDataUser;
         }
 
         [HttpDelete("{account}")]

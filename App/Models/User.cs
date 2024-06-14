@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using WebApiClientCore.Serialization.JsonConverters;
 
-namespace App
+namespace App.Models
 {
     /// <summary>
     /// 表示用户模型
@@ -12,13 +12,13 @@ namespace App
     {
         [Required]
         [StringLength(10, MinimumLength = 1)]
-        public string Account { get; set; }
+        public string Account { get; set; } = string.Empty;
 
         [Required]
         [StringLength(10, MinimumLength = 1)]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
 
-        public string NickName { get; set; }
+        public string? NickName { get; set; }
 
         [JsonDateTime("yyyy年MM月dd日")]
         public DateTime? BirthDay { get; set; }
@@ -26,15 +26,6 @@ namespace App
         public Gender Gender { get; set; }
 
         [JsonIgnore]
-        public string Email { get; set; }
-    }
-
-    /// <summary>
-    /// 性别
-    /// </summary>
-    public enum Gender
-    {
-        Female = 0,
-        Male = 1
+        public string? Email { get; set; }
     }
 }

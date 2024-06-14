@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using App.Models;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
@@ -12,8 +13,8 @@ namespace App.Clients
     /// <summary>
     /// 用户操作接口
     /// </summary>    
-    [LoggingFilter]
     [OAuthToken]
+    [LoggingFilter]   
     public interface IUserApi : IHttpApi
     {
         [HttpGet("api/users/{account}")]
@@ -21,17 +22,14 @@ namespace App.Clients
 
         [HttpGet("api/users/{account}")]
         ITask<string> GetAsStringAsync([Required] string account, CancellationToken token = default);
-
-
-        [HttpGet("api/users/{account}")]
+       
         [JsonReturn]
-        ITask<string> GetExpectJsonAsync([Required] string account, CancellationToken token = default);
+        [HttpGet("api/users/{account}")]       
+        ITask<User> GetExpectJsonAsync([Required] string account, CancellationToken token = default);
 
-
-        [HttpGet("api/users/{account}")]
         [XmlReturn]
-        ITask<string> GetExpectXmlAsync([Required] string account, CancellationToken token = default);
-
+        [HttpGet("api/users/{account}")]      
+        ITask<User> GetExpectXmlAsync([Required] string account, CancellationToken token = default);
 
 
         [HttpGet("api/users/{account}")]
@@ -57,8 +55,6 @@ namespace App.Clients
 
         [HttpPost("api/users/formdata")]
         Task<User> PostByFormDataAsync([Required, FormDataContent] User user, FormDataFile file, CancellationToken token = default);
-
-
 
         [HttpDelete("api/users/{account}")]
         Task DeleteAsync([Required] string account);

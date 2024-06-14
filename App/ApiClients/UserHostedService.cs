@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace App.Clients
 {
     public class UserHostedService : BackgroundService
-    {
-        private readonly IServiceProvider service;
-        private readonly ILogger logger;
+    { 
+        private readonly IServiceScopeFactory serviceScopeFactory;
+        private readonly ILogger<UserHostedService> logger;
 
-        public UserHostedService(IServiceProvider service, ILogger<UserHostedService> logger)
-        {
-            this.service = service;
+        public UserHostedService(IServiceScopeFactory serviceScopeFactory, ILogger<UserHostedService> logger)
+        { 
+            this.serviceScopeFactory = serviceScopeFactory;
             this.logger = logger;
         }
 
@@ -22,9 +22,9 @@ namespace App.Clients
         {
             try
             {
-                using var scope = this.service.CreateScope();
-                var userService = scope.ServiceProvider.GetService<UserService>();
-                await userService.RunRequestAsync();
+                using var scope = this.serviceScopeFactory.CreateScope();
+                var userService = scope.ServiceProvider.GetRequiredService<UserService>();
+                await userService.RunRequestsAsync();
             }
             catch (Exception ex)
             {

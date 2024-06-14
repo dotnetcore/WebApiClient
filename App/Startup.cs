@@ -1,5 +1,4 @@
 using App.Clients;
-using App.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -47,8 +46,7 @@ namespace App
 
             // 全局默认配置
             services
-                .AddWebApiClient()
-                .ConfigureHttpApi(o => { })
+                .AddWebApiClient() 
                 .UseJsonFirstApiActionDescriptor();
 
             // 注册userApi
@@ -68,7 +66,6 @@ namespace App
 
             // userApi客户端后台服务
             services.AddScoped<UserService>().AddHostedService<UserHostedService>();
-            services.AddDynamicHostSupport();
         }
 
         /// <summary>

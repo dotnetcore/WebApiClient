@@ -1,4 +1,5 @@
-﻿using System;
+﻿using App.Models;
+using System;
 using System.Threading.Tasks;
 using WebApiClientCore;
 using WebApiClientCore.Parameters;
@@ -14,7 +15,7 @@ namespace App.Clients
             this.userApi = userApi;
         }
 
-        public async Task RunRequestAsync()
+        public async Task RunRequestsAsync()
         {
             var user = new User
             {
