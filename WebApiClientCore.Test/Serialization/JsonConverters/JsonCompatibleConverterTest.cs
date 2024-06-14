@@ -35,7 +35,16 @@ namespace WebApiClientCore.Test.Serialization.JsonConverters
             var dateTime = JsonSerializer.Deserialize<DateTime>(json, options);
             Assert.Equal(DateTime.Parse("2010-10-10 10:10"), dateTime);
         }
+        [Fact]
+        public void DateTimeNullableReaderTest()
+        {
+            var options = new JsonSerializerOptions();
+            options.Converters.Add(JsonCompatibleConverter.DateTimeReader);
 
+            var json = "\"2010-10-10 10:10\"";
+            var dateTime = JsonSerializer.Deserialize<DateTime?>(json, options);
+            Assert.Equal(DateTime.Parse("2010-10-10 10:10"), dateTime);
+        }
         [Fact]
         public void DateTimeOffsetReaderTest()
         {
@@ -44,6 +53,17 @@ namespace WebApiClientCore.Test.Serialization.JsonConverters
 
             var json = "\"2010-10-10 10:10\"";
             var dateTime = JsonSerializer.Deserialize<DateTimeOffset>(json, options);
+            Assert.Equal(DateTimeOffset.Parse("2010-10-10 10:10"), dateTime);
+        }
+
+        [Fact]
+        public void DateTimeOffsetNullableReaderTest()
+        {
+            var options = new JsonSerializerOptions();
+            options.Converters.Add(JsonCompatibleConverter.DateTimeReader);
+
+            var json = "\"2010-10-10 10:10\"";
+            var dateTime = JsonSerializer.Deserialize<DateTimeOffset?>(json, options);
             Assert.Equal(DateTimeOffset.Parse("2010-10-10 10:10"), dateTime);
         }
     }
