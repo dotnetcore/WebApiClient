@@ -56,16 +56,6 @@ namespace WebApiClientCore
         };
 
         /// <summary>
-        /// 返回枚举的DisplayName
-        /// </summary>
-        /// <param name="header">请求头枚举</param>
-        /// <returns></returns>
-        private static string GetHeaderName(this HttpRequestHeader header)
-        {
-            return cache.TryGetValue(header, out var name) ? name : header.ToString();
-        }
-
-        /// <summary>
         /// 转换为header名
         /// </summary>
         /// <param name="header">请求头枚举</param>
