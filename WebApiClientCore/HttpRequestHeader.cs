@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApiClientCore
 {
@@ -32,7 +32,7 @@ namespace WebApiClientCore
         KeepAlive = 3,
 
         /// <summary>
-        ///  Pragma 标头，指定可应用于请求/响应链上的任何代理的特定于实现的指令
+        /// Pragma 标头，指定可应用于请求/响应链上的任何代理的特定于实现的指令
         /// </summary>
         [Display(Name = "Pragma")]
         Pragma = 4,
@@ -116,7 +116,7 @@ namespace WebApiClientCore
         ContentRange = 17,
 
         /// <summary>
-        ///  Expires 标头，指定日期和时间，在此之后伴随的正文数据应视为陈旧的
+        /// Expires 标头，指定日期和时间，在此之后伴随的正文数据应视为陈旧的
         /// </summary>
         [Display(Name = "Expires")]
         Expires = 18,
