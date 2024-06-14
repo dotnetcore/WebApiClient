@@ -12,54 +12,6 @@ namespace WebApiClientCore
         /// </summary>
         private static readonly Dictionary<HttpRequestHeader, string> cache = new()
         {
-            [HttpRequestHeader.CacheControl] = nameof(HttpRequestHeader.CacheControl),
-            [HttpRequestHeader.Connection] = nameof(HttpRequestHeader.Connection),
-            [HttpRequestHeader.Date] = nameof(HttpRequestHeader.Date),
-            [HttpRequestHeader.KeepAlive] = nameof(HttpRequestHeader.KeepAlive),
-            [HttpRequestHeader.Pragma] = nameof(HttpRequestHeader.Pragma),
-            [HttpRequestHeader.Trailer] = nameof(HttpRequestHeader.Trailer),
-            [HttpRequestHeader.TransferEncoding] = nameof(HttpRequestHeader.TransferEncoding),
-            [HttpRequestHeader.Upgrade] = nameof(HttpRequestHeader.Upgrade),
-            [HttpRequestHeader.Via] = nameof(HttpRequestHeader.Via),
-            [HttpRequestHeader.Warning] = nameof(HttpRequestHeader.Warning),
-            [HttpRequestHeader.Allow] = nameof(HttpRequestHeader.Allow),
-            [HttpRequestHeader.ContentLength] = nameof(HttpRequestHeader.ContentLength),
-            [HttpRequestHeader.ContentType] = nameof(HttpRequestHeader.ContentType),
-            [HttpRequestHeader.ContentEncoding] = nameof(HttpRequestHeader.ContentEncoding),
-            [HttpRequestHeader.ContentLanguage] = nameof(HttpRequestHeader.ContentLanguage),
-            [HttpRequestHeader.ContentLocation] = nameof(HttpRequestHeader.ContentLocation),
-            [HttpRequestHeader.ContentMd5] = nameof(HttpRequestHeader.ContentMd5),
-            [HttpRequestHeader.ContentRange] = nameof(HttpRequestHeader.ContentRange),
-            [HttpRequestHeader.Expires] = nameof(HttpRequestHeader.Expires),
-            [HttpRequestHeader.LastModified] = nameof(HttpRequestHeader.LastModified),
-            [HttpRequestHeader.Accept] = nameof(HttpRequestHeader.Accept),
-            [HttpRequestHeader.AcceptCharset] = nameof(HttpRequestHeader.AcceptCharset),
-            [HttpRequestHeader.AcceptEncoding] = nameof(HttpRequestHeader.AcceptEncoding),
-            [HttpRequestHeader.AcceptLanguage] = nameof(HttpRequestHeader.AcceptLanguage),
-            [HttpRequestHeader.Authorization] = nameof(HttpRequestHeader.Authorization),
-            [HttpRequestHeader.Cookie] = nameof(HttpRequestHeader.Cookie),
-            [HttpRequestHeader.Expect] = nameof(HttpRequestHeader.Expect),
-            [HttpRequestHeader.From] = nameof(HttpRequestHeader.From),
-            [HttpRequestHeader.Host] = nameof(HttpRequestHeader.Host),
-            [HttpRequestHeader.IfMatch] = nameof(HttpRequestHeader.IfMatch),
-            [HttpRequestHeader.IfModifiedSince] = nameof(HttpRequestHeader.IfModifiedSince),
-            [HttpRequestHeader.IfNoneMatch] = nameof(HttpRequestHeader.IfNoneMatch),
-            [HttpRequestHeader.IfRange] = nameof(HttpRequestHeader.IfRange),
-            [HttpRequestHeader.IfUnmodifiedSince] = nameof(HttpRequestHeader.IfUnmodifiedSince),
-            [HttpRequestHeader.MaxForwards] = nameof(HttpRequestHeader.MaxForwards),
-            [HttpRequestHeader.ProxyAuthorization] = nameof(HttpRequestHeader.ProxyAuthorization),
-            [HttpRequestHeader.Referer] = nameof(HttpRequestHeader.Referer),
-            [HttpRequestHeader.Range] = nameof(HttpRequestHeader.Range),
-            [HttpRequestHeader.Te] = nameof(HttpRequestHeader.Te),
-            [HttpRequestHeader.Translate] = nameof(HttpRequestHeader.Translate),
-            [HttpRequestHeader.UserAgent] = nameof(HttpRequestHeader.UserAgent)
-        };
-
-        /// <summary>
-        /// 请求头枚举和名称的缓存
-        /// </summary>
-        private static readonly Dictionary<HttpRequestHeader, string> displayCache = new()
-        {
             [HttpRequestHeader.CacheControl] = "Cache-Control",
             [HttpRequestHeader.Connection] = "Connection",
             [HttpRequestHeader.Date] = "Date",
@@ -110,7 +62,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         private static string GetHeaderName(this HttpRequestHeader header)
         {
-            return displayCache.TryGetValue(header, out var name) ? name : header.ToString();
+            return cache.TryGetValue(header, out var name) ? name : header.ToString();
         }
 
         /// <summary>
