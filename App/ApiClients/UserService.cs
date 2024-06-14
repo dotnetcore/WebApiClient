@@ -27,17 +27,15 @@ namespace App.Clients
             };
 
             // 上传的文件
-            var file = new FormDataFile("文件TextFile.txt");
+            var file = new FormDataFile("TextFile.txt");
 
             var response = await userApi.GetAsync(account: "get1");
-
             var @string = await userApi.GetAsStringAsync(account: "get2");
-            var jsonText = await userApi.GetExpectJsonAsync(account: "json");
-            var xmlText = await this.userApi.GetExpectXmlAsync(account: "xml");
-
             var byteArray = await userApi.GetAsByteArrayAsync(account: "get3");
             var stream = await userApi.GetAsStreamAsync(account: "get4");
             var model = await userApi.GetAsModelAsync(account: "get5");
+            var jsonUser = await userApi.GetExpectJsonAsync(account: "json");
+            var xmlUser = await this.userApi.GetExpectXmlAsync(account: "xml");
 
             var post1 = await userApi.PostByJsonAsync(user);
             var post2 = await userApi.PostByXmlAsync(user);
