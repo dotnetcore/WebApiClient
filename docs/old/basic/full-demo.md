@@ -1,8 +1,8 @@
-﻿# 8、完整接口声明示例
+﻿# 完整接口声明示例
 
 本示例的接口为swagger官方的v2/swagger.json，参见swagger官网接口，对于swagger文档，可以使用WebApiClient.Tools.Swagger工具生成客户端代码。
 
-## 8.1 IPetApi
+## IPetApi
 
 ```csharp
 using System;
@@ -95,7 +95,7 @@ namespace petstore.swagger
 }
 ```
 
-## 8.2 IUserApi
+## IUserApi
 
 ```csharp
 using System;

@@ -10,18 +10,14 @@
 
 ## 简介
 
-WebApiClient有两个版本
+WebApiClient 有两个版本
 
-+ `WebApiclientCore` 基于`.NET Standard2.1`重新设计的新版本，与全新的`依赖注入`、`配置`、`选项`、`日志`等重新设计过的.NET抽象Api完美契合
-+ `WebApiClient.JIT`、`WebApiClient.AOT` 基于`.NET Standard2.0`的旧版本(额外支持`.NET Framework 4.5+`)，支持`.NET Core 2.0+`,在老版本的.NET上亦能独当一面
-+ [QQ群 825135345](<https://shang.qq.com/wpa/qunwpa?idkey=c6df21787c9a774ca7504a954402c9f62b6595d1e63120eabebd6b2b93007410>)进群时请注明**WebApiClient**，在咨询问题之前，请先认真阅读以下剩余的文档，避免消耗作者不必要的重复解答时间。
-+ 反馈问题请前往 [https://github.com/dotnetcore/WebApiClient/issues](https://github.com/dotnetcore/WebApiClient/issues)
+### WebApiclientCore
+`WebApiclientCore` 基于`.NET Standard2.1`重新设计的新版本，与全新的`依赖注入`、`配置`、`选项`、`日志`等重新设计过的.NET 抽象 Api 完美契合，欢迎您使用、提问、贡献代码、提供创意。
+### WebApiClient
+`WebApiClient.JIT`、`WebApiClient.AOT` 基于`.NET Standard2.0`的旧版本(额外支持`.NET Framework 4.5+`)，支持`.NET Core 2.0+`,在老版本的.NET 上亦能独当一面,但我们不会继续更新它。
 
-## 特性
-
-+ 支持编译时代理类生成包，提高运行时性能和兼容性
-+ 支持OAuth2与token管理扩展包，方便实现身份认证和授权
-+ 支持Json.Net扩展包，提供灵活的Json序列化和反序列化
-+ 支持JsonRpc调用扩展包，支持使用JsonRpc协议进行远程过程调用
-+ 支持将本地或远程OpenApi文档解析生成WebApiClientCore接口代码的dotnet tool，简化接口声明的工作量
-+ 提供接口声明的语法分析与提示，帮助开发者避免使用不当的语法
+## 服务渠道
+1. QQ 群 [825135345](https://shang.qq.com/wpa/qunwpa?idkey=c6df21787c9a774ca7504a954402c9f62b6595d1e63120eabebd6b2b93007410) 进群时请注明 **WebApiClient**
+   
+2. 反馈问题请前往 [https://github.com/dotnetcore/WebApiClient/issues](https://github.com/dotnetcore/WebApiClient/issues)

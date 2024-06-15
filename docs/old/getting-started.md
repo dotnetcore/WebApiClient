@@ -1,13 +1,13 @@
 ﻿# 快速开始
 
-## 1 Nuget包
+## Nuget包
 
 | 包名 | 描述 | Nuget |
 ---|---|--|
 | WebApiClient.JIT | 适用于非AOT编译的所有平台，稳定性好 | [![NuGet](https://buildstats.info/nuget/WebApiClient.JIT)](https://www.nuget.org/packages/WebApiClient.JIT) |
 | WebApiClient.AOT | 适用于所有平台，包括IOS和UWP，复杂依赖项目可能编译不通过 | [![NuGet](https://buildstats.info/nuget/WebApiClient.AOT)](https://www.nuget.org/packages/WebApiClient.AOT) |
 
-## 2. Http请求
+## Http请求
 >
 > 接口的声明
 
