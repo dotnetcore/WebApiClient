@@ -22,7 +22,7 @@ namespace WebApiClientCore.Attributes
         /// <summary>
         /// 获取缓存键的请求头名称
         /// </summary>
-        protected string[] IncludeHeaderNames { get; private set; } = Array.Empty<string>();
+        protected string[] IncludeHeaderNames { get; private set; } = [];
 
         /// <summary>
         /// 获取或设置连同作为缓存键的请求头名称

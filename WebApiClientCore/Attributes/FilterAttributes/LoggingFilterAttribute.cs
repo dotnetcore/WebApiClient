@@ -104,8 +104,8 @@ namespace WebApiClientCore.Attributes
                 return null;
             }
 
-            return request.Content is ICustomHttpContentConvertable convertable
-                ? await convertable.ToCustomHttpContext().ReadAsStringAsync().ConfigureAwait(false)
+            return request.Content is ICustomHttpContentConvertable conversable
+                ? await conversable.ToCustomHttpContext().ReadAsStringAsync().ConfigureAwait(false)
                 : await request.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 

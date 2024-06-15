@@ -18,9 +18,9 @@ namespace WebApiClientCore.Implementations
             var actionInvoker = this.CreateDefaultActionInvoker(actionDescriptor);
             if (actionDescriptor.Return.ReturnType.IsInheritFrom<Task>() == false)
             {
-                if (actionInvoker is IITaskReturnConvertable convertable)
+                if (actionInvoker is IITaskReturnConvertable conversable)
                 {
-                    actionInvoker = convertable.ToITaskReturnActionInvoker();
+                    actionInvoker = conversable.ToITaskReturnActionInvoker();
                 }
             }
             return actionInvoker;

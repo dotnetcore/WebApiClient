@@ -58,7 +58,7 @@ namespace WebApiClientCore
             {
                 throw new ArgumentOutOfRangeException(nameof(maxCount));
             }
-            return new AcitonRetryTask<TResult>(async () => await task, maxCount, delay);
+            return new ActionRetryTask<TResult>(async () => await task, maxCount, delay);
         }
 
         /// <summary>
@@ -84,11 +84,9 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static IHandleTask<TResult> Handle<TResult>(this ITask<TResult> task)
         {
-            if (task == null)
-            {
-                throw new ArgumentNullException(nameof(task));
-            }
-            return new ActionHandleTask<TResult>(async () => await task);
+            return task == null 
+                ? throw new ArgumentNullException(nameof(task)) 
+                : (IHandleTask<TResult>)new ActionHandleTask<TResult>(async () => await task);
         }
     }
 }

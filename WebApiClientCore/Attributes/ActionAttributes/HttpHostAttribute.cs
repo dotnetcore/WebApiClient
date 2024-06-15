@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 表示请求服务http绝对完整主机域名
-    /// 例如http://www.abc.com/
+    /// 表示请求服务绝对完整主机域名
+    /// 例如 http://www.abc.com/
     /// </summary>
     [DebuggerDisplay("Host = {Host}")]
     public class HttpHostAttribute : HttpHostBaseAttribute
@@ -17,9 +17,9 @@ namespace WebApiClientCore.Attributes
         public Uri Host { get; }
 
         /// <summary>
-        /// 请求服务http绝对完整主机域名      
+        /// 请求服务绝对完整主机域名      
         /// </summary>
-        /// <param name="host">例如http://www.abc.com</param>
+        /// <param name="host">例如 http://www.abc.com </param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="UriFormatException"></exception>
         public HttpHostAttribute(string host)

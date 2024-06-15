@@ -5,7 +5,7 @@ using System.Net.Http.Headers;
 namespace WebApiClientCore.HttpContents
 {
     /// <summary>
-    /// 表示form-data表单
+    /// 表示 multipart/form-data 表单
     /// </summary>
     public class FormDataContent : MultipartContent, ICustomHttpContentConvertable
     {
@@ -20,7 +20,7 @@ namespace WebApiClientCore.HttpContents
         public static string MediaType => "multipart/form-data";
 
         /// <summary>
-        /// form-data表单
+        /// multipart/form-data 表单
         /// </summary>
         public FormDataContent()
             : this(Guid.NewGuid().ToString())
@@ -28,7 +28,7 @@ namespace WebApiClientCore.HttpContents
         }
 
         /// <summary>
-        /// form-data表单
+        /// multipart/form-data 表单
         /// </summary>
         /// <param name="boundary">分隔符</param>
         public FormDataContent(string boundary)
@@ -41,7 +41,7 @@ namespace WebApiClientCore.HttpContents
         }
 
         /// <summary>
-        /// 添加httpContent
+        /// 添加 httpContent
         /// </summary>
         /// <param name="content"></param>
         public override void Add(HttpContent content)
@@ -51,7 +51,7 @@ namespace WebApiClientCore.HttpContents
         }
 
         /// <summary>
-        /// 转换为自定义HttpConent的HttpContent
+        /// 转换为自定义内容的HttpContent
         /// </summary>
         /// <returns></returns>
         public HttpContent ToCustomHttpContext()
@@ -59,9 +59,9 @@ namespace WebApiClientCore.HttpContents
             var customHttpContent = new FormDataContent(this.boundary);
             foreach (var httpContent in this)
             {
-                if (httpContent is ICustomHttpContentConvertable convertable)
+                if (httpContent is ICustomHttpContentConvertable conversable)
                 {
-                    customHttpContent.Add(convertable.ToCustomHttpContext());
+                    customHttpContent.Add(conversable.ToCustomHttpContext());
                 }
                 else
                 {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 使用KeyValueSerializer序列化参数值得到的键值对作为x-www-form-urlencoded表单
+    /// 使用KeyValueSerializer序列化参数值得到的键值对作为 x-www-form-urlencoded 表单
     /// </summary>
     public class FormContentAttribute : HttpContentAttribute, ICollectionFormatable
     {
@@ -15,7 +15,7 @@ namespace WebApiClientCore.Attributes
         public CollectionFormat CollectionFormat { get; set; } = CollectionFormat.Multi;
 
         /// <summary>
-        /// 设置参数到http请求内容
+        /// 设置参数到 http 请求内容
         /// </summary>
         /// <param name="context">上下文</param>
         [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
@@ -27,7 +27,7 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 序列化参数为keyValue
+        /// 序列化参数为 keyValue 集合
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>

@@ -10,7 +10,7 @@ using WebApiClientCore.Internals;
 namespace WebApiClientCore.HttpContents
 {
     /// <summary>
-    /// 表示utf8的BufferContent
+    /// 表示 utf8 的BufferContent
     /// </summary>
     public class BufferContent : HttpContent, IBufferWriter<byte>
     {

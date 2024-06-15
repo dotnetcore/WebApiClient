@@ -68,11 +68,7 @@ namespace WebApiClientCore
             params object?[] args)
         {
             var instance = Activator.CreateInstance(type, args);
-            if (instance == null)
-            {
-                throw new TypeInstanceCreateException(type);
-            }
-            return (T)instance;
+            return instance == null ? throw new TypeInstanceCreateException(type) : (T)instance;
         }
 
         /// <summary>

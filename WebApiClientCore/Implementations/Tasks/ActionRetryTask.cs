@@ -8,7 +8,7 @@ namespace WebApiClientCore.Implementations.Tasks
     /// 表示支持重试的Api请求任务
     /// </summary>
     /// <typeparam name="TResult">结果类型</typeparam>
-    sealed class AcitonRetryTask<TResult> : TaskBase<TResult>, IRetryTask<TResult>
+    sealed class ActionRetryTask<TResult> : TaskBase<TResult>, IRetryTask<TResult>
     {
         /// <summary>
         /// 请求任务创建的委托
@@ -32,7 +32,7 @@ namespace WebApiClientCore.Implementations.Tasks
         /// <param name="maxRetryCount">最大尝试次数</param>
         /// <param name="retryDelay">各次重试的延时时间</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public AcitonRetryTask(Func<Task<TResult>> invoker, int maxRetryCount, Func<int, TimeSpan>? retryDelay)
+        public ActionRetryTask(Func<Task<TResult>> invoker, int maxRetryCount, Func<int, TimeSpan>? retryDelay)
         {
             if (maxRetryCount < 1)
             {
@@ -54,7 +54,7 @@ namespace WebApiClientCore.Implementations.Tasks
             {
                 try
                 {
-                    await this.DelayBeforRetry(i).ConfigureAwait(false);
+                    await this.DelayBeforeRetry(i).ConfigureAwait(false);
                     return await this.invoker.Invoke().ConfigureAwait(false);
                 }
                 catch (RetryMarkException ex)
@@ -71,7 +71,7 @@ namespace WebApiClientCore.Implementations.Tasks
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        private async Task DelayBeforRetry(int index)
+        private async Task DelayBeforeRetry(int index)
         {
             if (index == 0 || this.retryDelay == null)
             {
@@ -116,7 +116,7 @@ namespace WebApiClientCore.Implementations.Tasks
         /// 当捕获到异常时进行Retry
         /// </summary>
         /// <typeparam name="TException">异常类型</typeparam>
-        /// <param name="predicate">返回true才Retry</param>
+        /// <param name="predicate">返回 true 才Retry</param>
         /// <returns></returns>
         public IRetryTask<TResult> WhenCatch<TException>(Func<TException, bool> predicate) where TException : Exception
         {
@@ -149,7 +149,7 @@ namespace WebApiClientCore.Implementations.Tasks
         /// 当捕获到异常时进行Retry
         /// </summary>
         /// <typeparam name="TException">异常类型</typeparam>
-        /// <param name="predicate">返回true才Retry</param>
+        /// <param name="predicate">返回 true 才Retry</param>
         /// <returns></returns>
         public IRetryTask<TResult> WhenCatchAsync<TException>(Func<TException, Task<bool>> predicate) where TException : Exception
         {
@@ -168,7 +168,7 @@ namespace WebApiClientCore.Implementations.Tasks
                     throw;
                 }
             }
-            return new AcitonRetryTask<TResult>(newInvoker, this.maxRetryCount, this.retryDelay);
+            return new ActionRetryTask<TResult>(newInvoker, this.maxRetryCount, this.retryDelay);
         }
 
         /// <summary>
@@ -213,7 +213,7 @@ namespace WebApiClientCore.Implementations.Tasks
                 return result;
             }
 
-            return new AcitonRetryTask<TResult>(newInvoker, this.maxRetryCount, this.retryDelay);
+            return new ActionRetryTask<TResult>(newInvoker, this.maxRetryCount, this.retryDelay);
         }
 
         /// <summary>

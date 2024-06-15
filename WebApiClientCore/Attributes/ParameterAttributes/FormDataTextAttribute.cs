@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 表示参数值作为multipart/form-data表单的一个文本项
+    /// 表示参数值作为 multipart/form-data 表单的一个文本项
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method | AttributeTargets.Parameter, AllowMultiple = true, Inherited = true)]
     public partial class FormDataTextAttribute : IApiParameterAttribute
     {
         /// <summary>
-        /// 表示参数值作为multipart/form-data表单的一个文本项
+        /// 表示参数值作为 multipart/form-data 表单的一个文本项
         /// </summary>
         [AttributeCtorUsage(AttributeTargets.Parameter)]
         public FormDataTextAttribute()

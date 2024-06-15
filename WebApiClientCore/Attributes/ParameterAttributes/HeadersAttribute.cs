@@ -12,7 +12,7 @@ namespace WebApiClientCore.Attributes
     {
         /// <summary>
         /// 获取或设置是否将请求名的_转换为-
-        /// 默认为true
+        /// 默认为 true
         /// </summary>
         public bool UnderlineToMinus { get; set; } = true;
 

@@ -15,7 +15,7 @@ namespace WebApiClientCore.Serialization
         private static readonly XmlWriterSettings writerSettings = new();
 
         /// <summary>
-        /// 将对象序列化为xml文本
+        /// 将对象序列化为Xml文本
         /// </summary>
         /// <param name="obj">对象</param>
         /// <param name="options">配置选项</param> 
@@ -37,7 +37,7 @@ namespace WebApiClientCore.Serialization
         }
 
         /// <summary>
-        /// 将xml文本反序列化对象
+        /// 将Xml文本反序列化对象
         /// </summary>
         /// <param name="xml">xml文本内容</param>
         /// <param name="objType">对象类型</param>

@@ -7,7 +7,7 @@ using WebApiClientCore.Internals;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 表示json内容的结果特性
+    /// 表示 json 内容的结果特性
     /// </summary>
     public class JsonReturnAttribute : ApiReturnAttribute
     {
@@ -17,7 +17,7 @@ namespace WebApiClientCore.Attributes
         private static readonly string textJson = "text/json";
 
         /// <summary>
-        /// 问题描述json
+        /// 问题描述 json
         /// </summary>
         private static readonly string problemJson = "application/problem+json";
 
@@ -40,7 +40,7 @@ namespace WebApiClientCore.Attributes
 
         /// <summary>
         /// 指示响应的ContentType与AcceptContentType是否匹配
-        /// 返回false则调用下一个ApiReturnAttribute来处理响应结果
+        /// 返回 false 则调用下一个ApiReturnAttribute来处理响应结果
         /// </summary>
         /// <param name="responseContentType">响应的ContentType</param>
         /// <returns></returns>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace WebApiClientCore.HttpMessageHandlers
 {
     /// <summary>
-    /// 表示cookie授权验证的抽象http消息处理程序
+    /// 表示 cookie 授权验证的抽象 http 消息处理程序
     /// </summary>
     public abstract class CookieAuthorizationHandler : AuthorizationHandler
     {

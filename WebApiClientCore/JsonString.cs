@@ -20,7 +20,7 @@ namespace WebApiClientCore
 
     /// <summary>
     /// 表示Json字符串
-    /// 该字符串为Value对象的json文本
+    /// 该字符串为Value对象的 json 文本
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public sealed class JsonString<T> : IJsonString

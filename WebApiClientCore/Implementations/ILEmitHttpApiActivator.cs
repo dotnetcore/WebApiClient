@@ -74,7 +74,7 @@ namespace WebApiClientCore.Implementations
         [RequiresDynamicCode("Calls System.Reflection.Emit.AssemblyBuilder.DefineDynamicAssembly(AssemblyName, AssemblyBuilderAccess)")]
         private static Type BuildProxyType(MethodInfo[] apiMethods)
         {
-            // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口            
+            // 接口的实现在动态程序集里，所以接口必须为 public 修饰才可以创建代理类并实现此接口            
             var interfaceType = typeof(THttpApi);
             if (interfaceType.IsVisible == false)
             {
@@ -196,10 +196,10 @@ namespace WebApiClientCore.Implementations
                     iL.Emit(OpCodes.Stelem_Ref);
                 }
 
-                // 加载arguments参数
+                // 加载 arguments 参数
                 iL.Emit(OpCodes.Ldloc, arguments);
 
-                // Intercep(actionInvoker, arguments)
+                // Intercept(actionInvoker, arguments)
                 iL.Emit(OpCodes.Callvirt, interceptMethod);
 
                 if (actionMethod.ReturnType == typeof(void))

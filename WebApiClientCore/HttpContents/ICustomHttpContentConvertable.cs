@@ -3,7 +3,7 @@
 namespace WebApiClientCore.HttpContents
 {
     /// <summary>
-    /// 定义支持转换为自定义HttpConent的接口
+    /// 定义支持转换为自定义HttpContent的接口
     /// </summary>
     interface ICustomHttpContentConvertable
     {

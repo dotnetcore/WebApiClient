@@ -1,7 +1,7 @@
 ﻿namespace System.Net.Http
 {
     /// <summary>
-    /// 表示http进度
+    /// 表示 http 进度
     /// </summary>
     public class HttpProgress
     {

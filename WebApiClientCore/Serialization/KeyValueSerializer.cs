@@ -57,7 +57,7 @@ namespace WebApiClientCore.Serialization
 
             if (obj is IEnumerable<KeyValuePair<string, string>> keyValues)
             {
-                // 排除字典类型，字典类型要经过json序列化
+                // 排除字典类型，字典类型要经过Json序列化
                 if (objType.IsInheritFrom<IDictionary>() == false)
                 {
                     // key的值不经过PropertyNamingPolicy转换，保持原始值
@@ -78,7 +78,7 @@ namespace WebApiClientCore.Serialization
         /// <returns></returns>
         [RequiresDynamicCode("JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use System.Text.Json source generation for native AOT applications.")]
         [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
-        private static IList<KeyValue> GetKeyValueList(string key, object obj, Type objType, KeyValueSerializerOptions options)
+        private static List<KeyValue> GetKeyValueList(string key, object obj, Type objType, KeyValueSerializerOptions options)
         {
             var jsonOptions = options.GetJsonSerializerOptions();
             using var bufferWriter = new RecyclableBufferWriter<byte>();
@@ -103,12 +103,12 @@ namespace WebApiClientCore.Serialization
         }
 
         /// <summary>
-        /// 获取shortName键值对
+        /// 获取ShortName键值对
         /// </summary>
         /// <param name="key"></param>
         /// <param name="reader"></param>
         /// <returns></returns>
-        private static IList<KeyValue> GetShortNameKeyValueList(string key, ref Utf8JsonReader reader)
+        private static List<KeyValue> GetShortNameKeyValueList(string key, ref Utf8JsonReader reader)
         {
             var list = new List<KeyValue>();
             while (reader.Read())
@@ -150,13 +150,13 @@ namespace WebApiClientCore.Serialization
         }
 
         /// <summary>
-        /// 获取fullName键值对
+        /// 获取FullName键值对
         /// </summary>
         /// <param name="key"></param>
         /// <param name="reader"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        private static IList<KeyValue> GetFullNameKeyValueList(string key, ref Utf8JsonReader reader, KeyNamingOptions options)
+        private static List<KeyValue> GetFullNameKeyValueList(string key, ref Utf8JsonReader reader, KeyNamingOptions options)
         {
             using var doc = JsonDocument.ParseValue(ref reader);
             var root = doc.RootElement;

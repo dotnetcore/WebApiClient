@@ -70,7 +70,7 @@ namespace WebApiClientCore.Implementations
         /// 是否为简单类型
         /// 这些类型缺省特性时仍然使用PathQueryAttribute
         /// </summary>
-        /// <param name="realType">真实类型，非nullable</param>
+        /// <param name="realType">真实类型，非 nullable</param>
         /// <returns></returns>
         protected virtual bool IsSimpleType(Type realType)
         {

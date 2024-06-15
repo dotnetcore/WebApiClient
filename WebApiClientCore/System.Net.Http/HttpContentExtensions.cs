@@ -57,7 +57,7 @@ namespace System.Net.Http
         }
 
         /// <summary>
-        /// 确保httpContent的内容未被缓存
+        /// 确保HttpContent的内容未被缓存
         /// 已被缓存则抛出HttpContentBufferedException
         /// </summary>
         /// <param name="httpContent"></param>
@@ -71,7 +71,7 @@ namespace System.Net.Http
         }
 
         /// <summary>
-        /// 读取为二进制数组并转换为utf8编码
+        /// 读取为二进制数组并转换为 utf8 编码
         /// </summary>
         /// <param name="httpContent"></param>
         /// <exception cref="ArgumentException"></exception>

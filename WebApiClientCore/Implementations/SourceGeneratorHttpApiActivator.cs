@@ -34,7 +34,7 @@ namespace WebApiClientCore.Implementations
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ProxyTypeCreateException"></exception>
-        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2077", Justification = "类型proxyClassType已使用ModuleInitializer和DynamicDependency来阻止被裁剪")]
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2077", Justification = "类型 proxyClassType 已使用ModuleInitializer和DynamicDependency来阻止被裁剪")]
         public SourceGeneratorHttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
         {
             var httpApiType = typeof(THttpApi);
@@ -88,7 +88,7 @@ namespace WebApiClientCore.Implementations
                 throw new ProxyTypeException(httpApiType, message);
             }
 
-            // 按照Index特征对apiMethods进行排序
+            // 按照 Index 特征对 apiMethods 进行排序
             return from a in apiMethods
                    join c in classMethods
                    on a equals c

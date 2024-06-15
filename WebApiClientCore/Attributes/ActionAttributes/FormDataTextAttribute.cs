@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 表示参数值作为multipart/form-data表单的一个文本项
+    /// 表示参数值作为 multipart/form-data 表单的一个文本项
     /// </summary>
     public partial class FormDataTextAttribute : ApiActionAttribute
     {
@@ -19,7 +19,7 @@ namespace WebApiClientCore.Attributes
         private readonly string? value;
 
         /// <summary>
-        /// 表示name和value写入multipart/form-data表单
+        /// 表示 name 和 value 写入 multipart/form-data 表单
         /// </summary>
         /// <param name="name">字段名称</param>
         /// <param name="value">字段的值</param>

@@ -57,7 +57,7 @@ namespace WebApiClientCore.Internals
                 value = Uri.EscapeDataString(value);
             }
 
-            var newUri = uriString.RepaceIgnoreCase($"{{{name}}}", value, out replaced);
+            var newUri = uriString.ReplaceIgnoreCase($"{{{name}}}", value, out replaced);
             return replaced ? new UriValue(newUri) : this;
         }
 
@@ -71,7 +71,7 @@ namespace WebApiClientCore.Internals
         {
             var uriSpan = this.uriString.AsSpan();
             var fragmentSpan = GetFragment(uriSpan);
-            var baseSpan = uriSpan.Slice(0, uriSpan.Length - fragmentSpan.Length).TrimEnd('?').TrimEnd('&');
+            var baseSpan = uriSpan[..^fragmentSpan.Length].TrimEnd('?').TrimEnd('&');
             var concat = baseSpan.LastIndexOf('?') < 0 ? '?' : '&';
             var nameSpan = Uri.EscapeDataString(name);
             var valueSpan = string.IsNullOrEmpty(value)
@@ -105,18 +105,14 @@ namespace WebApiClientCore.Internals
         }
 
         /// <summary>
-        /// 返回uriString是否不带path
+        /// 返回 uriString是否不带 path
         /// </summary>
-        /// <param name="uriSpan"></param>
+        /// <param name="uriString"></param>
         /// <returns></returns>
-        private static bool IsEmptyPath(ReadOnlySpan<char> uriSpan)
+        private static bool IsEmptyPath(ReadOnlySpan<char> uriString)
         {
-            var index = uriSpan.IndexOf("://");
-            if (index < 0)
-            {
-                return false;
-            }
-            return uriSpan[(index + 3)..].IndexOf('/') < 0;
+            var index = uriString.IndexOf("://");
+            return index >= 0 && uriString[(index + 3)..].IndexOf('/') < 0;
         }
 
         /// <summary>

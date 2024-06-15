@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 表示http请求方法描述特性
+    /// 表示 http 请求方法描述特性
     /// </summary>
     [DebuggerDisplay("Method = {Method}")]
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]

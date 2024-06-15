@@ -58,11 +58,7 @@ namespace WebApiClientCore
         /// <returns></returns>
         public static IReadOnlyList<T> ToReadOnlyList<T>(this IEnumerable<T> source)
         {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-            return source.ToList().AsReadOnly();
+            return source == null ? throw new ArgumentNullException(nameof(source)) : (IReadOnlyList<T>)source.ToList().AsReadOnly();
         }
     }
 }

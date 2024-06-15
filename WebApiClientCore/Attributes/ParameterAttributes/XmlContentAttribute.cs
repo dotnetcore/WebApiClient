@@ -7,7 +7,7 @@ using WebApiClientCore.HttpContents;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 使用XmlSerializer序列化参数值得到的xml文本作为application/xml请求
+    /// 使用XmlSerializer序列化参数值得到的 xml 文本作为 application/xml 请求
     /// </summary>
     public class XmlContentAttribute : HttpContentAttribute, ICharSetable
     {
@@ -27,7 +27,7 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 设置参数到http请求内容
+        /// 设置参数到 http 请求内容
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>

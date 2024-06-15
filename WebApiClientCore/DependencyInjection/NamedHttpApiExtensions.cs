@@ -11,7 +11,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class NamedHttpApiExtensions
     {
         /// <summary>
-        /// 注册http接口类型的别名
+        /// 注册 http 接口类型的别名
         /// </summary>
         /// <param name="services"></param>
         /// <param name="name">接口别名</param>
@@ -26,7 +26,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// 获取builder关联的HttpApi类型
+        /// 获取 builder 关联的HttpApi类型
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>

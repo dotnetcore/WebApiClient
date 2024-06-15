@@ -57,7 +57,7 @@ namespace WebApiClientCore
         };
 
         /// <summary>
-        /// 转换为header名
+        /// 转换为 header 名
         /// </summary>
         /// <param name="header">请求头枚举</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>

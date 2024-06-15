@@ -24,7 +24,7 @@ namespace WebApiClientCore.Internals
         }
 
         /// <summary>
-        /// 添加char
+        /// 添加 char
         /// </summary>
         /// <param name="value"></param> 
         public void Append(char value)
@@ -40,7 +40,7 @@ namespace WebApiClientCore.Internals
         }
 
         /// <summary>
-        /// 添加chars
+        /// 添加 chars
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -87,7 +87,7 @@ namespace WebApiClientCore.Internals
         /// <returns></returns>
         public override readonly string ToString()
         {
-            return this.chars.Slice(0, this.index).ToString();
+            return this.chars[..this.index].ToString();
         }
     }
 }

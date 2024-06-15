@@ -99,7 +99,7 @@ namespace WebApiClientCore
         }
 
         /// <summary>
-        /// 获取指向api方法名的日志
+        /// 获取指向 api 方法名的日志
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>

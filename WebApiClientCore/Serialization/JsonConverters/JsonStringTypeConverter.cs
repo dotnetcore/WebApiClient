@@ -46,7 +46,7 @@ namespace WebApiClientCore.Serialization.JsonConverters
         private class Converter<TJsonString> : JsonConverter<TJsonString> where TJsonString : IJsonString
         {
             /// <summary>
-            /// 将json文本反序列化JsonString的Value的类型
+            /// 将Json文本反序列化JsonString的Value的类型
             /// 并构建JsonString类型并返回
             /// </summary>
             /// <param name="reader"></param>
@@ -65,7 +65,7 @@ namespace WebApiClientCore.Serialization.JsonConverters
             }
 
             /// <summary>
-            /// 将JsonString的value序列化文本，并作为json的某字段值
+            /// 将JsonString的Value序列化文本，并作为Json的某字段值
             /// </summary>
             /// <param name="writer"></param>
             /// <param name="value"></param>

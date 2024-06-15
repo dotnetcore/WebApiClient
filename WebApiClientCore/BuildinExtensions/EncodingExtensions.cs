@@ -22,7 +22,7 @@ namespace WebApiClientCore
             var decoder = srcEncoding.GetDecoder();
             var charCount = decoder.GetCharCount(buffer, false);
             var charArray = charCount > 1024 ? ArrayPool<char>.Shared.Rent(charCount) : null;
-            var chars = charArray == null ? stackalloc char[charCount] : charArray.AsSpan().Slice(0, charCount);
+            var chars = charArray == null ? stackalloc char[charCount] : charArray.AsSpan()[..charCount];
 
             try
             {

@@ -7,7 +7,7 @@ using WebApiClientCore.Serialization;
 namespace WebApiClientCore.HttpContents
 {
     /// <summary>
-    /// 表示uft8的json内容
+    /// 表示 uft8 的 json 内容
     /// </summary>
     public class JsonContent : BufferContent
     {
@@ -17,7 +17,7 @@ namespace WebApiClientCore.HttpContents
         public static string MediaType => "application/json";
 
         /// <summary>
-        /// uft8的json内容
+        /// uft8 的 json 内容
         /// </summary> 
         public JsonContent()
             : base(MediaType)
@@ -25,7 +25,7 @@ namespace WebApiClientCore.HttpContents
         }
 
         /// <summary>
-        /// uft8的json内容
+        /// uft8 的 json 内容
         /// </summary>
         /// <param name="value">对象值</param>
         /// <param name="jsonSerializerOptions">json序列化选项</param> 

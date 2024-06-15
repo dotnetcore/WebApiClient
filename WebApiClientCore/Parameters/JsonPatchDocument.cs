@@ -18,7 +18,7 @@ namespace WebApiClientCore.Parameters
         /// <summary>
         /// 操作列表
         /// </summary>
-        private readonly List<object> operations = new();
+        private readonly List<object> operations = [];
 
         /// <summary>
         /// Add操作
@@ -98,7 +98,7 @@ namespace WebApiClientCore.Parameters
             /// 查看的内容
             /// </summary>
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-            public List<object> Oprations => this.target.operations;
+            public List<object> Operations => this.target.operations;
 
             /// <summary>
             /// 调试视图

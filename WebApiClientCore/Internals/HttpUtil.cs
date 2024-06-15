@@ -17,7 +17,7 @@ namespace WebApiClientCore.Internals
         /// <param name="str">字符串</param>
         /// <param name="encoding">编码</param>
         /// <returns></returns>
-        [return: NotNullIfNotNull("str")]
+        [return: NotNullIfNotNull(nameof(str))]
         public static string? UrlEncode(string? str, Encoding encoding)
         {
             if (string.IsNullOrEmpty(str))
@@ -29,13 +29,13 @@ namespace WebApiClientCore.Internals
             var source = str.Length > 1024 ? new byte[byteCount] : stackalloc byte[byteCount];
             encoding.GetBytes(str, source);
 
-            var destLength = 0;
-            if (UrlEncodeTest(source, ref destLength) == false)
+            var destinationLength = 0;
+            if (UrlEncodeTest(source, ref destinationLength) == false)
             {
                 return str;
             }
 
-            var destination = destLength > 1024 ? new byte[destLength] : stackalloc byte[destLength];
+            var destination = destinationLength > 1024 ? new byte[destinationLength] : stackalloc byte[destinationLength];
             UrlEncodeCore(source, destination);
             return Encoding.ASCII.GetString(destination);
         }
@@ -56,16 +56,16 @@ namespace WebApiClientCore.Internals
             var source = chars.Length > 1024 ? new byte[byteCount] : stackalloc byte[byteCount];
             Encoding.UTF8.GetBytes(chars, source);
 
-            var destLength = 0;
-            if (UrlEncodeTest(source, ref destLength) == false)
+            var destinationLength = 0;
+            if (UrlEncodeTest(source, ref destinationLength) == false)
             {
                 bufferWriter.Write(source);
             }
             else
             {
-                var destination = bufferWriter.GetSpan(destLength);
+                var destination = bufferWriter.GetSpan(destinationLength);
                 UrlEncodeCore(source, destination);
-                bufferWriter.Advance(destLength);
+                bufferWriter.Advance(destinationLength);
             }
         }
 
@@ -74,23 +74,23 @@ namespace WebApiClientCore.Internals
         /// 测试是否需要进行编码
         /// </summary>
         /// <param name="source">源</param>
-        /// <param name="destLength">编码后的长度</param> 
-        private static bool UrlEncodeTest(ReadOnlySpan<byte> source, ref int destLength)
+        /// <param name="destinationLength">编码后的长度</param> 
+        private static bool UrlEncodeTest(ReadOnlySpan<byte> source, ref int destinationLength)
         {
-            destLength = 0;
+            destinationLength = 0;
             if (source.IsEmpty == true)
             {
                 return false;
             }
 
             var cUnsafe = 0;
-            var hasSapce = false;
+            var hasSpace = false;
             for (var i = 0; i < source.Length; i++)
             {
                 var ch = (char)source[i];
                 if (ch == ' ')
                 {
-                    hasSapce = true;
+                    hasSpace = true;
                 }
                 else if (!IsUrlSafeChar(ch))
                 {
@@ -98,18 +98,18 @@ namespace WebApiClientCore.Internals
                 }
             }
 
-            destLength = source.Length + cUnsafe * 2;
-            return !(hasSapce == false && cUnsafe == 0);
+            destinationLength = source.Length + cUnsafe * 2;
+            return !(hasSpace == false && cUnsafe == 0);
         }
 
 
         /// <summary>
-        /// 将source编码到destination
+        /// 将 source 编码到 destination
         /// </summary>
         /// <param name="source">源</param>
         /// <param name="destination">目标</param>  
         private static void UrlEncodeCore(ReadOnlySpan<byte> source, Span<byte> destination)
-        {
+        { 
             var index = 0;
             for (var i = 0; i < source.Length; i++)
             {
@@ -134,7 +134,7 @@ namespace WebApiClientCore.Internals
         }
 
         /// <summary>
-        /// 是否为uri安全字符
+        /// 是否为Uri安全字符
         /// </summary>
         /// <param name="ch"></param>
         /// <returns></returns>
@@ -171,11 +171,7 @@ namespace WebApiClientCore.Internals
         private static char ToCharLower(int n)
         {
             n &= 0xF;
-            if (n > 9)
-            {
-                return (char)(n - 10 + 97);
-            }
-            return (char)(n + 48);
+            return n > 9 ? (char)(n - 10 + 97) : (char)(n + 48);
         }
     }
 }

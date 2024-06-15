@@ -4,12 +4,12 @@ using System.Net.Http.Headers;
 namespace WebApiClientCore.HttpContents
 {
     /// <summary>
-    /// 表示form-data文本内容
+    /// 表示 multipart/form-data 文本内容
     /// </summary>
     public class FormDataTextContent : StringContent
     {
         /// <summary>
-        /// form-data文本内容
+        /// multipart/form-data 文本内容
         /// </summary>     
         /// <param name="keyValue">键值对</param>
         public FormDataTextContent(KeyValue keyValue)
@@ -18,7 +18,7 @@ namespace WebApiClientCore.HttpContents
         }
 
         /// <summary>
-        /// form-data文本内容
+        /// multipart/form-data 文本内容
         /// </summary>     
         /// <param name="name">名称</param>
         /// <param name="value">文本</param>

@@ -13,7 +13,7 @@ namespace WebApiClientCore
     public static class ApiParameterContextExtensions
     {
         /// <summary>
-        /// 序列化参数值为utf8编码的Json
+        /// 序列化参数值为 utf8 编码的 json
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
@@ -49,7 +49,7 @@ namespace WebApiClientCore
         }
 
         /// <summary>
-        /// 序列化参数值为utf8编码的Json
+        /// 序列化参数值为 utf8 编码的 json
         /// </summary>
         /// <param name="context"></param>
         /// <param name="bufferWriter">buffer写入器</param>

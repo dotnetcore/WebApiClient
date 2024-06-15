@@ -5,14 +5,14 @@ namespace WebApiClientCore.Attributes
 {
     /// <summary>
     /// 表示原始类型的结果特性
-    /// 支持结果类型为string、byte[]、Stream和HttpResponseMessage
+    /// 支持结果类型为 string、byte[]、Stream 和 HttpResponseMessage
     /// </summary> 
     public sealed class RawReturnAttribute : SpecialReturnAttribute
     {
         /// <summary>
-        /// 获取或设置是否确保响应的http状态码通过IsSuccessStatusCode验证
-        /// 当值为true时，请求可能会引发HttpStatusFailureException
-        /// 默认为true
+        /// 获取或设置是否确保响应的 http 状态码通过IsSuccessStatusCode验证
+        /// 当值为 true 时，请求可能会引发HttpStatusFailureException
+        /// 默认为 true
         /// </summary>
         public bool EnsureSuccessStatusCode { get; set; } = true;
 

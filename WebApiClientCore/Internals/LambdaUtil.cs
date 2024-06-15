@@ -69,7 +69,7 @@ namespace WebApiClientCore.Internals
             var declaringType = property.DeclaringType;
             if (declaringType == null)
             {
-                throw new ArgumentNullException(nameof(property));
+                throw new ArgumentException("DeclaringType can not be null", nameof(property));
             }
 
             // (TDeclaring instance) => (propertyType)((declaringType)instance).propertyName

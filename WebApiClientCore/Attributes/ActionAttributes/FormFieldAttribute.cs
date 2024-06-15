@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 表示参数值作为x-www-form-urlencoded的字段
+    /// 表示参数值作为 x-www-form-urlencoded 的字段
     /// </summary>
     public partial class FormFieldAttribute : ApiActionAttribute
     {
@@ -19,7 +19,7 @@ namespace WebApiClientCore.Attributes
         private readonly string? value;
 
         /// <summary>
-        /// 表示name和value写入x-www-form-urlencoded表单
+        /// 表示 name 和 value 写入 x-www-form-urlencoded 表单
         /// </summary>
         /// <param name="name">字段名称</param>
         /// <param name="value">字段的值</param>

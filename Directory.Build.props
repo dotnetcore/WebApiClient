@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<Version>2.1.2</Version>
 		<Copyright>Copyright © laojiu 2017-2024</Copyright>
-		<NoWarn>IDE0057;IDE0290</NoWarn>
+		<NoWarn>IDE0290;NETSDK1138</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup>

@@ -43,26 +43,26 @@ namespace WebApiClientCore.Attributes
         public bool AllowMultiple => this.GetType().IsAllowMultiple();
 
         /// <summary>
-        /// 获取或设置是否确保响应的http状态码通过IsSuccessStatusCode验证
-        /// 当值为true时，请求可能会引发HttpStatusFailureException
-        /// 默认为true
+        /// 获取或设置是否确保响应的 http 状态码通过IsSuccessStatusCode验证
+        /// 当值为 true 时，请求可能会引发HttpStatusFailureException
+        /// 默认为 true
         /// </summary>
         public bool EnsureSuccessStatusCode { get; set; } = true;
 
         /// <summary>
-        /// 获取或设置是否确保响应的ContentType与指定的Accpet-ContentType一致
-        /// 默认为false
+        /// 获取或设置是否确保响应的ContentType与指定的 Accept-ContentType 一致
+        /// 默认为 false
         /// </summary>
         public bool EnsureMatchAcceptContentType { get; set; } = false;
 
         /// <summary>
         /// 响应内容处理的抽象特性
         /// </summary>
-        /// <param name="accpetContentType">收受的内容类型</param>
+        /// <param name="acceptContentType">收受的内容类型</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ApiReturnAttribute(MediaTypeWithQualityHeaderValue accpetContentType)
+        public ApiReturnAttribute(MediaTypeWithQualityHeaderValue acceptContentType)
         {
-            this.AcceptContentType = accpetContentType ?? throw new ArgumentNullException(nameof(accpetContentType));
+            this.AcceptContentType = acceptContentType ?? throw new ArgumentNullException(nameof(acceptContentType));
         }
 
         /// <summary>
@@ -98,10 +98,10 @@ namespace WebApiClientCore.Attributes
                 return;
             }
 
-            var contenType = response.Content.Headers.ContentType;
-            if (contenType != null
+            var contentType = response.Content.Headers.ContentType;
+            if (contentType != null
                 && this.EnsureMatchAcceptContentType
-                && this.IsMatchAcceptContentType(contenType) == false)
+                && this.IsMatchAcceptContentType(contentType) == false)
             {
                 return;
             }
@@ -113,7 +113,7 @@ namespace WebApiClientCore.Attributes
 
         /// <summary>
         /// 指示响应的ContentType与AcceptContentType是否匹配
-        /// 返回false则调用下一个ApiReturnAttribute来处理响应结果
+        /// 返回 false 则调用下一个ApiReturnAttribute来处理响应结果
         /// </summary>
         /// <param name="responseContentType">响应的ContentType</param>
         /// <returns></returns>
@@ -140,7 +140,7 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 验证响应消息的http状态码
+        /// 验证响应消息的 http 状态码
         /// 验证不通过则抛出指定的异常
         /// </summary>
         /// <param name="response">响应消息</param>
@@ -154,7 +154,7 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 指示http状态码是否为成功的状态码
+        /// 指示 http 状态码是否为成功的状态码
         /// </summary>
         /// <param name="statusCode">http状态码</param>
         /// <returns></returns>

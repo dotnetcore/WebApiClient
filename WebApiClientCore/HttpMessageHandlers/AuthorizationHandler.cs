@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace WebApiClientCore.HttpMessageHandlers
 {
     /// <summary>
-    /// 表示授权应用的抽象http消息处理程序
+    /// 表示授权应用的抽象 http 消息处理程序
     /// </summary>
     public abstract class AuthorizationHandler : DelegatingHandler
     {
@@ -53,7 +53,7 @@ namespace WebApiClientCore.HttpMessageHandlers
 
         /// <summary>
         /// 返回响应是否为未授权状态
-        /// 反回true则触发重试请求
+        /// 反回 true 则触发重试请求
         /// </summary>
         /// <param name="response">响应消息</param> 
         protected virtual Task<bool> IsUnauthorizedAsync(HttpResponseMessage response)

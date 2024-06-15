@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 表示参数值序列化为Json并作为multipart/form-data表单的一个文本项
+    /// 表示参数值序列化为 json 并作为 multipart/form-data 表单的一个文本项
     /// </summary> 
     public class JsonFormDataTextAttribute : ApiParameterAttribute
     {

@@ -9,7 +9,7 @@ namespace WebApiClientCore.Attributes
     public class RawFormContentAttribute : HttpContentAttribute
     {
         /// <summary>
-        /// 设置参数到http请求内容
+        /// 设置参数到 http 请求内容
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>

@@ -5,7 +5,7 @@ using System.Net.Http.Headers;
 namespace WebApiClientCore.HttpContents
 {
     /// <summary>
-    /// 表示form-data文件内容
+    /// 表示 multipart/form-data 文件内容
     /// </summary>
     public class FormDataFileContent : StreamContent, ICustomHttpContentConvertable
     {
@@ -15,7 +15,7 @@ namespace WebApiClientCore.HttpContents
         public static string OctetStream => "application/octet-stream";
 
         /// <summary>
-        /// form-data文件内容
+        /// multipart/form-data 文件内容
         /// </summary>
         /// <param name="stream">文件流</param>
         /// <param name="name">名称</param>
@@ -58,7 +58,7 @@ namespace WebApiClientCore.HttpContents
             /// <summary>
             /// 省略号内容
             /// </summary>
-            private static readonly byte[] content = new[] { (byte)'.', (byte)'.', (byte)'.' };
+            private static readonly byte[] content = "..."u8.ToArray();
 
             /// <summary>
             /// 省略内容的文件请求内容

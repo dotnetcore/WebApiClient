@@ -6,7 +6,7 @@ using WebApiClientCore.Serialization;
 namespace WebApiClientCore.HttpContents
 {
     /// <summary>
-    /// 表示utf8的JsonPatch内容
+    /// 表示 utf8 的JsonPatch内容
     /// </summary>
     public class JsonPatchContent : BufferContent
     {

@@ -11,7 +11,7 @@ using WebApiClientCore.Internals;
 namespace WebApiClientCore.Parameters
 {
     /// <summary>
-    /// 表示form-data的一个文件项
+    /// 表示 multipart/form-data 的一个文件项
     /// </summary>
     [DebuggerDisplay("FileName = {FileName}")]
     public class FormDataFile : IApiParameter
@@ -39,7 +39,7 @@ namespace WebApiClientCore.Parameters
         public virtual string? EncodedFileName => HttpUtil.UrlEncode(this.FileName, Encoding.UTF8);
 
         /// <summary>
-        /// form-data的一个文件项
+        /// multipart/form-data的一个文件项
         /// </summary>
         /// <param name="filePath">文件路径</param>
         public FormDataFile(string filePath)
@@ -48,7 +48,7 @@ namespace WebApiClientCore.Parameters
         }
 
         /// <summary>
-        /// form-data的一个文件项
+        /// multipart/form-data的一个文件项
         /// </summary>
         /// <param name="fileInfo">文件信息</param>
         public FormDataFile(FileInfo fileInfo)
@@ -57,7 +57,7 @@ namespace WebApiClientCore.Parameters
         }
 
         /// <summary>
-        /// form-data的一个文件项
+        /// multipart/form-data的一个文件项
         /// </summary>
         /// <param name="buffer">数据</param>
         /// <param name="fileName">文件友好名称</param>
@@ -68,7 +68,7 @@ namespace WebApiClientCore.Parameters
         }
 
         /// <summary>
-        /// form-data的一个文件项        
+        /// multipart/form-data的一个文件项        
         /// 不支持多线程并发请求
         /// 如果多次请求则要求数据流必须支持倒带读取
         /// </summary>
@@ -81,7 +81,7 @@ namespace WebApiClientCore.Parameters
         }
 
         /// <summary>
-        /// form-data的一个文件项
+        /// multipart/form-data的一个文件项
         /// </summary>
         /// <param name="streamFactory">数据流的创建委托</param>
         /// <param name="fileName">文件友好名称</param>
@@ -219,7 +219,7 @@ namespace WebApiClientCore.Parameters
 
             /// <summary>
             /// 不释放资源
-            /// 而是尝试倒带内置的stream以支持重新读取
+            /// 而是尝试倒带内置的Stream以支持重新读取
             /// </summary>
             /// <param name="disposing"></param>
             protected override void Dispose(bool disposing)

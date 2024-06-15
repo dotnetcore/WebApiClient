@@ -9,12 +9,12 @@ using WebApiClientCore.Exceptions;
 namespace WebApiClientCore.Implementations
 {
     /// <summary>
-    /// 提供http请求
+    /// 提供 http 请求
     /// </summary>
     static class ApiRequestSender
     {
         /// <summary>
-        /// 发送http请求
+        /// 发送 http 请求
         /// </summary>
         /// <param name="context"></param>
         /// <exception cref="ApiInvalidConfigException"></exception>
@@ -38,14 +38,14 @@ namespace WebApiClientCore.Implementations
         }
 
         /// <summary>
-        /// 发送http请求
+        /// 发送 http 请求
         /// </summary>
         /// <param name="context"></param>
         /// <exception cref="HttpRequestException"></exception> 
         /// <returns></returns>
         private static async Task SendCoreAsync(ApiRequestContext context)
         {
-            var actionCache = await context.GetCaheAsync().ConfigureAwait(false);
+            var actionCache = await context.GetCacheAsync().ConfigureAwait(false);
             if (actionCache != null && actionCache.Value != null)
             {
                 context.HttpContext.ResponseMessage = actionCache.Value;
@@ -69,7 +69,7 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        private static async Task<ActionCache?> GetCaheAsync(this ApiRequestContext context)
+        private static async Task<ActionCache?> GetCacheAsync(this ApiRequestContext context)
         {
             var attribute = context.ActionDescriptor.CacheAttribute;
             if (attribute == null)
@@ -184,12 +184,12 @@ namespace WebApiClientCore.Implementations
         private readonly struct CancellationTokenLinker : IDisposable
         {
             /// <summary>
-            /// 链接产生的tokenSource
+            /// 链接产生的 tokenSource
             /// </summary>
             private readonly CancellationTokenSource? tokenSource;
 
             /// <summary>
-            /// 获取token
+            /// 获取 token
             /// </summary>
             public CancellationToken Token { get; }
 

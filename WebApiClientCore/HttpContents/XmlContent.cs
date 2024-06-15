@@ -4,7 +4,7 @@ using System.Text;
 namespace WebApiClientCore.HttpContents
 {
     /// <summary>
-    /// 表示xml内容
+    /// 表示 xml 内容
     /// </summary>
     public class XmlContent : StringContent
     {

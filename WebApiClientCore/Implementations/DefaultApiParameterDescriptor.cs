@@ -67,9 +67,9 @@ namespace WebApiClientCore.Implementations
         /// 请求Api的参数描述
         /// </summary>
         /// <param name="parameter">参数信息</param>
-        /// <param name="defaultAtribute">缺省特性时使用的默认特性</param>
+        /// <param name="defaultAttribute">缺省特性时使用的默认特性</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public DefaultApiParameterDescriptor(ParameterInfo parameter, IApiParameterAttribute defaultAtribute)
+        public DefaultApiParameterDescriptor(ParameterInfo parameter, IApiParameterAttribute defaultAttribute)
         {
             if (parameter == null)
             {
@@ -92,7 +92,7 @@ namespace WebApiClientCore.Implementations
             var attributes = this.GetAttributes(parameter, parameterAttributes).ToArray();
             if (attributes.Length == 0)
             {
-                this.Attributes = new[] { defaultAtribute }.ToReadOnlyList();
+                this.Attributes = new[] { defaultAttribute }.ToReadOnlyList();
             }
             else
             {

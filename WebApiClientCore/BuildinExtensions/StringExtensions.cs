@@ -27,7 +27,7 @@ namespace WebApiClientCore
         /// <param name="newValue">替换的新值</param>
         /// <param name="replaced">是否替换成功</param> 
         /// <returns></returns>
-        public static string RepaceIgnoreCase(this string source, ReadOnlySpan<char> oldValue, ReadOnlySpan<char> newValue, out bool replaced)
+        public static string ReplaceIgnoreCase(this string source, ReadOnlySpan<char> oldValue, ReadOnlySpan<char> newValue, out bool replaced)
         {
             replaced = false;
             if (string.IsNullOrEmpty(source) || oldValue.IsEmpty)
@@ -41,9 +41,9 @@ namespace WebApiClientCore
 
             while ((index = FindIndexIgnoreCase(sourceSpan, oldValue)) > -1)
             {
-                builder.Append(sourceSpan.Slice(0, index));
+                builder.Append(sourceSpan[..index]);
                 builder.Append(newValue);
-                sourceSpan = sourceSpan.Slice(index + oldValue.Length);
+                sourceSpan = sourceSpan[(index + oldValue.Length)..];
                 replaced = true;
             }
 

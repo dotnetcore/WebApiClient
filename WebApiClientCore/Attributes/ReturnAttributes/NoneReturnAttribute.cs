@@ -37,8 +37,7 @@ namespace WebApiClientCore.Attributes
                 return true;
             }
 
-            return responseMessage.IsSuccessStatusCode
-                && responseMessage.Content.Headers.ContentLength == 0;
+            return responseMessage.IsSuccessStatusCode && responseMessage.Content.Headers.ContentLength == 0;
         }
     }
 }

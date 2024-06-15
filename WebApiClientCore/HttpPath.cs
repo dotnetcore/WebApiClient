@@ -3,14 +3,14 @@
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 表示http路径
+    /// 表示 http 路径
     /// </summary>
     public abstract class HttpPath
     {
         /// <summary>
         /// 合成Uri
         /// </summary>
-        /// <param name="baseUri">基础uri</param>
+        /// <param name="baseUri">基础 uri</param>
         /// <returns></returns>
         public abstract Uri? MakeUri(Uri? baseUri);
 

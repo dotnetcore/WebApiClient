@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 表示参数值序列化为Json并作为x-www-form-urlencoded的字段
+    /// 表示参数值序列化为 json 并作为 x-www-form-urlencoded 的字段
     /// </summary>
     public class JsonFormFieldAttribute : ApiParameterAttribute
     {

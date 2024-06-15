@@ -13,7 +13,7 @@ using WebApiClientCore.Internals;
 namespace WebApiClientCore.Implementations
 {
     /// <summary>
-    /// 表示httpApi的请求消息
+    /// 表示HttpApi的请求消息
     /// </summary>
     sealed class HttpApiRequestMessageImpl : HttpApiRequestMessage
     {
@@ -38,7 +38,7 @@ namespace WebApiClientCore.Implementations
         /// <summary>
         /// httpApi的请求消息
         /// </summary>
-        /// <param name="requestUri">请求uri</param>
+        /// <param name="requestUri">请求 uri</param>
         /// <param name="useDefaultUserAgent">请求头是否包含默认的UserAgent</param>
         public HttpApiRequestMessageImpl(Uri? requestUri, bool useDefaultUserAgent)
         {
@@ -50,7 +50,7 @@ namespace WebApiClientCore.Implementations
         }
 
         /// <summary>
-        /// 返回使用uri值合成的请求URL
+        /// 返回使用 uri 值合成的请求URL
         /// </summary> 
         /// <param name="uri">uri值</param> 
         /// <returns></returns>
@@ -71,7 +71,7 @@ namespace WebApiClientCore.Implementations
         }
 
         /// <summary>
-        /// 创建uri
+        /// 创建 uri
         /// </summary>
         /// <param name="baseUri"></param>
         /// <param name="relative"></param>
@@ -92,8 +92,8 @@ namespace WebApiClientCore.Implementations
         }
 
         /// <summary>
-        /// 创建uri
-        /// 参数值的uri是绝对uir，且只有根路径
+        /// 创建 uri
+        /// 参数值的 uri 是绝对 uir，且只有根路径
         /// </summary>
         /// <param name="absolute"></param>
         /// <param name="uri"></param>
@@ -110,7 +110,7 @@ namespace WebApiClientCore.Implementations
         }
 
         /// <summary>
-        /// 返回相对uri
+        /// 返回相对 uri
         /// </summary>
         /// <param name="uri">uri</param> 
         /// <returns></returns>
@@ -121,14 +121,14 @@ namespace WebApiClientCore.Implementations
                 return uri.OriginalString;
             }
 
-            var path = uri.OriginalString.AsSpan().Slice(uri.Scheme.Length + 3);
+            var path = uri.OriginalString.AsSpan()[(uri.Scheme.Length + 3)..];
             var index = path.IndexOf('/');
             if (index < 0)
             {
                 return "/";
             }
 
-            return path.Slice(index).ToString();
+            return path[index..].ToString();
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace WebApiClientCore.Implementations
 
         /// <summary>
         /// 添加字段到已有的Content
-        /// 要求content-type为application/x-www-form-urlencoded
+        /// 要求 content-type 为 application/x-www-form-urlencoded
         /// </summary>
         /// <param name="keyValues">键值对</param>
         /// <exception cref="NotSupportedException"></exception>
@@ -173,7 +173,7 @@ namespace WebApiClientCore.Implementations
 
         /// <summary>
         /// 添加文本内容到已有的Content
-        /// 要求content-type为multipart/form-data
+        /// 要求 content-type 为 multipart/form-data
         /// </summary>     
         /// <param name="keyValues">键值对</param>
         /// <exception cref="NotSupportedException"></exception>
@@ -198,7 +198,7 @@ namespace WebApiClientCore.Implementations
 
         /// <summary>
         /// 添加文件内容到已有的Content
-        /// 要求content-type为multipart/form-data
+        /// 要求 content-type 为 multipart/form-data
         /// </summary>
         /// <param name="stream">文件流</param>
         /// <param name="name">名称</param>
@@ -220,7 +220,7 @@ namespace WebApiClientCore.Implementations
         }
 
         /// <summary>
-        /// 确保前后的mediaType一致
+        /// 确保前后的 mediaType 一致
         /// </summary>
         /// <param name="newMediaType">新的MediaType</param>
         /// <exception cref="NotSupportedException"></exception>

@@ -26,7 +26,7 @@ namespace WebApiClientCore.Benchmarks.StringReplaces
         [Benchmark]
         public void ReplaceByCutomSpan()
         {
-            str.RepaceIgnoreCase(pattern, replacement, out var _);
+            str.ReplaceIgnoreCase(pattern, replacement, out var _);
         }
     }
 }

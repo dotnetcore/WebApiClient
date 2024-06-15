@@ -14,7 +14,7 @@ using WebApiClientCore.Serialization;
 namespace WebApiClientCore.HttpContents
 {
     /// <summary>
-    /// 表示键值对表单内容
+    /// 表示 application/x-www-form-urlencoded 表单内容
     /// </summary>
     public class FormContent : HttpContent
     {
@@ -24,7 +24,7 @@ namespace WebApiClientCore.HttpContents
         private readonly RecyclableBufferWriter<byte> bufferWriter = new();
 
         /// <summary>
-        /// 默认的http编码
+        /// 默认的 http 编码
         /// </summary>
         private static readonly Encoding httpEncoding = Encoding.GetEncoding(28591);
 
@@ -35,7 +35,7 @@ namespace WebApiClientCore.HttpContents
 
 
         /// <summary>
-        /// 键值对表单内容
+        /// application/x-www-form-urlencoded 表单内容
         /// </summary>
         public FormContent()
         {
@@ -43,7 +43,7 @@ namespace WebApiClientCore.HttpContents
         }
 
         /// <summary>
-        /// 键值对表单内容
+        /// application/x-www-form-urlencoded 表单内容
         /// </summary>
         /// <param name="keyValues">键值对</param> 
         public FormContent(IEnumerable<KeyValue> keyValues)
@@ -53,7 +53,7 @@ namespace WebApiClientCore.HttpContents
         }
 
         /// <summary>
-        /// 键值对表单内容
+        /// application/x-www-form-urlencoded 表单内容
         /// </summary>
         /// <param name="value">模型对象值</param>
         /// <param name="options">序列化选项</param>
@@ -187,7 +187,7 @@ namespace WebApiClientCore.HttpContents
         /// 从HttpContent转换得到
         /// </summary>
         /// <param name="httpContent">httpContent实例</param>
-        /// <param name="disposeHttpContent">是否释放httpContent</param>
+        /// <param name="disposeHttpContent">是否释放 httpContent</param>
         /// <returns></returns>
         public static async Task<FormContent> ParseAsync(HttpContent? httpContent, bool disposeHttpContent = true)
         {

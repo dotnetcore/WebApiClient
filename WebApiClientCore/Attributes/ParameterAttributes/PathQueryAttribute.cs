@@ -8,7 +8,7 @@ using WebApiClientCore.Internals;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 使用KeyValueSerializer序列化参数值得到的键值对作为url路径参数或query参数的特性
+    /// 使用KeyValueSerializer序列化参数值得到的键值对作为 url 路径参数或 query 参数的特性
     /// </summary>
     public class PathQueryAttribute : ApiParameterAttribute, ICollectionFormatable
     {
@@ -39,7 +39,7 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 序列化参数为keyValue
+        /// 序列化参数为 keyValue 集合
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
@@ -51,9 +51,9 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 创建新的uri
+        /// 创建新的 uri
         /// </summary>
-        /// <param name="uri">原始uri</param>
+        /// <param name="uri">原始 uri</param>
         /// <param name="keyValues">键值对</param>
         /// <returns></returns>
         protected virtual Uri CreateUri(Uri uri, IEnumerable<KeyValue> keyValues)
