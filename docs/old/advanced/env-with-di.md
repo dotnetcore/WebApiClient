@@ -1,6 +1,6 @@
-﻿# 2、有依赖注入的环境
+﻿# 有依赖注入的环境
 
-## 2.1 Asp.net core 2.1+
+## Asp.net core 2.1+
 
 接口声明
 
@@ -38,7 +38,7 @@ public class HomeController : Controller
 }
 ```
 
-## 2.2 Asp.net MVC + Autofac
+## Asp.net MVC + Autofac
 
 接口声明
 

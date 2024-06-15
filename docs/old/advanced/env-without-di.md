@@ -1,6 +1,6 @@
-﻿# 1、没有依赖注入的环境
+﻿# 没有依赖注入的环境
 
-## 1.1 使用HttpApi.Register/Resolve
+## 使用HttpApi.Register/Resolve
 
 接口声明
 
