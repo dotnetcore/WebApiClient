@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+using WebApiClientCore.Exceptions;
 
 namespace WebApiClientCore.Implementations
 {
@@ -21,12 +23,21 @@ namespace WebApiClientCore.Implementations
         /// <param name="actionInvokerProvider"></param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
-        [UnconditionalSuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.", Justification = "<Pending>")]
+        [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "ILEmitHttpApiActivator使用之前已经使用RuntimeFeature.IsDynamicCodeCompiled来判断")]
         public DefaultHttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
         {
-            this.httpApiActivator = SourceGeneratorHttpApiActivator<THttpApi>.IsSupported
-                ? new SourceGeneratorHttpApiActivator<THttpApi>(apiActionDescriptorProvider, actionInvokerProvider)
-                : new ILEmitHttpApiActivator<THttpApi>(apiActionDescriptorProvider, actionInvokerProvider);
+            if (SourceGeneratorHttpApiActivator<THttpApi>.IsSupported)
+            {
+                this.httpApiActivator = new SourceGeneratorHttpApiActivator<THttpApi>(apiActionDescriptorProvider, actionInvokerProvider);
+            }
+            else if (RuntimeFeature.IsDynamicCodeCompiled)
+            {
+                this.httpApiActivator = new ILEmitHttpApiActivator<THttpApi>(apiActionDescriptorProvider, actionInvokerProvider);
+            }
+            else
+            {
+                throw new ProxyTypeCreateException(typeof(HttpApi));
+            }
         }
 
         /// <summary>

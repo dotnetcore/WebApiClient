@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace WebApiClientCore.Serialization.JsonConverters
 {
@@ -7,10 +8,20 @@ namespace WebApiClientCore.Serialization.JsonConverters
     /// </summary>
     public static class JsonCompatibleConverter
     {
+        private static JsonStringEnumConverter? stringEnumConverter;
+
         /// <summary>
         /// 获取Enum类型反序列化兼容的转换器
         /// </summary>
-        public static JsonConverter EnumReader { get; } = new JsonStringEnumConverter();
+        public static JsonConverter EnumReader
+        {
+            [RequiresDynamicCode("JsonStringEnumConverter需要动态代码")]
+            get
+            {
+                stringEnumConverter ??= new JsonStringEnumConverter();
+                return stringEnumConverter;
+            }
+        }
 
         /// <summary>
         /// 获取DateTime类型反序列化兼容的转换器

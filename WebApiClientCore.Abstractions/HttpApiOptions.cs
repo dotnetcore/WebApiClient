@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Xml;
@@ -96,10 +98,14 @@ namespace WebApiClientCore
         /// 创建反序列化JsonSerializerOptions
         /// </summary>
         /// <returns></returns>
+        [UnconditionalSuppressMessage("Trimming", "IL3050", Justification = "JsonCompatibleConverter.EnumReader使用前已经判断RuntimeFeature.IsDynamicCodeSupported")]
         private static JsonSerializerOptions CreateJsonDeserializeOptions()
         {
             var options = CreateJsonSerializeOptions();
-            options.Converters.Add(JsonCompatibleConverter.EnumReader);
+            if (RuntimeFeature.IsDynamicCodeSupported)
+            {
+                options.Converters.Add(JsonCompatibleConverter.EnumReader);
+            }
             options.Converters.Add(JsonCompatibleConverter.DateTimeReader);
             return options;
         }

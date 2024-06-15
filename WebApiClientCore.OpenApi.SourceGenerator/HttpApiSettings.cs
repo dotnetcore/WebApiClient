@@ -29,7 +29,7 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
             this.ResponseArrayType = "List";
             this.ResponseDictionaryType = "Dictionary";
             this.ParameterArrayType = "IEnumerable";
-            this.ParameterDictionaryType = "IDictionary"; 
+            this.ParameterDictionaryType = "IDictionary";
 
             this.OperationNameGenerator = new OperationNameProvider();
             this.ParameterNameGenerator = new ParameterNameProvider();
@@ -157,8 +157,8 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
                     name = name.Replace("[]", "Array");
                 }
 
-                var matchs = Regex.Matches(name, @"\W");
-                if (matchs.Count == 0 || matchs.Count % 2 > 0)
+                var matches = Regex.Matches(name, @"\W");
+                if (matches.Count == 0 || matches.Count % 2 > 0)
                 {
                     return name;
                 }
@@ -167,7 +167,7 @@ namespace WebApiClientCore.OpenApi.SourceGenerator
                 return Regex.Replace(name, @"\W", m =>
                 {
                     index++;
-                    return index < matchs.Count / 2 ? "Of" : null;
+                    return index < matches.Count / 2 ? "Of" : string.Empty;
                 });
             }
         }

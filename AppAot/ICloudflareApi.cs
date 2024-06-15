@@ -9,9 +9,6 @@ namespace AppAot
     public interface ICloudflareApi
     {
         [HttpGet("/page-data/app-data.json")]
-        Task<AppData> GetAppDataAsync();
-
-        [HttpGet("/page-data/app-data.json")]
-        ITask<AppData> GetAppData2Async();
+        Task<AppData> GetAppDataAsync(); 
     }
 }
