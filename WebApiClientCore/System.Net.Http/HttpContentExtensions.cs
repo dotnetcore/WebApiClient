@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
@@ -11,22 +12,39 @@ namespace System.Net.Http
     /// </summary>
     public static class HttpContentExtensions
     {
+        private const string IsBufferedPropertyName = "IsBuffered";
+        private const string IsBufferedGetMethodName = "get_IsBuffered";
+
         /// <summary>
         /// IsBuffered字段
         /// </summary>
-        private static readonly Func<HttpContent, bool>? isBuffered;
+        private static readonly Func<HttpContent, bool>? isBufferedFunc;
 
         /// <summary>
         /// 静态构造器
         /// </summary>
         static HttpContentExtensions()
         {
-            var property = typeof(HttpContent).GetProperty("IsBuffered", BindingFlags.Instance | BindingFlags.NonPublic);
+            var property = typeof(HttpContent).GetProperty(IsBufferedPropertyName, BindingFlags.Instance | BindingFlags.NonPublic);
             if (property != null)
             {
-                isBuffered = LambdaUtil.CreateGetFunc<HttpContent, bool>(property);
+#if NET8_0_OR_GREATER
+                if (property.GetGetMethod(nonPublic: true)?.Name == IsBufferedGetMethodName)
+                {
+                    isBufferedFunc = GetIsBuffered;
+                }
+#endif
+                if (isBufferedFunc == null)
+                {
+                    isBufferedFunc = LambdaUtil.CreateGetFunc<HttpContent, bool>(property);
+                }
             }
         }
+
+#if NET8_0_OR_GREATER
+        [UnsafeAccessor(UnsafeAccessorKind.Method, Name = IsBufferedGetMethodName)]
+        private static extern bool GetIsBuffered(HttpContent httpContent);
+#endif
 
         /// <summary>
         /// 获取是否已缓存数据 
@@ -35,7 +53,7 @@ namespace System.Net.Http
         /// <returns></returns>
         public static bool? IsBuffered(this HttpContent httpContent)
         {
-            return isBuffered?.Invoke(httpContent);
+            return isBufferedFunc == null ? null : isBufferedFunc(httpContent);
         }
 
         /// <summary>

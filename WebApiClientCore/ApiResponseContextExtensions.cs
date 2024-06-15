@@ -54,9 +54,7 @@ namespace WebApiClientCore
             else
             {
                 var utf8Json = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                return utf8Json.Length == 0
-                    ? objType.DefaultValue()
-                    : JsonSerializer.Deserialize(utf8Json, objType, options);
+                return utf8Json.Length == 0 ? objType.DefaultValue() : JsonSerializer.Deserialize(utf8Json, objType, options);
             }
         }
 
