@@ -1,6 +1,6 @@
-﻿# 1、GET/HEAD请求
+﻿# GET/HEAD请求
 
-## 1.1 Get请求简单例子
+## Get请求简单例子
 
 ```csharp
 public interface IMyWebApi : IHttpApi
@@ -14,7 +14,7 @@ var api = HttpApi.Create<IMyWebApi>();
 var response = await api.GetUserByAccountAsync("laojiu");
 ```
 
-## 1.2 使用`[HttpHost]`特性
+## 使用`[HttpHost]`特性
 
 ```csharp
 
@@ -29,9 +29,9 @@ public interface IMyWebApi : IHttpApi
 
 如果接口IMyWebApi有多个方法且都指向同一服务器，可以将请求的域名抽出来放到HttpHost特性。
 
-## 1.3 响应的json/xml内容转换为强类型模型
+## 响应的json/xml内容转换为强类型模型
 
-### 1.3.1 隐式转换为强类型模型
+### 隐式转换为强类型模型
 
 ```csharp
 
@@ -46,7 +46,7 @@ public interface IMyWebApi : IHttpApi
 
 当方法的返回数据是UserInfo类型的json或xml文本，且响应的Content-Type为application/json或application/xml值时，方法的原有返回类型ITask(Of HttpResponseMessage)就可以声明为ITask(Of UserInfo)。
 
-### 1.3.2 显式转换为强类型模型
+### 显式转换为强类型模型
 
 ```csharp
 [HttpHost("http://www.mywebapi.com/")]
@@ -61,7 +61,7 @@ public interface IMyWebApi : IHttpApi
 
 当方法的返回数据是UserInfo类型的json或xml文本，但响应的Content-Type可能不是期望的application/json或application/xml值时，就需要显式声明[JsonReturn]或[XmlReturn]特性。
 
-## 1.4 请求取消令牌参数CancellationToken
+## 请求取消令牌参数CancellationToken
 
 ```csharp
 [HttpHost("http://www.mywebapi.com/")]

@@ -1,4 +1,4 @@
-﻿# 4、PATCH请求
+﻿# PATCH请求
 
 json patch是为客户端能够局部更新服务端已存在的资源而设计的一种标准交互，在RFC6902里有详细的介绍json patch，通俗来讲有以下几个要点：
 
@@ -6,7 +6,7 @@ json patch是为客户端能够局部更新服务端已存在的资源而设计�
 请求body为描述多个opration的数据json内容；
 请求的Content-Type为application/json-patch+json；
 
-## 4.1 WebApiClient例子
+## WebApiClient例子
 
 ```csharp
 public interface IMyWebApi : IHttpApi
@@ -22,7 +22,7 @@ var api = HttpApi.Create<IMyWebApi>();
 await api.PatchAsync("id001", doc);
 ```
 
-## 4.2 Asp.net 服务端例子
+## Asp.net 服务端例子
 
 ```csharp
 [HttpPatch]

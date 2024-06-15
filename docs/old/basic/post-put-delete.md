@@ -1,6 +1,6 @@
-﻿# 3、POST/PUT/DELETE请求
+﻿# POST/PUT/DELETE请求
 
-## 3.1 使用Json或Xml提交
+## 使用Json或Xml提交
 
 使用`[XmlContent]`或`[Parameter(Kind.XmlBody)]`修饰强类型模型参数，表示提交xml
 使用`[JsonContent]`或`[Parameter(Kind.JsonBody)]`修饰强类型模型参数，表示提交json
@@ -17,7 +17,7 @@ ITask<UserInfo> AddUserWithJsonAsync([JsonContent] UserInfo user);
 ITask<UserInfo> UpdateUserWithXmlAsync([XmlContent] UserInfo user);
 ```
 
-## 3.2 使用x-www-form-urlencoded提交
+## 使用x-www-form-urlencoded提交
 
 使用`[FormContent]`或`[Parameter(Kind.Form)]`修饰强类型模型参数
 使用`[FormField]`或`[Parameter(Kind.Form)]`修饰简单类型参数
@@ -44,7 +44,7 @@ ITask<UserInfo> UpdateUserAsync(
     [Parameter(Kind.Form)] string fieldX);
 ```
 
-## 3.3 使用multipart/form-data提交
+## 使用multipart/form-data提交
 
 使用`[MulitpartContent]`或`[Parameter(Kind.FormData)]`修饰强类型模型参数
 使用`[MulitpartText]`或`[Parameter(Kind.FormData)]`修饰简单类型参数
@@ -71,7 +71,7 @@ ITask<UserInfo> UpdateUserWithMulitpartAsync(
     MulitpartFile file);
 ```
 
-## 3.4 使用具体的HttpContent类型提交
+## 使用具体的HttpContent类型提交
 
 ```csharp
 // POST webapi/user  

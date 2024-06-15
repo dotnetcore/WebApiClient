@@ -1,8 +1,8 @@
-﻿# 5、参数及属性注解
+﻿# 参数及属性注解
 
 这些注解特性的命名空间在WebApiClient.DataAnnotations，用于影响参数的序列化行为。
 
-## 5.1 参数别名
+## 参数别名
 
 ```csharp
 public interface IMyWebApi : IHttpApi
@@ -14,7 +14,7 @@ public interface IMyWebApi : IHttpApi
 }
 ```
 
-## 5.2 参数模型属性注解
+## 参数模型属性注解
 
 ```csharp
 public class UserInfo
