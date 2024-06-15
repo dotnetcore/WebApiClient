@@ -52,16 +52,12 @@ namespace WebApiClientCore.Extensions.OAuths
         public string? Error { get; set; }
 
         /// <summary>
-        /// 确保token成功
+        /// 确保 token 成功
         /// </summary>
         /// <exception cref="TokenException"></exception>
         public TokenResult EnsureSuccess()
         {
-            if (this.IsSuccess() == true)
-            {
-                return this;
-            }
-            throw new TokenException(this.Error);
+            return this.IsSuccess() ? this : throw new TokenException(this.Error);
         }
 
         /// <summary>
@@ -83,7 +79,7 @@ namespace WebApiClientCore.Extensions.OAuths
         }
 
         /// <summary>
-        /// 返回token是否支持刷新
+        /// 返回 token 是否支持刷新
         /// </summary>
         /// <returns></returns>
         public virtual bool CanRefresh()

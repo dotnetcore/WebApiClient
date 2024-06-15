@@ -7,7 +7,7 @@ using WebApiClientCore.HttpMessageHandlers;
 namespace WebApiClientCore.Extensions.OAuths.HttpMessageHandlers
 {
     /// <summary>
-    /// 表示token应用的http消息处理程序
+    /// 表示 token 应用的 http 消息处理程序
     /// </summary>
     public class OAuthTokenHandler : AuthorizationHandler
     {
@@ -17,7 +17,7 @@ namespace WebApiClientCore.Extensions.OAuths.HttpMessageHandlers
         private readonly ITokenProvider tokenProvider;
 
         /// <summary>
-        /// token应用的http消息处理程序
+        /// token 应用的 http 消息处理程序
         /// </summary>
         /// <param name="tokenProvider">token提供者</param> 
         public OAuthTokenHandler(ITokenProvider tokenProvider)
@@ -44,7 +44,7 @@ namespace WebApiClientCore.Extensions.OAuths.HttpMessageHandlers
         }
 
         /// <summary>
-        /// 应用token
+        /// 应用 token
         /// 默认为添加到请求头的Authorization
         /// </summary>
         /// <param name="request">请求上下文</param>

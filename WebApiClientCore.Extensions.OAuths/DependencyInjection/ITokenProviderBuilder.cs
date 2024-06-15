@@ -6,7 +6,7 @@
     public interface ITokenProviderBuilder
     {
         /// <summary>
-        /// 获取token提供者的名称
+        /// 获取 token 提供者的名称
         /// </summary>
         string Name { get; }
 

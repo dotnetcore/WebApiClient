@@ -7,12 +7,12 @@ using WebApiClientCore.Extensions.OAuths.Exceptions;
 namespace WebApiClientCore.Extensions.OAuths.TokenProviders
 {
     /// <summary>
-    /// 表示Token提供者抽象类
+    /// 表示 token 提供者抽象类
     /// </summary>
     public abstract class TokenProvider : ITokenProvider
     {
         /// <summary>
-        /// 最近请求到的token
+        /// 最近请求到的 token
         /// </summary>
         private TokenResult? token;
 
@@ -32,7 +32,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
-        /// Token提供者抽象类
+        /// token 提供者抽象类
         /// </summary>
         /// <param name="services"></param>
         public TokenProvider(IServiceProvider services)
@@ -42,7 +42,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
 
         /// <summary>
         /// 获取选项值
-        /// Options名称为本类型的Name属性
+        /// Options 名称为本类型的 Name 属性
         /// </summary>
         /// <typeparam name="TOptions"></typeparam>
         /// <returns></returns>
@@ -52,7 +52,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         }
 
         /// <summary>
-        /// 强制清除token以支持下次获取到新的token
+        /// 强制清除 token 以支持下次获取到新的 token
         /// </summary>
         public void ClearToken()
         {
@@ -63,7 +63,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         }
 
         /// <summary>
-        /// 获取token信息
+        /// 获取 token 信息
         /// </summary> 
         /// <returns></returns>
         public async Task<TokenResult> GetTokenAsync()
@@ -84,32 +84,28 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
                         : await this.RefreshTokenAsync(scope.ServiceProvider, this.token.Refresh_token ?? string.Empty).ConfigureAwait(false);
                 }
 
-                if (this.token == null)
-                {
-                    throw new TokenNullException();
-                }
-                return this.token.EnsureSuccess();
+                return this.token == null ? throw new TokenNullException() : this.token.EnsureSuccess();
             }
         }
 
 
         /// <summary>
-        /// 请求获取token
+        /// 请求获取 token
         /// </summary> 
         /// <param name="serviceProvider">服务提供者</param>
         /// <returns></returns>
         protected abstract Task<TokenResult?> RequestTokenAsync(IServiceProvider serviceProvider);
 
         /// <summary>
-        /// 刷新token
+        /// 刷新 token
         /// </summary> 
         /// <param name="serviceProvider">服务提供者</param>
-        /// <param name="refresh_token">刷新token</param>
+        /// <param name="refresh_token">刷新 token</param>
         /// <returns></returns>
         protected abstract Task<TokenResult?> RefreshTokenAsync(IServiceProvider serviceProvider, string refresh_token);
 
         /// <summary>
-        /// 转换为string
+        /// 转换为 string
         /// </summary>
         /// <returns></returns>
         public override string ToString()

@@ -5,7 +5,7 @@ using System.Threading;
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 表示http上下文
+    /// 表示 http 上下文
     /// </summary>
     public class HttpContext : HttpClientContext
     {

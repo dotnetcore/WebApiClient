@@ -15,7 +15,7 @@ namespace WebApiClientCore.Extensions.JsonRpc
         public static string MediaType => "application/json-rpc"; 
 
         /// <summary>
-        /// uft8的json内容
+        /// uft8 的 json 内容
         /// </summary>
         /// <param name="mediaType"></param>
         /// <param name="value">对象值</param>

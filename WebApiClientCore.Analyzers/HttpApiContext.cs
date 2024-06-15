@@ -84,14 +84,14 @@ namespace WebApiClientCore.Analyzers
                 return false;
             }
 
-            var ihttpApi = syntaxNodeContext.Compilation.GetTypeByMetadataName(IHttpApiTypeName);
-            if (ihttpApi == null)
+            var httpApi = syntaxNodeContext.Compilation.GetTypeByMetadataName(IHttpApiTypeName);
+            if (httpApi == null)
             {
                 return false;
             }
 
-            var iapiAttribute = syntaxNodeContext.Compilation.GetTypeByMetadataName(IApiAttributeTypeName);
-            if (IsHttpApiInterface(@interface, ihttpApi, iapiAttribute) == false)
+            var apiAttribute = syntaxNodeContext.Compilation.GetTypeByMetadataName(IApiAttributeTypeName);
+            if (IsHttpApiInterface(@interface, httpApi, apiAttribute) == false)
             {
                 return false;
             }
@@ -105,27 +105,27 @@ namespace WebApiClientCore.Analyzers
         }
 
         /// <summary>
-        /// 是否为http接口
+        /// 是否为 http 接口
         /// </summary>
         /// <param name="interface"></param>
-        /// <param name="ihttpApi"></param>
-        /// <param name="iapiAttribute"></param>
+        /// <param name="httpApi"></param>
+        /// <param name="apiAttribute"></param>
         /// <returns></returns>
-        private static bool IsHttpApiInterface(INamedTypeSymbol @interface, INamedTypeSymbol ihttpApi, INamedTypeSymbol? iapiAttribute)
+        private static bool IsHttpApiInterface(INamedTypeSymbol @interface, INamedTypeSymbol httpApi, INamedTypeSymbol? apiAttribute)
         {
-            if (@interface.AllInterfaces.Contains(ihttpApi))
+            if (@interface.AllInterfaces.Contains(httpApi))
             {
                 return true;
             }
 
-            if (iapiAttribute == null)
+            if (apiAttribute == null)
             {
                 return false;
             }
 
             return @interface.AllInterfaces.Append(@interface).Any(i =>
-                HasAttribute(i, iapiAttribute) || i.GetMembers().OfType<IMethodSymbol>().Any(m =>
-                HasAttribute(m, iapiAttribute) || m.Parameters.Any(p => HasAttribute(p, iapiAttribute))));
+                HasAttribute(i, apiAttribute) || i.GetMembers().OfType<IMethodSymbol>().Any(m =>
+                HasAttribute(m, apiAttribute) || m.Parameters.Any(p => HasAttribute(p, apiAttribute))));
         }
 
 

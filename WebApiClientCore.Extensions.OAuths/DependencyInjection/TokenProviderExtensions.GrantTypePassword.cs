@@ -11,7 +11,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public static partial class TokenProviderExtensions
     {
         /// <summary>
-        /// 为指定接口添加Password模式的token提供者
+        /// 为指定接口添加Password模式的 token 提供者
         /// </summary>
         /// <typeparam name="THttpApi">接口类型</typeparam>
         /// <param name="services"></param>
@@ -26,7 +26,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// 为指定接口添加Password模式的token提供者
+        /// 为指定接口添加Password模式的 token 提供者
         /// </summary>
         /// <typeparam name="THttpApi">接口类型</typeparam>
         /// <param name="services"></param>
@@ -40,7 +40,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// 为指定接口添加Password模式的token提供者
+        /// 为指定接口添加Password模式的 token 提供者
         /// </summary>
         /// <typeparam name="THttpApi">接口类型</typeparam>
         /// <param name="services"></param>

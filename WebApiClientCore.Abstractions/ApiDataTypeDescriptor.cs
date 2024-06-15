@@ -23,7 +23,7 @@ namespace WebApiClientCore
         public abstract bool IsRawStream { get; protected set; }
 
         /// <summary>
-        /// 获取是否为原始类型的byte[]
+        /// 获取是否为原始类型的 byte[]
         /// </summary>
         public abstract bool IsRawByteArray { get; protected set; }
 

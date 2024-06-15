@@ -58,7 +58,7 @@ namespace WebApiClientCore.Analyzers.Providers
         {
             foreach (var attribute in @interface.GetAttributes())
             {
-                if (this.CtorAttributeIsDefind(attribute, AttributeTargets.Interface) == false)
+                if (this.CtorAttributeIsDefend(attribute, AttributeTargets.Interface) == false)
                 {
                     yield return attribute;
                 }
@@ -75,7 +75,7 @@ namespace WebApiClientCore.Analyzers.Providers
         {
             foreach (var methodAttribute in methodSymbol.GetAttributes())
             {
-                if (this.CtorAttributeIsDefind(methodAttribute, AttributeTargets.Method) == false)
+                if (this.CtorAttributeIsDefend(methodAttribute, AttributeTargets.Method) == false)
                 {
                     yield return methodAttribute;
                 }
@@ -85,7 +85,7 @@ namespace WebApiClientCore.Analyzers.Providers
             {
                 foreach (var parameterAttribute in parameter.GetAttributes())
                 {
-                    if (this.CtorAttributeIsDefind(parameterAttribute, AttributeTargets.Parameter) == false)
+                    if (this.CtorAttributeIsDefend(parameterAttribute, AttributeTargets.Parameter) == false)
                     {
                         yield return parameterAttribute;
                     }
@@ -100,7 +100,7 @@ namespace WebApiClientCore.Analyzers.Providers
         /// <param name="attributeData"></param>
         /// <param name="targets">指定目标</param>
         /// <returns></returns>
-        private bool CtorAttributeIsDefind(AttributeData attributeData, AttributeTargets targets)
+        private bool CtorAttributeIsDefend(AttributeData attributeData, AttributeTargets targets)
         {
             var ctorAttr = this.Context.AttributeCtorUsageAttribute;
             if (ctorAttr == null)

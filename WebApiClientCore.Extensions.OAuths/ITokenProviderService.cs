@@ -1,12 +1,12 @@
 ﻿namespace WebApiClientCore.Extensions.OAuths
 {
     /// <summary>
-    /// 定义http接口的token提供者服务
+    /// 定义 http 接口的 token 提供者服务
     /// </summary>
     interface ITokenProviderService
     {
         /// <summary>
-        /// 获取token提供者
+        /// 获取 token 提供者
         /// </summary>
         ITokenProvider TokenProvider { get; }
 

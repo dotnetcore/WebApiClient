@@ -7,12 +7,12 @@ using WebApiClientCore.Extensions.OAuths.Exceptions;
 namespace WebApiClientCore.Extensions.OAuths.TokenProviders
 {
     /// <summary>
-    /// 表示Client模式的token提供者
+    /// 表示Client模式的 token 提供者
     /// </summary>
     public class ClientCredentialsTokenProvider : TokenProvider
     {
         /// <summary>
-        /// Client模式的token提供者
+        /// Client模式的 token 提供者
         /// </summary>
         /// <param name="services"></param> 
         public ClientCredentialsTokenProvider(IServiceProvider services)
@@ -21,14 +21,12 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         }
 
         /// <summary>
-        /// 请求获取token
+        /// 请求获取 token
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <returns></returns>
-#if NET5_0_OR_GREATER
         [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
         [UnconditionalSuppressMessage("Trimming", "IL3050:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
-#endif 
         protected override Task<TokenResult?> RequestTokenAsync(IServiceProvider serviceProvider)
         {
             var options = this.GetOptionsValue<ClientCredentialsOptions>();
@@ -42,15 +40,13 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         }
 
         /// <summary>
-        /// 刷新token
+        /// 刷新 token
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <param name="refresh_token"></param>
         /// <returns></returns>
-#if NET5_0_OR_GREATER
         [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
         [UnconditionalSuppressMessage("Trimming", "IL3050:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
-#endif 
         protected override Task<TokenResult?> RefreshTokenAsync(IServiceProvider serviceProvider, string refresh_token)
         {
             var options = this.GetOptionsValue<ClientCredentialsOptions>();

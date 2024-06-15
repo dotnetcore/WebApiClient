@@ -23,8 +23,8 @@ namespace WebApiClientCore.Analyzers.Providers
         public override IEnumerable<Diagnostic> CreateDiagnostics()
         {
             var syntax = this.Context.Syntax;
-            var isVisiable = syntax.Modifiers.Any(item => "public".Equals(item.ValueText));
-            if (isVisiable == false)
+            var isVisible = syntax.Modifiers.Any(item => "public".Equals(item.ValueText));
+            if (isVisible == false)
             {
                 var location = syntax.Identifier.GetLocation();
                 yield return this.CreateDiagnostic(location);

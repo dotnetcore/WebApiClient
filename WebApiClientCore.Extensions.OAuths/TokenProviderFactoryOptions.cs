@@ -18,12 +18,12 @@ namespace WebApiClientCore.Extensions.OAuths
         /// 登记映射
         /// </summary>
         /// <typeparam name="THttpApi">接口类型</typeparam>
-        /// <typeparam name="TTokenPrivder">提供者类型</typeparam>
+        /// <typeparam name="TTokenProvider">提供者类型</typeparam>
         /// <param name="alias">TokenProvider的别名</param>
-        public void Register<THttpApi, TTokenPrivder>(string alias) where TTokenPrivder : ITokenProvider
+        public void Register<THttpApi, TTokenProvider>(string alias) where TTokenProvider : ITokenProvider
         {
             var httpApiType = typeof(THttpApi);
-            var serviceType = typeof(TokenProviderService<THttpApi, TTokenPrivder>);
+            var serviceType = typeof(TokenProviderService<THttpApi, TTokenProvider>);
 
             if (this.httpApiServiceDescriptors.TryGetValue(httpApiType, out var existDescriptor) &&
                 existDescriptor.ServiceType == serviceType)

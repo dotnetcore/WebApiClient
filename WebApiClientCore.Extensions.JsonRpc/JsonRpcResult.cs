@@ -15,7 +15,7 @@ namespace WebApiClientCore.Extensions.JsonRpc
         public int? Id { get; set; }
 
         /// <summary>
-        /// jsonrpc版本号
+        /// json rpc版本号
         /// </summary>
         [JsonPropertyName("jsonrpc")]
         public string JsonRpc { get; set; } = string.Empty;

@@ -16,7 +16,7 @@ namespace WebApiClientCore.Attributes
 
         /// <summary>
         /// 获取或设置提交的Content-Type
-        /// 默认为application/json-rpc 
+        /// 默认为 application/json-rpc 
         /// </summary>
         public string ContentType { get; set; } = JsonRpcContent.MediaType;
 

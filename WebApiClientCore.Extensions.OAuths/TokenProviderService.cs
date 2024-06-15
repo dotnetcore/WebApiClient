@@ -1,21 +1,21 @@
 ﻿namespace WebApiClientCore.Extensions.OAuths
 {
     /// <summary>
-    /// 表示http接口的token提供者服务
+    /// 表示 http 接口的 token 提供者服务
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
     /// <typeparam name="TTokenProvider"></typeparam>
     sealed class TokenProviderService<THttpApi, TTokenProvider> : ITokenProviderService where TTokenProvider : ITokenProvider
     {
         /// <summary>
-        /// 获取token提供者
+        /// 获取 token 提供者
         /// </summary>
         public ITokenProvider TokenProvider { get; }
 
         /// <summary>
-        /// http接口的token提供者服务
+        /// http 接口的 token 提供者服务
         /// </summary>
-        /// <param name="tokenProvider">token提供者</param>
+        /// <param name="tokenProvider">token 提供者</param>
         public TokenProviderService(TTokenProvider tokenProvider)
         {
             this.TokenProvider = tokenProvider;

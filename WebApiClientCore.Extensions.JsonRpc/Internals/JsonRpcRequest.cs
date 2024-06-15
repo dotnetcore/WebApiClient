@@ -15,7 +15,7 @@ namespace WebApiClientCore.Extensions.JsonRpc
         private static int @id = 0;
 
         /// <summary>
-        /// jsonrpc
+        /// json rpc
         /// 2.0
         /// </summary>
         [JsonPropertyName("jsonrpc")]

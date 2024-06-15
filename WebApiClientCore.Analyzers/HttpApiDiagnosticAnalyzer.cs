@@ -25,7 +25,7 @@ namespace WebApiClientCore.Analyzers
                     Descriptors.AttributeDescriptor,
                     Descriptors.ReturnTypeDescriptor,
                     Descriptors.RefParameterDescriptor,
-                    Descriptors.NotMethodDefindedDescriptor,
+                    Descriptors.NotMethodDefendedDescriptor,
                     Descriptors.GenericMethodDescriptor,
                     Descriptors.UriAttributeDescriptor,
                     Descriptors.ModifierDescriptor,
@@ -70,7 +70,7 @@ namespace WebApiClientCore.Analyzers
             yield return new CtorAttributeDiagnosticProvider(context);
             yield return new ReturnTypeDiagnosticProvider(context);
             yield return new RefParameterDiagnosticProvider(context);
-            yield return new NotMethodDefindedDiagnosticProvider(context);
+            yield return new NotMethodDefendedDiagnosticProvider(context);
             yield return new GenericMethodDiagnosticProvider(context);
             yield return new UriAttributeDiagnosticProvider(context);
             yield return new ModifierDiagnosticProvider(context);

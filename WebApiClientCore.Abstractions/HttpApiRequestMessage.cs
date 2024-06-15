@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 namespace WebApiClientCore
 {
     /// <summary>
-    /// 表示httpApi的请求消息
+    /// 表示 httpApi 的请求消息
     /// </summary>
     public abstract class HttpApiRequestMessage : HttpRequestMessage
     {
         /// <summary>
-        /// 返回使用uri值合成的请求URL
+        /// 返回使用 uri 值合成的请求URL
         /// </summary> 
         /// <param name="uri">uri值</param> 
         /// <returns></returns>
@@ -29,7 +29,7 @@ namespace WebApiClientCore
 
         /// <summary>
         /// 添加字段到已有的Content
-        /// 要求content-type为application/x-www-form-urlencoded
+        /// 要求 content-type 为 application/x-www-form-urlencoded
         /// </summary>
         /// <param name="name">名称</param>
         /// <param name="value">值</param> 
@@ -42,7 +42,7 @@ namespace WebApiClientCore
 
         /// <summary>
         /// 添加字段到已有的Content
-        /// 要求content-type为application/x-www-form-urlencoded
+        /// 要求 content-type 为 application/x-www-form-urlencoded
         /// </summary>
         /// <param name="keyValues">键值对</param>
         /// <exception cref="NotSupportedException"></exception>
@@ -52,7 +52,7 @@ namespace WebApiClientCore
 
         /// <summary>
         /// 添加文本内容到已有的Content
-        /// 要求content-type为multipart/form-data
+        /// 要求 content-type 为 multipart/form-data
         /// </summary>     
         /// <param name="name">名称</param>
         /// <param name="value">文本</param> 
@@ -64,14 +64,14 @@ namespace WebApiClientCore
 
         /// <summary>
         /// 添加文本内容到已有的Content
-        /// 要求content-type为multipart/form-data
+        /// 要求 content-type 为 multipart/form-data
         /// </summary>     
         /// <param name="keyValues">键值对</param> 
         public abstract void AddFormDataText(IEnumerable<KeyValue> keyValues);
 
         /// <summary>
         /// 添加文件内容到已有的Content
-        /// 要求content-type为multipart/form-data
+        /// 要求 content-type 为 multipart/form-data
         /// </summary>
         /// <param name="stream">文件流</param>
         /// <param name="name">名称</param>

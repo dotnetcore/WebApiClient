@@ -8,7 +8,7 @@ using WebApiClientCore.Extensions.OAuths;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 表示token应用特性
+    /// 表示 token 应用特性
     /// 需要为接口或接口的基础接口注册TokenProvider
     /// </summary> 
     /// <remarks>
@@ -18,12 +18,12 @@ namespace WebApiClientCore.Attributes
     public class OAuthTokenAttribute : ApiFilterAttribute
     {
         /// <summary>
-        /// 获取指定TokenProvider别名的方法参数名
+        /// 获取指定 TokenProvider 别名的方法参数名
         /// </summary>
         public string? AliasParameterName { get; }
 
         /// <summary>
-        /// 获取或设置token提供者的查找模式
+        /// 获取或设置 token 提供者的查找模式
         /// </summary>
         public TypeMatchMode TokenProviderSearchMode { get; set; } = TypeMatchMode.TypeOrBaseTypes;
 
@@ -69,7 +69,7 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 获取token提供者
+        /// 获取 token 提供者
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
@@ -93,7 +93,7 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 应用token
+        /// 应用 token
         /// 默认为添加到请求头的Authorization
         /// </summary>
         /// <param name="context">请求上下文</param>
@@ -107,7 +107,7 @@ namespace WebApiClientCore.Attributes
 
         /// <summary>
         /// 返回响应是否为未授权状态
-        /// 反回true则强制清除token以支持下次获取到新的token
+        /// 反回 true 则强制清除 token 以支持下次获取到新的 token
         /// </summary>
         /// <param name="context"></param>
         protected virtual bool IsUnauthorized(ApiResponseContext context)

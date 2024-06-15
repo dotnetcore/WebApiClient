@@ -14,7 +14,7 @@ namespace WebApiClientCore.Serialization
     public sealed class KeyValueSerializerOptions : KeyNamingOptions
     {
         /// <summary>
-        /// 包装的jsonOptions
+        /// 包装的 jsonOptions
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly JsonSerializerOptions jsonOptions;
@@ -37,7 +37,7 @@ namespace WebApiClientCore.Serialization
         }
 
         /// <summary>
-        /// 获取或设置是否忽略null值
+        /// 获取或设置是否忽略 null 值
         /// </summary>
         public bool IgnoreNullValues
         {

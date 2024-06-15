@@ -17,7 +17,7 @@ namespace WebApiClientCore
     {
         /// <summary>
         /// 获取或设置Http服务完整主机域名
-        /// 例如http://www.abc.com/或http://www.abc.com/path/
+        /// 例如 http://www.abc.com/ 或 http://www.abc.com/path/
         /// 设置了HttpHost值，HttpHostAttribute将失效
         /// </summary>
         public Uri? HttpHost { get; set; }
@@ -45,12 +45,12 @@ namespace WebApiClientCore
 
 
         /// <summary>
-        /// 获取json序列化选项
+        /// 获取 json 序列化选项
         /// </summary>
         public JsonSerializerOptions JsonSerializeOptions { get; } = CreateJsonSerializeOptions();
 
         /// <summary>
-        /// 获取json反序列化选项
+        /// 获取 json 反序列化选项
         /// </summary>
         public JsonSerializerOptions JsonDeserializeOptions { get; } = CreateJsonDeserializeOptions();
 
@@ -65,7 +65,7 @@ namespace WebApiClientCore
         public XmlReaderSettings XmlDeserializeOptions { get; } = new XmlReaderSettings();
 
         /// <summary>
-        /// 获取keyValue序列化选项
+        /// 获取 keyValue 序列化选项
         /// </summary>
         public KeyValueSerializerOptions KeyValueSerializeOptions { get; } = new KeyValueSerializerOptions();
 

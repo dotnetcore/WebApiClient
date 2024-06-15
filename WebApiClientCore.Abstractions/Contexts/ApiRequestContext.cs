@@ -9,7 +9,7 @@ namespace WebApiClientCore
     public class ApiRequestContext
     {
         /// <summary>
-        /// 获取http上下文
+        /// 获取 http 上下文
         /// </summary>
         public HttpContext HttpContext { get; }
 

@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace WebApiClientCore.Extensions.OAuths
 {
     /// <summary>
-    /// 表示默认的token提供者工厂
+    /// 表示默认的 token 提供者工厂
     /// </summary>
     sealed class TokenProviderFactory : ITokenProviderFactory
     {
@@ -16,7 +16,7 @@ namespace WebApiClientCore.Extensions.OAuths
         private readonly ConcurrentDictionary<ServiceKey, ITokenProvider> tokenProviderCache = new();
 
         /// <summary>
-        /// 默认的token提供者工厂
+        /// 默认的 token 提供者工厂
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <param name="options"></param>
@@ -27,7 +27,7 @@ namespace WebApiClientCore.Extensions.OAuths
         }
 
         /// <summary>
-        /// 通过接口类型获取或创建其对应的token提供者
+        /// 通过接口类型获取或创建其对应的 token 提供者
         /// </summary>
         /// <param name="httpApiType">接口类型</param>
         /// <param name="typeMatchMode">类型匹配模式</param>     
@@ -42,7 +42,7 @@ namespace WebApiClientCore.Extensions.OAuths
         }
 
         /// <summary>
-        /// 通过接口类型获取或创建其对应的token提供者
+        /// 通过接口类型获取或创建其对应的 token 提供者
         /// </summary>
         /// <param name="httpApiType">接口类型</param>
         /// <param name="typeMatchMode">类型匹配模式</param>
@@ -68,7 +68,7 @@ namespace WebApiClientCore.Extensions.OAuths
         }
 
         /// <summary>
-        /// 创建其对应的token提供者
+        /// 创建其对应的 token 提供者
         /// </summary>
         /// <param name="serviceKey">缓存的键</param>    
         /// <returns></returns> 
@@ -95,8 +95,8 @@ namespace WebApiClientCore.Extensions.OAuths
 
 
             var message = string.IsNullOrEmpty(alias)
-                ? $"尚未注册{httpApiType}无别名的token提供者"
-                : $"尚未注册{httpApiType}别名为{alias}的token提供者";
+                ? $"尚未注册 {httpApiType} 无别名的 token 提供者"
+                : $"尚未注册 {httpApiType} 别名为{alias}的 token 提供者";
             throw new InvalidOperationException(message);
         }
 

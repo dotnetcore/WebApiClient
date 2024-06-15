@@ -9,7 +9,7 @@ namespace WebApiClientCore.Extensions.OAuths
     public interface ITokenProviderFactory
     {
         /// <summary>
-        /// 通过接口类型获取或创建其对应的token提供者
+        /// 通过接口类型获取或创建其对应的 token 提供者
         /// </summary>
         /// <param name="httpApiType">接口类型</param>
         /// <param name="typeMatchMode">类型匹配模式</param>     
@@ -20,7 +20,7 @@ namespace WebApiClientCore.Extensions.OAuths
             TypeMatchMode typeMatchMode = TypeMatchMode.TypeOnly);
 
         /// <summary>
-        /// 通过接口类型获取或创建其对应的token提供者
+        /// 通过接口类型获取或创建其对应的 token 提供者
         /// </summary>
         /// <param name="httpApiType">接口类型</param>
         /// <param name="typeMatchMode">类型匹配模式</param>

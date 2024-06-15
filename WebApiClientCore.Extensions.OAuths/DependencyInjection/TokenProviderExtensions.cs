@@ -14,7 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public static partial class TokenProviderExtensions
     {
         /// <summary>
-        /// 为指定接口添加token提供者
+        /// 为指定接口添加 token 提供者
         /// </summary>
         /// <typeparam name="THttpApi">接口类型</typeparam>
         /// <param name="services"></param>
@@ -30,7 +30,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// 为指定接口添加token提供者
+        /// 为指定接口添加 token 提供者
         /// </summary>
         /// <typeparam name="THttpApi">接口类型</typeparam>
         /// <typeparam name="TTokenProvider">token提供者类型</typeparam>
@@ -53,7 +53,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
 
         /// <summary>
-        /// 为指定接口添加token提供者
+        /// 为指定接口添加 token 提供者
         /// </summary>
         /// <typeparam name="THttpApi">接口类型</typeparam>
         /// <typeparam name="TTokenProvider">token提供者类型</typeparam>
@@ -74,14 +74,14 @@ namespace Microsoft.Extensions.DependencyInjection
 
 
         /// <summary>
-        /// 向token工厂提供者添加token提供者
+        /// 向 token 工厂提供者添加 token 提供者
         /// </summary>
         /// <typeparam name="THttpApi">接口类型</typeparam>
         /// <typeparam name="TTokenProvider">token提供者类型</typeparam>
         /// <param name="services"></param>
         /// <param name="alias">TokenProvider的别名</param>
         /// <returns></returns>
-        private static ITokenProviderBuilder AddTokenProviderCore<
+        private static TokenProviderBuilder AddTokenProviderCore<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] THttpApi,
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TTokenProvider>(
             this IServiceCollection services,
@@ -115,7 +115,7 @@ namespace Microsoft.Extensions.DependencyInjection
         private class TokenProviderBuilder : ITokenProviderBuilder
         {
             /// <summary>
-            /// 获取token提供者的名称
+            /// 获取 token 提供者的名称
             /// </summary>
             public string Name { get; }
 

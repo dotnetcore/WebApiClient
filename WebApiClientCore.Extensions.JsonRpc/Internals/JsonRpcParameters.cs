@@ -10,7 +10,7 @@ namespace WebApiClientCore.Extensions.JsonRpc
     sealed class JsonRpcParameters : List<ApiParameterContext>
     {
         /// <summary>
-        /// 转换为jsonRpc请求参数
+        /// 转换为 jsonRpc 请求参数
         /// </summary>
         /// <param name="paramsStyle"></param>
         /// <returns></returns>

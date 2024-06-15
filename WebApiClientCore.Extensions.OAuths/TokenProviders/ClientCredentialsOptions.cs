@@ -10,15 +10,15 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
     public class ClientCredentialsOptions
     {
         /// <summary>
-        /// 获取或设置提供Token获取的Url节点       
+        /// 获取或设置提供 token 获取的Url节点       
         /// </summary>
         [Required]
         [DisallowNull]
         public Uri? Endpoint { get; set; }
 
         /// <summary>
-        /// 是否尝试使用token刷新功能
-        /// 禁用则token过期时总是去请求新token
+        /// 是否尝试使用 token 刷新功能
+        /// 禁用则 token 过期时总是去请求新 token
         /// </summary>
         public bool UseRefreshToken { get; set; } = true;
 

@@ -11,7 +11,7 @@ using WebApiClientCore.HttpContents;
 namespace WebApiClientCore.Attributes
 {
     /// <summary>
-    /// 使用Json.Net序列化参数值得到的json文本作为application/json请求
+    /// 使用Json.Net序列化参数值得到的 json 文本作为 application/json 请求
     /// 每个Api只能注明于其中的一个参数
     /// </summary> 
     public class JsonNetContentAttribute : HttpContentAttribute
@@ -32,7 +32,7 @@ namespace WebApiClientCore.Attributes
         }
 
         /// <summary>
-        /// 设置参数到http请求内容
+        /// 设置参数到 http 请求内容
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>

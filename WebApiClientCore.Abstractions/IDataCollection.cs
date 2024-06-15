@@ -13,7 +13,7 @@ namespace WebApiClientCore
         int Count { get; }
 
         /// <summary>
-        /// 返回是否包含指定的key
+        /// 返回是否包含指定的 key
         /// </summary>
         /// <param name="key">键</param>
         /// <returns></returns>
@@ -28,7 +28,7 @@ namespace WebApiClientCore
 
         /// <summary>
         /// 读取指定的键并尝试转换为目标类型
-        /// 失败则返回目标类型的default值
+        /// 失败则返回目标类型的 default 值
         /// </summary>
         /// <typeparam name="TValue"></typeparam>
         /// <param name="key">键</param>

@@ -28,7 +28,7 @@ namespace WebApiClientCore.Analyzers
         /// <summary>
         /// 非方法声明诊断描述器
         /// </summary>
-        public static DiagnosticDescriptor NotMethodDefindedDescriptor { get; }
+        public static DiagnosticDescriptor NotMethodDefendedDescriptor { get; }
             = Create("WA1004", Resx.WA1004_title, Resx.WA1004_message);
 
         /// <summary>

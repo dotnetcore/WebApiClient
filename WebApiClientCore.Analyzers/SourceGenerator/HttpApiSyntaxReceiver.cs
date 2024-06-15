@@ -41,17 +41,17 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         /// <returns></returns>
         public IEnumerable<INamedTypeSymbol> GetHttpApiTypes(Compilation compilation)
         {
-            var ihttpApi = compilation.GetTypeByMetadataName(IHttpApiTypeName);
-            if (ihttpApi == null)
+            var httpApi = compilation.GetTypeByMetadataName(IHttpApiTypeName);
+            if (httpApi == null)
             {
                 yield break;
             }
 
-            var iapiAttribute = compilation.GetTypeByMetadataName(IApiAttributeTypeName);
+            var apiAttribute = compilation.GetTypeByMetadataName(IApiAttributeTypeName);
             foreach (var interfaceSyntax in this.interfaceSyntaxList)
             {
                 var @interface = compilation.GetSemanticModel(interfaceSyntax.SyntaxTree).GetDeclaredSymbol(interfaceSyntax);
-                if (@interface != null && IsHttpApiInterface(@interface, ihttpApi, iapiAttribute))
+                if (@interface != null && IsHttpApiInterface(@interface, httpApi, apiAttribute))
                 {
                     yield return @interface;
                 }
@@ -60,27 +60,27 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
 
 
         /// <summary>
-        /// 是否为http接口
+        /// 是否为 http 接口
         /// </summary>
         /// <param name="interface"></param>
-        /// <param name="ihttpApi"></param>
-        /// <param name="iapiAttribute"></param>
+        /// <param name="httpApi"></param>
+        /// <param name="apiAttribute"></param>
         /// <returns></returns>
-        private static bool IsHttpApiInterface(INamedTypeSymbol @interface, INamedTypeSymbol ihttpApi, INamedTypeSymbol? iapiAttribute)
+        private static bool IsHttpApiInterface(INamedTypeSymbol @interface, INamedTypeSymbol httpApi, INamedTypeSymbol? apiAttribute)
         {
-            if (@interface.AllInterfaces.Contains(ihttpApi))
+            if (@interface.AllInterfaces.Contains(httpApi))
             {
                 return true;
             }
 
-            if (iapiAttribute == null)
+            if (apiAttribute == null)
             {
                 return false;
             }
 
             return @interface.AllInterfaces.Append(@interface).Any(i =>
-                HasAttribute(i, iapiAttribute) || i.GetMembers().OfType<IMethodSymbol>().Any(m =>
-                HasAttribute(m, iapiAttribute) || m.Parameters.Any(p => HasAttribute(p, iapiAttribute))));
+                HasAttribute(i, apiAttribute) || i.GetMembers().OfType<IMethodSymbol>().Any(m =>
+                HasAttribute(m, apiAttribute) || m.Parameters.Any(p => HasAttribute(p, apiAttribute))));
         }
 
 
