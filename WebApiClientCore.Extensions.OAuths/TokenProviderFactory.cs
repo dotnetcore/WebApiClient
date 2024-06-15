@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
 namespace WebApiClientCore.Extensions.OAuths
 {
@@ -33,7 +34,11 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public ITokenProvider Create(Type httpApiType, TypeMatchMode typeMatchMode)
+        public ITokenProvider Create(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+            Type httpApiType, TypeMatchMode typeMatchMode)
         {
             return this.Create(httpApiType, typeMatchMode, alias: string.Empty);
         }
@@ -46,7 +51,11 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <param name="alias">TokenProvider的别名</param>     
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public ITokenProvider Create(Type httpApiType, TypeMatchMode typeMatchMode, string alias)
+        public ITokenProvider Create(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+            Type httpApiType, TypeMatchMode typeMatchMode, string alias)
         {
             if (httpApiType == null)
             {
@@ -101,7 +110,11 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <param name="alias">别名</param>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
-        private ITokenProvider? CreateTokenProviderFromBaseType(Type httpApiType, string alias)
+        private ITokenProvider? CreateTokenProviderFromBaseType(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+            Type httpApiType, string alias)
         {
             foreach (var baseType in httpApiType.GetInterfaces())
             {
@@ -122,13 +135,20 @@ namespace WebApiClientCore.Extensions.OAuths
         {
             private int? hashCode;
 
+#if NET5_0_OR_GREATER
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
             public Type HttpApiType { get; }
 
             public TypeMatchMode TypeMatchMode { get; }
 
             public string Alias { get; }
 
-            public ServiceKey(Type httpApiType, TypeMatchMode typeMatchMode, string alias)
+            public ServiceKey(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+                Type httpApiType, TypeMatchMode typeMatchMode, string alias)
             {
                 this.HttpApiType = httpApiType;
                 this.TypeMatchMode = typeMatchMode;

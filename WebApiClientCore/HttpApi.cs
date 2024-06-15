@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -91,7 +92,14 @@ namespace WebApiClientCore
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        public static MethodInfo[] FindApiMethods(Type httpApiType)
+#if NET5_0_OR_GREATER
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2070", Justification = "已使用DynamicallyAccessedMembers.All关联接口的父接口成员")]
+#endif
+        public static MethodInfo[] FindApiMethods(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+            Type httpApiType)
         {
             if (httpApiType.IsInterface == false)
             {

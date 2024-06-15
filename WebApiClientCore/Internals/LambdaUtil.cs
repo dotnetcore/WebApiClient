@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -57,7 +58,7 @@ namespace WebApiClientCore.Internals
         /// <typeparam name="TProperty"></typeparam>
         /// <param name="property">属性</param>
         /// <exception cref="ArgumentNullException"></exception>
-        /// <returns></returns>
+        /// <returns></returns> 
         public static Func<TDeclaring, TProperty> CreateGetFunc<TDeclaring, TProperty>(PropertyInfo property)
         {
             if (property == null)
@@ -65,38 +66,13 @@ namespace WebApiClientCore.Internals
                 throw new ArgumentNullException(nameof(property));
             }
 
-            if (property.DeclaringType == null)
+            var declaringType = property.DeclaringType;
+            if (declaringType == null)
             {
                 throw new ArgumentNullException(nameof(property));
             }
 
-            return CreateGetFunc<TDeclaring, TProperty>(property.DeclaringType, property.Name, property.PropertyType);
-        }
-
-        /// <summary>
-        /// 创建属性的获取委托
-        /// </summary>
-        /// <typeparam name="TDeclaring"></typeparam>
-        /// <typeparam name="TProperty"></typeparam>
-        /// <param name="declaringType">实例的类型</param>
-        /// <param name="propertyName">属性的名称</param>
-        /// <param name="propertyType">属性的类型</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <returns></returns>
-        public static Func<TDeclaring, TProperty> CreateGetFunc<TDeclaring, TProperty>(Type declaringType, string propertyName, Type? propertyType = null)
-        {
-            if (declaringType == null)
-            {
-                throw new ArgumentNullException(nameof(declaringType));
-            }
-
-            if (string.IsNullOrEmpty(propertyName) == true)
-            {
-                throw new ArgumentNullException(nameof(propertyName));
-            }
-
             // (TDeclaring instance) => (propertyType)((declaringType)instance).propertyName
-
             var paramInstance = Expression.Parameter(typeof(TDeclaring));
 
             var bodyInstance = (Expression)paramInstance;
@@ -105,15 +81,14 @@ namespace WebApiClientCore.Internals
                 bodyInstance = Expression.Convert(bodyInstance, declaringType);
             }
 
-            var bodyProperty = (Expression)Expression.Property(bodyInstance, propertyName);
-            if (typeof(TProperty) != propertyType)
+            var bodyProperty = (Expression)Expression.Property(bodyInstance, property);
+            if (typeof(TProperty) != property.PropertyType)
             {
                 bodyProperty = Expression.Convert(bodyProperty, typeof(TProperty));
             }
 
             return Expression.Lambda<Func<TDeclaring, TProperty>>(bodyProperty, paramInstance).Compile();
-        }
-
+        } 
 
         /// <summary>
         /// 创建字段的获取委托
@@ -156,7 +131,11 @@ namespace WebApiClientCore.Internals
         /// <typeparam name="TType"></typeparam>
         /// <param name="type">类型</param>
         /// <returns></returns>
-        public static Func<TType> CreateCtorFunc<TType>(Type type)
+        public static Func<TType> CreateCtorFunc<TType>(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+            Type type)
         {
             return CreateCtorFunc<Func<TType>>(type, Array.Empty<Type>());
         }
@@ -170,7 +149,11 @@ namespace WebApiClientCore.Internals
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
-        public static Func<TArg1, TType> CreateCtorFunc<TArg1, TType>(Type type)
+        public static Func<TArg1, TType> CreateCtorFunc<TArg1, TType>(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+            Type type)
         {
             var args = new Type[] { typeof(TArg1) };
             return CreateCtorFunc<Func<TArg1, TType>>(type, args);
@@ -186,7 +169,11 @@ namespace WebApiClientCore.Internals
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
-        public static Func<TArg1, TArg2, TType> CreateCtorFunc<TArg1, TArg2, TType>(Type type)
+        public static Func<TArg1, TArg2, TType> CreateCtorFunc<TArg1, TArg2, TType>(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        Type type)
         {
             var args = new Type[] { typeof(TArg1), typeof(TArg2) };
             return CreateCtorFunc<Func<TArg1, TArg2, TType>>(type, args);
@@ -201,7 +188,11 @@ namespace WebApiClientCore.Internals
         /// <typeparam name="TType"></typeparam>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static Func<TArg1, TArg2, TArg3, TType> CreateCtorFunc<TArg1, TArg2, TArg3, TType>(Type type)
+        public static Func<TArg1, TArg2, TArg3, TType> CreateCtorFunc<TArg1, TArg2, TArg3, TType>(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+            Type type)
         {
             var args = new Type[] { typeof(TArg1), typeof(TArg2), typeof(TArg3) };
             return CreateCtorFunc<Func<TArg1, TArg2, TArg3, TType>>(type, args);
@@ -216,7 +207,11 @@ namespace WebApiClientCore.Internals
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
-        private static TFunc CreateCtorFunc<TFunc>(Type type, Type[] args)
+        private static TFunc CreateCtorFunc<TFunc>(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        Type type, Type[] args)
         {
             if (type == null)
             {

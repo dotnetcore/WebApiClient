@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -25,6 +26,10 @@ namespace WebApiClientCore.Serialization
         /// <param name="obj">对象实例</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
+#if NET8_0_OR_GREATER
+        [RequiresDynamicCode("JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use System.Text.Json source generation for native AOT applications.")]
+        [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
+#endif
         public static IList<KeyValue> Serialize(string key, object? obj, KeyValueSerializerOptions? options)
         {
             var kvOptions = options ?? defaultOptions;
@@ -73,6 +78,10 @@ namespace WebApiClientCore.Serialization
         /// <param name="objType">对象类型</param>
         /// <param name="options">选项</param>
         /// <returns></returns>
+#if NET8_0_OR_GREATER
+        [RequiresDynamicCode("JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use System.Text.Json source generation for native AOT applications.")]
+        [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
+#endif
         private static IList<KeyValue> GetKeyValueList(string key, object obj, Type objType, KeyValueSerializerOptions options)
         {
             var jsonOptions = options.GetJsonSerializerOptions();

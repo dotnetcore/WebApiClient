@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClientCore.HttpContents;
 using WebApiClientCore.Internals;
@@ -54,7 +55,11 @@ namespace WebApiClientCore.Attributes
         /// 设置强类型模型结果值
         /// </summary>
         /// <param name="context">上下文</param>
-        /// <returns></returns>
+        /// <returns></returns> 
+#if NET5_0_OR_GREATER
+        [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
+        [UnconditionalSuppressMessage("Trimming", "IL3050:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
+#endif 
         public override async Task SetResultAsync(ApiResponseContext context)
         {
             var resultType = context.ActionDescriptor.Return.DataType.Type;

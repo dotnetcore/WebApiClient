@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClientCore.HttpContents;
@@ -30,6 +31,9 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
+#if NET5_0_OR_GREATER
+        [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
+#endif
         protected override Task SetHttpContentAsync(ApiParameterContext context)
         {
             var xml = context.SerializeToXml(this.encoding);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -32,7 +33,8 @@ namespace WebApiClientCore.Serialization.JsonConverters
         /// <param name="options"></param>
         /// <returns></returns>
 #if NET5_0_OR_GREATER
-        [System.Diagnostics.CodeAnalysis.DynamicDependency(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Converter<>))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Converter<>))]
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL3050", Justification = "类型已使用DynamicDependency来阻止被裁剪")]
 #endif
         public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
         {
@@ -53,6 +55,11 @@ namespace WebApiClientCore.Serialization.JsonConverters
             /// <param name="typeToConvert"></param>
             /// <param name="options"></param>
             /// <returns></returns> 
+#if NET5_0_OR_GREATER
+            [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
+            [UnconditionalSuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.", Justification = "<Pending>")]
+            [UnconditionalSuppressMessage("AOT", "IL2067", Justification = "<Pending>")]
+#endif
             public override TJsonString Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
                 var json = reader.GetString();
@@ -67,6 +74,10 @@ namespace WebApiClientCore.Serialization.JsonConverters
             /// <param name="writer"></param>
             /// <param name="value"></param>
             /// <param name="options"></param>
+#if NET5_0_OR_GREATER
+            [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
+            [UnconditionalSuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.", Justification = "<Pending>")]
+#endif
             public override void Write(Utf8JsonWriter writer, TJsonString value, JsonSerializerOptions options)
             {
                 if (value == null || value.Value == null)

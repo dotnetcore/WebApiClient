@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace WebApiClientCore
@@ -14,6 +15,9 @@ namespace WebApiClientCore
         /// 获取所在接口类型
         /// 这个值不一定是声明方法的接口类型
         /// </summary>
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
         public abstract Type InterfaceType { get; protected set; }
 
         /// <summary>

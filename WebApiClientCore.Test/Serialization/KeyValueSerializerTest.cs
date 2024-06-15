@@ -12,7 +12,7 @@ namespace WebApiClientCore.Test.Serialization
         public void SerializeTest()
         {
             var obj1 = new FormatModel { Age = 18, Name = "lao九" };
-           
+
             var options = new HttpApiOptions().KeyValueSerializeOptions;
 
             var kvs = KeyValueSerializer.Serialize("pName", obj1, options)
@@ -47,8 +47,21 @@ namespace WebApiClientCore.Test.Serialization
         }
 
         [Fact]
+        public void IgnoreNullValuesTest()
+        {
+            var obj1 = new FormatModel { Age = 18 };
+            var options = new HttpApiOptions().KeyValueSerializeOptions;
+            options.IgnoreNullValues = true;
+
+            var kvs = KeyValueSerializer.Serialize("pName", obj1, options)
+               .ToDictionary(item => item.Key, item => item.Value, StringComparer.OrdinalIgnoreCase);
+
+            Assert.False(kvs.ContainsKey("name"));
+        }
+
+        [Fact]
         public void KeyNamingStyleTest()
-        {             
+        {
             var model = new { x = new { y = 1 } };
 
             var value = KeyValueSerializer.Serialize("root", model, null).First();
@@ -80,7 +93,7 @@ namespace WebApiClientCore.Test.Serialization
         [Fact]
         public void ArrayIndexFormatTest()
         {
-            
+
             var model = new { x = new { y = new[] { 1, 2 } } };
 
             var kv = KeyValueSerializer.Serialize("root", model, new KeyValueSerializerOptions

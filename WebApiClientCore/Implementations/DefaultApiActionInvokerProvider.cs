@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace WebApiClientCore.Implementations
 {
@@ -31,7 +32,8 @@ namespace WebApiClientCore.Implementations
         /// <param name="actionDescriptor">Action描述</param>
         /// <returns></returns>
 #if NET5_0_OR_GREATER
-        [System.Diagnostics.CodeAnalysis.DynamicDependency(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors, typeof(DefaultApiActionInvoker<>))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(DefaultApiActionInvoker<>))]
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL3050", Justification = "类型已使用DynamicDependency来阻止被裁剪")]
 #endif
         protected virtual ApiActionInvoker CreateDefaultActionInvoker(ApiActionDescriptor actionDescriptor)
         {

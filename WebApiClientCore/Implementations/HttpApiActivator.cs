@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -9,7 +10,11 @@ namespace WebApiClientCore.Implementations
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
     [Obsolete("该类型存在构造器调用虚方法的设计失误，不建议再使用", error: false)]
-    public abstract class HttpApiActivator<THttpApi> : IHttpApiActivator<THttpApi>
+    public abstract class HttpApiActivator<
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+    THttpApi> : IHttpApiActivator<THttpApi>
     {
         /// <summary>
         /// 接口的所有方法执行器

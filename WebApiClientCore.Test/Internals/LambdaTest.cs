@@ -21,21 +21,7 @@ namespace WebApiClientCore.Test.Internals
             var name2 = getter2.Invoke(model);
             Assert.True(name2 == model.name);
 
-            Assert.NotNull(p.DeclaringType);
-            var getter3 = LambdaUtil.CreateGetFunc<object, object>(p.DeclaringType, p.Name);
-            var name3 = getter2.Invoke(model).ToString();
-            Assert.True(name3 == model.name);
-
-            var kv = new KeyValuePair<string, int>("k", 10);
-            var getter4 = LambdaUtil.CreateGetFunc<object, object>(kv.GetType(), "Value");
-            var value = (int)getter4.Invoke(kv);
-            Assert.True(value == kv.Value);
-
-            var getter5 = LambdaUtil.CreateGetFunc<object, int>(kv.GetType(), "Value");
-            Assert.True(getter5.Invoke(kv) == kv.Value);
-
-            var getter6 = LambdaUtil.CreateGetFunc<object, long>(kv.GetType(), "Value");
-            Assert.True(getter6.Invoke(kv) == kv.Value);
+            Assert.NotNull(p.DeclaringType);           
         }
 
         [Fact]

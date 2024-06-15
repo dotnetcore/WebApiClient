@@ -13,6 +13,7 @@ namespace WebApiClientCore.Test.BuildinExtensions
             Assert.Equal("Accept", HttpRequestHeader.Accept.ToHeaderName());
             Assert.Equal("Accept-Charset", HttpRequestHeader.AcceptCharset.ToHeaderName());
 
+#if NET5_0_OR_GREATER
             foreach (var item in Enum.GetValues<HttpRequestHeader>())
             {
                 var name = Enum.GetName(item);
@@ -20,6 +21,7 @@ namespace WebApiClientCore.Test.BuildinExtensions
                 var headerName = field?.GetCustomAttribute<DisplayAttribute>()?.Name;
                 Assert.Equal(headerName, item.ToHeaderName());
             }
+#endif
         }
     }
 }

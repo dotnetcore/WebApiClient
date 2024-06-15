@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace WebApiClientCore.Implementations
 {
@@ -10,7 +11,7 @@ namespace WebApiClientCore.Implementations
     /// <typeparam name="THttpApi"></typeparam>
     public class DefaultHttpApiActivator<
 #if NET5_0_OR_GREATER
-        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
 #endif
     THttpApi> : IHttpApiActivator<THttpApi>
     {
@@ -23,6 +24,9 @@ namespace WebApiClientCore.Implementations
         /// <param name="actionInvokerProvider"></param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
+#if NET5_0_OR_GREATER
+        [UnconditionalSuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.", Justification = "<Pending>")]
+#endif
         public DefaultHttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
         {
             this.httpApiActivator = SourceGeneratorHttpApiActivator<THttpApi>.IsSupported

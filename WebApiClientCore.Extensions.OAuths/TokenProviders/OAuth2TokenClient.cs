@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -37,6 +38,10 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <returns></returns>
         [HttpPost]
         [FormField("grant_type", "client_credentials")]
+#if NET8_0_OR_GREATER
+        [RequiresDynamicCode("JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use System.Text.Json source generation for native AOT applications.")]
+        [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
+#endif
         public Task<TokenResult?> RequestTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] ClientCredentials credentials)
         {
             return this.PostFormAsync(endpoint, "client_credentials", credentials);
@@ -50,6 +55,10 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <returns></returns>
         [HttpPost]
         [FormField("grant_type", "password")]
+#if NET8_0_OR_GREATER
+        [RequiresDynamicCode("JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use System.Text.Json source generation for native AOT applications.")]
+        [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
+#endif
         public Task<TokenResult?> RequestTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] PasswordCredentials credentials)
         {
             return this.PostFormAsync(endpoint, "password", credentials);
@@ -63,6 +72,10 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <returns></returns>
         [HttpPost]
         [FormField("grant_type", "refresh_token")]
+#if NET8_0_OR_GREATER
+        [RequiresDynamicCode("JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use System.Text.Json source generation for native AOT applications.")]
+        [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
+#endif
         public Task<TokenResult?> RefreshTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] RefreshTokenCredentials credentials)
         {
             return this.PostFormAsync(endpoint, "refresh_token", credentials);
@@ -76,6 +89,10 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <param name="grant_type"></param>
         /// <param name="credentials"></param>
         /// <returns></returns>
+#if NET8_0_OR_GREATER
+        [RequiresDynamicCode("JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use System.Text.Json source generation for native AOT applications.")]
+        [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
+#endif
         private async Task<TokenResult?> PostFormAsync<TCredentials>(Uri endpoint, string grant_type, TCredentials credentials)
         {
             using var formContent = new FormContent(credentials, this.httpApiOptions.KeyValueSerializeOptions);

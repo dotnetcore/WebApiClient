@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using WebApiClientCore.Extensions.OAuths;
 using WebApiClientCore.Extensions.OAuths.HttpMessageHandlers;
 
@@ -38,6 +39,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="handlerFactory">hanlder的创建委托</param>
         /// <param name="tokenProviderSearchMode">token提供者的查找模式</param> 
         /// <returns></returns>
+#if NET5_0_OR_GREATER
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2072", Justification = "类型httpApiType明确是不会被裁剪的")]
+#endif
         public static IHttpClientBuilder AddOAuthTokenHandler<TOAuthTokenHandler>(this IHttpClientBuilder builder, Func<IServiceProvider, ITokenProvider, TOAuthTokenHandler> handlerFactory, TypeMatchMode tokenProviderSearchMode = TypeMatchMode.TypeOrBaseTypes)
             where TOAuthTokenHandler : OAuthTokenHandler
         {

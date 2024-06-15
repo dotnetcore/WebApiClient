@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace WebApiClientCore.Implementations
@@ -24,6 +25,9 @@ namespace WebApiClientCore.Implementations
         /// <param name="parameterValue">参数值</param>
         /// <param name="validateProperty">是否验证属性值</param>
         /// <exception cref="ValidationException"></exception>
+#if NET5_0_OR_GREATER
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026", Justification = "允许instance属性被裁剪")]
+#endif
         public static void ValidateParameter(ApiParameterDescriptor parameter, object? parameterValue, bool validateProperty)
         {
             var name = parameter.Name;
@@ -44,6 +48,9 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="value">结果值</param> 
         /// <exception cref="ValidationException"></exception>
+#if NET5_0_OR_GREATER
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026", Justification = "允许instance属性被裁剪")]
+#endif
         public static void ValidateReturnValue(object? value)
         {
             if (value != null && IsNeedValidateProperty(value) == true)
@@ -58,6 +65,9 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="instance">实例</param>
         /// <returns></returns>
+#if NET5_0_OR_GREATER
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2070", Justification = "允许instance属性被裁剪")]
+#endif
         private static bool IsNeedValidateProperty(object instance)
         {
             var type = instance.GetType();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -40,8 +41,13 @@ namespace WebApiClientCore.Serialization
         /// </summary>
         public bool IgnoreNullValues
         {
+#if NET5_0_OR_GREATER
+            get => jsonOptions.DefaultIgnoreCondition == JsonIgnoreCondition.WhenWritingNull;
+            set => jsonOptions.DefaultIgnoreCondition = value ? JsonIgnoreCondition.WhenWritingNull : JsonIgnoreCondition.Never;
+#else
             get => jsonOptions.IgnoreNullValues;
             set => jsonOptions.IgnoreNullValues = value;
+#endif
         }
 
         /// <summary>
@@ -90,6 +96,10 @@ namespace WebApiClientCore.Serialization
         /// </summary>
         /// <param name="typeToConvert">目标类型</param>
         /// <returns></returns>
+#if NET8_0_OR_GREATER
+        [RequiresDynamicCode("Getting a converter for a type may require reflection which depends on runtime code generation.")]
+        [RequiresUnreferencedCode("Getting a converter for a type may require reflection which depends on unreferenced code.")]
+#endif
         public JsonConverter GetConverter(Type typeToConvert)
         {
             return this.jsonOptions.GetConverter(typeToConvert);

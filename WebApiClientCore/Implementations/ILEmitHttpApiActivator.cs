@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -13,7 +14,7 @@ namespace WebApiClientCore.Implementations
     /// <typeparam name="THttpApi"></typeparam>
     public sealed class ILEmitHttpApiActivator<
 #if NET5_0_OR_GREATER
-        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
 #endif
     THttpApi> : IHttpApiActivator<THttpApi>
     {
@@ -27,6 +28,12 @@ namespace WebApiClientCore.Implementations
         /// <param name="actionInvokerProvider"></param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
+#if NET5_0_OR_GREATER
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2072", Justification = "proxyType是运行时生成的")]
+#endif
+#if NET8_0_OR_GREATER
+        [RequiresDynamicCode("Calls System.Reflection.Emit.AssemblyBuilder.DefineDynamicAssembly(AssemblyName, AssemblyBuilderAccess)")]
+#endif
         public ILEmitHttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
         {
             var apiMethods = HttpApi.FindApiMethods(typeof(THttpApi));
@@ -36,7 +43,7 @@ namespace WebApiClientCore.Implementations
                 .Select(actionInvokerProvider.CreateActionInvoker)
                 .ToArray();
 
-            var proxyType = BuildProxyType(typeof(THttpApi), apiMethods);
+            var proxyType = BuildProxyType(apiMethods);
             this.activator = LambdaUtil.CreateCtorFunc<IHttpApiInterceptor, ApiActionInvoker[], THttpApi>(proxyType);
         }
 
@@ -66,15 +73,18 @@ namespace WebApiClientCore.Implementations
 
         /// <summary>
         /// 创建IHttpApi代理类的类型
-        /// </summary>
-        /// <param name="interfaceType">接口类型</param>
+        /// </summary> 
         /// <param name="apiMethods">接口的方法</param>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
-        private static Type BuildProxyType(Type interfaceType, MethodInfo[] apiMethods)
+#if NET8_0_OR_GREATER
+        [RequiresDynamicCode("Calls System.Reflection.Emit.AssemblyBuilder.DefineDynamicAssembly(AssemblyName, AssemblyBuilderAccess)")]
+#endif
+        private static Type BuildProxyType(MethodInfo[] apiMethods)
         {
             // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口            
+            var interfaceType = typeof(THttpApi);
             if (interfaceType.IsVisible == false)
             {
                 var message = Resx.required_PublicInterface.Format(interfaceType);

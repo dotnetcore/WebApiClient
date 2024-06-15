@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace WebApiClientCore.Implementations
@@ -36,7 +37,10 @@ namespace WebApiClientCore.Implementations
             return null;
         }
 
-
+#if NET5_0_OR_GREATER
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026", Justification = "类型已使用ModuleInitializer和DynamicDependency来阻止被裁剪")]
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2075", Justification = "类型已使用ModuleInitializer和DynamicDependency来阻止被裁剪")]
+#endif
         private static void AnalyzeAssembly(Assembly assembly)
         {
             var httpApiProxyClass = assembly.GetType(HttpApiProxyClassTypeName);

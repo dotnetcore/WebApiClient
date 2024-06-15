@@ -1,8 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Nullable>enable</Nullable>
+		<Nullable>enable</Nullable> 
 		<TargetFrameworks>netstandard2.1;net5.0;net8.0</TargetFrameworks>
+		<IsAotCompatible Condition="'$(TargetFramework)' == 'net8.0'">true</IsAotCompatible>
 		
 		<RootNamespace>WebApiClientCore</RootNamespace>
 		<AssemblyName>WebApiClientCore.Abstractions</AssemblyName>

@@ -1,4 +1,6 @@
-﻿namespace WebApiClientCore
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace WebApiClientCore
 {
     /// <summary>
     /// 定义THttpApi的实例创建器的接口
@@ -6,7 +8,7 @@
     /// <typeparam name="THttpApi"></typeparam>
     public interface IHttpApiActivator<
 #if NET5_0_OR_GREATER
-        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
 #endif
     THttpApi>
     {

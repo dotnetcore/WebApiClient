@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace WebApiClientCore.Implementations
@@ -14,7 +15,11 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="method">接口的方法</param>
         /// <param name="interfaceType">接口类型</param> 
-        public ApiActionDescriptor CreateActionDescriptor(MethodInfo method, Type interfaceType)
+        public ApiActionDescriptor CreateActionDescriptor(MethodInfo method,
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+            Type interfaceType)
         {
             return new JsonFirstApiActionDescriptor(method, interfaceType);
         }
