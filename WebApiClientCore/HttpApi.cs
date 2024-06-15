@@ -91,15 +91,9 @@ namespace WebApiClientCore
         /// <param name="httpApiType">接口类型</param> 
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
-        /// <returns></returns>
-#if NET5_0_OR_GREATER
+        /// <returns></returns> 
         [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2070", Justification = "已使用DynamicallyAccessedMembers.All关联接口的父接口成员")]
-#endif
-        public static MethodInfo[] FindApiMethods(
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-            Type httpApiType)
+        public static MethodInfo[] FindApiMethods([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type httpApiType)
         {
             if (httpApiType.IsInterface == false)
             {

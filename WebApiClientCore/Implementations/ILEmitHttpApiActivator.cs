@@ -12,11 +12,8 @@ namespace WebApiClientCore.Implementations
     /// 运行时使用ILEmit动态创建THttpApi的代理类和代理类实例
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
-    public sealed class ILEmitHttpApiActivator<
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    THttpApi> : IHttpApiActivator<THttpApi>
+    public sealed class ILEmitHttpApiActivator<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] THttpApi>
+        : IHttpApiActivator<THttpApi>
     {
         private readonly ApiActionInvoker[] actionInvokers;
         private readonly Func<IHttpApiInterceptor, ApiActionInvoker[], THttpApi> activator;
@@ -28,12 +25,8 @@ namespace WebApiClientCore.Implementations
         /// <param name="actionInvokerProvider"></param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
-#if NET5_0_OR_GREATER
         [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2072", Justification = "proxyType是运行时生成的")]
-#endif
-#if NET8_0_OR_GREATER
         [RequiresDynamicCode("Calls System.Reflection.Emit.AssemblyBuilder.DefineDynamicAssembly(AssemblyName, AssemblyBuilderAccess)")]
-#endif
         public ILEmitHttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
         {
             var apiMethods = HttpApi.FindApiMethods(typeof(THttpApi));
@@ -78,9 +71,7 @@ namespace WebApiClientCore.Implementations
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ProxyTypeCreateException"></exception>
         /// <returns></returns>
-#if NET8_0_OR_GREATER
         [RequiresDynamicCode("Calls System.Reflection.Emit.AssemblyBuilder.DefineDynamicAssembly(AssemblyName, AssemblyBuilderAccess)")]
-#endif
         private static Type BuildProxyType(MethodInfo[] apiMethods)
         {
             // 接口的实现在动态程序集里，所以接口必须为public修饰才可以创建代理类并实现此接口            

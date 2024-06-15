@@ -63,10 +63,9 @@ namespace WebApiClientCore
         /// <exception cref="TypeInstanceCreateException"></exception>
         /// <returns></returns>
         public static T CreateInstance<T>(
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-            this Type type, params object?[] args)
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+            this Type type, 
+            params object?[] args)
         {
             var instance = Activator.CreateInstance(type, args);
             if (instance == null)
@@ -82,9 +81,7 @@ namespace WebApiClientCore
         /// <param name="interfaceType">接口类型</param> 
         /// <returns></returns>
         public static Attribute[] GetInterfaceCustomAttributes(
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
             this Type interfaceType)
         {
             return interfaceType

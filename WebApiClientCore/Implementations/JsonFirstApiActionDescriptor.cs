@@ -24,11 +24,9 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="method"></param>
         /// <param name="interfaceType"></param>
-        public JsonFirstApiActionDescriptor(MethodInfo method,
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-            Type interfaceType)
+        public JsonFirstApiActionDescriptor(
+            MethodInfo method, 
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type interfaceType)
             : base(method, interfaceType)
         {
             var defineGetHead = this.Attributes.Any(a => this.IsGetHeadAttribute(a));

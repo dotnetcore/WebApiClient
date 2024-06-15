@@ -21,11 +21,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="tokenRequest">token请求委托</param>
         /// <param name="alias">TokenProvider的别名</param>
         /// <returns></returns>
-        public static ITokenProviderBuilder AddTokenProvider<
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-        THttpApi>(this IServiceCollection services, Func<IServiceProvider, Task<TokenResult?>> tokenRequest, string alias = "")
+        public static ITokenProviderBuilder AddTokenProvider<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] THttpApi>(
+            this IServiceCollection services,
+            Func<IServiceProvider, Task<TokenResult?>> tokenRequest,
+            string alias = "")
         {
             return services.AddTokenProvider<THttpApi, DelegateTokenProvider>(s => new DelegateTokenProvider(s, tokenRequest), alias);
         }
@@ -40,15 +39,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="alias">TokenProvider的别名</param>
         /// <returns></returns>
         public static ITokenProviderBuilder AddTokenProvider<
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-        THttpApi,
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-        TTokenProvider>(this IServiceCollection services, Func<IServiceProvider, TTokenProvider> tokenProviderFactory, string alias = "")
-            where TTokenProvider : class, ITokenProvider
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] THttpApi,
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TTokenProvider>(
+            this IServiceCollection services,
+            Func<IServiceProvider, TTokenProvider> tokenProviderFactory,
+            string alias = "") where TTokenProvider : class, ITokenProvider
         {
             return services
                 .RemoveAll<TTokenProvider>()
@@ -66,15 +61,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="alias">TokenProvider的别名</param>
         /// <returns></returns>
         public static ITokenProviderBuilder AddTokenProvider<
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-        THttpApi,
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-        TTokenProvider>(this IServiceCollection services, string alias = "")
-            where TTokenProvider : class, ITokenProvider
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] THttpApi,
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TTokenProvider>(
+            this IServiceCollection services,
+            string alias = "") where TTokenProvider : class, ITokenProvider
         {
             return services
                 .RemoveAll<TTokenProvider>()
@@ -92,15 +82,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="alias">TokenProvider的别名</param>
         /// <returns></returns>
         private static ITokenProviderBuilder AddTokenProviderCore<
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-        THttpApi,
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-        TTokenProvider>(this IServiceCollection services, string alias)
-            where TTokenProvider : class, ITokenProvider
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] THttpApi,
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TTokenProvider>(
+            this IServiceCollection services,
+            string alias) where TTokenProvider : class, ITokenProvider
         {
             if (alias == null)
             {

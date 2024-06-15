@@ -16,10 +16,8 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         ITokenProvider Create(
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-            Type httpApiType, TypeMatchMode typeMatchMode = TypeMatchMode.TypeOnly);
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type httpApiType,
+            TypeMatchMode typeMatchMode = TypeMatchMode.TypeOnly);
 
         /// <summary>
         /// 通过接口类型获取或创建其对应的token提供者
@@ -30,9 +28,8 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         ITokenProvider Create(
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-            Type httpApiType, TypeMatchMode typeMatchMode, string alias);
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type httpApiType,
+            TypeMatchMode typeMatchMode,
+            string alias);
     }
 }

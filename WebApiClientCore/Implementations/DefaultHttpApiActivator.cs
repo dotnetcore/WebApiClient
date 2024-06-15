@@ -9,11 +9,8 @@ namespace WebApiClientCore.Implementations
     /// 不支持则回退使用EmitHttpApiActivator
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
-    public class DefaultHttpApiActivator<
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    THttpApi> : IHttpApiActivator<THttpApi>
+    public class DefaultHttpApiActivator<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] THttpApi>
+        : IHttpApiActivator<THttpApi>
     {
         private readonly IHttpApiActivator<THttpApi> httpApiActivator;
 
@@ -24,9 +21,7 @@ namespace WebApiClientCore.Implementations
         /// <param name="actionInvokerProvider"></param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
-#if NET5_0_OR_GREATER
         [UnconditionalSuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.", Justification = "<Pending>")]
-#endif
         public DefaultHttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
         {
             this.httpApiActivator = SourceGeneratorHttpApiActivator<THttpApi>.IsSupported

@@ -30,11 +30,9 @@ namespace WebApiClientCore.Implementations
         /// 创建DefaultApiActionInvoker类型或其子类型的实例
         /// </summary>
         /// <param name="actionDescriptor">Action描述</param>
-        /// <returns></returns>
-#if NET5_0_OR_GREATER
+        /// <returns></returns> 
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(DefaultApiActionInvoker<>))]
         [UnconditionalSuppressMessage("ReflectionAnalysis", "IL3050", Justification = "类型已使用DynamicDependency来阻止被裁剪")]
-#endif
         protected virtual ApiActionInvoker CreateDefaultActionInvoker(ApiActionDescriptor actionDescriptor)
         {
             var resultType = actionDescriptor.Return.DataType.Type;

@@ -20,9 +20,7 @@ namespace WebApiClientCore.Serialization
         /// <param name="obj">对象</param>
         /// <param name="options">配置选项</param> 
         /// <returns></returns>
-#if NET8_0_OR_GREATER
         [RequiresUnreferencedCode("Members from serialized types may be trimmed if not referenced directly")]
-#endif
         public static string? Serialize(object? obj, XmlWriterSettings? options)
         {
             if (obj == null)
@@ -45,9 +43,7 @@ namespace WebApiClientCore.Serialization
         /// <param name="objType">对象类型</param>
         /// <param name="options">配置选项</param>
         /// <returns></returns>
-#if NET8_0_OR_GREATER
         [RequiresUnreferencedCode("Members from serialized types may be trimmed if not referenced directly")]
-#endif
         public static object? Deserialize(string? xml, Type objType, XmlReaderSettings? options)
         {
             if (objType == null)

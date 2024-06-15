@@ -23,10 +23,8 @@ namespace WebApiClientCore.Attributes
         /// <param name="context">上下文</param>
         /// <exception cref="ApiInvalidConfigException"></exception>
         /// <returns></returns>
-#if NET5_0_OR_GREATER
         [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
         [UnconditionalSuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.", Justification = "<Pending>")]
-#endif
         public override Task OnRequestAsync(ApiParameterContext context)
         {
             var uri = context.HttpContext.RequestMessage.RequestUri;
@@ -45,10 +43,8 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context">上下文</param>
         /// <returns></returns>
-#if NET8_0_OR_GREATER
         [RequiresDynamicCode("JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use System.Text.Json source generation for native AOT applications.")]
         [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
-#endif
         protected virtual IEnumerable<KeyValue> SerializeToKeyValues(ApiParameterContext context)
         {
             return context.SerializeToKeyValues();

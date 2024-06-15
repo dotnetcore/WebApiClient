@@ -17,12 +17,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="alias">TokenProvider的别名</param>
         /// <returns></returns>     
-        public static OptionsBuilder<ClientCredentialsOptions> AddClientCredentialsTokenProvider<
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-        THttpApi>(this IServiceCollection services, string alias = "")
-        { 
+        public static OptionsBuilder<ClientCredentialsOptions> AddClientCredentialsTokenProvider<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] THttpApi>(
+            this IServiceCollection services,
+            string alias = "")
+        {
             var builder = services.AddTokenProvider<THttpApi, ClientCredentialsTokenProvider>(alias);
             return new OptionsBuilder<ClientCredentialsOptions>(builder.Services, builder.Name);
         }
@@ -34,11 +32,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="configureOptions">配置</param> 
         /// <returns></returns>
-        public static OptionsBuilder<ClientCredentialsOptions> AddClientCredentialsTokenProvider<
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-        THttpApi>(this IServiceCollection services, Action<ClientCredentialsOptions> configureOptions)
+        public static OptionsBuilder<ClientCredentialsOptions> AddClientCredentialsTokenProvider<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] THttpApi>(
+            this IServiceCollection services,
+            Action<ClientCredentialsOptions> configureOptions)
         {
             return services.AddClientCredentialsTokenProvider<THttpApi>().Configure(configureOptions);
         }
@@ -51,11 +47,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="alias">TokenProvider的别名</param>
         /// <param name="configureOptions">配置</param>
         /// <returns></returns>
-        public static OptionsBuilder<ClientCredentialsOptions> AddClientCredentialsTokenProvider<
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-        THttpApi>(this IServiceCollection services, string alias, Action<ClientCredentialsOptions> configureOptions)
+        public static OptionsBuilder<ClientCredentialsOptions> AddClientCredentialsTokenProvider<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] THttpApi>(
+            this IServiceCollection services,
+            string alias, 
+            Action<ClientCredentialsOptions> configureOptions)
         {
             return services.AddClientCredentialsTokenProvider<THttpApi>(alias).Configure(configureOptions);
         }

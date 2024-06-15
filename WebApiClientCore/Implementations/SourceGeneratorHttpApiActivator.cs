@@ -14,11 +14,8 @@ namespace WebApiClientCore.Implementations
     /// 通过查找类型代理类型创建实例
     /// </summary>
     /// <typeparam name="THttpApi"></typeparam>
-    public sealed class SourceGeneratorHttpApiActivator<
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    THttpApi> : IHttpApiActivator<THttpApi>
+    public sealed class SourceGeneratorHttpApiActivator<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] THttpApi>
+        : IHttpApiActivator<THttpApi>
     {
         private readonly ApiActionInvoker[] actionInvokers;
         private readonly Func<IHttpApiInterceptor, ApiActionInvoker[], THttpApi> activator;
@@ -37,9 +34,7 @@ namespace WebApiClientCore.Implementations
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ProxyTypeCreateException"></exception>
-#if NET5_0_OR_GREATER
         [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2077", Justification = "类型proxyClassType已使用ModuleInitializer和DynamicDependency来阻止被裁剪")]
-#endif
         public SourceGeneratorHttpApiActivator(IApiActionDescriptorProvider apiActionDescriptorProvider, IApiActionInvokerProvider actionInvokerProvider)
         {
             var httpApiType = typeof(THttpApi);
@@ -75,14 +70,8 @@ namespace WebApiClientCore.Implementations
         /// <param name="proxyClassType">接口的实现类型</param>
         /// <returns></returns>
         private static IEnumerable<MethodInfo> FindApiMethods(
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-        Type httpApiType,
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-        Type proxyClassType)
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type httpApiType,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type proxyClassType)
         {
             var apiMethods = HttpApi.FindApiMethods(httpApiType)
                 .Select(item => new MethodFeature(item, isProxyMethod: false))

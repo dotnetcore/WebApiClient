@@ -15,11 +15,9 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="method">接口的方法</param>
         /// <param name="interfaceType">接口类型</param> 
-        public ApiActionDescriptor CreateActionDescriptor(MethodInfo method,
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-            Type interfaceType)
+        public ApiActionDescriptor CreateActionDescriptor(
+            MethodInfo method,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type interfaceType)
         {
             return new JsonFirstApiActionDescriptor(method, interfaceType);
         }

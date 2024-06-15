@@ -35,9 +35,7 @@ namespace WebApiClientCore.Implementations
         /// for test only
         /// </summary>
         /// <param name="method">方法信息</param>  
-#if NET5_0_OR_GREATER
         [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2072", Justification = "允许DeclaringType被裁剪")]
-#endif
         internal DefaultApiReturnDescriptor(MethodInfo method)
             : this(method, method.DeclaringType!)
         {
@@ -48,11 +46,9 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="method">方法信息</param>
         /// <param name="interfaceType">接口类型</param> 
-        public DefaultApiReturnDescriptor(MethodInfo method,
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-            Type interfaceType)
+        public DefaultApiReturnDescriptor(
+            MethodInfo method,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type interfaceType)
             : this(method.ReturnType, method.GetCustomAttributes(), interfaceType.GetInterfaceCustomAttributes())
         {
         }

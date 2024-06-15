@@ -69,10 +69,8 @@ namespace WebApiClientCore.Parameters
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-#if NET5_0_OR_GREATER
         [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
         [UnconditionalSuppressMessage("Trimming", "IL3050:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
-#endif 
         public Task OnRequestAsync(ApiParameterContext context)
         {
             if (context.HttpContext.RequestMessage.Method != HttpMethod.Patch)

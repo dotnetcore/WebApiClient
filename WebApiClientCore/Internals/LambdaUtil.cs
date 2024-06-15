@@ -88,7 +88,7 @@ namespace WebApiClientCore.Internals
             }
 
             return Expression.Lambda<Func<TDeclaring, TProperty>>(bodyProperty, paramInstance).Compile();
-        } 
+        }
 
         /// <summary>
         /// 创建字段的获取委托
@@ -132,10 +132,7 @@ namespace WebApiClientCore.Internals
         /// <param name="type">类型</param>
         /// <returns></returns>
         public static Func<TType> CreateCtorFunc<TType>(
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-            Type type)
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type)
         {
             return CreateCtorFunc<Func<TType>>(type, Array.Empty<Type>());
         }
@@ -150,10 +147,7 @@ namespace WebApiClientCore.Internals
         /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
         public static Func<TArg1, TType> CreateCtorFunc<TArg1, TType>(
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-            Type type)
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type)
         {
             var args = new Type[] { typeof(TArg1) };
             return CreateCtorFunc<Func<TArg1, TType>>(type, args);
@@ -170,10 +164,7 @@ namespace WebApiClientCore.Internals
         /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
         public static Func<TArg1, TArg2, TType> CreateCtorFunc<TArg1, TArg2, TType>(
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-        Type type)
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type)
         {
             var args = new Type[] { typeof(TArg1), typeof(TArg2) };
             return CreateCtorFunc<Func<TArg1, TArg2, TType>>(type, args);
@@ -188,11 +179,7 @@ namespace WebApiClientCore.Internals
         /// <typeparam name="TType"></typeparam>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static Func<TArg1, TArg2, TArg3, TType> CreateCtorFunc<TArg1, TArg2, TArg3, TType>(
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-            Type type)
+        public static Func<TArg1, TArg2, TArg3, TType> CreateCtorFunc<TArg1, TArg2, TArg3, TType>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type)
         {
             var args = new Type[] { typeof(TArg1), typeof(TArg2), typeof(TArg3) };
             return CreateCtorFunc<Func<TArg1, TArg2, TArg3, TType>>(type, args);
@@ -208,10 +195,8 @@ namespace WebApiClientCore.Internals
         /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
         private static TFunc CreateCtorFunc<TFunc>(
-#if NET5_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-        Type type, Type[] args)
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type,
+            Type[] args)
         {
             if (type == null)
             {
