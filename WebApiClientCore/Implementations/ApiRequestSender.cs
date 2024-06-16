@@ -199,7 +199,7 @@ namespace WebApiClientCore.Implementations
             /// <param name="tokenList"></param>
             public CancellationTokenLinker(IList<CancellationToken> tokenList)
             {
-                if (IsNoneCancellationToken(tokenList) == true)
+                if (IsNoneCancellationToken(tokenList))
                 {
                     this.tokenSource = null;
                     this.Token = CancellationToken.None;
@@ -218,15 +218,8 @@ namespace WebApiClientCore.Implementations
             /// <returns></returns>
             private static bool IsNoneCancellationToken(IList<CancellationToken> tokenList)
             {
-                if (tokenList.Count == 0)
-                {
-                    return true;
-                }
-                if (tokenList.Count == 1 && tokenList[0] == CancellationToken.None)
-                {
-                    return true;
-                }
-                return false;
+                var count = tokenList.Count;
+                return (count == 0) || (count == 1 && tokenList[0] == CancellationToken.None);
             }
 
             /// <summary>
@@ -234,10 +227,7 @@ namespace WebApiClientCore.Implementations
             /// </summary>
             public void Dispose()
             {
-                if (this.tokenSource != null)
-                {
-                    this.tokenSource.Dispose();
-                }
+                this.tokenSource?.Dispose();
             }
         }
     }
