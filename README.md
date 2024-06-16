@@ -29,4 +29,4 @@ Supports parsing local or remote OpenApi documents to generate WebApiClientCore 
 In [BenchmarkDotNet](WebApiClientCore.Benchmarks/results), the performance is 2.X times ahead of the similar product [refit](https://github.com/reactiveui/refit) under various requests.
 
 ### Documentation support
-https://webapiclient.github.io/
+[https://webapiclient.github.io/](https://webapiclient.github.io/en/)
