@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 
 namespace WebApiClientCore
 {
@@ -53,12 +54,28 @@ namespace WebApiClientCore
         }
 
         /// <summary>
+        /// 当此请求所依据的连接被中止且因此请求操作应被取消时发出通知
+        /// </summary>
+        public CancellationToken RequestAborted { get; }
+
+        /// <summary>
         /// Api响应的上下文
         /// </summary>
         /// <param name="context">请求上下文</param>
         public ApiResponseContext(ApiRequestContext context)
+            : this(context, default)
+        {
+        }
+
+        /// <summary>
+        /// Api响应的上下文
+        /// </summary>
+        /// <param name="context">请求上下文</param>
+        /// <param name="requestAborted">请求取消令牌</param>
+        public ApiResponseContext(ApiRequestContext context, CancellationToken requestAborted)
             : base(context.HttpContext, context.ActionDescriptor, context.Arguments, context.Properties)
         {
+            this.RequestAborted = requestAborted;
         }
     }
 }

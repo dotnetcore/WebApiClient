@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,9 +15,10 @@ namespace WebApiClientCore.Implementations
         /// 发送 http 请求
         /// </summary>
         /// <param name="context"></param>
+        /// <param name="requestAborted"></param>
         /// <exception cref="ApiInvalidConfigException"></exception>
         /// <returns></returns>
-        public static async Task<ApiResponseContext> SendAsync(ApiRequestContext context)
+        public static async Task<ApiResponseContext> SendAsync(ApiRequestContext context, CancellationToken requestAborted)
         {
             if (context.HttpContext.RequestMessage.RequestUri == null)
             {
@@ -28,12 +27,12 @@ namespace WebApiClientCore.Implementations
 
             try
             {
-                await SendCoreAsync(context).ConfigureAwait(false);
-                return new ApiResponseContext(context);
+                await SendCoreAsync(context, requestAborted).ConfigureAwait(false);
+                return new ApiResponseContext(context, requestAborted);
             }
             catch (Exception ex)
             {
-                return new ApiResponseContext(context) { Exception = ex };
+                return new ApiResponseContext(context, requestAborted) { Exception = ex };
             }
         }
 
@@ -41,9 +40,10 @@ namespace WebApiClientCore.Implementations
         /// 发送 http 请求
         /// </summary>
         /// <param name="context"></param>
+        /// <param name="requestAborted"></param>
         /// <exception cref="HttpRequestException"></exception> 
         /// <returns></returns>
-        private static async Task SendCoreAsync(ApiRequestContext context)
+        private static async Task SendCoreAsync(ApiRequestContext context, CancellationToken requestAborted)
         {
             var actionCache = await context.GetCacheAsync().ConfigureAwait(false);
             if (actionCache != null && actionCache.Value != null)
@@ -56,9 +56,7 @@ namespace WebApiClientCore.Implementations
                 var request = context.HttpContext.RequestMessage;
                 var completionOption = context.GetCompletionOption();
 
-                using var tokenLinker = new CancellationTokenLinker(context.HttpContext.CancellationTokens);
-                var response = await client.SendAsync(request, completionOption, tokenLinker.Token).ConfigureAwait(false);
-
+                var response = await client.SendAsync(request, completionOption, requestAborted).ConfigureAwait(false);
                 context.HttpContext.ResponseMessage = response;
                 await context.SetCacheAsync(actionCache?.Key, response).ConfigureAwait(false);
             }
@@ -175,59 +173,6 @@ namespace WebApiClientCore.Implementations
             {
                 this.Key = key;
                 this.Value = value;
-            }
-        }
-
-        /// <summary>
-        /// 表示CancellationToken链接器
-        /// </summary>
-        private readonly struct CancellationTokenLinker : IDisposable
-        {
-            /// <summary>
-            /// 链接产生的 tokenSource
-            /// </summary>
-            private readonly CancellationTokenSource? tokenSource;
-
-            /// <summary>
-            /// 获取 token
-            /// </summary>
-            public CancellationToken Token { get; }
-
-            /// <summary>
-            /// CancellationToken链接器
-            /// </summary>
-            /// <param name="tokenList"></param>
-            public CancellationTokenLinker(IList<CancellationToken> tokenList)
-            {
-                if (IsNoneCancellationToken(tokenList))
-                {
-                    this.tokenSource = null;
-                    this.Token = CancellationToken.None;
-                }
-                else
-                {
-                    this.tokenSource = CancellationTokenSource.CreateLinkedTokenSource(tokenList.ToArray());
-                    this.Token = this.tokenSource.Token;
-                }
-            }
-
-            /// <summary>
-            /// 是否为None的CancellationToken
-            /// </summary>
-            /// <param name="tokenList"></param>
-            /// <returns></returns>
-            private static bool IsNoneCancellationToken(IList<CancellationToken> tokenList)
-            {
-                var count = tokenList.Count;
-                return (count == 0) || (count == 1 && tokenList[0] == CancellationToken.None);
-            }
-
-            /// <summary>
-            /// 释放资源
-            /// </summary>
-            public void Dispose()
-            {
-                this.tokenSource?.Dispose();
             }
         }
     }
