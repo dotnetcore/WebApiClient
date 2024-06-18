@@ -1,7 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
-using System.Text.Json;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace WebApiClientCore.Benchmarks.Requests
@@ -23,12 +23,9 @@ namespace WebApiClientCore.Benchmarks.Requests
             var httpClient = scope.ServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(typeof(HttpClient).FullName);
 
             var id = "id";
-            var request = new HttpRequestMessage(HttpMethod.Get, $"http://webapiclient.com/{id}");
-            var response = await httpClient.SendAsync(request);
-            var json = await response.Content.ReadAsUtf8ByteArrayAsync();
-            return JsonSerializer.Deserialize<Model>(json);
+            var requestUri = $"http://webapiclient.com/{id}";
+            return await httpClient.GetFromJsonAsync<Model>(requestUri);
         }
-
 
         /// <summary>
         /// 使用WebApiClientCore请求
