@@ -1,11 +1,11 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using WebApiClientCore;
 using WebApiClientCore.Exceptions;
 using WebApiClientCore.Internals;
 
@@ -87,22 +87,18 @@ namespace System.Net.Http
         [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
         public static async Task<T?> ReadAsJsonAsync<T>(this HttpContent content, JsonSerializerOptions? options, CancellationToken cancellationToken = default)
         {
-#if NET5_0_OR_GREATER
-            return await System.Net.Http.Json.HttpContentJsonExtensions.ReadFromJsonAsync<T>(content, options, cancellationToken).ConfigureAwait(false);
-#else
-            var encoding = content.GetEncoding();
-            if (encoding.Equals(Encoding.UTF8))
+            var srcEncoding = content.GetEncoding();
+            if (Encoding.UTF8.Equals(srcEncoding))
             {
-                using var utf8Json = await content.ReadAsStreamAsync().ConfigureAwait(false);
-                return await JsonSerializer.DeserializeAsync<T>(utf8Json, options, cancellationToken);
+                using var utf8Json = await content.ReadAsStreamCoreAsync(cancellationToken).ConfigureAwait(false);
+                return await JsonSerializer.DeserializeAsync<T>(utf8Json, options, cancellationToken).ConfigureAwait(false);
             }
             else
             {
-                var byteArray = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                var utf8Json = Encoding.Convert(encoding, Encoding.UTF8, byteArray);
-                return utf8Json.Length == 0 ? default : JsonSerializer.Deserialize<T>(utf8Json, options);
+                var byteArray = await content.ReadAsByteArrayCoreAsync(cancellationToken).ConfigureAwait(false);
+                var utf8Json = Encoding.Convert(srcEncoding, Encoding.UTF8, byteArray);
+                return JsonSerializer.Deserialize<T>(utf8Json, options);
             }
-#endif
         }
 
         /// <summary>
@@ -117,22 +113,18 @@ namespace System.Net.Http
         [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
         public static async Task<object?> ReadAsJsonAsync(this HttpContent content, Type objType, JsonSerializerOptions? options, CancellationToken cancellationToken = default)
         {
-#if NET5_0_OR_GREATER
-            return await System.Net.Http.Json.HttpContentJsonExtensions.ReadFromJsonAsync(content, objType, options, cancellationToken).ConfigureAwait(false);
-#else
-            var encoding = content.GetEncoding();
-            if (encoding.Equals(Encoding.UTF8))
+            var srcEncoding = content.GetEncoding();
+            if (Encoding.UTF8.Equals(srcEncoding))
             {
-                using var stream = await content.ReadAsStreamAsync().ConfigureAwait(false);
-                return await JsonSerializer.DeserializeAsync(stream, objType, options, cancellationToken);
+                using var utf8Json = await content.ReadAsStreamCoreAsync(cancellationToken).ConfigureAwait(false);
+                return await JsonSerializer.DeserializeAsync(utf8Json, objType, options, cancellationToken).ConfigureAwait(false);
             }
             else
             {
-                var byteArray = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                var utf8Json = Encoding.Convert(encoding, Encoding.UTF8, byteArray);
-                return utf8Json.Length == 0 ? objType.DefaultValue() : JsonSerializer.Deserialize(utf8Json, objType, options);
+                var byteArray = await content.ReadAsByteArrayCoreAsync(cancellationToken).ConfigureAwait(false);
+                var utf8Json = Encoding.Convert(srcEncoding, Encoding.UTF8, byteArray);
+                return JsonSerializer.Deserialize(utf8Json, objType, options);
             }
-#endif
         }
 
         /// <summary>
@@ -144,18 +136,6 @@ namespace System.Net.Http
         public static Task<byte[]> ReadAsUtf8ByteArrayAsync(this HttpContent httpContent)
         {
             return httpContent.ReadAsByteArrayAsync(Encoding.UTF8, default);
-        }
-
-        /// <summary>
-        /// 读取为二进制数组并转换为 utf8 编码
-        /// </summary>
-        /// <param name="httpContent"></param>
-        /// <param name="cancellationToken"></param>
-        /// <exception cref="ArgumentException"></exception>
-        /// <returns></returns>
-        public static Task<byte[]> ReadAsUtf8ByteArrayAsync(this HttpContent httpContent, CancellationToken cancellationToken)
-        {
-            return httpContent.ReadAsByteArrayAsync(Encoding.UTF8, cancellationToken);
         }
 
         /// <summary>
@@ -181,13 +161,31 @@ namespace System.Net.Http
         public static async Task<byte[]> ReadAsByteArrayAsync(this HttpContent httpContent, Encoding dstEncoding, CancellationToken cancellationToken)
         {
             var encoding = httpContent.GetEncoding();
-#if NET5_0_OR_GREATER
-            var byteArray = await httpContent.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
-#else
-            var byteArray = await httpContent.ReadAsByteArrayAsync().ConfigureAwait(false);
-#endif
+            var byteArray = await httpContent.ReadAsByteArrayCoreAsync(cancellationToken).ConfigureAwait(false);
             return encoding.Equals(dstEncoding) ? byteArray : Encoding.Convert(encoding, dstEncoding, byteArray);
         }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Task<byte[]> ReadAsByteArrayCoreAsync(this HttpContent httpContent, CancellationToken cancellationToken)
+        {
+#if NET5_0_OR_GREATER
+            return httpContent.ReadAsByteArrayAsync(cancellationToken);
+#else
+            return httpContent.ReadAsByteArrayAsync();
+#endif
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Task<Stream> ReadAsStreamCoreAsync(this HttpContent httpContent, CancellationToken cancellationToken)
+        {
+#if NET5_0_OR_GREATER
+            return httpContent.ReadAsStreamAsync(cancellationToken);
+#else
+            return httpContent.ReadAsStreamAsync();
+#endif
+        }
+
 
         /// <summary>
         /// 获取编码信息
