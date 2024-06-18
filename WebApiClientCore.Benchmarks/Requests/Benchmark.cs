@@ -21,11 +21,6 @@ namespace WebApiClientCore.Benchmarks.Requests
         public void GlobalSetup()
         {
             var services = new ServiceCollection();
-
-            services
-                .AddHttpClient(typeof(HttpClient).FullName)
-                .AddHttpMessageHandler(() => new UserResponseHandler());
-
             services
                 .AddHttpApi<IWebApiClientCoreApi>(o =>
                 {

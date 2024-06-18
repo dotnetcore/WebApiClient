@@ -7,8 +7,9 @@ namespace WebApiClientCore.Benchmarks
     class Program
     {
         static void Main(string[] args)
-        {          
+        {
             BenchmarkRunner.Run<HttpGetBenchmark>();
+            BenchmarkRunner.Run<HttpGetJsonBenchmark>();
             BenchmarkRunner.Run<HttpPostJsonBenchmark>();
             BenchmarkRunner.Run<HttpPutFormBenchmark>();
             Console.ReadLine();
