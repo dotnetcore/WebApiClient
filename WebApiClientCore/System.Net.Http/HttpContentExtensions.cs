@@ -180,19 +180,22 @@ namespace System.Net.Http
         /// <returns></returns>
         public static Encoding GetEncoding(this HttpContent httpContent)
         {
-            var charSet = httpContent.Headers.ContentType?.CharSet;
-            if (string.IsNullOrEmpty(charSet) == true)
+            var contentType = httpContent.Headers.ContentType;
+            if (contentType == null)
             {
                 return Encoding.UTF8;
             }
 
-            var span = charSet.AsSpan().TrimStart('"').TrimEnd('"');
-            if (span.Equals(Encoding.UTF8.WebName, StringComparison.OrdinalIgnoreCase))
+            var charSet = contentType.CharSet.AsSpan();
+            if (charSet.IsEmpty)
             {
                 return Encoding.UTF8;
             }
 
-            return Encoding.GetEncoding(span.ToString());
+            var encoding = charSet.Trim('"');
+            return encoding.Equals(Encoding.UTF8.WebName, StringComparison.OrdinalIgnoreCase)
+                ? Encoding.UTF8
+                : Encoding.GetEncoding(encoding.ToString());
         }
     }
 }

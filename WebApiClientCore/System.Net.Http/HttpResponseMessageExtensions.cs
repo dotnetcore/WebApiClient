@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using WebApiClientCore.Internals;
 
 namespace System.Net.Http
 {
@@ -17,9 +17,11 @@ namespace System.Net.Http
         /// <returns></returns>
         public static string GetHeadersString(this HttpResponseMessage response)
         {
-            var builder = new StringBuilder()
-                .AppendLine($"HTTP/{response.Version} {(int)response.StatusCode} {response.ReasonPhrase}")
-                .Append(response.Headers.ToString());
+            Span<char> buffer = stackalloc char[4 * 1024];
+            var builder = new ValueStringBuilder(buffer);
+
+            builder.AppendLine($"HTTP/{response.Version} {(int)response.StatusCode} {response.ReasonPhrase}");
+            builder.Append(response.Headers.ToString());
 
             if (response.Content != null)
             {

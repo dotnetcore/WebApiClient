@@ -62,6 +62,17 @@ namespace WebApiClientCore.Internals
         }
 
         /// <summary>
+        /// 添加 chars 并换行
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public void AppendLine(ReadOnlySpan<char> value)
+        {
+            this.Append(value);
+            this.Append(Environment.NewLine);
+        }
+
+        /// <summary>
         /// 扩容
         /// </summary>
         /// <param name="newSize"></param>

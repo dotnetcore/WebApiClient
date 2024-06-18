@@ -1,4 +1,4 @@
-﻿using System.Text;
+﻿using WebApiClientCore.Internals;
 
 namespace System.Net.Http
 {
@@ -15,7 +15,8 @@ namespace System.Net.Http
         public static string GetHeadersString(this HttpRequestMessage request)
         {
             var uri = request.RequestUri;
-            var builder = new StringBuilder();
+            Span<char> buffer = stackalloc char[4 * 1024];
+            var builder = new ValueStringBuilder(buffer);
 
             if (uri != null && uri.IsAbsoluteUri)
             {
