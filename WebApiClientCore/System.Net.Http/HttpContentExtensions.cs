@@ -88,13 +88,21 @@ namespace System.Net.Http
         public static async Task<T?> ReadAsJsonAsync<T>(this HttpContent content, JsonSerializerOptions? options, CancellationToken cancellationToken = default)
         {
 #if NET5_0_OR_GREATER
-            if (content.IsBuffered() == false)
+            return await System.Net.Http.Json.HttpContentJsonExtensions.ReadFromJsonAsync<T>(content, options, cancellationToken).ConfigureAwait(false);
+#else
+            var encoding = content.GetEncoding();
+            if (encoding.Equals(Encoding.UTF8))
             {
-                return await System.Net.Http.Json.HttpContentJsonExtensions.ReadFromJsonAsync<T>(content, options, cancellationToken).ConfigureAwait(false);
+                using var utf8Json = await content.ReadAsStreamAsync().ConfigureAwait(false);
+                return await JsonSerializer.DeserializeAsync<T>(utf8Json, options, cancellationToken);
+            }
+            else
+            {
+                var byteArray = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                var utf8Json = Encoding.Convert(encoding, Encoding.UTF8, byteArray);
+                return utf8Json.Length == 0 ? default : JsonSerializer.Deserialize<T>(utf8Json, options);
             }
 #endif
-            var utf8Json = await content.ReadAsUtf8ByteArrayAsync(cancellationToken).ConfigureAwait(false);
-            return utf8Json.Length == 0 ? default : JsonSerializer.Deserialize<T>(utf8Json, options);
         }
 
         /// <summary>
@@ -110,13 +118,21 @@ namespace System.Net.Http
         public static async Task<object?> ReadAsJsonAsync(this HttpContent content, Type objType, JsonSerializerOptions? options, CancellationToken cancellationToken = default)
         {
 #if NET5_0_OR_GREATER
-            if (content.IsBuffered() == false)
+            return await System.Net.Http.Json.HttpContentJsonExtensions.ReadFromJsonAsync(content, objType, options, cancellationToken).ConfigureAwait(false);
+#else
+            var encoding = content.GetEncoding();
+            if (encoding.Equals(Encoding.UTF8))
             {
-                return await System.Net.Http.Json.HttpContentJsonExtensions.ReadFromJsonAsync(content, objType, options, cancellationToken).ConfigureAwait(false);
+                using var stream = await content.ReadAsStreamAsync().ConfigureAwait(false);
+                return await JsonSerializer.DeserializeAsync(stream, objType, options, cancellationToken);
+            }
+            else
+            {
+                var byteArray = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                var utf8Json = Encoding.Convert(encoding, Encoding.UTF8, byteArray);
+                return utf8Json.Length == 0 ? objType.DefaultValue() : JsonSerializer.Deserialize(utf8Json, objType, options);
             }
 #endif
-            var utf8Json = await content.ReadAsUtf8ByteArrayAsync(cancellationToken).ConfigureAwait(false);
-            return utf8Json.Length == 0 ? objType.DefaultValue() : JsonSerializer.Deserialize(utf8Json, objType, options);
         }
 
         /// <summary>

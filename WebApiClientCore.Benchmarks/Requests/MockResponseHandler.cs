@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
@@ -26,9 +27,10 @@ namespace WebApiClientCore.Benchmarks.Requests
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            var content = new StreamContent(new MemoryStream(jsonByteArray, writable: false));
             var response = new HttpResponseMessage(HttpStatusCode.OK)
             {
-                Content = new ByteArrayJsonContent(jsonByteArray)
+                Content = content
             };
             return Task.FromResult(response);
         }

@@ -1,7 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
-using System.Text.Json;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace WebApiClientCore.Benchmarks.Requests
@@ -23,15 +23,8 @@ namespace WebApiClientCore.Benchmarks.Requests
             var httpClient = scope.ServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(typeof(HttpClient).FullName);
 
             var input = new Model { A = "a" };
-            var json = JsonSerializer.SerializeToUtf8Bytes(input);
-            var request = new HttpRequestMessage(HttpMethod.Post, $"http://webapiclient.com/")
-            {
-                Content = new ByteArrayJsonContent(json)
-            };
-
-            var response = await httpClient.SendAsync(request);
-            json = await response.Content.ReadAsUtf8ByteArrayAsync();
-            return JsonSerializer.Deserialize<Model>(json);
+            var response = await httpClient.PostAsJsonAsync($"http://webapiclient.com/", input);
+            return await response.Content.ReadFromJsonAsync<Model>();
         }
 
         /// <summary>
