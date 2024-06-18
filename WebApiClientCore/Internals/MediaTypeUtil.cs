@@ -35,40 +35,9 @@ namespace WebApiClientCore.Internals
         /// <returns></returns>
         private static bool MediaTypeMatch(ReadOnlySpan<char> source, ReadOnlySpan<char> target)
         {
-            if (source.Length == 1 && source[0] == '*')
-            {
-                return true;
-            }
-
-            if (target.Length == 1 && target[0] == '*')
-            {
-                return true;
-            }
-
-            if (source.Length != target.Length)
-            {
-                return false;
-            }
-
-            for (var i = 0; i < source.Length; i++)
-            {
-                var s = source[i];
-                var t = target[i];
-                if (char.IsUpper(s))
-                {
-                    s = char.ToLowerInvariant(s);
-                }
-                if (char.IsUpper(t))
-                {
-                    t = char.ToLowerInvariant(t);
-                }
-
-                if (s.Equals(t) == false)
-                {
-                    return false;
-                }
-            }
-            return true;
+            return source.Length == 1 && source[0] == '*' ||
+                target.Length == 1 && target[0] == '*' ||
+                source.Equals(target, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

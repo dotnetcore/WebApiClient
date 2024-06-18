@@ -1,21 +1,16 @@
 ﻿using BenchmarkDotNet.Running;
 using System;
-using System.Linq;
+using WebApiClientCore.Benchmarks.Requests;
 
 namespace WebApiClientCore.Benchmarks
 {
     class Program
     {
         static void Main(string[] args)
-        {
-            var benchmarkTypes = typeof(Program).Assembly.GetTypes()
-                .Where(item => typeof(Requests.Benchmark).IsAssignableFrom(item))
-                .Where(item => item.IsAbstract == false && item.IsClass);
-
-            foreach (var item in benchmarkTypes)
-            {
-                BenchmarkRunner.Run(item);
-            }
+        {          
+            BenchmarkRunner.Run<HttpGetBenchmark>();
+            BenchmarkRunner.Run<HttpPostJsonBenchmark>();
+            BenchmarkRunner.Run<HttpPutFormBenchmark>();
             Console.ReadLine();
         }
     }
