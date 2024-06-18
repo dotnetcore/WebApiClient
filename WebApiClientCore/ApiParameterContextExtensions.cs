@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using System.Text.Json;
 using WebApiClientCore.Internals;
 using WebApiClientCore.Serialization;
 
@@ -59,6 +60,25 @@ namespace WebApiClientCore
         {
             var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
             JsonBufferSerializer.Serialize(bufferWriter, context.ParameterValue, options);
+        }
+
+        /// <summary>
+        /// 序列化参数值为 json 文本
+        /// </summary>
+        /// <param name="context"></param> 
+        /// <returns></returns>
+        [RequiresDynamicCode("JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use System.Text.Json source generation for native AOT applications.")]
+        [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
+        public static string? SerializeToJsonString(this ApiParameterContext context)
+        {
+            var value = context.ParameterValue;
+            if (value == null)
+            {
+                return null;
+            }
+
+            var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
+            return JsonSerializer.Serialize(value, value.GetType(), options);
         }
 
         /// <summary>
