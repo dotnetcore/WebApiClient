@@ -114,9 +114,7 @@ namespace WebApiClientCore.Test.Implementations
         {
             string get(string name, string value)
             {
-                return $@"Content-Disposition: form-data; name=""{name}""
-
-{HttpUtil.UrlEncode(value, Encoding.UTF8)}";
+                return $@"Content-Disposition: form-data; name=""{name}""{"\r\n\r\n"}{HttpUtil.UrlEncode(value, Encoding.UTF8)}";
             }
 
             var reqeust = new HttpApiRequestMessageImpl();
