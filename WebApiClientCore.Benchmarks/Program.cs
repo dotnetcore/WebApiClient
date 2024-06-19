@@ -10,6 +10,7 @@ namespace WebApiClientCore.Benchmarks
         {
             BenchmarkRunner.Run<HttpGetBenchmark>();
             BenchmarkRunner.Run<HttpGetJsonBenchmark>();
+            BenchmarkRunner.Run<HttpPostXmlBenchmark>();
             BenchmarkRunner.Run<HttpPostJsonBenchmark>();
             BenchmarkRunner.Run<HttpPutFormBenchmark>();
             Console.ReadLine();

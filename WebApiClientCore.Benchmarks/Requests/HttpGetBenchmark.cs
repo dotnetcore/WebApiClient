@@ -10,7 +10,7 @@ namespace WebApiClientCore.Benchmarks.Requests
         public async Task WebApiClientCore_GetAsync()
         {
             using var scope = this.ServiceProvider.CreateScope();
-            var benchmarkApi = scope.ServiceProvider.GetRequiredService<IWebApiClientCoreApi>();
+            var benchmarkApi = scope.ServiceProvider.GetRequiredService<IWebApiClientCoreJsonApi>();
             await benchmarkApi.GetAsync(id: "id001");
         }
 
@@ -18,7 +18,7 @@ namespace WebApiClientCore.Benchmarks.Requests
         public async Task Refit_GetAsync()
         {
             using var scope = this.ServiceProvider.CreateScope();
-            var benchmarkApi = scope.ServiceProvider.GetRequiredService<IRefitApi>();
+            var benchmarkApi = scope.ServiceProvider.GetRequiredService<IRefitJsonApi>();
             await benchmarkApi.GetAsync(id: "id001");
         }
     }

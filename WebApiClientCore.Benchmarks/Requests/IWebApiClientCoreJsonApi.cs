@@ -5,13 +5,13 @@ namespace WebApiClientCore.Benchmarks.Requests
 {
     [JsonReturn]
     [XmlReturn(Enable = false)]
-    public interface IWebApiClientCoreApi
+    public interface IWebApiClientCoreJsonApi
     {
         [HttpGet("/benchmarks/{id}")]
         Task GetAsync(string id);
 
         [HttpGet("/benchmarks/{id}")]
-        Task<User> GetJsonAsync(string id);
+        Task<User> GetJsonAsync(string id); 
 
         [HttpPost("/benchmarks")]
         Task<User> PostJsonAsync([JsonContent] User model);

@@ -1,17 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netcoreapp3.1;net8.0</TargetFrameworks>
+		<TargetFramework>net8.0</TargetFramework>
 		<OutputType>Exe</OutputType>
+		<EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>Sign.snk</AssemblyOriginatorKeyFile>
-		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>		 
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
 		<PackageReference Include="Refit.HttpClientFactory" Version="7.0.0" />
+		<PackageReference Include="Refit.Xml" Version="7.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

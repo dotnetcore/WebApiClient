@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using WebApiClientCore.Serialization;
 
 namespace WebApiClientCore.Benchmarks
 {
@@ -26,12 +27,14 @@ namespace WebApiClientCore.Benchmarks
 
 
         public static User Instance { get; }
-        public static byte[] Utf8Array { get; }
+        public static byte[] Utf8Json { get; }
+        public static string XmlString { get; set; }
 
         static User()
         {
-            Utf8Array = File.ReadAllBytes("user.json");
-            Instance = JsonSerializer.Deserialize<User>(Utf8Array);
+            Utf8Json = File.ReadAllBytes("user.json");
+            Instance = JsonSerializer.Deserialize<User>(Utf8Json);
+            XmlString = XmlSerializer.Serialize(Instance, null);
         }
     }
 }

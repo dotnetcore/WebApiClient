@@ -10,7 +10,7 @@ namespace WebApiClientCore.Benchmarks.Requests
         public async Task<User> WebApiClientCore_PutFormAsync()
         {
             using var scope = this.ServiceProvider.CreateScope();
-            var benchmarkApi = scope.ServiceProvider.GetRequiredService<IWebApiClientCoreApi>();
+            var benchmarkApi = scope.ServiceProvider.GetRequiredService<IWebApiClientCoreJsonApi>();
             return await benchmarkApi.PutFormAsync(id: "id001", User.Instance);
         }
 
@@ -18,7 +18,7 @@ namespace WebApiClientCore.Benchmarks.Requests
         public async Task<User> Refit_PutFormAsync()
         {
             using var scope = this.ServiceProvider.CreateScope();
-            var benchmarkApi = scope.ServiceProvider.GetRequiredService<IRefitApi>();
+            var benchmarkApi = scope.ServiceProvider.GetRequiredService<IRefitJsonApi>();
             return await benchmarkApi.PutFormAsync(id: "id001", User.Instance);
         }
     }

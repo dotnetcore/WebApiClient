@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace WebApiClientCore.Benchmarks.Requests
 {
-    public interface IRefitApi
+    public interface IRefitJsonApi
     {
         [Get("/benchmarks/{id}")]
         Task GetAsync(string id);
