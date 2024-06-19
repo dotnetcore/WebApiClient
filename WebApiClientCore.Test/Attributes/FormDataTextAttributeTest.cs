@@ -13,9 +13,7 @@ namespace WebApiClientCore.Test.Attributes
     {
         private string get(string name, string value)
         {
-            return $@"Content-Disposition: form-data; name=""{name}""
-
-{HttpUtility.UrlEncode(value, Encoding.UTF8)}";
+            return $@"Content-Disposition: form-data; name=""{name}""{"\r\n\r\n"}{HttpUtility.UrlEncode(value, Encoding.UTF8)}";
         }
 
         [Fact]
