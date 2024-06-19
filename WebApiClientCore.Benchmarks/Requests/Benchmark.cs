@@ -23,26 +23,28 @@ namespace WebApiClientCore.Benchmarks.Requests
         {
             var services = new ServiceCollection();
             services
-                .AddHttpApi<IWebApiClientCoreJsonApi>(o =>
+                .AddWebApiClient()
+                .ConfigureHttpApi(o =>
                 {
+                    o.UseLogging = false;
                     o.UseParameterPropertyValidate = false;
                     o.UseReturnValuePropertyValidate = false;
-                })
+                });
+
+            services
+                .AddHttpApi<IWebApiClientCoreJsonApi>()
                 .AddHttpMessageHandler(() => new JsonResponseHandler())
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://webapiclient.com/"));
 
             services
-                .AddHttpApi<IWebApiClientCoreXmlApi>(o =>
-                {
-                    o.UseParameterPropertyValidate = false;
-                    o.UseReturnValuePropertyValidate = false;
-                })
+                .AddHttpApi<IWebApiClientCoreXmlApi>()
                 .AddHttpMessageHandler(() => new XmlResponseHandler())
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://webapiclient.com/"));
 
             services
                 .AddRefitClient<IRefitJsonApi>(new RefitSettings
                 {
+                    ContentSerializer = new SystemTextJsonContentSerializer()
                 })
                 .AddHttpMessageHandler(() => new JsonResponseHandler())
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://webapiclient.com/"));
