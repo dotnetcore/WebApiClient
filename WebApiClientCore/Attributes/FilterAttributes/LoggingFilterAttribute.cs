@@ -124,7 +124,7 @@ namespace WebApiClientCore.Attributes
 
             if (content.IsBuffered() == true || context.GetCompletionOption() == HttpCompletionOption.ResponseContentRead)
             {
-                return await content.ReadAsStringAsync().ConfigureAwait(false);
+                return await content.ReadAsStringAsync(context.RequestAborted).ConfigureAwait(false);
             }
 
             return "...";

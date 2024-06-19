@@ -1,11 +1,11 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using WebApiClientCore;
 using WebApiClientCore.Exceptions;
 using WebApiClientCore.Internals;
 
@@ -90,12 +90,12 @@ namespace System.Net.Http
             var srcEncoding = content.GetEncoding();
             if (Encoding.UTF8.Equals(srcEncoding))
             {
-                using var utf8Json = await content.ReadAsStreamCoreAsync(cancellationToken).ConfigureAwait(false);
+                using var utf8Json = await content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
                 return await JsonSerializer.DeserializeAsync<T>(utf8Json, options, cancellationToken).ConfigureAwait(false);
             }
             else
             {
-                var byteArray = await content.ReadAsByteArrayCoreAsync(cancellationToken).ConfigureAwait(false);
+                var byteArray = await content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
                 var utf8Json = Encoding.Convert(srcEncoding, Encoding.UTF8, byteArray);
                 return JsonSerializer.Deserialize<T>(utf8Json, options);
             }
@@ -116,12 +116,12 @@ namespace System.Net.Http
             var srcEncoding = content.GetEncoding();
             if (Encoding.UTF8.Equals(srcEncoding))
             {
-                using var utf8Json = await content.ReadAsStreamCoreAsync(cancellationToken).ConfigureAwait(false);
+                using var utf8Json = await content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
                 return await JsonSerializer.DeserializeAsync(utf8Json, objType, options, cancellationToken).ConfigureAwait(false);
             }
             else
             {
-                var byteArray = await content.ReadAsByteArrayCoreAsync(cancellationToken).ConfigureAwait(false);
+                var byteArray = await content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
                 var utf8Json = Encoding.Convert(srcEncoding, Encoding.UTF8, byteArray);
                 return JsonSerializer.Deserialize(utf8Json, objType, options);
             }
@@ -161,31 +161,9 @@ namespace System.Net.Http
         public static async Task<byte[]> ReadAsByteArrayAsync(this HttpContent httpContent, Encoding dstEncoding, CancellationToken cancellationToken)
         {
             var encoding = httpContent.GetEncoding();
-            var byteArray = await httpContent.ReadAsByteArrayCoreAsync(cancellationToken).ConfigureAwait(false);
+            var byteArray = await httpContent.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
             return encoding.Equals(dstEncoding) ? byteArray : Encoding.Convert(encoding, dstEncoding, byteArray);
         }
-
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Task<byte[]> ReadAsByteArrayCoreAsync(this HttpContent httpContent, CancellationToken cancellationToken)
-        {
-#if NET5_0_OR_GREATER
-            return httpContent.ReadAsByteArrayAsync(cancellationToken);
-#else
-            return httpContent.ReadAsByteArrayAsync();
-#endif
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Task<Stream> ReadAsStreamCoreAsync(this HttpContent httpContent, CancellationToken cancellationToken)
-        {
-#if NET5_0_OR_GREATER
-            return httpContent.ReadAsStreamAsync(cancellationToken);
-#else
-            return httpContent.ReadAsStreamAsync();
-#endif
-        }
-
 
         /// <summary>
         /// 获取编码信息
@@ -210,6 +188,7 @@ namespace System.Net.Http
             return encoding.Equals(Encoding.UTF8.WebName, StringComparison.OrdinalIgnoreCase)
                 ? Encoding.UTF8
                 : Encoding.GetEncoding(encoding.ToString());
-        }
+        } 
+
     }
 }

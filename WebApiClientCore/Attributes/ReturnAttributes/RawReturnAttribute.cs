@@ -68,15 +68,15 @@ namespace WebApiClientCore.Attributes
             }
             else if (dataType.IsRawString == true)
             {
-                context.Result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                context.Result = await response.Content.ReadAsStringAsync(context.RequestAborted).ConfigureAwait(false);
             }
             else if (dataType.IsRawByteArray == true)
             {
-                context.Result = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                context.Result = await response.Content.ReadAsByteArrayAsync(context.RequestAborted).ConfigureAwait(false);
             }
             else if (dataType.IsRawStream == true)
             {
-                context.Result = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                context.Result = await response.Content.ReadAsStreamAsync(context.RequestAborted).ConfigureAwait(false);
             }
         }
     }
