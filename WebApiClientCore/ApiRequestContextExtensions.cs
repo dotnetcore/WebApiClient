@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Net.Http;
 
 namespace WebApiClientCore
 {
@@ -78,25 +77,7 @@ namespace WebApiClientCore
 
             value = null;
             return false;
-        }
-
-        /// <summary>
-        /// 返回请求使用的HttpCompletionOption
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        internal static HttpCompletionOption GetCompletionOption(this ApiRequestContext context)
-        {
-            if (context.HttpContext.CompletionOption != null)
-            {
-                return context.HttpContext.CompletionOption.Value;
-            }
-
-            var dataType = context.ActionDescriptor.Return.DataType;
-            return dataType.IsRawHttpResponseMessage || dataType.IsRawStream
-                ? HttpCompletionOption.ResponseHeadersRead
-                : HttpCompletionOption.ResponseContentRead;
-        }
+        } 
 
         /// <summary>
         /// 获取指向 api 方法名的日志

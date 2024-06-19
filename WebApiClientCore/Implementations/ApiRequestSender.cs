@@ -54,12 +54,38 @@ namespace WebApiClientCore.Implementations
             {
                 var client = context.HttpContext.HttpClient;
                 var request = context.HttpContext.RequestMessage;
-                var completionOption = context.GetCompletionOption();
+                var completionOption = GetCompletionOption(context);
 
                 var response = await client.SendAsync(request, completionOption, requestAborted).ConfigureAwait(false);
                 context.HttpContext.ResponseMessage = response;
                 await context.SetCacheAsync(actionCache?.Key, response).ConfigureAwait(false);
             }
+        }
+
+
+        /// <summary>
+        /// 返回请求使用的HttpCompletionOption
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private static HttpCompletionOption GetCompletionOption(ApiRequestContext context)
+        {
+            if (context.HttpContext.CompletionOption != null)
+            {
+                return context.HttpContext.CompletionOption.Value;
+            }
+
+            if (context.ActionDescriptor.Return.DataType.IsRawType)
+            {
+                return HttpCompletionOption.ResponseHeadersRead;
+            }
+
+            if (context.ActionDescriptor.FilterAttributes.Count == 0 && context.HttpContext.HttpApiOptions.GlobalFilters.Count == 0)
+            {
+                return HttpCompletionOption.ResponseHeadersRead;
+            }
+
+            return HttpCompletionOption.ResponseContentRead;
         }
 
         /// <summary>

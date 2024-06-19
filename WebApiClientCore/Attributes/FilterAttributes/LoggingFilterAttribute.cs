@@ -122,12 +122,9 @@ namespace WebApiClientCore.Attributes
                 return null;
             }
 
-            if (content.IsBuffered() == true || context.GetCompletionOption() == HttpCompletionOption.ResponseContentRead)
-            {
-                return await content.ReadAsStringAsync(context.RequestAborted).ConfigureAwait(false);
-            }
-
-            return "...";
+            return content.IsBuffered() == true 
+                ? await content.ReadAsStringAsync(context.RequestAborted).ConfigureAwait(false) 
+                : "...";
         }
 
         /// <summary>
