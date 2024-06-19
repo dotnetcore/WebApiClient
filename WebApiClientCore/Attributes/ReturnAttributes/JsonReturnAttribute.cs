@@ -1,8 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClientCore.HttpContents;
-using WebApiClientCore.Internals;
 
 namespace WebApiClientCore.Attributes
 {
@@ -11,15 +12,7 @@ namespace WebApiClientCore.Attributes
     /// </summary>
     public class JsonReturnAttribute : ApiReturnAttribute
     {
-        /// <summary>
-        /// text/json
-        /// </summary>
-        private static readonly string textJson = "text/json";
-
-        /// <summary>
-        /// 问题描述 json
-        /// </summary>
-        private static readonly string problemJson = "application/problem+json";
+        private static readonly HashSet<string> allowMediaTypes = new([JsonContent.MediaType, "text/json", "application/problem+json"], StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// json内容的结果特性
@@ -46,9 +39,8 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected override bool IsMatchAcceptContentType(MediaTypeHeaderValue responseContentType)
         {
-            return base.IsMatchAcceptContentType(responseContentType)
-                || MediaTypeUtil.IsMatch(textJson, responseContentType.MediaType)
-                || MediaTypeUtil.IsMatch(problemJson, responseContentType.MediaType);
+            var mediaType = responseContentType.MediaType;
+            return mediaType != null && allowMediaTypes.Contains(mediaType);
         }
 
         /// <summary>

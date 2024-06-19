@@ -1,8 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApiClientCore.HttpContents;
-using WebApiClientCore.Internals;
 
 namespace WebApiClientCore.Attributes
 {
@@ -11,10 +12,7 @@ namespace WebApiClientCore.Attributes
     /// </summary>
     public class XmlReturnAttribute : ApiReturnAttribute
     {
-        /// <summary>
-        /// text/xml
-        /// </summary>
-        private static readonly string textXml = "text/xml";
+        private static readonly HashSet<string> allowMediaTypes = new([XmlContent.MediaType, "text/xml"], StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// xml内容的结果特性
@@ -41,8 +39,8 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         protected override bool IsMatchAcceptContentType(MediaTypeHeaderValue responseContentType)
         {
-            return base.IsMatchAcceptContentType(responseContentType)
-                || MediaTypeUtil.IsMatch(textXml, responseContentType.MediaType);
+            var mediaType = responseContentType.MediaType;
+            return mediaType != null && allowMediaTypes.Contains(mediaType);
         }
 
         /// <summary>
