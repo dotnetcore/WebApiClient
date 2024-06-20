@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace WebApiClientCore.Serialization
@@ -29,11 +32,32 @@ namespace WebApiClientCore.Serialization
             }
 
             var settings = options ?? writerSettings;
-            using var writer = new EncodingStingWriter(settings.Encoding);
+            using var writer = new EncodingStringWriter(settings.Encoding);
             using var xmlWriter = XmlWriter.Create(writer, settings);
             var xmlSerializer = new System.Xml.Serialization.XmlSerializer(obj.GetType());
             xmlSerializer.Serialize(xmlWriter, obj);
             return writer.ToString();
+        }
+
+        /// <summary>
+        /// 将对象序列化为Xml文本
+        /// </summary>
+        /// <param name="bufferWriter">buffer写入器</param> 
+        /// <param name="obj">对象</param>
+        /// <param name="options">配置选项</param> 
+        [RequiresUnreferencedCode("Members from serialized types may be trimmed if not referenced directly")]
+        public static void Serialize(IBufferWriter<byte> bufferWriter, object? obj, XmlWriterSettings? options)
+        {
+            if (obj == null)
+            {
+                return;
+            }
+
+            var settings = options ?? writerSettings;
+            using var writer = new BufferTextWriter(bufferWriter, settings.Encoding);
+            using var xmlWriter = XmlWriter.Create(writer, settings);
+            var xmlSerializer = new System.Xml.Serialization.XmlSerializer(obj.GetType());
+            xmlSerializer.Serialize(xmlWriter, obj);
         }
 
         /// <summary>
@@ -63,28 +87,121 @@ namespace WebApiClientCore.Serialization
             return xmlSerializer.Deserialize(xmlReader);
         }
 
+
+        private class BufferTextWriter : TextWriter
+        {
+            private readonly IBufferWriter<byte> bufferWriter;
+
+            public override Encoding Encoding { get; }
+
+            public BufferTextWriter(IBufferWriter<byte> bufferWriter, Encoding encoding)
+            {
+                this.bufferWriter = bufferWriter;
+                this.Encoding = encoding;
+            }
+            public override Task FlushAsync()
+            {
+                return Task.CompletedTask;
+            }
+
+            public override void Write(ReadOnlySpan<char> buffer)
+            {
+                this.Encoding.GetBytes(buffer, this.bufferWriter);
+            }
+
+            public override void Write(char value)
+            {
+                Span<char> buffer = [value];
+                this.Write(buffer);
+            }
+
+            public override void Write(char[] buffer, int index, int count)
+            {
+                this.Write(buffer.AsSpan(index, count));
+            }
+            public override void Write(string? value)
+            {
+                this.Write(value.AsSpan());
+            }
+
+            public override Task WriteAsync(string? value)
+            {
+                this.Write(value.AsSpan());
+                return Task.CompletedTask;
+            }
+
+            public override Task WriteAsync(ReadOnlyMemory<char> buffer, CancellationToken cancellationToken = default)
+            {
+                this.Write(buffer.Span);
+                return Task.CompletedTask;
+            }
+
+            public override Task WriteAsync(char value)
+            {
+                Span<char> buffer = [value];
+                this.Write(buffer);
+                return Task.CompletedTask;
+            }
+
+            public override Task WriteAsync(char[] buffer, int index, int count)
+            {
+                this.Write(buffer.AsSpan(index, count));
+                return Task.CompletedTask;
+            }
+
+            public override void WriteLine(ReadOnlySpan<char> buffer)
+            {
+                this.Write(buffer);
+                WriteLine();
+            }
+
+            public override Task WriteLineAsync(string? value)
+            {
+                this.Write(value.AsSpan());
+                WriteLine();
+                return Task.CompletedTask;
+            }
+            public override Task WriteLineAsync(char value)
+            {
+                Span<char> buffer = [value];
+                this.Write(buffer);
+                WriteLine();
+                return Task.CompletedTask;
+            }
+
+            public override Task WriteLineAsync(char[] buffer, int index, int count)
+            {
+                this.Write(buffer.AsSpan(0, count));
+                WriteLine();
+                return Task.CompletedTask;
+            }
+
+            public override Task WriteLineAsync(ReadOnlyMemory<char> buffer, CancellationToken cancellationToken = default)
+            {
+                this.Write(buffer.Span);
+                WriteLine();
+                return Task.CompletedTask;
+            }
+        }
+
+
         /// <summary>
         /// 表示可指定编码文本写入器
         /// </summary>
-        private class EncodingStingWriter : StringWriter
+        private class EncodingStringWriter : StringWriter
         {
-            /// <summary>
-            /// 编码
-            /// </summary>
-            private readonly Encoding encoding;
-
             /// <summary>
             /// 获取编码
             /// </summary>
-            public override Encoding Encoding => this.encoding;
+            public override Encoding Encoding { get; }
 
             /// <summary>
             /// 可指定编码文本写入器
             /// </summary>
             /// <param name="encoding">编码</param>
-            public EncodingStingWriter(Encoding encoding)
+            public EncodingStringWriter(Encoding encoding)
             {
-                this.encoding = encoding;
+                this.Encoding = encoding;
             }
         }
     }

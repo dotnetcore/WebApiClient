@@ -8,7 +8,7 @@ namespace WebApiClientCore
     /// <summary>
     /// 提供Encoding扩展
     /// </summary>
-    static class EncodingExtensions
+    static partial class EncodingExtensions
     {
         /// <summary>
         /// 转换编码

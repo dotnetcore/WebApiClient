@@ -34,8 +34,14 @@ namespace WebApiClientCore.Attributes
         [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
         protected override Task SetHttpContentAsync(ApiParameterContext context)
         {
-            var xml = context.SerializeToXml(this.encoding);
-            context.HttpContext.RequestMessage.Content = new XmlContent(xml, this.encoding);
+            var options = context.HttpContext.HttpApiOptions.XmlSerializeOptions;
+            if (encoding != null && encoding.Equals(options.Encoding) == false)
+            {
+                options = options.Clone();
+                options.Encoding = encoding;
+            }
+
+            context.HttpContext.RequestMessage.Content = new XmlContent(context.ParameterValue, options);
             return Task.CompletedTask;
         }
     }
