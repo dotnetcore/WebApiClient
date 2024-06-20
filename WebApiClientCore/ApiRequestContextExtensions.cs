@@ -99,7 +99,7 @@ namespace WebApiClientCore
 
                 var action = context.ActionDescriptor;
                 var parameters = action.Parameters.Select(item => HttpApi.GetName(item.ParameterType, includeNamespace: false));
-                var categoryName = $"{action.InterfaceType.Namespace}.{action.InterfaceType.Name}.{action.Member.Name}({string.Join(", ", parameters)})";
+                var categoryName = $"{action.InterfaceType.FullName}.{action.Member.Name}({string.Join(", ", parameters)})";
                 return loggerFactory.CreateLogger(categoryName);
             }
         }
