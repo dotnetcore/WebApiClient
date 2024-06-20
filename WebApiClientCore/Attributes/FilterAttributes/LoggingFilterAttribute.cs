@@ -81,10 +81,13 @@ namespace WebApiClientCore.Attributes
                 return;
             }
 
-            if (this.isLoggingFilterAttribute && IsLogEnable(context, out var logger))
+            if (this.isLoggingFilterAttribute)
             {
-                await this.FillResponseAsync(logMessage, context).ConfigureAwait(false);
-                logMessage.WriteTo(logger);
+                if (IsLogEnable(context, out var logger))
+                {
+                    await this.FillResponseAsync(logMessage, context).ConfigureAwait(false);
+                    logMessage.WriteTo(logger);
+                }
             }
             else
             {
