@@ -18,33 +18,36 @@ namespace WebApiClientCore.Test.Serialization
             var kvs = KeyValueSerializer.Serialize("pName", obj1, options)
                 .ToDictionary(item => item.Key, item => item.Value, StringComparer.OrdinalIgnoreCase);
 
-            Assert.True(kvs.Count == 2);
-            Assert.True(kvs["Name"] == "lao九");
-            Assert.True(kvs["Age"] == "18");
+            Assert.Equal(2, kvs.Count);
+            Assert.Equal("lao九", kvs["Name"]);
+            Assert.Equal("18", kvs["Age"]);
 
 
             kvs = KeyValueSerializer.Serialize("pName", 30, null)
                .ToDictionary(item => item.Key, item => item.Value);
 
-            Assert.True(kvs.Count == 1);
-            Assert.True(kvs["pName"] == "30");
+            Assert.Single(kvs);
+            Assert.Equal("30", kvs["pName"]);
 
             var bools = KeyValueSerializer.Serialize("bool", true, null);
             Assert.Equal("true", bools[0].Value);
 
-            var strings = KeyValueSerializer.Serialize("strings", "string", null);
-            Assert.Equal("string", strings[0].Value);
+            var strings = KeyValueSerializer.Serialize("strings", "\r\n", null);
+            Assert.Equal("\r\n", strings[0].Value);
 
+            var floats = KeyValueSerializer.Serialize("floats", 3.14f, null);
+            Assert.Equal("3.14", floats[0].Value);
 
             var dic = new System.Collections.Concurrent.ConcurrentDictionary<string, object>();
             dic.TryAdd("Key", "Value");
 
             var kvs2 = KeyValueSerializer.Serialize("dic", dic, options);
-            Assert.True(kvs2.First().Key == "key");
+            Assert.Equal("key", kvs2.First().Key);
 
 
             Assert.True(KeyValueSerializer.Serialize("null", null, null).Any());
         }
+
 
         [Fact]
         public void IgnoreNullValuesTest()
