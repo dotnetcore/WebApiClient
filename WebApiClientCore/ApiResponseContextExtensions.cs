@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using WebApiClientCore.Serialization;
 
@@ -29,7 +29,7 @@ namespace WebApiClientCore
 
             var content = response.Content;
             var options = context.HttpContext.HttpApiOptions.JsonDeserializeOptions;
-            return await content.ReadAsJsonAsync(objType, options, context.RequestAborted);
+            return await content.ReadFromJsonAsync(objType, options, context.RequestAborted);
         }
 
         /// <summary>

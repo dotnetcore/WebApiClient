@@ -1,8 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using WebApiClientCore;
@@ -72,61 +70,8 @@ namespace System.Net.Http
             {
                 throw new HttpContentBufferedException();
             }
-        }
-
-
-        /// <summary>
-        /// 读取 json 内容为指定的类型
-        /// </summary>
-        /// <typeparam name="T">目标类型</typeparam>
-        /// <param name="content">http内容</param>
-        /// <param name="options">json反序列化选项</param>
-        /// <param name="cancellationToken">取消令牌</param>
-        /// <returns></returns>
-        [RequiresDynamicCode("JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use System.Text.Json source generation for native AOT applications.")]
-        [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
-        public static async Task<T?> ReadAsJsonAsync<T>(this HttpContent content, JsonSerializerOptions? options, CancellationToken cancellationToken = default)
-        {
-            var srcEncoding = content.GetEncoding();
-            if (Encoding.UTF8.Equals(srcEncoding))
-            {
-                using var utf8Json = await content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-                return await JsonSerializer.DeserializeAsync<T>(utf8Json, options, cancellationToken).ConfigureAwait(false);
-            }
-            else
-            {
-                var byteArray = await content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
-                var utf8Json = Encoding.Convert(srcEncoding, Encoding.UTF8, byteArray);
-                return JsonSerializer.Deserialize<T>(utf8Json, options);
-            }
-        }
-
-        /// <summary>
-        /// 读取 json 内容为指定的类型
-        /// </summary>
-        /// <param name="content">http内容</param>
-        /// <param name="objType">目标类型</param>
-        /// <param name="options">json反序列化选项</param>
-        /// <param name="cancellationToken">取消令牌</param>
-        /// <returns></returns>
-        [RequiresDynamicCode("JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use System.Text.Json source generation for native AOT applications.")]
-        [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
-        public static async Task<object?> ReadAsJsonAsync(this HttpContent content, Type objType, JsonSerializerOptions? options, CancellationToken cancellationToken = default)
-        {
-            var srcEncoding = content.GetEncoding();
-            if (Encoding.UTF8.Equals(srcEncoding))
-            {
-                using var utf8Json = await content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-                return await JsonSerializer.DeserializeAsync(utf8Json, objType, options, cancellationToken).ConfigureAwait(false);
-            }
-            else
-            {
-                var byteArray = await content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
-                var utf8Json = Encoding.Convert(srcEncoding, Encoding.UTF8, byteArray);
-                return JsonSerializer.Deserialize(utf8Json, objType, options);
-            }
-        }
-
+        } 
+       
         /// <summary>
         /// 读取为二进制数组并转换为 utf8 编码
         /// </summary>

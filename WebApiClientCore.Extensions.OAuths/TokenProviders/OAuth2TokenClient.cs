@@ -3,6 +3,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using WebApiClientCore.Attributes;
 using WebApiClientCore.HttpContents;
@@ -90,7 +91,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
             formContent.AddFormField(new KeyValue("grant_type", grant_type));
 
             var response = await this.httpClientFactory.CreateClient().PostAsync(endpoint, formContent);
-            return await response.Content.ReadAsJsonAsync<TokenResult>(this.httpApiOptions.JsonDeserializeOptions);
+            return await response.Content.ReadFromJsonAsync<TokenResult>(this.httpApiOptions.JsonDeserializeOptions);
         }
     }
 }

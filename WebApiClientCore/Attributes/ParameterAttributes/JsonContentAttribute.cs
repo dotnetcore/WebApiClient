@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
-using WebApiClientCore.HttpContents;
 
 namespace WebApiClientCore.Attributes
 {
@@ -13,9 +13,10 @@ namespace WebApiClientCore.Attributes
     /// </summary>
     public class JsonContentAttribute : HttpContentAttribute, ICharSetable
     {
-        /// <summary>
-        /// 编码方式
-        /// </summary>
+        private const string jsonMediaType = "application/json";
+        private static readonly MediaTypeHeaderValue defaultMediaType = new(jsonMediaType);
+
+        private MediaTypeHeaderValue mediaType = defaultMediaType;
         private Encoding encoding = Encoding.UTF8;
 
         /// <summary>
@@ -25,7 +26,11 @@ namespace WebApiClientCore.Attributes
         public string CharSet
         {
             get => this.encoding.WebName;
-            set => this.encoding = Encoding.GetEncoding(value);
+            set
+            {
+                this.encoding = Encoding.GetEncoding(value);
+                this.mediaType = new MediaTypeHeaderValue(jsonMediaType) { CharSet = this.encoding.WebName };
+            }
         }
 
         /// <summary>
@@ -37,29 +42,11 @@ namespace WebApiClientCore.Attributes
         [UnconditionalSuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.", Justification = "<Pending>")]
         protected override Task SetHttpContentAsync(ApiParameterContext context)
         {
-            context.HttpContext.RequestMessage.Content = this.CreateContent(context);
+            var value = context.ParameterValue;
+            var valueType = value == null ? context.Parameter.ParameterType : value.GetType();
+            var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
+            context.HttpContext.RequestMessage.Content = JsonContent.Create(value, valueType, this.mediaType, options);
             return Task.CompletedTask;
         }
-
-        [RequiresDynamicCode("JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use System.Text.Json source generation for native AOT applications.")]
-        [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
-#if NET5_0_OR_GREATER
-        private System.Net.Http.Json.JsonContent CreateContent(ApiParameterContext context)
-        {
-            var value = context.ParameterValue;
-            var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
-            var valueType = value == null ? context.Parameter.ParameterType : value.GetType();
-            var mediaType = Encoding.UTF8.Equals(this.encoding) ? defaultMediaType : new MediaTypeHeaderValue(JsonContent.MediaType) { CharSet = this.CharSet };
-            return System.Net.Http.Json.JsonContent.Create(value, valueType, mediaType, options);
-        }
-        private static readonly MediaTypeHeaderValue defaultMediaType = new(JsonContent.MediaType);
-#else
-        private JsonContent CreateContent(ApiParameterContext context)
-        {
-            var value = context.ParameterValue;
-            var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
-            return new JsonContent(value, options, this.encoding);
-        }
-#endif
     }
 }

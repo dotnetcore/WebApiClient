@@ -34,10 +34,10 @@ namespace WebApiClientCore
         /// <param name="name">名称</param>
         /// <param name="value">值</param> 
         /// <returns></returns>
-        public async Task AddFormFieldAsync(string name, string? value)
+        public Task AddFormFieldAsync(string name, string? value)
         {
             var keyValue = new KeyValue(name, value);
-            await this.AddFormFieldAsync(Enumerable.Repeat(keyValue, 1)).ConfigureAwait(false);
+            return this.AddFormFieldAsync(Enumerable.Repeat(keyValue, 1));
         }
 
         /// <summary>
