@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClientCore.HttpContents;
@@ -36,9 +37,29 @@ namespace WebApiClientCore.Attributes
         [UnconditionalSuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.", Justification = "<Pending>")]
         protected override Task SetHttpContentAsync(ApiParameterContext context)
         {
-            var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
-            context.HttpContext.RequestMessage.Content = new JsonContent(context.ParameterValue, options, this.encoding);
+            context.HttpContext.RequestMessage.Content = this.CreateContent(context);
             return Task.CompletedTask;
         }
+
+        [RequiresDynamicCode("JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use System.Text.Json source generation for native AOT applications.")]
+        [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
+#if NET5_0_OR_GREATER
+        private System.Net.Http.Json.JsonContent CreateContent(ApiParameterContext context)
+        {
+            var value = context.ParameterValue;
+            var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
+            var valueType = value == null ? context.Parameter.ParameterType : value.GetType();
+            var mediaType = Encoding.UTF8.Equals(this.encoding) ? defaultMediaType : new MediaTypeHeaderValue(JsonContent.MediaType) { CharSet = this.CharSet };
+            return System.Net.Http.Json.JsonContent.Create(value, valueType, mediaType, options);
+        }
+        private static readonly MediaTypeHeaderValue defaultMediaType = new(JsonContent.MediaType);
+#else
+        private JsonContent CreateContent(ApiParameterContext context)
+        {
+            var value = context.ParameterValue;
+            var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
+            return new JsonContent(value, options, this.encoding);
+        }
+#endif
     }
 }
