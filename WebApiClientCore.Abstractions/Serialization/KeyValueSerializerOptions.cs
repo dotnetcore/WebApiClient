@@ -41,8 +41,13 @@ namespace WebApiClientCore.Serialization
         /// </summary>
         public bool IgnoreNullValues
         {
+#if NET5_0_OR_GREATER
             get => jsonOptions.DefaultIgnoreCondition == JsonIgnoreCondition.WhenWritingNull;
             set => jsonOptions.DefaultIgnoreCondition = value ? JsonIgnoreCondition.WhenWritingNull : JsonIgnoreCondition.Never;
+#else
+            get => jsonOptions.IgnoreNullValues;
+            set => jsonOptions.IgnoreNullValues = value;
+#endif
         }
 
         /// <summary>

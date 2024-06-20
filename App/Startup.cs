@@ -46,13 +46,12 @@ namespace App
 
             // È«¾ÖÄ¬ÈÏÅäÖÃ
             services
-                .AddWebApiClient() 
+                .AddWebApiClient()
                 .UseJsonFirstApiActionDescriptor();
 
             // ×¢²áuserApi
             services.AddHttpApi(typeof(IUserApi)).ConfigureHttpApi(o =>
             {
-                o.UseLogging = Environment.IsDevelopment();
                 o.HttpHost = new Uri("http://localhost:5000/");
             });
 

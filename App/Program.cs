@@ -25,8 +25,7 @@ namespace App
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host
-                .CreateDefaultBuilder(args)
-                .UseSerilog(writeToProviders: false)
+                .CreateDefaultBuilder(args) 
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
