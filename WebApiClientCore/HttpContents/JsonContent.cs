@@ -2,7 +2,6 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using WebApiClientCore.Internals;
 using WebApiClientCore.Serialization;
 
 namespace WebApiClientCore.HttpContents
@@ -50,17 +49,21 @@ namespace WebApiClientCore.HttpContents
         [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
         public JsonContent(object? value, JsonSerializerOptions? jsonSerializerOptions, Encoding? encoding)
         {
+            JsonBufferSerializer.Serialize(this, value, jsonSerializerOptions);
+
             if (encoding == null || Encoding.UTF8.Equals(encoding))
             {
                 this.Headers.ContentType = defaultMediaType;
-                JsonBufferSerializer.Serialize(this, value, jsonSerializerOptions);
             }
             else
             {
                 this.Headers.ContentType = new MediaTypeHeaderValue(mediaType) { CharSet = encoding.WebName };
-                using var utf8Writer = new RecyclableBufferWriter<byte>();
-                JsonBufferSerializer.Serialize(utf8Writer, value, jsonSerializerOptions);
-                Encoding.UTF8.Convert(encoding, utf8Writer.WrittenSpan, this);
+
+                var utf8Json = this.WrittenSegment;
+                var encodingBuffer = Encoding.Convert(Encoding.UTF8, encoding, utf8Json.Array!, utf8Json.Offset, utf8Json.Count);
+
+                this.Clear();
+                this.Write(encodingBuffer);
             }
         }
     }

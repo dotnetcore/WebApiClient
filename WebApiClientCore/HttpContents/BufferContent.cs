@@ -20,6 +20,11 @@ namespace WebApiClientCore.HttpContents
         private readonly RecyclableBufferWriter<byte> bufferWriter = new();
 
         /// <summary>
+        /// 获取已数入的数据
+        /// </summary>
+        protected ArraySegment<byte> WrittenSegment => this.bufferWriter.WrittenSegment;
+
+        /// <summary>
         /// 缓冲的 Http 内容
         /// </summary> 
         public BufferContent(string mediaType)
@@ -91,6 +96,14 @@ namespace WebApiClientCore.HttpContents
         {
             this.EnsureNotBuffered();
             this.bufferWriter.Write(buffer);
+        }
+
+        /// <summary>
+        /// 清除数据
+        /// </summary>
+        public void Clear()
+        {
+            this.bufferWriter.Clear();
         }
 
         /// <summary>
