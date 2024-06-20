@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
-using WebApiClientCore.HttpContents;
 
 namespace WebApiClientCore.Parameters
 {
@@ -13,11 +14,10 @@ namespace WebApiClientCore.Parameters
     /// 表示将自身作为JsonPatch请求内容
     /// </summary>
     [DebuggerTypeProxy(typeof(DebugView))]
+    [RequiresDynamicCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext.")]
     public class JsonPatchDocument : IApiParameter
     {
-        /// <summary>
-        /// 操作列表
-        /// </summary>
+        private static readonly MediaTypeHeaderValue mediaTypeHeaderValue = new("application/json-patch+json");
         private readonly List<object> operations = [];
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace WebApiClientCore.Parameters
             }
 
             var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
-            context.HttpContext.RequestMessage.Content = new JsonPatchContent(this.operations, options);
+            context.HttpContext.RequestMessage.Content = JsonContent.Create(this.operations, this.operations.GetType(), mediaTypeHeaderValue, options);
 
             return Task.CompletedTask;
         }
