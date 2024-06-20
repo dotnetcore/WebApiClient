@@ -57,6 +57,6 @@ namespace WebApiClientCore
         /// <summary>
         /// 获取自定义数据存储的字典
         /// </summary>
-        public abstract ConcurrentDictionary<object, object> Properties { get; protected set; }
+        public abstract ConcurrentDictionary<object, object?> Properties { get; protected set; }
     }
 }

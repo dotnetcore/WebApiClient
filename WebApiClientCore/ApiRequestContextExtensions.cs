@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace WebApiClientCore
 {
@@ -77,24 +78,30 @@ namespace WebApiClientCore
 
             value = null;
             return false;
-        } 
+        }
 
         /// <summary>
-        /// 获取指向 api 方法名的日志
+        /// 获取以 ApiAction 为容器的 ILogger
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        internal static ILogger? GetLogger(this ApiRequestContext context)
+        public static ILogger? GetActionLogger(this ApiRequestContext context)
         {
-            var loggerFactory = context.HttpContext.ServiceProvider.GetService<ILoggerFactory>();
-            if (loggerFactory == null)
-            {
-                return null;
-            }
+            return context.ActionDescriptor.Properties.GetOrAdd(typeof(ILogger), CreateLogger) as ILogger;
 
-            var method = context.ActionDescriptor.Member;
-            var categoryName = $"{method.DeclaringType?.Namespace}.{method.DeclaringType?.Name}.{method.Name}";
-            return loggerFactory.CreateLogger(categoryName);
+            object? CreateLogger(object _)
+            {
+                var loggerFactory = context.HttpContext.ServiceProvider.GetService<ILoggerFactory>();
+                if (loggerFactory == null)
+                {
+                    return null;
+                }
+
+                var action = context.ActionDescriptor;
+                var parameters = action.Parameters.Select(item => HttpApi.GetName(item.ParameterType, includeNamespace: false));
+                var categoryName = $"{action.InterfaceType.Namespace}.{action.InterfaceType.Name}.{action.Member.Name}({string.Join(", ", parameters)})";
+                return loggerFactory.CreateLogger(categoryName);
+            }
         }
     }
 }

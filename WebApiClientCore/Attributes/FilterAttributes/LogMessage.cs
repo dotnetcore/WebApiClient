@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.IO;
 using System.Text;
 
@@ -9,6 +10,26 @@ namespace WebApiClientCore.Attributes
     /// </summary>
     public class LogMessage
     {
+        private static readonly Action<ILogger, string?, string?, TimeSpan, Exception?> logInformation = LoggerMessage.Define<string?, string?, TimeSpan>(LogLevel.Information, 0,
+            """
+            [REQUEST]
+            {request}            
+            [RESPONSE]
+            {response}            
+            [ELAPSED]
+            {elapsed}
+            """);
+
+        private static readonly Action<ILogger, string?, string?, TimeSpan, Exception> logError = LoggerMessage.Define<string?, string?, TimeSpan>(LogLevel.Error, 0,
+           """
+            [REQUEST]
+            {request}            
+            [RESPONSE]
+            {response}            
+            [ELAPSED]
+            {elapsed}
+            """);
+
         /// <summary>
         /// 获取或设置是否记录请求
         /// </summary>
@@ -106,6 +127,47 @@ namespace WebApiClientCore.Attributes
             }
 
             return builder.ToString();
+        }
+
+        /// <summary>
+        /// 写到日志组件
+        /// </summary>
+        /// <param name="logger">日志组件</param>
+        public void WriteTo(ILogger logger)
+        {
+            var builder = new TextBuilder();
+            var request = "...";
+            var response = "...";
+            var elapsed = this.ResponseTime.Subtract(this.RequestTime);
+
+            if (this.HasRequest)
+            {
+                request = builder
+                    .Clear()
+                    .AppendIfNotNull(this.RequestHeaders)
+                    .AppendLineIf(this.RequestContent != null)
+                    .AppendIfNotNull(this.RequestContent)
+                    .ToString();
+            }
+
+            if (this.HasResponse)
+            {
+                response = builder
+                    .Clear()
+                    .AppendIfNotNull(this.ResponseHeaders)
+                    .AppendLineIf(this.ResponseContent != null)
+                    .AppendIfNotNull(this.ResponseContent)
+                    .ToString();
+            }
+
+            if (this.Exception == null)
+            {
+                logInformation(logger, request, response, elapsed, null);
+            }
+            else
+            {
+                logError(logger, request, response, elapsed, this.Exception);
+            }
         }
 
         /// <summary>
@@ -233,6 +295,12 @@ namespace WebApiClientCore.Attributes
                 {
                     this.builder.AppendLine(value);
                 }
+                return this;
+            }
+
+            public TextBuilder Clear()
+            {
+                this.builder.Clear();
                 return this;
             }
 

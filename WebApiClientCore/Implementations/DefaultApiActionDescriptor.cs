@@ -61,7 +61,7 @@ namespace WebApiClientCore.Implementations
         /// <summary>
         /// 获取自定义数据存储的字典
         /// </summary>
-        public override ConcurrentDictionary<object, object> Properties { get; protected set; }
+        public override ConcurrentDictionary<object, object?> Properties { get; protected set; }
 
         /// <summary>
         /// 请求Api描述
@@ -109,7 +109,7 @@ namespace WebApiClientCore.Implementations
             this.Attributes = actionAttributes;
             this.CacheAttribute = methodAttributes.OfType<IApiCacheAttribute>().FirstOrDefault();
             this.FilterAttributes = filterAttributes;
-            this.Properties = new ConcurrentDictionary<object, object>();
+            this.Properties = new ConcurrentDictionary<object, object?>();
 
             this.Return = new DefaultApiReturnDescriptor(method.ReturnType, methodAttributes, interfaceAttributes);
             this.Parameters = method.GetParameters().Select(p => new DefaultApiParameterDescriptor(p)).ToReadOnlyList();

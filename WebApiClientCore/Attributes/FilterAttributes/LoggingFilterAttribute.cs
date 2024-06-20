@@ -11,8 +11,7 @@ namespace WebApiClientCore.Attributes
     /// </summary>
     public class LoggingFilterAttribute : ApiFilterAttribute
     {
-        private static readonly Action<ILogger, LogMessage, Exception> logError = LoggerMessage.Define<LogMessage>(LogLevel.Error, 0, "{LogMessage}");
-        private static readonly Action<ILogger, LogMessage, Exception?> logInformation = LoggerMessage.Define<LogMessage>(LogLevel.Information, 1, "{LogMessage}");
+        private readonly bool isLoggingFilterAttribute;
 
         /// <summary>
         /// 获取或设置是否输出请求内容
@@ -30,6 +29,7 @@ namespace WebApiClientCore.Attributes
         public LoggingFilterAttribute()
         {
             this.OrderIndex = int.MaxValue;
+            this.isLoggingFilterAttribute = this.GetType() == typeof(LoggingFilterAttribute);
         }
 
         /// <summary>
@@ -44,20 +44,26 @@ namespace WebApiClientCore.Attributes
                 return;
             }
 
+            // LoggingFilterAttribute本类型依赖于ILogger输出日志
+            if (this.isLoggingFilterAttribute && context.GetActionLogger() == null)
+            {
+                return;
+            }
+
             var logMessage = new LogMessage
             {
                 RequestTime = DateTime.Now,
                 HasRequest = this.LogRequest
             };
 
-            if (this.LogRequest == true)
+            if (this.LogRequest)
             {
                 var request = context.HttpContext.RequestMessage;
                 logMessage.RequestHeaders = request.GetHeadersString();
                 logMessage.RequestContent = await ReadRequestContentAsync(request).ConfigureAwait(false);
             }
 
-            context.Properties.Set(typeof(LoggingFilterAttribute), logMessage);
+            context.Properties.Set(typeof(LogMessage), logMessage);
         }
 
         /// <summary>
@@ -67,12 +73,7 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public sealed async override Task OnResponseAsync(ApiResponseContext context)
         {
-            if (context.HttpContext.HttpApiOptions.UseLogging == false)
-            {
-                return;
-            }
-
-            var logMessage = context.Properties.Get<LogMessage>(typeof(LoggingFilterAttribute));
+            var logMessage = context.Properties.Get<LogMessage>(typeof(LogMessage));
             if (logMessage == null)
             {
                 return;
@@ -90,6 +91,33 @@ namespace WebApiClientCore.Attributes
             }
 
             await this.WriteLogAsync(context, logMessage).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// 写日志到指定日志组件
+        /// 默认写入Microsoft.Extensions.Logging
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <param name="logMessage">日志消息</param>
+        /// <returns></returns>
+        protected virtual Task WriteLogAsync(ApiResponseContext context, LogMessage logMessage)
+        {
+            var logger = context.GetActionLogger();
+            if (logger != null)
+            {
+                this.WriteLog(logger, logMessage);
+            }
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// 写日志到ILogger
+        /// </summary>
+        /// <param name="logger">日志组件</param>
+        /// <param name="logMessage">日志消息</param>
+        protected virtual void WriteLog(ILogger logger, LogMessage logMessage)
+        {
+            logMessage.WriteTo(logger);
         }
 
         /// <summary>
@@ -122,43 +150,9 @@ namespace WebApiClientCore.Attributes
                 return null;
             }
 
-            return content.IsBuffered() == true 
-                ? await content.ReadAsStringAsync(context.RequestAborted).ConfigureAwait(false) 
+            return content.IsBuffered() == true
+                ? await content.ReadAsStringAsync(context.RequestAborted).ConfigureAwait(false)
                 : "...";
-        }
-
-        /// <summary>
-        /// 写日志到指定日志组件
-        /// 默认写入Microsoft.Extensions.Logging
-        /// </summary>
-        /// <param name="context">上下文</param>
-        /// <param name="logMessage">日志消息</param>
-        /// <returns></returns>
-        protected virtual Task WriteLogAsync(ApiResponseContext context, LogMessage logMessage)
-        {
-            var logger = context.GetLogger();
-            if (logger != null)
-            {
-                this.WriteLog(logger, logMessage);
-            }
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// 写日志到ILogger
-        /// </summary>
-        /// <param name="logger">日志</param>
-        /// <param name="logMessage">日志消息</param>
-        protected virtual void WriteLog(ILogger logger, LogMessage logMessage)
-        {
-            if (logMessage.Exception == null)
-            {
-                logInformation(logger, logMessage, null);
-            }
-            else
-            {
-                logError(logger, logMessage.ToExcludeException(), logMessage.Exception);
-            }
         }
     }
 }

@@ -26,6 +26,7 @@ namespace App
         {
             return Host
                 .CreateDefaultBuilder(args)
+                .UseSerilog(writeToProviders: false)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
