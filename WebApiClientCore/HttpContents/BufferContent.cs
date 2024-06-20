@@ -23,8 +23,16 @@ namespace WebApiClientCore.HttpContents
         /// utf8的BufferContent
         /// </summary> 
         public BufferContent(string mediaType)
+            : this(new MediaTypeHeaderValue(mediaType))
         {
-            this.Headers.ContentType = new MediaTypeHeaderValue(mediaType);
+        }
+
+        /// <summary>
+        /// utf8的BufferContent
+        /// </summary> 
+        public BufferContent(MediaTypeHeaderValue mediaType)
+        {
+            this.Headers.ContentType = mediaType;
         }
 
         /// <summary>

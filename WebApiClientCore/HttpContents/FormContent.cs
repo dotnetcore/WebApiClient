@@ -18,6 +18,9 @@ namespace WebApiClientCore.HttpContents
     /// </summary>
     public class FormContent : HttpContent
     {
+        private const string mediaType = "application/x-www-form-urlencoded";
+        private static readonly MediaTypeHeaderValue mediaTypeHeaderValue = new(mediaType);
+
         /// <summary>
         /// buffer写入器
         /// </summary>
@@ -31,7 +34,7 @@ namespace WebApiClientCore.HttpContents
         /// <summary>
         /// 获取对应的ContentType
         /// </summary>
-        public static string MediaType => "application/x-www-form-urlencoded";
+        public static string MediaType => mediaType;
 
 
         /// <summary>
@@ -39,7 +42,7 @@ namespace WebApiClientCore.HttpContents
         /// </summary>
         public FormContent()
         {
-            this.Headers.ContentType = new MediaTypeHeaderValue(MediaType);
+            this.Headers.ContentType = mediaTypeHeaderValue;
         }
 
         /// <summary>
@@ -47,9 +50,9 @@ namespace WebApiClientCore.HttpContents
         /// </summary>
         /// <param name="keyValues">键值对</param> 
         public FormContent(IEnumerable<KeyValue> keyValues)
+            : this()
         {
             this.AddFormField(keyValues);
-            this.Headers.ContentType = new MediaTypeHeaderValue(MediaType);
         }
 
         /// <summary>

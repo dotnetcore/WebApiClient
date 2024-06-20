@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using WebApiClientCore.Internals;
@@ -11,16 +12,19 @@ namespace WebApiClientCore.HttpContents
     /// </summary>
     public class JsonContent : BufferContent
     {
+        private const string mediaType = "application/json";
+        private static readonly MediaTypeHeaderValue mediaTypeHeaderValue = new(mediaType);
+
         /// <summary>
         /// 获取对应的ContentType
         /// </summary>
-        public static string MediaType => "application/json";
+        public static string MediaType => mediaType;
 
         /// <summary>
         /// uft8 的 json 内容
         /// </summary> 
         public JsonContent()
-            : base(MediaType)
+            : base(mediaTypeHeaderValue)
         {
         }
 
@@ -45,7 +49,7 @@ namespace WebApiClientCore.HttpContents
         [RequiresDynamicCode("JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use System.Text.Json source generation for native AOT applications.")]
         [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
         public JsonContent(object? value, JsonSerializerOptions? jsonSerializerOptions, Encoding? encoding)
-            : base(MediaType)
+            : base(mediaTypeHeaderValue)
         {
             if (encoding == null || Encoding.UTF8.Equals(encoding))
             {
@@ -57,7 +61,7 @@ namespace WebApiClientCore.HttpContents
                 JsonBufferSerializer.Serialize(utf8Writer, value, jsonSerializerOptions);
 
                 Encoding.UTF8.Convert(encoding, utf8Writer.WrittenSpan, this);
-                this.Headers.ContentType!.CharSet = encoding.WebName;
+                this.Headers.ContentType = new MediaTypeHeaderValue(mediaType) { CharSet = encoding.WebName };
             }
         }
     }
