@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Threading.Tasks;
 using WebApiClientCore.HttpContents;
@@ -44,8 +45,9 @@ namespace WebApiClientCore.Attributes
                 return;
             }
 
-            // LoggingFilterAttribute本类型依赖于ILogger输出日志
-            if (this.isLoggingFilterAttribute && context.GetActionLogger() == null)
+            // 本类型依赖于 ActionLogger
+            // 且 LogLevel 最大为 LogLevel.Error
+            if (this.isLoggingFilterAttribute && !IsLogEnable(context))
             {
                 return;
             }
@@ -79,18 +81,16 @@ namespace WebApiClientCore.Attributes
                 return;
             }
 
-            logMessage.ResponseTime = DateTime.Now;
-            logMessage.Exception = context.Exception;
-
-            var response = context.HttpContext.ResponseMessage;
-            if (this.LogResponse && response != null)
+            if (this.isLoggingFilterAttribute && IsLogEnable(context, out var logger))
             {
-                logMessage.HasResponse = true;
-                logMessage.ResponseHeaders = response.GetHeadersString();
-                logMessage.ResponseContent = await ReadResponseContentAsync(context).ConfigureAwait(false);
+                await this.FillResponseAsync(logMessage, context).ConfigureAwait(false);
+                logMessage.WriteTo(logger);
             }
-
-            await this.WriteLogAsync(context, logMessage).ConfigureAwait(false);
+            else
+            {
+                await this.FillResponseAsync(logMessage, context).ConfigureAwait(false);
+                await this.WriteLogAsync(context, logMessage).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -118,6 +118,44 @@ namespace WebApiClientCore.Attributes
         protected virtual void WriteLog(ILogger logger, LogMessage logMessage)
         {
             logMessage.WriteTo(logger);
+        }
+
+        private static bool IsLogEnable(ApiRequestContext context)
+        {
+            var logger = context.GetActionLogger();
+            return logger != null && logger.IsEnabled(LogLevel.Error);
+        }
+
+        private static bool IsLogEnable(ApiResponseContext context, [MaybeNullWhen(false)] out ILogger logger)
+        {
+            logger = context.GetActionLogger();
+            if (logger == null)
+            {
+                return false;
+            }
+
+            var logLevel = context.Exception == null ? LogLevel.Information : LogLevel.Error;
+            return logger.IsEnabled(logLevel);
+        }
+
+        /// <summary>
+        /// 填充响应内容到LogMessage
+        /// </summary>
+        /// <param name="logMessage"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private async Task FillResponseAsync(LogMessage logMessage, ApiResponseContext context)
+        {
+            logMessage.ResponseTime = DateTime.Now;
+            logMessage.Exception = context.Exception;
+
+            var response = context.HttpContext.ResponseMessage;
+            if (this.LogResponse && response != null)
+            {
+                logMessage.HasResponse = true;
+                logMessage.ResponseHeaders = response.GetHeadersString();
+                logMessage.ResponseContent = await ReadResponseContentAsync(context).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
