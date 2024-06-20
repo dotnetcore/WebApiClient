@@ -29,7 +29,7 @@ namespace WebApiClientCore.Serialization
             }
 
             var settings = options ?? writerSettings;
-            var writer = new EncodingWriter(settings.Encoding);
+            using var writer = new EncodingStingWriter(settings.Encoding);
             using var xmlWriter = XmlWriter.Create(writer, settings);
             var xmlSerializer = new System.Xml.Serialization.XmlSerializer(obj.GetType());
             xmlSerializer.Serialize(xmlWriter, obj);
@@ -66,7 +66,7 @@ namespace WebApiClientCore.Serialization
         /// <summary>
         /// 表示可指定编码文本写入器
         /// </summary>
-        private class EncodingWriter : StringWriter
+        private class EncodingStingWriter : StringWriter
         {
             /// <summary>
             /// 编码
@@ -82,7 +82,7 @@ namespace WebApiClientCore.Serialization
             /// 可指定编码文本写入器
             /// </summary>
             /// <param name="encoding">编码</param>
-            public EncodingWriter(Encoding encoding)
+            public EncodingStingWriter(Encoding encoding)
             {
                 this.encoding = encoding;
             }
