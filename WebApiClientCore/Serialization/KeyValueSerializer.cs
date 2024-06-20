@@ -80,16 +80,10 @@ namespace WebApiClientCore.Serialization
         [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
         private static List<KeyValue> GetKeyValueList(string key, object obj, Type objType, KeyValueSerializerOptions options)
         {
-            var jsonOptions = options.GetJsonSerializerOptions();
             using var bufferWriter = new RecyclableBufferWriter<byte>();
-            using var utf8JsonWriter = new Utf8JsonWriter(bufferWriter, new JsonWriterOptions
-            {
-                Indented = false,
-                SkipValidation = true,
-                Encoder = jsonOptions.Encoder
-            });
-
-            System.Text.Json.JsonSerializer.Serialize(utf8JsonWriter, obj, objType, jsonOptions);
+            var jsonOptions = options.GetJsonSerializerOptions();
+            var utf8JsonWriter = Utf8JsonWriterCache.Get(bufferWriter, jsonOptions);
+            JsonSerializer.Serialize(utf8JsonWriter, obj, objType, jsonOptions);
             var utf8JsonReader = new Utf8JsonReader(bufferWriter.WrittenSpan, new JsonReaderOptions
             {
                 MaxDepth = jsonOptions.MaxDepth,
