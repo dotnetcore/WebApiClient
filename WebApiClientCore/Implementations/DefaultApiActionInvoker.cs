@@ -92,7 +92,7 @@ namespace WebApiClientCore.Implementations
         private static async Task<TResult> InvokeAsync(ApiRequestContext request)
         {
 #nullable disable
-            var response = await ApiRequestExecuter.ExecuteAsync(request).ConfigureAwait(false);
+            var response = await ApiRequestExecutor.ExecuteAsync(request).ConfigureAwait(false);
             if (response.ResultStatus == ResultStatus.HasResult)
             {
                 return (TResult)response.Result;

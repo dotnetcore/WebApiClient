@@ -9,7 +9,7 @@ namespace WebApiClientCore.Implementations
     /// <summary>
     /// 请求上下文执行器
     /// </summary>
-    static class ApiRequestExecuter
+    static class ApiRequestExecutor
     {
         /// <summary>
         /// 执行上下文
