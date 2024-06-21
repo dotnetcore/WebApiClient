@@ -90,6 +90,21 @@ namespace WebApiClientCore
         [RequiresUnreferencedCode("Members from serialized types may be trimmed if not referenced directly")]
         public static string? SerializeToXml(this ApiParameterContext context, Encoding? encoding)
         {
+            using var bufferWriter = new RecyclableBufferWriter<char>();
+            context.SerializeToXml(encoding, bufferWriter);
+            return bufferWriter.WrittenSpan.ToString();
+        }
+
+        /// <summary>
+        /// 序列化参数值为Xml
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="bufferWriter">数据写入器</param>
+        /// <param name="encoding">xml的编码</param>
+        /// <returns></returns>
+        [RequiresUnreferencedCode("Members from serialized types may be trimmed if not referenced directly")]
+        public static void SerializeToXml(this ApiParameterContext context, Encoding? encoding, IBufferWriter<char> bufferWriter)
+        {
             var options = context.HttpContext.HttpApiOptions.XmlSerializeOptions;
             if (encoding != null && encoding.Equals(options.Encoding) == false)
             {
@@ -97,7 +112,7 @@ namespace WebApiClientCore
                 options.Encoding = encoding;
             }
 
-            return XmlSerializer.Serialize(context.ParameterValue, options);
+            XmlSerializer.Serialize(context.ParameterValue, options, bufferWriter);
         }
 
         /// <summary>

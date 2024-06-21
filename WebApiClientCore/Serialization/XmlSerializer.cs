@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using WebApiClientCore.Internals;
 
 namespace WebApiClientCore.Serialization
 {
@@ -31,10 +32,9 @@ namespace WebApiClientCore.Serialization
                 return null;
             }
 
-            var settings = options ?? writerSettings;
-            using var writer = new EncodingStringWriter(settings.Encoding);
-            SerializeCore(writer, obj, settings);
-            return writer.ToString();
+            using var bufferWriter = new RecyclableBufferWriter<char>();
+            Serialize(obj, options, bufferWriter);
+            return bufferWriter.WrittenSpan.ToString();
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace WebApiClientCore.Serialization
         /// <param name="obj">对象</param>
         /// <param name="options">配置选项</param> 
         [RequiresUnreferencedCode("Members from serialized types may be trimmed if not referenced directly")]
-        public static void Serialize(IBufferWriter<byte> bufferWriter, object? obj, XmlWriterSettings? options)
+        public static void Serialize(object? obj, XmlWriterSettings? options, IBufferWriter<char> bufferWriter)
         {
             if (obj == null)
             {
@@ -52,14 +52,8 @@ namespace WebApiClientCore.Serialization
             }
 
             var settings = options ?? writerSettings;
-            using var writer = new BufferTextWriter(bufferWriter, settings.Encoding);
-            SerializeCore(writer, obj, settings);
-        }
-
-        [RequiresUnreferencedCode("Members from serialized types may be trimmed if not referenced directly")]
-        private static void SerializeCore(TextWriter textWriter, object obj, XmlWriterSettings settings)
-        {
-            using var xmlWriter = XmlWriter.Create(textWriter, settings);
+            using var writer = new XmlBufferWriter(bufferWriter, settings.Encoding);
+            using var xmlWriter = XmlWriter.Create(writer, settings);
             var xmlSerializer = new System.Xml.Serialization.XmlSerializer(obj.GetType());
             xmlSerializer.Serialize(xmlWriter, obj);
         }
@@ -92,17 +86,18 @@ namespace WebApiClientCore.Serialization
         }
 
 
-        private class BufferTextWriter : TextWriter
+        private class XmlBufferWriter : TextWriter
         {
-            private readonly IBufferWriter<byte> bufferWriter;
+            private readonly IBufferWriter<char> bufferWriter;
 
             public override Encoding Encoding { get; }
 
-            public BufferTextWriter(IBufferWriter<byte> bufferWriter, Encoding encoding)
+            public XmlBufferWriter(IBufferWriter<char> bufferWriter, Encoding encoding)
             {
                 this.bufferWriter = bufferWriter;
                 this.Encoding = encoding;
             }
+
             public override Task FlushAsync()
             {
                 return Task.CompletedTask;
@@ -110,7 +105,7 @@ namespace WebApiClientCore.Serialization
 
             public override void Write(ReadOnlySpan<char> buffer)
             {
-                this.Encoding.GetBytes(buffer, this.bufferWriter);
+                this.bufferWriter.Write(buffer);
             }
 
             public override void Write(char value)
@@ -185,27 +180,6 @@ namespace WebApiClientCore.Serialization
                 this.Write(buffer.Span);
                 WriteLine();
                 return Task.CompletedTask;
-            }
-        }
-
-
-        /// <summary>
-        /// 表示可指定编码文本写入器
-        /// </summary>
-        private class EncodingStringWriter : StringWriter
-        {
-            /// <summary>
-            /// 获取编码
-            /// </summary>
-            public override Encoding Encoding { get; }
-
-            /// <summary>
-            /// 可指定编码文本写入器
-            /// </summary>
-            /// <param name="encoding">编码</param>
-            public EncodingStringWriter(Encoding encoding)
-            {
-                this.Encoding = encoding;
             }
         }
     }

@@ -37,9 +37,7 @@ namespace WebApiClientCore.Test.Attributes.ParameterAttributes
             await attr.OnRequestAsync(new ApiParameterContext(context, 0));
             var body = await context.HttpContext.RequestMessage.Content!.ReadAsStringAsync();
 
-            using var bufferWriter = new RecyclableBufferWriter<byte>();
-            XmlSerializer.Serialize(bufferWriter, context.Arguments[0], null);
-            var target = Encoding.GetEncoding(attr.CharSet).GetString(bufferWriter.WrittenSpan);
+            var target = XmlSerializer.Serialize(context.Arguments[0], null);
             Assert.True(body == target);
         }
     }

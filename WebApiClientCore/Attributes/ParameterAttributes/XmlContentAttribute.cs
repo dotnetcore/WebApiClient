@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiClientCore.HttpContents;
+using WebApiClientCore.Internals;
 
 namespace WebApiClientCore.Attributes
 {
@@ -34,14 +35,9 @@ namespace WebApiClientCore.Attributes
         [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
         protected override Task SetHttpContentAsync(ApiParameterContext context)
         {
-            var options = context.HttpContext.HttpApiOptions.XmlSerializeOptions;
-            if (encoding != null && encoding.Equals(options.Encoding) == false)
-            {
-                options = options.Clone();
-                options.Encoding = encoding;
-            }
-
-            context.HttpContext.RequestMessage.Content = new XmlContent(context.ParameterValue, options);
+            using var bufferWriter = new RecyclableBufferWriter<char>();
+            context.SerializeToXml(this.encoding, bufferWriter);
+            context.HttpContext.RequestMessage.Content = new XmlContent(bufferWriter.WrittenSpan, this.encoding);
             return Task.CompletedTask;
         }
     }
