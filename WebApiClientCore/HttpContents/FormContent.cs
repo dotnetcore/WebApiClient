@@ -111,15 +111,18 @@ namespace WebApiClientCore.HttpContents
         /// 添加已编码的原始内容表单
         /// </summary>
         /// <param name="encodedForm">表单内容</param>
-        public void AddForm(string? encodedForm)
+        public void AddForm(ReadOnlySpan<char> encodedForm)
         {
-            if (encodedForm == null)
-            {
-                return;
-            }
+            this.EnsureNotBuffered();
 
-            var formBytes = httpEncoding.GetBytes(encodedForm);
-            this.AddForm(formBytes);
+            if (encodedForm.Length > 0)
+            {
+                if (this.bufferWriter.WrittenCount > 0)
+                {
+                    this.bufferWriter.Write((byte)'&');
+                }
+                httpEncoding.GetBytes(encodedForm, this.bufferWriter);
+            }
         }
 
         /// <summary>
@@ -130,16 +133,14 @@ namespace WebApiClientCore.HttpContents
         {
             this.EnsureNotBuffered();
 
-            if (encodedForm.IsEmpty == true)
+            if (encodedForm.Length > 0)
             {
-                return;
+                if (this.bufferWriter.WrittenCount > 0)
+                {
+                    this.bufferWriter.Write((byte)'&');
+                }
+                this.bufferWriter.Write(encodedForm);
             }
-
-            if (this.bufferWriter.WrittenCount > 0)
-            {
-                this.bufferWriter.Write((byte)'&');
-            }
-            this.bufferWriter.Write(encodedForm);
         }
 
         /// <summary>
