@@ -58,8 +58,12 @@ namespace WebApiClientCore.Benchmarks.Requests
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://webapiclient.com/"));
 
             this.ServiceProvider = services.BuildServiceProvider();
+
+            // 服务显式加载预热
             this.ServiceProvider.GetService<IWebApiClientCoreJsonApi>();
+            this.ServiceProvider.GetService<IWebApiClientCoreXmlApi>();
             this.ServiceProvider.GetService<IRefitJsonApi>();
+            this.ServiceProvider.GetService<IRefitXmlApi>();
         }
 
         private class JsonResponseHandler : DelegatingHandler

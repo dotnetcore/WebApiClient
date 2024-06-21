@@ -9,5 +9,5 @@ Job=InProcess  Toolchain=InProcessEmitToolchain
 ```
 | Method                    | Mean      | Error     | StdDev    | Ratio | RatioSD | Gen0   | Allocated | Alloc Ratio |
 |-------------------------- |----------:|----------:|----------:|------:|--------:|-------:|----------:|------------:|
-| WebApiClientCore_GetAsync |  5.926 μs | 0.1162 μs | 0.1630 μs |  1.00 |    0.00 | 0.3052 |   3.45 KB |        1.00 |
-| Refit_GetAsync            | 15.943 μs | 0.2997 μs | 0.3681 μs |  2.70 |    0.10 | 0.4883 |   5.18 KB |        1.50 |
+| WebApiClientCore_GetAsync |  5.558 μs | 0.1094 μs | 0.1384 μs |  1.00 |    0.00 | 0.3357 |   3.45 KB |        1.00 |
+| Refit_GetAsync            | 14.494 μs | 0.2764 μs | 0.3394 μs |  2.61 |    0.10 | 0.4883 |   5.18 KB |        1.50 |
