@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
@@ -24,7 +25,8 @@ namespace System.Net.Http
 
         /// <summary>
         /// 静态构造器
-        /// </summary>
+        /// </summary> 
+        [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(HttpContent))]
         static HttpContentExtensions()
         {
             var property = typeof(HttpContent).GetProperty(IsBufferedPropertyName, BindingFlags.Instance | BindingFlags.NonPublic);
@@ -70,8 +72,8 @@ namespace System.Net.Http
             {
                 throw new HttpContentBufferedException();
             }
-        } 
-       
+        }
+
         /// <summary>
         /// 读取为二进制数组并转换为 utf8 编码
         /// </summary>
@@ -133,7 +135,7 @@ namespace System.Net.Http
             return encoding.Equals(Encoding.UTF8.WebName, StringComparison.OrdinalIgnoreCase)
                 ? Encoding.UTF8
                 : Encoding.GetEncoding(encoding.ToString());
-        } 
+        }
 
     }
 }
