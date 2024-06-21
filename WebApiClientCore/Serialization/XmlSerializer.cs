@@ -33,9 +33,7 @@ namespace WebApiClientCore.Serialization
 
             var settings = options ?? writerSettings;
             using var writer = new EncodingStringWriter(settings.Encoding);
-            using var xmlWriter = XmlWriter.Create(writer, settings);
-            var xmlSerializer = new System.Xml.Serialization.XmlSerializer(obj.GetType());
-            xmlSerializer.Serialize(xmlWriter, obj);
+            SerializeCore(writer, obj, settings);
             return writer.ToString();
         }
 
@@ -55,7 +53,13 @@ namespace WebApiClientCore.Serialization
 
             var settings = options ?? writerSettings;
             using var writer = new BufferTextWriter(bufferWriter, settings.Encoding);
-            using var xmlWriter = XmlWriter.Create(writer, settings);
+            SerializeCore(writer, obj, settings);
+        }
+
+        [RequiresUnreferencedCode("Members from serialized types may be trimmed if not referenced directly")]
+        private static void SerializeCore(TextWriter textWriter, object obj, XmlWriterSettings settings)
+        {
+            using var xmlWriter = XmlWriter.Create(textWriter, settings);
             var xmlSerializer = new System.Xml.Serialization.XmlSerializer(obj.GetType());
             xmlSerializer.Serialize(xmlWriter, obj);
         }

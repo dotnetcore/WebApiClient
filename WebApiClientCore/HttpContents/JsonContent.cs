@@ -58,13 +58,17 @@ namespace WebApiClientCore.HttpContents
             else
             {
                 this.Headers.ContentType = new MediaTypeHeaderValue(mediaType) { CharSet = encoding.WebName };
-
-                var utf8Json = this.WrittenSegment;
-                var encodingBuffer = Encoding.Convert(Encoding.UTF8, encoding, utf8Json.Array!, utf8Json.Offset, utf8Json.Count);
-
-                this.Clear();
-                this.Write(encodingBuffer);
+                this.ConvertEncoding(encoding);
             }
+        }
+
+        private void ConvertEncoding(Encoding encoding)
+        {
+            var utf8Json = this.WrittenSegment;
+            var encodingBuffer = Encoding.Convert(Encoding.UTF8, encoding, utf8Json.Array!, utf8Json.Offset, utf8Json.Count);
+
+            this.Clear();
+            this.Write(encodingBuffer);
         }
     }
 }

@@ -11,13 +11,19 @@ namespace WebApiClientCore.Attributes
     /// 使用JsonSerializer序列化参数值得到的 json 文本作为 application/json 请求
     /// 每个Api只能注明于其中的一个参数
     /// </summary>
-    public class JsonContentAttribute : HttpContentAttribute, ICharSetable
+    public class JsonContentAttribute : HttpContentAttribute, ICharSetable, IChunkedable
     {
         private const string jsonMediaType = "application/json";
         private static readonly MediaTypeHeaderValue defaultMediaType = new(jsonMediaType);
 
         private MediaTypeHeaderValue mediaType = defaultMediaType;
         private Encoding encoding = Encoding.UTF8;
+
+        /// <summary>
+        /// 获取或设置是否允许 chunked 传输
+        /// 默认为 true
+        /// </summary>
+        public bool AllowChunked { get; set; } = true;
 
         /// <summary>
         /// 获取或设置编码名称
@@ -43,9 +49,17 @@ namespace WebApiClientCore.Attributes
         protected override Task SetHttpContentAsync(ApiParameterContext context)
         {
             var value = context.ParameterValue;
-            var valueType = value == null ? context.Parameter.ParameterType : value.GetType();
             var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
-            context.HttpContext.RequestMessage.Content = JsonContent.Create(value, valueType, this.mediaType, options);
+
+            if (this.AllowChunked)
+            {
+                var valueType = value == null ? context.Parameter.ParameterType : value.GetType();
+                context.HttpContext.RequestMessage.Content = JsonContent.Create(value, valueType, this.mediaType, options);
+            }
+            else
+            {
+                context.HttpContext.RequestMessage.Content = new HttpContents.JsonContent(value, options, this.encoding);
+            }
             return Task.CompletedTask;
         }
     }

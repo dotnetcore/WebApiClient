@@ -15,10 +15,16 @@ namespace WebApiClientCore.Parameters
     /// </summary>
     [DebuggerTypeProxy(typeof(DebugView))]
     [RequiresDynamicCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext.")]
-    public class JsonPatchDocument : IApiParameter
+    public class JsonPatchDocument : IApiParameter, IChunkedable
     {
         private static readonly MediaTypeHeaderValue mediaTypeHeaderValue = new("application/json-patch+json");
         private readonly List<object> operations = [];
+
+        /// <summary>
+        /// 获取或设置是否允许 chunked 传输
+        /// 默认为 true
+        /// </summary>
+        public bool AllowChunked { get; set; } = true;
 
         /// <summary>
         /// Add操作
@@ -79,8 +85,14 @@ namespace WebApiClientCore.Parameters
             }
 
             var options = context.HttpContext.HttpApiOptions.JsonSerializeOptions;
-            context.HttpContext.RequestMessage.Content = JsonContent.Create(this.operations, this.operations.GetType(), mediaTypeHeaderValue, options);
-
+            if (this.AllowChunked)
+            {
+                context.HttpContext.RequestMessage.Content = JsonContent.Create(this.operations, this.operations.GetType(), mediaTypeHeaderValue, options);
+            }
+            else
+            {
+                context.HttpContext.RequestMessage.Content = new HttpContents.JsonPatchContent(this.operations, options);
+            }
             return Task.CompletedTask;
         }
 

@@ -26,7 +26,9 @@ namespace WebApiClientCore.HttpContents
         public XmlContent(string? xml, Encoding encoding)
         {
             encoding.GetBytes(xml, this);
-            this.Headers.ContentType = encoding == Encoding.UTF8 ? defaultMediaType : new MediaTypeHeaderValue(MediaType) { CharSet = encoding.WebName };
+            this.Headers.ContentType = encoding == Encoding.UTF8
+                ? defaultMediaType :
+                new MediaTypeHeaderValue(MediaType) { CharSet = encoding.WebName };
         }
 
         /// <summary>
@@ -38,8 +40,9 @@ namespace WebApiClientCore.HttpContents
         public XmlContent(object? obj, XmlWriterSettings xmlWriterSettings)
         {
             XmlSerializer.Serialize(this, obj, xmlWriterSettings);
-            var encoding = xmlWriterSettings.Encoding;
-            this.Headers.ContentType = encoding == Encoding.UTF8 ? defaultMediaType : new MediaTypeHeaderValue(MediaType) { CharSet = encoding.WebName };
+            this.Headers.ContentType = xmlWriterSettings.Encoding == Encoding.UTF8
+                ? defaultMediaType
+                : new MediaTypeHeaderValue(MediaType) { CharSet = xmlWriterSettings.Encoding.WebName };
         }
     }
 }
