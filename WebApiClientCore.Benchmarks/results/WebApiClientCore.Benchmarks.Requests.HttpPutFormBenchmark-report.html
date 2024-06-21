@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>WebApiClientCore.Benchmarks.Requests.HttpPutFormBenchmark-20240621-134621</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.13.12, CentOS Linux 7 (Core)
+Intel Xeon CPU E5-2650 v2 2.60GHz, 2 CPU, 32 logical and 16 physical cores
+  [Host] : .NET 8.0.4, X64 NativeAOT AVX
+</code></pre>
+<pre><code>Job=InProcess  Toolchain=InProcessEmitToolchain  
+</code></pre>
+
+<table>
+<thead><tr><th>Method                 </th><th>Mean</th><th>Error</th><th>StdDev</th><th>Median</th><th>Ratio</th><th>RatioSD</th><th>Gen0</th><th>Allocated</th><th>Alloc Ratio</th>
+</tr>
+</thead><tbody><tr><td>WebApiClientCore_PutFormAsync</td><td>20.10 &mu;s</td><td>0.395 &mu;s</td><td>0.470 &mu;s</td><td>19.96 &mu;s</td><td>1.00</td><td>0.00</td><td>0.5493</td><td>5.7 KB</td><td>1.00</td>
+</tr><tr><td>Refit_PutFormAsync</td><td>75.53 &mu;s</td><td>1.476 &mu;s</td><td>2.163 &mu;s</td><td>74.24 &mu;s</td><td>3.78</td><td>0.12</td><td>1.0986</td><td>11.57 KB</td><td>2.03</td>
+</tr></tbody></table>
+</body>
+</html>
