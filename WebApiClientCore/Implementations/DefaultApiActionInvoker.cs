@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using System;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Runtime.ExceptionServices;
@@ -16,6 +17,11 @@ namespace WebApiClientCore.Implementations
     public class DefaultApiActionInvoker<TResult> : ApiActionInvoker, IITaskReturnConvertable
     {
         /// <summary>
+        /// 请求委托
+        /// </summary>
+        private RequestDelegate? requestDelegate;
+
+        /// <summary>
         /// 获取Action描述
         /// </summary>
         public override ApiActionDescriptor ActionDescriptor { get; }
@@ -24,9 +30,11 @@ namespace WebApiClientCore.Implementations
         /// Action执行器
         /// </summary>
         /// <param name="actionDescriptor"></param>
-        public DefaultApiActionInvoker(ApiActionDescriptor actionDescriptor)
+        /// <param name="httpApiOptionsMonitor"></param>
+        public DefaultApiActionInvoker(ApiActionDescriptor actionDescriptor, IOptionsMonitor<HttpApiOptions> httpApiOptionsMonitor)
         {
             this.ActionDescriptor = actionDescriptor;
+            httpApiOptionsMonitor.OnChange(options => this.requestDelegate = null);
         }
 
         /// <summary>
@@ -65,7 +73,7 @@ namespace WebApiClientCore.Implementations
 
                 var httpContext = new HttpContext(context, requestMessage);
                 var requestContext = new ApiRequestContext(httpContext, this.ActionDescriptor, arguments, new DefaultDataCollection());
-                return await InvokeAsync(requestContext).ConfigureAwait(false);
+                return await this.InvokeAsync(requestContext).ConfigureAwait(false);
             }
             catch (HttpRequestException)
             {
@@ -89,10 +97,12 @@ namespace WebApiClientCore.Implementations
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        private static async Task<TResult> InvokeAsync(ApiRequestContext request)
+        private async Task<TResult> InvokeAsync(ApiRequestContext request)
         {
-#nullable disable
-            var response = await ApiRequestExecutor.ExecuteAsync(request).ConfigureAwait(false);
+            this.requestDelegate ??= ApiRequestExecutor.Build(request); // 不需要 lock，并发 build 也不影响结果
+            var response = await this.requestDelegate(request).ConfigureAwait(false);
+
+#nullable disable           
             if (response.ResultStatus == ResultStatus.HasResult)
             {
                 return (TResult)response.Result;

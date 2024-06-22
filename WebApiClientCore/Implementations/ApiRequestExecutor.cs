@@ -12,19 +12,45 @@ namespace WebApiClientCore.Implementations
     static class ApiRequestExecutor
     {
         /// <summary>
-        /// 执行上下文
+        /// 创建请求委托
         /// </summary>
-        /// <param name="request">请求上下文</param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        public static async Task<ApiResponseContext> ExecuteAsync(ApiRequestContext request)
+        public static RequestDelegate Build(ApiRequestContext request)
         {
-            await HandleRequestAsync(request).ConfigureAwait(false);
-            using var requestAbortedLinker = new CancellationTokenLinker(request.HttpContext.CancellationTokens);
+            var builder = new ApiPipeBuilder(async request =>
+            {
+                // TODO 这里要缓存 requestAbortedLinker
+                using var requestAbortedLinker = new CancellationTokenLinker(request.HttpContext.CancellationTokens);
+                return await ApiRequestSender.SendAsync(request, requestAbortedLinker.Token).ConfigureAwait(false);
+            });
 
-            var response = await ApiRequestSender.SendAsync(request, requestAbortedLinker.Token).ConfigureAwait(false);
-            await HandleResponseAsync(response).ConfigureAwait(false);
-            return response;
+            builder.Use(next => async request =>
+            {
+                await HandleRequestAsync(request).ConfigureAwait(false);
+                var response = await next(request).ConfigureAwait(false);
+                await HandleResponseAsync(response).ConfigureAwait(false);
+
+                // TODO 在这里释放 requestAbortedLinker 才正确
+
+                return response;
+            });
+
+            // GlobalFilter
+            foreach (var filter in request.HttpContext.HttpApiOptions.GlobalFilters)
+            {
+                builder.Use(filter.ExecuteAsync);
+            }
+
+            // FilterAttribute
+            foreach (var filter in request.ActionDescriptor.FilterAttributes)
+            {
+                builder.Use(filter.ExecuteAsync);
+            }
+
+            return builder.Build();
         }
+
 
         /// <summary>
         /// 处理请求上下文
@@ -61,18 +87,6 @@ namespace WebApiClientCore.Implementations
             {
                 await @return.OnRequestAsync(context).ConfigureAwait(false);
             }
-
-            // GlobalFilter请求前执行 
-            foreach (var filter in context.HttpContext.HttpApiOptions.GlobalFilters)
-            {
-                await filter.OnRequestAsync(context).ConfigureAwait(false);
-            }
-
-            // Filter请求前执行 
-            foreach (var filter in context.ActionDescriptor.FilterAttributes)
-            {
-                await filter.OnRequestAsync(context).ConfigureAwait(false);
-            }
         }
 
         /// <summary>
@@ -108,18 +122,6 @@ namespace WebApiClientCore.Implementations
                 {
                     context.Exception = ex;
                 }
-            }
-
-            // GlobalFilter请求后执行 
-            foreach (var filter in context.HttpContext.HttpApiOptions.GlobalFilters)
-            {
-                await filter.OnResponseAsync(context).ConfigureAwait(false);
-            }
-
-            // Filter请求后执行
-            foreach (var filter in context.ActionDescriptor.FilterAttributes)
-            {
-                await filter.OnResponseAsync(context).ConfigureAwait(false);
             }
         }
 

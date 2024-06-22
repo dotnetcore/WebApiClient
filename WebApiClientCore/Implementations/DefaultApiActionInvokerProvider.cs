@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using Microsoft.Extensions.Options;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace WebApiClientCore.Implementations
@@ -8,6 +9,17 @@ namespace WebApiClientCore.Implementations
     /// </summary>
     public class DefaultApiActionInvokerProvider : IApiActionInvokerProvider
     {
+        private readonly IOptionsMonitor<HttpApiOptions> httpApiOptionsMonitor;
+
+        /// <summary>
+        /// ApiActionInvoker提供者
+        /// </summary>
+        /// <param name="httpApiOptionsMonitor"></param>
+        public DefaultApiActionInvokerProvider(IOptionsMonitor<HttpApiOptions> httpApiOptionsMonitor)
+        {
+            this.httpApiOptionsMonitor = httpApiOptionsMonitor;
+        }
+
         /// <summary>
         /// 创建Action执行器
         /// </summary>
@@ -37,7 +49,7 @@ namespace WebApiClientCore.Implementations
         {
             var resultType = actionDescriptor.Return.DataType.Type;
             var invokerType = typeof(DefaultApiActionInvoker<>).MakeGenericType(resultType);
-            return invokerType.CreateInstance<ApiActionInvoker>(actionDescriptor);
+            return invokerType.CreateInstance<ApiActionInvoker>(actionDescriptor, this.httpApiOptionsMonitor);
         }
     }
 }
