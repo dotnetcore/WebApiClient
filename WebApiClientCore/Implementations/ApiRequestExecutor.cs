@@ -28,24 +28,58 @@ namespace WebApiClientCore.Implementations
             builder.Use(next => async request =>
             {
                 await HandleRequestAsync(request).ConfigureAwait(false);
+                return await next(request).ConfigureAwait(false);
+            });
+
+            // GlobalFilter.OnRequestAsync
+            foreach (var filter in request.HttpContext.HttpApiOptions.GlobalFilters)
+            {
+                builder.Use(next => async request =>
+                {
+                    await filter.OnRequestAsync(request).ConfigureAwait(false); // 应该把 next 做为 OnRequestAsync 的参数，在OnRequestAsync里调用才正确
+                    return await next(request).ConfigureAwait(false);
+                });
+            }
+
+            // FilterAttribute.OnRequestAsync
+            foreach (var filter in request.ActionDescriptor.FilterAttributes)
+            {
+                builder.Use(next => async request =>
+                {
+                    await filter.OnRequestAsync(request).ConfigureAwait(false); // 应该把 next 做为 OnRequestAsync 的参数，在OnRequestAsync里调用才正确
+                    return await next(request).ConfigureAwait(false);
+                });
+            }
+
+            builder.Use(next => async request =>
+            {
                 var response = await next(request).ConfigureAwait(false);
                 await HandleResponseAsync(response).ConfigureAwait(false);
 
                 // TODO 在这里释放 requestAbortedLinker 才正确
-
                 return response;
             });
 
-            // GlobalFilter
+            // GlobalFilter.OnResponseAsync
             foreach (var filter in request.HttpContext.HttpApiOptions.GlobalFilters)
             {
-                builder.Use(filter.ExecuteAsync);
+                builder.Use(next => async request =>
+                {
+                    var response = await next(request).ConfigureAwait(false);
+                    await filter.OnResponseAsync(response).ConfigureAwait(false);
+                    return response;
+                });
             }
 
-            // FilterAttribute
+            // FilterAttribute.OnResponseAsync
             foreach (var filter in request.ActionDescriptor.FilterAttributes)
             {
-                builder.Use(filter.ExecuteAsync);
+                builder.Use(next => async request =>
+                {
+                    var response = await next(request).ConfigureAwait(false);
+                    await filter.OnResponseAsync(response).ConfigureAwait(false);
+                    return response;
+                });
             }
 
             return builder.Build();
