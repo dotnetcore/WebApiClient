@@ -25,7 +25,7 @@ namespace WebApiClientCore.Implementations
         /// <summary>
         /// 请求头的默认UserAgent
         /// </summary>
-        private readonly static ProductInfoHeaderValue defaultUserAgent = new(assemblyName.Name ?? "WebApiClientCore", assemblyName.Version?.ToString());
+        private readonly static ProductInfoHeaderValue defaultUserAgent = new(assemblyName.Name ?? nameof(WebApiClientCore), assemblyName.Version?.ToString());
 
         /// <summary>
         /// httpApi的请求消息
@@ -123,12 +123,7 @@ namespace WebApiClientCore.Implementations
 
             var path = uri.OriginalString.AsSpan()[(uri.Scheme.Length + 3)..];
             var index = path.IndexOf('/');
-            if (index < 0)
-            {
-                return "/";
-            }
-
-            return path[index..].ToString();
+            return index < 0 ? "/" : path[index..].ToString();
         }
 
         /// <summary>
@@ -182,16 +177,16 @@ namespace WebApiClientCore.Implementations
         {
             this.EnsureMediaTypeEqual(FormDataContent.MediaType);
 
-            if (!(this.Content is MultipartContent httpContent))
+            if (this.Content is not MultipartContent httpContent)
             {
                 httpContent = new FormDataContent();
+                this.Content = httpContent;
             }
 
             foreach (var keyValue in keyValues)
             {
                 var textContent = new FormDataTextContent(keyValue);
                 httpContent.Add(textContent);
-                this.Content = httpContent;
             }
         }
 
@@ -209,14 +204,14 @@ namespace WebApiClientCore.Implementations
         {
             this.EnsureMediaTypeEqual(FormDataContent.MediaType);
 
-            if (!(this.Content is MultipartContent httpContent))
+            if (this.Content is not MultipartContent httpContent)
             {
                 httpContent = new FormDataContent();
+                this.Content = httpContent;
             }
 
             var fileContent = new FormDataFileContent(stream, name, fileName, contentType);
             httpContent.Add(fileContent);
-            this.Content = httpContent;
         }
 
         /// <summary>
