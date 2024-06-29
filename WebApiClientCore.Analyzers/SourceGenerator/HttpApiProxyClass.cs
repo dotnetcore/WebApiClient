@@ -112,8 +112,8 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         private string BuildMethod(INamedTypeSymbol declaringType, IMethodSymbol method, int index)
         {
             var builder = new StringBuilder();
-            var parametersString = string.Join(", ", method.Parameters.Select(item => $"{GetFullName(item.Type)} @{item.Name}"));
-            var parameterNamesString = string.Join(", ", method.Parameters.Select(item => "@" + item.Name));
+            var parametersString = string.Join(", ", method.Parameters.Select((item, i) => $"{GetFullName(item.Type)} p{i}"));
+            var parameterNamesString = string.Join(", ", method.Parameters.Select((item, i) => $"p{i}"));
             var parameterArrayString = string.IsNullOrEmpty(parameterNamesString)
                 ? "global::System.Array.Empty<global::System.Object>()"
                 : $"new global::System.Object[] {{ {parameterNamesString} }}";
