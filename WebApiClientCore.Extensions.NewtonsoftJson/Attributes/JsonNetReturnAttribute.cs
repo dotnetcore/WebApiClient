@@ -45,7 +45,7 @@ namespace WebApiClientCore.Attributes
             var resultType = context.ActionDescriptor.Return.DataType.Type;
 
             var name = context.HttpContext.OptionsName;
-            var options = context.HttpContext.ServiceProvider.GetService<IOptionsMonitor<JsonNetSerializerOptions>>().Get(name);
+            var options = context.HttpContext.ServiceProvider.GetRequiredService<IOptionsMonitor<JsonNetSerializerOptions>>().Get(name);
 
             context.Result = JsonConvert.DeserializeObject(json, resultType, options.JsonDeserializeOptions);
         }

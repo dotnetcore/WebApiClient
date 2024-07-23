@@ -39,7 +39,7 @@ namespace WebApiClientCore.Attributes
         protected override Task SetHttpContentAsync(ApiParameterContext context)
         {
             var name = context.HttpContext.OptionsName;
-            var options = context.HttpContext.ServiceProvider.GetService<IOptionsMonitor<JsonNetSerializerOptions>>().Get(name);
+            var options = context.HttpContext.ServiceProvider.GetRequiredService<IOptionsMonitor<JsonNetSerializerOptions>>().Get(name);
             var json = context.ParameterValue == null
                 ? string.Empty
                 : JsonConvert.SerializeObject(context.ParameterValue, options.JsonSerializeOptions);
