@@ -1,5 +1,6 @@
 ﻿@inherits HtmlTempate<HttpApi>
 @using NSwag;
+@using System.Security;
 @using WebApiClientCore.OpenApi.SourceGenerator;
 
 <HttpApi>
@@ -26,8 +27,8 @@
                 {
                     <div>/// &lt;summary&gt;</div>
                     foreach (var line in Model.Summary.Split(new[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
-                    {
-                        <div>/// @line</div>
+                    { 
+                        <div>/// @SecurityElement.Escape(line)</div>
                     }
                     <div>/// &lt;/summary&gt;</div>
                 }
@@ -48,18 +49,19 @@
                     {
                         <div>/// &lt;summary&gt;</div>
                         foreach (var line in method.Summary.Split(new[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
-                        {
-                            <div>/// @line</div>
+                        { 
+                            <div>/// @SecurityElement.Escape(line)</div>
                         }
                         <div>/// &lt;/summary&gt;</div>
 
                         foreach (var parameter in method.Parameters)
                         {
                             var description = parameter.HasDescription ? parameter.Description.Replace("\r", "\t").Replace("\n", "\t") : null;
-                            <div>/// &lt;param name="@(parameter.VariableName)"&gt;@(description)&lt;/param&gt;</div>
+               
+                            <div>/// &lt;param name="@(parameter.VariableName)"&gt;@(SecurityElement.Escape(description))&lt;/param&gt;</div>
                         }
                         <div>/// &lt;param name="cancellationToken"&gt;cancellationToken&lt;/param&gt;</div>
-                        <div>/// &lt;returns&gt;@(method.ResultDescription)&lt;/returns&gt;</div>
+                        <div>/// &lt;returns&gt;@(SecurityElement.Escape(method.ResultDescription))&lt;/returns&gt;</div>
                     }
                 </summary>
 
@@ -91,7 +93,7 @@
                             {
                                 var schema = parameter.Schema as OpenApiParameter;
                                 if (schema != null && schema.CollectionFormat != OpenApiParameterCollectionFormat.Undefined
-                                    && schema.CollectionFormat != OpenApiParameterCollectionFormat.Multi)
+                                && schema.CollectionFormat != OpenApiParameterCollectionFormat.Multi)
                                 {
                                     <span>[PathQuery(CollectionFormat = CollectionFormat.@(schema.CollectionFormat))]</span>
                                 }

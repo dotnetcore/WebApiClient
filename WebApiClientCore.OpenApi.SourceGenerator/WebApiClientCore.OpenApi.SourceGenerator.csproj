@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<Nullable>enable</Nullable>
+		<Version>2.1.4.1</Version>
 		<TargetFrameworks>netcoreapp3.1;net6.0;net8.0</TargetFrameworks>
 
 		<Summary>将本地或远程OpenApi文档解析生成WebApiClientCore的接口定义代码文件的工具</Summary>
@@ -24,16 +25,11 @@
 		<None Update="petstore.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Update="Views\HttpApi.cshtml">
+		<None Update="Views\*.cshtml">
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 			<Pack>$(IncludeRazorContentInPack)</Pack>
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="Views\HttpModel.cshtml">
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-			<Pack>$(IncludeRazorContentInPack)</Pack>
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None> 
+	</ItemGroup> 
 
 </Project>

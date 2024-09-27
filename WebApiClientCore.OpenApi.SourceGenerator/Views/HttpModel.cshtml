@@ -1,4 +1,5 @@
 ﻿@inherits HtmlTempate<HttpModel>
+@using System.Security;
 @using WebApiClientCore.OpenApi.SourceGenerator;
 
 <HttpModel>
@@ -17,7 +18,7 @@
         <class>
             @foreach (var line in Model.Lines)
             {
-                <div>@line</div>
+                <div>@SecurityElement.Escape(line)</div>
             }
         </class>
         <div>}</div>
