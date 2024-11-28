@@ -180,13 +180,13 @@ namespace WebApiClientCore.Implementations
             if (this.Content is not MultipartContent httpContent)
             {
                 httpContent = new FormDataContent();
-                this.Content = httpContent;
             }
 
             foreach (var keyValue in keyValues)
             {
                 var textContent = new FormDataTextContent(keyValue);
                 httpContent.Add(textContent);
+                this.Content = httpContent;
             }
         }
 

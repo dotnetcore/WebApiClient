@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Text;
 using System.Threading.Tasks;
 using WebApiClientCore.Exceptions;
 using WebApiClientCore.Implementations;
-using WebApiClientCore.Internals;
 using Xunit;
 
 namespace WebApiClientCore.Test.Implementations
@@ -112,9 +110,9 @@ namespace WebApiClientCore.Test.Implementations
         [Fact]
         public async Task AddFormDataTextTest()
         {
-            string get(string name, string value)
+            static string get(string name, string value)
             {
-                return $@"Content-Disposition: form-data; name=""{name}""{"\r\n\r\n"}{HttpUtil.UrlEncode(value, Encoding.UTF8)}";
+                return $@"Content-Disposition: form-data; name=""{name}""{"\r\n\r\n"}{value}";
             }
 
             var reqeust = new HttpApiRequestMessageImpl();
@@ -129,6 +127,20 @@ namespace WebApiClientCore.Test.Implementations
             Assert.Contains(get("name", "laojiu"), body);
             Assert.Contains(get("age", "18"), body);
             Assert.Equal("multipart/form-data", reqeust.Content.Headers.ContentType!.MediaType);
+        }
+         
+
+        [Fact]
+        public void AddFormDataTextEmptyCollectionTest()
+        {
+            var reqeust = new HttpApiRequestMessageImpl
+            {
+                Method = System.Net.Http.HttpMethod.Post,
+                RequestUri = new Uri("http://webapiclient.com")
+            };
+
+            reqeust.AddFormDataText([]);
+            Assert.Null(reqeust.Content);
         }
     }
 }
