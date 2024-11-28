@@ -1,12 +1,9 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using WebApiClientCore.HttpContents;
-using WebApiClientCore.Internals;
 
 namespace WebApiClientCore.Parameters
 {
@@ -22,7 +19,7 @@ namespace WebApiClientCore.Parameters
         private readonly Func<Stream> streamFactory;
 
         /// <summary>
-        /// 获取文件好友名称
+        /// 获取文件名称
         /// </summary>
         public string? FileName { get; }
 
@@ -30,14 +27,7 @@ namespace WebApiClientCore.Parameters
         /// 获取或设置文件的Mime
         /// </summary>
         public string? ContentType { get; set; } = FormDataFileContent.OctetStream;
-
-        /// <summary>
-        /// 获取编码后的文件好友名称
-        /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public virtual string? EncodedFileName => HttpUtil.UrlEncode(this.FileName, Encoding.UTF8);
-
+         
         /// <summary>
         /// multipart/form-data的一个文件项
         /// </summary>
