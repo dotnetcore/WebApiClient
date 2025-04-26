@@ -166,8 +166,21 @@ namespace WebApiClientCore.Analyzers.SourceGenerator
         {
             public static MethodEqualityComparer Default { get; } = new MethodEqualityComparer();
 
-            public bool Equals(IMethodSymbol x, IMethodSymbol y)
+            public bool Equals(IMethodSymbol? x, IMethodSymbol? y)
             {
+#if NET8_0_OR_GREATER
+                ArgumentNullException.ThrowIfNull(x);
+                ArgumentNullException.ThrowIfNull(y);
+#else
+                if (x is null)
+                {
+                    throw new ArgumentNullException(nameof(x));
+                }
+                if (y is null)
+                {
+                    throw new ArgumentNullException(nameof(y));
+                }
+#endif
                 if (x.Name != y.Name || !x.ReturnType.Equals(y.ReturnType, SymbolEqualityComparer.Default))
                 {
                     return false;
