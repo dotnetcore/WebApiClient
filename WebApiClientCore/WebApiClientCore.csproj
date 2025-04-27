@@ -1,40 +1,49 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+	<Import Project="../props/WebApiClientCore.Common.props" />
 	<PropertyGroup>
-		<Nullable>enable</Nullable>
-		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<TargetFrameworks>netstandard2.1;net5.0;net8.0</TargetFrameworks>
-		<IsAotCompatible Condition="'$(TargetFramework)' == 'net8.0'">true</IsAotCompatible>
+		<IsAotCompatible>$(WebApiClientCoreIsAotCompatible)</IsAotCompatible>
 
 		<Description>.NetCore声明式的Http客户端库</Description>
 		<Summary>一款基于HttpClient封装，只需要定义c#接口并修饰相关特性，即可异步调用远程http接口的客户端库</Summary>
 
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>Sign.snk</AssemblyOriginatorKeyFile>
-	</PropertyGroup> 
+	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
 		<PackageReference Include="System.Net.Http.Json" Version="3.2.0" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="3.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions"
+			Version="3.0.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
 		<PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions"
+			Version="5.0.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
 		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions"
+			Version="8.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions"
+			Version="9.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\WebApiClientCore.Abstractions\WebApiClientCore.Abstractions.csproj" />
-		<ProjectReference Include="..\WebApiClientCore.Analyzers\WebApiClientCore.Analyzers.csproj" ReferenceOutputAssembly="false" />
+		<ProjectReference
+			Include="..\WebApiClientCore.Abstractions\WebApiClientCore.Abstractions.csproj" />
+		<ProjectReference Include="..\WebApiClientCore.Analyzers\WebApiClientCore.Analyzers.csproj"
+			ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -51,8 +60,10 @@
 		</EmbeddedResource>
 	</ItemGroup>
 
-	<!--nuget analyzers目录-->
+	<!--nuget
+	analyzers目录-->
 	<ItemGroup>
-		<None Include="$(OutputPath)\..\..\WebApiClientCore.Analyzers\$(Configuration)\**" PackagePath="analyzers\dotnet\cs" Pack="true" Visible="false" />
+		<None Include="$(OutputPath)\..\..\WebApiClientCore.Analyzers\$(Configuration)\**"
+			PackagePath="analyzers\dotnet\cs" Pack="true" Visible="false" />
 	</ItemGroup>
 </Project>

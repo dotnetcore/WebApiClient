@@ -1,0 +1,15 @@
+﻿<Project>
+	<PropertyGroup>
+		<Nullable>enable</Nullable>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<TargetFrameworks>netstandard2.1;net5.0;net8.0;net9.0</TargetFrameworks>
+		<LangVersion>latest</LangVersion>
+	</PropertyGroup>
+	<PropertyGroup>
+		<WebApiClientCoreIsAotCompatible>false</WebApiClientCoreIsAotCompatible>
+		<WebApiClientCoreIsAotCompatible Condition="'$(TargetFramework)' == 'netstandard2.1'">false</WebApiClientCoreIsAotCompatible>
+		<WebApiClientCoreIsAotCompatible Condition="'$(TargetFramework)' == 'net5.0'">false</WebApiClientCoreIsAotCompatible>
+		<WebApiClientCoreIsAotCompatible Condition="'$(TargetFramework)' == 'net8.0'">true</WebApiClientCoreIsAotCompatible>
+		<WebApiClientCoreIsAotCompatible Condition="'$(TargetFramework)' == 'net9.0'">true</WebApiClientCoreIsAotCompatible>
+	</PropertyGroup>
+</Project>
