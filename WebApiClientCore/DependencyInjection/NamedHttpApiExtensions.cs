@@ -21,8 +21,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddSingleton(new NameTypeRegistration());
             var descriptor = services.Single(item => item.ServiceType == typeof(NameTypeRegistration));
 
-            var registration = (NameTypeRegistration)descriptor.ImplementationInstance;
-            registration[name] = httpApiType;
+            var registration = (NameTypeRegistration?)descriptor.ImplementationInstance;
+            registration![name] = httpApiType;
         }
 
         /// <summary>
@@ -38,7 +38,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 return null;
             }
 
-            var registration = (NameTypeRegistration)descriptor.ImplementationInstance;
+            var registration = (NameTypeRegistration?)descriptor.ImplementationInstance;
+            if (registration == null)
+            {
+                return null;
+            }
             registration.TryGetValue(builder.Name, out var type);
             return type;
         }

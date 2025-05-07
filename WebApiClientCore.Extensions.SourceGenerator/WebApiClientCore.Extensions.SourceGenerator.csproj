@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="../props/WebApiClientCore.Extensions.Common.props"/>
 	<PropertyGroup>
-		<Nullable>enable</Nullable>
-		<IncludeBuildOutput>false</IncludeBuildOutput>
-		<TargetFramework>netstandard2.1</TargetFramework>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>Sign.snk</AssemblyOriginatorKeyFile>
 		<Summary>此扩展包的实现已合并到WebApiClientCore包，无任何功能</Summary>

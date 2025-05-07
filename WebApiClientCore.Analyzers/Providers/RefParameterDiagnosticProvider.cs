@@ -50,7 +50,7 @@ namespace WebApiClientCore.Analyzers.Providers
                     if (declaringSyntax is ParameterSyntax parameterSyntax)
                     {
                         var modifier = parameterSyntax.Modifiers.FirstOrDefault();
-                        if (modifier != null)
+                        if (modifier != default)
                         {
                             var location = modifier.GetLocation();
                             yield return this.CreateDiagnostic(location);
