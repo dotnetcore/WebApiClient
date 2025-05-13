@@ -75,7 +75,7 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <returns></returns>
         public virtual bool IsExpired()
         {
-            return DateTime.Now.Subtract(this.createTime) > TimeSpan.FromSeconds(this.Expires_in);
+            return DateTime.Now.Subtract(this.createTime) >= TimeSpan.FromSeconds(this.Expires_in);
         }
 
         /// <summary>
