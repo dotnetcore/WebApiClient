@@ -1,0 +1,113 @@
+name: Performance Benchmark
+
+# 仅支持手动触发，仅在 net10 分支可用
+on:
+  workflow_dispatch:
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_NOLOGO: true
+
+jobs:
+  benchmark:
+    name: Run Performance Benchmarks
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: net10
+      
+      # 安装性能测试所需的 .NET SDK 版本
+      - name: Setup .NET Core 3.1
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '3.1.x'
+      
+      - name: Setup .NET 5.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '5.0.x'
+      
+      - name: Setup .NET 8.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      
+      - name: Setup .NET 10.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      
+      # 验证 SDK 安装
+      - name: Display .NET info
+        run: dotnet --info
+      
+      - name: List installed SDKs
+        run: dotnet --list-sdks
+      
+      # 缓存 NuGet 包
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+      
+      # 恢复依赖
+      - name: Restore dependencies
+        run: dotnet restore
+      
+      # 编译 Benchmarks 项目
+      - name: Build Benchmarks project
+        run: dotnet build WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --no-restore
+      
+      # 执行 net5.0 性能测试
+      - name: Run benchmarks on net5.0
+        run: dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net5.0 --no-build -- --filter '*' --exporters json
+        continue-on-error: true
+      
+      # 执行 net8.0 性能测试
+      - name: Run benchmarks on net8.0
+        run: dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net8.0 --no-build -- --filter '*' --exporters json
+        continue-on-error: true
+      
+      # 执行 net10.0 性能测试
+      - name: Run benchmarks on net10.0
+        run: dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net10.0 --no-build -- --filter '*' --exporters json
+        continue-on-error: true
+      
+      # 收集性能测试结果
+      - name: List benchmark results
+        run: |
+          echo "=== Benchmark Results ==="
+          find . -name "BenchmarkDotNet.Artifacts" -type d
+          find . -path "*/BenchmarkDotNet.Artifacts/results/*" -type f
+      
+      # 上传性能测试报告
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: benchmark-results
+          path: |
+            **/BenchmarkDotNet.Artifacts/results/**/*
+            WebApiClientCore.Benchmarks/results/**/*
+          retention-days: 30
+      
+      # 可选：生成性能对比摘要
+      - name: Generate benchmark summary
+        if: always()
+        run: |
+          echo "## Performance Benchmark Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Benchmark execution completed. Check artifacts for detailed results." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Tested Frameworks" >> $GITHUB_STEP_SUMMARY
+          echo "- .NET 5.0" >> $GITHUB_STEP_SUMMARY
+          echo "- .NET 8.0" >> $GITHUB_STEP_SUMMARY
+          echo "- .NET 10.0" >> $GITHUB_STEP_SUMMARY

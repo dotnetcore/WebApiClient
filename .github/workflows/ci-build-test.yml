@@ -1,0 +1,173 @@
+name: CI Build and Test
+
+# 仅支持手动触发，仅在 net10 分支可用
+on:
+  workflow_dispatch:
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_NOLOGO: true
+
+jobs:
+  build-and-test:
+    name: Build and Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: net10
+      
+      # 安装多个 .NET SDK 版本（从旧到新）
+      - name: Setup .NET Core 3.1
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '3.1.x'
+        continue-on-error: ${{ matrix.os == 'macos-latest' }}
+      
+      - name: Setup .NET 5.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '5.0.x'
+      
+      - name: Setup .NET 6.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.0.x'
+      
+      - name: Setup .NET 7.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '7.0.x'
+      
+      - name: Setup .NET 8.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      
+      - name: Setup .NET 10.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      
+      # 验证 SDK 安装
+      - name: Display .NET info
+        run: dotnet --info
+      
+      - name: List installed SDKs
+        run: dotnet --list-sdks
+      
+      # 缓存 NuGet 包
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+      
+      # 恢复依赖
+      - name: Restore dependencies
+        run: dotnet restore
+      
+      # 编译所有项目（Release 配置）
+      - name: Build all projects
+        run: dotnet build --configuration Release --no-restore
+      
+      # 对 net6.0 执行测试
+      - name: Test on net6.0
+        run: dotnet test --configuration Release --framework net6.0 --no-build --verbosity normal --logger "trx;LogFileName=test-results-net6.0.trx"
+        continue-on-error: false
+      
+      # 对 net8.0 执行测试
+      - name: Test on net8.0
+        run: dotnet test --configuration Release --framework net8.0 --no-build --verbosity normal --logger "trx;LogFileName=test-results-net8.0.trx"
+        continue-on-error: false
+      
+      # 对 net10.0 执行测试
+      - name: Test on net10.0
+        run: dotnet test --configuration Release --framework net10.0 --no-build --verbosity normal --logger "trx;LogFileName=test-results-net10.0.trx"
+        continue-on-error: false
+      
+      # 上传测试结果
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.os }}
+          path: '**/TestResults/*.trx'
+          retention-days: 7
+  
+  # 可选：验证 NuGet 包构建
+  verify-packages:
+    name: Verify NuGet Packages
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: net10
+      
+      - name: Setup .NET Core 3.1
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '3.1.x'
+      
+      - name: Setup .NET 5.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '5.0.x'
+      
+      - name: Setup .NET 6.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.0.x'
+      
+      - name: Setup .NET 7.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '7.0.x'
+      
+      - name: Setup .NET 8.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      
+      - name: Setup .NET 10.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+      
+      - name: Restore dependencies
+        run: dotnet restore
+      
+      - name: Pack all projects
+        run: dotnet pack --configuration Release --no-restore --output ./packages
+      
+      - name: List generated packages
+        run: ls -lh ./packages/*.nupkg
+      
+      - name: Upload NuGet packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: ./packages/*.nupkg
+          retention-days: 7
