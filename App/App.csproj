@@ -16,6 +16,10 @@
 			Include="..\WebApiClientCore.Extensions.OAuths\WebApiClientCore.Extensions.OAuths.csproj" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+		<PackageReference Include="System.Text.Json" Version="4.6.0" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<None Update="TextFile.txt">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
