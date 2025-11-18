@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFrameworks>net5.0;net8.0;net10.0</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
 		<SignAssembly>true</SignAssembly>
