@@ -153,14 +153,11 @@ jobs:
           echo "=== All Result Files ==="
           find . -path "*/BenchmarkDotNet.Artifacts*/results/*" -type f
           echo ""
-          echo "=== Checking for JSON results ==="
-          find . -path "*/BenchmarkDotNet.Artifacts*/results/*.json" -type f | while read file; do
+          echo "=== Checking for Markdown reports ==="
+          find . -path "*/BenchmarkDotNet.Artifacts*/results/*-report-github.md" -type f | while read file; do
             echo "Found: $file"
             echo "Size: $(du -h "$file" | cut -f1)"
           done
-          echo ""
-          echo "=== Directory Tree ==="
-          ls -la BenchmarkDotNet.Artifacts.* 2>/dev/null || echo "No BenchmarkDotNet.Artifacts.* directories found in root"
       
       # 生成详细的性能对比摘要（同时输出到 Summary 和文件）
       - name: Generate detailed benchmark summary

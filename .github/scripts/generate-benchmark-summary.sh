@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Benchmark Results Summary Script
-# 用于从 BenchmarkDotNet JSON 结果中提取关键性能指标
+# 直接从 BenchmarkDotNet 生成的 Markdown 报告中提取结果
 
 echo "# Benchmark Results Summary"
 echo ""
@@ -19,59 +19,24 @@ for fw in "${frameworks[@]}"; do
         echo "### Framework: ${fw}"
         echo ""
         
-        # 查找 JSON 结果文件
-        json_files=$(find "$result_dir" -name "*.json" -type f 2>/dev/null)
+        # 查找 Markdown 报告文件
+        md_files=$(find "$result_dir" -name "*-report-github.md" -type f 2>/dev/null)
         
-        if [ -n "$json_files" ]; then
-            echo "Found benchmark results:"
-            
-            for json_file in $json_files; do
-                benchmark_name=$(basename "$json_file" .json)
-                echo ""
+        if [ -n "$md_files" ]; then
+            for md_file in $md_files; do
+                benchmark_name=$(basename "$md_file" -report-github.md)
                 echo "#### $benchmark_name"
+                echo ""
                 
-                # 使用 jq 提取完整的关键指标（如果可用）
-                if command -v jq &> /dev/null; then
-                    echo "| Method | Mean (μs) | Error (μs) | StdDev (μs) | Ratio | Gen0 | Allocated (KB) | Alloc Ratio |"
-                    echo "|--------|-----------|------------|-------------|-------|------|----------------|-------------|"
-                    
-                    # 提取详细数据，转换单位
-                    jq -r '.Benchmarks[] | 
-                        "| \(.Method) | \(
-                            if .Statistics.Mean then 
-                                (.Statistics.Mean / 1000 | . * 100 | round / 100) 
-                            else "N/A" end
-                        ) | \(
-                            if .Statistics.StandardError then 
-                                (.Statistics.StandardError / 1000 | . * 100 | round / 100) 
-                            else "N/A" end
-                        ) | \(
-                            if .Statistics.StandardDeviation then 
-                                (.Statistics.StandardDeviation / 1000 | . * 100 | round / 100) 
-                            else "N/A" end
-                        ) | \(
-                            if .Ratio then 
-                                (.Ratio | . * 100 | round / 100)
-                            else "N/A" end
-                        ) | \(
-                            .Memory.Gen0Collections // "0"
-                        ) | \(
-                            if .Memory.BytesAllocatedPerOperation then 
-                                (.Memory.BytesAllocatedPerOperation / 1024 | . * 100 | round / 100) 
-                            else "N/A" end
-                        ) | \(
-                            if .Memory.AllocRatio then 
-                                (.Memory.AllocRatio | . * 100 | round / 100)
-                            else "N/A" end
-                        ) |"' "$json_file" 2>/dev/null || echo "Unable to parse JSON"
-                else
-                    echo "⚠️ jq not available, showing file location: $json_file"
-                    echo ""
-                    echo "Please install jq to see detailed performance metrics."
-                fi
+                # 直接提取 Markdown 表格（从表头到空行）
+                # 查找包含 "| Method" 的行，然后提取完整表格
+                awk '/\| Method.*\|/ {found=1} found {print} /^$/ && found {exit}' "$md_file" | 
+                    grep -v "^$" || echo "No table found in $md_file"
+                
+                echo ""
             done
         else
-            echo "No JSON results found in $result_dir"
+            echo "No Markdown reports found in $result_dir"
         fi
         
         echo ""
@@ -85,17 +50,19 @@ done
 
 echo "## Performance Metrics Explanation"
 echo ""
-echo "- **Mean**: Average execution time in microseconds (μs)"
+echo "- **Mean**: Average execution time"
 echo "- **Error**: Half of 99.9% confidence interval"
 echo "- **StdDev**: Standard deviation of all measurements"
-echo "- **Ratio**: Mean of current method divided by baseline mean"
+echo "- **Ratio**: Performance ratio compared to baseline (lower is better for baseline)"
+echo "- **RatioSD**: Standard deviation of the Ratio"
 echo "- **Gen0**: GC Generation 0 collections per 1000 operations"
-echo "- **Allocated**: Total memory allocated per operation in kilobytes (KB)"
-echo "- **Alloc Ratio**: Allocated memory ratio compared to baseline"
+echo "- **Allocated**: Total memory allocated per operation"
+echo "- **Alloc Ratio**: Memory allocation ratio compared to baseline"
 echo ""
 echo "## Notes"
 echo ""
+echo "- **Baseline** method (marked with 🏆 or Ratio=1.00) is the reference point"
 echo "- Lower values are better for Mean, Error, StdDev, and Allocated"
-echo "- Ratio of 1.00 means equal performance to baseline (typically the first method)"
-echo "- Download the artifact 'benchmark-results' for detailed reports and raw JSON data"
+echo "- Ratio > 1.00 means slower/more memory than baseline"
+echo "- Download the artifact 'benchmark-results' for detailed reports and raw data"
 echo ""
