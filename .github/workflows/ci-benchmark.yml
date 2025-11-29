@@ -68,25 +68,34 @@ jobs:
       
       # 执行 net5.0 性能测试
       - name: Run benchmarks on net5.0
-        run: dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net5.0 --no-build -- --filter '*' --exporters json
+        run: dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net5.0 --no-build -- --filter '*' --exporters json --logBuildOutput true
         continue-on-error: true
       
       # 执行 net8.0 性能测试
       - name: Run benchmarks on net8.0
-        run: dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net8.0 --no-build -- --filter '*' --exporters json
+        run: dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net8.0 --no-build -- --filter '*' --exporters json --logBuildOutput true
         continue-on-error: true
       
       # 执行 net10.0 性能测试
       - name: Run benchmarks on net10.0
-        run: dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net10.0 --no-build -- --filter '*' --exporters json
+        run: dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net10.0 --no-build -- --filter '*' --exporters json --logBuildOutput true
         continue-on-error: true
       
       # 收集性能测试结果
       - name: List benchmark results
+        if: always()
         run: |
           echo "=== Benchmark Results ==="
           find . -name "BenchmarkDotNet.Artifacts" -type d
+          echo ""
+          echo "=== Result Files ==="
           find . -path "*/BenchmarkDotNet.Artifacts/results/*" -type f
+          echo ""
+          echo "=== Checking for JSON results ==="
+          find . -path "*/BenchmarkDotNet.Artifacts/results/*.json" -type f | while read file; do
+            echo "Found: $file"
+            echo "Size: $(du -h "$file" | cut -f1)"
+          done
       
       # 上传性能测试报告
       - name: Upload benchmark results
