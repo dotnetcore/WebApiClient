@@ -66,19 +66,37 @@ jobs:
       - name: Build Benchmarks project
         run: dotnet build WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --no-restore
       
+      # 执行 netcoreapp3.1 性能测试
+      - name: Run benchmarks on netcoreapp3.1
+        run: dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework netcoreapp3.1 --no-build -- --filter '*' --exporters json --artifactsPath ./BenchmarkDotNet.Artifacts.netcoreapp3.1
+        continue-on-error: true
+      
       # 执行 net5.0 性能测试
       - name: Run benchmarks on net5.0
-        run: dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net5.0 --no-build -- --filter '*' --exporters json --logBuildOutput true
+        run: dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net5.0 --no-build -- --filter '*' --exporters json --artifactsPath ./BenchmarkDotNet.Artifacts.net5.0
         continue-on-error: true
       
       # 执行 net8.0 性能测试
       - name: Run benchmarks on net8.0
-        run: dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net8.0 --no-build -- --filter '*' --exporters json --logBuildOutput true
+        run: dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net8.0 --no-build -- --filter '*' --exporters json --artifactsPath ./BenchmarkDotNet.Artifacts.net8.0
         continue-on-error: true
       
       # 执行 net10.0 性能测试
       - name: Run benchmarks on net10.0
-        run: dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net10.0 --no-build -- --filter '*' --exporters json --logBuildOutput true
+        run: dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net10.0 --no-build -- --filter '*' --exporters json --artifactsPath ./BenchmarkDotNet.Artifacts.net10.0
+        continue-on-error: true
+      
+      # AOT 性能测试
+      - name: Build AOT Benchmark project
+        run: dotnet publish WebApiClientCore.Benchmarks.Aot/WebApiClientCore.Benchmarks.Aot.csproj --configuration Release --output ./aot-publish
+        continue-on-error: true
+      
+      - name: Run AOT benchmarks on net10.0
+        if: success()
+        run: |
+          cd WebApiClientCore.Benchmarks.Aot
+          chmod +x ../aot-publish/WebApiClientCore.Benchmarks.Aot
+          ../aot-publish/WebApiClientCore.Benchmarks.Aot --filter '*' --exporters json --artifactsPath ./BenchmarkDotNet.Artifacts.net10.0-aot
         continue-on-error: true
       
       # 收集性能测试结果
@@ -86,13 +104,13 @@ jobs:
         if: always()
         run: |
           echo "=== Benchmark Results ==="
-          find . -name "BenchmarkDotNet.Artifacts" -type d
+          find . -name "BenchmarkDotNet.Artifacts*" -type d
           echo ""
           echo "=== Result Files ==="
-          find . -path "*/BenchmarkDotNet.Artifacts/results/*" -type f
+          find . -path "*/BenchmarkDotNet.Artifacts*/results/*" -type f
           echo ""
           echo "=== Checking for JSON results ==="
-          find . -path "*/BenchmarkDotNet.Artifacts/results/*.json" -type f | while read file; do
+          find . -path "*/BenchmarkDotNet.Artifacts*/results/*.json" -type f | while read file; do
             echo "Found: $file"
             echo "Size: $(du -h "$file" | cut -f1)"
           done
@@ -104,9 +122,16 @@ jobs:
         with:
           name: benchmark-results
           path: |
-            **/BenchmarkDotNet.Artifacts/results/**/*
+            **/BenchmarkDotNet.Artifacts.*/results/**/*
             WebApiClientCore.Benchmarks/results/**/*
           retention-days: 30
+      
+      # 生成详细的性能对比摘要
+      - name: Generate detailed benchmark summary
+        if: always()
+        run: |
+          chmod +x .github/scripts/generate-benchmark-summary.sh
+          .github/scripts/generate-benchmark-summary.sh >> $GITHUB_STEP_SUMMARY
       
       # 可选：生成性能对比摘要
       - name: Generate benchmark summary
@@ -117,6 +142,16 @@ jobs:
           echo "Benchmark execution completed. Check artifacts for detailed results." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Tested Frameworks" >> $GITHUB_STEP_SUMMARY
+          echo "- .NET Core 3.1" >> $GITHUB_STEP_SUMMARY
           echo "- .NET 5.0" >> $GITHUB_STEP_SUMMARY
           echo "- .NET 8.0" >> $GITHUB_STEP_SUMMARY
           echo "- .NET 10.0" >> $GITHUB_STEP_SUMMARY
+          echo "- .NET 10.0 AOT" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Result Directories" >> $GITHUB_STEP_SUMMARY
+          echo "Each framework's results are stored in separate directories:" >> $GITHUB_STEP_SUMMARY
+          echo "- BenchmarkDotNet.Artifacts.netcoreapp3.1/results/" >> $GITHUB_STEP_SUMMARY
+          echo "- BenchmarkDotNet.Artifacts.net5.0/results/" >> $GITHUB_STEP_SUMMARY
+          echo "- BenchmarkDotNet.Artifacts.net8.0/results/" >> $GITHUB_STEP_SUMMARY
+          echo "- BenchmarkDotNet.Artifacts.net10.0/results/" >> $GITHUB_STEP_SUMMARY
+          echo "- BenchmarkDotNet.Artifacts.net10.0-aot/results/ (if AOT build succeeded)" >> $GITHUB_STEP_SUMMARY
