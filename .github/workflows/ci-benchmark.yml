@@ -107,24 +107,28 @@ jobs:
           fi
         continue-on-error: true
       
-      # AOT 性能测试
-      - name: Build AOT Benchmark project
-        run: dotnet publish WebApiClientCore.Benchmarks.Aot/WebApiClientCore.Benchmarks.Aot.csproj --configuration Release --output ./aot-publish
-        continue-on-error: true
-      
-      - name: Run AOT benchmarks on net10.0
-        if: success()
-        run: |
-          cd WebApiClientCore.Benchmarks.Aot
-          chmod +x ../aot-publish/WebApiClientCore.Benchmarks.Aot
-          ../aot-publish/WebApiClientCore.Benchmarks.Aot --filter '*' --exporters json --artifacts ./BenchmarkDotNet.Artifacts.net10.0-aot
-          # 复制结果到根目录
-          if [ -d "BenchmarkDotNet.Artifacts/results" ]; then
-            mkdir -p ../BenchmarkDotNet.Artifacts.net10.0-aot
-            cp -r BenchmarkDotNet.Artifacts/results ../BenchmarkDotNet.Artifacts.net10.0-aot/
-          fi
-          cd ..
-        continue-on-error: true
+      # AOT 性能测试（暂时禁用）
+      # 原因：BenchmarkDotNet 0.15.7 依赖 CommandLineParser 和反射，无法在 AOT 下运行
+      # 错误：System.InvalidOperationException: Type BenchmarkDotNet.ConsoleArguments.CommandLineOptions appears to be immutable
+      # 等待 BenchmarkDotNet 官方完全支持 Native AOT 后再启用
+      # 
+      # - name: Build AOT Benchmark project
+      #   run: dotnet publish WebApiClientCore.Benchmarks.Aot/WebApiClientCore.Benchmarks.Aot.csproj --configuration Release --output ./aot-publish
+      #   continue-on-error: true
+      # 
+      # - name: Run AOT benchmarks on net10.0
+      #   if: success()
+      #   run: |
+      #     cd WebApiClientCore.Benchmarks.Aot
+      #     chmod +x ../aot-publish/WebApiClientCore.Benchmarks.Aot
+      #     ../aot-publish/WebApiClientCore.Benchmarks.Aot --filter '*' --exporters json --artifacts ./BenchmarkDotNet.Artifacts.net10.0-aot
+      #     # 复制结果到根目录
+      #     if [ -d "BenchmarkDotNet.Artifacts/results" ]; then
+      #       mkdir -p ../BenchmarkDotNet.Artifacts.net10.0-aot
+      #       cp -r BenchmarkDotNet.Artifacts/results ../BenchmarkDotNet.Artifacts.net10.0-aot/
+      #     fi
+      #     cd ..
+      #   continue-on-error: true
       
       # 收集性能测试结果
       - name: List benchmark results
@@ -179,7 +183,13 @@ jobs:
           echo "- **BenchmarkDotNet.Artifacts.net5.0/results/** - .NET 5.0 detailed results" >> $GITHUB_STEP_SUMMARY
           echo "- **BenchmarkDotNet.Artifacts.net8.0/results/** - .NET 8.0 detailed results" >> $GITHUB_STEP_SUMMARY
           echo "- **BenchmarkDotNet.Artifacts.net10.0/results/** - .NET 10.0 detailed results" >> $GITHUB_STEP_SUMMARY
-          echo "- **BenchmarkDotNet.Artifacts.net10.0-aot/results/** - .NET 10.0 AOT detailed results (if succeeded)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ⚠️ AOT Benchmark Status" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Native AOT benchmark is currently disabled because:" >> $GITHUB_STEP_SUMMARY
+          echo "- BenchmarkDotNet 0.15.7 uses reflection and runtime code generation" >> $GITHUB_STEP_SUMMARY
+          echo "- CommandLineParser library is not AOT-compatible" >> $GITHUB_STEP_SUMMARY
+          echo "- Waiting for official Native AOT support from BenchmarkDotNet" >> $GITHUB_STEP_SUMMARY
       
       # 上传性能测试报告（在汇总生成之后）
       - name: Upload benchmark results
