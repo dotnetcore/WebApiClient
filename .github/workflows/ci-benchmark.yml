@@ -115,6 +115,16 @@ jobs:
             echo "Size: $(du -h "$file" | cut -f1)"
           done
       
+      # 生成详细的性能对比摘要
+      - name: Generate detailed benchmark summary
+        if: always()
+        run: |
+          chmod +x .github/scripts/generate-benchmark-summary.sh
+          # 输出到 GitHub Summary
+          .github/scripts/generate-benchmark-summary.sh >> $GITHUB_STEP_SUMMARY
+          # 同时保存到文件供 artifact 下载
+          .github/scripts/generate-benchmark-summary.sh > benchmark-summary.md
+      
       # 上传性能测试报告
       - name: Upload benchmark results
         uses: actions/upload-artifact@v4
@@ -122,16 +132,11 @@ jobs:
         with:
           name: benchmark-results
           path: |
-            **/BenchmarkDotNet.Artifacts.*/results/**/*
+            BenchmarkDotNet.Artifacts.*/results/**/*
+            WebApiClientCore.Benchmarks.Aot/BenchmarkDotNet.Artifacts.*/results/**/*
             WebApiClientCore.Benchmarks/results/**/*
+            benchmark-summary.md
           retention-days: 30
-      
-      # 生成详细的性能对比摘要
-      - name: Generate detailed benchmark summary
-        if: always()
-        run: |
-          chmod +x .github/scripts/generate-benchmark-summary.sh
-          .github/scripts/generate-benchmark-summary.sh >> $GITHUB_STEP_SUMMARY
       
       # 可选：生成性能对比摘要
       - name: Generate benchmark summary
