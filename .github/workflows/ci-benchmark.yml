@@ -42,6 +42,16 @@ jobs:
         with:
           dotnet-version: '10.0.x'
       
+      # 安装 OpenSSL 1.1（.NET Core 3.1 和 .NET 5.0 需要）
+      - name: Install OpenSSL 1.1 for older .NET versions
+        run: |
+          # Ubuntu 22.04+ 默认只有 OpenSSL 3.x，需要手动安装 1.1
+          wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+          sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+          
+          # 验证安装
+          ldconfig -p | grep libssl
+      
       # 验证 SDK 安装
       - name: Display .NET info
         run: dotnet --info
