@@ -68,22 +68,43 @@ jobs:
       
       # 执行 netcoreapp3.1 性能测试
       - name: Run benchmarks on netcoreapp3.1
-        run: dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework netcoreapp3.1 --no-build -- --filter '*' --exporters json --artifactsPath ./BenchmarkDotNet.Artifacts.netcoreapp3.1
+        run: |
+          dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework netcoreapp3.1 --no-build -- --filter '*' --exporters json --artifacts ./BenchmarkDotNet.Artifacts.netcoreapp3.1
+          # 复制结果到标准位置
+          if [ -d "BenchmarkDotNet.Artifacts/results" ]; then
+            mkdir -p BenchmarkDotNet.Artifacts.netcoreapp3.1
+            cp -r BenchmarkDotNet.Artifacts/results BenchmarkDotNet.Artifacts.netcoreapp3.1/
+          fi
         continue-on-error: true
       
       # 执行 net5.0 性能测试
       - name: Run benchmarks on net5.0
-        run: dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net5.0 --no-build -- --filter '*' --exporters json --artifactsPath ./BenchmarkDotNet.Artifacts.net5.0
+        run: |
+          dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net5.0 --no-build -- --filter '*' --exporters json --artifacts ./BenchmarkDotNet.Artifacts.net5.0
+          if [ -d "BenchmarkDotNet.Artifacts/results" ]; then
+            mkdir -p BenchmarkDotNet.Artifacts.net5.0
+            cp -r BenchmarkDotNet.Artifacts/results BenchmarkDotNet.Artifacts.net5.0/
+          fi
         continue-on-error: true
       
       # 执行 net8.0 性能测试
       - name: Run benchmarks on net8.0
-        run: dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net8.0 --no-build -- --filter '*' --exporters json --artifactsPath ./BenchmarkDotNet.Artifacts.net8.0
+        run: |
+          dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net8.0 --no-build -- --filter '*' --exporters json --artifacts ./BenchmarkDotNet.Artifacts.net8.0
+          if [ -d "BenchmarkDotNet.Artifacts/results" ]; then
+            mkdir -p BenchmarkDotNet.Artifacts.net8.0
+            cp -r BenchmarkDotNet.Artifacts/results BenchmarkDotNet.Artifacts.net8.0/
+          fi
         continue-on-error: true
       
       # 执行 net10.0 性能测试
       - name: Run benchmarks on net10.0
-        run: dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net10.0 --no-build -- --filter '*' --exporters json --artifactsPath ./BenchmarkDotNet.Artifacts.net10.0
+        run: |
+          dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net10.0 --no-build -- --filter '*' --exporters json --artifacts ./BenchmarkDotNet.Artifacts.net10.0
+          if [ -d "BenchmarkDotNet.Artifacts/results" ]; then
+            mkdir -p BenchmarkDotNet.Artifacts.net10.0
+            cp -r BenchmarkDotNet.Artifacts/results BenchmarkDotNet.Artifacts.net10.0/
+          fi
         continue-on-error: true
       
       # AOT 性能测试
@@ -96,17 +117,26 @@ jobs:
         run: |
           cd WebApiClientCore.Benchmarks.Aot
           chmod +x ../aot-publish/WebApiClientCore.Benchmarks.Aot
-          ../aot-publish/WebApiClientCore.Benchmarks.Aot --filter '*' --exporters json --artifactsPath ./BenchmarkDotNet.Artifacts.net10.0-aot
+          ../aot-publish/WebApiClientCore.Benchmarks.Aot --filter '*' --exporters json --artifacts ./BenchmarkDotNet.Artifacts.net10.0-aot
+          # 复制结果到根目录
+          if [ -d "BenchmarkDotNet.Artifacts/results" ]; then
+            mkdir -p ../BenchmarkDotNet.Artifacts.net10.0-aot
+            cp -r BenchmarkDotNet.Artifacts/results ../BenchmarkDotNet.Artifacts.net10.0-aot/
+          fi
+          cd ..
         continue-on-error: true
       
       # 收集性能测试结果
       - name: List benchmark results
         if: always()
         run: |
-          echo "=== Benchmark Results ==="
+          echo "=== Current Directory ==="
+          pwd
+          echo ""
+          echo "=== Benchmark Results Directories ==="
           find . -name "BenchmarkDotNet.Artifacts*" -type d
           echo ""
-          echo "=== Result Files ==="
+          echo "=== All Result Files ==="
           find . -path "*/BenchmarkDotNet.Artifacts*/results/*" -type f
           echo ""
           echo "=== Checking for JSON results ==="
@@ -114,18 +144,44 @@ jobs:
             echo "Found: $file"
             echo "Size: $(du -h "$file" | cut -f1)"
           done
+          echo ""
+          echo "=== Directory Tree ==="
+          ls -la BenchmarkDotNet.Artifacts.* 2>/dev/null || echo "No BenchmarkDotNet.Artifacts.* directories found in root"
       
-      # 生成详细的性能对比摘要
+      # 生成详细的性能对比摘要（同时输出到 Summary 和文件）
       - name: Generate detailed benchmark summary
         if: always()
         run: |
           chmod +x .github/scripts/generate-benchmark-summary.sh
-          # 输出到 GitHub Summary
-          .github/scripts/generate-benchmark-summary.sh >> $GITHUB_STEP_SUMMARY
-          # 同时保存到文件供 artifact 下载
-          .github/scripts/generate-benchmark-summary.sh > benchmark-summary.md
+          
+          # 生成标题和基本信息
+          echo "## Performance Benchmark Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Benchmark execution completed. Download the artifact for detailed results." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # 执行汇总脚本，同时输出到 Summary 和文件
+          .github/scripts/generate-benchmark-summary.sh | tee benchmark-summary.md >> $GITHUB_STEP_SUMMARY
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Download Instructions" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "1. Scroll to the bottom of this page" >> $GITHUB_STEP_SUMMARY
+          echo "2. Find the 'Artifacts' section" >> $GITHUB_STEP_SUMMARY
+          echo "3. Click on **benchmark-results** to download" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📁 Artifact Contents" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **benchmark-summary.md** - Complete multi-framework comparison (same as above)" >> $GITHUB_STEP_SUMMARY
+          echo "- **BenchmarkDotNet.Artifacts.netcoreapp3.1/results/** - .NET Core 3.1 detailed results" >> $GITHUB_STEP_SUMMARY
+          echo "- **BenchmarkDotNet.Artifacts.net5.0/results/** - .NET 5.0 detailed results" >> $GITHUB_STEP_SUMMARY
+          echo "- **BenchmarkDotNet.Artifacts.net8.0/results/** - .NET 8.0 detailed results" >> $GITHUB_STEP_SUMMARY
+          echo "- **BenchmarkDotNet.Artifacts.net10.0/results/** - .NET 10.0 detailed results" >> $GITHUB_STEP_SUMMARY
+          echo "- **BenchmarkDotNet.Artifacts.net10.0-aot/results/** - .NET 10.0 AOT detailed results (if succeeded)" >> $GITHUB_STEP_SUMMARY
       
-      # 上传性能测试报告
+      # 上传性能测试报告（在汇总生成之后）
       - name: Upload benchmark results
         uses: actions/upload-artifact@v4
         if: always()
@@ -137,26 +193,3 @@ jobs:
             WebApiClientCore.Benchmarks/results/**/*
             benchmark-summary.md
           retention-days: 30
-      
-      # 可选：生成性能对比摘要
-      - name: Generate benchmark summary
-        if: always()
-        run: |
-          echo "## Performance Benchmark Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Benchmark execution completed. Check artifacts for detailed results." >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Tested Frameworks" >> $GITHUB_STEP_SUMMARY
-          echo "- .NET Core 3.1" >> $GITHUB_STEP_SUMMARY
-          echo "- .NET 5.0" >> $GITHUB_STEP_SUMMARY
-          echo "- .NET 8.0" >> $GITHUB_STEP_SUMMARY
-          echo "- .NET 10.0" >> $GITHUB_STEP_SUMMARY
-          echo "- .NET 10.0 AOT" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Result Directories" >> $GITHUB_STEP_SUMMARY
-          echo "Each framework's results are stored in separate directories:" >> $GITHUB_STEP_SUMMARY
-          echo "- BenchmarkDotNet.Artifacts.netcoreapp3.1/results/" >> $GITHUB_STEP_SUMMARY
-          echo "- BenchmarkDotNet.Artifacts.net5.0/results/" >> $GITHUB_STEP_SUMMARY
-          echo "- BenchmarkDotNet.Artifacts.net8.0/results/" >> $GITHUB_STEP_SUMMARY
-          echo "- BenchmarkDotNet.Artifacts.net10.0/results/" >> $GITHUB_STEP_SUMMARY
-          echo "- BenchmarkDotNet.Artifacts.net10.0-aot/results/ (if AOT build succeeded)" >> $GITHUB_STEP_SUMMARY
