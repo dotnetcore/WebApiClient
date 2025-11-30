@@ -15,7 +15,10 @@
 		<ProjectReference
 			Include="..\WebApiClientCore.Extensions.OAuths\WebApiClientCore.Extensions.OAuths.csproj" />
 	</ItemGroup>
-
+	<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+		<!--netcoreapp3.1无法编译成功可能是因为ms没有改System.Text.Json程序集的版本号导致了冲突，往上升一下版本编译能过-->
+		<PackageReference Include="System.Text.Json" Version="6.0.10" />
+	</ItemGroup>
 	<ItemGroup>
 		<None Update="TextFile.txt">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
