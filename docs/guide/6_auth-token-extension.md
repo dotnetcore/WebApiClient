@@ -14,6 +14,82 @@ token 的应用特性，使用 ITokenProviderFactory 创建 ITokenProvider，然
 
 ### OAuthTokenHandler
 属于 http 消息处理器，功能与 OAuthTokenAttribute 一样，除此之外，如果因为意外的原因导致服务器仍然返回未授权(401 状态码)，其还会丢弃旧 token，申请新 token 来重试一次请求。
+
+## Token 提前刷新
+
+为避免 token 在检查后到实际使用前过期，支持配置提前刷新时间窗口。
+
+### 默认行为
+
+默认启用提前刷新，使用 Auto 策略：
+- 固定窗口：60 秒
+- 百分比窗口：10%
+- 实际窗口：取两者较小值
+
+### 配置方式1：通过 HttpApiOptions
+
+```csharp
+services.AddHttpApi<IUserApi>(o =>
+{
+    o.ConfigureOAuthToken(t =>
+    {
+        t.RefreshWindowSeconds = 120;           // 固定窗口120秒
+        t.RefreshWindowPercentage = 0.15;       // 百分比15%
+        t.RefreshWindowStrategy = RefreshWindowStrategy.Auto;
+    });
+});
+```
+
+### 配置方式2：通过独立配置
+
+```csharp
+services.AddHttpApi<IUserApi>()
+    .AddOAuthTokenHandler()
+    .ConfigureOAuthTokenOptions(o =>
+    {
+        o.RefreshWindowSeconds = 120;
+        o.RefreshWindowStrategy = RefreshWindowStrategy.FixedSeconds;
+    });
+```
+
+### 从配置文件加载
+
+**appsettings.json:**
+```json
+{
+  "OAuthToken": {
+    "IUserApi": {
+      "UseTokenRefreshWindow": true,
+      "RefreshWindowSeconds": 120,
+      "RefreshWindowPercentage": 0.15,
+      "RefreshWindowStrategy": "Auto"
+    }
+  }
+}
+```
+
+**Program.cs:**
+```csharp
+services.AddHttpApi<IUserApi>()
+    .ConfigureOAuthTokenOptions(configuration.GetSection("OAuthToken:IUserApi"));
+```
+
+### 刷新策略
+
+| 策略 | 说明 | 适用场景 |
+|------|------|----------|
+| `FixedSeconds` | 固定秒数 | Token 有效期固定 |
+| `Percentage` | 百分比 | Token 有效期不固定 |
+| `Auto` (默认) | 取较小值 | 通用场景 |
+
+### 禁用提前刷新
+
+```csharp
+services.AddHttpApi<IUserApi>(o =>
+{
+    o.ConfigureOAuthToken(t => t.UseTokenRefreshWindow = false);
+});
+```
  
 
 ## OAuth 的 Client 模式
