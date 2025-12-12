@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using WebApiClientCore.Extensions.OAuths;
+using WebApiClientCore.Extensions.OAuths.Exceptions;
 using Xunit;
 
 namespace WebApiClientCore.Test.Extensions.OAuths
@@ -31,8 +32,8 @@ namespace WebApiClientCore.Test.Extensions.OAuths
         public void IsExpired_WithExpiredToken_ReturnsTrue()
         {
             // Arrange
-            var token = new TokenResult { Expires_in = 1 };
-            Thread.Sleep(1100); // 等待超过1秒
+            var token = new TokenResult { Expires_in = 0 };
+            // 直接使用 expires_in=0，避免等待
 
             // Act
             var result = token.IsExpired();
@@ -81,7 +82,6 @@ namespace WebApiClientCore.Test.Extensions.OAuths
             // Arrange
             var token = new TokenResult { Expires_in = 2 }; // 2 seconds
             var refreshWindow = TimeSpan.FromSeconds(60); // 1 minute
-            Thread.Sleep(100); // 等待一小段时间
 
             // Act
             var result = token.IsExpired(refreshWindow);
@@ -129,8 +129,8 @@ namespace WebApiClientCore.Test.Extensions.OAuths
         public void IsExpired_AfterActualExpiration_ReturnsTrueRegardlessOfWindow()
         {
             // Arrange
-            var token = new TokenResult { Expires_in = 1 };
-            Thread.Sleep(1100); // 等待过期
+            var token = new TokenResult { Expires_in = 0 };
+            // 使用 expires_in=0 模拟过期
             var refreshWindow = TimeSpan.Zero;
 
             // Act
@@ -211,15 +211,15 @@ namespace WebApiClientCore.Test.Extensions.OAuths
         public void IsExpired_ProgressionFromValidToRefreshWindow_TransitionsCorrectly()
         {
             // Arrange
-            var token = new TokenResult { Expires_in = 3 }; // 3 seconds
-            var refreshWindow = TimeSpan.FromSeconds(2);
+            var token = new TokenResult { Expires_in = 1 }; // 1 second
+            var refreshWindow = TimeSpan.FromSeconds(0.5);
 
             // Act & Assert - Initially outside refresh window
             Assert.False(token.IsExpired(refreshWindow));
 
-            // Wait to enter refresh window
-            Thread.Sleep(1100); // After 1 second, remaining = 2 seconds
-            Assert.True(token.IsExpired(refreshWindow), "Should be in refresh window after 1 second");
+            // Wait a small amount of time to enter refresh window
+            Thread.Sleep(600); // After 0.6 seconds, remaining time < 0.5 seconds (refresh window)
+            Assert.True(token.IsExpired(refreshWindow), "Should be in refresh window after some time");
         }
 
         [Fact]
@@ -227,14 +227,14 @@ namespace WebApiClientCore.Test.Extensions.OAuths
         public void IsExpired_ProgressionFromRefreshWindowToExpired_RemainsTrue()
         {
             // Arrange
-            var token = new TokenResult { Expires_in = 2 }; // 2 seconds
-            var refreshWindow = TimeSpan.FromSeconds(1);
+            var token = new TokenResult { Expires_in = 1 }; // 1 second
+            var refreshWindow = TimeSpan.FromSeconds(0.5);
 
             // Act & Assert - Check at different points
-            Thread.Sleep(1100); // After 1 second, in refresh window
+            Thread.Sleep(600); // After 0.6 seconds, in refresh window
             Assert.True(token.IsExpired(refreshWindow));
 
-            Thread.Sleep(1000); // After 2 seconds, actually expired
+            Thread.Sleep(500); // After 1.1 seconds, actually expired
             Assert.True(token.IsExpired(refreshWindow));
         }
 
@@ -260,6 +260,74 @@ namespace WebApiClientCore.Test.Extensions.OAuths
                     Assert.Equal(firstResult.Value, result);
                 }
             }
+        }
+
+        #endregion
+
+        #region IsSuccess 和 EnsureSuccess 方法测试
+
+        [Theory]
+        [InlineData("valid_token", true)]
+        [InlineData(null, false)]
+        [InlineData("", false)]
+        [Trait("Category", "IsSuccess")]
+        public void IsSuccess_WithDifferentAccessTokens_ReturnsCorrectly(string? accessToken, bool expectedResult)
+        {
+            // Arrange
+            var token = new TokenResult { Access_token = accessToken, Expires_in = 3600 };
+
+            // Act
+            var result = token.IsSuccess();
+
+            // Assert
+            Assert.Equal(expectedResult, result);
+        }
+
+        [Fact]
+        [Trait("Category", "EnsureSuccess")]
+        public void EnsureSuccess_WithValidToken_ReturnsSameToken()
+        {
+            // Arrange
+            var token = new TokenResult { Access_token = "valid_token", Expires_in = 3600 };
+
+            // Act
+            var result = token.EnsureSuccess();
+
+            // Assert
+            Assert.Same(token, result);
+        }
+
+        [Fact]
+        [Trait("Category", "EnsureSuccess")]
+        public void EnsureSuccess_WithInvalidToken_ThrowsTokenException()
+        {
+            // Arrange
+            var token = new TokenResult { Access_token = null, Expires_in = 3600, Error = "invalid_token" };
+
+            // Act & Assert
+            var exception = Assert.Throws<TokenException>(() => token.EnsureSuccess());
+            Assert.Equal("invalid_token", exception.Message);
+        }
+
+        #endregion
+
+        #region CanRefresh 方法测试
+
+        [Theory]
+        [InlineData("valid_refresh_token", true)]
+        [InlineData(null, false)]
+        [InlineData("", false)]
+        [Trait("Category", "CanRefresh")]
+        public void CanRefresh_WithDifferentRefreshTokens_ReturnsCorrectly(string? refreshToken, bool expectedResult)
+        {
+            // Arrange
+            var token = new TokenResult { Access_token = "valid_token", Refresh_token = refreshToken, Expires_in = 3600 };
+
+            // Act
+            var result = token.CanRefresh();
+
+            // Assert
+            Assert.Equal(expectedResult, result);
         }
 
         #endregion
