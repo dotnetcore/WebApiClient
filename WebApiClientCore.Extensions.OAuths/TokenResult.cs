@@ -75,7 +75,19 @@ namespace WebApiClientCore.Extensions.OAuths
         /// <returns></returns>
         public virtual bool IsExpired()
         {
-            return DateTime.Now.Subtract(this.createTime) > TimeSpan.FromSeconds(this.Expires_in);
+            return IsExpired(TimeSpan.Zero);
+        }
+
+        /// <summary>
+        /// 返回是否已过期或在刷新窗口内
+        /// </summary>
+        /// <param name="refreshWindow">提前刷新时间窗口</param>
+        /// <returns>如果已过期或剩余有效时间小于等于刷新窗口,返回true</returns>
+        public virtual bool IsExpired(TimeSpan refreshWindow)
+        {
+            var elapsed = DateTime.Now.Subtract(this.createTime);
+            var remaining = TimeSpan.FromSeconds(this.Expires_in).Subtract(elapsed);
+            return remaining <= refreshWindow;
         }
 
         /// <summary>

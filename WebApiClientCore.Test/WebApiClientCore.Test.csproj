@@ -21,5 +21,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\WebApiClientCore\WebApiClientCore.csproj" />
+		<ProjectReference Include="..\WebApiClientCore.Extensions.OAuths\WebApiClientCore.Extensions.OAuths.csproj" />
 	</ItemGroup>
 </Project>
