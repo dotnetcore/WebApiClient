@@ -16,6 +16,7 @@
 		<PackageReference Include="BenchmarkDotNet" Version="0.15.7" />
 		<PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
 		<PackageReference Include="Refit.Xml" Version="8.0.0" />
+		<PackageReference Include="RestSharp" Version="111.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
