@@ -1,6 +1,6 @@
 name: Performance Benchmark
 
-# 仅支持手动触发，仅在 net10 分支可用
+# 仅支持手动触发
 on:
   workflow_dispatch:
 
@@ -18,8 +18,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: net10
       
       # 安装性能测试所需的 .NET SDK 版本
       - name: Setup .NET Core 3.1

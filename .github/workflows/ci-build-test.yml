@@ -1,6 +1,6 @@
 name: CI Build and Test
 
-# 仅支持手动触发，仅在 net10 分支可用
+# 仅支持手动触发
 on:
   workflow_dispatch:
 
@@ -22,8 +22,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: net10
       
       # 安装多个 .NET SDK 版本（从旧到新）
       - name: Setup .NET Core 3.1
