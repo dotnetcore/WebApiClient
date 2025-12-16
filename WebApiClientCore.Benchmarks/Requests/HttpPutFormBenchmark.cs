@@ -1,4 +1,4 @@
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using Microsoft.Extensions.DependencyInjection;
 using RestSharp;
 using System.Threading.Tasks;
@@ -34,8 +34,7 @@ namespace WebApiClientCore.Benchmarks.Requests
                 .AddParameter("bio", User.Instance.Bio)
                 .AddParameter("followers", User.Instance.Followers)
                 .AddParameter("following", User.Instance.Following)
-                .AddParameter("url", User.Instance.Url)
-                .AddHeader("Content-Type", "application/x-www-form-urlencoded");
+                .AddParameter("url", User.Instance.Url);
             return await client.PutAsync<User>(request);
         }
     }
