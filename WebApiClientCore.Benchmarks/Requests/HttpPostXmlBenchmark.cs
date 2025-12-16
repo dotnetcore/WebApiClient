@@ -1,6 +1,9 @@
-﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes;
 using Microsoft.Extensions.DependencyInjection;
+using RestSharp;
+using System.Net.Http;
 using System.Threading.Tasks;
+using System;
 
 namespace WebApiClientCore.Benchmarks.Requests
 {
@@ -20,6 +23,16 @@ namespace WebApiClientCore.Benchmarks.Requests
             using var scope = this.ServiceProvider.CreateScope();
             var benchmarkApi = scope.ServiceProvider.GetRequiredService<IRefitXmlApi>();
             return await benchmarkApi.PostXmlAsync(User.Instance);
+        }
+
+        [Benchmark]
+        public async Task<User> RestSharp_PostXmlAsync()
+        {
+            using var scope = this.ServiceProvider.CreateScope();
+            var client = scope.ServiceProvider.GetRequiredService<RestSharpXmlClient>();
+            var request = new RestRequest($"/benchmarks")
+                .AddXmlBody(User.Instance);
+            return await client.PostAsync<User>(request);
         }
     }
 }
