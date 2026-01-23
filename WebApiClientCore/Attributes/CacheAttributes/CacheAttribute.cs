@@ -61,12 +61,12 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="expiration">缓存毫秒数</param>
         /// <param name="errorExpiration">接口异常时 缓存毫秒数，默认：3秒</param>
-        /// <param name="eableNonGet">是否允许对非 GET 请求进行缓存</param>
-        public CacheAttribute(double expiration, double errorExpiration = 3000, bool eableNonGet = false)
+        /// <param name="enableNonGet">是否允许对非 GET 请求进行缓存</param>
+        public CacheAttribute(double expiration, double errorExpiration = 3000, bool enableNonGet = false)
             : base(expiration)
         {
             this.ErrorExpiration = errorExpiration;
-            this.EnableNonGet = eableNonGet;
+            this.EnableNonGet = enableNonGet;
         }
 
         /// <summary>
