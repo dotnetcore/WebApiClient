@@ -1,0 +1,210 @@
+name: Performance Benchmark
+
+# 仅支持手动触发
+on:
+  workflow_dispatch:
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_NOLOGO: true
+
+jobs:
+  benchmark:
+    name: Run Performance Benchmarks
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      # 安装性能测试所需的 .NET SDK 版本
+      - name: Setup .NET Core 3.1
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '3.1.x'
+      
+      - name: Setup .NET 5.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '5.0.x'
+      
+      - name: Setup .NET 8.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      
+      - name: Setup .NET 10.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      
+      # 安装 OpenSSL 1.1（.NET Core 3.1 和 .NET 5.0 需要）
+      - name: Install OpenSSL 1.1 for older .NET versions
+        run: |
+          # Ubuntu 22.04+ 默认只有 OpenSSL 3.x，需要手动安装 1.1
+          wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+          sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+          
+          # 验证安装
+          ldconfig -p | grep libssl
+      
+      # 验证 SDK 安装
+      - name: Display .NET info
+        run: dotnet --info
+      
+      - name: List installed SDKs
+        run: dotnet --list-sdks
+      
+      # 缓存 NuGet 包
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+      
+      # 恢复依赖
+      - name: Restore dependencies
+        run: dotnet restore
+      
+      # 编译 Benchmarks 项目
+      - name: Build Benchmarks project
+        run: dotnet build WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --no-restore
+      
+      # 执行 netcoreapp3.1 性能测试
+      - name: Run benchmarks on netcoreapp3.1
+        run: |
+          dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework netcoreapp3.1 --no-build -- --filter '*' --exporters json --artifacts ./BenchmarkDotNet.Artifacts.netcoreapp3.1
+          # 复制结果到标准位置
+          if [ -d "BenchmarkDotNet.Artifacts/results" ]; then
+            mkdir -p BenchmarkDotNet.Artifacts.netcoreapp3.1
+            cp -r BenchmarkDotNet.Artifacts/results BenchmarkDotNet.Artifacts.netcoreapp3.1/
+          fi
+        continue-on-error: true
+      
+      # 执行 net5.0 性能测试
+      - name: Run benchmarks on net5.0
+        run: |
+          dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net5.0 --no-build -- --filter '*' --exporters json --artifacts ./BenchmarkDotNet.Artifacts.net5.0
+          if [ -d "BenchmarkDotNet.Artifacts/results" ]; then
+            mkdir -p BenchmarkDotNet.Artifacts.net5.0
+            cp -r BenchmarkDotNet.Artifacts/results BenchmarkDotNet.Artifacts.net5.0/
+          fi
+        continue-on-error: true
+      
+      # 执行 net8.0 性能测试
+      - name: Run benchmarks on net8.0
+        run: |
+          dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net8.0 --no-build -- --filter '*' --exporters json --artifacts ./BenchmarkDotNet.Artifacts.net8.0
+          if [ -d "BenchmarkDotNet.Artifacts/results" ]; then
+            mkdir -p BenchmarkDotNet.Artifacts.net8.0
+            cp -r BenchmarkDotNet.Artifacts/results BenchmarkDotNet.Artifacts.net8.0/
+          fi
+        continue-on-error: true
+      
+      # 执行 net10.0 性能测试
+      - name: Run benchmarks on net10.0
+        run: |
+          dotnet run --project WebApiClientCore.Benchmarks/WebApiClientCore.Benchmarks.csproj --configuration Release --framework net10.0 --no-build -- --filter '*' --exporters json --artifacts ./BenchmarkDotNet.Artifacts.net10.0
+          if [ -d "BenchmarkDotNet.Artifacts/results" ]; then
+            mkdir -p BenchmarkDotNet.Artifacts.net10.0
+            cp -r BenchmarkDotNet.Artifacts/results BenchmarkDotNet.Artifacts.net10.0/
+          fi
+        continue-on-error: true
+      
+      # AOT 性能测试（暂时禁用）
+      # 原因：BenchmarkDotNet 0.15.7 依赖 CommandLineParser 和反射，无法在 AOT 下运行
+      # 错误：System.InvalidOperationException: Type BenchmarkDotNet.ConsoleArguments.CommandLineOptions appears to be immutable
+      # 等待 BenchmarkDotNet 官方完全支持 Native AOT 后再启用
+      # 
+      # - name: Build AOT Benchmark project
+      #   run: dotnet publish WebApiClientCore.Benchmarks.Aot/WebApiClientCore.Benchmarks.Aot.csproj --configuration Release --output ./aot-publish
+      #   continue-on-error: true
+      # 
+      # - name: Run AOT benchmarks on net10.0
+      #   if: success()
+      #   run: |
+      #     cd WebApiClientCore.Benchmarks.Aot
+      #     chmod +x ../aot-publish/WebApiClientCore.Benchmarks.Aot
+      #     ../aot-publish/WebApiClientCore.Benchmarks.Aot --filter '*' --exporters json --artifacts ./BenchmarkDotNet.Artifacts.net10.0-aot
+      #     # 复制结果到根目录
+      #     if [ -d "BenchmarkDotNet.Artifacts/results" ]; then
+      #       mkdir -p ../BenchmarkDotNet.Artifacts.net10.0-aot
+      #       cp -r BenchmarkDotNet.Artifacts/results ../BenchmarkDotNet.Artifacts.net10.0-aot/
+      #     fi
+      #     cd ..
+      #   continue-on-error: true
+      
+      # 收集性能测试结果
+      - name: List benchmark results
+        if: always()
+        run: |
+          echo "=== Current Directory ==="
+          pwd
+          echo ""
+          echo "=== Benchmark Results Directories ==="
+          find . -name "BenchmarkDotNet.Artifacts*" -type d
+          echo ""
+          echo "=== All Result Files ==="
+          find . -path "*/BenchmarkDotNet.Artifacts*/results/*" -type f
+          echo ""
+          echo "=== Checking for Markdown reports ==="
+          find . -path "*/BenchmarkDotNet.Artifacts*/results/*-report-github.md" -type f | while read file; do
+            echo "Found: $file"
+            echo "Size: $(du -h "$file" | cut -f1)"
+          done
+      
+      # 生成详细的性能对比摘要（同时输出到 Summary 和文件）
+      - name: Generate detailed benchmark summary
+        if: always()
+        run: |
+          chmod +x .github/scripts/generate-benchmark-summary.sh
+          
+          # 生成标题和基本信息
+          echo "## Performance Benchmark Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Benchmark execution completed. Download the artifact for detailed results." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # 执行汇总脚本，同时输出到 Summary 和文件
+          .github/scripts/generate-benchmark-summary.sh | tee benchmark-summary.md >> $GITHUB_STEP_SUMMARY
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Download Instructions" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "1. Scroll to the bottom of this page" >> $GITHUB_STEP_SUMMARY
+          echo "2. Find the 'Artifacts' section" >> $GITHUB_STEP_SUMMARY
+          echo "3. Click on **benchmark-results** to download" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📁 Artifact Contents" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **benchmark-summary.md** - Complete multi-framework comparison (same as above)" >> $GITHUB_STEP_SUMMARY
+          echo "- **BenchmarkDotNet.Artifacts.netcoreapp3.1/results/** - .NET Core 3.1 detailed results" >> $GITHUB_STEP_SUMMARY
+          echo "- **BenchmarkDotNet.Artifacts.net5.0/results/** - .NET 5.0 detailed results" >> $GITHUB_STEP_SUMMARY
+          echo "- **BenchmarkDotNet.Artifacts.net8.0/results/** - .NET 8.0 detailed results" >> $GITHUB_STEP_SUMMARY
+          echo "- **BenchmarkDotNet.Artifacts.net10.0/results/** - .NET 10.0 detailed results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ⚠️ AOT Benchmark Status" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Native AOT benchmark is currently disabled because:" >> $GITHUB_STEP_SUMMARY
+          echo "- BenchmarkDotNet 0.15.7 uses reflection and runtime code generation" >> $GITHUB_STEP_SUMMARY
+          echo "- CommandLineParser library is not AOT-compatible" >> $GITHUB_STEP_SUMMARY
+          echo "- Waiting for official Native AOT support from BenchmarkDotNet" >> $GITHUB_STEP_SUMMARY
+      
+      # 上传性能测试报告（在汇总生成之后）
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: benchmark-results
+          path: |
+            BenchmarkDotNet.Artifacts.*/results/**/*
+            WebApiClientCore.Benchmarks.Aot/BenchmarkDotNet.Artifacts.*/results/**/*
+            WebApiClientCore.Benchmarks/results/**/*
+            benchmark-summary.md
+          retention-days: 30

@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<OutputType>Exe</OutputType>
+		<PublishAot>true</PublishAot>
+		<InvariantGlobalization>true</InvariantGlobalization>
+		<EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+		<SignAssembly>false</SignAssembly>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<IsPackable>false</IsPackable>
+		<!-- AOT 优化设置 -->
+		<IlcOptimizationPreference>Speed</IlcOptimizationPreference>
+		<IlcGenerateStackTraceData>false</IlcGenerateStackTraceData>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BenchmarkDotNet" Version="0.15.7" />
+		<PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
+		<PackageReference Include="Refit.Xml" Version="8.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\WebApiClientCore\WebApiClientCore.csproj" />
+		<ProjectReference Include="..\WebApiClientCore.Analyzers\WebApiClientCore.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
+
+	<!-- 链接共享源代码文件 -->
+	<ItemGroup>
+		<Compile Include="..\WebApiClientCore.Benchmarks\**\*.cs" Exclude="..\WebApiClientCore.Benchmarks\obj\**;..\WebApiClientCore.Benchmarks\bin\**" />
+	</ItemGroup>
+
+	<!-- 复制资源文件 -->
+	<ItemGroup>
+		<None Include="..\WebApiClientCore.Benchmarks\user.json" Link="user.json" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="..\WebApiClientCore.Benchmarks\Sign.snk" Link="Sign.snk" />
+	</ItemGroup>
+
+</Project>
