@@ -29,7 +29,8 @@ namespace WebApiClientCore.HttpContents
                 var disposition = new ContentDispositionHeaderValue("form-data")
                 {
                     Name = $"\"{name}\"",
-                    FileName = $"\"{fileName}\""
+                    FileName = $"\"{fileName}\"",
+                    FileNameStar = $"\"{fileName}\""
                 };
                 this.Headers.ContentDisposition = disposition;
             }
