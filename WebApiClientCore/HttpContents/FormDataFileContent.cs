@@ -30,7 +30,7 @@ namespace WebApiClientCore.HttpContents
                 {
                     Name = $"\"{name}\"",
                     FileName = $"\"{fileName}\"",
-                    FileNameStar = $"\"{fileName}\""
+                    FileNameStar = fileName
                 };
                 this.Headers.ContentDisposition = disposition;
             }
