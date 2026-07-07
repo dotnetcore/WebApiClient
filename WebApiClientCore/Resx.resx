@@ -118,96 +118,96 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="contenType_RemainAs" xml:space="preserve">
-    <value>Content-Type必须保持为{0}</value>
+    <value>Content-Type must remain as {0}</value>
   </data>
   <data name="failure_StatusCode" xml:space="preserve">
-    <value>服务器响应了错误的http状态码：{0} {1}</value>
+    <value>Server responded with an incorrect http status code: {0} {1}</value>
   </data>
   <data name="gethead_Content_Warning" xml:space="preserve">
-    <value>使用了{0}请求方法，但仍然设置了请求体内容，远程接口可能无法兼容</value>
+    <value>The {0} request method is used, but the request body content is still set, the remote interface may not be compatible</value>
   </data>
   <data name="httpContent_isBuffered" xml:space="preserve">
-    <value>数据内容已经被缓存和固化</value>
+    <value>Data content has been buffered and solidified</value>
   </data>
   <data name="invalid_UriAttribute" xml:space="preserve">
-    <value>UriAttribute必须修饰于第一个参数</value>
+    <value>UriAttribute must be applied to the first parameter</value>
   </data>
   <data name="missing_Ctor" xml:space="preserve">
-    <value>类型{0}不存在构造函数.ctor({1})</value>
+    <value>Type {0} does not have a constructor .ctor({1})</value>
   </data>
   <data name="outof_MaxLimited" xml:space="preserve">
-    <value>重试已经达到了最大次数限制：{0}</value>
+    <value>Retry has reached the maximum limit: {0}</value>
   </data>
   <data name="parameter_CannotCvtTimeout" xml:space="preserve">
-    <value>无法将参数值{0}转换为Timeout</value>
+    <value>Cannot convert parameter value {0} to Timeout</value>
   </data>
   <data name="parameter_CannotCvtUri" xml:space="preserve">
-    <value>无法将参数值{0}转换为Uri</value>
+    <value>Cannot convert parameter value {0} to Uri</value>
   </data>
   <data name="parameter_CannotMissing" xml:space="preserve">
-    <value>请传入{0}参数</value>
+    <value>Please pass the {0} parameter</value>
   </data>
   <data name="parameter_MustbeHttpContenType" xml:space="preserve">
-    <value>参数{0}必须为HttpContent类型</value>
+    <value>Parameter {0} must be of type HttpContent</value>
   </data>
   <data name="parameter_MustPutForward" xml:space="preserve">
-    <value>参数{0}必须置前</value>
+    <value>Parameter {0} must be placed before</value>
   </data>
   <data name="required_AbsoluteUri" xml:space="preserve">
-    <value>{0}要求为绝对Uri</value>
+    <value>{0} requires an absolute Uri</value>
   </data>
   <data name="required_HttpHost" xml:space="preserve">
-    <value>未配置HttpHost，接口需要先配置HttpHost</value>
+    <value>HttpHost is not configured, the interface needs to configure HttpHost first</value>
   </data>
   <data name="required_InterfaceType" xml:space="preserve">
-    <value>类型{0}必须为接口类型</value>
+    <value>Type {0} must be an interface type</value>
   </data>
   <data name="required_NameAndValue" xml:space="preserve">
-    <value>请传入name和value参数</value>
+    <value>Please pass name and value parameters</value>
   </data>
   <data name="required_PatchMethod" xml:space="preserve">
-    <value>JsonPatchContent的请求方法要求为PATCH</value>
+    <value>The request method of JsonPatchContent is required to be PATCH</value>
   </data>
   <data name="required_PublicInterface" xml:space="preserve">
-    <value>接口必须为public修饰：{0}</value>
+    <value>The interface must be public: {0}</value>
   </data>
   <data name="required_RequestUri" xml:space="preserve">
-    <value>未配置RequestUri，RequestUri不能为null</value>
+    <value>RequestUri is not configured, RequestUri cannot be null</value>
   </data>
   <data name="timeout_OutOfRange" xml:space="preserve">
-    <value>Timeout值{0}不能超时HttpClient.Timeout</value>
+    <value>Timeout value {0} cannot exceed HttpClient.Timeout</value>
   </data>
   <data name="unexpected_Result" xml:space="preserve">
-    <value>结果不符合预期值</value>
+    <value>Result does not match expected value</value>
   </data>
   <data name="unsupported_ByRef" xml:space="preserve">
-    <value>接口参数不支持ref/out修饰: {0}</value>
+    <value>Interface parameters do not support ref/out modifiers: {0}</value>
   </data>
   <data name="unsupported_ContentType" xml:space="preserve">
-    <value>不支持将ContentType为 {0} 的内容转换为{1}</value>
+    <value>Cannot convert content with ContentType {0} to {1}</value>
   </data>
   <data name="unsupported_ConvertType" xml:space="preserve">
-    <value>无法将JsonTokenType.{0}转换为{1}类型</value>
+    <value>Cannot convert JsonTokenType.{0} to type {1}</value>
   </data>
   <data name="unsupported_GenericMethod" xml:space="preserve">
-    <value>不支持泛型方法: {0}</value>
+    <value>Generic methods are not supported: {0}</value>
   </data>
   <data name="unsupported_GenericTypeDefinitionType" xml:space="preserve">
-    <value>不支持注册泛型定义类型{0}</value>
+    <value>Registering generic type definition {0} is not supported</value>
   </data>
   <data name="unsupported_HttpMessageHandler" xml:space="preserve">
-    <value>HttpMessageHandler必须是DelegatingHandler或者HttpClientHandler</value>
+    <value>HttpMessageHandler must be DelegatingHandler or HttpClientHandler</value>
   </data>
   <data name="unsupported_NoUseCookies" xml:space="preserve">
-    <value>HttpClientHandler必须开启UseCookies</value>
+    <value>HttpClientHandler must enable UseCookies</value>
   </data>
   <data name="unsupported_Property" xml:space="preserve">
-    <value>不支持属性访问器: {0}</value>
+    <value>Property accessors are not supported: {0}</value>
   </data>
   <data name="unsupported_ReturnType" xml:space="preserve">
-    <value>返回类型必须为Task、Task&lt;&gt;或ITask&lt;&gt;: {0}</value>
+    <value>Return type must be Task, Task&lt;&gt;, or ITask&lt;&gt;: {0}</value>
   </data>
   <data name="unsupported_SerializeApiParametern" xml:space="preserve">
-    <value>不支持序列化类型{0}，该类型只能做为方法的参数值</value>
+    <value>Serialization of type {0} is not supported, this type can only be used as a method parameter value</value>
   </data>
 </root>

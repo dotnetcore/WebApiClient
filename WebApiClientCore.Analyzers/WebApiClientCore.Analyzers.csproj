@@ -24,7 +24,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Update="Resx.en-US.resx">
+		<EmbeddedResource Update="Resx.zh-CN.resx">
+			<Generator></Generator>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resx.zh-TW.resx">
+			<Generator></Generator>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resx.es.resx">
 			<Generator></Generator>
 		</EmbeddedResource>
 		<EmbeddedResource Update="Resx.resx">

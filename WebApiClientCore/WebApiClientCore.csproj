@@ -55,6 +55,12 @@
 			<Generator>ResXFileCodeGenerator</Generator>
 			<LastGenOutput>Resx.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
+		<EmbeddedResource Update="Resx.zh-TW.resx">
+			<Generator></Generator>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resx.es.resx">
+			<Generator></Generator>
+		</EmbeddedResource>
 	</ItemGroup>
 
 	<!--nuget analyzers目录-->
