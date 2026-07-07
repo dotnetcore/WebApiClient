@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace WebApiClientCore.Extensions.OAuths
 {
@@ -18,9 +19,23 @@ namespace WebApiClientCore.Extensions.OAuths
         void ClearToken();
 
         /// <summary>
+        /// 强制清除 token 以支持下次获取到新的 token
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task ClearTokenAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// 获取 token 信息
         /// </summary> 
         /// <returns></returns>
         Task<TokenResult> GetTokenAsync();
+
+        /// <summary>
+        /// 获取 token 信息
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<TokenResult> GetTokenAsync(CancellationToken cancellationToken);
     }
 }

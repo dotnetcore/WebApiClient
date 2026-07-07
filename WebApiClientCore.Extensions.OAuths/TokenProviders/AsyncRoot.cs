@@ -47,9 +47,9 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// using( await asyncRoot.LockAsync() ){ }
         /// </summary>
         /// <returns></returns>
-        public async Task<IDisposable> LockAsync()
+        public async Task<IDisposable> LockAsync(CancellationToken cancellationToken)
         {
-            await this.semaphoreSlim.WaitAsync().ConfigureAwait(false);
+            await this.semaphoreSlim.WaitAsync(cancellationToken).ConfigureAwait(false);
             return new UnLocker(this);
         }
 

@@ -19,9 +19,9 @@ namespace WebApiClientCore.Implementations
         public static async Task<ApiResponseContext> ExecuteAsync(ApiRequestContext request)
         {
             await HandleRequestAsync(request).ConfigureAwait(false);
-            using var requestAbortedLinker = new CancellationTokenLinker(request.HttpContext.CancellationTokens);
+            using var cancellationTokenLinker = new CancellationTokenLinker(request.HttpContext.CancellationTokens);
 
-            var response = await ApiRequestSender.SendAsync(request, requestAbortedLinker.Token).ConfigureAwait(false);
+            var response = await ApiRequestSender.SendAsync(request, cancellationTokenLinker.CancellationToken).ConfigureAwait(false);
             await HandleResponseAsync(response).ConfigureAwait(false);
             return response;
         }
@@ -126,7 +126,7 @@ namespace WebApiClientCore.Implementations
         /// <summary>
         /// 表示CancellationToken链接器
         /// </summary>
-        private readonly struct CancellationTokenLinker : IDisposable
+        private sealed class CancellationTokenLinker : IDisposable
         {
             /// <summary>
             /// 链接产生的 tokenSource
@@ -136,7 +136,7 @@ namespace WebApiClientCore.Implementations
             /// <summary>
             /// 获取 token
             /// </summary>
-            public CancellationToken Token { get; }
+            public CancellationToken CancellationToken { get; }
 
             /// <summary>
             /// CancellationToken链接器
@@ -147,12 +147,12 @@ namespace WebApiClientCore.Implementations
                 if (IsNoneCancellationToken(tokenList))
                 {
                     this.tokenSource = null;
-                    this.Token = CancellationToken.None;
+                    this.CancellationToken = CancellationToken.None;
                 }
                 else
                 {
                     this.tokenSource = CancellationTokenSource.CreateLinkedTokenSource(tokenList.ToArray());
-                    this.Token = this.tokenSource.Token;
+                    this.CancellationToken = this.tokenSource.Token;
                 }
             }
 

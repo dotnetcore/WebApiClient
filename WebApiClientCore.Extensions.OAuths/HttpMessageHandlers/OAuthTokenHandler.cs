@@ -36,10 +36,10 @@ namespace WebApiClientCore.Extensions.OAuths.HttpMessageHandlers
         {
             if (reason == SetReason.ForResend)
             {
-                this.tokenProvider.ClearToken();
+                await this.tokenProvider.ClearTokenAsync(cancellationToken);
             }
 
-            var tokenResult = await this.tokenProvider.GetTokenAsync().ConfigureAwait(false);
+            var tokenResult = await this.tokenProvider.GetTokenAsync(cancellationToken).ConfigureAwait(false);
             this.UseTokenResult(request, tokenResult);
         }
 

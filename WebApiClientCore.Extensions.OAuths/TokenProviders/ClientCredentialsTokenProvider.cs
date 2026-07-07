@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using WebApiClientCore.Extensions.OAuths.Exceptions;
 
@@ -24,10 +25,11 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// 请求获取 token
         /// </summary>
         /// <param name="serviceProvider"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
         [UnconditionalSuppressMessage("Trimming", "IL3050:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
-        protected override Task<TokenResult?> RequestTokenAsync(IServiceProvider serviceProvider)
+        protected override Task<TokenResult?> RequestTokenAsync(IServiceProvider serviceProvider, CancellationToken cancellationToken)
         {
             var options = this.GetOptionsValue<ClientCredentialsOptions>();
             if (options.Endpoint == null)
@@ -36,7 +38,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
             }
 
             var tokenClient = serviceProvider.GetRequiredService<OAuth2TokenClient>();
-            return tokenClient.RequestTokenAsync(options.Endpoint, options.Credentials);
+            return tokenClient.RequestTokenAsync(options.Endpoint, options.Credentials, cancellationToken);
         }
 
         /// <summary>
@@ -44,10 +46,11 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <param name="refresh_token"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
         [UnconditionalSuppressMessage("Trimming", "IL3050:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
-        protected override Task<TokenResult?> RefreshTokenAsync(IServiceProvider serviceProvider, string refresh_token)
+        protected override Task<TokenResult?> RefreshTokenAsync(IServiceProvider serviceProvider, string refresh_token, CancellationToken cancellationToken)
         {
             var options = this.GetOptionsValue<ClientCredentialsOptions>();
             if (options.Endpoint == null)
@@ -57,7 +60,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
 
             if (options.UseRefreshToken == false)
             {
-                return this.RequestTokenAsync(serviceProvider);
+                return this.RequestTokenAsync(serviceProvider, cancellationToken);
             }
 
             var refreshCredentials = new RefreshTokenCredentials
@@ -69,7 +72,7 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
             };
 
             var tokenClient = serviceProvider.GetRequiredService<OAuth2TokenClient>();
-            return tokenClient.RefreshTokenAsync(options.Endpoint, refreshCredentials);
+            return tokenClient.RefreshTokenAsync(options.Endpoint, refreshCredentials, cancellationToken);
         }
     }
 }

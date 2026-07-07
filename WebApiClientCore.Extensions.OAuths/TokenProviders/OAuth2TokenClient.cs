@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using WebApiClientCore.Attributes;
 using WebApiClientCore.HttpContents;
@@ -35,14 +36,15 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// </summary>
         /// <param name="endpoint">token请求地址</param>
         /// <param name="credentials">身份信息</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpPost]
         [FormField("grant_type", "client_credentials")]
         [RequiresDynamicCode("JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use System.Text.Json source generation for native AOT applications.")]
         [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
-        public Task<TokenResult?> RequestTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] ClientCredentials credentials)
+        public Task<TokenResult?> RequestTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] ClientCredentials credentials, CancellationToken cancellationToken)
         {
-            return this.PostFormAsync(endpoint, "client_credentials", credentials);
+            return this.PostFormAsync(endpoint, "client_credentials", credentials, cancellationToken);
         }
 
         /// <summary>
@@ -50,14 +52,15 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// </summary>
         /// <param name="endpoint">token请求地址</param>
         /// <param name="credentials">身份信息</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpPost]
         [FormField("grant_type", "password")]
         [RequiresDynamicCode("JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use System.Text.Json source generation for native AOT applications.")]
         [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
-        public Task<TokenResult?> RequestTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] PasswordCredentials credentials)
+        public Task<TokenResult?> RequestTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] PasswordCredentials credentials, CancellationToken cancellationToken)
         {
-            return this.PostFormAsync(endpoint, "password", credentials);
+            return this.PostFormAsync(endpoint, "password", credentials, cancellationToken);
         }
 
         /// <summary>
@@ -65,14 +68,15 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// </summary>
         /// <param name="endpoint">token请求地址</param>
         /// <param name="credentials">身份信息</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpPost]
         [FormField("grant_type", "refresh_token")]
         [RequiresDynamicCode("JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use System.Text.Json source generation for native AOT applications.")]
         [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
-        public Task<TokenResult?> RefreshTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] RefreshTokenCredentials credentials)
+        public Task<TokenResult?> RefreshTokenAsync([Required, Uri] Uri endpoint, [Required, FormContent] RefreshTokenCredentials credentials, CancellationToken cancellationToken)
         {
-            return this.PostFormAsync(endpoint, "refresh_token", credentials);
+            return this.PostFormAsync(endpoint, "refresh_token", credentials, cancellationToken);
         }
 
         /// <summary>
@@ -82,16 +86,17 @@ namespace WebApiClientCore.Extensions.OAuths.TokenProviders
         /// <param name="endpoint"></param>
         /// <param name="grant_type"></param>
         /// <param name="credentials"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [RequiresDynamicCode("JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use System.Text.Json source generation for native AOT applications.")]
         [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.")]
-        private async Task<TokenResult?> PostFormAsync<TCredentials>(Uri endpoint, string grant_type, TCredentials credentials)
+        private async Task<TokenResult?> PostFormAsync<TCredentials>(Uri endpoint, string grant_type, TCredentials credentials, CancellationToken cancellationToken)
         {
             using var formContent = new FormContent(credentials, this.httpApiOptions.KeyValueSerializeOptions);
             formContent.AddFormField(new KeyValue("grant_type", grant_type));
 
-            var response = await this.httpClientFactory.CreateClient().PostAsync(endpoint, formContent);
-            return await response.Content.ReadFromJsonAsync<TokenResult>(this.httpApiOptions.JsonDeserializeOptions);
+            var response = await this.httpClientFactory.CreateClient().PostAsync(endpoint, formContent, cancellationToken);
+            return await response.Content.ReadFromJsonAsync<TokenResult>(this.httpApiOptions.JsonDeserializeOptions, cancellationToken);
         }
     }
 }

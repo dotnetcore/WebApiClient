@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using WebApiClientCore;
 using WebApiClientCore.Extensions.OAuths;
@@ -24,6 +25,22 @@ namespace Microsoft.Extensions.DependencyInjection
         public static ITokenProviderBuilder AddTokenProvider<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] THttpApi>(
             this IServiceCollection services,
             Func<IServiceProvider, Task<TokenResult?>> tokenRequest,
+            string alias = "")
+        {
+            return services.AddTokenProvider<THttpApi>((s, c) => tokenRequest.Invoke(s), alias);
+        }
+
+        /// <summary>
+        /// 为指定接口添加 token 提供者
+        /// </summary>
+        /// <typeparam name="THttpApi">接口类型</typeparam>
+        /// <param name="services"></param>
+        /// <param name="tokenRequest">token请求委托</param>
+        /// <param name="alias">TokenProvider的别名</param>
+        /// <returns></returns>
+        public static ITokenProviderBuilder AddTokenProvider<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] THttpApi>(
+            this IServiceCollection services,
+            Func<IServiceProvider, CancellationToken, Task<TokenResult?>> tokenRequest,
             string alias = "")
         {
             return services.AddTokenProvider<THttpApi, DelegateTokenProvider>(s => new DelegateTokenProvider(s, tokenRequest), alias);

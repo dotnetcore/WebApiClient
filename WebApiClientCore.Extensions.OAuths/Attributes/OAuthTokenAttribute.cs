@@ -1,7 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 using WebApiClientCore.Extensions.OAuths;
 
@@ -50,7 +53,9 @@ namespace WebApiClientCore.Attributes
         /// <returns></returns>
         public sealed override async Task OnRequestAsync(ApiRequestContext context)
         {
-            var token = await this.GetTokenProvider(context).GetTokenAsync().ConfigureAwait(false);
+            var tokenProvider = this.GetTokenProvider(context);
+            using var linker = new CancellationTokenLinker(context.HttpContext.CancellationTokens);
+            var token = await tokenProvider.GetTokenAsync(linker.CancellationToken).ConfigureAwait(false);
             this.UseTokenResult(context, token);
         }
 
@@ -59,13 +64,12 @@ namespace WebApiClientCore.Attributes
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public sealed override Task OnResponseAsync(ApiResponseContext context)
+        public sealed override async Task OnResponseAsync(ApiResponseContext context)
         {
             if (this.IsUnauthorized(context) == true)
             {
-                this.GetTokenProvider(context).ClearToken();
+                await this.GetTokenProvider(context).ClearTokenAsync(context.RequestAborted);
             }
-            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -114,6 +118,59 @@ namespace WebApiClientCore.Attributes
         {
             var response = context.HttpContext.ResponseMessage;
             return response != null && response.StatusCode == HttpStatusCode.Unauthorized;
+        }
+
+        /// <summary>
+        /// 表示CancellationToken链接器
+        /// </summary>
+        private sealed class CancellationTokenLinker : IDisposable
+        {
+            /// <summary>
+            /// 链接产生的 tokenSource
+            /// </summary>
+            private readonly CancellationTokenSource? tokenSource;
+
+            /// <summary>
+            /// 获取 token
+            /// </summary>
+            public CancellationToken CancellationToken { get; }
+
+            /// <summary>
+            /// CancellationToken链接器
+            /// </summary>
+            /// <param name="tokenList"></param>
+            public CancellationTokenLinker(IList<CancellationToken> tokenList)
+            {
+                if (IsNoneCancellationToken(tokenList))
+                {
+                    this.tokenSource = null;
+                    this.CancellationToken = CancellationToken.None;
+                }
+                else
+                {
+                    this.tokenSource = CancellationTokenSource.CreateLinkedTokenSource(tokenList.ToArray());
+                    this.CancellationToken = this.tokenSource.Token;
+                }
+            }
+
+            /// <summary>
+            /// 是否为None的CancellationToken
+            /// </summary>
+            /// <param name="tokenList"></param>
+            /// <returns></returns>
+            private static bool IsNoneCancellationToken(IList<CancellationToken> tokenList)
+            {
+                var count = tokenList.Count;
+                return (count == 0) || (count == 1 && tokenList[0] == CancellationToken.None);
+            }
+
+            /// <summary>
+            /// 释放资源
+            /// </summary>
+            public void Dispose()
+            {
+                this.tokenSource?.Dispose();
+            }
         }
     }
 }
