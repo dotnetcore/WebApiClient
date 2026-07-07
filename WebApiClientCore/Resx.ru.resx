@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+	Microsoft ResX Schema 
+
+	Version 2.0
+	-->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+	<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+	<xsd:element name="root" msdata:IsDataSet="true">
+	  <xsd:complexType>
+		<xsd:choice maxOccurs="unbounded">
+		  <xsd:element name="metadata">
+			<xsd:complexType>
+			  <xsd:sequence>
+				<xsd:element name="value" type="xsd:string" minOccurs="0" />
+			  </xsd:sequence>
+			  <xsd:attribute name="name" use="required" type="xsd:string" />
+			  <xsd:attribute name="type" type="xsd:string" />
+			  <xsd:attribute name="mimetype" type="xsd:string" />
+			  <xsd:attribute ref="xml:space" />
+			</xsd:complexType>
+		  </xsd:element>
+		  <xsd:element name="assembly">
+			<xsd:complexType>
+			  <xsd:attribute name="alias" type="xsd:string" />
+			  <xsd:attribute name="name" type="xsd:string" />
+			</xsd:complexType>
+		  </xsd:element>
+		  <xsd:element name="data">
+			<xsd:complexType>
+			  <xsd:sequence>
+				<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+				<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+			  </xsd:sequence>
+			  <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+			  <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+			  <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+			  <xsd:attribute ref="xml:space" />
+			</xsd:complexType>
+		  </xsd:element>
+		  <xsd:element name="resheader">
+			<xsd:complexType>
+			  <xsd:sequence>
+				<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+			  </xsd:sequence>
+			  <xsd:attribute name="name" type="xsd:string" use="required" />
+			</xsd:complexType>
+		  </xsd:element>
+		</xsd:choice>
+	  </xsd:complexType>
+	</xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+	<value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+	<value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+	<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+	<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="contenType_RemainAs" xml:space="preserve">
+	<value>Content-Type должен оставаться как {0}</value>
+  </data>
+  <data name="failure_StatusCode" xml:space="preserve">
+	<value>Сервер ответил неверным http-статусом: {0} {1}</value>
+  </data>
+  <data name="gethead_Content_Warning" xml:space="preserve">
+	<value>Используется метод запроса {0}, но всё ещё установлено содержимое тела запроса; удалённый интерфейс может быть несовместим</value>
+  </data>
+  <data name="httpContent_isBuffered" xml:space="preserve">
+	<value>Содержимое данных было буферизовано и сохранено</value>
+  </data>
+  <data name="invalid_UriAttribute" xml:space="preserve">
+	<value>UriAttribute должен быть применён к первому параметру</value>
+  </data>
+  <data name="missing_Ctor" xml:space="preserve">
+	<value>У типа {0} нет конструктора .ctor({1})</value>
+  </data>
+  <data name="outof_MaxLimited" xml:space="preserve">
+	<value>Повторная попытка достигла максимального лимита: {0}</value>
+  </data>
+  <data name="parameter_CannotCvtTimeout" xml:space="preserve">
+	<value>Невозможно преобразовать значение параметра {0} в Timeout</value>
+  </data>
+  <data name="parameter_CannotCvtUri" xml:space="preserve">
+	<value>Невозможно преобразовать значение параметра {0} в Uri</value>
+  </data>
+  <data name="parameter_CannotMissing" xml:space="preserve">
+	<value>Пожалуйста, передайте параметр {0}</value>
+  </data>
+  <data name="parameter_MustbeHttpContenType" xml:space="preserve">
+	<value>Параметр {0} должен быть типа HttpContent</value>
+  </data>
+  <data name="parameter_MustPutForward" xml:space="preserve">
+	<value>Параметр {0} должен быть размещён перед</value>
+  </data>
+  <data name="required_AbsoluteUri" xml:space="preserve">
+	<value>{0} требует абсолютный Uri</value>
+  </data>
+  <data name="required_HttpHost" xml:space="preserve">
+	<value>HttpHost не настроен; сначала необходимо настроить HttpHost для интерфейса</value>
+  </data>
+  <data name="required_InterfaceType" xml:space="preserve">
+	<value>Тип {0} должен быть интерфейсом</value>
+  </data>
+  <data name="required_NameAndValue" xml:space="preserve">
+	<value>Пожалуйста, передайте параметры name и value</value>
+  </data>
+  <data name="required_PatchMethod" xml:space="preserve">
+	<value>Метод запроса JsonPatchContent должен быть PATCH</value>
+  </data>
+  <data name="required_PublicInterface" xml:space="preserve">
+	<value>Интерфейс должен быть public: {0}</value>
+  </data>
+  <data name="required_RequestUri" xml:space="preserve">
+	<value>RequestUri не настроен, RequestUri не может быть null</value>
+  </data>
+  <data name="timeout_OutOfRange" xml:space="preserve">
+	<value>Значение таймаута {0} не может превышать HttpClient.Timeout</value>
+  </data>
+  <data name="unexpected_Result" xml:space="preserve">
+	<value>Результат не соответствует ожидаемому значению</value>
+  </data>
+  <data name="unsupported_ByRef" xml:space="preserve">
+	<value>Параметры интерфейса не поддерживают модификаторы ref/out: {0}</value>
+  </data>
+  <data name="unsupported_ContentType" xml:space="preserve">
+	<value>Невозможно преобразовать содержимое с ContentType {0} в {1}</value>
+  </data>
+  <data name="unsupported_ConvertType" xml:space="preserve">
+	<value>Невозможно преобразовать JsonTokenType.{0} в тип {1}</value>
+  </data>
+  <data name="unsupported_GenericMethod" xml:space="preserve">
+	<value>Универсальные методы не поддерживаются: {0}</value>
+  </data>
+  <data name="unsupported_GenericTypeDefinitionType" xml:space="preserve">
+	<value>Регистрация определения универсального типа {0} не поддерживается</value>
+  </data>
+  <data name="unsupported_HttpMessageHandler" xml:space="preserve">
+	<value>HttpMessageHandler должен быть DelegatingHandler или HttpClientHandler</value>
+  </data>
+  <data name="unsupported_NoUseCookies" xml:space="preserve">
+	<value>HttpClientHandler должен включить UseCookies</value>
+  </data>
+  <data name="unsupported_Property" xml:space="preserve">
+	<value>Аксессоры свойств не поддерживаются: {0}</value>
+  </data>
+  <data name="unsupported_ReturnType" xml:space="preserve">
+	<value>Тип возврата должен быть Task, Task&lt;&gt; или ITask&lt;&gt;: {0}</value>
+  </data>
+  <data name="unsupported_SerializeApiParametern" xml:space="preserve">
+	<value>Сериализация типа {0} не поддерживается; этот тип может использоваться только как значение параметра метода</value>
+  </data>
+</root>
