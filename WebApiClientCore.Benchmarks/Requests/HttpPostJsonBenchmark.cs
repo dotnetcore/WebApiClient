@@ -1,5 +1,6 @@
-﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes;
 using Microsoft.Extensions.DependencyInjection;
+using RestSharp;
 using System.Threading.Tasks;
 
 namespace WebApiClientCore.Benchmarks.Requests
@@ -19,8 +20,18 @@ namespace WebApiClientCore.Benchmarks.Requests
         public async Task<User> Refit_PostJsonAsync()
         {
             using var scope = this.ServiceProvider.CreateScope();
-            var benchmarkApi = scope.ServiceProvider.GetRequiredService<IRefitJsonApi>();             
+            var benchmarkApi = scope.ServiceProvider.GetRequiredService<IRefitJsonApi>();              
             return await benchmarkApi.PostJsonAsync(User.Instance);
+        }
+
+        [Benchmark]
+        public async Task<User> RestSharp_PostJsonAsync()
+        {
+            using var scope = this.ServiceProvider.CreateScope();
+            var client = scope.ServiceProvider.GetRequiredService<RestSharpJsonClient>();
+            var request = new RestRequest($"/benchmarks")
+                .AddJsonBody(User.Instance);
+            return await client.PostAsync<User>(request);
         }
     }
 }
