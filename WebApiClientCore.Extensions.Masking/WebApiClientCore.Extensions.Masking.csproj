@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<Nullable>enable</Nullable>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<TargetFrameworks>netstandard2.1;net8.0;net10.0</TargetFrameworks>
+		<IsAotCompatible Condition="'$(TargetFramework)' == 'net8.0' Or '$(TargetFramework)' == 'net10.0'">true</IsAotCompatible>
+
+		<Version>1.0.0</Version>
+		<PackageId>WebApiClientCore.Extensions.Masking</PackageId>
+		<Title>WebApiClientCore.Extensions.Masking</Title>
+		<Description>WebApiClientCore 的日志脱敏扩展，声明式地为请求和响应日志中的敏感字段执行脱敏</Description>
+		<Summary>内置 Replace、Truncate、Phone、Email、IdCard 等脱敏策略，支持自定义策略与依赖注入</Summary>
+		<PackageTags>masking;mask;log;sensitive;webapiclientcore</PackageTags>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\WebApiClientCore\Sign.snk</AssemblyOriginatorKeyFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\WebApiClientCore\WebApiClientCore.csproj" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+</Project>
