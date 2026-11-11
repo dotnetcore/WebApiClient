@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.34909.67
@@ -20,6 +20,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore.Extensions.NewtonsoftJson", "WebApiClientCore.Extensions.NewtonsoftJson\WebApiClientCore.Extensions.NewtonsoftJson.csproj", "{11533BA4-FB16-4D76-9E73-870D3075D3AE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore.Extensions.JsonRpc", "WebApiClientCore.Extensions.JsonRpc\WebApiClientCore.Extensions.JsonRpc.csproj", "{32DC2A56-469A-4514-A6C0-5718B5DB8294}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore.Extensions.Masking", "WebApiClientCore.Extensions.Masking\WebApiClientCore.Extensions.Masking.csproj", "{A1B2C3D4-1111-4A2B-9C3D-000000000002}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore.Masking.Test", "WebApiClientCore.Masking.Test\WebApiClientCore.Masking.Test.csproj", "{A1B2C3D4-1111-4A2B-9C3D-000000000003}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientCore.Abstractions", "WebApiClientCore.Abstractions\WebApiClientCore.Abstractions.csproj", "{BB0EFCA6-6AD2-45A2-B62D-62426F5015D2}"
 EndProject
@@ -85,6 +89,14 @@ Global
 		{F77DA016-1F63-46BF-A5A0-AD4662D528B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F77DA016-1F63-46BF-A5A0-AD4662D528B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F77DA016-1F63-46BF-A5A0-AD4662D528B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1B2C3D4-1111-4A2B-9C3D-000000000002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-1111-4A2B-9C3D-000000000002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1B2C3D4-1111-4A2B-9C3D-000000000002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1B2C3D4-1111-4A2B-9C3D-000000000002}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1B2C3D4-1111-4A2B-9C3D-000000000003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-1111-4A2B-9C3D-000000000003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1B2C3D4-1111-4A2B-9C3D-000000000003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1B2C3D4-1111-4A2B-9C3D-000000000003}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,6 +106,7 @@ Global
 		{3692CADD-3B12-4720-BB56-CE7511C69F9A} = {056F3910-2135-4D12-A420-6C3060533422}
 		{3371725B-C3BC-492C-B7A2-2B982EEF28AA} = {056F3910-2135-4D12-A420-6C3060533422}
 		{F77DA016-1F63-46BF-A5A0-AD4662D528B9} = {E938B9B9-5F60-46BA-82D4-C7C30EBF6FF2}
+		{A1B2C3D4-1111-4A2B-9C3D-000000000003} = {056F3910-2135-4D12-A420-6C3060533422}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {915190C5-E5CB-440F-84B4-AE76368EA776}
